@@ -1,0 +1,60 @@
+{
+  "name": "sonic-app",
+  "version": "0.0.1",
+  "description": "Sonic application built with React and Typescript.",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "dev": "webpack-cli serve --open --config webpack.dev.js",
+    "build": "webpack --config webpack.prod.js",
+    "format": "prettier --write ./src"
+  },
+  "author": {
+    "name": "Psychedelic",
+    "url": "https://github.com/Psychedelic"
+  },
+  "license": "GNU",
+  "devDependencies": {
+    "@commitlint/cli": "15.0.0",
+    "@commitlint/config-conventional": "15.0.0",
+    "@psychedelic/plug-inpage-provider": "1.5.0-comp",
+    "@types/react": "^17.0.30",
+    "@types/react-dom": "^17.0.9",
+    "@types/react-router-dom": "^5.3.1",
+    "@typescript-eslint/eslint-plugin": "^5.1.0",
+    "@typescript-eslint/parser": "^5.1.0",
+    "clean-webpack-plugin": "^4.0.0",
+    "commitlint": "15.0.0",
+    "css-loader": "^6.5.0",
+    "dotenv": "^10.0.0",
+    "eslint": "8.2.0",
+    "husky": "^7.0.2",
+    "lint-staged": "12.0.3",
+    "prettier": "^2.4.1",
+    "ts-loader": "^9.2.6",
+    "typescript": "^4.4.4",
+    "webpack": "^5.58.2",
+    "webpack-cli": "^4.9.1",
+    "webpack-dev-server": "^4.3.1",
+    "webpack-merge": "^5.8.0"
+  },
+  "dependencies": {
+    "@chakra-ui/react": "^1.7.2",
+    "@dfinity/candid": "^0.10.1",
+    "@dfinity/principal": "^0.10.1",
+    "@emotion/react": "^11",
+    "@emotion/styled": "^11",
+    "@reduxjs/toolkit": "^1.6.2",
+    "axios": "^0.24.0",
+    "framer-motion": "^4",
+    "ismobilejs": "^1.1.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-icons": "^4.3.1",
+    "react-redux": "^7.2.5",
+    "react-router-dom": "6.0.2"
+  },
+  "lint-staged": {
+    "*.{js,jss,ts,tsx,css,md}": "prettier --write"
+  }
+}
