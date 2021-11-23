@@ -1,3 +1,4 @@
+import { NumberInput } from '@/components';
 import {
   chevronDownSrc,
   logoSrc,
@@ -8,7 +9,6 @@ import {
   Box,
   Button,
   Flex,
-  Input,
   Menu,
   MenuButton,
   MenuList,
@@ -22,13 +22,14 @@ type Token = {
 
 type TokenBoxProps = {
   value: string,
-  handleValueChange: (string) => any,
+  setValue: (string) => any,
   onTokenSelect: (string) => any,
   tokenOptions: Array<Token>,
   currentToken: Token,
   source: 'plug' | 'sonic',
   balance: '0.00',
   amount: '0.00',
+  disabled?: boolean,
   status?: 'disabled' | 'active',
 };
 
@@ -48,14 +49,18 @@ const TokenOption = ({ img, name }: Token) => (
 export const TokenBox = ({
   status,
   value,
-  handleValueChange,
+  setValue,
   onTokenSelect,
   tokenOptions,
   currentToken,
   source,
   balance,
   amount,
+  disabled=false,
 }: TokenBoxProps) => {
+
+  const sourceImg = source === 'plug' ? greyPlugSrc : greySonicSrc;
+
   return (
     <Box
       borderRadius={20}
@@ -97,22 +102,18 @@ export const TokenBox = ({
             ))}
           </MenuList>
         </Menu>
-        <Input
+        <NumberInput
           value={value}
-          onChange={handleValueChange}
-          color={ status === 'active' ? '#F6FCFD' : '#888E8F' }
-          fontSize="30px"
-          fontWeight={700}
-          textAlign="right"
-          height="fit-content"
-          maxWidth="fit-content"
-          variant="unstyled"
-          border="none"
+          setValue={setValue}
+          disabled={disabled}
+          style={{
+            color: status === 'active' ? '#F6FCFD' : '#888E8F',
+          }}
         />
       </Flex>
       <Flex direction="row" justifyContent="space-between">
         <Flex direction="row">
-          <Box as="img" src={greyPlugSrc} mr="7px" />
+          <Box as="img" src={sourceImg} mr="7px" height="20px" />
           <Box as="p" color="#888E8F" fontSize="16px">
             {`Balance: ${balance} ${currentToken.name}`}
           </Box>
