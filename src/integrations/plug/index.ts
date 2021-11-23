@@ -1,2 +1,2 @@
-export * from './use-init';
-export * from './utils';
+export * from './use-plug-init';
+export * from './plug.utils';

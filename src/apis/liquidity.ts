@@ -1,6 +1,6 @@
 import { GetAgent } from '@/utils/getAgent';
 import { Principal } from '@dfinity/agent';
-import { parseAmount } from '@/utils/formate';
+import { parseAmount } from '@/utils/format';
 import { TokenPair } from '@/types/global';
 
 class Liquidity {

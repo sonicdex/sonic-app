@@ -1,6 +1,7 @@
 import { GetAgent } from '@/utils/getAgent';
-import { parseAmount } from '@/utils/formate';
+import { parseAmount } from '@/utils/format';
 import { authClient } from '@/utils/getAgent/identity';
+
 class Swap {
   async getActor() {
     return await GetAgent.swapActor();
@@ -23,6 +24,7 @@ class Swap {
     try {
       const owner = authClient?.principal;
       const currentTime = (new Date().getTime() + 5 * 60 * 1000) * 10000000;
+
       const call = await (
         await this.getActor()
       ).swapExactTokensForTokens(
@@ -32,6 +34,7 @@ class Swap {
         owner || '',
         currentTime
       );
+
       const call1 = await (
         await this.getActor()
       ).swapTokensForExactTokens(
@@ -41,6 +44,7 @@ class Swap {
         owner || '',
         currentTime
       );
+
       return [call, call1];
     } catch (e) {
       console.log(e, 'swap');

@@ -1,4 +1,4 @@
-export const idlFactory = ({ IDL }) => {
+export const swapIDL = ({ IDL }) => {
   const Stats = IDL.Record({
     tokenPerUser: IDL.Nat,
     owner: IDL.Principal,
@@ -22,8 +22,3 @@ export const idlFactory = ({ IDL }) => {
   });
   return Faucet;
 };
-export const init = ({ IDL }) => {
-  return [IDL.Principal];
-};
-
-export default idlFactory;

@@ -1,4 +1,4 @@
-export default ({ IDL }) => {
+export const ledgerIDL = ({ IDL }) => {
   const AccountIdentifier = IDL.Text;
   const Duration = IDL.Record({ secs: IDL.Nat64, nanos: IDL.Nat32 });
   const ArchiveOptions = IDL.Record({
@@ -40,23 +40,4 @@ export default ({ IDL }) => {
     notify_dfx: IDL.Func([NotifyCanisterArgs], [], []),
     send_dfx: IDL.Func([SendArgs], [BlockHeight], []),
   });
-};
-export const init = ({ IDL }) => {
-  const AccountIdentifier = IDL.Text;
-  const Duration = IDL.Record({ secs: IDL.Nat64, nanos: IDL.Nat32 });
-  const ArchiveOptions = IDL.Record({
-    max_message_size_bytes: IDL.Opt(IDL.Nat32),
-    node_max_memory_size_bytes: IDL.Opt(IDL.Nat32),
-    controller_id: IDL.Principal,
-  });
-  const ICPTs = IDL.Record({ e8s: IDL.Nat64 });
-  const LedgerCanisterInitPayload = IDL.Record({
-    send_whitelist: IDL.Vec(IDL.Tuple(IDL.Principal)),
-    minting_account: AccountIdentifier,
-    transaction_window: IDL.Opt(Duration),
-    max_message_size_bytes: IDL.Opt(IDL.Nat32),
-    archive_options: IDL.Opt(ArchiveOptions),
-    initial_values: IDL.Vec(IDL.Tuple(AccountIdentifier, ICPTs)),
-  });
-  return [LedgerCanisterInitPayload];
 };

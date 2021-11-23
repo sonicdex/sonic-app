@@ -11,3 +11,7 @@ export const parseToken = <T extends BaseToken>(token: string) => {
     return null;
   }
 };
+
+export const createBearerToken = (token: string): string => {
+  return `Bearer ${token}`;
+};

@@ -17,7 +17,6 @@ export default () => {
     }
 
     let result = number.toString();
-
     const arr = result.split('.');
 
     // In the case of integers
@@ -33,7 +32,6 @@ export default () => {
     }
 
     const integer = arr[0];
-
     const decimal = arr[1];
 
     if (decimal.length == n) {
@@ -49,16 +47,13 @@ export default () => {
     }
 
     result = integer + '.' + decimal.substr(0, n);
-
     const last = decimal.substr(n, 1);
 
     // Round, convert to integer and then process, avoid the loss of floating-point precision
 
     if (parseInt(last, 10) >= 5) {
       const x = Math.pow(10, n);
-
       result = (Math.round(parseFloat(result) * x) + 1) / x;
-
       result = result.toFixed(n);
     }
 

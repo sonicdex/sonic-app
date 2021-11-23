@@ -1,5 +1,5 @@
 export enum LocalStorageKey {
-  ExampleKey = 'example-key',
+  WalletType = 'WALLET_TYPE',
 }
 
 export function getFromStorage(key: LocalStorageKey): any | undefined {

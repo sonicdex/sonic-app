@@ -1,7 +1,7 @@
 import { GetAgent } from '@/utils/getAgent';
 import { TokenValue, TokenInfo } from '@/types/global';
 import { Principal } from '@dfinity/agent';
-import { parseAmount } from '@/utils/formate';
+import { parseAmount } from '@/utils/format';
 import { authClient } from '@/utils/getAgent/identity';
 import { CommonApi } from './common';
 class Assets {

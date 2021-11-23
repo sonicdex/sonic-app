@@ -1,4 +1,4 @@
-export const cutPrincipalId = (principalId: string) => {
+export const desensitizationPrincipalId = (principalId: string) => {
   if (principalId) {
     const firstPart = principalId.slice(0, 5);
     const secondPart = principalId.slice(
