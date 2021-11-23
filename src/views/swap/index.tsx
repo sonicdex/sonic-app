@@ -51,14 +51,11 @@ export const Swap = () => {
       <Box mt="20px">
         <TokenBox
           value={fromValue}
-          handleValueChange={(e) => {
-            console.log(e);
-            setFromValue(e.target.value);
-          }}
+          setValue={setFromValue}
           onTokenSelect={handleTokenSelect}
           tokenOptions={Object.values(tokenOptions)}
           currentToken={fromToken}
-          source="plug"
+          source="sonic"
           balance="0.00"
           amount="0.00"
         />
