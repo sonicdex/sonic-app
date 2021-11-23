@@ -8,9 +8,12 @@ type TitleBoxProps = {
   title: string,
 };
 
-export const TitleBox = ({...props} : TitleBoxProps) => {
-  const { title, children, settings, onArrowBack } = props;
-
+export const TitleBox = ({
+  children,
+  title,
+  settings,
+  onArrowBack,
+} : TitleBoxProps) => {
   const headerBottomRadius = children ? 0 : 20;
   const titleRightAdjustment = settings ? "-16px" : "auto";
   const titleLeftAdjustment = onArrowBack ? "-16px" : "auto";
@@ -20,9 +23,9 @@ export const TitleBox = ({...props} : TitleBoxProps) => {
       direction="column"
     >
       <Flex
-        pt={15}
-        pb={13}
-        px={21}
+        pt="15px"
+        pb="13px"
+        px="21px"
         bg="#1E1E1E"
         fontSize={18}
         color="#F6FCFD"
@@ -55,8 +58,8 @@ export const TitleBox = ({...props} : TitleBoxProps) => {
       </Flex>
       { children && (
         <Box
-          py={15}
-          px={21}
+          py="8px"
+          px="21px"
           bg="#282828"
           borderBottomRadius={20}
         >
