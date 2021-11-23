@@ -6,3 +6,4 @@ export * from './button';
 export * from './toggle';
 export * from './title-box';
 export * from './token-box';
+export * from './number-input';
