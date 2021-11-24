@@ -8,3 +8,7 @@ export { default as infoSrc } from './info.svg';
 export { default as closeSrc } from './close.svg';
 export { default as settingSrc } from './settings.svg';
 export { default as arrowDownSrc } from './arrow-down.svg';
+export { default as checkSrc } from './check.svg';
+export { default as swapSrc } from './swap.svg';
+export { default as withdrawSrc } from './withdraw.svg';
+export { default as depositSrc } from './deposit.svg';
