@@ -7,3 +7,4 @@ export { default as greyPlugSrc } from './grey-plug.svg';
 export { default as infoSrc } from './info.svg';
 export { default as closeSrc } from './close.svg';
 export { default as settingSrc } from './settings.svg';
+export { default as arrowDownSrc } from './arrow-down.svg';
