@@ -28,6 +28,7 @@ export const NumberInput = ({
   return (
     <NumberFormat
       placeholder={placeholder}
+      disabled={disabled}
       value={value}
       onValueChange={handleValueChange}
       decimalScale={decimalPoints}
