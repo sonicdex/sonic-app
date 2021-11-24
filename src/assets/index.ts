@@ -12,3 +12,5 @@ export { default as checkSrc } from './check.svg';
 export { default as swapSrc } from './swap.svg';
 export { default as withdrawSrc } from './withdraw.svg';
 export { default as depositSrc } from './deposit.svg';
+export { default as copySrc } from './copy.svg';
+export { default as exitSrc } from './exit.svg';

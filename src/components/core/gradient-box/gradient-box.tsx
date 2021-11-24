@@ -1,13 +1,31 @@
 import { useColorModeValue } from '@chakra-ui/color-mode';
-import { Flex } from '@chakra-ui/layout';
+import { Flex, Box } from '@chakra-ui/react';
 import { FC, HTMLAttributes } from 'react';
 
 type GradientBoxProps = HTMLAttributes<HTMLDivElement> & {
   size?: 'sm' | 'md' | 'lg';
 };
 
+/*
+   _before={{
+content: '""',
+position: 'absolute',
+top: 0,
+right: 0,
+bottom: 0,
+left: 0,
+margin: '-4px',
+borderRadius: 'inherit',
+zIndex: 'hide',
+background:
+'linear-gradient(93.07deg,#ffd719 0.61%,#f754d4 33.98%,#1fd1ec 65.84%,#48fa6b 97.7%)',
+}}
+ */
+
+
 export const GradientBox: FC<GradientBoxProps> = ({
   size = 'md',
+  children,
   ...props
 }: GradientBoxProps) => {
   const bg = useColorModeValue('gray.100', 'gray.800');
@@ -29,31 +47,29 @@ export const GradientBox: FC<GradientBoxProps> = ({
 
   return (
     <Flex
-      position="relative"
       justifyContent="center"
       alignItems="center"
-      backgroundClip="padding-box"
-      borderWidth="2px"
-      borderStyle="solid"
-      borderColor="transparent"
       borderRadius="full"
       background={bg}
+      pt="-4px"
       {...boxProps[size]}
-      _before={{
-        content: '""',
-        position: 'absolute',
-        top: 0,
-        right: 0,
-        bottom: 0,
-        left: 0,
-        margin: '-4px',
-        borderRadius: 'inherit',
-        zIndex: 'hide',
-        background:
-          'linear-gradient(93.07deg,#ffd719 0.61%,#f754d4 33.98%,#1fd1ec 65.84%,#48fa6b 97.7%)',
-      }}
       size={size}
-      {...props}
-    />
+    >
+      <Box
+        position="absolute"
+        bg="linear-gradient(93.07deg,#ffd719 0.61%,#f754d4 33.98%,#1fd1ec 65.84%,#48fa6b 97.7%)"
+        width="27px"
+        height="27px"
+        borderRadius="full"
+      />
+      <Box
+        position="absolute"
+        bg="#1E1E1E"
+        height="25px"
+        width="25px"
+        borderRadius="full"
+      />
+      {children}
+    </Flex>
   );
 };
