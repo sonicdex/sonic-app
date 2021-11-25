@@ -1,15 +1,16 @@
 const path = require('path');
-const webpack = require('webpack');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 require('dotenv').config();
 
-module.exports = (env) => {
+module.exports = () => {
   return {
     entry: './src/index.tsx',
+    devtool: 'source-map',
     output: {
       path: path.join(__dirname, 'public/js'),
       publicPath: '/public',
       filename: 'bundle.js',
+      sourceMapFilename: 'bundle.js.map',
     },
     resolve: {
       extensions: ['.ts', '.tsx', '.js'],
@@ -47,15 +48,6 @@ module.exports = (env) => {
         },
       ],
     },
-    plugins: [
-      new CleanWebpackPlugin(),
-      new webpack.EnvironmentPlugin([
-        'LEDGER_CANISTER_ID',
-        'SWAP_CANISTER_ID',
-        'SWAP_STORAGE_CANISTER_ID',
-        'WICP_CANISTER_ID',
-        'XTC_CANISTER_ID',
-      ]),
-    ],
+    plugins: [new CleanWebpackPlugin()],
   };
 };
