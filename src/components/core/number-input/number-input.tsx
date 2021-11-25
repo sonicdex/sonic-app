@@ -22,7 +22,7 @@ export const NumberInput = ({
   style={},
 }: NumberInputProps) => {
   const handleValueChange = (response) => {
-    setValue(response.formatedValue);
+    setValue(response.formattedValue);
   };
 
   return (
