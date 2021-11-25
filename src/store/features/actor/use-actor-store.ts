@@ -1,20 +1,33 @@
-import { TokenIDL } from '@/did';
-import { AppActors } from '@/integrations/actor';
 import { useAppDispatch, useAppSelector } from '@/store';
 
-import { selectActorState, setActors, setTokenActors } from '.';
+import {
+  Actors,
+  TokenActors,
+  selectActorState,
+  setActors,
+  setTokenActors,
+} from '.';
 
 export const useActorStore = () => {
   const { actors, tokenActors, state } = useAppSelector(selectActorState);
   const dispatch = useAppDispatch();
 
-  const _setActors = (actors: AppActors[]) => {
+  const _setActors = (actors: Partial<Actors>) => {
     dispatch(setActors(actors));
   };
 
-  const _setTokenActors = (actors: TokenIDL.Factory) => {
+  const _setTokenActors = (actors: TokenActors) => {
     dispatch(setTokenActors(actors));
   };
+
+  const getTokenActor = (canisterId: string) => {
+    if (!tokenActors[canisterId]) {
+    }
+
+    return tokenActors[canisterId];
+  };
+
+  const getNewTokenActor = (cawnisterId: string) => {};
 
   return {
     actors,

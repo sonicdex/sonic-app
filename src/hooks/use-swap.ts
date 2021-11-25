@@ -1,17 +1,15 @@
-import { GetAgent } from '@/utils/getAgent';
 import { parseAmount } from '@/utils/format';
-import { authClient } from '@/utils/getAgent/identity';
+import { useActorStore } from '@/store/features/actor';
+import { usePlugStore } from '@/store';
+import { Principal } from '@dfinity/principal';
 
-class Swap {
-  async getActor() {
-    return await GetAgent.swapActor();
-  }
+export const useSwapView = () => {
+  const { actors } = useActorStore();
+  const { swap: swapActor } = actors;
 
-  async getCommonTokenActor(canisterId: string) {
-    return await GetAgent.commonTokenActor(canisterId);
-  }
+  const { principalId } = usePlugStore();
 
-  async swap(
+  async function swap(
     tokenIn: string,
     tokenOut: string,
     amountIn: string,
@@ -22,27 +20,22 @@ class Swap {
     decimalOut: number
   ) {
     try {
-      const owner = authClient?.principal;
       const currentTime = (new Date().getTime() + 5 * 60 * 1000) * 10000000;
 
-      const call = await (
-        await this.getActor()
-      ).swapExactTokensForTokens(
+      const call = await swapActor.swapExactTokensForTokens(
         parseAmount(amountIn, decimalIn),
         parseAmount(amountOutMin, decimalIn),
         [tokenIn, tokenOut],
-        owner || '',
-        currentTime
+        Principal.fromText(principalId),
+        BigInt(currentTime)
       );
 
-      const call1 = await (
-        await this.getActor()
-      ).swapTokensForExactTokens(
+      const call1 = await swapActor.swapTokensForExactTokens(
         parseAmount(amountOut, decimalOut),
         parseAmount(amountInMax, decimalOut),
         [tokenIn, tokenOut],
-        owner || '',
-        currentTime
+        Principal.fromText(principalId),
+        BigInt(currentTime)
       );
 
       return [call, call1];
@@ -51,6 +44,8 @@ class Swap {
       return e;
     }
   }
-}
 
-export const SwapApi = new Swap();
+  return {
+    swap,
+  };
+};

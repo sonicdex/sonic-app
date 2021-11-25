@@ -4,13 +4,13 @@ import type { RootState } from '@/store';
 import { LedgerIDL, SwapIDL, SwapStorageIDL, TokenIDL } from '@/did';
 import { ENV } from '@/config';
 
-interface Actors {
+export interface Actors {
   ledger?: LedgerIDL.Factory;
   swap?: SwapIDL.Factory;
   swapStorage?: SwapStorageIDL.Factory;
 }
 
-interface TokenActors {
+export interface TokenActors {
   [canisterId: string]: TokenIDL.Factory;
 }
 

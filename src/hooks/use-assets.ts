@@ -1,16 +1,13 @@
-// TODO: Rewrite to functional programming style
 import { Principal } from '@dfinity/principal';
 
 import { TokenInfo } from '@/typings/global';
 import { parseAmount } from '@/utils/format';
 import { useActorStore } from '@/store/features/actor';
 import { usePlugStore } from '@/store';
-import { useCommonApi } from './use-token';
 
 export const useAssets = () => {
   const { actors } = useActorStore();
   const { principalId } = usePlugStore();
-  const { getTokenInfo } = useCommonApi();
   const { swap: swapActor } = actors;
 
   async function getTokens() {
@@ -70,7 +67,6 @@ export const useAssets = () => {
       );
     } catch (e) {
       console.log(e, 'deposit');
-      return e;
     }
   }
 

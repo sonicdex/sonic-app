@@ -1,12 +1,15 @@
 import BigNumber from 'bignumber.js';
 import { ethers } from 'ethers';
-import { parseUnits, formatUnits } from 'ethers/lib/utils';
+import { formatUnits } from 'ethers/lib/utils';
 import axios from 'axios';
 
 import { principalToAccountIdentifier } from './common';
 import RosettaApi from '@/apis/rosetta';
 import { plug } from '@/integrations/plug';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { usePlugStore } from '@/store';
+import { Principal } from '@dfinity/principal';
+import { parseAmount } from './format';
 
 export const formatICP = (val: BigInt): string => {
   try {
@@ -34,38 +37,13 @@ export const parseICP = (val: string): BigInt => {
   }
 };
 
-export const parseAmount = (val: string, decimals: number): BigInt => {
-  try {
-    const str = parseUnits(val, decimals).toString();
-    return BigInt(str);
-  } catch (err) {
-    return BigInt(0);
-  }
-};
-
-export const useICPBalance = async (principal: string) => {
-  const [balance, setBalance] = useState(BigInt(0));
-
+export const getICPBalance = (principal: Principal) => {
   let res = {
     status: 0,
     data: '',
     msg: '',
   };
 
-  const { plugWallet } = store.getState();
-
-  if (plugWallet.principal) {
-    const result: any = await plug.requestBalance();
-    console.log('Plug balance result');
-
-    const amount =
-      result.find((balance) => balance.name === 'ICP')?.amount || 0;
-    return {
-      status: 1,
-      data: String(amount),
-      msg: '',
-    };
-  }
   const rosettaAPI = new RosettaApi();
 
   let promise = new Promise<{ status: number; data: string; msg: string }>(
@@ -88,6 +66,32 @@ export const useICPBalance = async (principal: string) => {
   );
 
   return promise;
+};
+
+export const useICPBalance = () => {
+  const { principalId } = usePlugStore();
+  const [balance, setBalance] = useState(BigInt(0));
+
+  const getBalance = async () => {
+    if (principalId) {
+      const result: any = plug.requestBalance();
+
+      const balance =
+        result.find((balance) => balance.name === 'ICP')?.amount || 0;
+
+      setBalance(balance);
+      return balance;
+    }
+  };
+
+  useEffect(() => {
+    getBalance();
+  }, [principalId]);
+
+  return {
+    balance,
+    getBalance,
+  };
 };
 
 export const getICPPrice = () => {

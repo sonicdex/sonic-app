@@ -1,27 +1,21 @@
+import { Principal } from '@dfinity/principal';
 import { useActorStore } from '@/store/features/actor';
+import { useEffect } from 'react';
+import { usePlugStore } from '@/store';
 
-export const useCommonApi = () => {
+export const useToken = (canisterId: string) => {
+  const { principalId } = usePlugStore();
   const { actors, tokenActors } = useActorStore();
 
-  const { swapActor } = actors;
+  useEffect(() => {}, [canisterId]);
 
-  async function getCommonTokenActor(canisterId: string) {
-    return await GetAgent.commonTokenActor(canisterId);
-  }
-  async function commonNoIdentityActor(canisterId: string) {
-    return await GetAgent.commonNoIdentityActor(canisterId);
-  }
+  const { swap: swapActor } = actors;
 
-  async function getPair(
-    token0: string,
-    token1: string
-  ): Promise<TokenPair[] | []> {
+  async function getPair(token0: string, token1: string) {
     try {
-      const result = await (
-        await this.getActor()
-      ).getPair(
-        Principal.fromText(token0) || '',
-        Principal.fromText(token1) || ''
+      const result = await swapActor.getPair(
+        Principal.fromText(token0),
+        Principal.fromText(token1)
       );
       return (result as []).length ? (result as []) : [];
     } catch (e) {
@@ -53,10 +47,9 @@ export const useCommonApi = () => {
   // get wallet balanceof
   async function balanceOf(tokenCanisterId: string) {
     try {
-      const owner = authClient?.principal;
       return await (
         await this.getCommonTokenActor(tokenCanisterId)
-      ).balanceOf(owner);
+      ).balanceOf(principalId);
     } catch (e) {
       console.log(e, 'balanceOf');
       return e;
@@ -84,10 +77,9 @@ export const useCommonApi = () => {
     spender: string
   ): Promise<any> {
     try {
-      const owner = authClient?.principal;
       return await (
         await this.getCommonTokenActor(tokenCanisterId)
-      ).allowance(owner, Principal.fromText(spender));
+      ).allowance(principalId, Principal.fromText(spender));
     } catch (e) {
       console.log(e, 'approve');
       return e;
