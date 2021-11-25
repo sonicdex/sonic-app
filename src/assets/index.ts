@@ -14,3 +14,4 @@ export { default as withdrawSrc } from './withdraw.svg';
 export { default as depositSrc } from './deposit.svg';
 export { default as copySrc } from './copy.svg';
 export { default as exitSrc } from './exit.svg';
+export { default as equalSrc } from './equal.svg';
