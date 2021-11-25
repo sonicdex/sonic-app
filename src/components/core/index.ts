@@ -7,3 +7,5 @@ export * from './toggle';
 export * from './title-box';
 export * from './token-box';
 export * from './number-input';
+export * from './information-box';
+export * from './header';
