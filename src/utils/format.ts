@@ -1,12 +1,12 @@
 import BigNumber from 'bignumber.js';
-import { TokenValue } from '@/typings/global';
+
 import { parseUnits, formatUnits } from 'ethers/lib/utils';
 import { Bytes } from '@ethersproject/bytes';
 import { ethers } from 'ethers';
 
 export type BigNumberish = BigNumber | Bytes | bigint | string | number;
 
-export const parseAmount = (val: string, decimals: number): BigInt => {
+export const parseAmount = (val: string, decimals: number): bigint => {
   try {
     const str = parseUnits(val, decimals).toString();
     return BigInt(str);
@@ -122,17 +122,12 @@ export const calculatePriceImpact = (
   return impact;
 };
 
-interface InitDefaultLiquidityTokenProps {
-  defaultFromToken: TokenValue | string;
-  defaultToToken: TokenValue | string;
-}
-
 export const initDefaultLiquidityToken = ({
   fromToken,
   toToken,
   token0,
   token1,
-}): InitDefaultLiquidityTokenProps => {
+}) => {
   const defaultFromToken = fromToken
     ? {
         decimals: fromToken.decimals,

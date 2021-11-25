@@ -78,16 +78,6 @@ export interface Token {
   timestamp: BigInt;
 }
 
-export interface TokenValue {
-  decimals: number;
-  fee: bigint;
-  id: string;
-  name: string;
-  symbol: string;
-  totalSupply: number;
-  logo?: string;
-}
-
 export interface TokenMetadata {
   canisterId: string;
   cycles: BigInt;

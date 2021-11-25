@@ -1,10 +1,12 @@
 import BigNumber from 'bignumber.js';
-import { principalToAccountIdentifier } from '../utils/common';
-import RosettaApi from './rosetta';
 import { ethers } from 'ethers';
 import { parseUnits, formatUnits } from 'ethers/lib/utils';
 import axios from 'axios';
-import store from '../redux/store';
+
+import { principalToAccountIdentifier } from './common';
+import RosettaApi from '@/apis/rosetta';
+import { plug } from '@/integrations/plug';
+import { useState } from 'react';
 
 export const formatICP = (val: BigInt): string => {
   try {
@@ -41,16 +43,21 @@ export const parseAmount = (val: string, decimals: number): BigInt => {
   }
 };
 
-export const getICPBalance = async (principal: string) => {
+export const useICPBalance = async (principal: string) => {
+  const [balance, setBalance] = useState(BigInt(0));
+
   let res = {
     status: 0,
     data: '',
     msg: '',
   };
+
   const { plugWallet } = store.getState();
+
   if (plugWallet.principal) {
-    // @ts-ignore
-    const result = await window?.ic.plug.requestBalance();
+    const result: any = await plug.requestBalance();
+    console.log('Plug balance result');
+
     const amount =
       result.find((balance) => balance.name === 'ICP')?.amount || 0;
     return {
@@ -60,6 +67,7 @@ export const getICPBalance = async (principal: string) => {
     };
   }
   const rosettaAPI = new RosettaApi();
+
   let promise = new Promise<{ status: number; data: string; msg: string }>(
     (resolve, reject) => {
       if (!principal) return resolve(res);
@@ -78,6 +86,7 @@ export const getICPBalance = async (principal: string) => {
         });
     }
   );
+
   return promise;
 };
 

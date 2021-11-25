@@ -1,27 +1,19 @@
-import { GetAgent } from '@/utils/getAgent';
-import { Principal } from '@dfinity/agent';
+import { Principal } from '@dfinity/principal';
 import { parseAmount } from '@/utils/format';
-import { TokenPair } from '@/types/global';
+import { useActorStore } from '@/store/features/actor';
 
-class Liquidity {
-  async getActor() {
-    return await GetAgent.swapActor();
-  }
+export const useLiquidity = () => {
+  const { actors } = useActorStore();
+  const { swap: swapActor } = actors;
 
-  async getCommonTokenActor(canisterId: string) {
-    return await GetAgent.commonTokenActor(canisterId);
-  }
-
-  async getUserLPBalances(owner: Principal) {
+  async function getUserLPBalances(owner: Principal) {
     try {
-      let result: unknown = await (
-        await this.getActor()
-      ).getUserLPBalances(owner);
+      let result: unknown = await swapActor.getUserLPBalances(owner);
       if (result) {
         const lps: any[] = [];
         for (const i of result as []) {
           const par: string[] = (i[0] as string).split(':');
-          let LP = (await this.getPair(par[0], par[1]))[0];
+          let LP = (await getPair(par[0], par[1]))[0];
           LP.lptokens = i[1];
           lps.push(LP);
         }
@@ -33,33 +25,29 @@ class Liquidity {
     }
   }
 
-  async getPair(token0: string, token1: string): Promise<TokenPair[] | []> {
+  async function getPair(token0: string, token1: string) {
     try {
-      const result = await (
-        await this.getActor()
-      ).getPair(
-        Principal.fromText(token0) || '',
-        Principal.fromText(token1) || ''
+      const result = await swapActor.getPair(
+        Principal.fromText(token0),
+        Principal.fromText(token1)
       );
-      return (result as []).length ? (result as []) : [];
+      return result ?? [];
     } catch (e) {
       console.log(e, 'balanceOf');
       return e;
     }
   }
 
-  async getTokenInfo(tokenCanisterId) {
+  function getTokenInfo(tokenCanisterId: string) {
     try {
-      return await (
-        await this.getCommonTokenActor(tokenCanisterId)
-      ).getMetadata();
+      return getCommonTokenActor(tokenCanisterId).getMetadata();
     } catch (e) {
       console.log(e, 'getTokenInfo');
       return e;
     }
   }
 
-  async addLiquidity(
+  async function addLiquidity(
     token0: string,
     token1: string,
     amount0: string,
@@ -71,23 +59,21 @@ class Liquidity {
   ) {
     try {
       const currentTime = (new Date().getTime() + 5 * 60 * 1000) * 10000000;
-      return await (
-        await this.getActor()
-      ).addLiquidity(
+      return await swapActor.addLiquidity(
         Principal.fromText(token0),
         Principal.fromText(token1),
         parseAmount(amount0, decimal0),
         parseAmount(amount1, decimal1),
         parseAmount(amount0Min, decimal0),
         parseAmount(amount1Min, decimal1),
-        currentTime
+        BigInt(currentTime)
       );
     } catch (e) {
       console.log(e, 'balanceOf');
       return e;
     }
   }
-  async removeLiquidity(
+  async function removeLiquidity(
     token0: string,
     token1: string,
     lpAmount: string,
@@ -98,21 +84,25 @@ class Liquidity {
   ) {
     try {
       const currentTime = (new Date().getTime() + 5 * 60 * 1000) * 10000000;
-      return await (
-        await this.getActor()
-      ).removeLiquidity(
+      return await swapActor.removeLiquidity(
         Principal.fromText(token0),
         Principal.fromText(token1),
         BigInt(lpAmount),
         parseAmount(amount0Min, Number(decimal0)),
         parseAmount(amount1Min, Number(decimal1)),
-        currentTime
+        BigInt(currentTime)
       );
     } catch (e) {
       console.log(e, 'balanceOf');
       return e;
     }
   }
-}
 
-export const LiquidityApi = new Liquidity();
+  return {
+    getUserLPBalances,
+    getPair,
+    getTokenInfo,
+    addLiquidity,
+    removeLiquidity,
+  };
+};

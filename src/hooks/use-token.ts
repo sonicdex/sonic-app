@@ -1,22 +1,21 @@
-import { GetAgent } from '@/utils/getAgent';
-import { Principal } from '@dfinity/agent';
-import { parseAmount } from '@/utils/format';
-import { TokenPair } from '@/types/global';
-import { authClient } from '@/utils/getAgent/identity';
+import { useActorStore } from '@/store/features/actor';
 
-class Common {
-  async getActor() {
-    return await GetAgent.swapActor();
-  }
+export const useCommonApi = () => {
+  const { actors, tokenActors } = useActorStore();
 
-  async getCommonTokenActor(canisterId: string) {
+  const { swapActor } = actors;
+
+  async function getCommonTokenActor(canisterId: string) {
     return await GetAgent.commonTokenActor(canisterId);
   }
-  async commonNoIdentityActor(canisterId: string) {
+  async function commonNoIdentityActor(canisterId: string) {
     return await GetAgent.commonNoIdentityActor(canisterId);
   }
 
-  async getPair(token0: string, token1: string): Promise<TokenPair[] | []> {
+  async function getPair(
+    token0: string,
+    token1: string
+  ): Promise<TokenPair[] | []> {
     try {
       const result = await (
         await this.getActor()
@@ -31,7 +30,7 @@ class Common {
     }
   }
 
-  async getMetadata(tokenCanisterId) {
+  async function getMetadata(tokenCanisterId) {
     try {
       return await (
         await this.commonNoIdentityActor(tokenCanisterId)
@@ -41,7 +40,7 @@ class Common {
       return e;
     }
   }
-  async getTokenInfo(tokenCanisterId) {
+  async function getTokenInfo(tokenCanisterId) {
     try {
       return await (
         await this.getCommonTokenActor(tokenCanisterId)
@@ -52,7 +51,7 @@ class Common {
     }
   }
   // get wallet balanceof
-  async balanceOf(tokenCanisterId: string) {
+  async function balanceOf(tokenCanisterId: string) {
     try {
       const owner = authClient?.principal;
       return await (
@@ -64,7 +63,7 @@ class Common {
     }
   }
 
-  async approve(
+  async function approve(
     tokenCanisterId: string,
     spender: string,
     value: string | number,
@@ -80,7 +79,10 @@ class Common {
       return e;
     }
   }
-  async allowance(tokenCanisterId: string, spender: string): Promise<any> {
+  async function allowance(
+    tokenCanisterId: string,
+    spender: string
+  ): Promise<any> {
     try {
       const owner = authClient?.principal;
       return await (
@@ -91,6 +93,8 @@ class Common {
       return e;
     }
   }
-}
 
-export const CommonApi = new Common();
+  return {
+    getTokenInfo,
+  };
+};

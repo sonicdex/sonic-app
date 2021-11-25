@@ -13,8 +13,12 @@ export const usePlugInit = () => {
 
     if (connectionPromise) {
       connectionPromise
-        ?.then((isConnected) => {
-          setIsConnected(isConnected);
+        .then(async (isConnected) => {
+          if (isConnected) {
+            const hasPrincipal = await getPrincipal();
+            if (hasPrincipal) return setIsConnected(isConnected);
+          }
+          return setIsConnected(false);
         })
         .catch((err) => {
           console.error(err);

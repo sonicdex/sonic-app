@@ -5,9 +5,9 @@ import { TagCloseButton, TagLabel } from '@chakra-ui/react';
 
 import { disconnect } from '@/integrations/plug';
 import { FeatureState, useAppDispatch, usePlugStore } from '@/store';
-import { cutPrincipalId } from '@/utils';
 import { DUMMY_PRINCIPAL_ID } from '@/config';
 import { Emoji, GradientBox } from '@/components/core';
+import { desensitizationPrincipalId } from '@/utils/canister';
 
 type PlugPrincipalIDTagProps = TagProps;
 
@@ -22,8 +22,10 @@ export const PlugPrincipalIDTag = forwardRef<
     setIsConnected(false);
   };
 
-  const shortenedPrincipalId = useMemo(() => {
-    const result = cutPrincipalId(principalId ?? DUMMY_PRINCIPAL_ID);
+  const desensitizedPrincipalId = useMemo(() => {
+    const result = desensitizationPrincipalId(
+      principalId ?? DUMMY_PRINCIPAL_ID
+    );
 
     return result;
   }, [principalId]);
@@ -43,7 +45,7 @@ export const PlugPrincipalIDTag = forwardRef<
           <Emoji label="Fire">🔥</Emoji>
         </GradientBox>
       )}
-      <TagLabel ml="2">{shortenedPrincipalId}</TagLabel>
+      <TagLabel ml="2">{desensitizedPrincipalId}</TagLabel>
       <TagCloseButton onClick={onClick} />
     </Tag>
   );
