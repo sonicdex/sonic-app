@@ -44,6 +44,14 @@ export const AddLiquidityStep = ({ onPrevious, onAdd }: AddLiquidityStepProps) =
     setter(tokenOptions[tokenName]);
   };
 
+  const handlePreviousStep = () => {
+    if (subStep === 0) {
+      onPrevious();
+    } else {
+      setSubStep(subStep - 1);
+    }
+  };
+
   const getActiveStatus = (token, value) => {
     const shouldBeActive = (token &&
       value?.length &&
@@ -78,7 +86,7 @@ export const AddLiquidityStep = ({ onPrevious, onAdd }: AddLiquidityStepProps) =
   return (
     <>
       <TitleBox
-        onArrowBack={onPrevious}
+        onArrowBack={handlePreviousStep}
         title="Add Liquidity"
         settings={true}
       />
