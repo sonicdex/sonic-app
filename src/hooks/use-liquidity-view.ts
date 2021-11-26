@@ -1,9 +1,11 @@
 import { Principal } from '@dfinity/principal';
 import { parseAmount } from '@/utils/format';
 import { useActorStore } from '@/store/features/actor';
+import { useToken } from './use-token';
 
-export const useLiquidity = () => {
+export const useLiquidityView = () => {
   const { actors } = useActorStore();
+  const { getNotIdentifiedTokenActor } = useToken();
   const { swap: swapActor } = actors;
 
   async function getUserLPBalances(owner: Principal) {
@@ -40,7 +42,7 @@ export const useLiquidity = () => {
 
   function getTokenInfo(tokenCanisterId: string) {
     try {
-      return getCommonTokenActor(tokenCanisterId).getMetadata();
+      return getNotIdentifiedTokenActor(tokenCanisterId).getMetadata();
     } catch (e) {
       console.log(e, 'getTokenInfo');
       return e;
@@ -84,7 +86,8 @@ export const useLiquidity = () => {
   ) {
     try {
       const currentTime = (new Date().getTime() + 5 * 60 * 1000) * 10000000;
-      return await swapActor.removeLiquidity(
+      // TODO: Fix parameters
+      return await (swapActor as any).removeLiquidity(
         Principal.fromText(token0),
         Principal.fromText(token1),
         BigInt(lpAmount),

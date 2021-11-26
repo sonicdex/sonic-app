@@ -1,13 +1,48 @@
 import { Principal } from '@dfinity/principal';
 import { useActorStore } from '@/store/features/actor';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { usePlugStore } from '@/store';
+import { parseAmount } from '@/utils/format';
+import { Actor, HttpAgent } from '@dfinity/agent';
+import { ENV } from '@/config';
+import { IDL } from '@dfinity/candid';
+import { TokenIDL } from '@/did';
+import { ActorAdapter } from '@/integrations/actor';
 
-export const useToken = (canisterId: string) => {
+const getNotIdentifiedAgent = () => {
+  return new HttpAgent({ host: ENV.host });
+};
+
+const getNotIdentifiedActor = (
+  canisterId: string,
+  factory: IDL.InterfaceFactory
+) => {
+  const agent = getNotIdentifiedAgent();
+
+  return Actor.createActor(factory, {
+    agent,
+    canisterId,
+  });
+};
+
+export const useToken = (canisterId?: string) => {
   const { principalId } = usePlugStore();
-  const { actors, tokenActors } = useActorStore();
+  const { actors, tokenActors, setTokenActors } = useActorStore();
 
-  useEffect(() => {}, [canisterId]);
+  useEffect(() => {
+    if (canisterId && !tokenActors[canisterId]) {
+      new ActorAdapter(window.ic.plug)
+        .createActor<TokenIDL.Factory>(canisterId, TokenIDL.factory)
+        .then((newTokenActor) => {
+          setTokenActors({ [canisterId]: newTokenActor });
+        })
+        .catch((error) => console.error(error));
+    }
+  }, [canisterId]);
+
+  const getNotIdentifiedTokenActor = (canisterId: string) => {
+    return getNotIdentifiedActor(canisterId, TokenIDL.factory);
+  };
 
   const { swap: swapActor } = actors;
 
@@ -24,21 +59,17 @@ export const useToken = (canisterId: string) => {
     }
   }
 
-  async function getMetadata(tokenCanisterId) {
+  async function getMetadata(tokenCanisterId: string) {
     try {
-      return await (
-        await this.commonNoIdentityActor(tokenCanisterId)
-      ).getMetadata();
+      return await getNotIdentifiedTokenActor(tokenCanisterId).getMetadata();
     } catch (e) {
       console.log(e, 'balanceOf');
       return e;
     }
   }
-  async function getTokenInfo(tokenCanisterId) {
+  async function getTokenInfo(tokenCanisterId: string) {
     try {
-      return await (
-        await this.getCommonTokenActor(tokenCanisterId)
-      ).getTokenInfo();
+      return await getNotIdentifiedTokenActor(tokenCanisterId).getTokenInfo();
     } catch (e) {
       console.log(e, 'balanceOf');
       return e;
@@ -47,9 +78,9 @@ export const useToken = (canisterId: string) => {
   // get wallet balanceof
   async function balanceOf(tokenCanisterId: string) {
     try {
-      return await (
-        await this.getCommonTokenActor(tokenCanisterId)
-      ).balanceOf(principalId);
+      return await getNotIdentifiedTokenActor(tokenCanisterId).balanceOf(
+        principalId
+      );
     } catch (e) {
       console.log(e, 'balanceOf');
       return e;
@@ -64,9 +95,10 @@ export const useToken = (canisterId: string) => {
   ): Promise<any> {
     try {
       const amount = parseAmount(value.toString(), decimals);
-      return await (
-        await this.getCommonTokenActor(tokenCanisterId)
-      ).approve(Principal.fromText(spender), amount);
+      return await getNotIdentifiedTokenActor(tokenCanisterId).approve(
+        Principal.fromText(spender),
+        amount
+      );
     } catch (e) {
       console.log(e, 'approve');
       return e;
@@ -77,9 +109,10 @@ export const useToken = (canisterId: string) => {
     spender: string
   ): Promise<any> {
     try {
-      return await (
-        await this.getCommonTokenActor(tokenCanisterId)
-      ).allowance(principalId, Principal.fromText(spender));
+      return await getNotIdentifiedTokenActor(tokenCanisterId).allowance(
+        principalId,
+        Principal.fromText(spender)
+      );
     } catch (e) {
       console.log(e, 'approve');
       return e;
@@ -88,5 +121,11 @@ export const useToken = (canisterId: string) => {
 
   return {
     getTokenInfo,
+    approve,
+    balanceOf,
+    getMetadata,
+    getPair,
+    allowance,
+    getNotIdentifiedTokenActor,
   };
 };

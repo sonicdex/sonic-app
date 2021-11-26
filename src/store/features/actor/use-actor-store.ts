@@ -1,4 +1,8 @@
+import { ENV } from '@/config';
+import { TokenIDL } from '@/did';
 import { useAppDispatch, useAppSelector } from '@/store';
+import { Actor, HttpAgent } from '@dfinity/agent';
+import { IDL } from '@dfinity/candid';
 
 import {
   Actors,
@@ -19,15 +23,6 @@ export const useActorStore = () => {
   const _setTokenActors = (actors: TokenActors) => {
     dispatch(setTokenActors(actors));
   };
-
-  const getTokenActor = (canisterId: string) => {
-    if (!tokenActors[canisterId]) {
-    }
-
-    return tokenActors[canisterId];
-  };
-
-  const getNewTokenActor = (cawnisterId: string) => {};
 
   return {
     actors,

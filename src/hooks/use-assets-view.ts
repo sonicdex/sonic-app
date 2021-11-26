@@ -4,11 +4,13 @@ import { TokenInfo } from '@/typings/global';
 import { parseAmount } from '@/utils/format';
 import { useActorStore } from '@/store/features/actor';
 import { usePlugStore } from '@/store';
+import { useToken } from './use-token';
 
-export const useAssets = () => {
+export const useAssetsView = () => {
   const { actors } = useActorStore();
   const { principalId } = usePlugStore();
   const { swap: swapActor } = actors;
+  const { getTokenInfo } = useToken();
 
   async function getTokens() {
     try {
