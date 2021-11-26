@@ -16,7 +16,7 @@ export const TitleBox = ({
 } : TitleBoxProps) => {
   const headerBottomRadius = children ? 0 : 20;
   const titleRightAdjustment = settings ? "-16px" : "auto";
-  const titleLeftAdjustment = onArrowBack ? "-16px" : "auto";
+  const titleLeftAdjustment = onArrowBack ? "-18px" : "auto";
 
   return (
     <Flex
@@ -37,8 +37,10 @@ export const TitleBox = ({
       >
         { onArrowBack && (
           <Box
+            onClick={onArrowBack}
             as="img"
             src={arrowBackSrc}
+            cursor="pointer"
             mr="auto"
           />
         )}
