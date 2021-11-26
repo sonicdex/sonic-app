@@ -14,8 +14,10 @@ export const Emoji: React.FC<EmojiProps> = forwardRef<EmojiProps, 'svg'>(
         role="img"
         aria-label={label}
         title={label}
-        fontSize="4px"
-        transform="scale(6)"
+        fontSize="18px"
+        ml="3px"
+        mt="2px"
+        transform="scale(1)"
       >
         {children}
       </chakra.span>

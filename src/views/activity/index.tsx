@@ -1,3 +1,9 @@
+import { Header } from '@/components';
+
 export const Activity = () => {
-  return <div>Activity</div>;
+  return (
+    <>
+      <Header title="Your Activity" />
+    </>
+  );
 };

@@ -1,12 +1,12 @@
 /* global BigInt */
-import { DelegationIdentity } from "@dfinity/identity";
-import { getCrc32 } from "@dfinity/agent/lib/esm/utils/getCrc";
-import * as SHA1 from "@dfinity/agent/lib/esm/utils/sha224";
-import * as SHA2 from "js-sha256";
-import { blobFromUint8Array, blobToHex, Principal } from "@dfinity/agent";
-import crc32 from "crc-32";
-import { GetAgent } from "./getAgent";
-import {getSelectedAccount} from "./identity";
+import { DelegationIdentity } from '@dfinity/identity';
+import { getCrc32 } from '@dfinity/agent/lib/esm/utils/getCrc';
+import * as SHA1 from '@dfinity/agent/lib/esm/utils/sha224';
+import * as SHA2 from 'js-sha256';
+import { blobFromUint8Array, blobToHex, Principal } from '@dfinity/agent';
+import crc32 from 'crc-32';
+import { GetAgent } from './getAgent';
+import { getSelectedAccount } from './identity';
 
 /**
  * @param {String} str - hex string
@@ -39,8 +39,8 @@ export const isDelegateByAccount = (principal, delegationIdentityAccount) => {
  * @returns
  */
 export const principalToAccountIdentifier = (principal, s) => {
-  if (!principal) return "";
-  const padding = Buffer("\x0Aaccount-id");
+  if (!principal) return '';
+  const padding = Buffer('\x0Aaccount-id');
   const array = new Uint8Array([
     ...padding,
     ...Principal.fromText(principal).toBlob(),
@@ -63,8 +63,8 @@ const to32bits = (num) => {
 };
 const toHexString = (byteArray) => {
   return Array.from(byteArray, function (byte) {
-    return ("0" + (byte & 0xff).toString(16)).slice(-2);
-  }).join("");
+    return ('0' + (byte & 0xff).toString(16)).slice(-2);
+  }).join('');
 };
 
 /**
@@ -83,7 +83,7 @@ export const topupCycles = async (amount, canisterPrincipalString) => {
   }
   function principalToAccountId(principal, subaccount) {
     const shaObj = SHA2.sha224.create();
-    shaObj.update("\x0Aaccount-id");
+    shaObj.update('\x0Aaccount-id');
     shaObj.update(principal.toBlob());
     shaObj.update(subaccount ? subaccount : new Uint8Array(32));
     const hash = new Uint8Array(shaObj.array());
@@ -101,7 +101,7 @@ export const topupCycles = async (amount, canisterPrincipalString) => {
   }
   let promise = new Promise(async (resolve, reject) => {
     if (!process.env.REACT_APP_CMINTING_CANISTER_ID)
-      return reject({ message: "CMinting canister not found." });
+      return reject({ message: 'CMinting canister not found.' });
     try {
       const minting_id = Principal.fromText(
         process.env.REACT_APP_CMINTING_CANISTER_ID
@@ -134,17 +134,17 @@ export const topupCycles = async (amount, canisterPrincipalString) => {
   return promise;
 };
 
-export const checkMnemonic=(mne)=>{
+export const checkMnemonic = (mne) => {
   const english = require('bip39wordlist/english.json').list;
-  for (const i of mne){
-    if (!english.includes(i)){
-       return  false;
+  for (const i of mne) {
+    if (!english.includes(i)) {
+      return false;
     }
   }
 
- return  true;
-}
+  return true;
+};
 
-export const toThousands =(num)=>{
+export const toThousands = (num) => {
   return (num || 0).toString().replace(/(\d)(?=(?:\d{3})+$)/g, '$1,');
-}
+};

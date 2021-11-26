@@ -8,7 +8,7 @@ const appTheme = {
   styles: {
     global: (props) => ({
       body: {
-        bg: mode('white', 'gray.900')(props),
+        bg: mode('white', 'bg')(props),
       },
     }),
   },
