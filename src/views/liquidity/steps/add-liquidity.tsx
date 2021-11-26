@@ -4,7 +4,7 @@ import { Flex, Box } from '@chakra-ui/react';
 import { equalSrc, infoSrc, plusSrc } from '@/assets';
 import { Button, TitleBox, TokenBox } from '@/components';
 
-type AddLiquidityProps = {
+type AddLiquidityStepProps = {
   onPrevious: () => any,
   onAdd: (any) => any,
 };
@@ -30,8 +30,7 @@ const BUTTON_TITLES = [
   'Confirm Supply',
 ];
 
-
-export const AddLiquidity = ({ onPrevious, onAdd }: AddLiquidityProps) => {
+export const AddLiquidityStep = ({ onPrevious, onAdd }: AddLiquidityStepProps) => {
   // subStep 0 for review 1 for add liquidity
   const [subStep, setSubStep] = useState(0);
 
@@ -50,7 +49,7 @@ export const AddLiquidity = ({ onPrevious, onAdd }: AddLiquidityProps) => {
       value?.length &&
       (parseFloat(value) > 0));
 
-    return shouldBeActive || subStep === 1 ? 'active' : null;
+    return shouldBeActive && subStep !== 1 ? 'active' : null;
   };
 
   const shouldButtonBeActive = () => {
@@ -94,7 +93,6 @@ export const AddLiquidity = ({ onPrevious, onAdd }: AddLiquidityProps) => {
             status={getActiveStatus(fromToken, fromValue)}
             disabled={subStep === 1}
             menuDisabled={subStep === 1}
-            source={'sonic'}
             balance="0.00"
             amount="0.00"
           />
@@ -121,7 +119,6 @@ export const AddLiquidity = ({ onPrevious, onAdd }: AddLiquidityProps) => {
             tokenOptions={Object.values(tokenOptions)}
             currentToken={toToken}
             status={getActiveStatus(toToken, toValue)}
-            source={'sonic'}
             disabled={subStep === 1}
             menuDisabled={subStep === 1}
             balance="0.00"
@@ -152,7 +149,7 @@ export const AddLiquidity = ({ onPrevious, onAdd }: AddLiquidityProps) => {
                 onTokenSelect={(tokenName) => handleTokenSelect(tokenName, setToToken)}
                 tokenOptions={Object.values(tokenOptions)}
                 currentToken={toToken}
-                status={getActiveStatus(toToken, toValue)}
+                status="active"
                 balance="0.00"
                 balanceText="Share of pool:"
                 amountText="SHARE HERE"
@@ -182,9 +179,10 @@ export const AddLiquidity = ({ onPrevious, onAdd }: AddLiquidityProps) => {
       <Button
         fontSize={22}
         fontWeight={700}
+        borderRadius={20}
         title={buttonTitle}
         onClick={handleButtonClick}
-        disabled={!shouldButtonBeActive()}
+        status={shouldButtonBeActive() ? undefined : 'disabled'}
       />
     </>
   )
