@@ -1,5 +1,4 @@
 import { Box, Flex, Fade } from '@chakra-ui/react';
-import { checkPlainSrc } from '@/assets';
 
 type CheckboxProps = {
   checked: boolean;
@@ -20,7 +19,12 @@ export const Checkbox = ({ checked, onChange }: CheckboxProps) => {
       justifyContent="center"
     >
       <Fade in={checked}>
-        <Box as="img" src={checkPlainSrc} width="16px" height="16px" />
+        <Box
+          as="img"
+          src={'/assets/check-plain.svg'}
+          width="16px"
+          height="16px"
+        />
       </Fade>
     </Flex>
   );

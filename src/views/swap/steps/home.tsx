@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Box, Flex } from '@chakra-ui/react';
 
-import { arrowDownSrc } from '@/assets';
-import { useAppSelector, selectPlugState } from '@/store';
 import { TitleBox, Toggle, TokenBox, Button } from '@/components';
 
 type HomeStepProps = {
@@ -79,7 +77,7 @@ export const HomeStep = ({
           mb="-26px"
           zIndex={1200}
         >
-          <Box as="img" m="auto" src={arrowDownSrc} />
+          <Box as="img" m="auto" src={'/assets/arrow-down.svg'} />
         </Box>
         <Box mt="10px" width="100%">
           <TokenBox

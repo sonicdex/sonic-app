@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Flex, Box } from '@chakra-ui/react';
 
-import { equalSrc, infoSrc, plusSrc } from '@/assets';
 import { Button, TitleBox, TokenBox } from '@/components';
 
 type AddLiquidityStepProps = {
@@ -9,18 +8,18 @@ type AddLiquidityStepProps = {
   onAdd: (any) => any;
 };
 
-// Mocked values
+// FIXME: Mocked values
 const tokenOptions = {
   XMPL: {
-    img: infoSrc,
+    img: '/assets/info.svg',
     name: 'XMPL',
   },
   XMP2: {
-    img: infoSrc,
+    img: '/assets/info.svg',
     name: 'XMP2',
   },
   XMP3: {
-    img: infoSrc,
+    img: '/assets/info.svg',
     name: 'XMP3',
   },
 };
@@ -118,7 +117,7 @@ export const AddLiquidityStep = ({
           mb="-26px"
           zIndex={1200}
         >
-          <Box as="img" m="auto" src={plusSrc} />
+          <Box as="img" m="auto" src={'/assets/plus.svg'} />
         </Box>
         <Box mt="10px" width="100%">
           <TokenBox
@@ -151,7 +150,7 @@ export const AddLiquidityStep = ({
               mb="-26px"
               zIndex={1200}
             >
-              <Box as="img" m="auto" src={equalSrc} />
+              <Box as="img" m="auto" src={'/assets/equal.svg'} />
             </Flex>
             <Box mt="10px" width="100%">
               <TokenBox

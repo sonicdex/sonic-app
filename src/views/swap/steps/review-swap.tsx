@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Box, Flex } from '@chakra-ui/react';
 
-import { infoSrc, arrowDownSrc } from '@/assets';
 import { useAppSelector, selectPlugState } from '@/store';
 import { Checkbox, TitleBox, Toggle, TokenBox, Button } from '@/components';
 
@@ -62,7 +61,7 @@ export const ReviewStep = ({
           mb="-26px"
           zIndex={1200}
         >
-          <Box as="img" m="auto" src={arrowDownSrc} />
+          <Box as="img" m="auto" src={'/assets/arrow-down.svg'} />
         </Box>
         <Box mt="10px" width="100%">
           <TokenBox
@@ -108,7 +107,7 @@ export const ReviewStep = ({
         </Flex>
         <Box
           as="img"
-          src={infoSrc}
+          src={'/assets/info.svg'}
           width="20px"
           transition="opacity 200ms"
           opacity={keepInSonic ? 1 : 0.5}

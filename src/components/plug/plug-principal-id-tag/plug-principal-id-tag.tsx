@@ -16,9 +16,10 @@ import { disconnect } from '@/integrations/plug';
 import { FeatureState, useAppDispatch, usePlugStore } from '@/store';
 import { Emoji, GradientBox } from '@/components/core';
 import { desensitizationPrincipalId } from '@/utils/canister';
-import { copySrc, exitSrc, chevronDownSrc } from '@/assets';
 
-const ChevronIcon = () => <Box ml="11px" as="img" src={chevronDownSrc} />;
+const ChevronIcon = () => (
+  <Box ml="11px" as="img" src={'/assets/chevron-down.svg'} />
+);
 
 export const PlugPrincipalIDTag: FC<TagProps> = ({
   ...props
@@ -29,6 +30,10 @@ export const PlugPrincipalIDTag: FC<TagProps> = ({
   const handleDisconnect = () => {
     setIsConnected(false);
   };
+
+  const shortPrincipalId = useMemo(() => {
+    return desensitizationPrincipalId(principalId);
+  }, [principalId]);
 
   const mediumPrincipalId = useMemo(() => {
     return desensitizationPrincipalId(principalId, 11, 9);
@@ -56,7 +61,7 @@ export const PlugPrincipalIDTag: FC<TagProps> = ({
             </GradientBox>
           )}
           <Box ml="2" fontWeight={600}>
-            {mediumPrincipalId}
+            {shortPrincipalId}
           </Box>
           <ChevronIcon />
         </Flex>
@@ -81,7 +86,7 @@ export const PlugPrincipalIDTag: FC<TagProps> = ({
         </MenuItem>
         <MenuItem py="7px" px="19px" fontWeight={700} onClick={handleCopy}>
           <Flex direction="row">
-            <Box as="img" src={copySrc} mr="12px" />
+            <Box as="img" src={'/assets/copy.svg'} mr="12px" />
             Copy ID
           </Flex>
         </MenuItem>
@@ -93,7 +98,7 @@ export const PlugPrincipalIDTag: FC<TagProps> = ({
           onClick={handleDisconnect}
         >
           <Flex direction="row">
-            <Box as="img" src={exitSrc} mr="12px" />
+            <Box as="img" src={'/assets/exit.svg'} mr="12px" />
             Disconnect
           </Flex>
         </MenuItem>

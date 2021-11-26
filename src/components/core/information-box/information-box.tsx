@@ -1,7 +1,6 @@
 import { useState, ReactNode } from 'react';
 import { Collapse } from '@chakra-ui/react';
 import { Box, Flex } from '@chakra-ui/react';
-import { closeSrc } from '@/assets';
 
 type InformationBoxTypes = {
   title: string;
@@ -43,7 +42,7 @@ export const InformationBox = ({
               w="18px"
               cursor="pointer"
               onClick={handleClose}
-              src={closeSrc}
+              src={'/assets/close.svg'}
             />
           </Flex>
           {children}

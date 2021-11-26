@@ -1,5 +1,4 @@
 import { NumberInput } from '@/components';
-import { chevronDownSrc, logoSrc, greySonicSrc, greyPlugSrc } from '@/assets';
 import {
   Box,
   Button,
@@ -32,7 +31,7 @@ type TokenBoxProps = {
   glow?: boolean;
 };
 
-const ChevronDownIcon = () => <Box as="img" src={chevronDownSrc} />;
+const ChevronDownIcon = () => <Box as="img" src={'/assets/chevron-down.svg'} />;
 
 const TokenOption = ({ img, name }: Token) => (
   <Flex direction="row" width="fit-content" alignItems="center">
@@ -59,7 +58,8 @@ export const TokenBox = ({
   disabled = false,
   glow = false,
 }: TokenBoxProps) => {
-  const sourceImg = source === 'plug' ? greyPlugSrc : greySonicSrc;
+  const sourceImg =
+    source === 'plug' ? '/assets/grey-plug.svg' : '/assets/grey-sonic.png';
 
   const border = glow ? '1px solid #3D52F4' : '1px solid #373737';
   const background = glow ? '#151515' : '#1E1E1E';

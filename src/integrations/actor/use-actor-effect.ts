@@ -18,5 +18,5 @@ export const useActorEffect = ({
     }
 
     setActor(null);
-  }, [actor, setActor]);
+  }, [actor]);
 };

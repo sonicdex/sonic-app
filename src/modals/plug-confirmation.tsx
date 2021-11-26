@@ -7,8 +7,6 @@ import {
   ModalBody,
 } from '@chakra-ui/react';
 
-import { closeSrc, logoSrc } from '@/assets';
-
 type PlugConfirmationModalProps = {
   isOpen: boolean;
   onClose: () => any;
@@ -28,7 +26,7 @@ export const PlugConfirmationModal = ({
           right="20px"
           width="20px"
           as="img"
-          src={closeSrc}
+          src={'/assets/close.svg'}
           onClick={onClose}
           cursor="pointer"
         />
@@ -39,7 +37,7 @@ export const PlugConfirmationModal = ({
           <Box as="p" color="#888E8F" fontSize="16px" mt="13px" mb="20px">
             Please confirm this transaction in Plug
           </Box>
-          <Box width="95px" as="img" src={logoSrc} />
+          <Box width="95px" as="img" src={'/assets/logo.png'} />
         </Flex>
       </ModalBody>
     </ModalContent>

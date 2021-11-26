@@ -1,21 +1,20 @@
 import { useState } from 'react';
 
 import { useAppSelector, selectPlugState } from '@/store';
-import { infoSrc } from '@/assets';
 import { HomeStep, ReviewStep } from './steps';
 
 // Mocked
 const tokenOptions = {
   XMPL: {
-    img: infoSrc,
+    img: '/assets/info.svg',
     name: 'XMPL',
   },
   XMP2: {
-    img: infoSrc,
+    img: '/assets/info.svg',
     name: 'XMP2',
   },
   XMP3: {
-    img: infoSrc,
+    img: '/assets/info.svg',
     name: 'XMP3',
   },
 };
