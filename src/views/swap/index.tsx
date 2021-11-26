@@ -1,11 +1,10 @@
 import { useState } from 'react';
-import { Box, Flex } from '@chakra-ui/react';
 
-import { infoSrc, arrowDownSrc } from '@/assets';
 import { useAppSelector, selectPlugState } from '@/store';
-import { TitleBox, Toggle, TokenBox, Button } from '@/components';
+import { infoSrc } from '@/assets';
+import { HomeStep, ReviewStep } from './steps';
 
-// Mocked values
+// Mocked
 const tokenOptions = {
   'XMPL': {
     img: infoSrc,
@@ -21,90 +20,73 @@ const tokenOptions = {
   },
 };
 
+const STEPS = [
+  HomeStep,
+  ReviewStep,
+];
+
 export const Swap = () => {
+  const [step, setStep] = useState(0);
+
   const { isConnected } = useAppSelector(selectPlugState);
-  const [lazySwap, setLazySwap] = useState(true);
+  const [keepInSonic, setKeepInSonic] = useState(false);
   const [fromValue, setFromValue] = useState('0.00');
   const [fromToken, setFromToken] = useState(Object.values(tokenOptions)[0]);
   const [toValue, setToValue] = useState('0.00');
   const [toToken, setToToken] = useState(Object.values(tokenOptions)[1]);
 
+  const [modalOpen, setModalOpen] = useState(true);
+
   const handleTokenSelect = (tokenName, setter) => {
     setter(tokenOptions[tokenName]);
   };
 
-  const source = lazySwap ? 'plug' : 'sonic';
-  const buttonTitle = isConnected ? 'Review Swap' : 'Connect to Plug';
+  const handleNextStep = () => {
+    if ((step + 1) < STEPS.length) {
+      setStep(step + 1);
+    } else {
+      setStep(0);
+    }
+  };
 
-  return (
-    <>
-      <TitleBox title="Swap" settings="sd">
-        <Flex direction="row" justifyContent="space-between" alignItems="center">
-          <Flex
-            fontWeight={700}
-            fontSize="16px"
-            as="h4"
-            direction="row"
-          >
-            Lazy Swap
-            <Box
-              ml="7px"
-              as="img"
-              src={infoSrc}
-            />
-          </Flex>
-          <Toggle toggle={lazySwap} onToggle={() => setLazySwap(!lazySwap)} />
-        </Flex>
-      </TitleBox>
-      <Flex direction="column" alignItems="center" mb="20px">
-        <Box mt="20px" width="100%">
-          <TokenBox
-            value={fromValue}
-            setValue={setFromValue}
-            onTokenSelect={(tokenName) => handleTokenSelect(tokenName, setFromToken)}
-            tokenOptions={Object.values(tokenOptions)}
-            currentToken={fromToken}
-            source={source}
-            balance="0.00"
-            amount="0.00"
-          />
-        </Box>
-        <Box
-          borderRadius="15px"
-          width="42px"
-          height="42px"
-          border="1px solid #373737"
-          py="12px"
-          px="13px"
-          bg="#1E1E1E"
-          mt="-16px"
-          mb="-26px"
-          zIndex={1200}
-        >
-          <Box as="img" m="auto" src={arrowDownSrc} />
-        </Box>
-        <Box mt="10px" width="100%">
-          <TokenBox
-            value={toValue}
-            setValue={setToValue}
-            onTokenSelect={(tokenName) => handleTokenSelect(tokenName, setToToken)}
-            tokenOptions={Object.values(tokenOptions)}
-            currentToken={toToken}
-            disabled={true}
-            source={source}
-            balance="0.00"
-            amount="0.00"
-          />
-        </Box>
-      </Flex>
-      <Button
-        onClick={() => console.log('Handle onClick')}
-        title={buttonTitle}
-        fontWeight={700}
-        fontSize={22}
-        borderRadius={20}
-        disabled={!isConnected}
-      />
-    </>
-  );
+  const handlePrevStep = () => {
+    if ((step - 1) >= 0) {
+      setStep(step - 1);
+    }
+  };
+
+  switch (step) {
+    case 0:
+      return (
+        <HomeStep
+          handleTokenSelect={handleTokenSelect}
+          fromValue={fromValue}
+          fromToken={fromToken}
+          toValue={toValue}
+          toToken={toToken}
+          setFromValue={setFromValue}
+          setFromToken={setFromToken}
+          setToValue={setToValue}
+          setToToken={setToToken}
+          tokenOptions={tokenOptions}
+          nextStep={handleNextStep}
+        />
+      )
+      break;
+    case 1:
+      return (
+        <ReviewStep
+          keepInSonic={keepInSonic}
+          setKeepInSonic={setKeepInSonic}
+          fromValue={fromValue}
+          toValue={toValue}
+          fromToken={fromToken}
+          toToken={toToken}
+          nextStep={handleNextStep}
+          prevStep={handlePrevStep}
+          tokenOptions={tokenOptions}
+        />
+      )
+      break;
+  }
 };
