@@ -25,6 +25,10 @@ export const NumberInput = ({
     setValue(response.formattedValue);
   };
 
+  const isAllowed = (response) => {
+    return response.formattedValue.length > 0;
+  }
+
   return (
     <NumberFormat
       placeholder={placeholder}
@@ -35,6 +39,7 @@ export const NumberInput = ({
       fixedDecimalScale={fixedDecimalPoints}
       thousandSeparator=","
       allowNegative={allowNegative}
+      isAllowed={isAllowed}
       isNumericString
       style={{
         color: status === 'active' ? '#F6FCFD' : '#888E8F',
@@ -44,7 +49,8 @@ export const NumberInput = ({
         fontWeight: 700,
         border: 'none',
         textAlign: 'right',
-        ...style
+        transition: 'color 400ms',
+        ...style,
       }}
     />
   );;

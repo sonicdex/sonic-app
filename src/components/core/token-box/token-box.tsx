@@ -155,7 +155,7 @@ export const TokenBox = ({
             {balanceDisplay}
           </Box>
         </Flex>
-        <Box color={ status === 'active' ? '#F6FCFD' : '#888E8F' }>
+        <Box transition="color 400ms" color={ status === 'active' ? '#F6FCFD' : '#888E8F' }>
           {amountDisplay}
         </Box>
       </Flex>
