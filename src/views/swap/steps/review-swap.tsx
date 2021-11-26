@@ -36,7 +36,7 @@ export const ReviewStep = ({
 
   return (
     <>
-      <TitleBox title="Swap" settings="sd" />
+      <TitleBox title="Swap" settings="sd" onArrowBack={prevStep} />
       <Flex direction="column" alignItems="center" mb="20px">
         <Box mt="20px" width="100%">
           <TokenBox
