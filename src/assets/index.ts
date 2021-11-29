@@ -16,3 +16,8 @@ export { default as copySrc } from './copy.svg';
 export { default as exitSrc } from './exit.svg';
 export { default as equalSrc } from './equal.svg';
 export { default as checkPlainSrc } from './check-plain.svg';
+export { default as bluePlusSrc } from './blue-plus.svg';
+export { default as greyMinusSrc } from './grey-minus.svg';
+export { default as wicpSrc } from './wicp.svg';
+export { default as icpSrc } from './icp.svg';
+export { default as xtcSrc } from './xtc.svg';
