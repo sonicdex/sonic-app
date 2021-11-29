@@ -1,11 +1,11 @@
-import { settingSrc, arrowBackSrc } from '@/assets';
-import { Box, Flex } from "@chakra-ui/react"
+import { Box, Flex } from '@chakra-ui/react';
+import { arrowBackSrc } from '@/assets';
 
 type TitleBoxProps = {
-  children?: any,
-  settings?: any,
-  onArrowBack?: () => void,
-  title: string,
+  children?: any;
+  settings?: any;
+  onArrowBack?: () => void;
+  title: string;
 };
 
 export const TitleBox = ({
@@ -13,15 +13,13 @@ export const TitleBox = ({
   title,
   settings,
   onArrowBack,
-} : TitleBoxProps) => {
+}: TitleBoxProps) => {
   const headerBottomRadius = children ? 0 : 20;
-  const titleRightAdjustment = settings ? "-16px" : "auto";
-  const titleLeftAdjustment = onArrowBack ? "-18px" : "auto";
+  const titleRightAdjustment = settings ? '-16px' : 'auto';
+  const titleLeftAdjustment = onArrowBack ? '-18px' : 'auto';
 
   return (
-    <Flex
-      direction="column"
-    >
+    <Flex direction="column">
       <Flex
         pt="15px"
         pb="13px"
@@ -35,7 +33,7 @@ export const TitleBox = ({
         borderBottomRadius={headerBottomRadius}
         direction="row"
       >
-        { onArrowBack && (
+        {onArrowBack && (
           <Box
             onClick={onArrowBack}
             as="img"
@@ -44,30 +42,16 @@ export const TitleBox = ({
             mr="auto"
           />
         )}
-        <Box
-          ml={titleLeftAdjustment}
-          mr={titleRightAdjustment}
-        >
+        <Box ml={titleLeftAdjustment} mr={titleRightAdjustment}>
           {title}
         </Box>
-        { settings && (
-          <Box
-            as="img"
-            src={settingSrc}
-            ml="auto"
-          />
-        )}
+        {settings && <Box as="img" src={arrowBackSrc} ml="auto" />}
       </Flex>
-      { children && (
-        <Box
-          py="8px"
-          px="21px"
-          bg="#282828"
-          borderBottomRadius={20}
-        >
+      {children && (
+        <Box py="8px" px="21px" bg="#282828" borderBottomRadius={20}>
           {children}
         </Box>
       )}
     </Flex>
-  )
-}
+  );
+};

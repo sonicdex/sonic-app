@@ -1,20 +1,19 @@
-import { useState } from 'react';
 import { Box, Flex } from '@chakra-ui/react';
 
-import { infoSrc, arrowDownSrc } from '@/assets';
-import { useAppSelector, selectPlugState } from '@/store';
-import { Checkbox, TitleBox, Toggle, TokenBox, Button } from '@/components';
+import { Checkbox, TitleBox, TokenBox, Button } from '@/components';
+
+import { arrowDownSrc, infoSrc } from '@/assets';
 
 type ReviewStepProps = {
-  fromValue: string,
-  toValue: string,
-  fromToken: any,
-  toToken: any,
-  keepInSonic: boolean,
-  nextStep: () => any,
-  prevStep: () => any,
-  tokenOptions: object,
-  setKeepInSonic: (boolean) => any,
+  fromValue: string;
+  toValue: string;
+  fromToken: any;
+  toToken: any;
+  keepInSonic: boolean;
+  nextStep: () => any;
+  prevStep: () => any;
+  tokenOptions: object;
+  setKeepInSonic: (boolean) => any;
 };
 
 export const ReviewStep = ({
@@ -96,12 +95,12 @@ export const ReviewStep = ({
             onChange={() => setKeepInSonic(!keepInSonic)}
           />
           <Box
-            as="p" 
+            as="p"
             fontSize="16px"
             fontWeight={600}
             ml="9px"
             transition="color 200ms"
-            color={ keepInSonic ? "#FFFFFF" : "#888E8F" }
+            color={keepInSonic ? '#FFFFFF' : '#888E8F'}
           >
             Keep tokens in Sonic after swap
           </Box>
@@ -123,4 +122,4 @@ export const ReviewStep = ({
       />
     </>
   );
-}
+};

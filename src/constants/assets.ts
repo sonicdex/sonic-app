@@ -1,16 +1,16 @@
 import { wicpSrc, icpSrc, xtcSrc } from '@/assets';
 
 export const ASSETS = {
-  'WICP': {
+  WICP: {
     name: 'WICP',
     img: wicpSrc,
   },
-  'ICP': {
+  ICP: {
     name: 'ICP',
     img: icpSrc,
   },
-  'XTC': {
+  XTC: {
     name: 'XTC',
-    img: xtcSrc
+    img: xtcSrc,
   },
 };

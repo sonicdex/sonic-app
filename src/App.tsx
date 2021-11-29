@@ -6,11 +6,15 @@ import { Activity, Assets, Liquidity, Swap } from '@/views';
 import { EmptyMobile, Layout } from './components';
 import { usePlugInit } from './integrations/plug';
 
+import { useActorsInit } from './integrations/actor/use-actors-init';
+
 export const App = () => {
   const isAnyMobileDevice = isMobile(window.navigator).any;
 
   usePlugInit();
+  useActorsInit();
 
+  // TODO: Remove after plug mobile connection
   if (isAnyMobileDevice) {
     return <EmptyMobile />;
   }

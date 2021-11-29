@@ -1,21 +1,22 @@
 import { useState } from 'react';
 import { Flex, Box } from '@chakra-ui/react';
 
-import { equalSrc, infoSrc, plusSrc } from '@/assets';
 import { Button, TitleBox, TokenBox } from '@/components';
 import { ASSETS } from '@/constants';
 
+import { plusSrc, equalSrc } from '@/assets';
+
 type AddLiquidityStepProps = {
-  onPrevious: () => any,
-  onAdd: (any) => any,
+  onPrevious: () => any;
+  onAdd: (any) => any;
 };
 
-const BUTTON_TITLES = [
-  'Review Supply',
-  'Confirm Supply',
-];
+const BUTTON_TITLES = ['Review Supply', 'Confirm Supply'];
 
-export const AddLiquidityStep = ({ onPrevious, onAdd }: AddLiquidityStepProps) => {
+export const AddLiquidityStep = ({
+  onPrevious,
+  onAdd,
+}: AddLiquidityStepProps) => {
   // subStep 0 for review 1 for add liquidity
   const [subStep, setSubStep] = useState(0);
 
@@ -39,9 +40,7 @@ export const AddLiquidityStep = ({ onPrevious, onAdd }: AddLiquidityStepProps) =
   };
 
   const getActiveStatus = (token, value) => {
-    const shouldBeActive = (token &&
-      value?.length &&
-      (parseFloat(value) > 0));
+    const shouldBeActive = token && value?.length && parseFloat(value) > 0;
 
     return shouldBeActive && subStep !== 1 ? 'active' : null;
   };
@@ -49,11 +48,12 @@ export const AddLiquidityStep = ({ onPrevious, onAdd }: AddLiquidityStepProps) =
   const shouldButtonBeActive = () => {
     if (subStep === 1) return true;
 
-    const fromTokenCondition = (getActiveStatus(fromToken, fromValue) === 'active');
-    const toTokenCondition = (getActiveStatus(toToken, toValue) === 'active');
+    const fromTokenCondition =
+      getActiveStatus(fromToken, fromValue) === 'active';
+    const toTokenCondition = getActiveStatus(toToken, toValue) === 'active';
 
     return fromTokenCondition && toTokenCondition;
-  }
+  };
 
   const buttonTitle = BUTTON_TITLES[subStep];
 
@@ -81,7 +81,9 @@ export const AddLiquidityStep = ({ onPrevious, onAdd }: AddLiquidityStepProps) =
           <TokenBox
             value={fromValue}
             setValue={setFromValue}
-            onTokenSelect={(tokenName) => handleTokenSelect(tokenName, setFromToken)}
+            onTokenSelect={(tokenName) =>
+              handleTokenSelect(tokenName, setFromToken)
+            }
             tokenOptions={Object.values(ASSETS)}
             currentToken={fromToken}
             status={getActiveStatus(fromToken, fromValue)}
@@ -109,7 +111,9 @@ export const AddLiquidityStep = ({ onPrevious, onAdd }: AddLiquidityStepProps) =
           <TokenBox
             value={toValue}
             setValue={setToValue}
-            onTokenSelect={(tokenName) => handleTokenSelect(tokenName, setToToken)}
+            onTokenSelect={(tokenName) =>
+              handleTokenSelect(tokenName, setToToken)
+            }
             tokenOptions={Object.values(ASSETS)}
             currentToken={toToken}
             status={getActiveStatus(toToken, toValue)}
@@ -119,7 +123,7 @@ export const AddLiquidityStep = ({ onPrevious, onAdd }: AddLiquidityStepProps) =
             amount="0.00"
           />
         </Box>
-        { subStep === 1 && (
+        {subStep === 1 && (
           <>
             <Flex
               direction="column"
@@ -140,7 +144,9 @@ export const AddLiquidityStep = ({ onPrevious, onAdd }: AddLiquidityStepProps) =
               <TokenBox
                 value={toValue}
                 setValue={setToValue}
-                onTokenSelect={(tokenName) => handleTokenSelect(tokenName, setToToken)}
+                onTokenSelect={(tokenName) =>
+                  handleTokenSelect(tokenName, setToToken)
+                }
                 tokenOptions={Object.values(ASSETS)}
                 currentToken={toToken}
                 status="active"
@@ -179,5 +185,5 @@ export const AddLiquidityStep = ({ onPrevious, onAdd }: AddLiquidityStepProps) =
         status={shouldButtonBeActive() ? undefined : 'disabled'}
       />
     </>
-  )
-}
+  );
+};

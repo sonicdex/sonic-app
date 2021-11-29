@@ -5,9 +5,7 @@ import { usePlugStore } from '@/store';
 import { ActorAdapter } from './actor-adapter';
 import { ActorProps, AppActors } from './models';
 
-export const useActor = <T extends AppActors>(
-  props: ActorProps
-): T | undefined => {
+export const useActor = <T extends AppActors>(props: ActorProps): T | null => {
   const [actor, setActor] = useState<T>();
   const { isConnected } = usePlugStore();
 
@@ -18,7 +16,7 @@ export const useActor = <T extends AppActors>(
         .then((newActor) => setActor(newActor))
         .catch((error) => console.error(error));
     } else {
-      setActor(undefined);
+      setActor(null);
     }
   }, [isConnected]);
 

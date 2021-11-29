@@ -1,14 +1,10 @@
 import { useState } from 'react';
 
 import { useAppSelector, selectPlugState } from '@/store';
-import { infoSrc } from '@/assets';
 import { HomeStep, ReviewStep } from './steps';
 import { ASSETS } from '@/constants';
 
-const STEPS = [
-  HomeStep,
-  ReviewStep,
-];
+const STEPS = [HomeStep, ReviewStep];
 
 export const Swap = () => {
   const [step, setStep] = useState(0);
@@ -41,7 +37,7 @@ export const Swap = () => {
   };
 
   const handleNextStep = () => {
-    if ((step + 1) < STEPS.length) {
+    if (step + 1 < STEPS.length) {
       setStep(step + 1);
     } else {
       setStep(0);
@@ -49,7 +45,7 @@ export const Swap = () => {
   };
 
   const handlePrevStep = () => {
-    if ((step - 1) >= 0) {
+    if (step - 1 >= 0) {
       setStep(step - 1);
     }
   };
@@ -70,7 +66,7 @@ export const Swap = () => {
           tokenOptions={ASSETS}
           nextStep={handleNextStep}
         />
-      )
+      );
       break;
     case 1:
       return (
@@ -85,7 +81,7 @@ export const Swap = () => {
           prevStep={handlePrevStep}
           tokenOptions={ASSETS}
         />
-      )
+      );
       break;
   }
 };

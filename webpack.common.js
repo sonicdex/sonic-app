@@ -1,16 +1,17 @@
 const path = require('path');
 const webpack = require('webpack');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const HtmlWebpackPlugin = require("html-webpack-plugin");
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 require('dotenv').config();
 
-module.exports = (env) => {
+module.exports = () => {
   return {
     entry: './src/index.tsx',
+    devtool: 'source-map',
     output: {
-      path: path.resolve(__dirname, "dist"),
-      filename: "assets/js/[name].[contenthash:8].js",
-      publicPath: "/"
+      path: path.resolve(__dirname, 'dist'),
+      publicPath: '/',
+      filename: '[name].[contenthash:8].js',
     },
     resolve: {
       extensions: ['.ts', '.tsx', '.js'],
@@ -44,17 +45,10 @@ module.exports = (env) => {
       new webpack.ProvidePlugin({
         process: 'process/browser',
       }),
-      new webpack.EnvironmentPlugin([
-        'LEDGER_CANISTER_ID',
-        'SWAP_CANISTER_ID',
-        'SWAP_STORAGE_CANISTER_ID',
-        'WICP_CANISTER_ID',
-        'XTC_CANISTER_ID',
-      ]),
       new HtmlWebpackPlugin({
-        template: path.resolve(__dirname, "public/index.html"),
-        inject: true
-      })
+        template: path.resolve(__dirname, 'public/index.html'),
+        inject: true,
+      }),
     ],
   };
 };

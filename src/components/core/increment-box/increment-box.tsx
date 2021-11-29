@@ -1,15 +1,14 @@
 import { Box, Flex } from '@chakra-ui/react';
-
-import { bluePlusSrc, greyMinusSrc } from '@/assets';
+import { greyMinusSrc, bluePlusSrc } from '@/assets';
 
 type IncrementBoxProps = {
-  mainImg: string,
-  secondImg?: string,
-  title: string,
-  children: any,
-  onIncrement: () => any,
-  onDecreace: () => any,
-}
+  mainImg: string;
+  secondImg?: string;
+  title: string;
+  children: any;
+  onIncrement: () => any;
+  onDecreace: () => any;
+};
 
 export const IncrementBox = ({
   mainImg,
@@ -19,14 +18,7 @@ export const IncrementBox = ({
   onIncrement,
   onDecreace,
 }: IncrementBoxProps) => {
-  const MainImg = (
-    <Box
-      as="img"
-      width="44px"
-      height="44px"
-      src={mainImg}
-    />
-  );
+  const MainImg = <Box as="img" width="44px" height="44px" src={mainImg} />;
 
   const SecondImg = (
     <Box width="44px" height="44px" position="relative">
@@ -49,7 +41,7 @@ export const IncrementBox = ({
         src={secondImg}
       />
     </Box>
-  )
+  );
 
   return (
     <Flex
@@ -62,27 +54,14 @@ export const IncrementBox = ({
       px="20px"
       py="18px"
     >
-      <Flex
-        direction="row"
-        alignItems="center"
-        justifyContent="flex-start"
-      >
-        { secondImg ? (SecondImg) : (MainImg) }
-        <Box
-          ml="16px"
-          fontSize="18px"
-          fontWeight={700}
-          color="#F6FCFD"
-          as="h3"
-        >
+      <Flex direction="row" alignItems="center" justifyContent="flex-start">
+        {secondImg ? SecondImg : MainImg}
+        <Box ml="16px" fontSize="18px" fontWeight={700} color="#F6FCFD" as="h3">
           {title}
         </Box>
       </Flex>
       {children}
-      <Flex
-        direction="row"
-        alignItems="center"
-      >
+      <Flex direction="row" alignItems="center">
         <Flex
           alignItems="center"
           justifyContent="center"
@@ -111,4 +90,4 @@ export const IncrementBox = ({
       </Flex>
     </Flex>
   );
-}
+};

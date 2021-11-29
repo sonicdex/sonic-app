@@ -1,20 +1,8 @@
 import { useState } from 'react';
-import { Flex, Box } from '@chakra-ui/react';
 
-import {
-  InformationBox,
-  Header,
-  IncrementBox
-} from '@/components';
 import { ASSETS } from '@/constants';
 
-import {
-  HomeStep,
-  DepositStep,
-  WithdrawStep
-} from './steps';
-
-import { AssetContent } from './components';
+import { HomeStep, DepositStep, WithdrawStep } from './steps';
 
 // Mocked
 const SonicAssets = [
@@ -44,7 +32,7 @@ const getTokenFromAsset = (tokenName) => {
   return {
     name: asset.name,
     img: asset.img,
-  }
+  };
 };
 
 export const Assets = () => {
@@ -72,26 +60,13 @@ export const Assets = () => {
           showInformation={showInformation}
           sonicAssets={SonicAssets}
         />
-      )
-      break;
+      );
     case 'deposit':
-      return (
-        <DepositStep
-          token={token}
-          onArrowBack={() => setStep('home')}
-        />
-      )
-      break;
+      return <DepositStep token={token} onArrowBack={() => setStep('home')} />;
     case 'withdraw':
-      return (
-        <WithdrawStep
-          token={token}
-          onArrowBack={() => setStep('home')}
-        />
-      )
-      break;
+      return <WithdrawStep token={token} onArrowBack={() => setStep('home')} />;
     default:
       setStep('home');
-    break;
+      break;
   }
 };

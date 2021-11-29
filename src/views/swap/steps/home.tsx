@@ -1,22 +1,22 @@
 import { useState, useEffect } from 'react';
 import { Box, Flex } from '@chakra-ui/react';
 
-import { arrowDownSrc } from '@/assets';
-import { useAppSelector, selectPlugState } from '@/store';
 import { TitleBox, Toggle, TokenBox, Button } from '@/components';
 
+import { arrowDownSrc } from '@/assets';
+
 type HomeStepProps = {
-  fromValue: string,
-  setFromValue: (string) => any,
-  toValue: string,
-  setToValue: (string) => any,
-  fromToken: any,
-  setFromToken: (string) => any,
-  toToken: any,
-  setToToken: (string) => any,
-  handleTokenSelect: any,
-  nextStep: () => any,
-  tokenOptions: object,
+  fromValue: string;
+  setFromValue: (string) => any;
+  toValue: string;
+  setToValue: (string) => any;
+  fromToken: any;
+  setFromToken: (string) => any;
+  toToken: any;
+  setToToken: (string) => any;
+  handleTokenSelect: any;
+  nextStep: () => any;
+  tokenOptions: object;
 };
 
 export const HomeStep = ({
@@ -37,7 +37,7 @@ export const HomeStep = ({
   useEffect(() => {
     // Integration: Calculate swap value & fill values
     // adjust setLoading properly
-  },[fromValue, fromToken, toToken]);
+  }, [fromValue, fromToken, toToken]);
 
   const handleButtonOnClick = () => {
     if (loading) return;
@@ -47,7 +47,7 @@ export const HomeStep = ({
 
   const isReady = fromValue && parseFloat(fromValue) > 0;
 
-  const getStatus = (token, value) => isReady ? 'active' : '';
+  const getStatus = (token, value) => (isReady ? 'active' : '');
 
   return (
     <>
@@ -57,7 +57,9 @@ export const HomeStep = ({
           <TokenBox
             value={fromValue}
             setValue={setFromValue}
-            onTokenSelect={(tokenName) => handleTokenSelect(tokenName, setFromToken)}
+            onTokenSelect={(tokenName) =>
+              handleTokenSelect(tokenName, setFromToken)
+            }
             tokenOptions={Object.values(tokenOptions)}
             currentToken={fromToken}
             status={getStatus(fromToken, fromValue)}
@@ -83,7 +85,9 @@ export const HomeStep = ({
           <TokenBox
             value={toValue}
             setValue={setToValue}
-            onTokenSelect={(tokenName) => handleTokenSelect(tokenName, setToToken)}
+            onTokenSelect={(tokenName) =>
+              handleTokenSelect(tokenName, setToToken)
+            }
             tokenOptions={Object.values(tokenOptions)}
             currentToken={toToken}
             disabled={true}
@@ -98,8 +102,8 @@ export const HomeStep = ({
         fontWeight={700}
         fontSize={22}
         borderRadius={20}
-        status={(loading || !isReady)? 'disabled' : undefined}
+        status={loading || !isReady ? 'disabled' : undefined}
       />
     </>
   );
-}
+};

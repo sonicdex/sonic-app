@@ -22,7 +22,6 @@ background:
 }}
  */
 
-
 export const GradientBox: FC<GradientBoxProps> = ({
   size = 'md',
   children,

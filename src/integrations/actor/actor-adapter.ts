@@ -26,7 +26,7 @@ export class ActorAdapter implements ActorRepository {
   private async createAgent(): Promise<any> {
     if (!this.plugProvider.agent) {
       await this.plugProvider.createAgent({
-        whitelist: ENV.canisters,
+        whitelist: Object.values(ENV.canisterIds),
         host: ENV.host,
       });
     }
