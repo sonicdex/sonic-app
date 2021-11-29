@@ -41,6 +41,9 @@ module.exports = (env) => {
     },
     plugins: [
       new CleanWebpackPlugin(),
+      new webpack.ProvidePlugin({
+        process: 'process/browser',
+      }),
       new webpack.EnvironmentPlugin([
         'LEDGER_CANISTER_ID',
         'SWAP_CANISTER_ID',
