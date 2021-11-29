@@ -43,7 +43,7 @@ const ChevronDownIcon = () => (
 
 const TokenOption = ({ img, name }: Token) => (
   <Flex direction="row" width="fit-content" alignItems="center">
-    <Box as="img" src={img} height="20px" />
+    <Box as="img" src={img} height="25px" />
     <Box as="p" fontWeight={700} color="#F6FCFD" ml="7px">
       {name}
     </Box>
