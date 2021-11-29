@@ -1,7 +1,7 @@
 import isMobile from 'ismobilejs';
-import { Routes, Route, BrowserRouter } from 'react-router-dom';
+import { Routes, Navigate, Route, BrowserRouter } from 'react-router-dom';
 
-import { Activity, Assets, Liquidity, NoMatch, Swap } from '@/views';
+import { Activity, Assets, Liquidity, Swap } from '@/views';
 
 import { EmptyMobile, Layout } from './components';
 import { usePlugInit } from './integrations/plug';
@@ -23,7 +23,7 @@ export const App = () => {
           <Route path="/swap" element={<Swap />} />
           <Route path="/liquidity" element={<Liquidity />} />
           <Route path="/activity" element={<Activity />} />
-          <Route path="*" element={<NoMatch />} />
+          <Route path="*" element={<Navigate to="/swap" />} />
         </Routes>
       </Layout>
     </BrowserRouter>
