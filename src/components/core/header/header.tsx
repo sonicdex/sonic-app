@@ -1,20 +1,15 @@
-import { Box, Flex } from "@chakra-ui/react"
+import { Box, Flex } from '@chakra-ui/react';
 import { Button } from '@/components';
 
 type HeaderProps = {
-  title: string,
-  buttonText?: string,
-  onButtonClick?: () => any,
+  title: string;
+  buttonText?: string;
+  onButtonClick?: () => any;
 };
 
-export const Header = ({
-  title,
-  buttonText,
-  onButtonClick
-}: HeaderProps) => {
-
-  const paddingToLine = (buttonText && onButtonClick) ? '17px' : '24px';
-  const marginTop = (buttonText && onButtonClick) ? '-8px' : '0px';
+export const Header = ({ title, buttonText, onButtonClick }: HeaderProps) => {
+  const paddingToLine = buttonText && onButtonClick ? '17px' : '24px';
+  const marginTop = buttonText && onButtonClick ? '-8px' : '0px';
 
   return (
     <Flex
@@ -26,20 +21,11 @@ export const Header = ({
       mb="20px"
       borderBottom="1px solid #373737"
     >
-      <Box
-        as="h3"
-        fontSize="18px"
-        fontWeight={700}
-        color="#F6FCFD"
-      >
+      <Box as="h3" fontSize="18px" fontWeight={700} color="#F6FCFD">
         {title}
       </Box>
-      { buttonText && onButtonClick && (
-        <Button
-        title={buttonText}
-        size="fit"
-        onClick={onButtonClick}
-        />
+      {buttonText && onButtonClick && (
+        <Button title={buttonText} size="fit" onClick={onButtonClick} />
       )}
     </Flex>
   );

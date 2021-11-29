@@ -16,7 +16,10 @@ export type PlugButtonProps = Omit<ButtonProps, 'color' | 'variant'> & {
 };
 
 export const PlugButton = forwardRef<HTMLButtonElement, PlugButtonProps>(
-  ({ whitelist = ENV.canisters, host = ENV.host, ...props }, ref) => {
+  (
+    { whitelist = Object.values(ENV.canisterIds), host = ENV.host, ...props },
+    ref
+  ) => {
     const { setIsConnected, setPlugState, state } = usePlugStore();
 
     const handleConnect = (isConnected: boolean) => {

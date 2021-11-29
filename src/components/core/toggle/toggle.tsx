@@ -2,11 +2,11 @@ import { useState } from 'react';
 import { Box, Flex } from '@chakra-ui/react';
 
 type ToggleProps = {
-  toggle: boolean,
-  onToggle: () => any,
+  toggle: boolean;
+  onToggle: () => any;
 };
 
-export const Toggle = ({ toggle, onToggle } : ToggleProps) => (
+export const Toggle = ({ toggle, onToggle }: ToggleProps) => (
   <Flex
     direction="row"
     cursor="pointer"
@@ -24,7 +24,7 @@ export const Toggle = ({ toggle, onToggle } : ToggleProps) => (
       bg="linear-gradient(108.08deg, #3D52F4 0%, #192985 100%)"
       borderRadius={100}
       position="absolute"
-      marginLeft={toggle ? "0px" : "63px" }
+      marginLeft={toggle ? '0px' : '63px'}
       transition="margin 400ms"
     />
     <Box

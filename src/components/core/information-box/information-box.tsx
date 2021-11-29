@@ -1,16 +1,20 @@
 import { useState, ReactNode } from 'react';
-import { Collapse } from "@chakra-ui/react";
-import { Box, Flex } from "@chakra-ui/react"
-import { closeSrc } from '@/assets';
+import { Collapse } from '@chakra-ui/react';
+import { Box, Flex } from '@chakra-ui/react';
 
 type InformationBoxTypes = {
-  title: string,
-  children: ReactNode,
-  onClose?: () => void,
-  mb?: string,
+  title: string;
+  children: ReactNode;
+  onClose?: () => void;
+  mb?: string;
 };
 
-export const InformationBox = ({ title, children, onClose, mb="20px" }: InformationBoxTypes) => {
+export const InformationBox = ({
+  title,
+  children,
+  onClose,
+  mb = '20px',
+}: InformationBoxTypes) => {
   const [collapse, setCollapse] = useState(true);
 
   const handleClose = () => {
@@ -29,17 +33,8 @@ export const InformationBox = ({ title, children, onClose, mb="20px" }: Informat
           mb={mb}
           borderRadius={20}
         >
-          <Flex
-            direction="row"
-            justifyContent="space-between"
-            mb="7px"
-          >
-            <Box
-              as="h3"
-              fontSize="18px"
-              fontWeight="700"
-              color="#F6FCFD"
-            >
+          <Flex direction="row" justifyContent="space-between" mb="7px">
+            <Box as="h3" fontSize="18px" fontWeight="700" color="#F6FCFD">
               {title}
             </Box>
             <Box
@@ -47,7 +42,7 @@ export const InformationBox = ({ title, children, onClose, mb="20px" }: Informat
               w="18px"
               cursor="pointer"
               onClick={handleClose}
-              src={closeSrc}
+              src={'/assets/close.svg'}
             />
           </Flex>
           {children}
@@ -55,4 +50,4 @@ export const InformationBox = ({ title, children, onClose, mb="20px" }: Informat
       </Collapse>
     </>
   );
-}
+};

@@ -14,7 +14,7 @@ export const Assets = () => {
 
   return (
     <>
-      { showInformation && (
+      {showInformation && (
         <InformationBox title="Assets Details" mb="37px">
           <InformationDescription />
         </InformationBox>
@@ -25,5 +25,5 @@ export const Assets = () => {
         onButtonClick={() => console.log('deposit asset flow')}
       />
     </>
-  )
+  );
 };

@@ -3,6 +3,8 @@ type RequestConnectArgs = {
   host?: string;
 };
 
+export const plug = window.ic.plug;
+
 export const requestConnect = (args?: RequestConnectArgs) =>
   window.ic?.plug?.requestConnect(args);
 

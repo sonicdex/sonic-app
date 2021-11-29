@@ -9,21 +9,21 @@ import {
   Menu,
   MenuList,
   MenuItem,
-  MenuButton
+  MenuButton,
 } from '@chakra-ui/react';
 
 import { disconnect } from '@/integrations/plug';
 import { FeatureState, useAppDispatch, usePlugStore } from '@/store';
-import { cutPrincipalId } from '@/utils';
-import { DUMMY_PRINCIPAL_ID } from '@/config';
 import { Emoji, GradientBox } from '@/components/core';
-import { copySrc, exitSrc, chevronDownSrc } from '@/assets';
+import { desensitizationPrincipalId } from '@/utils/canister';
 
 const ChevronIcon = () => (
-  <Box ml="11px" as="img" src={chevronDownSrc} />
+  <Box ml="11px" as="img" src={'/assets/chevron-down.svg'} />
 );
 
-export const PlugPrincipalIDTag : FC<TagProps> = ({ ...props }) : ReactElement => {
+export const PlugPrincipalIDTag: FC<TagProps> = ({
+  ...props
+}): ReactElement => {
   const { principalId, state, setIsConnected } = usePlugStore();
   const dispatch = useAppDispatch();
 
@@ -31,14 +31,12 @@ export const PlugPrincipalIDTag : FC<TagProps> = ({ ...props }) : ReactElement =
     setIsConnected(false);
   };
 
-  const shortenedPrincipalId = useMemo(() => {
-    const result = cutPrincipalId(principalId ?? DUMMY_PRINCIPAL_ID);
-
-    return result;
+  const shortPrincipalId = useMemo(() => {
+    return desensitizationPrincipalId(principalId);
   }, [principalId]);
 
   const mediumPrincipalId = useMemo(() => {
-    return cutPrincipalId(principalId, 11, 9);
+    return desensitizationPrincipalId(principalId, 11, 9);
   }, [principalId]);
 
   const onClick = async () => {
@@ -53,21 +51,18 @@ export const PlugPrincipalIDTag : FC<TagProps> = ({ ...props }) : ReactElement =
 
   return (
     <Menu>
-      <MenuButton
-        borderRadius="full"
-        px="4"
-        h="12"
-        bg="#1E1E1E"
-      >
+      <MenuButton borderRadius="full" px="4" h="12" bg="#1E1E1E">
         <Flex direction="row" alignItems="center">
           {state === FeatureState.Loading ? (
             <Spinner />
-            ) : (
-              <GradientBox>
-                <Emoji label="Fire">🔥</Emoji>
-              </GradientBox>
+          ) : (
+            <GradientBox>
+              <Emoji label="Fire">🔥</Emoji>
+            </GradientBox>
           )}
-          <Box ml="2" fontWeight={600}>{shortenedPrincipalId}</Box>
+          <Box ml="2" fontWeight={600}>
+            {shortPrincipalId}
+          </Box>
           <ChevronIcon />
         </Flex>
       </MenuButton>
@@ -84,19 +79,14 @@ export const PlugPrincipalIDTag : FC<TagProps> = ({ ...props }) : ReactElement =
           px="19px"
           fontWeight={700}
           _hover={{
-            bg: "#1E1E1E"
+            bg: '#1E1E1E',
           }}
         >
           {mediumPrincipalId}
         </MenuItem>
-        <MenuItem
-          py="7px"
-          px="19px"
-          fontWeight={700}
-          onClick={handleCopy}
-        >
+        <MenuItem py="7px" px="19px" fontWeight={700} onClick={handleCopy}>
           <Flex direction="row">
-            <Box as="img" src={copySrc} mr="12px" />
+            <Box as="img" src={'/assets/copy.svg'} mr="12px" />
             Copy ID
           </Flex>
         </MenuItem>
@@ -108,7 +98,7 @@ export const PlugPrincipalIDTag : FC<TagProps> = ({ ...props }) : ReactElement =
           onClick={handleDisconnect}
         >
           <Flex direction="row">
-            <Box as="img" src={exitSrc} mr="12px" />
+            <Box as="img" src={'/assets/exit.svg'} mr="12px" />
             Disconnect
           </Flex>
         </MenuItem>

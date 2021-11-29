@@ -1,29 +1,25 @@
 import { useState } from 'react';
 
 import { useAppSelector, selectPlugState } from '@/store';
-import { infoSrc } from '@/assets';
 import { HomeStep, ReviewStep } from './steps';
 
 // Mocked
 const tokenOptions = {
-  'XMPL': {
-    img: infoSrc,
+  XMPL: {
+    img: '/assets/info.svg',
     name: 'XMPL',
   },
-  'XMP2': {
-    img: infoSrc,
+  XMP2: {
+    img: '/assets/info.svg',
     name: 'XMP2',
   },
-  'XMP3': {
-    img: infoSrc,
+  XMP3: {
+    img: '/assets/info.svg',
     name: 'XMP3',
   },
 };
 
-const STEPS = [
-  HomeStep,
-  ReviewStep,
-];
+const STEPS = [HomeStep, ReviewStep];
 
 export const Swap = () => {
   const [step, setStep] = useState(0);
@@ -42,7 +38,7 @@ export const Swap = () => {
   };
 
   const handleNextStep = () => {
-    if ((step + 1) < STEPS.length) {
+    if (step + 1 < STEPS.length) {
       setStep(step + 1);
     } else {
       setStep(0);
@@ -50,7 +46,7 @@ export const Swap = () => {
   };
 
   const handlePrevStep = () => {
-    if ((step - 1) >= 0) {
+    if (step - 1 >= 0) {
       setStep(step - 1);
     }
   };
@@ -71,7 +67,7 @@ export const Swap = () => {
           tokenOptions={tokenOptions}
           nextStep={handleNextStep}
         />
-      )
+      );
       break;
     case 1:
       return (
@@ -86,7 +82,7 @@ export const Swap = () => {
           prevStep={handlePrevStep}
           tokenOptions={tokenOptions}
         />
-      )
+      );
       break;
   }
 };
