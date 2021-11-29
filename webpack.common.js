@@ -1,15 +1,16 @@
 const path = require('path');
 const webpack = require('webpack');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 require('dotenv').config();
 
 module.exports = (env) => {
   return {
     entry: './src/index.tsx',
     output: {
-      path: path.join(__dirname, 'public/js'),
-      publicPath: '/public',
-      filename: 'bundle.js',
+      path: path.resolve(__dirname, "dist"),
+      filename: "assets/js/[name].[contenthash:8].js",
+      publicPath: "/"
     },
     resolve: {
       extensions: ['.ts', '.tsx', '.js'],
@@ -36,15 +37,6 @@ module.exports = (env) => {
           test: /\.css$/i,
           use: ['style-loader', 'css-loader'],
         },
-        {
-          test: /\.html$/,
-          use: {
-            loader: 'html-loader',
-            options: {
-              attrs: [':src'],
-            },
-          },
-        },
       ],
     },
     plugins: [
@@ -56,6 +48,10 @@ module.exports = (env) => {
         'WICP_CANISTER_ID',
         'XTC_CANISTER_ID',
       ]),
+      new HtmlWebpackPlugin({
+        template: path.resolve(__dirname, "public/index.html"),
+        inject: true
+      })
     ],
   };
 };

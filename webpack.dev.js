@@ -13,7 +13,7 @@ module.exports = (env) => {
       port: 9000,
       compress: true,
       static: {
-        directory: path.join(__dirname, 'public'),
+        directory: path.join(__dirname, 'dist'),
       },
       devMiddleware: {
         index: true,
