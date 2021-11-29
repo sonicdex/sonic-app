@@ -5,6 +5,7 @@ import * as SHA1 from '@dfinity/agent/lib/esm/utils/sha224';
 import * as SHA2 from 'js-sha256';
 import { blobFromUint8Array, blobToHex, Principal } from '@dfinity/agent';
 import crc32 from 'crc-32';
+
 import { GetAgent } from './getAgent';
 import { getSelectedAccount } from './identity';
 
