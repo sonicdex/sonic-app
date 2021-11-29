@@ -3,26 +3,11 @@ import { Flex, Box } from '@chakra-ui/react';
 
 import { equalSrc, infoSrc, plusSrc } from '@/assets';
 import { Button, TitleBox, TokenBox } from '@/components';
+import { ASSETS } from '@/constants';
 
 type AddLiquidityStepProps = {
   onPrevious: () => any,
   onAdd: (any) => any,
-};
-
-// Mocked values
-const tokenOptions = {
-  'XMPL': {
-    img: infoSrc,
-    name: 'XMPL',
-  },
-  'XMP2': {
-    img: infoSrc,
-    name: 'XMP2',
-  },
-  'XMP3': {
-    img: infoSrc,
-    name: 'XMP3',
-  },
 };
 
 const BUTTON_TITLES = [
@@ -35,13 +20,14 @@ export const AddLiquidityStep = ({ onPrevious, onAdd }: AddLiquidityStepProps) =
   const [subStep, setSubStep] = useState(0);
 
   const [fromValue, setFromValue] = useState('0.00');
-  const [fromToken, setFromToken] = useState(Object.values(tokenOptions)[0]);
+  const [fromToken, setFromToken] = useState(Object.values(ASSETS)[0]);
 
   const [toValue, setToValue] = useState('0.00');
-  const [toToken, setToToken] = useState(Object.values(tokenOptions)[1]);
+  const [toToken, setToToken] = useState(Object.values(ASSETS)[1]);
 
   const handleTokenSelect = (tokenName, setter) => {
-    setter(tokenOptions[tokenName]);
+    if (tokenName === fromToken.name || tokenName === toToken.name) return;
+    setter(ASSETS[tokenName]);
   };
 
   const handlePreviousStep = () => {
@@ -96,7 +82,7 @@ export const AddLiquidityStep = ({ onPrevious, onAdd }: AddLiquidityStepProps) =
             value={fromValue}
             setValue={setFromValue}
             onTokenSelect={(tokenName) => handleTokenSelect(tokenName, setFromToken)}
-            tokenOptions={Object.values(tokenOptions)}
+            tokenOptions={Object.values(ASSETS)}
             currentToken={fromToken}
             status={getActiveStatus(fromToken, fromValue)}
             disabled={subStep === 1}
@@ -124,7 +110,7 @@ export const AddLiquidityStep = ({ onPrevious, onAdd }: AddLiquidityStepProps) =
             value={toValue}
             setValue={setToValue}
             onTokenSelect={(tokenName) => handleTokenSelect(tokenName, setToToken)}
-            tokenOptions={Object.values(tokenOptions)}
+            tokenOptions={Object.values(ASSETS)}
             currentToken={toToken}
             status={getActiveStatus(toToken, toValue)}
             disabled={subStep === 1}
@@ -155,7 +141,7 @@ export const AddLiquidityStep = ({ onPrevious, onAdd }: AddLiquidityStepProps) =
                 value={toValue}
                 setValue={setToValue}
                 onTokenSelect={(tokenName) => handleTokenSelect(tokenName, setToToken)}
-                tokenOptions={Object.values(tokenOptions)}
+                tokenOptions={Object.values(ASSETS)}
                 currentToken={toToken}
                 status="active"
                 balance="0.00"
