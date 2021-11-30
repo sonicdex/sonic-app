@@ -8,7 +8,7 @@
     "baseUrl": "src",
     "paths": {
       "@/*": ["*"],
-      "@mocks": ["../mocks"]
+      "@tests/*": ["../tests/*"]
     },
     "forceConsistentCasingInFileNames": true,
     "emitDecoratorMetadata": true,
