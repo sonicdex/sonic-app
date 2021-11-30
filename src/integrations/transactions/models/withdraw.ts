@@ -1,6 +1,6 @@
 import { Principal } from '@dfinity/principal';
 
 export type Withdraw = {
-  principal: Principal;
+  tokenId: Principal;
   amount: number;
 };

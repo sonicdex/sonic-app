@@ -9,9 +9,9 @@ export interface WithdrawTransaction
 export const createWithdrawTransaction: CreateTransaction<
   Withdraw,
   WithdrawTransaction
-> = ({ amount, principal }, onSuccess, onFail) => {
+> = ({ amount, tokenId }, onSuccess, onFail) => {
   return {
-    args: [principal, amount],
+    args: [tokenId, amount],
     canisterId: ENV.canisterIds.swap,
     idl: SwapIDL.factory,
     methodName: 'withdraw',

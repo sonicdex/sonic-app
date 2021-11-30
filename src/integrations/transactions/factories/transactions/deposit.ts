@@ -9,13 +9,13 @@ export interface DepositTransaction
 export const createDepositTransaction: CreateTransaction<
   Deposit,
   DepositTransaction
-> = ({ amount, principal }, onSuccess, onFail) => {
+> = ({ amount, tokenId }, onSuccess, onFail) => {
   return {
     canisterId: ENV.canisterIds.swap,
     idl: SwapIDL.factory,
     methodName: 'deposit',
     onSuccess,
     onFail,
-    args: [principal, amount],
+    args: [tokenId, amount],
   };
 };

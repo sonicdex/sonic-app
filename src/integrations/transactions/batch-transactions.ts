@@ -1,12 +1,20 @@
 import Provider from '@psychedelic/plug-inpage-provider';
-import { Transaction } from '@psychedelic/plug-inpage-provider/dist/src/Provider';
+import type { Transaction } from '@psychedelic/plug-inpage-provider/dist/src/Provider';
+
+export enum BatchTransactionState {
+  Idle = 'idle',
+  Running = 'running',
+}
 
 export class BatchTransactions {
   private transactions: Transaction[] = [];
+  private batchTransactionResolver = null;
+  private batchTransactionRejector = null;
+  private state: BatchTransactionState = BatchTransactionState.Idle;
 
   constructor(
     private provider: Provider,
-    private confirmRetry?: () => Promise<boolean>
+    private handleRetry?: () => Promise<boolean>
   ) {}
 
   public push(transaction: Transaction): BatchTransactions {
@@ -20,8 +28,28 @@ export class BatchTransactions {
   }
 
   public async execute(): Promise<unknown> {
-    const result = await this.provider.batchTransactions(this.transactions);
-    return result;
+    if (this.state !== BatchTransactionState.Idle) {
+      return Promise.reject(BatchTransactionState.Running);
+    }
+
+    if (this.transactions.length === 0) {
+      return Promise.resolve();
+    }
+
+    return new Promise((resolve, reject) => {
+      this.state = BatchTransactionState.Running;
+      this.batchTransactionResolver = resolve;
+      this.batchTransactionRejector = reject;
+      this.start();
+    });
+  }
+
+  public getTransactions(): Transaction[] {
+    return this.transactions;
+  }
+
+  public getState(): BatchTransactionState {
+    return this.state;
   }
 
   private handleTransactionSuccess(
@@ -29,6 +57,9 @@ export class BatchTransactions {
     response: unknown
   ): Promise<unknown> {
     this.pop();
+    if (this.transactions.length === 0) {
+      this.finishPromise(true, response);
+    }
     return transaction.onSuccess(response);
   }
 
@@ -36,18 +67,31 @@ export class BatchTransactions {
     transaction: Transaction,
     error: unknown
   ): Promise<unknown> {
-    // TODO: ask retry
-    const retry = this.confirmRetry && (await this.confirmRetry());
+    const retry = this.handleRetry && (await this.handleRetry());
     if (retry) {
-      // if retry
-      return this.execute();
+      return this.start();
     } else {
-      // if not retry
+      this.finishPromise(false, error);
       return transaction.onFail(error);
     }
   }
 
   private pop(): void {
-    this.transactions.pop();
+    this.transactions = this.transactions.slice(1);
+  }
+
+  private finishPromise(resolved: boolean, result: unknown): void {
+    if (resolved) {
+      this.batchTransactionResolver(result);
+    } else {
+      this.batchTransactionRejector(result);
+    }
+    this.batchTransactionResolver = null;
+    this.batchTransactionRejector = null;
+    this.state = BatchTransactionState.Idle;
+  }
+
+  private start(): void {
+    this.provider.batchTransactions(this.transactions);
   }
 }
