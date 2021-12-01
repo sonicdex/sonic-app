@@ -27,7 +27,7 @@ export const AddLiquidityStep = ({
   const [toToken, setToToken] = useState();
 
   const handleTokenSelect = (tokenName, setter) => {
-    // setter(tokenOptions[tokenName]);
+    // TODO: add handler function
   };
 
   const handlePreviousStep = () => {
@@ -83,11 +83,7 @@ export const AddLiquidityStep = ({
             onTokenSelect={(tokenName) =>
               handleTokenSelect(tokenName, setFromToken)
             }
-<<<<<<< HEAD
             tokenOptions={[]}
-=======
-            tokenOptions={Object.values(ASSETS)}
->>>>>>> develop
             currentToken={fromToken}
             status={getActiveStatus(fromToken, fromValue)}
             disabled={subStep === 1}
@@ -117,11 +113,7 @@ export const AddLiquidityStep = ({
             onTokenSelect={(tokenName) =>
               handleTokenSelect(tokenName, setToToken)
             }
-<<<<<<< HEAD
             tokenOptions={[]}
-=======
-            tokenOptions={Object.values(ASSETS)}
->>>>>>> develop
             currentToken={toToken}
             status={getActiveStatus(toToken, toValue)}
             disabled={subStep === 1}
@@ -154,11 +146,7 @@ export const AddLiquidityStep = ({
                 onTokenSelect={(tokenName) =>
                   handleTokenSelect(tokenName, setToToken)
                 }
-<<<<<<< HEAD
                 tokenOptions={[]}
-=======
-                tokenOptions={Object.values(ASSETS)}
->>>>>>> develop
                 currentToken={toToken}
                 status="active"
                 balance="0.00"
