@@ -1,12 +1,9 @@
-import NumberFormat from 'react-number-format';
+import { Box } from '@chakra-ui/react';
 
 type NumberInputProps = {
   value: string;
   setValue: (string) => any;
-  decimalPoints?: number;
-  fixedDecimalPoints?: boolean;
   placeholder?: string;
-  allowNegative?: boolean;
   disabled?: boolean;
   style?: any;
 };
@@ -14,44 +11,35 @@ type NumberInputProps = {
 export const NumberInput = ({
   value,
   setValue,
-  decimalPoints = 5,
-  fixedDecimalPoints = true,
-  placeholder = '0.00000',
-  allowNegative = false,
+  placeholder = '0.00',
   disabled = false,
   style = {},
 }: NumberInputProps) => {
   const handleValueChange = (response) => {
-    setValue(response.formattedValue);
-  };
+    const inputValue = response.target.value;
+    const parsedInputValue = parseFloat(inputValue);
 
-  const isAllowed = (response) => {
-    return response.formattedValue.length > 0;
+    if (isNaN(inputValue)) return;
+    setValue(inputValue);
   };
 
   return (
-    <NumberFormat
+    <Box
+      as="input"
+      type="text"
+      bg="#1E1E1E"
+      textAlign="right"
+      fontSize="30px"
+      fontWeight={700}
+      color="#888E8F"
+      outline="none"
+      transition="color 400ms"
+      _placeholder={{ color: '#888E8F' }}
       placeholder={placeholder}
       disabled={disabled}
       value={value}
-      onValueChange={handleValueChange}
-      decimalScale={decimalPoints}
-      fixedDecimalScale={fixedDecimalPoints}
-      thousandSeparator=","
-      allowNegative={allowNegative}
-      isAllowed={isAllowed}
-      isNumericString
-      style={{
-        color: status === 'active' ? '#F6FCFD' : '#888E8F',
-        background: '#1E1E1E',
-        outline: 'none',
-        fontSize: '30px',
-        fontWeight: 700,
-        border: 'none',
-        textAlign: 'right',
-        transition: 'color 400ms',
-        ...style,
-      }}
+      onChange={handleValueChange}
+      style={style}
     />
   );
 };
