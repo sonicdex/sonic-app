@@ -1,16 +1,12 @@
 import Provider from '@psychedelic/plug-inpage-provider';
 import type { Transaction } from '@psychedelic/plug-inpage-provider/dist/src/Provider';
+import { Batch } from './models/batch';
 
-export enum BatchTransactionState {
-  Idle = 'idle',
-  Running = 'running',
-}
-
-export class BatchTransactions {
+export class BatchTransactions implements Batch.Controller {
   private transactions: Transaction[] = [];
   private batchTransactionResolver = null;
   private batchTransactionRejector = null;
-  private state: BatchTransactionState = BatchTransactionState.Idle;
+  private state: Batch.State = Batch.State.Idle;
 
   constructor(
     private provider: Provider,
@@ -28,8 +24,8 @@ export class BatchTransactions {
   }
 
   public async execute(): Promise<unknown> {
-    if (this.state !== BatchTransactionState.Idle) {
-      return Promise.reject(BatchTransactionState.Running);
+    if (this.state !== Batch.State.Idle) {
+      return Promise.reject(Batch.State.Running);
     }
 
     if (this.transactions.length === 0) {
@@ -37,7 +33,7 @@ export class BatchTransactions {
     }
 
     return new Promise((resolve, reject) => {
-      this.state = BatchTransactionState.Running;
+      this.state = Batch.State.Running;
       this.batchTransactionResolver = resolve;
       this.batchTransactionRejector = reject;
       this.start();
@@ -48,7 +44,7 @@ export class BatchTransactions {
     return this.transactions;
   }
 
-  public getState(): BatchTransactionState {
+  public getState(): Batch.State {
     return this.state;
   }
 
@@ -88,7 +84,7 @@ export class BatchTransactions {
     }
     this.batchTransactionResolver = null;
     this.batchTransactionRejector = null;
-    this.state = BatchTransactionState.Idle;
+    this.state = Batch.State.Idle;
   }
 
   private start(): void {

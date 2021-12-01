@@ -1,9 +1,6 @@
-import {
-  BatchTransactions,
-  BatchTransactionState,
-} from '@/integrations/transactions';
+import { BatchTransactions, Batch } from '@/integrations/transactions';
 import { batchTransactionFailMock, mockPlugProvider } from '@tests/mocks/plug';
-import { mockTransaction } from '../mocks/transactions';
+import { mockTransaction } from '@tests/mocks/transactions';
 
 const makeSut = () => {
   const plugMock = mockPlugProvider();
@@ -72,13 +69,13 @@ describe('BatchTransactions', () => {
   test('should throw if already is running', async () => {
     const { sut } = builtSut;
     sut.execute();
-    await expect(sut.execute()).rejects.toEqual(BatchTransactionState.Running);
+    await expect(sut.execute()).rejects.toEqual(Batch.State.Running);
   });
 
   test('should has running state after start execute', async () => {
     const { sut } = builtSut;
     sut.execute();
-    expect(sut.getState()).toBe(BatchTransactionState.Running);
+    expect(sut.getState()).toBe(Batch.State.Running);
   });
 
   test('should resolve for empty transactions', async () => {

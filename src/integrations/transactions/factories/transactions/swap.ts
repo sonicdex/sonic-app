@@ -6,8 +6,7 @@ import { Principal } from '@dfinity/principal';
 import { Transaction } from '@psychedelic/plug-inpage-provider/dist/src/Provider';
 import { CreateTransaction, Swap } from '../../models';
 
-export interface SwapTransaction
-  extends Transaction<SwapIDL.TxReceipt, SwapIDL.TxReceipt> {}
+export interface SwapTransaction extends Transaction {}
 
 export interface SwapExtraArgs {
   principal: Principal;
@@ -42,8 +41,8 @@ export const createSwapTransaction: CreateTransaction<
     onFail,
     onSuccess,
     args: [
-      parseAmount(amountIn, decimalIn),
-      parseAmount(amountOutMin, decimalIn),
+      parseAmount(amountIn, Number(decimalIn)),
+      parseAmount(amountOutMin, Number(decimalIn)),
       [tokenIn, tokenOut],
       owner || '',
       currentTime,

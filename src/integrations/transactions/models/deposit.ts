@@ -1,6 +1,4 @@
-import { Principal } from '@dfinity/principal';
-
 export type Deposit = {
-  tokenId: Principal;
+  tokenId: string;
   amount: number;
 };

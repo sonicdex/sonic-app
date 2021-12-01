@@ -3,8 +3,7 @@ import { SwapIDL } from '@/did';
 import { Transaction } from '@psychedelic/plug-inpage-provider/dist/src/Provider';
 import { CreateTransaction, Deposit } from '../../models';
 
-export interface DepositTransaction
-  extends Transaction<SwapIDL.TxReceipt, SwapIDL.TxReceipt> {}
+export interface DepositTransaction extends Transaction {}
 
 export const createDepositTransaction: CreateTransaction<
   Deposit,

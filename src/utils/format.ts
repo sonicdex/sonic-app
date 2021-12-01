@@ -163,3 +163,27 @@ export const formatAmount = (val: BigInt, decimals: number): string => {
     return '0';
   }
 };
+
+export const amountOutMin = (
+  toValue: number,
+  tolerance: number,
+  decimals: string
+) => {
+  return new BigNumber('1')
+    .minus(new BigNumber(tolerance))
+    .multipliedBy(new BigNumber(toValue))
+    .dp(Number(decimals))
+    .toString();
+};
+
+export const amountInMax = (
+  fromValue: number,
+  tolerance: number,
+  decimals: string
+) => {
+  return new BigNumber('1')
+    .minus(new BigNumber(tolerance))
+    .multipliedBy(new BigNumber(fromValue))
+    .dp(Number(decimals))
+    .toString();
+};

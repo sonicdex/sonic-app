@@ -5,6 +5,6 @@ export type Swap = {
   amountOut: string;
   amountOutMin: string;
   amountInMax: string;
-  decimalIn: number;
-  decimalOut: number;
+  decimalIn: string;
+  decimalOut: string;
 };
