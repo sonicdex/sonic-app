@@ -1,12 +1,9 @@
 import { useSwapActor } from '@/integrations/actor/use-swap-actor';
+import { Balances } from '@/models';
 import { usePlugStore } from '@/store';
 import { Principal } from '@dfinity/principal';
 import { useEffect, useState } from 'react';
 import { plug } from '../integrations/plug';
-
-type Balances = {
-  [canisterId: string]: number;
-};
 
 const parsePlugResponse = (response: any): Balances => {
   const parsed = (response as any as PlugTokenBalance[]).reduce((acc, cur) => {
