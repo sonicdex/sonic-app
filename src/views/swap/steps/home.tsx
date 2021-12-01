@@ -2,19 +2,22 @@ import { useState, useEffect } from 'react';
 import { Box, Flex } from '@chakra-ui/react';
 
 import { TitleBox, Toggle, TokenBox, Button } from '@/components';
+import { Balances, SupportedToken } from '@/models';
+import { getCurrencyString, parseAmount } from '@/utils/format';
 
 type HomeStepProps = {
   fromValue: string;
   setFromValue: (string) => any;
   toValue: string;
   setToValue: (string) => any;
-  fromToken: any;
+  fromToken: SupportedToken;
   setFromToken: (string) => any;
-  toToken: any;
+  toToken: SupportedToken;
   setToToken: (string) => any;
   handleTokenSelect: any;
   nextStep: () => any;
   tokenOptions: object;
+  balances: Balances;
 };
 
 export const HomeStep = ({
@@ -29,6 +32,7 @@ export const HomeStep = ({
   setToToken,
   handleTokenSelect,
   nextStep,
+  balances,
 }: HomeStepProps) => {
   const [loading, setLoading] = useState(false);
 
@@ -61,7 +65,10 @@ export const HomeStep = ({
             tokenOptions={Object.values(tokenOptions)}
             currentToken={fromToken}
             status={getStatus(fromToken, fromValue)}
-            balance="0.00"
+            balance={getCurrencyString(
+              fromToken && balances ? balances[fromToken.id] : 0,
+              fromToken?.decimals
+            )}
             amount="0.00"
           />
         </Box>
@@ -89,7 +96,10 @@ export const HomeStep = ({
             tokenOptions={Object.values(tokenOptions)}
             currentToken={toToken}
             disabled={true}
-            balance="0.00"
+            balance={getCurrencyString(
+              toToken && balances ? balances[toToken.id] : 0,
+              toToken?.decimals
+            )}
             amount="0.00"
           />
         </Box>

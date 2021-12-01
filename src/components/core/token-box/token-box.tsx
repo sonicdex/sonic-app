@@ -1,4 +1,5 @@
 import { NumberInput } from '@/components';
+import { SupportedToken } from '@/models';
 import {
   Box,
   Button,
@@ -9,19 +10,14 @@ import {
   MenuItem,
 } from '@chakra-ui/react';
 
-type Token = {
-  img: string;
-  name: string;
-};
-
 type TokenBoxProps = {
   value: string;
   setValue: (string) => any;
   onTokenSelect: (string) => any;
-  tokenOptions: Array<Token>;
-  currentToken: Token;
-  balance: '0.00';
-  amount: '0.00';
+  tokenOptions: Array<SupportedToken>;
+  currentToken?: SupportedToken;
+  balance: string;
+  amount: string;
   source?: 'plug' | 'sonic' | null;
   balanceText?: string;
   menuDisabled?: boolean;
@@ -33,7 +29,7 @@ type TokenBoxProps = {
 
 const ChevronDownIcon = () => <Box as="img" src={'/assets/chevron-down.svg'} />;
 
-const TokenOption = ({ img, name }: Token) => (
+const TokenOption = ({ img, name }: SupportedToken) => (
   <Flex direction="row" width="fit-content" alignItems="center">
     <Box as="img" src={img} height="20px" />
     <Box as="p" fontWeight={700} color="#F6FCFD" ml="7px">
@@ -66,7 +62,7 @@ export const TokenBox = ({
 
   const balanceDisplay = balanceText
     ? balanceText
-    : `Balance: ${balance} ${currentToken.name}`;
+    : `Balance: ${balance} ${currentToken?.name}`;
 
   const amountDisplay = amountText ? amountText : `$${amount}`;
 
@@ -112,16 +108,16 @@ export const TokenBox = ({
             pl="10px"
             pr="12px"
           >
-            <TokenOption img={currentToken.img} name={currentToken.name} />
+            <TokenOption {...currentToken} />
           </MenuButton>
           {!menuDisabled && (
             <MenuList>
               {tokenOptions.map((token) => (
                 <MenuItem
                   key={token.name}
-                  onClick={() => onTokenSelect(token.name)}
+                  onClick={() => onTokenSelect(token.id)}
                 >
-                  <TokenOption img={token.img} name={token.name} />
+                  <TokenOption {...token} />
                 </MenuItem>
               ))}
             </MenuList>

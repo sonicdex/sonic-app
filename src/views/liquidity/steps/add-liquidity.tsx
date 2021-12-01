@@ -9,20 +9,20 @@ type AddLiquidityStepProps = {
 };
 
 // FIXME: Mocked values
-const tokenOptions = {
-  XMPL: {
-    img: '/assets/info.svg',
-    name: 'XMPL',
-  },
-  XMP2: {
-    img: '/assets/info.svg',
-    name: 'XMP2',
-  },
-  XMP3: {
-    img: '/assets/info.svg',
-    name: 'XMP3',
-  },
-};
+// const tokenOptions = {
+//   XMPL: {
+//     img: '/assets/info.svg',
+//     name: 'XMPL',
+//   },
+//   XMP2: {
+//     img: '/assets/info.svg',
+//     name: 'XMP2',
+//   },
+//   XMP3: {
+//     img: '/assets/info.svg',
+//     name: 'XMP3',
+//   },
+// };
 
 const BUTTON_TITLES = ['Review Supply', 'Confirm Supply'];
 
@@ -34,13 +34,13 @@ export const AddLiquidityStep = ({
   const [subStep, setSubStep] = useState(0);
 
   const [fromValue, setFromValue] = useState('0.00');
-  const [fromToken, setFromToken] = useState(Object.values(tokenOptions)[0]);
+  const [fromToken, setFromToken] = useState();
 
   const [toValue, setToValue] = useState('0.00');
-  const [toToken, setToToken] = useState(Object.values(tokenOptions)[1]);
+  const [toToken, setToToken] = useState();
 
   const handleTokenSelect = (tokenName, setter) => {
-    setter(tokenOptions[tokenName]);
+    // setter(tokenOptions[tokenName]);
   };
 
   const handlePreviousStep = () => {
@@ -96,7 +96,7 @@ export const AddLiquidityStep = ({
             onTokenSelect={(tokenName) =>
               handleTokenSelect(tokenName, setFromToken)
             }
-            tokenOptions={Object.values(tokenOptions)}
+            tokenOptions={[]}
             currentToken={fromToken}
             status={getActiveStatus(fromToken, fromValue)}
             disabled={subStep === 1}
@@ -126,7 +126,7 @@ export const AddLiquidityStep = ({
             onTokenSelect={(tokenName) =>
               handleTokenSelect(tokenName, setToToken)
             }
-            tokenOptions={Object.values(tokenOptions)}
+            tokenOptions={[]}
             currentToken={toToken}
             status={getActiveStatus(toToken, toValue)}
             disabled={subStep === 1}
@@ -159,7 +159,7 @@ export const AddLiquidityStep = ({
                 onTokenSelect={(tokenName) =>
                   handleTokenSelect(tokenName, setToToken)
                 }
-                tokenOptions={Object.values(tokenOptions)}
+                tokenOptions={[]}
                 currentToken={toToken}
                 status="active"
                 balance="0.00"
@@ -181,10 +181,10 @@ export const AddLiquidityStep = ({
           px="20px"
         >
           <Box color="#888E8F" as="p">
-            {`${fromToken.name} + ${toToken.name}`}
+            {`${'fromToken'} + ${'toToken'}`}
           </Box>
           <Box color="#888E8F" as="p">
-            {`1 ${fromToken.name} = 0.23 ${toToken.name}`}
+            {`1 ${'fromToken'} = 0.23 ${'toToken'}`}
           </Box>
         </Flex>
       </Flex>

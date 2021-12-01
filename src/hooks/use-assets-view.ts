@@ -1,6 +1,5 @@
 import { Principal } from '@dfinity/principal';
 
-import { TokenInfo } from '@/typings/global';
 import { parseAmount } from '@/utils/format';
 import { useActorStore } from '@/store/features/actor';
 import { usePlugStore } from '@/store';

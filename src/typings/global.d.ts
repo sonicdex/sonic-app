@@ -203,4 +203,11 @@ declare global {
     holderNumber: bigint | number;
     cycles: bigint | number;
   }
+
+  export interface PlugTokenBalance {
+    name: string;
+    symbol: string;
+    amount: string;
+    canisterId: string | null;
+  }
 }
