@@ -29,6 +29,7 @@ export class RosettaError extends Error {
    * @param {String} message An error message describing the error.
    * @param {Number} status number The HTTP response status.
    */
+  public errorType;
   constructor(message, status) {
     super(message);
     switch (status) {
@@ -55,6 +56,17 @@ export class Transaction {
    * @param {Number} blockIndex The index.tsx of the block containing the transaction.
    * milliseconds since the Unix Epoch.
    */
+  public blockIndex;
+  public hash;
+  public timestamp;
+  public type;
+  public status;
+  public account1Address;
+  public account2Address;
+  public amount;
+  public fee;
+  public memo;
+
   constructor(rosettaTransaction, blockIndex) {
     this.blockIndex = blockIndex;
     this.hash = rosettaTransaction.transaction_identifier.hash;
@@ -99,6 +111,8 @@ export default class RosettaApi {
   /**
    * Create a RosettaApi.
    */
+  public networkIdentifier;
+  public axios;
   constructor() {
     this.axios = axios.create({
       baseURL:
