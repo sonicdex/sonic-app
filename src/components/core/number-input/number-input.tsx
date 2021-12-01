@@ -19,7 +19,7 @@ export const NumberInput = ({
     const inputValue = response.target.value;
     const parsedInputValue = parseFloat(inputValue);
 
-    if (isNaN(inputValue)) return; 
+    if (isNaN(inputValue)) return;
     setValue(inputValue);
   };
 
