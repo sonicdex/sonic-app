@@ -1,5 +1,7 @@
 const path = require('path');
+const webpack = require('webpack');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 require('dotenv').config();
 
 module.exports = () => {
@@ -7,10 +9,9 @@ module.exports = () => {
     entry: './src/index.tsx',
     devtool: 'source-map',
     output: {
-      path: path.join(__dirname, 'public/js'),
-      publicPath: '/public',
-      filename: 'bundle.js',
-      sourceMapFilename: 'bundle.js.map',
+      path: path.resolve(__dirname, 'dist'),
+      publicPath: '/',
+      filename: '[name].[contenthash:8].js',
     },
     resolve: {
       extensions: ['.ts', '.tsx', '.js'],
@@ -37,17 +38,17 @@ module.exports = () => {
           test: /\.css$/i,
           use: ['style-loader', 'css-loader'],
         },
-        {
-          test: /\.html$/,
-          use: {
-            loader: 'html-loader',
-            options: {
-              attrs: [':src'],
-            },
-          },
-        },
       ],
     },
-    plugins: [new CleanWebpackPlugin()],
+    plugins: [
+      new CleanWebpackPlugin(),
+      new webpack.ProvidePlugin({
+        process: 'process/browser',
+      }),
+      new HtmlWebpackPlugin({
+        template: path.resolve(__dirname, 'public/index.html'),
+        inject: true,
+      }),
+    ],
   };
 };

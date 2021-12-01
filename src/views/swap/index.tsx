@@ -2,22 +2,7 @@ import { useState } from 'react';
 
 import { useAppSelector, selectPlugState } from '@/store';
 import { HomeStep, ReviewStep } from './steps';
-
-// Mocked
-const tokenOptions = {
-  XMPL: {
-    img: '/assets/info.svg',
-    name: 'XMPL',
-  },
-  XMP2: {
-    img: '/assets/info.svg',
-    name: 'XMP2',
-  },
-  XMP3: {
-    img: '/assets/info.svg',
-    name: 'XMP3',
-  },
-};
+import { ASSETS } from '@/constants';
 
 const STEPS = [HomeStep, ReviewStep];
 
@@ -27,14 +12,28 @@ export const Swap = () => {
   const { isConnected } = useAppSelector(selectPlugState);
   const [keepInSonic, setKeepInSonic] = useState(false);
   const [fromValue, setFromValue] = useState('0.00');
-  const [fromToken, setFromToken] = useState(Object.values(tokenOptions)[0]);
+  const [fromToken, setFromToken] = useState(Object.values(ASSETS)[0]);
   const [toValue, setToValue] = useState('0.00');
-  const [toToken, setToToken] = useState(Object.values(tokenOptions)[1]);
+  const [toToken, setToToken] = useState(Object.values(ASSETS)[1]);
 
   const [modalOpen, setModalOpen] = useState(true);
 
   const handleTokenSelect = (tokenName, setter) => {
-    setter(tokenOptions[tokenName]);
+    const filledTokenName = ASSETS[tokenName];
+
+    switch (tokenName) {
+      case fromToken.name:
+        setFromToken(toToken);
+        setToToken(filledTokenName);
+        break;
+      case toToken.name:
+        setToToken(fromToken);
+        setFromToken(filledTokenName);
+        break;
+      default:
+        setter(filledTokenName);
+        break;
+    }
   };
 
   const handleNextStep = () => {
@@ -64,7 +63,7 @@ export const Swap = () => {
           setFromToken={setFromToken}
           setToValue={setToValue}
           setToToken={setToToken}
-          tokenOptions={tokenOptions}
+          tokenOptions={ASSETS}
           nextStep={handleNextStep}
         />
       );
@@ -80,7 +79,7 @@ export const Swap = () => {
           toToken={toToken}
           nextStep={handleNextStep}
           prevStep={handlePrevStep}
-          tokenOptions={tokenOptions}
+          tokenOptions={ASSETS}
         />
       );
       break;
