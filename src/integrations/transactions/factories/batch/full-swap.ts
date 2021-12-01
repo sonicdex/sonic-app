@@ -6,7 +6,7 @@ import {
 } from '..';
 import { BatchTransactions } from '../../batch-transactions';
 
-export const createFullSwipe = (): BatchTransactions => {
+export const createFullSwap = (): BatchTransactions => {
   // Create a new batch of transactions
   const batch = new BatchTransactions(plug, async () => {
     return confirm('Failed. Try again?');

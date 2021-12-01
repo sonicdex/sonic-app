@@ -8,22 +8,6 @@ type AddLiquidityStepProps = {
   onAdd: (any) => any;
 };
 
-// FIXME: Mocked values
-// const tokenOptions = {
-//   XMPL: {
-//     img: '/assets/info.svg',
-//     name: 'XMPL',
-//   },
-//   XMP2: {
-//     img: '/assets/info.svg',
-//     name: 'XMP2',
-//   },
-//   XMP3: {
-//     img: '/assets/info.svg',
-//     name: 'XMP3',
-//   },
-// };
-
 const BUTTON_TITLES = ['Review Supply', 'Confirm Supply'];
 
 export const AddLiquidityStep = ({
@@ -40,7 +24,7 @@ export const AddLiquidityStep = ({
   const [toToken, setToToken] = useState();
 
   const handleTokenSelect = (tokenName, setter) => {
-    // setter(tokenOptions[tokenName]);
+    // TODO: add handler function
   };
 
   const handlePreviousStep = () => {

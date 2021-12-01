@@ -22,7 +22,7 @@ enum DepositSwapState {
   Error = 'error',
 }
 
-export const createDepositSwipe: CreateBatch<DepositSwapParams> = ({
+export const createDepositSwap: CreateBatch<DepositSwapParams> = ({
   fromValue,
   tokenIn,
   tokenOut,

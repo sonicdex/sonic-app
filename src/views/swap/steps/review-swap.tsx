@@ -1,9 +1,5 @@
-import { useState } from 'react';
+import { Button, Checkbox, TitleBox, TokenBox } from '@/components';
 import { Box, Flex } from '@chakra-ui/react';
-
-import { useAppSelector, selectPlugState } from '@/store';
-import { Checkbox, TitleBox, Toggle, TokenBox, Button } from '@/components';
-import { createDepositSwipe } from '@/integrations/transactions';
 
 type ReviewStepProps = {
   fromValue: string;

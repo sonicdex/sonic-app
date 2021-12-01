@@ -1,2 +1,2 @@
-export * from './full-swipe';
-export * from './deposit-swipe';
+export * from './full-swap';
+export * from './deposit-swap';
