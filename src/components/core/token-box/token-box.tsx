@@ -12,8 +12,8 @@ import {
 
 type TokenBoxProps = {
   value: string;
-  setValue: (string) => any;
-  onTokenSelect: (string) => any;
+  setValue: (value: string) => any;
+  onTokenSelect: (token: string) => any;
   tokenOptions: Array<SupportedToken>;
   currentToken?: SupportedToken;
   balance: string;

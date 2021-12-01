@@ -12,7 +12,7 @@ type ReviewStepProps = {
   nextStep: () => any;
   prevStep: () => any;
   tokenOptions: object;
-  setKeepInSonic: (boolean) => any;
+  setKeepInSonic: (shouldKeep: boolean) => any;
 };
 
 export const ReviewStep = ({

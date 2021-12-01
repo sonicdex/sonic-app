@@ -2,13 +2,12 @@ import { useState } from 'react';
 import { Flex, Box } from '@chakra-ui/react';
 
 import { Button, TitleBox, TokenBox } from '@/components';
-import { ASSETS } from '@/constants';
 
 import { plusSrc, equalSrc } from '@/assets';
 
 type AddLiquidityStepProps = {
   onPrevious: () => any;
-  onAdd: (any) => any;
+  onAdd: (any: any) => any;
 };
 
 const BUTTON_TITLES = ['Review Supply', 'Confirm Supply'];
@@ -41,7 +40,7 @@ export const AddLiquidityStep = ({
   const getActiveStatus = (token, value) => {
     const shouldBeActive = token && value?.length && parseFloat(value) > 0;
 
-    return shouldBeActive && subStep !== 1 ? 'active' : null;
+    return shouldBeActive && subStep !== 1 ? 'active' : undefined;
   };
 
   const shouldButtonBeActive = () => {

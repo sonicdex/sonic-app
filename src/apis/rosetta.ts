@@ -30,7 +30,7 @@ export class RosettaError extends Error {
    * @param {Number} status number The HTTP response status.
    */
   public errorType;
-  constructor(message, status) {
+  constructor(message: string, status: number) {
     super(message);
     switch (status) {
       case 408:
@@ -67,7 +67,7 @@ export class Transaction {
   public fee;
   public memo;
 
-  constructor(rosettaTransaction, blockIndex) {
+  constructor(rosettaTransaction: any, blockIndex: number) {
     this.blockIndex = blockIndex;
     this.hash = rosettaTransaction.transaction_identifier.hash;
     const timestampMs = rosettaTransaction.metadata.timestamp
@@ -126,7 +126,7 @@ export default class RosettaApi {
 
     this.networkIdentifier = this.networksList().then((res) =>
       res.network_identifiers.find(
-        (networkIdentifier) =>
+        (networkIdentifier: any) =>
           networkIdentifier.blockchain === 'Internet Computer'
       )
     );
@@ -142,11 +142,11 @@ export default class RosettaApi {
     try {
       const response = await this.accountBalanceByAddress(accountAddress);
       return new BigNumber(response.balances[0].value);
-    } catch (error) {
+    } catch (error: any) {
       //console.log(error);
       return new RosettaError(
         error.message,
-        axios.isAxiosError(error) ? error?.response?.status : undefined
+        axios.isAxiosError(error) ? error?.response?.status : ''
       );
     }
   }
@@ -159,11 +159,11 @@ export default class RosettaApi {
     try {
       const response = await this.networkStatus();
       return response.current_block_identifier.index;
-    } catch (error) {
+    } catch (error: any) {
       //console.log(error);
       return new RosettaError(
         error.message,
-        axios.isAxiosError(error) ? error?.response?.status : undefined
+        axios.isAxiosError(error) ? error?.response?.status : ''
       );
     }
   }

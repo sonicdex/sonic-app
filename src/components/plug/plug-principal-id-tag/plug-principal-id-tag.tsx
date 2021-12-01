@@ -10,7 +10,6 @@ import {
   MenuButton,
 } from '@chakra-ui/react';
 
-import { disconnect } from '@/integrations/plug';
 import { FeatureState, useAppDispatch, usePlugStore } from '@/store';
 import { Emoji, GradientBox } from '@/components/core';
 import { desensitizationPrincipalId } from '@/utils/canister';
@@ -36,14 +35,10 @@ export const PlugPrincipalIDTag: FC<TagProps> = ({
     return desensitizationPrincipalId(principalId, 11, 9);
   }, [principalId]);
 
-  const onClick = async () => {
-    handleDisconnect();
-
-    await disconnect();
-  };
-
   const handleCopy = () => {
-    navigator.clipboard.writeText(principalId);
+    if (principalId) {
+      navigator.clipboard.writeText(principalId);
+    }
   };
 
   return (
