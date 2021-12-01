@@ -1,9 +1,7 @@
-import { useState } from 'react';
 import { Box, Flex } from '@chakra-ui/react';
 
-import { useAppSelector, selectPlugState } from '@/store';
-import { Checkbox, TitleBox, Toggle, TokenBox, Button } from '@/components';
-import { createDepositSwipe } from '@/integrations/transactions';
+import { Checkbox, TitleBox, TokenBox, Button } from '@/components';
+import { arrowDownSrc, infoSrc } from '@/assets';
 
 type ReviewStepProps = {
   fromValue: string;
@@ -62,7 +60,7 @@ export const ReviewStep = ({
           mb="-26px"
           zIndex={1200}
         >
-          <Box as="img" m="auto" src={'/assets/arrow-down.svg'} />
+          <Box as="img" m="auto" src={arrowDownSrc} />
         </Box>
         <Box mt="10px" width="100%">
           <TokenBox
@@ -108,7 +106,7 @@ export const ReviewStep = ({
         </Flex>
         <Box
           as="img"
-          src={'/assets/info.svg'}
+          src={infoSrc}
           width="20px"
           transition="opacity 200ms"
           opacity={keepInSonic ? 1 : 0.5}

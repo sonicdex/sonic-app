@@ -1,9 +1,7 @@
 import { ReactElement, FC, useMemo } from 'react';
-import { Tag, TagProps } from '@chakra-ui/tag';
+import { TagProps } from '@chakra-ui/tag';
 import { Spinner } from '@chakra-ui/spinner';
 import {
-  TagCloseButton,
-  TagLabel,
   Flex,
   Box,
   Menu,
@@ -16,10 +14,9 @@ import { disconnect } from '@/integrations/plug';
 import { FeatureState, useAppDispatch, usePlugStore } from '@/store';
 import { Emoji, GradientBox } from '@/components/core';
 import { desensitizationPrincipalId } from '@/utils/canister';
+import { chevronDownSrc, copySrc, exitSrc } from '@/assets';
 
-const ChevronIcon = () => (
-  <Box ml="11px" as="img" src={'/assets/chevron-down.svg'} />
-);
+const ChevronIcon = () => <Box ml="11px" as="img" src={chevronDownSrc} />;
 
 export const PlugPrincipalIDTag: FC<TagProps> = ({
   ...props
@@ -86,7 +83,7 @@ export const PlugPrincipalIDTag: FC<TagProps> = ({
         </MenuItem>
         <MenuItem py="7px" px="19px" fontWeight={700} onClick={handleCopy}>
           <Flex direction="row">
-            <Box as="img" src={'/assets/copy.svg'} mr="12px" />
+            <Box as="img" src={copySrc} mr="12px" />
             Copy ID
           </Flex>
         </MenuItem>
@@ -98,7 +95,7 @@ export const PlugPrincipalIDTag: FC<TagProps> = ({
           onClick={handleDisconnect}
         >
           <Flex direction="row">
-            <Box as="img" src={'/assets/exit.svg'} mr="12px" />
+            <Box as="img" src={exitSrc} mr="12px" />
             Disconnect
           </Flex>
         </MenuItem>

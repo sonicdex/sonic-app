@@ -5,6 +5,8 @@ import { TitleBox, Toggle, TokenBox, Button } from '@/components';
 import { Balances, SupportedToken } from '@/models';
 import { getCurrencyString, parseAmount } from '@/utils/format';
 
+import { arrowDownSrc } from '@/assets';
+
 type HomeStepProps = {
   fromValue: string;
   setFromValue: (string) => any;
@@ -84,7 +86,7 @@ export const HomeStep = ({
           mb="-26px"
           zIndex={1200}
         >
-          <Box as="img" m="auto" src={'/assets/arrow-down.svg'} />
+          <Box as="img" m="auto" src={arrowDownSrc} />
         </Box>
         <Box mt="10px" width="100%">
           <TokenBox

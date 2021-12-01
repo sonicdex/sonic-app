@@ -8,7 +8,6 @@ import RosettaApi from '@/apis/rosetta';
 import { plug } from '@/integrations/plug';
 import { useEffect, useState } from 'react';
 import { usePlugStore } from '@/store';
-import { Principal } from '@dfinity/principal';
 import { parseAmount } from './format';
 
 export const formatICP = (val: BigInt): string => {
@@ -37,7 +36,7 @@ export const parseICP = (val: string): BigInt => {
   }
 };
 
-export const getICPBalance = (principal: Principal) => {
+export const getICPBalance = (principalId: string) => {
   let res = {
     status: 0,
     data: '',
@@ -48,9 +47,9 @@ export const getICPBalance = (principal: Principal) => {
 
   let promise = new Promise<{ status: number; data: string; msg: string }>(
     (resolve, reject) => {
-      if (!principal) return resolve(res);
+      if (!principalId) return resolve(res);
       rosettaAPI
-        .getAccountBalance(principalToAccountIdentifier(principal || '', 0))
+        .getAccountBalance(principalToAccountIdentifier(principalId || '', 0))
         .then((bal) => {
           res.status = 1;
           res.data = new BigNumber(bal.toString())
@@ -58,9 +57,9 @@ export const getICPBalance = (principal: Principal) => {
             .toString();
           resolve(res);
         })
-        .catch((err) => {
+        .catch((err: any) => {
           res.msg = err.message;
-          resolve(res);
+          reject(res);
         });
     }
   );

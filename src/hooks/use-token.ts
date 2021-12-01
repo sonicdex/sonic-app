@@ -1,6 +1,6 @@
 import { Principal } from '@dfinity/principal';
 import { useActorStore } from '@/store/features/actor';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { usePlugStore } from '@/store';
 import { parseAmount } from '@/utils/format';
 import { Actor, HttpAgent } from '@dfinity/agent';
