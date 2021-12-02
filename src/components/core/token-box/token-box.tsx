@@ -9,7 +9,7 @@ import {
   MenuItem,
 } from '@chakra-ui/react';
 
-import { greyMinusSrc, greySonicSrc, chevronDownSrc } from '@/assets';
+import { greyPlugSrc, greySonicSrc, chevronDownSrc } from '@/assets';
 
 type Token = {
   img: string;
@@ -60,7 +60,7 @@ export const TokenBox = ({
   disabled = false,
   glow = false,
 }: TokenBoxProps) => {
-  const sourceImg = source === 'plug' ? greyMinusSrc : greySonicSrc;
+  const sourceImg = source === 'plug' ? greyPlugSrc : greySonicSrc;
 
   const border = glow ? '1px solid #3D52F4' : '1px solid #373737';
   const background = glow ? '#151515' : '#1E1E1E';
