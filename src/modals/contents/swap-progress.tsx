@@ -23,6 +23,7 @@ const CircleIcon = ({
 
   const bg = status === 'disabled' ? '#353535' : '#3D52F4';
   const opacity = status === 'disabled' ? 0.5 : 1;
+  const checkOpacity = status === 'done' ? 1 : 0;
 
   return (
     <Box
@@ -54,18 +55,18 @@ const CircleIcon = ({
           animation={spinAnimation}
         />
       )}
-      { status === 'done' && (
-        <Box
-          top={0}
-          right={0}
-          mt="-5px"
-          mr="-3px"
-          zIndex={300}
-          as="img"
-          src={greenCheckSrc}
-          position="absolute"
-        />
-      )}
+      <Box
+        top={0}
+        right={0}
+        opacity={checkOpacity}
+        mt="-5px"
+        mr="-3px"
+        zIndex={300}
+        as="img"
+        src={greenCheckSrc}
+        transition="opacity 400ms"
+        position="absolute"
+      />
       <Flex
         w="100%"
         h="100%"
@@ -75,6 +76,7 @@ const CircleIcon = ({
         justifyContent="center"
         position="absolute"
         opacity={opacity}
+        transition="opacity 400ms"
       >
         <Box as="img" w="18px" src={iconSrc} />
       </Flex>
@@ -96,6 +98,10 @@ const Step = ({
   const color = status === 'disabled' ? '#888E8F' : '#FFFFFF';
   const weight = status === 'disabled' ? 400 : 600;
   const opacity = status === 'disabled' ? 0.4 : 1;
+  const ml = status === 'disabled' ?
+    chevron ? "2px" : "3px" :
+    "0px";
+  const chevMl = status === 'disabled' ? "25px" : "24px";
 
   return (
     <Flex
@@ -110,10 +116,12 @@ const Step = ({
         <Box
           mt="9px"
           as="h3"
+          pl={ml}
           fontWeight={weight}
           fontSize="14px"
           color={color}
           textAlign="center"
+          transition="color 400ms"
         >
           {children}
         </Box>
@@ -124,7 +132,9 @@ const Step = ({
           as="img"
           mt="15px"
           mx="24px"
+          ml={chevMl}
           src={doubleRightChevronSrc}
+          transition="opacity 400ms"
         />
       )}
     </Flex>
@@ -158,7 +168,7 @@ export const SwapProgress = ({ currentModalState, currentModalData }: SwapProgre
     <Flex
       direction="column"
       alignItems="center"
-      width="100%"
+      width="441px"
       height="100%"
       bg="#1E1E1E"
       pt="37px"
