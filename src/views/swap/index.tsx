@@ -79,6 +79,7 @@ export const Swap = () => {
           toToken={toToken}
           nextStep={handleNextStep}
           prevStep={handlePrevStep}
+          setFromValue={setFromValue}
           tokenOptions={ASSETS}
         />
       );

@@ -14,6 +14,7 @@ type ReviewStepProps = {
   keepInSonic: boolean;
   nextStep: () => any;
   prevStep: () => any;
+  setFromValue: (string) => any;
   tokenOptions: object;
   setKeepInSonic: (boolean) => any;
 };
@@ -26,6 +27,7 @@ export const ReviewStep = ({
   nextStep,
   prevStep,
   keepInSonic,
+  setFromValue,
   setKeepInSonic,
   tokenOptions,
 }: ReviewStepProps) => {
@@ -46,6 +48,7 @@ export const ReviewStep = ({
     setTimeout(() => setCurrentModalState('swap'), 3000);
     setTimeout(() => setCurrentModalState('withdraw'), 6000);
     setTimeout(() => {
+      setFromValue('0.00');
       clearModal();
       nextStep();
     }, 9000);
