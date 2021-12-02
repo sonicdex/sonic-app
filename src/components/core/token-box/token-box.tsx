@@ -8,6 +8,7 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
+  Image,
 } from '@chakra-ui/react';
 
 type TokenBoxProps = {
@@ -27,11 +28,11 @@ type TokenBoxProps = {
   glow?: boolean;
 };
 
-const ChevronDownIcon = () => <Box as="img" src={'/assets/chevron-down.svg'} />;
+const ChevronDownIcon = () => <Image src={'/assets/chevron-down.svg'} />;
 
-const TokenOption = ({ img, name }: SupportedToken) => (
+const TokenOption = ({ logo, name }: SupportedToken) => (
   <Flex direction="row" width="fit-content" alignItems="center">
-    <Box as="img" src={img} height="20px" />
+    <Image src={logo} height="20px" />
     <Box as="p" fontWeight={700} color="#F6FCFD" ml="7px">
       {name}
     </Box>
@@ -108,7 +109,7 @@ export const TokenBox = ({
             pl="10px"
             pr="12px"
           >
-            <TokenOption {...currentToken} />
+            {currentToken && <TokenOption {...currentToken} />}
           </MenuButton>
           {!menuDisabled && (
             <MenuList>
@@ -135,7 +136,7 @@ export const TokenBox = ({
       </Flex>
       <Flex direction="row" justifyContent="space-between">
         <Flex direction="row">
-          {source && <Box as="img" src={sourceImg} mr="7px" height="20px" />}
+          {source && <Image src={sourceImg} mr="7px" height="20px" />}
           <Box as="p" color="#888E8F" fontSize="16px">
             {balanceDisplay}
           </Box>

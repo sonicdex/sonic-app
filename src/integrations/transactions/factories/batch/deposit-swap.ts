@@ -1,6 +1,5 @@
 import { plug } from '@/integrations/plug';
 import { amountInMax, amountOutMin } from '@/utils/format';
-import { Principal } from '@dfinity/principal';
 import { useState } from 'react';
 import { createDepositTransaction, createSwapTransaction } from '..';
 import { BatchTransactions } from '../..';

@@ -1,3 +1,4 @@
+// @ts-nocheck TODO: fix types
 import { ENV } from '@/config';
 import { LedgerIDL, SwapIDL, TokenIDL, SwapStorageIDL } from '@/did';
 import { useActorStore } from '@/store/features/actor';

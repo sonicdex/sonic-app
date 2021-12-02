@@ -79,21 +79,21 @@ declare global {
     timestamp: BigInt;
   }
 
-  export interface TokenMetadata {
-    canisterId: string;
-    cycles: BigInt;
-    decimals: BigInt;
-    deployTime: BigInt;
-    fee: BigInt;
-    feeTo: Principal;
-    historySize: BigInt;
-    holderNumber: BigInt;
-    name: string;
-    owner: Principal;
-    symbol: string;
-    totalSupply: BigInt;
-    logo: string;
-  }
+  // export interface TokenMetadata {
+  //   canisterId: string;
+  //   cycles: BigInt;
+  //   decimals: BigInt;
+  //   deployTime: BigInt;
+  //   fee: BigInt;
+  //   feeTo: Principal;
+  //   historySize: BigInt;
+  //   holderNumber: BigInt;
+  //   name: string;
+  //   owner: Principal;
+  //   symbol: string;
+  //   totalSupply: BigInt;
+  //   logo: string;
+  // }
 
   export interface TokenTx {
     amount: BigInt;

@@ -6,28 +6,31 @@ import { useEffect, useState } from 'react';
 import { plug } from '../integrations/plug';
 
 const parsePlugResponse = (response: any): Balances => {
-  const parsed = (response as any as PlugTokenBalance[]).reduce((acc, cur) => {
-    return {
-      ...acc,
-      [cur.canisterId]: Number(cur.amount),
-    };
+  const parsed = (response as PlugTokenBalance[]).reduce((acc, current) => {
+    if (current.canisterId) {
+      return {
+        ...acc,
+        [current.canisterId]: Number(current.amount),
+      };
+    }
+    return acc;
   }, {} as Balances);
   return parsed;
 };
 
 const parseSwapResponse = (response: [string, bigint][]): Balances => {
-  const parsed = response.reduce((acc, cur) => {
+  const parsed = response.reduce((acc, current) => {
     return {
       ...acc,
-      [cur[0]]: Number(cur[1]),
+      [current[0]]: Number(current[1]),
     };
   }, {} as Balances);
   return parsed;
 };
 
 const sumBalances = (...balances: Balances[]): Balances => {
-  return balances.reduce((acc, cur) => {
-    const balance = Object.entries(cur);
+  return balances.reduce((acc, current) => {
+    const balance = Object.entries(current);
     balance.forEach(([canisterId, amount]) => {
       if (acc[canisterId]) {
         acc[canisterId] += amount;

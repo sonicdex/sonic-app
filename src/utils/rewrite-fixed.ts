@@ -1,12 +1,13 @@
 export default () => {
   Number.prototype.toFixed = function (n) {
+    if (!n) return '';
     if (n > 20 || n < 0) {
       throw new RangeError(
         'toFixed() digits argument must be between 0 and 20'
       );
     }
 
-    const number = this;
+    const number = this as number;
 
     if (isNaN(number) || number >= Math.pow(10, 21)) {
       return number.toString();
@@ -53,8 +54,8 @@ export default () => {
 
     if (parseInt(last, 10) >= 5) {
       const x = Math.pow(10, n);
-      result = (Math.round(parseFloat(result) * x) + 1) / x;
-      result = result.toFixed(n);
+      const numberRes = (Math.round(parseFloat(result) * x) + 1) / x;
+      result = numberRes.toFixed(n);
     }
 
     return result;

@@ -1,27 +1,10 @@
 import { useEffect, useState } from 'react';
 
-import { useAppSelector, selectPlugState } from '@/store';
 import { HomeStep, ReviewStep } from './steps';
 import { useUserBalances } from '@/hooks/use-user-balances';
 import { useSwapActor } from '@/integrations/actor/use-swap-actor';
 import { SwapIDL } from '@/did';
-import { Balances, SupportedToken, SupportedTokenList } from '@/models';
-
-// Mocked
-// const tokenOptions = {
-//   XMPL: {
-//     img: '/assets/info.svg',
-//     name: 'XMPL',
-//   },
-//   XMP2: {
-//     img: '/assets/info.svg',
-//     name: 'XMP2',
-//   },
-//   XMP3: {
-//     img: '/assets/info.svg',
-//     name: 'XMP3',
-//   },
-// };
+import { SupportedToken, SupportedTokenList } from '@/models';
 
 const parseResponseTokenList = (
   response: SwapIDL.TokenInfoExt[]
@@ -29,7 +12,7 @@ const parseResponseTokenList = (
   return response.reduce((list, token) => {
     list[token.id] = {
       ...token,
-      img: '/assets/info.svg',
+      logo: '/assets/info.svg',
     };
     return list;
   }, {} as SupportedTokenList);
@@ -37,17 +20,20 @@ const parseResponseTokenList = (
 
 const STEPS = [HomeStep, ReviewStep];
 
+enum Step {
+  Home,
+  Review,
+}
+
 export const Swap = () => {
-  const [step, setStep] = useState(0);
+  const [step, setStep] = useState(Step.Home);
 
   const [tokenList, setTokenList] = useState<SupportedTokenList>({});
-  const { isConnected } = useAppSelector(selectPlugState);
   const [keepInSonic, setKeepInSonic] = useState(false);
   const [fromValue, setFromValue] = useState('0.00');
   const [fromToken, setFromToken] = useState<SupportedToken>();
   const [toValue, setToValue] = useState('0.00');
   const [toToken, setToToken] = useState<SupportedToken>();
-  const [modalOpen, setModalOpen] = useState(true);
 
   const swapActor = useSwapActor();
   const { totalBalances } = useUserBalances();
@@ -62,7 +48,10 @@ export const Swap = () => {
     });
   }, [swapActor]);
 
-  const handleTokenSelect = (tokenName: string, setter) => {
+  const handleTokenSelect = (
+    tokenName: string,
+    setter: (token: SupportedToken) => void
+  ) => {
     setter(tokenList[tokenName]);
   };
 
@@ -70,7 +59,7 @@ export const Swap = () => {
     if (step + 1 < STEPS.length) {
       setStep(step + 1);
     } else {
-      setStep(0);
+      setStep(Step.Home);
     }
   };
 
@@ -81,7 +70,7 @@ export const Swap = () => {
   };
 
   switch (step) {
-    case 0:
+    case Step.Home:
       return (
         <HomeStep
           handleTokenSelect={handleTokenSelect}
@@ -98,8 +87,8 @@ export const Swap = () => {
           balances={totalBalances}
         />
       );
-      break;
-    case 1:
+
+    case Step.Review:
       return (
         <ReviewStep
           keepInSonic={keepInSonic}
@@ -113,6 +102,5 @@ export const Swap = () => {
           tokenOptions={tokenList}
         />
       );
-      break;
   }
 };

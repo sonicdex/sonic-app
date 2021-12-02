@@ -4,12 +4,13 @@ import { Batch } from './models/batch';
 
 export class BatchTransactions implements Batch.Controller {
   private transactions: Transaction[] = [];
-  private batchTransactionResolver = null;
-  private batchTransactionRejector = null;
+  // TODO: Add types
+  private batchTransactionResolver: any;
+  private batchTransactionRejector: any;
   private state: Batch.State = Batch.State.Idle;
 
   constructor(
-    private provider: Provider,
+    private provider?: Provider,
     private handleRetry?: () => Promise<boolean>
   ) {}
 
@@ -82,12 +83,12 @@ export class BatchTransactions implements Batch.Controller {
     } else {
       this.batchTransactionRejector(result);
     }
-    this.batchTransactionResolver = null;
-    this.batchTransactionRejector = null;
+    this.batchTransactionResolver;
+    this.batchTransactionRejector;
     this.state = Batch.State.Idle;
   }
 
   private start(): void {
-    this.provider.batchTransactions(this.transactions);
+    this.provider?.batchTransactions(this.transactions);
   }
 }

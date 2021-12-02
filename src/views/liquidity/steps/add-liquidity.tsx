@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Flex, Box } from '@chakra-ui/react';
+import { Flex, Image, Box } from '@chakra-ui/react';
 
 import { Button, TitleBox, TokenBox } from '@/components';
 
@@ -25,8 +25,9 @@ export const AddLiquidityStep = ({
   const [toValue, setToValue] = useState('0.00');
   const [toToken, setToToken] = useState();
 
-  const handleTokenSelect = (tokenName, setter) => {
+  const handleTokenSelect = (tokenName: string, setter: any) => {
     // TODO: add handler function
+    console.log(tokenName, setter);
   };
 
   const handlePreviousStep = () => {
@@ -37,7 +38,7 @@ export const AddLiquidityStep = ({
     }
   };
 
-  const getActiveStatus = (token, value) => {
+  const getActiveStatus = (token?: string, value?: string) => {
     const shouldBeActive = token && value?.length && parseFloat(value) > 0;
 
     return shouldBeActive && subStep !== 1 ? 'active' : undefined;
@@ -103,7 +104,7 @@ export const AddLiquidityStep = ({
           mb="-26px"
           zIndex={1200}
         >
-          <Box as="img" m="auto" src={plusSrc} />
+          <Image m="auto" src={plusSrc} />
         </Box>
         <Box mt="10px" width="100%">
           <TokenBox
@@ -136,7 +137,7 @@ export const AddLiquidityStep = ({
               mb="-26px"
               zIndex={1200}
             >
-              <Box as="img" m="auto" src={equalSrc} />
+              <Image m="auto" src={equalSrc} />
             </Flex>
             <Box mt="10px" width="100%">
               <TokenBox

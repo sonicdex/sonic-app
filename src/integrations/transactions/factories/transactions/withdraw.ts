@@ -1,13 +1,14 @@
+// @ts-nocheck TODO: fix types
 import { ENV } from '@/config';
 import { SwapIDL } from '@/did';
-import { Transaction } from '@psychedelic/plug-inpage-provider/dist/src/Provider';
-import { CreateTransaction, Deposit, Withdraw } from '../../models';
+import type { Transaction } from '@psychedelic/plug-inpage-provider/dist/src/Provider';
+import { CreateTransaction, Withdraw } from '../../models';
 
 export interface WithdrawTransaction
   extends Transaction<SwapIDL.TxReceipt, SwapIDL.TxReceipt> {}
 
 export const createWithdrawTransaction: CreateTransaction<
-  Withdraw,
+  Withdraw | null,
   WithdrawTransaction
 > = ({ amount, tokenId }, onSuccess, onFail) => {
   return {

@@ -1,5 +1,5 @@
 import { useState, ReactNode } from 'react';
-import { Box, Flex, Collapse } from '@chakra-ui/react';
+import { Box, Flex, Image, Collapse } from '@chakra-ui/react';
 
 import { closeSrc } from '@/assets';
 
@@ -20,7 +20,9 @@ export const InformationBox = ({
 
   const handleClose = () => {
     setCollapse(false);
-    setTimeout(onClose, 200);
+    if (onClose) {
+      setTimeout(onClose, 200);
+    }
   };
 
   return (
@@ -38,8 +40,7 @@ export const InformationBox = ({
             <Box as="h3" fontSize="18px" fontWeight="700" color="#F6FCFD">
               {title}
             </Box>
-            <Box
-              as="img"
+            <Image
               w="18px"
               cursor="pointer"
               onClick={handleClose}
