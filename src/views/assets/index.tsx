@@ -1,37 +1,35 @@
 import { useState } from 'react';
 
-import { ASSETS } from '@/constants';
+import { TOKEN } from '@/constants';
 
 import { HomeStep, DepositStep, WithdrawStep } from './steps';
+import { SupportedToken } from '@/models';
 
 // Mocked
-const SonicAssets = [
+const SonicAssets: Partial<SupportedToken>[] = [
   {
     name: 'XTC',
-    amount: '400',
-    price: '$23.231',
-    img: ASSETS.XTC.img,
+    totalSupply: BigInt(400),
+    logo: TOKEN.XTC.logo,
   },
   {
     name: 'WICP',
-    amount: '100',
-    price: '$43.231',
-    img: ASSETS.WICP.img,
+    totalSupply: BigInt(100),
+    logo: TOKEN.WICP.logo,
   },
   {
     name: 'ICP',
-    amount: '200',
-    price: '$93.231',
-    img: ASSETS.ICP.img,
+    totalSupply: BigInt(200),
+    logo: TOKEN.ICP.logo,
   },
 ];
 
-const getTokenFromAsset = (tokenName) => {
+const getTokenFromAsset = (tokenName: string) => {
   const asset = SonicAssets.filter((a) => a.name === tokenName)[0];
 
   return {
     name: asset.name,
-    img: asset.img,
+    logo: asset.logo,
   };
 };
 
@@ -41,14 +39,18 @@ export const Assets = () => {
 
   const showInformation = true;
 
-  const handleIncrement = (tokenName) => {
-    setToken(getTokenFromAsset(tokenName));
-    setStep('deposit');
+  const handleIncrement = (tokenName?: string) => {
+    if (tokenName) {
+      setToken(getTokenFromAsset(tokenName));
+      setStep('deposit');
+    }
   };
 
-  const handleDecrease = (tokenName) => {
-    setToken(getTokenFromAsset(tokenName));
-    setStep('withdraw');
+  const handleDecrease = (tokenName?: string) => {
+    if (tokenName) {
+      setToken(getTokenFromAsset(tokenName));
+      setStep('withdraw');
+    }
   };
 
   switch (step) {
@@ -67,6 +69,7 @@ export const Assets = () => {
       return <WithdrawStep token={token} onArrowBack={() => setStep('home')} />;
     default:
       setStep('home');
+      return null;
       break;
   }
 };

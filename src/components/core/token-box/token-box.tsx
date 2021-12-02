@@ -1,4 +1,5 @@
 import { NumberInput } from '@/components';
+import { SupportedToken } from '@/models';
 import {
   Box,
   Button,
@@ -7,21 +8,15 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
+  Image,
 } from '@chakra-ui/react';
-
-import { greyMinusSrc, greySonicSrc, chevronDownSrc } from '@/assets';
-
-type Token = {
-  img: string;
-  name: string;
-};
 
 type TokenBoxProps = {
   value: string;
-  setValue: (string) => any;
-  onTokenSelect: (string) => any;
-  tokenOptions: Array<Token>;
-  currentToken: Token;
+  setValue: (value: string) => any;
+  onTokenSelect: (token: string) => any;
+  tokenOptions: Array<SupportedToken>;
+  currentToken?: SupportedToken;
   balance: string;
   amount: string;
   source?: 'plug' | 'sonic' | null;
@@ -33,11 +28,11 @@ type TokenBoxProps = {
   glow?: boolean;
 };
 
-const ChevronDownIcon = () => <Box as="img" src={chevronDownSrc} />;
+const ChevronDownIcon = () => <Image src={'/assets/chevron-down.svg'} />;
 
-const TokenOption = ({ img, name }: Token) => (
+const TokenOption = ({ logo, name }: SupportedToken) => (
   <Flex direction="row" width="fit-content" alignItems="center">
-    <Box as="img" src={img} height="25px" />
+    <Image src={logo} height="20px" />
     <Box as="p" fontWeight={700} color="#F6FCFD" ml="7px">
       {name}
     </Box>
@@ -60,14 +55,15 @@ export const TokenBox = ({
   disabled = false,
   glow = false,
 }: TokenBoxProps) => {
-  const sourceImg = source === 'plug' ? greyMinusSrc : greySonicSrc;
+  const sourceImg =
+    source === 'plug' ? '/assets/grey-plug.svg' : '/assets/grey-sonic.png';
 
   const border = glow ? '1px solid #3D52F4' : '1px solid #373737';
   const background = glow ? '#151515' : '#1E1E1E';
 
   const balanceDisplay = balanceText
     ? balanceText
-    : `Balance: ${balance} ${currentToken.name}`;
+    : `Balance: ${balance} ${currentToken?.name}`;
 
   const amountDisplay = amountText ? amountText : `$${amount}`;
 
@@ -113,16 +109,16 @@ export const TokenBox = ({
             pl="10px"
             pr="12px"
           >
-            <TokenOption img={currentToken.img} name={currentToken.name} />
+            {currentToken && <TokenOption {...currentToken} />}
           </MenuButton>
           {!menuDisabled && (
             <MenuList>
               {tokenOptions.map((token) => (
                 <MenuItem
                   key={token.name}
-                  onClick={() => onTokenSelect(token.name)}
+                  onClick={() => onTokenSelect(token.id)}
                 >
-                  <TokenOption img={token.img} name={token.name} />
+                  <TokenOption {...token} />
                 </MenuItem>
               ))}
             </MenuList>
@@ -140,7 +136,7 @@ export const TokenBox = ({
       </Flex>
       <Flex direction="row" justifyContent="space-between">
         <Flex direction="row">
-          {source && <Box as="img" src={sourceImg} mr="7px" height="20px" />}
+          {source && <Image src={sourceImg} mr="7px" height="20px" />}
           <Box as="p" color="#888E8F" fontSize="16px">
             {balanceDisplay}
           </Box>

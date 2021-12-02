@@ -19,7 +19,7 @@ const getNotIdentifiedActor = (
 ) => {
   const agent = getNotIdentifiedAgent();
 
-  return Actor.createActor(factory, {
+  return Actor.createActor<TokenIDL.Factory>(factory, {
     agent,
     canisterId,
   });
@@ -31,7 +31,7 @@ export const useToken = (canisterId?: string) => {
 
   useEffect(() => {
     if (canisterId && !tokenActors[canisterId]) {
-      new ActorAdapter(window.ic.plug)
+      new ActorAdapter(window.ic?.plug)
         .createActor<TokenIDL.Factory>(canisterId, TokenIDL.factory)
         .then((newTokenActor) => {
           setTokenActors({ [canisterId]: newTokenActor });
@@ -48,14 +48,13 @@ export const useToken = (canisterId?: string) => {
 
   async function getPair(token0: string, token1: string) {
     try {
-      const result = await swapActor.getPair(
+      const result = await swapActor?.getPair(
         Principal.fromText(token0),
         Principal.fromText(token1)
       );
       return (result as []).length ? (result as []) : [];
     } catch (e) {
-      console.log(e, 'balanceOf');
-      return e;
+      console.log(e, 'getPair');
     }
   }
 
@@ -63,27 +62,26 @@ export const useToken = (canisterId?: string) => {
     try {
       return await getNotIdentifiedTokenActor(tokenCanisterId).getMetadata();
     } catch (e) {
-      console.log(e, 'balanceOf');
-      return e;
+      console.log(e, 'getMetadata');
     }
   }
   async function getTokenInfo(tokenCanisterId: string) {
     try {
       return await getNotIdentifiedTokenActor(tokenCanisterId).getTokenInfo();
     } catch (e) {
-      console.log(e, 'balanceOf');
-      return e;
+      console.log(e, 'getTokenInfo');
     }
   }
   // get wallet balanceof
   async function balanceOf(tokenCanisterId: string) {
-    try {
-      return await getNotIdentifiedTokenActor(tokenCanisterId).balanceOf(
-        principalId
-      );
-    } catch (e) {
-      console.log(e, 'balanceOf');
-      return e;
+    if (principalId) {
+      try {
+        return await getNotIdentifiedTokenActor(tokenCanisterId).balanceOf(
+          Principal.fromText(principalId)
+        );
+      } catch (e) {
+        console.log(e, 'balanceOf');
+      }
     }
   }
 
@@ -101,21 +99,21 @@ export const useToken = (canisterId?: string) => {
       );
     } catch (e) {
       console.log(e, 'approve');
-      return e;
     }
   }
   async function allowance(
     tokenCanisterId: string,
     spender: string
   ): Promise<any> {
-    try {
-      return await getNotIdentifiedTokenActor(tokenCanisterId).allowance(
-        principalId,
-        Principal.fromText(spender)
-      );
-    } catch (e) {
-      console.log(e, 'approve');
-      return e;
+    if (principalId) {
+      try {
+        return await getNotIdentifiedTokenActor(tokenCanisterId).allowance(
+          Principal.fromText(principalId),
+          Principal.fromText(spender)
+        );
+      } catch (e) {
+        console.log(e, 'approve');
+      }
     }
   }
 

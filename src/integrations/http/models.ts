@@ -32,9 +32,9 @@ export type UseHttpProps = Omit<Http.Request, 'body' | 'params'>;
 
 export type UseHttp<Request, Response> = {
   isLoading: boolean;
-  response: Http.Response<Response>;
+  response: Http.Response<Response> | null;
   error: Http.Response | null | unknown;
   request: (
     params?: Pick<Http.Request<Request>, 'body' | 'params' | 'headers'>
-  ) => Promise<Http.Response<Response>>;
+  ) => Promise<Http.Response<Response> | undefined>;
 };

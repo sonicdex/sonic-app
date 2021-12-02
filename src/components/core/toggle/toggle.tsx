@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Box, Flex } from '@chakra-ui/react';
 
 type ToggleProps = {

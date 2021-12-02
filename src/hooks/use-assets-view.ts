@@ -1,10 +1,10 @@
 import { Principal } from '@dfinity/principal';
 
-import { TokenInfo } from '@/typings/global';
 import { parseAmount } from '@/utils/format';
 import { useActorStore } from '@/store/features/actor';
 import { usePlugStore } from '@/store';
 import { useToken } from './use-token';
+import { TokenIDL } from '@/did';
 
 export const useAssetsView = () => {
   const { actors } = useActorStore();
@@ -14,45 +14,58 @@ export const useAssetsView = () => {
 
   async function getTokens() {
     try {
-      let res = await swapActor.getSupportedTokenList();
-      return res;
+      if (swapActor) {
+        let res = await swapActor.getSupportedTokenList();
+
+        return res;
+      }
     } catch (e) {
       return Promise.reject(e);
     }
   }
 
-  async function getUserInfoByNamePageAbove(
-    _owner: Principal
-  ): Promise<TokenInfo[]> {
-    try {
-      const result = await swapActor.getUserInfoByNamePageAbove(
-        _owner,
-        BigInt(0),
-        '', // token name
-        BigInt(0), // token start at
-        BigInt(0), // token limit
-        BigInt(0), // above 0
-        '', // lp name or symbol
-        BigInt(0),
-        BigInt(10)
-      );
-      const res = (result as { lpBalances: [[string, BigInt][], BigInt] })
-        .lpBalances[0];
-      if (!res.length) {
-        return [];
+  async function getUserInfoByNamePageAbove(_owner: Principal) {
+    if (swapActor) {
+      try {
+        const result = await swapActor.getUserInfoByNamePageAbove(
+          _owner,
+          BigInt(0),
+          '', // token name
+          BigInt(0), // token start at
+          BigInt(0), // token limit
+          BigInt(0), // above 0
+          '', // lp name or symbol
+          BigInt(0),
+          BigInt(10)
+        );
+        const res = (result as { lpBalances: [[string, BigInt][], BigInt] })
+          .lpBalances[0];
+        if (!res.length) {
+          return [];
+        }
+
+        const info = await Promise.all(
+          res.map((_i) => getTokenInfo(String(_i[0])))
+        );
+
+        const infoWithoutUndefined = info.filter(
+          (_i) => _i !== undefined
+        ) as TokenIDL.TokenInfo[];
+
+        return infoWithoutUndefined.map((i, index) => {
+          const { metadata, ...infoWithoutMetadata } = i;
+
+          i = { ...metadata, metadata, ...infoWithoutMetadata };
+          return {
+            ...infoWithoutMetadata,
+            bal: res[index][1],
+            id: res[index][0],
+          };
+        });
+        // CommonApi
+      } catch (e) {
+        console.log(e, 'getUserInfoByNamePageAbove');
       }
-      const info = await Promise.all(
-        res.map((_i) => getTokenInfo(String(_i[0])))
-      );
-      return info.map((i, index) => {
-        i = { ...i.metadata, ...i };
-        delete i.metadata;
-        return { ...i, bal: res[index][1], id: res[index][0] };
-      });
-      // CommonApi
-    } catch (e) {
-      console.log(e, 'getUserInfoByNamePageAbove');
-      return e;
     }
   }
 
@@ -63,7 +76,7 @@ export const useAssetsView = () => {
   ) {
     try {
       const amount = parseAmount(value.toString(), decimals);
-      return await swapActor.deposit(
+      return await swapActor?.deposit(
         Principal.fromText(tokenCanisterId),
         amount
       );
@@ -77,29 +90,28 @@ export const useAssetsView = () => {
     value: string | number,
     decimals: number
   ) {
-    try {
-      const amount = parseAmount(value.toString(), decimals);
+    if (swapActor) {
+      try {
+        const amount = parseAmount(value.toString(), decimals);
 
-      return await swapActor.withdraw(
-        Principal.fromText(tokenCanisterId),
-        amount
-      );
-    } catch (e) {
-      console.error('withdraw', e);
-      return e;
+        await swapActor.withdraw(Principal.fromText(tokenCanisterId), amount);
+      } catch (e) {
+        console.error('withdraw', e);
+      }
     }
   }
 
   async function getBalance(tokenCanisterId: string) {
-    try {
-      const owner = principalId;
-      return await swapActor.balanceOf(
-        tokenCanisterId,
-        Principal.fromText(owner)
-      );
-    } catch (error) {
-      console.error('balanceOf', error);
-      return error;
+    if (principalId) {
+      try {
+        return await swapActor?.balanceOf(
+          tokenCanisterId,
+          Principal.fromText(principalId)
+        );
+      } catch (error) {
+        console.error('balanceOf', error);
+        return error;
+      }
     }
   }
 

@@ -1,3 +1,4 @@
+import { IDL } from '@dfinity/candid';
 import type { Principal } from '@dfinity/principal';
 
 export namespace SwapStorageIDL {
@@ -118,7 +119,7 @@ export namespace SwapStorageIDL {
   }
   export interface Factory extends Storage {}
 
-  export const factory = ({ IDL }) => {
+  export const factory: IDL.InterfaceFactory = ({ IDL }) => {
     const Operation__1 = IDL.Variant({
       lpTransfer: IDL.Null,
       lpApprove: IDL.Null,

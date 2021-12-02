@@ -1,7 +1,6 @@
-import { Box, Flex } from '@chakra-ui/react';
+import { Box, Image, Flex } from '@chakra-ui/react';
 
 import { Checkbox, TitleBox, TokenBox, Button } from '@/components';
-
 import { arrowDownSrc, infoSrc } from '@/assets';
 
 type ReviewStepProps = {
@@ -13,7 +12,7 @@ type ReviewStepProps = {
   nextStep: () => any;
   prevStep: () => any;
   tokenOptions: object;
-  setKeepInSonic: (boolean) => any;
+  setKeepInSonic: (shouldKeep: boolean) => any;
 };
 
 export const ReviewStep = ({
@@ -61,7 +60,7 @@ export const ReviewStep = ({
           mb="-26px"
           zIndex={1200}
         >
-          <Box as="img" m="auto" src={arrowDownSrc} />
+          <Image m="auto" src={arrowDownSrc} />
         </Box>
         <Box mt="10px" width="100%">
           <TokenBox
@@ -92,7 +91,7 @@ export const ReviewStep = ({
         <Flex direction="row" alignItems="center">
           <Checkbox
             checked={keepInSonic}
-            onChange={() => setKeepInSonic(!keepInSonic)}
+            onClick={() => setKeepInSonic(!keepInSonic)}
           />
           <Box
             as="p"
@@ -105,8 +104,7 @@ export const ReviewStep = ({
             Keep tokens in Sonic after swap
           </Box>
         </Flex>
-        <Box
-          as="img"
+        <Image
           src={infoSrc}
           width="20px"
           transition="opacity 200ms"

@@ -5,6 +5,7 @@ import {
   ModalOverlay,
   ModalContent,
   ModalBody,
+  Image,
 } from '@chakra-ui/react';
 
 import { logoSrc, closeSrc } from '@/assets';
@@ -22,12 +23,11 @@ export const PlugConfirmationModal = ({
     <ModalOverlay />
     <ModalContent bg="#1E1E1E" borderRadius="20px">
       <ModalBody pt="37px" px="73px" pb="35px">
-        <Box
+        <Image
           position="absolute"
           top="20px"
           right="20px"
           width="20px"
-          as="img"
           src={closeSrc}
           onClick={onClose}
           cursor="pointer"
@@ -39,7 +39,7 @@ export const PlugConfirmationModal = ({
           <Box as="p" color="#888E8F" fontSize="16px" mt="13px" mb="20px">
             Please confirm this transaction in Plug
           </Box>
-          <Box width="95px" as="img" src={logoSrc} />
+          <Image width="95px" src={logoSrc} />
         </Flex>
       </ModalBody>
     </ModalContent>

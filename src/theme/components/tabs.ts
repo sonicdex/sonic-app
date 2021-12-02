@@ -40,7 +40,7 @@ const baseStyleTablist: SystemStyleFunction = (props) => {
   };
 
   return {
-    justifyContent: alignments[align],
+    justifyContent: alignments[align as keyof typeof alignments],
     flexDirection: orientation === 'vertical' ? 'column' : 'row',
   };
 };

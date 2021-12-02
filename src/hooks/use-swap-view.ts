@@ -19,29 +19,30 @@ export const useSwapView = () => {
     decimalIn: number,
     decimalOut: number
   ) {
-    try {
-      const currentTime = (new Date().getTime() + 5 * 60 * 1000) * 10000000;
+    if (principalId) {
+      try {
+        const currentTime = (new Date().getTime() + 5 * 60 * 1000) * 10000000;
 
-      const call = await swapActor.swapExactTokensForTokens(
-        parseAmount(amountIn, decimalIn),
-        parseAmount(amountOutMin, decimalIn),
-        [tokenIn, tokenOut],
-        Principal.fromText(principalId),
-        BigInt(currentTime)
-      );
+        const call = await swapActor?.swapExactTokensForTokens(
+          parseAmount(amountIn, decimalIn),
+          parseAmount(amountOutMin, decimalIn),
+          [tokenIn, tokenOut],
+          Principal.fromText(principalId),
+          BigInt(currentTime)
+        );
 
-      const call1 = await swapActor.swapTokensForExactTokens(
-        parseAmount(amountOut, decimalOut),
-        parseAmount(amountInMax, decimalOut),
-        [tokenIn, tokenOut],
-        Principal.fromText(principalId),
-        BigInt(currentTime)
-      );
+        const call1 = await swapActor?.swapTokensForExactTokens(
+          parseAmount(amountOut, decimalOut),
+          parseAmount(amountInMax, decimalOut),
+          [tokenIn, tokenOut],
+          Principal.fromText(principalId),
+          BigInt(currentTime)
+        );
 
-      return [call, call1];
-    } catch (e) {
-      console.log(e, 'swap');
-      return e;
+        return [call, call1];
+      } catch (e) {
+        console.log(e, 'swap');
+      }
     }
   }
 

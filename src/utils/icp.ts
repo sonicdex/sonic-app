@@ -73,13 +73,17 @@ export const useICPBalance = () => {
 
   const getBalance = async () => {
     if (principalId) {
-      const result: any = plug.requestBalance();
+      const result = plug?.requestBalance();
 
-      const balance =
-        result.find((balance) => balance.name === 'ICP')?.amount || 0;
+      if (result) {
+        // TODO: Fix types
+        const balance =
+          (result as unknown as any[]).find((balance) => balance.name === 'ICP')
+            ?.amount || 0;
 
-      setBalance(balance);
-      return balance;
+        setBalance(balance);
+        return balance;
+      }
     }
   };
 
@@ -93,6 +97,7 @@ export const useICPBalance = () => {
   };
 };
 
+// FIXME: export binance API URL, abstract this
 export const getICPPrice = () => {
   let promise = new Promise<string | undefined>((resolve, reject) => {
     axios

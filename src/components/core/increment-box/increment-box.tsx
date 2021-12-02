@@ -1,38 +1,36 @@
-import { Box, Flex } from '@chakra-ui/react';
+import { Box, Image, Flex } from '@chakra-ui/react';
 import { greyMinusSrc, bluePlusSrc } from '@/assets';
 
 type IncrementBoxProps = {
-  mainImg: string;
+  mainImgSrc?: string;
   secondImg?: string;
-  title: string;
+  title?: string;
   children: any;
   onIncrement: () => any;
   onDecreace: () => any;
 };
 
 export const IncrementBox = ({
-  mainImg,
+  mainImgSrc,
   secondImg,
   children,
   title,
   onIncrement,
   onDecreace,
 }: IncrementBoxProps) => {
-  const MainImg = <Box as="img" width="44px" height="44px" src={mainImg} />;
+  const MainImg = <Image width="44px" height="44px" src={mainImgSrc} />;
 
   const SecondImg = (
     <Box width="44px" height="44px" position="relative">
-      <Box
-        as="img"
+      <Image
         position="absolute"
         width="30px"
         height="30px"
         top={0}
         left={0}
-        src={mainImg}
+        src={mainImgSrc}
       />
-      <Box
-        as="img"
+      <Image
         position="absolute"
         width="30px"
         height="30px"
@@ -72,7 +70,7 @@ export const IncrementBox = ({
           height="40px"
           borderRadius="40px"
         >
-          <Box as="img" src={greyMinusSrc} />
+          <Image src={greyMinusSrc} />
         </Flex>
         <Flex
           ml="10px"
@@ -85,7 +83,7 @@ export const IncrementBox = ({
           cursor="pointer"
           height="40px"
         >
-          <Box as="img" src={bluePlusSrc} />
+          <Image src={bluePlusSrc} />
         </Flex>
       </Flex>
     </Flex>
