@@ -1,6 +1,7 @@
 import isMobile from 'ismobilejs';
 import { Routes, Navigate, Route, BrowserRouter } from 'react-router-dom';
 
+import { ModalManager } from '@/modals';
 import { Activity, Assets, Liquidity, Swap } from '@/views';
 
 import { EmptyMobile, Layout } from './components';
@@ -22,6 +23,7 @@ export const App = () => {
   return (
     <BrowserRouter>
       <Layout>
+        <ModalManager />
         <Routes>
           <Route path="/assets" element={<Assets />} />
           <Route path="/swap" element={<Swap />} />
