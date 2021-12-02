@@ -3,6 +3,8 @@ import { Box, Flex } from '@chakra-ui/react';
 import { Checkbox, TitleBox, TokenBox, Button } from '@/components';
 
 import { arrowDownSrc, infoSrc } from '@/assets';
+import { MODALS } from '@/modals';
+import { useModalStore } from '@/store';
 
 type ReviewStepProps = {
   fromValue: string;
@@ -27,10 +29,26 @@ export const ReviewStep = ({
   setKeepInSonic,
   tokenOptions,
 }: ReviewStepProps) => {
+  const {
+    setCurrentModal,
+    setCurrentModalData,
+    clearModal,
+    setCurrentModalState
+  } = useModalStore();
+
   const handleApproveSwap = () => {
     // Integration: Do swap
     // trigger modals.
-    nextStep();
+    setCurrentModalData({ fromToken: fromToken.name, toToken: toToken.name });
+    setCurrentModalState('deposit');
+    setCurrentModal(MODALS.swapProgress);
+
+    setTimeout(() => setCurrentModalState('swap'), 3000);
+    setTimeout(() => setCurrentModalState('withdraw'), 6000);
+    setTimeout(() => {
+      clearModal();
+      nextStep();
+    }, 9000);
   };
 
   return (
