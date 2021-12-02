@@ -1,5 +1,5 @@
 import { Box, Flex } from '@chakra-ui/react';
-import { arrowBackSrc } from '@/assets';
+import { arrowBackSrc, settingSrc } from '@/assets';
 
 type TitleBoxProps = {
   children?: any;
@@ -45,7 +45,7 @@ export const TitleBox = ({
         <Box ml={titleLeftAdjustment} mr={titleRightAdjustment}>
           {title}
         </Box>
-        {settings && <Box as="img" src={arrowBackSrc} ml="auto" />}
+        {settings && <Box as="img" src={settingSrc} ml="auto" />}
       </Flex>
       {children && (
         <Box py="8px" px="21px" bg="#282828" borderBottomRadius={20}>
