@@ -1,7 +1,7 @@
 import isMobile from 'ismobilejs';
 import { Routes, Navigate, Route, BrowserRouter } from 'react-router-dom';
 
-import { Activity, Assets, Liquidity, Swap } from '@/views';
+import { Activity, Assets, Liquidity, Swap, TestView } from '@/views';
 import { NotificationManager } from '@/notifications';
 
 import { EmptyMobile, Layout } from './components';
@@ -30,6 +30,7 @@ export const App = () => {
           <Route path="/liquidity" element={<Liquidity />} />
           <Route path="/activity" element={<Activity />} />
           <Route path="*" element={<Navigate to="/swap" />} />
+          <Route path="/test" element={<TestView />} />
         </Routes>
       </Layout>
     </BrowserRouter>
