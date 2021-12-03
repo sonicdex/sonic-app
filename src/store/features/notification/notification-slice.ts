@@ -32,7 +32,9 @@ export const notificationSlice = createSlice({
     },
     popNotification: (state, action: PayloadAction<string>) => {
       const popId = action.payload;
-      const filteredNotifications = state.notifications.filter((obj) => obj.id !== popId);
+      const filteredNotifications = state.notifications.filter(
+        (obj) => obj.id !== popId
+      );
 
       state.notifications = filteredNotifications;
     },
