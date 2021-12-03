@@ -2,6 +2,7 @@ import { Box, Image, Flex } from '@chakra-ui/react';
 
 import { Checkbox, TitleBox, TokenBox, Button } from '@/components';
 import { arrowDownSrc, infoSrc } from '@/assets';
+import { useNotificationStore } from '@/store';
 
 type ReviewStepProps = {
   fromValue: string;
@@ -26,9 +27,15 @@ export const ReviewStep = ({
   setKeepInSonic,
   tokenOptions,
 }: ReviewStepProps) => {
+  const { addNotification } = useNotificationStore();
   const handleApproveSwap = () => {
     // Integration: Do swap
     // trigger modals.
+    addNotification({
+      title: 'NOTIFICATION',
+      type: 'done',
+      id: Date.now().toString(),
+    });
     nextStep();
   };
 

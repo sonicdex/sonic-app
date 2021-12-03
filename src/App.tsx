@@ -2,6 +2,7 @@ import isMobile from 'ismobilejs';
 import { Routes, Navigate, Route, BrowserRouter } from 'react-router-dom';
 
 import { Activity, Assets, Liquidity, Swap } from '@/views';
+import { NotificationManager } from '@/notifications';
 
 import { EmptyMobile, Layout } from './components';
 import { usePlugInit } from './integrations/plug';
@@ -22,6 +23,7 @@ export const App = () => {
   return (
     <BrowserRouter>
       <Layout>
+        <NotificationManager />
         <Routes>
           <Route path="/assets" element={<Assets />} />
           <Route path="/swap" element={<Swap />} />
