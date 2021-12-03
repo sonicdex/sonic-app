@@ -50,7 +50,6 @@ export const Liquidity = () => {
   };
 
   const onClose = () => {
-    console.log('Closed information');
     setDisplayInformation(false);
   };
 
