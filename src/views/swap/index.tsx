@@ -18,15 +18,13 @@ const parseResponseTokenList = (
   }, {} as SupportedTokenList);
 };
 
-const STEPS = [HomeStep, ReviewStep];
-
-enum Step {
+enum SwapStep {
   Home,
   Review,
 }
 
 export const Swap = () => {
-  const [step, setStep] = useState(Step.Home);
+  const [step, setStep] = useState(SwapStep.Home);
 
   const [tokenList, setTokenList] = useState<SupportedTokenList>({});
   const [keepInSonic, setKeepInSonic] = useState(false);
@@ -40,6 +38,7 @@ export const Swap = () => {
 
   useEffect(() => {
     if (!swapActor) return;
+
     swapActor.getSupportedTokenList().then((response) => {
       const parsedTokenList = parseResponseTokenList(response);
       setTokenList(parsedTokenList);
@@ -56,10 +55,10 @@ export const Swap = () => {
   };
 
   const handleNextStep = () => {
-    if (step + 1 < STEPS.length) {
+    if (step + 1 < Object.keys(SwapStep).length) {
       setStep(step + 1);
     } else {
-      setStep(Step.Home);
+      setStep(SwapStep.Home);
     }
   };
 
@@ -69,38 +68,41 @@ export const Swap = () => {
     }
   };
 
-  switch (step) {
-    case Step.Home:
-      return (
-        <HomeStep
-          handleTokenSelect={handleTokenSelect}
-          fromValue={fromValue}
-          fromToken={fromToken}
-          toValue={toValue}
-          toToken={toToken}
-          setFromValue={setFromValue}
-          setFromToken={setFromToken}
-          setToValue={setToValue}
-          setToToken={setToToken}
-          tokenOptions={tokenList}
-          nextStep={handleNextStep}
-          balances={totalBalances}
-        />
-      );
+  const steps = {
+    [SwapStep.Home]: (
+      <HomeStep
+        handleTokenSelect={handleTokenSelect}
+        fromValue={fromValue}
+        fromToken={fromToken}
+        toValue={toValue}
+        toToken={toToken}
+        setFromValue={setFromValue}
+        setFromToken={setFromToken}
+        setToValue={setToValue}
+        setToToken={setToToken}
+        tokenOptions={tokenList}
+        nextStep={handleNextStep}
+        balances={totalBalances}
+      />
+    ),
+    [SwapStep.Review]: (
+      <ReviewStep
+        keepInSonic={keepInSonic}
+        setKeepInSonic={setKeepInSonic}
+        fromValue={fromValue}
+        toValue={toValue}
+        fromToken={fromToken}
+        toToken={toToken}
+        nextStep={handleNextStep}
+        prevStep={handlePrevStep}
+        tokenOptions={tokenList}
+      />
+    ),
+  };
 
-    case Step.Review:
-      return (
-        <ReviewStep
-          keepInSonic={keepInSonic}
-          setKeepInSonic={setKeepInSonic}
-          fromValue={fromValue}
-          toValue={toValue}
-          fromToken={fromToken}
-          toToken={toToken}
-          nextStep={handleNextStep}
-          prevStep={handlePrevStep}
-          tokenOptions={tokenList}
-        />
-      );
+  if (steps.hasOwnProperty(step)) {
+    return steps[step];
   }
+
+  return steps[SwapStep.Home];
 };

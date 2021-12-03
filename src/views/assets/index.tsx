@@ -1,31 +1,10 @@
 import { useState } from 'react';
 
-import { TOKEN } from '@/constants';
-
 import { HomeStep, DepositStep, WithdrawStep } from './steps';
-import { SupportedToken } from '@/models';
-
-// Mocked
-const SonicAssets: Partial<SupportedToken>[] = [
-  {
-    name: 'XTC',
-    totalSupply: BigInt(400),
-    logo: TOKEN.XTC.logo,
-  },
-  {
-    name: 'WICP',
-    totalSupply: BigInt(100),
-    logo: TOKEN.WICP.logo,
-  },
-  {
-    name: 'ICP',
-    totalSupply: BigInt(200),
-    logo: TOKEN.ICP.logo,
-  },
-];
+import { SONIC_ASSETS_MOCK } from './mocks';
 
 const getTokenFromAsset = (tokenName: string) => {
-  const asset = SonicAssets.filter((a) => a.name === tokenName)[0];
+  const asset = SONIC_ASSETS_MOCK.filter((a) => a.name === tokenName)[0];
 
   return {
     name: asset.name,
@@ -33,8 +12,14 @@ const getTokenFromAsset = (tokenName: string) => {
   };
 };
 
+enum AssetStep {
+  Home,
+  Deposit,
+  Withdraw,
+}
+
 export const Assets = () => {
-  const [step, setStep] = useState('home');
+  const [step, setStep] = useState(AssetStep.Home);
   const [token, setToken] = useState(getTokenFromAsset('XTC'));
 
   const showInformation = true;
@@ -42,34 +27,37 @@ export const Assets = () => {
   const handleIncrement = (tokenName?: string) => {
     if (tokenName) {
       setToken(getTokenFromAsset(tokenName));
-      setStep('deposit');
+      setStep(AssetStep.Deposit);
     }
   };
 
   const handleDecrease = (tokenName?: string) => {
     if (tokenName) {
       setToken(getTokenFromAsset(tokenName));
-      setStep('withdraw');
+      setStep(AssetStep.Withdraw);
     }
   };
 
-  switch (step) {
-    case 'home':
-      return (
-        <HomeStep
-          handleIncrement={handleIncrement}
-          handleDecrease={handleDecrease}
-          showInformation={showInformation}
-          sonicAssets={SonicAssets}
-        />
-      );
-    case 'deposit':
-      return <DepositStep token={token} onArrowBack={() => setStep('home')} />;
-    case 'withdraw':
-      return <WithdrawStep token={token} onArrowBack={() => setStep('home')} />;
-    default:
-      setStep('home');
-      return null;
-      break;
+  const steps = {
+    [AssetStep.Home]: (
+      <HomeStep
+        handleIncrement={handleIncrement}
+        handleDecrease={handleDecrease}
+        showInformation={showInformation}
+        sonicAssets={SONIC_ASSETS_MOCK}
+      />
+    ),
+    [AssetStep.Deposit]: (
+      <DepositStep token={token} onArrowBack={() => setStep(AssetStep.Home)} />
+    ),
+    [AssetStep.Withdraw]: (
+      <WithdrawStep token={token} onArrowBack={() => setStep(AssetStep.Home)} />
+    ),
+  };
+
+  if (steps.hasOwnProperty(step)) {
+    return steps[step];
   }
+
+  return steps[AssetStep.Home];
 };

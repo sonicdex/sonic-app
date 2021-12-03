@@ -1,16 +1,12 @@
 import { Flex, Box } from '@chakra-ui/react';
 
 type AssetContentProps = {
-  price: string,
-  amount: string,
-}
+  price: string;
+  amount: string;
+};
 
 export const AssetContent = ({ price, amount }: AssetContentProps) => (
-  <Flex
-    position="absolute"
-    left="201px"
-    direction="row"
-  >
+  <Flex position="absolute" left="201px" direction="row">
     <Flex direction="column" alignItems="center">
       <Box as="h4" color="#888E8F" fontSize="16px" mb="4px">
         Amount
