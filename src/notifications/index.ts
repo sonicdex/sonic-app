@@ -1,2 +1,3 @@
+export * from './notification-box';
 export * from './notification-manager';
-export * from './notification-messages';
+export * from './notifications.constants';
