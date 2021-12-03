@@ -21,3 +21,5 @@ export { default as greyMinusSrc } from './grey-minus.svg';
 export { default as wicpSrc } from './wicp.svg';
 export { default as icpSrc } from './icp.svg';
 export { default as xtcSrc } from './xtc.svg';
+export { default as transparentGreenCheckSrc } from './transparent-green-check.svg';
+export { default as redWarningSrc } from './red-warning.svg';
