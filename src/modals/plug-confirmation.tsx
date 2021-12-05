@@ -1,6 +1,5 @@
 import {
   Flex,
-  Box,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -24,7 +23,7 @@ export const PlugConfirmationModal = ({
   <Modal onClose={onClose} isOpen={isOpen} isCentered>
     <ModalOverlay />
     <ModalContent bg="#1E1E1E" borderRadius={5}>
-      <ModalBody pt={9} px="73px" pb={9}>
+      <ModalBody pt={9} px={18} pb={9}>
         <Image
           position="absolute"
           top={5}
@@ -41,7 +40,7 @@ export const PlugConfirmationModal = ({
           <Text color="#888E8F" fontSize="md" mt={3} mb={5}>
             Please confirm this transaction in Plug
           </Text>
-          <Image width="95px" src={logoSrc} />
+          <Image width={24} src={logoSrc} />
         </Flex>
       </ModalBody>
     </ModalContent>

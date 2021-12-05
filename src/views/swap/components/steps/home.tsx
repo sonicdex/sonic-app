@@ -82,8 +82,8 @@ export const HomeStep = ({
           py={3}
           px={3}
           bg="#1E1E1E"
-          mt="-16px"
-          mb="-26px"
+          mt={-4}
+          mb={-6}
           zIndex={1200}
         >
           <Image m="auto" src={arrowDownSrc} />

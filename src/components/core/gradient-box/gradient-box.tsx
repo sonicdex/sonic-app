@@ -50,7 +50,7 @@ export const GradientBox: FC<GradientBoxProps> = ({
       alignItems="center"
       borderRadius="full"
       background={bg}
-      pt="-4px"
+      pt={-1}
       {...boxProps[size]}
       size={size}
     >

@@ -37,7 +37,7 @@ export const NotificationBox = ({
   return (
     <Collapse in={show} animateOpacity unmountOnExit>
       <Box
-        width="325px"
+        width={80}
         position="relative"
         borderRadius={5}
         bg="#1E1E1E"
@@ -58,7 +58,7 @@ export const NotificationBox = ({
           right={4}
         />
         <Flex direction="column" alignItems="flex-start">
-          <Text color="#F6FCFD" fontSize="md" fontWeight={700} maxWidth="243px">
+          <Text color="#F6FCFD" fontSize="md" fontWeight={700} maxWidth={60}>
             {title}
           </Text>
           {type === 'done' && transactionLink && (

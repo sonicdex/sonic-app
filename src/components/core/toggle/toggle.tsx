@@ -19,7 +19,7 @@ export const Toggle = ({ toggle, onToggle }: ToggleProps) => (
   >
     <Box
       height={10}
-      width="63px"
+      width={16}
       bg="linear-gradient(108.08deg, #3D52F4 0%, #192985 100%)"
       borderRadius={100}
       position="absolute"
@@ -27,7 +27,7 @@ export const Toggle = ({ toggle, onToggle }: ToggleProps) => (
       transition="margin 400ms"
     />
     <Box
-      width="63px"
+      width={16}
       textAlign="center"
       py={2}
       borderRadius={100}
@@ -38,7 +38,7 @@ export const Toggle = ({ toggle, onToggle }: ToggleProps) => (
       Yes
     </Box>
     <Box
-      width="63px"
+      width={16}
       textAlign="center"
       py={2}
       borderRadius={100}

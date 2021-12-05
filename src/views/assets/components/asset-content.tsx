@@ -6,7 +6,7 @@ type AssetContentProps = {
 };
 
 export const AssetContent = ({ price, amount }: AssetContentProps) => (
-  <Flex position="absolute" left="201px" direction="row">
+  <Flex position="absolute" left={48} direction="row">
     <Flex direction="column" alignItems="center">
       <Box as="h4" color="#888E8F" mb={1}>
         Amount
@@ -15,7 +15,7 @@ export const AssetContent = ({ price, amount }: AssetContentProps) => (
         {amount}
       </Text>
     </Flex>
-    <Flex direction="column" alignItems="center" ml="88px">
+    <Flex direction="column" alignItems="center" ml={20}>
       <Box as="h4" color="#888E8F" mb={1}>
         Price
       </Box>

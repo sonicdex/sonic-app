@@ -34,6 +34,7 @@ export const HomeStep = () => {
 
       {SONIC_ASSETS_MOCK.map(({ name, logo }) => (
         <Asset
+          key={name}
           title={name}
           mainImgSrc={logo}
           onAdd={() => handleIncrement(name)}
