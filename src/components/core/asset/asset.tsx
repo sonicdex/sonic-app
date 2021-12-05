@@ -1,8 +1,15 @@
-import { IconButton, HStack, Box, Image, Flex } from '@chakra-ui/react';
+import {
+  IconButton,
+  FlexProps,
+  HStack,
+  Box,
+  Image,
+  Flex,
+} from '@chakra-ui/react';
 import { greyMinusSrc } from '@/assets';
 import { PlusIcon } from '@/components/icons';
 
-type AssetProps = {
+type AssetProps = FlexProps & {
   mainImgSrc?: string;
   secondImg?: string;
   title?: string;
@@ -18,6 +25,7 @@ export const Asset = ({
   title,
   onAdd,
   onRemove,
+  ...props
 }: AssetProps) => {
   const MainImg = <Image width={10} height={10} src={mainImgSrc} />;
 
@@ -52,6 +60,7 @@ export const Asset = ({
       bg="#1E1E1E"
       px={5}
       py={4}
+      {...props}
     >
       <Flex direction="row" alignItems="center" justifyContent="flex-start">
         {secondImg ? SecondImg : MainImg}

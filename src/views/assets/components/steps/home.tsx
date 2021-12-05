@@ -1,11 +1,13 @@
-import { Box, Text } from '@chakra-ui/react';
+import { Text } from '@chakra-ui/react';
 
 import { InformationBox, Header, Asset } from '@/components';
 import { AssetStep, assetsViewActions, useAppDispatch } from '@/store';
 
 import { SONIC_ASSETS_MOCK } from '../../mocks';
+import { useAssetsView } from '@/store/features/assets-view/use-assets-view';
 
 export const HomeStep = () => {
+  const {} = useAssetsView();
   const dispatch = useAppDispatch();
 
   const handleIncrement = (tokenName?: string) => {
@@ -24,26 +26,24 @@ export const HomeStep = () => {
 
   return (
     <>
-      {/* TODO: Modal */}
-      {true && (
-        <InformationBox title="Assets Details" mb={9}>
-          <Text color="#888E8F">Assets description here</Text>
-        </InformationBox>
-      )}
+      <InformationBox title="Assets Details" mb={9}>
+        <Text color="#888E8F">Assets description here</Text>
+      </InformationBox>
+
       <Header title="Your Assets" />
-      {SONIC_ASSETS_MOCK.map((asset) => (
-        <Box mb={5} key={asset.name}>
-          <Asset
-            title={asset.name}
-            mainImgSrc={asset.logo}
-            onAdd={() => handleIncrement(asset.name)}
-            onRemove={() => handleDecrease(asset.name)}
-          >
-            {/* {asset.totalSupply && (
+
+      {SONIC_ASSETS_MOCK.map(({ name, logo }) => (
+        <Asset
+          title={name}
+          mainImgSrc={logo}
+          onAdd={() => handleIncrement(name)}
+          onRemove={() => handleDecrease(name)}
+          mb={4}
+        >
+          {/* {asset.totalSupply && (
           <AssetContent price={asset.price} amount={asset.totalSupply} />
         )} */}
-          </Asset>
-        </Box>
+        </Asset>
       ))}
     </>
   );
