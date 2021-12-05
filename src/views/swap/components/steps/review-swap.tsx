@@ -1,6 +1,6 @@
-import { Text, Box, Image, Flex } from '@chakra-ui/react';
+import { FormControl, Checkbox, Box, Image, Flex } from '@chakra-ui/react';
 
-import { Checkbox, TitleBox, TokenBox, Button } from '@/components';
+import { TitleBox, TokenBox, Button } from '@/components';
 import { arrowDownSrc, infoSrc } from '@/assets';
 import { useNotificationStore } from '@/store';
 
@@ -95,20 +95,18 @@ export const ReviewStep = ({
         px={5}
         py={4}
       >
-        <Flex direction="row" alignItems="center">
+        <FormControl direction="row" alignItems="center">
           <Checkbox
-            checked={keepInSonic}
-            onClick={() => setKeepInSonic(!keepInSonic)}
-          />
-          <Text
-            fontWeight={600}
-            ml={2}
-            transition="color 200ms"
+            isChecked={keepInSonic}
+            onChange={(e) => setKeepInSonic(e.target.checked)}
+            colorScheme="dark-blue"
+            size="lg"
             color={keepInSonic ? '#FFFFFF' : '#888E8F'}
+            fontWeight={600}
           >
             Keep tokens in Sonic after swap
-          </Text>
-        </Flex>
+          </Checkbox>
+        </FormControl>
         <Image
           src={infoSrc}
           width={5}
@@ -116,7 +114,7 @@ export const ReviewStep = ({
           opacity={keepInSonic ? 1 : 0.5}
         />
       </Flex>
-      <Button onClick={handleApproveSwap} fontSize="2xl" borderRadius={20}>
+      <Button isFullWidth size="lg" onClick={handleApproveSwap}>
         Confirm Swap
       </Button>
     </>
