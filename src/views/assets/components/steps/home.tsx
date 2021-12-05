@@ -26,7 +26,7 @@ export const HomeStep = () => {
     <>
       {/* TODO: Modal */}
       {true && (
-        <InformationBox title="Assets Details" mb="37px">
+        <InformationBox title="Assets Details" mb={9}>
           <Text color="#888E8F">Assets description here</Text>
         </InformationBox>
       )}

@@ -72,4 +72,4 @@ export const PlugPrincipalIDTag: FC<TagProps> = (props): ReactElement => {
 
 PlugPrincipalIDTag.displayName = 'PlugPrincipalIDTag';
 
-const ChevronIcon = () => <Image ml="11px" src={chevronDownSrc} />;
+const ChevronIcon = () => <Image ml={3} src={chevronDownSrc} />;

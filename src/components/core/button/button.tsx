@@ -4,7 +4,6 @@ import {
 } from '@chakra-ui/react';
 
 type ButtonProps = ChakraButtonProps & {
-  title: string;
   onClick: () => void;
   gradient?: 'horizontal' | 'vertical';
   status?: 'disabled' | 'grey-disabled';
@@ -12,7 +11,6 @@ type ButtonProps = ChakraButtonProps & {
 
 export const Button = ({
   onClick,
-  title,
   status,
   gradient = 'vertical',
   ...props
@@ -30,9 +28,6 @@ export const Button = ({
 
   return (
     <ChakraButton
-      py={2}
-      px={4}
-      fontSize="md"
       fontWeight="bold"
       onClick={handleOnClick}
       borderRadius={12}
@@ -42,10 +37,7 @@ export const Button = ({
       background={status === 'grey-disabled' ? '#282828' : background}
       transition="opacity 400ms"
       opacity={status === 'disabled' ? 0.4 : 1}
-      isFullWidth
       {...props}
-    >
-      {title}
-    </ChakraButton>
+    />
   );
 };

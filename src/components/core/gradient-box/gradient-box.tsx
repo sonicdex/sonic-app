@@ -57,15 +57,15 @@ export const GradientBox: FC<GradientBoxProps> = ({
       <Box
         position="absolute"
         bg="linear-gradient(93.07deg,#ffd719 0.61%,#f754d4 33.98%,#1fd1ec 65.84%,#48fa6b 97.7%)"
-        width="27px"
-        height="27px"
+        width={7}
+        height={7}
         borderRadius="full"
       />
       <Box
         position="absolute"
         bg="#1E1E1E"
-        height="25px"
-        width="25px"
+        height={6}
+        width={6}
         borderRadius="full"
       />
       {children}

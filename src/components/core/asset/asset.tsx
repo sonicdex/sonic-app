@@ -19,22 +19,22 @@ export const Asset = ({
   onAdd,
   onRemove,
 }: AssetProps) => {
-  const MainImg = <Image width="44px" height="44px" src={mainImgSrc} />;
+  const MainImg = <Image width={11} height={11} src={mainImgSrc} />;
 
   const SecondImg = (
-    <Box width="44px" height="44px" position="relative">
+    <Box width={11} height={11} position="relative">
       <Image
         position="absolute"
-        width="30px"
-        height="30px"
+        width={8}
+        height={8}
         top={0}
         left={0}
         src={mainImgSrc}
       />
       <Image
         position="absolute"
-        width="30px"
-        height="30px"
+        width={8}
+        height={8}
         bottom={0}
         right={0}
         src={secondImg}

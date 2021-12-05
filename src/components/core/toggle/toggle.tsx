@@ -9,7 +9,7 @@ export const Toggle = ({ toggle, onToggle }: ToggleProps) => (
   <Flex
     direction="row"
     cursor="pointer"
-    p="6px"
+    p={1.5}
     bg="#1E1E1E"
     width="fit-content"
     borderRadius={100}
@@ -18,7 +18,7 @@ export const Toggle = ({ toggle, onToggle }: ToggleProps) => (
     onClick={() => onToggle()}
   >
     <Box
-      height="38px"
+      height={10}
       width="63px"
       bg="linear-gradient(108.08deg, #3D52F4 0%, #192985 100%)"
       borderRadius={100}
@@ -29,10 +29,10 @@ export const Toggle = ({ toggle, onToggle }: ToggleProps) => (
     <Box
       width="63px"
       textAlign="center"
-      py="7px"
+      py={2}
       borderRadius={100}
       fontWeight={700}
-      fontSize="16px"
+      fontSize="md"
       zIndex={100}
     >
       Yes
@@ -40,10 +40,10 @@ export const Toggle = ({ toggle, onToggle }: ToggleProps) => (
     <Box
       width="63px"
       textAlign="center"
-      py="7px"
+      py={2}
       borderRadius={100}
       fontWeight={700}
-      fontSize="16px"
+      fontSize="md"
       zIndex={100}
     >
       No

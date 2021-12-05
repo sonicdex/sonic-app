@@ -9,7 +9,7 @@ import { HomeStep, AddLiquidityStep } from './components/steps';
 //   'Liquidity providers earn a 0.25% fee on all trades proportional to their share of the pool. Fees are added to the pool, accrue in real time and can be claimed by withdrawing your liquidity. If you want to learn ';
 
 // const InformationDescription = () => (
-//   <Box as="p" color="#888E8F" fontSize="16px">
+//   <Box as="p" color="#888E8F">
 //     {INFORMATION_DESCRIPTION}
 //     <Box
 //       as="a"
