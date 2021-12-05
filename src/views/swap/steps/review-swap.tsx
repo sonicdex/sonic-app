@@ -35,16 +35,26 @@ export const ReviewStep = ({
     setCurrentModal,
     setCurrentModalData,
     clearModal,
+    setOnClose,
     setCurrentModalState,
   } = useModalStore();
 
   const handleApproveSwap = () => {
     // Integration: Do swap
     // trigger modals.
+
+    // Note: setOnClose automatically calls clearModal
+    setOnClose(() => {
+      console.log('Closed Modal');
+      setFromValue('0.00');
+      nextStep();
+    });
     setCurrentModalData({ fromToken: fromToken.name, toToken: toToken.name });
     setCurrentModalState('deposit');
     setCurrentModal(MODALS.swapProgress);
 
+    // TODO: Remove after integration with batch transactions
+    // TODO: Refactor in case OnClose is called to stop all effects
     setTimeout(() => setCurrentModalState('swap'), 3000);
     setTimeout(() => setCurrentModalState('withdraw'), 6000);
     setTimeout(() => {

@@ -3,6 +3,7 @@ import {
   selectModalState,
   setCurrentModal,
   setCurrentModalState,
+  setOnClose,
   setCurrentModalData,
   setModalState,
   clearModal,
@@ -27,6 +28,10 @@ export const useModalStore = () => {
     dispatch(setModalState(state));
   };
 
+  const _setOnClose = (onClose: () => any) => {
+    dispatch(setOnClose(onClose));
+  };
+
   const _clearModal = () => {
     dispatch(clearModal());
   };
@@ -39,6 +44,7 @@ export const useModalStore = () => {
     currentModal,
     currentModalState,
     state,
+    setOnClose: _setOnClose,
     setCurrentModalData: _setCurrentModalData,
     setCurrentModal: _setCurrentModal,
     setCurrentModalState: _setCurrentModalState,
