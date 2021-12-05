@@ -1,7 +1,5 @@
 import { useState, ReactNode } from 'react';
-import { Box, BoxProps, Flex, Image, Collapse } from '@chakra-ui/react';
-
-import { closeSrc } from '@/assets';
+import { Box, BoxProps, Flex, Collapse, CloseButton } from '@chakra-ui/react';
 
 type InformationBoxTypes = BoxProps & {
   title: string;
@@ -31,15 +29,15 @@ export const InformationBox = ({
         pt={4}
         px={5}
         pb={5}
-        borderRadius={20}
         mb={5}
+        borderRadius="xl"
         {...props}
       >
         <Flex direction="row" justifyContent="space-between" mb={2}>
           <Box as="h3" fontSize="lg" fontWeight="bold" color="#F6FCFD">
             {title}
           </Box>
-          <Image w={5} cursor="pointer" onClick={handleClose} src={closeSrc} />
+          <CloseButton size="sm" variant="rounded" onClick={handleClose} />
         </Flex>
         {children}
       </Box>

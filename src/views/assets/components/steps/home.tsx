@@ -1,6 +1,6 @@
-import { Box } from '@chakra-ui/react';
+import { Box, Text } from '@chakra-ui/react';
 
-import { InformationBox, Header, IncrementBox } from '@/components';
+import { InformationBox, Header, Asset } from '@/components';
 import { AssetStep, assetsViewActions, useAppDispatch } from '@/store';
 
 import { SONIC_ASSETS_MOCK } from '../../mocks';
@@ -24,18 +24,16 @@ export const HomeStep = () => {
 
   return (
     <>
-      {/* TODO: Information */}
+      {/* TODO: Modal */}
       {true && (
         <InformationBox title="Assets Details" mb="37px">
-          <Box as="p" color="#888E8F">
-            Assets description here
-          </Box>
+          <Text color="#888E8F">Assets description here</Text>
         </InformationBox>
       )}
       <Header title="Your Assets" />
       {SONIC_ASSETS_MOCK.map((asset) => (
         <Box mb={5} key={asset.name}>
-          <IncrementBox
+          <Asset
             title={asset.name}
             mainImgSrc={asset.logo}
             onIncrement={() => handleIncrement(asset?.name)}
@@ -44,7 +42,7 @@ export const HomeStep = () => {
             {/* {asset.totalSupply && (
           <AssetContent price={asset.price} amount={asset.totalSupply} />
         )} */}
-          </IncrementBox>
+          </Asset>
         </Box>
       ))}
     </>

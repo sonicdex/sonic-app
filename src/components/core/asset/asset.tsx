@@ -1,7 +1,8 @@
-import { Box, Image, Flex } from '@chakra-ui/react';
-import { greyMinusSrc, bluePlusSrc } from '@/assets';
+import { IconButton, HStack, Box, Image, Flex } from '@chakra-ui/react';
+import { greyMinusSrc } from '@/assets';
+import { PlusIcon } from '@/components/icons';
 
-type IncrementBoxProps = {
+type AssetProps = {
   mainImgSrc?: string;
   secondImg?: string;
   title?: string;
@@ -10,14 +11,14 @@ type IncrementBoxProps = {
   onDecreace: () => any;
 };
 
-export const IncrementBox = ({
+export const Asset = ({
   mainImgSrc,
   secondImg,
   children,
   title,
   onIncrement,
   onDecreace,
-}: IncrementBoxProps) => {
+}: AssetProps) => {
   const MainImg = <Image width="44px" height="44px" src={mainImgSrc} />;
 
   const SecondImg = (
@@ -45,47 +46,34 @@ export const IncrementBox = ({
     <Flex
       position="relative"
       direction="row"
-      borderRadius="20px"
+      borderRadius="2xl"
       alignItems="center"
       justifyContent="space-between"
       bg="#1E1E1E"
-      px="20px"
-      py="18px"
+      px={5}
+      py={4}
     >
       <Flex direction="row" alignItems="center" justifyContent="flex-start">
         {secondImg ? SecondImg : MainImg}
-        <Box ml="16px" fontSize="18px" fontWeight={700} color="#F6FCFD" as="h3">
+        <Box ml={4} fontSize="lg" fontWeight={700} color="#F6FCFD" as="h3">
           {title}
         </Box>
       </Flex>
       {children}
-      <Flex direction="row" alignItems="center">
-        <Flex
-          alignItems="center"
-          justifyContent="center"
-          onClick={onDecreace}
-          border="1px solid #888E8F"
-          width="40px"
-          cursor="pointer"
-          height="40px"
-          borderRadius="40px"
-        >
-          <Image src={greyMinusSrc} />
-        </Flex>
-        <Flex
-          ml="10px"
-          alignItems="center"
-          justifyContent="center"
-          onClick={onIncrement}
-          border="1px solid #3B50ED"
-          width="40px"
-          borderRadius="40px"
-          cursor="pointer"
-          height="40px"
-        >
-          <Image src={bluePlusSrc} />
-        </Flex>
-      </Flex>
+      <HStack>
+        <IconButton
+          icon={<Image src={greyMinusSrc} />}
+          aria-label="Left icon"
+          isRound
+          variant="outline"
+        />
+        <IconButton
+          icon={<PlusIcon />}
+          aria-label="Right icon"
+          isRound
+          variant="outline"
+        />
+      </HStack>
     </Flex>
   );
 };
