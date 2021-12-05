@@ -110,7 +110,8 @@ export const HomeStep = ({
         isFullWidth
         size="lg"
         onClick={handleButtonOnClick}
-        status={loading || !isReady ? 'disabled' : undefined}
+        isLoading={loading}
+        isDisabled={!isReady}
       >
         Review Swap
       </Button>

@@ -172,11 +172,10 @@ export const AddLiquidityStep = ({
         </Flex>
       </Flex>
       <Button
-        fontSize="2xl"
-        fontWeight={700}
-        borderRadius={20}
+        isFullWidth
+        size="lg"
         onClick={handleButtonClick}
-        status={shouldButtonBeActive() ? undefined : 'disabled'}
+        isDisabled={!shouldButtonBeActive()}
       >
         {buttonTitle}
       </Button>

@@ -58,11 +58,10 @@ export const DepositStep = () => {
         />
       </Box>
       <Button
-        status={isReady ? undefined : 'disabled'}
+        isFullWidth
+        size="lg"
+        isDisabled={!isReady}
         onClick={handleDeposit}
-        borderRadius={20}
-        fontWeight="bold"
-        fontSize="xl"
       >
         Deposit
       </Button>

@@ -58,11 +58,10 @@ export const WithdrawStep = () => {
         />
       </Box>
       <Button
-        status={isReady ? undefined : 'disabled'}
+        isFullWidth
+        size="lg"
+        isDisabled={!isReady}
         onClick={handleWithdraw}
-        borderRadius={20}
-        fontWeight={700}
-        fontSize="2xl"
       >
         Withdraw
       </Button>

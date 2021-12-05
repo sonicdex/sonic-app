@@ -43,7 +43,7 @@ export const NotificationBox = ({
         bg="#1E1E1E"
         mb={8}
         pt={4}
-        pr={11}
+        pr={10}
         pl={12}
         pb={4}
       >
