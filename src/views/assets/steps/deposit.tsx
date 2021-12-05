@@ -1,49 +1,38 @@
 import { useState } from 'react';
 import { Box } from '@chakra-ui/react';
-import {
-  InformationBox,
-  TitleBox,
-  TokenBox,
-  Button,
-} from '@/components';
+import { InformationBox, TitleBox, TokenBox, Button } from '@/components';
 
 import { ASSETS } from '@/constants';
 
 type Token = {
-  name: string,
-  img: string, 
+  name: string;
+  img: string;
 };
 
 type DepositStepProps = {
-  token: Token,
-  onArrowBack: () => any,
+  token: Token;
+  onArrowBack: () => any;
 };
 
-export const DepositStep = ({
-  token,
-  onArrowBack,
-}: DepositStepProps) => {
+export const DepositStep = ({ token, onArrowBack }: DepositStepProps) => {
   const [currentToken, setCurrentToken] = useState(token);
   const [value, setValue] = useState('0');
 
   const isReady = value && parseFloat(value) > 0;
-  const getStatus = () => isReady ? 'active' : '';
+  const getStatus = () => (isReady ? 'active' : '');
 
   const handleTokenSelect = (tokenName) => {
     setCurrentToken(ASSETS[tokenName]);
-  }
+  };
 
   const handleDeposit = () => {
     // Integration:
     // Deposit token to Sonic
-  }
+  };
 
   return (
     <>
-      <TitleBox
-        title="Deposit Asset"
-        onArrowBack={onArrowBack}
-      />
+      <TitleBox title="Deposit Asset" onArrowBack={onArrowBack} />
       <Box my="20px">
         <TokenBox
           value={value}
@@ -67,4 +56,4 @@ export const DepositStep = ({
       />
     </>
   );
-}
+};

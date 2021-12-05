@@ -1,24 +1,20 @@
 import { Flex, Box } from '@chakra-ui/react';
 
-import {
-  InformationBox,
-  Header,
-  IncrementBox
-} from '@/components';
+import { InformationBox, Header, IncrementBox } from '@/components';
 import { AssetContent } from '../components';
 
 type SonicAsset = {
-  name: string,
-  amount: string,
-  price: string,
-  img: string, 
+  name: string;
+  amount: string;
+  price: string;
+  img: string;
 };
 
 type HomeStepProps = {
-  sonicAssets: Array<SonicAsset>,
-  handleIncrement: (string) => any,
-  handleDecrease: (string) => any,
-  showInformation?: boolean,
+  sonicAssets: Array<SonicAsset>;
+  handleIncrement: (string) => any;
+  handleDecrease: (string) => any;
+  showInformation?: boolean;
 };
 
 const InformationDescription = () => (
@@ -31,18 +27,16 @@ export const HomeStep = ({
   sonicAssets,
   handleIncrement,
   handleDecrease,
-  showInformation = false
+  showInformation = false,
 }: HomeStepProps) => (
   <>
-    { showInformation && (
+    {showInformation && (
       <InformationBox title="Assets Details" mb="37px">
         <InformationDescription />
       </InformationBox>
     )}
-    <Header
-      title="Your Assets"
-    />
-    { sonicAssets.map((asset) => (
+    <Header title="Your Assets" />
+    {sonicAssets.map((asset) => (
       <Box mb="20px" key={asset.name}>
         <IncrementBox
           title={asset.name}

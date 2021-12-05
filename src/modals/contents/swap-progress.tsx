@@ -4,7 +4,7 @@ import {
   swapSrc,
   withdrawSrc,
   greenCheckSrc,
-  doubleRightChevronSrc
+  doubleRightChevronSrc,
 } from '@/assets';
 
 const spin = keyframes`
@@ -16,8 +16,8 @@ const CircleIcon = ({
   status,
   iconSrc,
 }: {
-  status?: 'active' | 'disabled' | 'done',
-  iconSrc: string,
+  status?: 'active' | 'disabled' | 'done';
+  iconSrc: string;
 }) => {
   const spinAnimation = `${spin} infinite 2s linear`;
 
@@ -26,14 +26,8 @@ const CircleIcon = ({
   const checkOpacity = status === 'done' ? 1 : 0;
 
   return (
-    <Box
-      w="45px"
-      h="45px"
-      borderRadius="45px"
-      position="relative"
-      bg={bg}
-    >
-      { status === 'active' && (
+    <Box w="45px" h="45px" borderRadius="45px" position="relative" bg={bg}>
+      {status === 'active' && (
         <Box
           w="45px"
           h="45px"
@@ -43,7 +37,7 @@ const CircleIcon = ({
           position="absolute"
         />
       )}
-      { status === 'active' && (
+      {status === 'active' && (
         <Box
           w="100%"
           h="100%"
@@ -88,30 +82,22 @@ const Step = ({
   children,
   iconSrc,
   status,
-  chevron=false,
+  chevron = false,
 }: {
-  children: React.ReactNode,
-  status: 'active' | 'disabled' | 'done',
-  iconSrc: string,
-  chevron?: boolean,
+  children: React.ReactNode;
+  status: 'active' | 'disabled' | 'done';
+  iconSrc: string;
+  chevron?: boolean;
 }) => {
   const color = status === 'disabled' ? '#888E8F' : '#FFFFFF';
   const weight = status === 'disabled' ? 400 : 600;
   const opacity = status === 'disabled' ? 0.4 : 1;
-  const ml = status === 'disabled' ?
-    chevron ? "2px" : "3px" :
-    "0px";
-  const chevMl = status === 'disabled' ? "25px" : "24px";
+  const ml = status === 'disabled' ? (chevron ? '2px' : '3px') : '0px';
+  const chevMl = status === 'disabled' ? '25px' : '24px';
 
   return (
-    <Flex
-      direction="row"
-      alignItems="flex-start"
-    >
-      <Flex
-        direction="column"
-        alignItems="center"
-      >
+    <Flex direction="row" alignItems="flex-start">
+      <Flex direction="column" alignItems="center">
         <CircleIcon iconSrc={iconSrc} status={status} />
         <Box
           mt="9px"
@@ -126,7 +112,7 @@ const Step = ({
           {children}
         </Box>
       </Flex>
-      { chevron && (
+      {chevron && (
         <Box
           opacity={opacity}
           as="img"
@@ -141,18 +127,17 @@ const Step = ({
   );
 };
 
-const STEPS = [
-  'deposit',
-  'swap',
-  'withdraw',
-];
+const STEPS = ['deposit', 'swap', 'withdraw'];
 
 type SwapProgressProps = {
   currentModalState?: string;
   currentModalData?: any;
 };
 
-export const SwapProgress = ({ currentModalState, currentModalData }: SwapProgressProps) => {
+export const SwapProgress = ({
+  currentModalState,
+  currentModalData,
+}: SwapProgressProps) => {
   const { fromToken, toToken } = currentModalData;
   const getStepStatus = (step) => {
     const currentStepIndex = STEPS.indexOf(currentModalState);
@@ -162,7 +147,7 @@ export const SwapProgress = ({ currentModalState, currentModalData }: SwapProgre
     if (currentStepIndex === stepIndex) return 'active';
 
     return 'disabled';
-  }
+  };
 
   return (
     <Flex
@@ -176,45 +161,20 @@ export const SwapProgress = ({ currentModalState, currentModalData }: SwapProgre
       pb="43px"
       borderRadius="20px"
     >
-      <Box
-        as="h1"
-        color="#F6FCFD"
-        fontWeight={700}
-        fontSize="22px"
-        mb="13px"
-      >
+      <Box as="h1" color="#F6FCFD" fontWeight={700} fontSize="22px" mb="13px">
         Swap in Progress
       </Box>
-      <Box
-        as="p"
-        color="#888E8F"
-        fontSize="16px"
-        mb="33px"
-      >
+      <Box as="p" color="#888E8F" fontSize="16px" mb="33px">
         Please allow a few seconds for swap to finish
       </Box>
-      <Flex
-        direction="row"
-        justifyContent="center"
-      >
-        <Step
-          status={getStepStatus('deposit')}
-          iconSrc={depositSrc}
-          chevron
-        >
+      <Flex direction="row" justifyContent="center">
+        <Step status={getStepStatus('deposit')} iconSrc={depositSrc} chevron>
           Depositing <br /> {fromToken}
         </Step>
-        <Step
-          status={getStepStatus('swap')}
-          iconSrc={swapSrc}
-          chevron
-        >
+        <Step status={getStepStatus('swap')} iconSrc={swapSrc} chevron>
           Swapping <br /> {fromToken} to {toToken}
         </Step>
-        <Step
-          status={getStepStatus('withdraw')}
-          iconSrc={withdrawSrc}
-        >
+        <Step status={getStepStatus('withdraw')} iconSrc={withdrawSrc}>
           Withdrawing <br /> {toToken}
         </Step>
       </Flex>

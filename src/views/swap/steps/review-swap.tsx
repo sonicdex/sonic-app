@@ -35,7 +35,7 @@ export const ReviewStep = ({
     setCurrentModal,
     setCurrentModalData,
     clearModal,
-    setCurrentModalState
+    setCurrentModalState,
   } = useModalStore();
 
   const handleApproveSwap = () => {
