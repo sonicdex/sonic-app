@@ -2,7 +2,7 @@ import { useState } from 'react';
 // import { Box } from '@chakra-ui/react';
 
 // import { InformationBox, Header } from '@/components';
-import { HomeStep, AddLiquidityStep } from './steps';
+import { HomeStep, AddLiquidityStep } from './components/steps';
 
 // const INFORMATION_TITLE = 'Liquidity Provider Rewards';
 // const INFORMATION_DESCRIPTION =

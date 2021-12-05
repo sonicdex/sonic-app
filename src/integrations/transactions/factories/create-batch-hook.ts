@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react';
 import { BatchTransactions } from '..';
 import { Batch } from '../models';
 
-export const createBatchHook: Batch.CreateHook = ({ states, transactions }) => {
+export const useBatchHook: Batch.CreateHook = ({ states, transactions }) => {
   const [state, setState] = useState<string>(states.Idle);
   const [error, setError] = useState<unknown>();
 

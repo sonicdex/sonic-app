@@ -1,8 +1,8 @@
-import { createBatchHook } from '..';
+import { useBatchHook } from '..';
 import { createSupportedTokenListTransaction } from '../transactions/supported-token-list';
 
-export const createTestBatch = () =>
-  createBatchHook({
+export const useTestBatch = () =>
+  useBatchHook({
     states: {
       Idle: 'idle',
       Done: 'done',
