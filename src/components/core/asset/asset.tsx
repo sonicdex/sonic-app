@@ -7,8 +7,8 @@ type AssetProps = {
   secondImg?: string;
   title?: string;
   children: any;
-  onIncrement: () => any;
-  onDecreace: () => any;
+  onAdd: () => any;
+  onRemove: () => any;
 };
 
 export const Asset = ({
@@ -16,8 +16,8 @@ export const Asset = ({
   secondImg,
   children,
   title,
-  onIncrement,
-  onDecreace,
+  onAdd,
+  onRemove,
 }: AssetProps) => {
   const MainImg = <Image width="44px" height="44px" src={mainImgSrc} />;
 
@@ -46,7 +46,7 @@ export const Asset = ({
     <Flex
       position="relative"
       direction="row"
-      borderRadius="2xl"
+      borderRadius="xl"
       alignItems="center"
       justifyContent="space-between"
       bg="#1E1E1E"
@@ -66,12 +66,14 @@ export const Asset = ({
           aria-label="Left icon"
           isRound
           variant="outline"
+          onClick={onRemove}
         />
         <IconButton
           icon={<PlusIcon />}
           aria-label="Right icon"
           isRound
           variant="outline"
+          onClick={onAdd}
         />
       </HStack>
     </Flex>

@@ -36,8 +36,8 @@ export const HomeStep = () => {
           <Asset
             title={asset.name}
             mainImgSrc={asset.logo}
-            onIncrement={() => handleIncrement(asset?.name)}
-            onDecreace={() => handleDecrease(asset?.name)}
+            onAdd={() => handleIncrement(asset.name)}
+            onRemove={() => handleDecrease(asset.name)}
           >
             {/* {asset.totalSupply && (
           <AssetContent price={asset.price} amount={asset.totalSupply} />
