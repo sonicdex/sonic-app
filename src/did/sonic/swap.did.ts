@@ -1,3 +1,4 @@
+import { IDL } from '@dfinity/candid';
 import type { Principal } from '@dfinity/principal';
 
 export namespace SwapIDL {
@@ -178,7 +179,7 @@ export namespace SwapIDL {
   }
   export interface Factory extends Swap {}
 
-  export const factory = ({ IDL }) => {
+  export const factory: IDL.InterfaceFactory = ({ IDL }) => {
     const PairInfoExt = IDL.Record({
       id: IDL.Text,
       price0CumulativeLast: IDL.Nat,

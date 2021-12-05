@@ -1,14 +1,13 @@
 import { useState } from 'react';
-import { Flex, Box } from '@chakra-ui/react';
+import { Flex, Image, Box } from '@chakra-ui/react';
 
 import { Button, TitleBox, TokenBox } from '@/components';
-import { ASSETS } from '@/constants';
 
 import { plusSrc, equalSrc } from '@/assets';
 
 type AddLiquidityStepProps = {
   onPrevious: () => any;
-  onAdd: (any) => any;
+  onAdd: (any: any) => any;
 };
 
 const BUTTON_TITLES = ['Review Supply', 'Confirm Supply'];
@@ -21,14 +20,14 @@ export const AddLiquidityStep = ({
   const [subStep, setSubStep] = useState(0);
 
   const [fromValue, setFromValue] = useState('0.00');
-  const [fromToken, setFromToken] = useState(Object.values(ASSETS)[0]);
+  const [fromToken, setFromToken] = useState();
 
   const [toValue, setToValue] = useState('0.00');
-  const [toToken, setToToken] = useState(Object.values(ASSETS)[1]);
+  const [toToken, setToToken] = useState();
 
-  const handleTokenSelect = (tokenName, setter) => {
-    if (tokenName === fromToken.name || tokenName === toToken.name) return;
-    setter(ASSETS[tokenName]);
+  const handleTokenSelect = (tokenName: string, setter: any) => {
+    // TODO: add handler function
+    console.log(tokenName, setter);
   };
 
   const handlePreviousStep = () => {
@@ -39,10 +38,10 @@ export const AddLiquidityStep = ({
     }
   };
 
-  const getActiveStatus = (token, value) => {
+  const getActiveStatus = (token?: string, value?: string) => {
     const shouldBeActive = token && value?.length && parseFloat(value) > 0;
 
-    return shouldBeActive && subStep !== 1 ? 'active' : null;
+    return shouldBeActive && subStep !== 1 ? 'active' : undefined;
   };
 
   const shouldButtonBeActive = () => {
@@ -84,7 +83,7 @@ export const AddLiquidityStep = ({
             onTokenSelect={(tokenName) =>
               handleTokenSelect(tokenName, setFromToken)
             }
-            tokenOptions={Object.values(ASSETS)}
+            tokenOptions={[]}
             currentToken={fromToken}
             status={getActiveStatus(fromToken, fromValue)}
             disabled={subStep === 1}
@@ -105,7 +104,7 @@ export const AddLiquidityStep = ({
           mb="-26px"
           zIndex={1200}
         >
-          <Box as="img" m="auto" src={plusSrc} />
+          <Image m="auto" src={plusSrc} />
         </Box>
         <Box mt="10px" width="100%">
           <TokenBox
@@ -114,7 +113,7 @@ export const AddLiquidityStep = ({
             onTokenSelect={(tokenName) =>
               handleTokenSelect(tokenName, setToToken)
             }
-            tokenOptions={Object.values(ASSETS)}
+            tokenOptions={[]}
             currentToken={toToken}
             status={getActiveStatus(toToken, toValue)}
             disabled={subStep === 1}
@@ -138,7 +137,7 @@ export const AddLiquidityStep = ({
               mb="-26px"
               zIndex={1200}
             >
-              <Box as="img" m="auto" src={equalSrc} />
+              <Image m="auto" src={equalSrc} />
             </Flex>
             <Box mt="10px" width="100%">
               <TokenBox
@@ -147,7 +146,7 @@ export const AddLiquidityStep = ({
                 onTokenSelect={(tokenName) =>
                   handleTokenSelect(tokenName, setToToken)
                 }
-                tokenOptions={Object.values(ASSETS)}
+                tokenOptions={[]}
                 currentToken={toToken}
                 status="active"
                 balance="0.00"
@@ -169,10 +168,10 @@ export const AddLiquidityStep = ({
           px="20px"
         >
           <Box color="#888E8F" as="p">
-            {`${fromToken.name} + ${toToken.name}`}
+            {`${'fromToken'} + ${'toToken'}`}
           </Box>
           <Box color="#888E8F" as="p">
-            {`1 ${fromToken.name} = 0.23 ${toToken.name}`}
+            {`1 ${'fromToken'} = 0.23 ${'toToken'}`}
           </Box>
         </Flex>
       </Flex>

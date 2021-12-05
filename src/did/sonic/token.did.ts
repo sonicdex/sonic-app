@@ -1,3 +1,4 @@
+import { IDL } from '@dfinity/candid';
 import type { Principal } from '@dfinity/principal';
 
 export namespace TokenIDL {
@@ -83,7 +84,7 @@ export namespace TokenIDL {
   }
   export interface Factory extends Token {}
 
-  export const factory = ({ IDL }) => {
+  export const factory: IDL.InterfaceFactory = ({ IDL }) => {
     const TxReceipt = IDL.Variant({
       ok: IDL.Nat,
       err: IDL.Variant({

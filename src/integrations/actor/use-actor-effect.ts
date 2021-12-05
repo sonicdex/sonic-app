@@ -4,7 +4,7 @@ import { AppActors } from '.';
 
 type UseActorEffectOptions = {
   actor?: AppActors;
-  setActor: (actor: AppActors) => void;
+  setActor: (actor?: AppActors) => void;
 };
 
 export const useActorEffect = ({
@@ -17,6 +17,6 @@ export const useActorEffect = ({
       return;
     }
 
-    setActor(null);
+    setActor(undefined);
   }, [actor]);
 };

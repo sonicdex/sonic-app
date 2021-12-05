@@ -1,16 +1,17 @@
 import { wicpSrc, icpSrc, xtcSrc } from '@/assets';
+import { SupportedToken } from '@/models';
 
-export const ASSETS = {
+export const TOKEN: Record<string, Partial<SupportedToken>> = {
   WICP: {
     name: 'WICP',
-    img: wicpSrc,
+    logo: wicpSrc,
   },
   ICP: {
     name: 'ICP',
-    img: icpSrc,
+    logo: icpSrc,
   },
   XTC: {
     name: 'XTC',
-    img: xtcSrc,
+    logo: xtcSrc,
   },
 };

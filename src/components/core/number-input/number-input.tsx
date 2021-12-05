@@ -1,8 +1,9 @@
 import { Box } from '@chakra-ui/react';
+import { ChangeEvent } from 'react';
 
 type NumberInputProps = {
   value: string;
-  setValue: (string) => any;
+  setValue: (value: string) => any;
   placeholder?: string;
   disabled?: boolean;
   style?: any;
@@ -15,11 +16,11 @@ export const NumberInput = ({
   disabled = false,
   style = {},
 }: NumberInputProps) => {
-  const handleValueChange = (response) => {
-    const inputValue = response.target.value;
-    const parsedInputValue = parseFloat(inputValue);
+  const handleValueChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const inputValue = event.target.value;
+    // const parsedInputValue = parseFloat(inputValue);
 
-    if (isNaN(inputValue)) return;
+    if (isNaN(Number(inputValue))) return;
     setValue(inputValue);
   };
 

@@ -10,12 +10,12 @@ export const useLiquidityView = () => {
 
   async function getUserLPBalances(owner: Principal) {
     try {
-      let result: unknown = await swapActor.getUserLPBalances(owner);
+      let result: unknown = await swapActor?.getUserLPBalances(owner);
       if (result) {
         const lps: any[] = [];
         for (const i of result as []) {
           const par: string[] = (i[0] as string).split(':');
-          let LP = (await getPair(par[0], par[1]))[0];
+          let LP: any = (await getPair(par[0], par[1]))?.[0];
           LP.lptokens = i[1];
           lps.push(LP);
         }
@@ -23,20 +23,18 @@ export const useLiquidityView = () => {
       }
     } catch (e) {
       console.log(e, 'balanceOf');
-      return e;
     }
   }
 
   async function getPair(token0: string, token1: string) {
     try {
-      const result = await swapActor.getPair(
+      const result = await swapActor?.getPair(
         Principal.fromText(token0),
         Principal.fromText(token1)
       );
       return result ?? [];
     } catch (e) {
       console.log(e, 'balanceOf');
-      return e;
     }
   }
 
@@ -45,7 +43,6 @@ export const useLiquidityView = () => {
       return getNotIdentifiedTokenActor(tokenCanisterId).getMetadata();
     } catch (e) {
       console.log(e, 'getTokenInfo');
-      return e;
     }
   }
 
@@ -61,7 +58,7 @@ export const useLiquidityView = () => {
   ) {
     try {
       const currentTime = (new Date().getTime() + 5 * 60 * 1000) * 10000000;
-      return await swapActor.addLiquidity(
+      return await swapActor?.addLiquidity(
         Principal.fromText(token0),
         Principal.fromText(token1),
         parseAmount(amount0, decimal0),
@@ -72,7 +69,6 @@ export const useLiquidityView = () => {
       );
     } catch (e) {
       console.log(e, 'balanceOf');
-      return e;
     }
   }
   async function removeLiquidity(
@@ -97,7 +93,6 @@ export const useLiquidityView = () => {
       );
     } catch (e) {
       console.log(e, 'balanceOf');
-      return e;
     }
   }
 

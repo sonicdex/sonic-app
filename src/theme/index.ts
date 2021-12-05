@@ -6,7 +6,7 @@ import { colors } from './foundations';
 
 const appTheme = {
   styles: {
-    global: (props) => ({
+    global: (props: any) => ({
       body: {
         bg: mode('white', 'bg')(props),
       },

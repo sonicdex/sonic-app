@@ -1,22 +1,25 @@
 import { useState, useEffect } from 'react';
-import { Box, Flex } from '@chakra-ui/react';
+import { Box, Flex, Image } from '@chakra-ui/react';
 
-import { TitleBox, Toggle, TokenBox, Button } from '@/components';
+import { TitleBox, TokenBox, Button } from '@/components';
+import { Balances, SupportedToken } from '@/models';
+import { getCurrencyString } from '@/utils/format';
 
 import { arrowDownSrc } from '@/assets';
 
 type HomeStepProps = {
   fromValue: string;
-  setFromValue: (string) => any;
   toValue: string;
-  setToValue: (string) => any;
-  fromToken: any;
-  setFromToken: (string) => any;
-  toToken: any;
-  setToToken: (string) => any;
-  handleTokenSelect: any;
-  nextStep: () => any;
+  fromToken?: SupportedToken;
+  toToken?: SupportedToken;
   tokenOptions: object;
+  balances?: Balances;
+  setFromValue: (value: string) => any;
+  setToValue: (value: string) => any;
+  setFromToken?: (token: SupportedToken) => any;
+  setToToken?: (token: SupportedToken) => any;
+  handleTokenSelect: (...args: any[]) => any;
+  nextStep: () => any;
 };
 
 export const HomeStep = ({
@@ -31,12 +34,14 @@ export const HomeStep = ({
   setToToken,
   handleTokenSelect,
   nextStep,
+  balances,
 }: HomeStepProps) => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     // Integration: Calculate swap value & fill values
     // adjust setLoading properly
+    console.log(setLoading);
   }, [fromValue, fromToken, toToken]);
 
   const handleButtonOnClick = () => {
@@ -46,8 +51,7 @@ export const HomeStep = ({
   };
 
   const isReady = fromValue && parseFloat(fromValue) > 0;
-
-  const getStatus = (token, value) => (isReady ? 'active' : '');
+  const getStatus = () => (isReady ? 'active' : '');
 
   return (
     <>
@@ -62,8 +66,11 @@ export const HomeStep = ({
             }
             tokenOptions={Object.values(tokenOptions)}
             currentToken={fromToken}
-            status={getStatus(fromToken, fromValue)}
-            balance="0.00"
+            status={getStatus()}
+            balance={getCurrencyString(
+              fromToken && balances ? balances[fromToken.id] : 0,
+              fromToken?.decimals
+            )}
             amount="0.00"
           />
         </Box>
@@ -79,7 +86,7 @@ export const HomeStep = ({
           mb="-26px"
           zIndex={1200}
         >
-          <Box as="img" m="auto" src={arrowDownSrc} />
+          <Image m="auto" src={arrowDownSrc} />
         </Box>
         <Box mt="10px" width="100%">
           <TokenBox
@@ -91,7 +98,10 @@ export const HomeStep = ({
             tokenOptions={Object.values(tokenOptions)}
             currentToken={toToken}
             disabled={true}
-            balance="0.00"
+            balance={getCurrencyString(
+              toToken && balances ? balances[toToken.id] : 0,
+              toToken?.decimals
+            )}
             amount="0.00"
           />
         </Box>
