@@ -1,11 +1,12 @@
 import {
   Flex,
-  Box,
   Modal,
   ModalOverlay,
   ModalContent,
   ModalBody,
   Image,
+  Heading,
+  Text,
 } from '@chakra-ui/react';
 
 import { logoSrc, closeSrc } from '@/assets';
@@ -21,25 +22,25 @@ export const PlugConfirmationModal = ({
 }: PlugConfirmationModalProps) => (
   <Modal onClose={onClose} isOpen={isOpen} isCentered>
     <ModalOverlay />
-    <ModalContent bg="#1E1E1E" borderRadius="20px">
-      <ModalBody pt="37px" px="73px" pb="35px">
+    <ModalContent bg="#1E1E1E" borderRadius={5}>
+      <ModalBody pt={9} px={18} pb={9}>
         <Image
           position="absolute"
-          top="20px"
-          right="20px"
-          width="20px"
+          top={5}
+          right={5}
+          width={5}
           src={closeSrc}
           onClick={onClose}
           cursor="pointer"
         />
         <Flex direction="column" alignItems="center">
-          <Box as="h3" color="#F6FCFD" fontWeight={700} fontSize="22px">
+          <Heading as="h3" color="#F6FCFD" fontWeight={700} fontSize="md">
             Waiting for confirmation
-          </Box>
-          <Box as="p" color="#888E8F" fontSize="16px" mt="13px" mb="20px">
+          </Heading>
+          <Text color="#888E8F" fontSize="md" mt={3} mb={5}>
             Please confirm this transaction in Plug
-          </Box>
-          <Image width="95px" src={logoSrc} />
+          </Text>
+          <Image width={24} src={logoSrc} />
         </Flex>
       </ModalBody>
     </ModalContent>

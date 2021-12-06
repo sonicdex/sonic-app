@@ -10,4 +10,4 @@ export * from './number-input';
 export * from './information-box';
 export * from './header';
 export * from './check-box';
-export * from './increment-box';
+export * from './asset';

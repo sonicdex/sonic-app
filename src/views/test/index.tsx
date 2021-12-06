@@ -1,7 +1,7 @@
-import { createTestBatch } from '@/integrations/transactions';
+import { useTestBatch } from '@/integrations/transactions';
 
 export const TestView = () => {
-  const { execute, state } = createTestBatch();
+  const { execute, state } = useTestBatch();
 
   return (
     <div>

@@ -1,6 +1,6 @@
-import { Box, Image, Flex } from '@chakra-ui/react';
+import { FormControl, Checkbox, Box, Image, Flex } from '@chakra-ui/react';
 
-import { Checkbox, TitleBox, TokenBox, Button } from '@/components';
+import { TitleBox, TokenBox, Button } from '@/components';
 import { arrowDownSrc, infoSrc } from '@/assets';
 import { useNotificationStore } from '@/store';
 
@@ -42,8 +42,8 @@ export const ReviewStep = ({
   return (
     <>
       <TitleBox title="Swap" settings="sd" onArrowBack={prevStep} />
-      <Flex direction="column" alignItems="center" mb="20px">
-        <Box mt="20px" width="100%">
+      <Flex direction="column" alignItems="center" mb={5}>
+        <Box mt={5} width="100%">
           <TokenBox
             value={fromValue}
             setValue={() => {}}
@@ -57,19 +57,19 @@ export const ReviewStep = ({
           />
         </Box>
         <Box
-          borderRadius="15px"
-          width="42px"
-          height="42px"
-          py="12px"
-          px="13px"
+          borderRadius={4}
+          width={10}
+          height={10}
+          py={3}
+          px={3}
           bg="#3D52F4"
-          mt="-16px"
-          mb="-26px"
+          mt={-4}
+          mb={-6}
           zIndex={1200}
         >
           <Image m="auto" src={arrowDownSrc} />
         </Box>
-        <Box mt="10px" width="100%">
+        <Box mt={2.5} width="100%">
           <TokenBox
             value={toValue}
             setValue={() => {}}
@@ -89,42 +89,34 @@ export const ReviewStep = ({
         direction="row"
         justifyContent="space-between"
         alignItems="center"
-        borderRadius="20px"
-        mb="20px"
+        borderRadius={5}
+        mb={5}
         bg="#1E1E1E"
-        px="20px"
-        py="16px"
+        px={5}
+        py={4}
       >
-        <Flex direction="row" alignItems="center">
+        <FormControl direction="row" alignItems="center">
           <Checkbox
-            checked={keepInSonic}
-            onClick={() => setKeepInSonic(!keepInSonic)}
-          />
-          <Box
-            as="p"
-            fontSize="16px"
-            fontWeight={600}
-            ml="9px"
-            transition="color 200ms"
+            isChecked={keepInSonic}
+            onChange={(e) => setKeepInSonic(e.target.checked)}
+            colorScheme="dark-blue"
+            size="lg"
             color={keepInSonic ? '#FFFFFF' : '#888E8F'}
+            fontWeight={600}
           >
             Keep tokens in Sonic after swap
-          </Box>
-        </Flex>
+          </Checkbox>
+        </FormControl>
         <Image
           src={infoSrc}
-          width="20px"
+          width={5}
           transition="opacity 200ms"
           opacity={keepInSonic ? 1 : 0.5}
         />
       </Flex>
-      <Button
-        onClick={handleApproveSwap}
-        title="Confirm Swap"
-        fontWeight={700}
-        fontSize={22}
-        borderRadius={20}
-      />
+      <Button isFullWidth size="lg" onClick={handleApproveSwap}>
+        Confirm Swap
+      </Button>
     </>
   );
 };
