@@ -52,13 +52,14 @@ export const HomeStep = ({
   const [buttonStatus, buttonMessage] = useMemo<
     ['disabled' | 'grey-disabled' | undefined, string]
   >(() => {
-    if (loading) return ['disabled', 'Loading'];
+    if (loading) return ['grey-disabled', 'Loading'];
     if (!balances) return ['disabled', 'No balances found'];
     if (!fromToken) return ['disabled', 'No from token selected'];
     if (!toToken) return ['disabled', 'No to token selected'];
 
     const parsedFromValue = (fromValue && parseFloat(fromValue)) || 0;
-    if (parsedFromValue <= 0) return ['disabled', 'No from value selected'];
+    if (parsedFromValue <= 0)
+      return ['disabled', `No ${fromToken.name} value selected`];
     if (parsedFromValue > balances[fromToken.id])
       return ['disabled', `Insufficient ${fromToken.name} Balance`];
 
