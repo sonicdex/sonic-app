@@ -1,4 +1,5 @@
 import { Box, Flex, keyframes } from '@chakra-ui/react';
+import { ModalComponentProps } from '../modals';
 import {
   depositSrc,
   swapSrc,
@@ -129,15 +130,10 @@ const Step = ({
 
 const STEPS = ['deposit', 'swap', 'withdraw'];
 
-type SwapProgressProps = {
-  currentModalState?: string;
-  currentModalData?: any;
-};
-
 export const SwapProgress = ({
   currentModalState = 'deposit',
   currentModalData,
-}: SwapProgressProps) => {
+}: Partial<ModalComponentProps>) => {
   const { fromToken, toToken } = currentModalData;
   const getStepStatus = (step: string) => {
     const currentStepIndex = STEPS.indexOf(currentModalState);
