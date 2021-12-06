@@ -2,31 +2,27 @@ import { FormControl, Checkbox, Box, Image, Flex } from '@chakra-ui/react';
 
 import { TitleBox, TokenBox, Button } from '@/components';
 import { arrowDownSrc, infoSrc } from '@/assets';
-import { useNotificationStore } from '@/store';
+import {
+  SwapStep,
+  swapViewActions,
+  useAppDispatch,
+  useNotificationStore,
+  useSwapViewStore,
+} from '@/store';
+import { getCurrencyString } from '@/utils/format';
+import { Balances } from '@/models';
+import { useState } from 'react';
 
 type ReviewStepProps = {
-  fromValue: string;
-  toValue: string;
-  fromToken: any;
-  toToken: any;
-  keepInSonic: boolean;
-  nextStep: () => any;
-  prevStep: () => any;
-  tokenOptions: object;
-  setKeepInSonic: (shouldKeep: boolean) => any;
+  balances?: Balances;
 };
 
-export const ReviewStep = ({
-  fromValue,
-  toValue,
-  fromToken,
-  toToken,
-  nextStep,
-  prevStep,
-  keepInSonic,
-  setKeepInSonic,
-  tokenOptions,
-}: ReviewStepProps) => {
+export const ReviewStep = ({ balances }: ReviewStepProps) => {
+  const { fromTokenOptions, toTokenOptions, from, to } = useSwapViewStore();
+  const dispatch = useAppDispatch();
+
+  const [keepInSonic, setKeepInSonic] = useState<boolean>(false);
+
   const { addNotification } = useNotificationStore();
   const handleApproveSwap = () => {
     // Integration: Do swap
@@ -36,24 +32,33 @@ export const ReviewStep = ({
       type: 'done',
       id: Date.now().toString(),
     });
-    nextStep();
   };
 
   return (
     <>
-      <TitleBox title="Swap" settings="sd" onArrowBack={prevStep} />
+      <TitleBox
+        title="Swap"
+        settings="sd"
+        onArrowBack={() => dispatch(swapViewActions.setStep(SwapStep.Home))}
+      />
       <Flex direction="column" alignItems="center" mb={5}>
         <Box mt={5} width="100%">
           <TokenBox
-            value={fromValue}
-            setValue={() => {}}
-            onTokenSelect={() => {}}
-            tokenOptions={Object.values(tokenOptions)}
-            currentToken={fromToken}
-            balance="0.00"
+            value={from.value}
+            setValue={(value) =>
+              dispatch(swapViewActions.setValue({ data: 'from', value }))
+            }
+            onTokenSelect={(tokenId) => {
+              dispatch(swapViewActions.setToken({ data: 'from', tokenId }));
+            }}
+            tokenOptions={fromTokenOptions}
+            currentToken={from.token}
+            balance={getCurrencyString(
+              from.token && balances ? balances[from.token.id] : 0,
+              from.token?.decimals
+            )}
             amount="0.00"
-            disabled
-            menuDisabled
+            status="active"
           />
         </Box>
         <Box
@@ -71,17 +76,23 @@ export const ReviewStep = ({
         </Box>
         <Box mt={2.5} width="100%">
           <TokenBox
-            value={toValue}
-            setValue={() => {}}
-            onTokenSelect={() => {}}
-            tokenOptions={Object.values(tokenOptions)}
-            currentToken={toToken}
+            value={to.value}
+            setValue={(value) =>
+              dispatch(swapViewActions.setValue({ data: 'to', value }))
+            }
+            onTokenSelect={(tokenId) => {
+              dispatch(swapViewActions.setToken({ data: 'to', tokenId }));
+            }}
+            tokenOptions={toTokenOptions}
+            currentToken={to.token}
+            balance={getCurrencyString(
+              to.token && balances ? balances[to.token.id] : 0,
+              to.token?.decimals
+            )}
             status="active"
-            balance="0.00"
             amount="0.00"
             glow
             disabled
-            menuDisabled
           />
         </Box>
       </Flex>
