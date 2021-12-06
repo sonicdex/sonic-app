@@ -3,6 +3,7 @@ import {
   selectModalState,
   setCurrentModal,
   setCurrentModalState,
+  setModalCallbacks,
   setOnClose,
   setCurrentModalData,
   setModalState,
@@ -18,6 +19,10 @@ export const useModalStore = () => {
 
   const _setCurrentModal = (currentModal: string) => {
     dispatch(setCurrentModal(currentModal));
+  };
+
+  const _setModalCallbacks = (callbacks: Array<() => any>) => {
+    dispatch(setModalCallbacks(callbacks));
   };
 
   const _setCurrentModalState = (currentModalState: string) => {
@@ -44,6 +49,7 @@ export const useModalStore = () => {
     currentModal,
     currentModalState,
     state,
+    setModalCallbacks: _setModalCallbacks,
     setOnClose: _setOnClose,
     setCurrentModalData: _setCurrentModalData,
     setCurrentModal: _setCurrentModal,
