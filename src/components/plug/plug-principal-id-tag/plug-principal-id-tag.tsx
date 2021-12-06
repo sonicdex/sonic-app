@@ -3,6 +3,8 @@ import { TagProps } from '@chakra-ui/tag';
 import { Spinner } from '@chakra-ui/spinner';
 import {
   Flex,
+  HStack,
+  Text,
   Image,
   Box,
   Menu,
@@ -16,11 +18,7 @@ import { Emoji, GradientBox } from '@/components/core';
 import { desensitizationPrincipalId } from '@/utils/canister';
 import { chevronDownSrc, copySrc, exitSrc } from '@/assets';
 
-const ChevronIcon = () => <Image ml="11px" src={chevronDownSrc} />;
-
-export const PlugPrincipalIDTag: FC<TagProps> = ({
-  ...props
-}): ReactElement => {
+export const PlugPrincipalIDTag: FC<TagProps> = (props): ReactElement => {
   const { principalId, state, setIsConnected } = usePlugStore();
 
   const handleDisconnect = () => {
@@ -29,10 +27,6 @@ export const PlugPrincipalIDTag: FC<TagProps> = ({
 
   const shortPrincipalId = useMemo(() => {
     return desensitizationPrincipalId(principalId);
-  }, [principalId]);
-
-  const mediumPrincipalId = useMemo(() => {
-    return desensitizationPrincipalId(principalId, 11, 9);
   }, [principalId]);
 
   const handleCopy = () => {
@@ -58,41 +52,18 @@ export const PlugPrincipalIDTag: FC<TagProps> = ({
           <ChevronIcon />
         </Flex>
       </MenuButton>
-      <MenuList
-        p="0px"
-        bg="#1E1E1E"
-        borderWidth="0px"
-        borderRadius="20px"
-        overflow="hidden"
-      >
-        <MenuItem
-          py="7px"
-          pt="17px"
-          px="19px"
-          fontWeight={700}
-          _hover={{
-            bg: '#1E1E1E',
-          }}
-        >
-          {mediumPrincipalId}
+      <MenuList bg="#1E1E1E" border="none" borderRadius="xl" overflow="hidden">
+        <MenuItem fontWeight="bold" onClick={handleCopy}>
+          <HStack direction="row">
+            <Image src={copySrc} />
+            <Text>Copy ID</Text>
+          </HStack>
         </MenuItem>
-        <MenuItem py="7px" px="19px" fontWeight={700} onClick={handleCopy}>
-          <Flex direction="row">
-            <Image src={copySrc} mr="12px" />
-            Copy ID
-          </Flex>
-        </MenuItem>
-        <MenuItem
-          py="7px"
-          pb="15px"
-          px="19px"
-          fontWeight={700}
-          onClick={handleDisconnect}
-        >
-          <Flex direction="row">
-            <Image src={exitSrc} mr="12px" />
-            Disconnect
-          </Flex>
+        <MenuItem fontWeight="bold" onClick={handleDisconnect}>
+          <HStack direction="row">
+            <Image src={exitSrc} />
+            <Text>Disconnect</Text>
+          </HStack>
         </MenuItem>
       </MenuList>
     </Menu>
@@ -100,3 +71,5 @@ export const PlugPrincipalIDTag: FC<TagProps> = ({
 };
 
 PlugPrincipalIDTag.displayName = 'PlugPrincipalIDTag';
+
+const ChevronIcon = () => <Image ml={3} src={chevronDownSrc} />;

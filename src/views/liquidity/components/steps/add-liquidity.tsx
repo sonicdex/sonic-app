@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Flex, Image, Box } from '@chakra-ui/react';
+import { Text, Flex, Image, Box } from '@chakra-ui/react';
 
 import { Button, TitleBox, TokenBox } from '@/components';
 
@@ -75,7 +75,7 @@ export const AddLiquidityStep = ({
         title="Add Liquidity"
         settings={true}
       />
-      <Flex mt="20px" direction="column" alignItems="center">
+      <Flex mt={5} direction="column" alignItems="center">
         <Box width="100%">
           <TokenBox
             value={fromValue}
@@ -93,20 +93,20 @@ export const AddLiquidityStep = ({
           />
         </Box>
         <Box
-          borderRadius="15px"
-          width="42px"
-          height="42px"
+          borderRadius={4}
+          width={10}
+          height={10}
           border="1px solid #373737"
-          py="12px"
-          px="13px"
+          py={3}
+          px={3}
           bg="#1E1E1E"
-          mt="-16px"
-          mb="-26px"
+          mt={-4}
+          mb={-6}
           zIndex={1200}
         >
           <Image m="auto" src={plusSrc} />
         </Box>
-        <Box mt="10px" width="100%">
+        <Box mt={2.5} width="100%">
           <TokenBox
             value={toValue}
             setValue={setToValue}
@@ -127,19 +127,19 @@ export const AddLiquidityStep = ({
             <Flex
               direction="column"
               alignItems="center"
-              borderRadius="15px"
-              width="42px"
-              height="42px"
-              py="12px"
-              px="13px"
+              borderRadius={4}
+              width={10}
+              height={10}
+              py={3}
+              px={3}
               bg="#3D52F4"
-              mt="-16px"
-              mb="-26px"
+              mt={-4}
+              mb={-6}
               zIndex={1200}
             >
               <Image m="auto" src={equalSrc} />
             </Flex>
-            <Box mt="10px" width="100%">
+            <Box mt={2.5} width="100%">
               <TokenBox
                 value={toValue}
                 setValue={setToValue}
@@ -164,25 +164,21 @@ export const AddLiquidityStep = ({
           direction="row"
           justifyContent="space-between"
           width="100%"
-          my="10px"
-          px="20px"
+          my={2.5}
+          px={5}
         >
-          <Box color="#888E8F" as="p">
-            {`${'fromToken'} + ${'toToken'}`}
-          </Box>
-          <Box color="#888E8F" as="p">
-            {`1 ${'fromToken'} = 0.23 ${'toToken'}`}
-          </Box>
+          <Text color="#888E8F">{`${'fromToken'} + ${'toToken'}`}</Text>
+          <Text color="#888E8F">{`1 ${'fromToken'} = 0.23 ${'toToken'}`}</Text>
         </Flex>
       </Flex>
       <Button
-        fontSize={22}
-        fontWeight={700}
-        borderRadius={20}
-        title={buttonTitle}
+        isFullWidth
+        size="lg"
         onClick={handleButtonClick}
-        status={shouldButtonBeActive() ? undefined : 'disabled'}
-      />
+        isDisabled={!shouldButtonBeActive()}
+      >
+        {buttonTitle}
+      </Button>
     </>
   );
 };

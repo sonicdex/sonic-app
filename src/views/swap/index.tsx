@@ -1,10 +1,16 @@
 import { useEffect, useState } from 'react';
 
-import { HomeStep, ReviewStep } from './steps';
+import { HomeStep, ReviewStep } from './components/steps';
 import { useUserBalances } from '@/hooks/use-user-balances';
 import { useSwapActor } from '@/integrations/actor/use-swap-actor';
 import { SwapIDL } from '@/did';
 import { SupportedToken, SupportedTokenList } from '@/models';
+import {
+  SwapStep,
+  swapViewActions,
+  useAppDispatch,
+  useSwapViewStore,
+} from '@/store';
 import { infoSrc } from '@/assets';
 
 const parseResponseTokenList = (
@@ -19,13 +25,9 @@ const parseResponseTokenList = (
   }, {} as SupportedTokenList);
 };
 
-enum SwapStep {
-  Home,
-  Review,
-}
-
 export const Swap = () => {
-  const [step, setStep] = useState(SwapStep.Home);
+  const { step } = useSwapViewStore();
+  const dispatch = useAppDispatch();
 
   const [tokenList, setTokenList] = useState<SupportedTokenList>({});
   const [keepInSonic, setKeepInSonic] = useState(false);
@@ -61,15 +63,15 @@ export const Swap = () => {
 
   const handleNextStep = () => {
     if (step + 1 < Object.keys(SwapStep).length) {
-      setStep(step + 1);
+      dispatch(swapViewActions.setStep(step + 1));
     } else {
-      setStep(SwapStep.Home);
+      dispatch(swapViewActions.setStep(SwapStep.Home));
     }
   };
 
   const handlePrevStep = () => {
     if (step - 1 >= 0) {
-      setStep(step - 1);
+      dispatch(swapViewActions.setStep(step - 1));
     }
   };
 

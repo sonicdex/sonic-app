@@ -3,14 +3,27 @@ import { Principal } from '@dfinity/principal';
 import { parseAmount } from '@/utils/format';
 import { useActorStore } from '@/store/features/actor';
 import { usePlugStore } from '@/store';
-import { useToken } from './use-token';
+import { useToken } from '../../../hooks/use-token';
 import { TokenIDL } from '@/did';
+import { useEffect } from 'react';
 
 export const useAssetsView = () => {
   const { actors } = useActorStore();
   const { principalId } = usePlugStore();
   const { swap: swapActor } = actors;
   const { getTokenInfo } = useToken();
+
+  useEffect(() => {
+    async function getSupportedTokenList() {
+      if (swapActor) {
+        const result = await swapActor.getSupportedTokenList();
+
+        console.log(result);
+      }
+    }
+
+    getSupportedTokenList();
+  }, [swapActor]);
 
   async function getTokens() {
     try {

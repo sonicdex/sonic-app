@@ -49,21 +49,18 @@ export const HomeStep = ({
     return false;
   }, [balances, fromToken, toToken]);
 
-  const [buttonStatus, buttonMessage] = useMemo<
-    ['disabled' | 'grey-disabled' | undefined, string]
-  >(() => {
-    if (loading) return ['grey-disabled', 'Loading'];
-    if (!balances) return ['disabled', 'No balances found'];
-    if (!fromToken) return ['disabled', 'No from token selected'];
-    if (!toToken) return ['disabled', 'No to token selected'];
+  const [buttonDisabled, buttonMessage] = useMemo<[boolean, string]>(() => {
+    if (loading) return [true, 'Loading'];
+    if (!balances || !fromToken || !toToken)
+      throw new Error('State is loading');
 
     const parsedFromValue = (fromValue && parseFloat(fromValue)) || 0;
     if (parsedFromValue <= 0)
-      return ['disabled', `No ${fromToken.name} value selected`];
+      return [true, `No ${fromToken.name} value selected`];
     if (parsedFromValue > balances[fromToken.id])
-      return ['disabled', `Insufficient ${fromToken.name} Balance`];
+      return [true, `Insufficient ${fromToken.name} Balance`];
 
-    return [undefined, 'Review Swap'];
+    return [false, 'Review Swap'];
   }, [loading, balances, fromToken, toToken, fromValue, toValue]);
 
   const fromValueStatus = useMemo(() => {
@@ -74,8 +71,8 @@ export const HomeStep = ({
   return (
     <>
       <TitleBox title="Swap" settings="sd" />
-      <Flex direction="column" alignItems="center" mb="20px">
-        <Box mt="20px" width="100%">
+      <Flex direction="column" alignItems="center" mb={5}>
+        <Box mt={5} width="100%">
           <TokenBox
             value={fromValue}
             setValue={setFromValue}
@@ -93,20 +90,20 @@ export const HomeStep = ({
           />
         </Box>
         <Box
-          borderRadius="15px"
-          width="42px"
-          height="42px"
+          borderRadius={4}
+          width={10}
+          height={10}
           border="1px solid #373737"
-          py="12px"
-          px="13px"
+          py={3}
+          px={3}
           bg="#1E1E1E"
-          mt="-16px"
-          mb="-26px"
+          mt={-4}
+          mb={-6}
           zIndex={1200}
         >
           <Image m="auto" src={arrowDownSrc} />
         </Box>
-        <Box mt="10px" width="100%">
+        <Box mt={2.5} width="100%">
           <TokenBox
             value={toValue}
             setValue={setToValue}
@@ -125,13 +122,17 @@ export const HomeStep = ({
         </Box>
       </Flex>
       <Button
+        isFullWidth
+        size="lg"
         onClick={handleButtonOnClick}
-        title={buttonMessage}
         fontWeight={700}
         fontSize={22}
         borderRadius={20}
-        status={buttonStatus}
-      />
+        isLoading={loading}
+        isDisabled={buttonDisabled}
+      >
+        {buttonMessage}
+      </Button>
     </>
   );
 };

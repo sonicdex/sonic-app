@@ -49,8 +49,8 @@ export const Logo = forwardRef<IconProps, 'svg'>((props, ref) => {
           y2="491.079"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#1A2A86" />
-          <stop offset="1" stop-color="#2C44FF" />
+          <stop stopColor="#1A2A86" />
+          <stop offset="1" stopColor="#2C44FF" />
         </linearGradient>
         <linearGradient
           id="paint1_linear_1_72"
@@ -60,8 +60,8 @@ export const Logo = forwardRef<IconProps, 'svg'>((props, ref) => {
           y2="74.7432"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#1A2A86" />
-          <stop offset="1" stop-color="#2B43FB" />
+          <stop stopColor="#1A2A86" />
+          <stop offset="1" stopColor="#2B43FB" />
         </linearGradient>
         <linearGradient
           id="paint2_linear_1_72"
@@ -71,9 +71,9 @@ export const Logo = forwardRef<IconProps, 'svg'>((props, ref) => {
           y2="593.938"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#566AFF" />
-          <stop offset="0.493345" stop-color="#3347D1" />
-          <stop offset="1" stop-color="#566AFF" />
+          <stop stopColor="#566AFF" />
+          <stop offset="0.493345" stopColor="#3347D1" />
+          <stop offset="1" stopColor="#566AFF" />
         </linearGradient>
         <linearGradient
           id="paint3_linear_1_72"
@@ -83,9 +83,9 @@ export const Logo = forwardRef<IconProps, 'svg'>((props, ref) => {
           y2="593.938"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#566AFF" />
-          <stop offset="0.493345" stop-color="#3347D1" />
-          <stop offset="1" stop-color="#566AFF" />
+          <stop stopColor="#566AFF" />
+          <stop offset="0.493345" stopColor="#3347D1" />
+          <stop offset="1" stopColor="#566AFF" />
         </linearGradient>
       </defs>
     </Icon>

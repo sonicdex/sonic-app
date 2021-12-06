@@ -11,9 +11,9 @@ export const Checkbox = ({ checked, onClick }: CheckboxProps) => {
   return (
     <Flex
       cursor="pointer"
-      borderRadius="6px"
-      width="23px"
-      height="23px"
+      borderRadius={1.5}
+      width={6}
+      height={6}
       onClick={onClick}
       border={checked ? '' : '1.5px solid #888E8F'}
       bg={checked ? '#384CE3' : ''}
@@ -21,7 +21,7 @@ export const Checkbox = ({ checked, onClick }: CheckboxProps) => {
       justifyContent="center"
     >
       <Fade in={checked}>
-        <Image src={checkPlainSrc} width="16px" height="16px" />
+        <Image src={checkPlainSrc} width={4} height={4} />
       </Fade>
     </Flex>
   );
