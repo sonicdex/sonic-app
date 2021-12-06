@@ -9,6 +9,7 @@ type ButtonProps = {
   fontSize?: number;
   gradient?: 'horizontal' | 'vertical';
   status?: 'disabled' | 'grey-disabled';
+  wireframe?: boolean;
 };
 
 export const Button = ({
@@ -20,11 +21,14 @@ export const Button = ({
   fontSize = 16,
   size = 'full',
   gradient = 'vertical',
+  wireframe = false,
 }: ButtonProps) => {
-  const background =
+  let background =
     gradient === 'horizontal'
       ? 'linear-gradient(108.08deg, #3D52F4 0%, #192985 100%)'
       : 'linear-gradient(180deg, #3D52F4 0%, #192985 100%)';
+
+  if (wireframe) background = 'none';
   const handleOnClick = () => {
     if (status) return;
 
@@ -39,6 +43,7 @@ export const Button = ({
       fontWeight={fontWeight}
       onClick={handleOnClick}
       borderRadius={borderRadius}
+      border={wireframe ? '1px solid #FFFFFF' : ''}
       textAlign="center"
       color={status === 'grey-disabled' ? '#888E8F' : '#F6FCFD'}
       width={size === 'full' ? '100%' : 'fit-content'}
