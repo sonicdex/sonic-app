@@ -5,6 +5,7 @@ import { useUserBalances } from '@/hooks/use-user-balances';
 import { useSwapActor } from '@/integrations/actor/use-swap-actor';
 import { SwapIDL } from '@/did';
 import { SupportedToken, SupportedTokenList } from '@/models';
+import { infoSrc } from '@/assets';
 
 const parseResponseTokenList = (
   response: SwapIDL.TokenInfoExt[]
@@ -12,7 +13,7 @@ const parseResponseTokenList = (
   return response.reduce((list, token) => {
     list[token.id] = {
       ...token,
-      logo: '/assets/info.svg',
+      logo: infoSrc,
     };
     return list;
   }, {} as SupportedTokenList);
