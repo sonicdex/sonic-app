@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Box, Flex, Image } from '@chakra-ui/react';
 
 import { TitleBox, TokenBox, Button } from '@/components';
@@ -50,8 +50,26 @@ export const HomeStep = ({
     nextStep();
   };
 
-  const isReady = fromValue && parseFloat(fromValue) > 0;
-  const getStatus = () => (isReady ? 'active' : '');
+  const [buttonStatus, buttonMessage] = useMemo<
+    ['disabled' | 'grey-disabled' | undefined, string]
+  >(() => {
+    if (loading) return ['disabled', 'Loading'];
+    if (!balances) return ['disabled', 'No balances found'];
+    if (!fromToken) return ['disabled', 'No from token selected'];
+    if (!toToken) return ['disabled', 'No to token selected'];
+
+    const parsedFromValue = (fromValue && parseFloat(fromValue)) || 0;
+    if (parsedFromValue <= 0) return ['disabled', 'No from value selected'];
+    if (parsedFromValue > balances[fromToken.id])
+      return ['disabled', `Insufficient ${fromToken.name} Balance`];
+
+    return [undefined, 'Review Swap'];
+  }, [loading, balances, fromToken, toToken, fromValue, toValue]);
+
+  const fromValueStatus = useMemo(() => {
+    if (fromValue && parseFloat(fromValue) > 0) return 'active';
+    return 'inactive';
+  }, [fromValue]);
 
   return (
     <>
@@ -66,7 +84,7 @@ export const HomeStep = ({
             }
             tokenOptions={Object.values(tokenOptions)}
             currentToken={fromToken}
-            status={getStatus()}
+            status={fromValueStatus}
             balance={getCurrencyString(
               fromToken && balances ? balances[fromToken.id] : 0,
               fromToken?.decimals
@@ -108,11 +126,11 @@ export const HomeStep = ({
       </Flex>
       <Button
         onClick={handleButtonOnClick}
-        title="Review Swap"
+        title={buttonMessage}
         fontWeight={700}
         fontSize={22}
         borderRadius={20}
-        status={loading || !isReady ? 'disabled' : undefined}
+        status={buttonStatus}
       />
     </>
   );

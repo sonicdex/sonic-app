@@ -40,12 +40,17 @@ export const Swap = () => {
 
   useEffect(() => {
     if (!swapActor) return;
-    swapActor.getSupportedTokenList().then((response) => {
-      const parsedTokenList = parseResponseTokenList(response);
-      setTokenList(parsedTokenList);
-      setFromToken(Object.values(parsedTokenList)[0]);
-      setToToken(Object.values(parsedTokenList)[1]);
-    });
+    swapActor
+      .getSupportedTokenList()
+      .then((response) => {
+        const parsedTokenList = parseResponseTokenList(response);
+        setTokenList(parsedTokenList);
+        setFromToken(Object.values(parsedTokenList)[0]);
+        setToToken(Object.values(parsedTokenList)[1]);
+      })
+      .catch((error) => {
+        console.error('SwapActorError', error);
+      });
   }, [swapActor]);
 
   const handleTokenSelect = (
