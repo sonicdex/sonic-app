@@ -1,9 +1,9 @@
 import { plug } from '@/integrations/plug';
 import { amountInMax, amountOutMin } from '@/utils/format';
+
 import { useState } from 'react';
 import { createDepositTransaction, createSwapTransaction } from '..';
 import { BatchTransactions } from '../..';
-import { CreateBatch } from '../../models/create-batch';
 
 interface DepositSwapParams {
   tokenIn: TokenAdded;
@@ -21,13 +21,13 @@ enum DepositSwapState {
   Error = 'error',
 }
 
-export const createDepositSwap: CreateBatch<DepositSwapParams> = ({
-  fromValue,
+export const createDepositSwap = ({
   tokenIn,
   tokenOut,
   tolerance,
+  fromValue,
   toValue,
-}): any => {
+}: DepositSwapParams) => {
   const [state, setState] = useState(DepositSwapState.Idle);
   const [error, setError] = useState<unknown>();
 

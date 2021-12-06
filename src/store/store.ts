@@ -2,11 +2,13 @@ import { configureStore } from '@reduxjs/toolkit';
 
 import actorReducer from '@/store/features/actor/actor-slice';
 import plugReducer from '@/store/features/plug/plug-slice';
+import notificationReducer from '@/store/features/notification/notification-slice';
 
 export const store = configureStore({
   reducer: {
     actor: actorReducer,
     plug: plugReducer,
+    notification: notificationReducer,
   },
 });
 

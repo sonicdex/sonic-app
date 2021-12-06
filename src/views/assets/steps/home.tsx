@@ -39,8 +39,8 @@ export const HomeStep = ({
           onDecreace={() => handleDecrease(asset?.name)}
         >
           {/* {asset.totalSupply && (
-            <AssetContent price={asset.price} amount={asset.totalSupply} />
-          )} */}
+          <AssetContent price={asset.price} amount={asset.totalSupply} />
+        )} */}
         </IncrementBox>
       </Box>
     ))}

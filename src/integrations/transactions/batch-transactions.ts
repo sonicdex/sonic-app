@@ -4,10 +4,9 @@ import { Batch } from './models/batch';
 
 export class BatchTransactions implements Batch.Controller {
   private transactions: Transaction[] = [];
-  // TODO: Add types
-  private batchTransactionResolver: any;
-  private batchTransactionRejector: any;
   private state: Batch.State = Batch.State.Idle;
+  private batchTransactionResolver?: (value: unknown) => void;
+  private batchTransactionRejector?: (value: unknown) => void;
 
   constructor(
     private provider?: Provider,
@@ -78,13 +77,17 @@ export class BatchTransactions implements Batch.Controller {
   }
 
   private finishPromise(resolved: boolean, result: unknown): void {
+    if (!this.batchTransactionRejector || !this.batchTransactionResolver) {
+      throw new Error('Batch promise not initialized');
+    }
+
     if (resolved) {
       this.batchTransactionResolver(result);
     } else {
       this.batchTransactionRejector(result);
     }
-    this.batchTransactionResolver;
-    this.batchTransactionRejector;
+    this.batchTransactionResolver = undefined;
+    this.batchTransactionRejector = undefined;
     this.state = Batch.State.Idle;
   }
 
