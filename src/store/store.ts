@@ -9,11 +9,14 @@ import assetsViewReducer from '@/store/features/assets-view/assets-view-slice';
 import liquidityViewReducer from '@/store/features/liquidity-view/liquidity-view-slice';
 import swapViewReducer from '@/store/features/swap-view/swap-view-slice';
 
+import swapReducer from '@/store/features/swap/swap-slice';
+
 export const store = configureStore({
   reducer: {
     actor: actorReducer,
     plug: plugReducer,
     notification: notificationReducer,
+    swap: swapReducer,
     swapView: swapViewReducer,
     assetsView: assetsViewReducer,
     liquidityView: liquidityViewReducer,

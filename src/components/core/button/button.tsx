@@ -3,7 +3,7 @@ import {
   ButtonProps as ChakraButtonProps,
 } from '@chakra-ui/react';
 
-type ButtonProps = ChakraButtonProps & {
+export type ButtonProps = ChakraButtonProps & {
   gradient?: 'horizontal' | 'vertical';
 };
 

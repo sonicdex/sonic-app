@@ -9,11 +9,10 @@ import {
 import { greyMinusSrc } from '@/assets';
 import { PlusIcon } from '@/components/icons';
 
-type AssetProps = FlexProps & {
+export type AssetProps = FlexProps & {
   mainImgSrc?: string;
   secondImg?: string;
   title?: string;
-  children: any;
   onAdd: () => any;
   onRemove: () => any;
 };

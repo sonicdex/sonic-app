@@ -15,6 +15,7 @@ import { getTokenFromAsset } from './utils';
 export const WithdrawStep = () => {
   const { selectedTokenName } = useAssetsViewStore();
   const dispatch = useAppDispatch();
+  const [value, setValue] = useState('0');
 
   const selectedToken = useMemo(() => {
     if (selectedTokenName) {
@@ -23,8 +24,6 @@ export const WithdrawStep = () => {
     return undefined;
   }, [selectedTokenName]);
   const isReady = useMemo(() => value && parseFloat(value) > 0, [value]);
-
-  const [value, setValue] = useState('0');
 
   const getStatus = () => (isReady ? 'active' : '');
 
