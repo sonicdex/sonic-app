@@ -68,6 +68,12 @@ export const HomeStep = ({
     return 'inactive';
   }, [fromValue]);
 
+  const toTokenOptions = useMemo(() => {
+    return Object.values(tokenOptions).filter(
+      (token) => token.id !== fromToken?.id
+    );
+  }, [tokenOptions, fromToken]);
+
   return (
     <>
       <TitleBox title="Swap" settings="sd" />
@@ -76,8 +82,8 @@ export const HomeStep = ({
           <TokenBox
             value={fromValue}
             setValue={setFromValue}
-            onTokenSelect={(tokenName) =>
-              handleTokenSelect(tokenName, setFromToken)
+            onTokenSelect={(tokenId) =>
+              handleTokenSelect(tokenId, setFromToken)
             }
             tokenOptions={Object.values(tokenOptions)}
             currentToken={fromToken}
@@ -107,10 +113,8 @@ export const HomeStep = ({
           <TokenBox
             value={toValue}
             setValue={setToValue}
-            onTokenSelect={(tokenName) =>
-              handleTokenSelect(tokenName, setToToken)
-            }
-            tokenOptions={Object.values(tokenOptions)}
+            onTokenSelect={(tokenId) => handleTokenSelect(tokenId, setToToken)}
+            tokenOptions={toTokenOptions}
             currentToken={toToken}
             disabled={true}
             balance={getCurrencyString(
