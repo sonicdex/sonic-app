@@ -3,6 +3,7 @@ import BigNumber from 'bignumber.js';
 import { parseUnits, formatUnits } from 'ethers/lib/utils';
 import { Bytes } from '@ethersproject/bytes';
 import { ethers } from 'ethers';
+import { SupportedToken } from '@/models';
 
 export type BigNumberish = BigNumber | Bytes | bigint | string | number;
 
@@ -122,12 +123,19 @@ export const calculatePriceImpact = (
   return impact;
 };
 
+type InitDefaultLiquidityTokenOptions = {
+  fromToken: SupportedToken;
+  toToken: SupportedToken;
+  token0: SupportedToken;
+  token1: SupportedToken;
+};
+
 export const initDefaultLiquidityToken = ({
   fromToken,
   toToken,
   token0,
   token1,
-}) => {
+}: InitDefaultLiquidityTokenOptions) => {
   const defaultFromToken = fromToken
     ? {
         decimals: fromToken.decimals,
@@ -162,4 +170,28 @@ export const formatAmount = (val: BigInt, decimals: number): string => {
   } catch (err) {
     return '0';
   }
+};
+
+export const amountOutMin = (
+  toValue: number,
+  tolerance: number,
+  decimals: string
+) => {
+  return new BigNumber('1')
+    .minus(new BigNumber(tolerance))
+    .multipliedBy(new BigNumber(toValue))
+    .dp(Number(decimals))
+    .toString();
+};
+
+export const amountInMax = (
+  fromValue: number,
+  tolerance: number,
+  decimals: string
+) => {
+  return new BigNumber('1')
+    .minus(new BigNumber(tolerance))
+    .multipliedBy(new BigNumber(fromValue))
+    .dp(Number(decimals))
+    .toString();
 };

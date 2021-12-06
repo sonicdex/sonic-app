@@ -20,7 +20,7 @@ export const ModalManager = () => {
     useAppSelector(selectModalState);
 
   const ModalComponent = MODAL_MAPPING[currentModal];
-  const shouldOpen = currentModal && currentModal.length > 0;
+  const shouldOpen = currentModal?.length > 0;
 
   const handleOnClose = () => {
     clearModal();

@@ -1,5 +1,5 @@
 export const desensitizationPrincipalId = (
-  principalId: string,
+  principalId?: string,
   firstLength: number = 5,
   lastLength: number = 3
 ) => {

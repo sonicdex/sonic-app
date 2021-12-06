@@ -11,7 +11,7 @@ export interface Actors {
 }
 
 export interface TokenActors {
-  [canisterId: string]: TokenIDL.Factory;
+  [canisterId: string]: TokenIDL.Factory | undefined;
 }
 
 interface ActorState {

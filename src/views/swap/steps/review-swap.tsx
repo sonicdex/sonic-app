@@ -1,10 +1,10 @@
-import { Box, Flex } from '@chakra-ui/react';
+import { Box, Image, Flex } from '@chakra-ui/react';
 
 import { Checkbox, TitleBox, TokenBox, Button } from '@/components';
-
 import { arrowDownSrc, infoSrc } from '@/assets';
 import { MODALS } from '@/modals';
 import { useModalStore } from '@/store';
+import { useNotificationStore } from '@/store';
 
 type ReviewStepProps = {
   fromValue: string;
@@ -14,9 +14,9 @@ type ReviewStepProps = {
   keepInSonic: boolean;
   nextStep: () => any;
   prevStep: () => any;
-  setFromValue: (string) => any;
+  setFromValue: (arg0: string) => any;
   tokenOptions: object;
-  setKeepInSonic: (boolean) => any;
+  setKeepInSonic: (shouldKeep: boolean) => any;
 };
 
 export const ReviewStep = ({
@@ -31,6 +31,7 @@ export const ReviewStep = ({
   setKeepInSonic,
   tokenOptions,
 }: ReviewStepProps) => {
+  const { addNotification } = useNotificationStore();
   const {
     setCurrentModal,
     setCurrentModalData,
@@ -60,6 +61,12 @@ export const ReviewStep = ({
     setTimeout(() => {
       setFromValue('0.00');
       clearModal();
+      nextStep();
+      addNotification({
+        title: 'NOTIFICATION',
+        type: 'done',
+        id: Date.now().toString(),
+      });
       nextStep();
     }, 9000);
   };
@@ -92,7 +99,7 @@ export const ReviewStep = ({
           mb="-26px"
           zIndex={1200}
         >
-          <Box as="img" m="auto" src={arrowDownSrc} />
+          <Image m="auto" src={arrowDownSrc} />
         </Box>
         <Box mt="10px" width="100%">
           <TokenBox
@@ -123,7 +130,7 @@ export const ReviewStep = ({
         <Flex direction="row" alignItems="center">
           <Checkbox
             checked={keepInSonic}
-            onChange={() => setKeepInSonic(!keepInSonic)}
+            onClick={() => setKeepInSonic(!keepInSonic)}
           />
           <Box
             as="p"
@@ -136,8 +143,7 @@ export const ReviewStep = ({
             Keep tokens in Sonic after swap
           </Box>
         </Flex>
-        <Box
-          as="img"
+        <Image
           src={infoSrc}
           width="20px"
           transition="opacity 200ms"

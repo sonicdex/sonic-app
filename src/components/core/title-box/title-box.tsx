@@ -1,4 +1,4 @@
-import { Box, Flex } from '@chakra-ui/react';
+import { Box, Image, Flex } from '@chakra-ui/react';
 import { arrowBackSrc, settingSrc } from '@/assets';
 
 type TitleBoxProps = {
@@ -34,9 +34,8 @@ export const TitleBox = ({
         direction="row"
       >
         {onArrowBack && (
-          <Box
+          <Image
             onClick={onArrowBack}
-            as="img"
             src={arrowBackSrc}
             cursor="pointer"
             mr="auto"
@@ -45,7 +44,7 @@ export const TitleBox = ({
         <Box ml={titleLeftAdjustment} mr={titleRightAdjustment}>
           {title}
         </Box>
-        {settings && <Box as="img" src={settingSrc} ml="auto" />}
+        {settings && <Image src={settingSrc} ml="auto" />}
       </Flex>
       {children && (
         <Box py="8px" px="21px" bg="#282828" borderBottomRadius={20}>

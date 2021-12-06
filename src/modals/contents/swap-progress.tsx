@@ -135,11 +135,11 @@ type SwapProgressProps = {
 };
 
 export const SwapProgress = ({
-  currentModalState,
+  currentModalState = 'deposit',
   currentModalData,
 }: SwapProgressProps) => {
   const { fromToken, toToken } = currentModalData;
-  const getStepStatus = (step) => {
+  const getStepStatus = (step: string) => {
     const currentStepIndex = STEPS.indexOf(currentModalState);
     const stepIndex = STEPS.indexOf(step);
 

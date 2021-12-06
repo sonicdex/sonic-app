@@ -1,16 +1,12 @@
 import { useState } from 'react';
 import { Box } from '@chakra-ui/react';
-import { InformationBox, TitleBox, TokenBox, Button } from '@/components';
+import { TitleBox, TokenBox, Button } from '@/components';
 
-import { ASSETS } from '@/constants';
-
-type Token = {
-  name: string;
-  img: string;
-};
+import { TOKEN } from '@/constants';
+import { SupportedToken } from '@/models';
 
 type DepositStepProps = {
-  token: Token;
+  token: Partial<SupportedToken>;
   onArrowBack: () => any;
 };
 
@@ -21,8 +17,8 @@ export const DepositStep = ({ token, onArrowBack }: DepositStepProps) => {
   const isReady = value && parseFloat(value) > 0;
   const getStatus = () => (isReady ? 'active' : '');
 
-  const handleTokenSelect = (tokenName) => {
-    setCurrentToken(ASSETS[tokenName]);
+  const handleTokenSelect = (tokenName: string) => {
+    setCurrentToken(TOKEN[tokenName]);
   };
 
   const handleDeposit = () => {
@@ -42,8 +38,9 @@ export const DepositStep = ({ token, onArrowBack }: DepositStepProps) => {
           balance="23.23"
           amount="53.23"
           status={getStatus()}
-          tokenOptions={Object.values(ASSETS)}
-          currentToken={currentToken}
+          // TODO: Fix types
+          tokenOptions={Object.values(TOKEN) as SupportedToken[]}
+          currentToken={currentToken as SupportedToken}
         />
       </Box>
       <Button

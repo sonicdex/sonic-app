@@ -13,8 +13,8 @@ interface ModalState {
 
 // Define the initial state using that type
 const initialState: ModalState = {
-  currentModal: undefined,
-  currentModalState: undefined,
+  currentModal: '',
+  currentModalState: '',
   currentModalData: {},
   onClose: () => {},
   state: FeatureState?.Idle,
@@ -38,8 +38,8 @@ export const modalSlice = createSlice({
       state.currentModalData = action.payload;
     },
     clearModal: (state) => {
-      state.currentModal = undefined;
-      state.currentModalState = undefined;
+      state.currentModal = '';
+      state.currentModalState = '';
       state.currentModalData = {};
     },
     setState: (state, action: PayloadAction<FeatureState>) => {
