@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import { Box, Flex, Image } from '@chakra-ui/react';
 
 import { TitleBox, TokenBox, Button } from '@/components';
@@ -36,19 +36,18 @@ export const HomeStep = ({
   nextStep,
   balances,
 }: HomeStepProps) => {
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    // Integration: Calculate swap value & fill values
-    // adjust setLoading properly
-    console.log(setLoading);
-  }, [fromValue, fromToken, toToken]);
-
   const handleButtonOnClick = () => {
     if (loading) return;
 
     nextStep();
   };
+
+  const loading = useMemo(() => {
+    if (!balances) return true;
+    if (!fromToken) return true;
+    if (!toToken) return true;
+    return false;
+  }, [balances, fromToken, toToken]);
 
   const [buttonStatus, buttonMessage] = useMemo<
     ['disabled' | 'grey-disabled' | undefined, string]
