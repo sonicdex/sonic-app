@@ -81,7 +81,6 @@ export const Asset = ({
           aria-label="Right icon"
           isRound
           variant="outline"
-          colorScheme="dark-blue"
           onClick={onAdd}
         />
       </HStack>
