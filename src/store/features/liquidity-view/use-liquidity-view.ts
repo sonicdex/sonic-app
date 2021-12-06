@@ -1,7 +1,7 @@
 import { Principal } from '@dfinity/principal';
 import { parseAmount } from '@/utils/format';
 import { useActorStore } from '@/store/features/actor';
-import { useToken } from '../../../hooks/use-token';
+import { useToken } from '@/hooks/use-token';
 
 export const useLiquidityView = () => {
   const { actors } = useActorStore();

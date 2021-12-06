@@ -1,10 +1,14 @@
 import { Text } from '@chakra-ui/react';
 
 import { InformationBox, Header, Asset } from '@/components';
-import { AssetStep, assetsViewActions, useAppDispatch } from '@/store';
+import {
+  AssetStep,
+  assetsViewActions,
+  useAppDispatch,
+  useAssetsView,
+} from '@/store';
 
 import { SONIC_ASSETS_MOCK } from '../../mocks';
-import { useAssetsView } from '@/store/features/assets-view/use-assets-view';
 
 export const HomeStep = () => {
   const {} = useAssetsView();

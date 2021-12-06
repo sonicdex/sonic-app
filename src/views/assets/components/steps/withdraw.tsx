@@ -21,11 +21,11 @@ export const WithdrawStep = () => {
       return getTokenFromAsset(selectedTokenName);
     }
     return undefined;
-  }, []);
+  }, [selectedTokenName]);
+  const isReady = useMemo(() => value && parseFloat(value) > 0, [value]);
 
   const [value, setValue] = useState('0');
 
-  const isReady = value && parseFloat(value) > 0;
   const getStatus = () => (isReady ? 'active' : '');
 
   const handleTokenSelect = (tokenName: string) => {

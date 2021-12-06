@@ -86,7 +86,7 @@ export const PlugButton = forwardRef<HTMLButtonElement, PlugButtonProps>(
           bottom: 0,
           left: 0,
           zIndex: 'hide',
-          margin: '-3px',
+          margin: '-2px',
           borderRadius: 'inherit',
           background:
             'linear-gradient(93.07deg,#ffd719 0.61%,#f754d4 33.98%,#1fd1ec 65.84%,#48fa6b 97.7%)',
