@@ -62,6 +62,15 @@ export const swapViewSlice = createSlice({
         action.payload.tokenId && state.tokenList
           ? state.tokenList[action.payload.tokenId]
           : undefined;
+      if (state.from.token?.id === state.to.token?.id && state.tokenList) {
+        // Change 'to.token' if it's the same as the new 'from.token'
+        const anotherTokenId = Object.keys(state.tokenList).find(
+          (tokenId) => tokenId !== state.from.token?.id
+        );
+        state.to.token = anotherTokenId
+          ? state.tokenList[anotherTokenId]
+          : undefined;
+      }
       state.step = SwapStep.Home;
     },
     setTokenList: (state, action: PayloadAction<SupportedTokenList>) => {
