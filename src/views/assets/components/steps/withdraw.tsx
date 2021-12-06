@@ -33,7 +33,7 @@ export const WithdrawStep = () => {
 
   const handleWithdraw = () => {
     // Integration:
-    // Deposit token to Sonic
+    // Withdraw token from Sonic
   };
 
   return (
