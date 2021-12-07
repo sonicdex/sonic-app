@@ -17,7 +17,7 @@ type TokenBoxProps = {
   value: string;
   setValue: (value: string) => any;
   onTokenSelect: (token: string) => any;
-  tokenOptions: Array<SupportedToken>;
+  tokenOptions?: Array<SupportedToken>;
   currentToken?: SupportedToken;
   balance: string;
   amount: string;
@@ -114,7 +114,7 @@ export const TokenBox = ({
           </MenuButton>
           {!menuDisabled && (
             <MenuList>
-              {tokenOptions.map((token) => (
+              {tokenOptions?.map((token) => (
                 <MenuItem
                   key={token.id}
                   onClick={() => onTokenSelect(token.id)}

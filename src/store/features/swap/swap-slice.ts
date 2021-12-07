@@ -9,7 +9,7 @@ interface SwapState {
 }
 
 const initialState: SwapState = {
-  state: FeatureState?.Idle,
+  state: 'loading' as FeatureState,
   supportedTokenList: undefined,
 };
 

@@ -2,33 +2,36 @@ import { useMemo, useState } from 'react';
 import { Box } from '@chakra-ui/react';
 import { TitleBox, TokenBox, Button } from '@/components';
 
-import { TOKEN } from '@/constants';
 import { SupportedToken } from '@/models';
-import {
-  AssetStep,
-  assetsViewActions,
-  useAppDispatch,
-  useAssetsViewStore,
-} from '@/store';
-import { getTokenFromAsset } from './utils';
+import { assetsViewActions, useAppDispatch, useAssetsViewStore } from '@/store';
+import { useNavigate } from 'react-router';
 
-export const WithdrawStep = () => {
-  const { selectedTokenName } = useAssetsViewStore();
+export const AssetsWithdraw = () => {
+  const { selectedTokenId } = useAssetsViewStore();
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
   const [value, setValue] = useState('0');
 
   const selectedToken = useMemo(() => {
-    if (selectedTokenName) {
-      return getTokenFromAsset(selectedTokenName);
+    if (selectedTokenId) {
+      return {
+        id: selectedTokenId,
+      };
     }
     return undefined;
-  }, [selectedTokenName]);
+  }, [selectedTokenId]);
   const isReady = useMemo(() => value && parseFloat(value) > 0, [value]);
+  const status = useMemo(() => {
+    if (isReady) {
+      return 'active';
+    }
 
-  const getStatus = () => (isReady ? 'active' : '');
+    return '';
+  }, [isReady]);
 
-  const handleTokenSelect = (tokenName: string) => {
-    dispatch(assetsViewActions.setSelectedTokenName(tokenName));
+  const handleTokenSelect = (tokenId: string) => {
+    dispatch(assetsViewActions.setSelectedTokenId(tokenId));
   };
 
   const handleWithdraw = () => {
@@ -40,7 +43,7 @@ export const WithdrawStep = () => {
     <>
       <TitleBox
         title="Withdraw Asset"
-        onArrowBack={() => dispatch(assetsViewActions.setStep(AssetStep.Home))}
+        onArrowBack={() => navigate('/assets')}
       />
       <Box my={5}>
         <TokenBox
@@ -50,9 +53,7 @@ export const WithdrawStep = () => {
           source="sonic"
           balance="23.23"
           amount="53.23"
-          status={getStatus()}
-          // TODO: Fix types
-          tokenOptions={Object.values(TOKEN) as SupportedToken[]}
+          status={status}
           currentToken={selectedToken as SupportedToken}
         />
       </Box>

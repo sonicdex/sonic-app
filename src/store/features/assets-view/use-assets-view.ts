@@ -2,7 +2,12 @@ import { Principal } from '@dfinity/principal';
 
 import { parseAmount } from '@/utils/format';
 import { useActorStore } from '@/store/features/actor';
-import { usePlugStore } from '@/store';
+import {
+  FeatureState,
+  swapActions,
+  useAppDispatch,
+  usePlugStore,
+} from '@/store';
 import { useToken } from '../../../hooks/use-token';
 import { TokenIDL } from '@/did';
 import { useEffect } from 'react';
@@ -10,30 +15,33 @@ import { useEffect } from 'react';
 export const useAssetsView = () => {
   const { actors } = useActorStore();
   const { principalId } = usePlugStore();
+
+  const dispatch = useAppDispatch();
+
   const { swap: swapActor } = actors;
   const { getTokenInfo } = useToken();
 
   useEffect(() => {
-    async function getSupportedTokenList() {
-      if (swapActor) {
-        const result = await swapActor.getSupportedTokenList();
-
-        console.log(result);
-      }
-    }
-
     getSupportedTokenList();
   }, [swapActor]);
 
-  async function getTokens() {
-    try {
-      if (swapActor) {
-        let res = await swapActor.getSupportedTokenList();
+  async function getSupportedTokenList() {
+    if (swapActor) {
+      try {
+        dispatch(swapActions.setState(FeatureState.Loading));
 
-        return res;
+        const response = await swapActor.getSupportedTokenList();
+
+        if (response) {
+          dispatch(swapActions.setSupportedTokenList(response));
+        }
+        dispatch(swapActions.setState(FeatureState.Idle));
+
+        return response;
+      } catch (error) {
+        console.log(error);
+        dispatch(swapActions.setState(FeatureState.Error));
       }
-    } catch (e) {
-      return Promise.reject(e);
     }
   }
 
@@ -129,7 +137,7 @@ export const useAssetsView = () => {
   }
 
   return {
-    getTokens,
+    getSupportedTokenList,
     getUserInfoByNamePageAbove,
     getBalance,
     deposit,

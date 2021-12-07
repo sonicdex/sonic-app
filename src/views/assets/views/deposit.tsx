@@ -2,35 +2,37 @@ import { useMemo, useState } from 'react';
 import { Box } from '@chakra-ui/react';
 import { TitleBox, TokenBox, Button } from '@/components';
 
-import { TOKEN } from '@/constants';
 import { SupportedToken } from '@/models';
-import {
-  AssetStep,
-  assetsViewActions,
-  useAppDispatch,
-  useAssetsViewStore,
-} from '@/store';
-import { getTokenFromAsset } from './utils';
+import { assetsViewActions, useAppDispatch, useAssetsViewStore } from '@/store';
+import { useNavigate } from 'react-router';
 
-export const DepositStep = () => {
-  const { selectedTokenName } = useAssetsViewStore();
+export const AssetsDeposit = () => {
+  const { selectedTokenId } = useAssetsViewStore();
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const [value, setValue] = useState('0');
 
   const selectedToken = useMemo(() => {
-    if (selectedTokenName) {
-      return getTokenFromAsset(selectedTokenName);
+    if (selectedTokenId) {
+      return {
+        id: selectedTokenId,
+      };
     }
     return undefined;
-  }, [selectedTokenName]);
+  }, [selectedTokenId]);
   const isReady = useMemo(() => value && parseFloat(value) > 0, [value]);
+  const status = useMemo(() => {
+    if (isReady) {
+      return 'active';
+    }
 
-  const getStatus = () => (isReady ? 'active' : '');
+    return '';
+  }, [isReady]);
 
-  const handleTokenSelect = (tokenName: string) => {
-    console.log(tokenName);
-    dispatch(assetsViewActions.setSelectedTokenName(tokenName));
+  const handleTokenSelect = (TokenId: string) => {
+    console.log(TokenId);
+    dispatch(assetsViewActions.setSelectedTokenId(TokenId));
   };
 
   const handleDeposit = () => {
@@ -40,10 +42,7 @@ export const DepositStep = () => {
 
   return (
     <>
-      <TitleBox
-        title="Deposit Asset"
-        onArrowBack={() => dispatch(assetsViewActions.setStep(AssetStep.Home))}
-      />
+      <TitleBox title="Deposit Asset" onArrowBack={() => navigate('/assets')} />
       <Box my={5}>
         <TokenBox
           value={value}
@@ -52,9 +51,7 @@ export const DepositStep = () => {
           source="plug"
           balance="23.23"
           amount="53.23"
-          status={getStatus()}
-          // TODO: Fix types
-          tokenOptions={Object.values(TOKEN) as SupportedToken[]}
+          status={status}
           currentToken={selectedToken as SupportedToken}
         />
       </Box>
