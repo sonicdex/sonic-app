@@ -37,8 +37,8 @@ export const App = () => {
           <Route path="/swap" element={<Swap />} />
           <Route path="/liquidity" element={<Liquidity />} />
           <Route path="/activity" element={<Activity />} />
-          <Route path="*" element={<Navigate to="/swap" />} />
           <Route path="/test" element={<TestView />} />
+          <Route path="*" element={<Navigate to="/assets" />} />
         </Routes>
       </Layout>
     </BrowserRouter>

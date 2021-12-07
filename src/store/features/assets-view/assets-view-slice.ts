@@ -4,12 +4,14 @@ import type { RootState } from '@/store';
 
 interface AssetsViewState {
   state: FeatureState;
-  selectedTokenId?: string;
+  depositValue: string;
+  withdrawValue: string;
 }
 
 const initialState: AssetsViewState = {
   state: FeatureState?.Idle,
-  selectedTokenId: undefined,
+  depositValue: '',
+  withdrawValue: '',
 };
 
 export const assetsViewSlice = createSlice({
@@ -20,8 +22,11 @@ export const assetsViewSlice = createSlice({
     setState: (state, action: PayloadAction<FeatureState>) => {
       state.state = action.payload;
     },
-    setSelectedTokenId: (state, action: PayloadAction<string>) => {
-      state.selectedTokenId = action.payload;
+    setDepositValue: (state, action: PayloadAction<string>) => {
+      state.depositValue = action.payload;
+    },
+    setWithdrawValue: (state, action: PayloadAction<string>) => {
+      state.withdrawValue = action.payload;
     },
   },
 });

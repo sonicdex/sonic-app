@@ -1,3 +1,3 @@
-export type Balances = {
+export type Balance = {
   [canisterId: string]: number;
 };

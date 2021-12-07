@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js';
 import { parseUnits, formatUnits } from 'ethers/lib/utils';
 import { Bytes } from '@ethersproject/bytes';
 import { ethers } from 'ethers';
-import { SupportedToken } from '@/models';
+import { TokenMetadata } from '@/models';
 
 export type BigNumberish = BigNumber | Bytes | bigint | string | number;
 
@@ -124,10 +124,10 @@ export const calculatePriceImpact = (
 };
 
 type InitDefaultLiquidityTokenOptions = {
-  fromToken: SupportedToken;
-  toToken: SupportedToken;
-  token0: SupportedToken;
-  token1: SupportedToken;
+  fromToken: TokenMetadata;
+  toToken: TokenMetadata;
+  token0: TokenMetadata;
+  token1: TokenMetadata;
 };
 
 export const initDefaultLiquidityToken = ({
