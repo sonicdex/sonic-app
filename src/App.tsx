@@ -3,6 +3,7 @@ import { Routes, Navigate, Route, BrowserRouter } from 'react-router-dom';
 
 import { Activity, Assets, Liquidity, Swap, TestView } from '@/views';
 import { NotificationManager } from '@/notifications';
+import { ModalManager } from '@/modals';
 
 import { EmptyMobile, Layout } from './components';
 import { usePlugInit } from './integrations/plug';
@@ -24,6 +25,7 @@ export const App = () => {
   return (
     <BrowserRouter>
       <Layout>
+        <ModalManager />
         <NotificationManager />
         <Routes>
           <Route path="/assets" element={<Assets />} />

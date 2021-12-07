@@ -6,12 +6,14 @@ import {
   SwapStep,
   swapViewActions,
   useAppDispatch,
+  useModalStore,
   useNotificationStore,
   useSwapViewStore,
 } from '@/store';
 import { getCurrencyString } from '@/utils/format';
 import { Balances } from '@/models';
 import { useState } from 'react';
+import { MODALS } from '@/modals';
 
 type ReviewStepProps = {
   balances?: Balances;
@@ -20,6 +22,13 @@ type ReviewStepProps = {
 export const ReviewStep = ({ balances }: ReviewStepProps) => {
   const { fromTokenOptions, toTokenOptions, from, to } = useSwapViewStore();
   const dispatch = useAppDispatch();
+  const {
+    setCurrentModal,
+    // setCurrentModalData,
+    clearModal,
+    setOnClose,
+    setCurrentModalState,
+  } = useModalStore();
 
   const [keepInSonic, setKeepInSonic] = useState<boolean>(false);
 
@@ -32,6 +41,25 @@ export const ReviewStep = ({ balances }: ReviewStepProps) => {
       type: 'done',
       id: Date.now().toString(),
     });
+    setOnClose(() => {
+      console.log('Closed Modal');
+    });
+    // setCurrentModalData({ fromToken: fromToken.name, toToken: toToken.name });
+    setCurrentModalState('deposit');
+    setCurrentModal(MODALS.swapProgress);
+
+    // TODO: Remove after integration with batch transactions
+    // TODO: Refactor in case OnClose is called to stop all effects
+    setTimeout(() => setCurrentModalState('swap'), 3000);
+    setTimeout(() => setCurrentModalState('withdraw'), 6000);
+    setTimeout(() => {
+      clearModal();
+      addNotification({
+        title: 'NOTIFICATION',
+        type: 'done',
+        id: Date.now().toString(),
+      });
+    }, 9000);
   };
 
   return (

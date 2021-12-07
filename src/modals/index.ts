@@ -1,1 +1,2 @@
-export * from './plug-confirmation';
+export * from './modal-manager';
+export * from './modals';

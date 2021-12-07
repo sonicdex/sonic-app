@@ -1,3 +1,5 @@
+export * from './plug';
+export * from './modal';
 export * from './activity-view';
 export * from './actor';
 export * from './assets-view';
