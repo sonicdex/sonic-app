@@ -7,7 +7,7 @@ import { ModalManager } from '@/modals';
 
 import { EmptyMobile, Layout } from './components';
 import { usePlugInit } from './integrations/plug';
-
+import { useSwapInit } from './integrations/swap';
 import { useActorsInit } from './integrations/actor/use-actors-init';
 
 export const App = () => {
@@ -15,6 +15,7 @@ export const App = () => {
 
   usePlugInit();
   useActorsInit();
+  useSwapInit();
 
   // TODO: Remove after plug mobile connection
   if (isAnyMobileDevice) {

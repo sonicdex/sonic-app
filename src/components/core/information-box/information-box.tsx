@@ -1,20 +1,17 @@
 import { useState, ReactNode } from 'react';
-import { Box, Flex, Image, Collapse } from '@chakra-ui/react';
+import { Box, BoxProps, Flex, Collapse, CloseButton } from '@chakra-ui/react';
 
-import { closeSrc } from '@/assets';
-
-type InformationBoxTypes = {
+type InformationBoxTypes = BoxProps & {
   title: string;
   children: ReactNode;
   onClose?: () => void;
-  mb?: string;
 };
 
 export const InformationBox = ({
   title,
   children,
   onClose,
-  mb = '20px',
+  ...props
 }: InformationBoxTypes) => {
   const [collapse, setCollapse] = useState(true);
 
@@ -29,22 +26,18 @@ export const InformationBox = ({
     <Collapse in={collapse} unmountOnExit={true}>
       <Box
         bg="rgba(57, 77, 231, 0.2)"
-        pt="16px"
-        px="20px"
-        pb="21px"
-        mb={mb}
-        borderRadius={20}
+        pt={4}
+        px={5}
+        pb={5}
+        mb={5}
+        borderRadius="xl"
+        {...props}
       >
-        <Flex direction="row" justifyContent="space-between" mb="7px">
-          <Box as="h3" fontSize="18px" fontWeight="700" color="#F6FCFD">
+        <Flex direction="row" justifyContent="space-between" mb={2}>
+          <Box as="h3" fontSize="lg" fontWeight="bold" color="#F6FCFD">
             {title}
           </Box>
-          <Image
-            w="18px"
-            cursor="pointer"
-            onClick={handleClose}
-            src={closeSrc}
-          />
+          <CloseButton size="sm" variant="rounded" onClick={handleClose} />
         </Flex>
         {children}
       </Box>

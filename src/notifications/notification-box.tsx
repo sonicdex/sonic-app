@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Flex, Box, Collapse, keyframes } from '@chakra-ui/react';
+import { Text, Flex, Box, Collapse, keyframes } from '@chakra-ui/react';
 
 import { transparentGreenCheckSrc, redWarningSrc, closeSrc } from '@/assets';
 
@@ -37,42 +37,30 @@ export const NotificationBox = ({
   return (
     <Collapse in={show} animateOpacity unmountOnExit>
       <Box
-        width="325px"
+        width={80}
         position="relative"
-        borderRadius="20px"
+        borderRadius={5}
         bg="#1E1E1E"
-        mb="30px"
-        pt="15px"
-        pr="43px"
-        pl="45px"
-        pb="18px"
+        mb={8}
+        pt={4}
+        pr={10}
+        pl={12}
+        pb={4}
       >
-        <Box
-          as="img"
-          src={iconSrc}
-          position="absolute"
-          top="18px"
-          left="15px"
-        />
+        <Box as="img" src={iconSrc} position="absolute" top={4} left={4} />
         <Box
           cursor="pointer"
           onClick={handleClose}
           as="img"
           src={closeSrc}
           position="absolute"
-          top="18px"
-          right="15px"
+          top={4}
+          right={4}
         />
         <Flex direction="column" alignItems="flex-start">
-          <Box
-            as="p"
-            color="#F6FCFD"
-            fontSize="16px"
-            fontWeight={700}
-            maxWidth="243px"
-          >
+          <Text color="#F6FCFD" fontSize="md" fontWeight={700} maxWidth={60}>
             {title}
-          </Box>
+          </Text>
           {type === 'done' && transactionLink && (
             <Box
               as="a"
@@ -89,11 +77,11 @@ export const NotificationBox = ({
         <Box
           position="absolute"
           width="calc(100% - 30px)"
-          height="2px"
+          height={0.5}
           bg={animationColor}
-          bottom="1px"
-          left="15px"
-          borderRadius="20px"
+          bottom={0.5}
+          left={4}
+          borderRadius={5}
           animation={collapseAnimation}
           onAnimationEnd={handleClose}
         />

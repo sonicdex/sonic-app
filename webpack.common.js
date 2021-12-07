@@ -6,18 +6,22 @@ require('dotenv').config();
 
 module.exports = () => {
   return {
+    name: 'sonic-app',
     entry: './src/index.tsx',
-    devtool: 'source-map',
     output: {
       path: path.resolve(__dirname, 'dist'),
       publicPath: '/',
-      filename: '[name].[contenthash:8].js',
+      uniqueName: 'sonic-app',
     },
     resolve: {
       extensions: ['.ts', '.tsx', '.js'],
       alias: {
         '@': path.join(__dirname, '/src'),
       },
+    },
+    performance: {
+      maxAssetSize: 650 * 1024,
+      maxEntrypointSize: 650 * 1024,
     },
     module: {
       rules: [
@@ -31,8 +35,12 @@ module.exports = () => {
           type: 'asset/resource',
         },
         {
-          test: /\.(png|svg|jpg|jpeg|gif)$/i,
+          test: /\.(png|jpg|jpeg|gif)$/i,
           type: 'asset/resource',
+        },
+        {
+          test: /\.svg/,
+          type: 'asset/inline',
         },
         {
           test: /\.css$/i,
@@ -44,10 +52,6 @@ module.exports = () => {
       new CleanWebpackPlugin(),
       new webpack.ProvidePlugin({
         process: 'process/browser',
-      }),
-      new HtmlWebpackPlugin({
-        template: path.resolve(__dirname, 'public/index.html'),
-        inject: true,
       }),
     ],
   };

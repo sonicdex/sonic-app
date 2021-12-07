@@ -2,6 +2,7 @@ import { chevronDownSrc, greyPlugSrc, greySonicSrc } from '@/assets';
 import { NumberInput } from '@/components';
 import { SupportedToken } from '@/models';
 import {
+  Text,
   Box,
   Button,
   Flex,
@@ -33,10 +34,10 @@ const ChevronDownIcon = () => <Image src={chevronDownSrc} />;
 
 const TokenOption = ({ logo, name }: SupportedToken) => (
   <Flex direction="row" width="fit-content" alignItems="center">
-    <Image src={logo} height="20px" />
-    <Box as="p" fontWeight={700} color="#F6FCFD" ml="7px">
+    <Image src={logo} height={5} />
+    <Text fontWeight={700} color="#F6FCFD" ml={2}>
       {name}
-    </Box>
+    </Text>
   </Flex>
 );
 
@@ -72,9 +73,9 @@ export const TokenBox = ({
       borderRadius={20}
       bg={background}
       border={border}
-      pt="20px"
-      px="20px"
-      pb="17px"
+      pt={5}
+      px={5}
+      pb={4}
       transition="border 400ms"
       position="relative"
       _hover={{
@@ -85,8 +86,8 @@ export const TokenBox = ({
         <Box
           position="absolute"
           borderRadius={20}
-          top="0px"
-          left="0px"
+          top={0}
+          left={0}
           width="100%"
           height="100%"
           filter="blur(6px)"
@@ -98,16 +99,16 @@ export const TokenBox = ({
         direction="row"
         alignItems="center"
         justifyContent="space-between"
-        mb="13px"
+        mb={3}
       >
         <Menu>
           <MenuButton
             as={Button}
             rightIcon={!menuDisabled ? <ChevronDownIcon /> : null}
             borderRadius={20}
-            py="9px"
-            pl="10px"
-            pr="12px"
+            py={2}
+            pl={2.5}
+            pr={3}
           >
             {currentToken && <TokenOption {...currentToken} />}
           </MenuButton>
@@ -115,7 +116,7 @@ export const TokenBox = ({
             <MenuList>
               {tokenOptions.map((token) => (
                 <MenuItem
-                  key={token.name}
+                  key={token.id}
                   onClick={() => onTokenSelect(token.id)}
                 >
                   <TokenOption {...token} />
@@ -136,10 +137,8 @@ export const TokenBox = ({
       </Flex>
       <Flex direction="row" justifyContent="space-between">
         <Flex direction="row">
-          {source && <Image src={sourceImg} mr="7px" height="20px" />}
-          <Box as="p" color="#888E8F" fontSize="16px">
-            {balanceDisplay}
-          </Box>
+          {source && <Image src={sourceImg} mr={2} height={5} />}
+          <Text color="#888E8F">{balanceDisplay}</Text>
         </Flex>
         <Box
           transition="color 400ms"
