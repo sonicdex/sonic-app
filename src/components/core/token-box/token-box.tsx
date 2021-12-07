@@ -1,5 +1,11 @@
-import { chevronDownSrc, greyPlugSrc, greySonicSrc } from '@/assets';
+import {
+  chevronDownSrc,
+  greyPlugSrc,
+  greySonicSrc,
+  questionMarkSrc,
+} from '@/assets';
 import { NumberInput } from '@/components';
+import { DefaultTokensImage } from '@/constants';
 import { TokenMetadata } from '@/models';
 import {
   Skeleton,
@@ -34,11 +40,11 @@ type TokenBoxProps = {
 
 const ChevronDownIcon = () => <Image src={chevronDownSrc} />;
 
-const TokenOption = ({ logo, name }: TokenMetadata) => (
+const TokenOption = ({ logo = questionMarkSrc, symbol }: TokenMetadata) => (
   <Flex direction="row" width="fit-content" alignItems="center">
-    {logo && <Image src={logo} height={5} />}
+    {logo && <Image src={DefaultTokensImage[symbol] ?? logo} height={5} />}
     <Text fontWeight={700} color="#F6FCFD" ml={2}>
-      {name}
+      {symbol}
     </Text>
   </Flex>
 );

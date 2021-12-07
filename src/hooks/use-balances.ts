@@ -1,22 +1,11 @@
-import { useSwapActor } from '@/integrations/actor/use-swap-actor';
+import { useMemo } from 'react';
+
 import { Balance } from '@/models';
-import {
-  plugActions,
-  swapActions,
-  useAppDispatch,
-  usePlugStore,
-  useSwapStore,
-} from '@/store';
-import { Principal } from '@dfinity/principal';
-import { useEffect, useMemo } from 'react';
-import { plug } from '../integrations/plug';
+import { usePlugStore, useSwapStore } from '@/store';
 
 export const useBalances = () => {
-  const swapActor = useSwapActor();
-  const { isConnected, principalId, balance: plugBalance } = usePlugStore();
-  const { balances: sonicBalance } = useSwapStore();
-
-  const dispatch = useAppDispatch();
+  const { balance: plugBalance } = usePlugStore();
+  const { balance: sonicBalance } = useSwapStore();
 
   const totalBalance = useMemo(() => {
     if (plugBalance && sonicBalance) {
@@ -25,22 +14,6 @@ export const useBalances = () => {
 
     return undefined;
   }, [plugBalance, sonicBalance]);
-
-  useEffect(() => {
-    if (plug && isConnected) {
-      plug
-        .requestBalance()
-        .then((response) => dispatch(plugActions.setBalance(response)));
-    }
-  }, [plug, isConnected]);
-
-  useEffect(() => {
-    if (swapActor && principalId) {
-      swapActor
-        .getUserBalances(Principal.fromText(principalId))
-        .then((response) => dispatch(swapActions.setBalances(response)));
-    }
-  }, [swapActor, principalId]);
 
   return {
     plugBalance,

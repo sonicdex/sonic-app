@@ -25,14 +25,14 @@ export const HomeStep = () => {
     dispatch(swapViewActions.setStep(SwapStep.Review));
   };
 
-  console.log(totalBalance, from, to);
-
   const loading = useMemo(() => {
     if (!totalBalance) return true;
     if (!from.token) return true;
     if (!to.token) return true;
     return false;
   }, [totalBalance, from.token, to.token]);
+
+  console.log(totalBalance, from, to);
 
   const [buttonDisabled, buttonMessage] = useMemo<[boolean, string]>(() => {
     if (loading) return [true, 'Loading'];

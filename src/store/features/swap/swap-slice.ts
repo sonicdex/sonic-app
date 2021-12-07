@@ -7,7 +7,7 @@ import { Balance } from '@/models';
 interface SwapState {
   state: FeatureState;
   supportedTokenList?: SwapIDL.TokenInfoExt[];
-  balances?: Balance;
+  balance?: Balance;
 }
 
 const initialState: SwapState = {
@@ -29,14 +29,17 @@ export const swapSlice = createSlice({
     ) => {
       state.supportedTokenList = action.payload;
     },
-    setBalances: (state, action: PayloadAction<[string, bigint][]>) => {
-      const parsedBalances = action.payload.reduce((acc, current) => {
+    setBalance: (
+      state,
+      action: PayloadAction<[string, bigint][] | undefined>
+    ) => {
+      const parsedBalances = action.payload?.reduce((acc, current) => {
         return {
           ...acc,
           [current[0]]: Number(current[1]),
         };
       }, {} as Balance);
-      state.balances = parsedBalances;
+      state.balance = parsedBalances;
     },
   },
 });
