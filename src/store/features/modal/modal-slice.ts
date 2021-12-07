@@ -17,7 +17,7 @@ interface ModalState {
 // Define the initial state using that type
 const initialState: ModalState = {
   currentModal: '',
-  currentModalState: 'swap',
+  currentModalState: '',
   currentModalData: {},
   onClose: () => {},
   state: FeatureState?.Idle,
