@@ -14,7 +14,7 @@ interface ModalState {
 
 // Define the initial state using that type
 const initialState: ModalState = {
-  currentModal: '',
+  currentModal: 'SWAP-FAILED',
   currentModalState: '',
   currentModalData: {},
   onClose: () => {},
