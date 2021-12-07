@@ -1,13 +1,18 @@
-import { FeatureState, usePlugStore } from '@/store';
+import {
+  FeatureState,
+  plugActions,
+  useAppDispatch,
+  usePlugStore,
+} from '@/store';
 import { useEffect } from 'react';
 import { checkIsConnected, getPrincipal } from '.';
 
 export const usePlugInit = () => {
-  const { isConnected, setIsConnected, setPlugState, setPrincipalId } =
-    usePlugStore();
+  const { isConnected } = usePlugStore();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
-    setPlugState(FeatureState.Loading);
+    dispatch(plugActions.setState(FeatureState.Loading));
 
     const connectionPromise = checkIsConnected();
 
@@ -16,14 +21,15 @@ export const usePlugInit = () => {
         .then(async (isConnected) => {
           if (isConnected) {
             const hasPrincipal = await getPrincipal();
-            if (hasPrincipal) return setIsConnected(isConnected);
+            if (hasPrincipal)
+              return dispatch(plugActions.setIsConnected(isConnected));
           }
-          return setIsConnected(false);
+          return dispatch(plugActions.setIsConnected(false));
         })
         .catch((err) => {
           console.error(err);
-          setIsConnected(false);
-          setPlugState(FeatureState.Error);
+          dispatch(plugActions.setIsConnected(false));
+          dispatch(plugActions.setState(FeatureState.Error));
         });
     }
   }, []);
@@ -36,15 +42,17 @@ export const usePlugInit = () => {
 
           if (principal) {
             if (typeof principal === 'string') {
-              setPrincipalId(principal as unknown as string);
+              dispatch(
+                plugActions.setPrincipalId(principal as unknown as string)
+              );
             } else {
-              setPrincipalId(principal.toText());
+              dispatch(plugActions.setPrincipalId(principal.toText()));
             }
           }
-          setPlugState(FeatureState.Idle);
+          dispatch(plugActions.setState(FeatureState.Idle));
         } catch (err) {
           console.error(err);
-          setPlugState(FeatureState.Error);
+          dispatch(plugActions.setState(FeatureState.Error));
         }
       };
 
@@ -54,6 +62,6 @@ export const usePlugInit = () => {
       }
     }
 
-    setPlugState(FeatureState.Idle);
+    dispatch(plugActions.setState(FeatureState.Idle));
   }, [isConnected]);
 };

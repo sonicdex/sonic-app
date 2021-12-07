@@ -3,13 +3,21 @@ import { Box } from '@chakra-ui/react';
 import { TitleBox, TokenBox, Button } from '@/components';
 
 import { SupportedToken } from '@/models';
-import { assetsViewActions, useAppDispatch, useAssetsViewStore } from '@/store';
+import {
+  assetsViewActions,
+  useAppDispatch,
+  useAssetsViewStore,
+  usePlugStore,
+} from '@/store';
 import { useNavigate } from 'react-router';
 
 export const AssetsDeposit = () => {
   const { selectedTokenId } = useAssetsViewStore();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const { balance } = usePlugStore();
+
+  console.log('plug balances', balance);
 
   const [value, setValue] = useState('0');
 

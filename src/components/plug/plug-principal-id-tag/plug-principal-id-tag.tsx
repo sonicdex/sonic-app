@@ -13,16 +13,22 @@ import {
   MenuButton,
 } from '@chakra-ui/react';
 
-import { FeatureState, usePlugStore } from '@/store';
+import {
+  FeatureState,
+  plugActions,
+  useAppDispatch,
+  usePlugStore,
+} from '@/store';
 import { Emoji, GradientBox } from '@/components/core';
 import { desensitizationPrincipalId } from '@/utils/canister';
 import { chevronDownSrc, copySrc, exitSrc } from '@/assets';
 
 export const PlugPrincipalIDTag: FC<TagProps> = (props): ReactElement => {
-  const { principalId, state, setIsConnected } = usePlugStore();
+  const { principalId, state } = usePlugStore();
+  const dispatch = useAppDispatch();
 
   const handleDisconnect = () => {
-    setIsConnected(false);
+    dispatch(plugActions.setIsConnected(false));
   };
 
   const shortPrincipalId = useMemo(() => {
