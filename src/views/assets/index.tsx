@@ -62,7 +62,7 @@ export const Assets = () => {
           background: `linear-gradient(to bottom, transparent 0%, ${theme.colors.bg} 100%)`,
         }}
       >
-        <Stack spacing={4} overflow="auto">
+        <Stack spacing={4} pb={8} overflow="auto">
           {swapState === FeatureState.Loading &&
           !isSupportedTokenListPresent ? (
             <>
