@@ -19,16 +19,16 @@ export const Assets = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const moveToDeposit = (TokenId?: string) => {
-    if (TokenId) {
-      dispatch(assetsViewActions.setSelectedTokenId(TokenId));
+  const navigateToDeposit = (tokenId?: string) => {
+    if (tokenId) {
+      dispatch(assetsViewActions.setSelectedTokenId(tokenId));
       navigate('/assets/deposit');
     }
   };
 
-  const moveToWithdraw = (TokenId?: string) => {
-    if (TokenId) {
-      dispatch(assetsViewActions.setSelectedTokenId(TokenId));
+  const navigateToWithdraw = (tokenId?: string) => {
+    if (tokenId) {
+      dispatch(assetsViewActions.setSelectedTokenId(tokenId));
       navigate('/assets/withdraw');
     }
   };
@@ -52,13 +52,16 @@ export const Assets = () => {
             <Asset isLoading />
           </>
         ) : isSupportedTokenListPresent ? (
-          supportedTokenList.map(({ name, symbol }) => (
+          supportedTokenList.map(({ id, name, symbol }) => (
             <Asset
-              key={name}
-              title={name}
+              key={id}
+              name={name}
+              symbol={symbol}
+              addLabel={`Deposit ${symbol}`}
+              removeLabel={`Withdraw ${symbol}`}
               mainImgSrc={DefaultTokensImage[symbol]}
-              onAdd={() => moveToDeposit(name)}
-              onRemove={() => moveToWithdraw(name)}
+              onAdd={() => navigateToDeposit(id)}
+              onRemove={() => navigateToWithdraw(id)}
             />
           ))
         ) : null}

@@ -1,29 +1,39 @@
 import {
   IconButton,
   FlexProps,
+  Heading,
+  Stack,
+  Text,
   HStack,
   SkeletonCircle,
   Box,
   Image,
   Flex,
+  Tooltip,
 } from '@chakra-ui/react';
 import { greyMinusSrc, questionMarkSrc } from '@/assets';
 import { PlusIcon } from '@/components/icons';
+import { SwapIDL } from '@/did';
 
-export type AssetProps = FlexProps & {
-  title?: string;
-  mainImgSrc?: string;
-  secondImg?: string;
-  onAdd?: () => any;
-  onRemove?: () => any;
-  isLoading?: boolean;
-};
+export type AssetProps = FlexProps &
+  Partial<SwapIDL.TokenInfoExt> & {
+    addLabel?: string;
+    removeLabel?: string;
+    mainImgSrc?: string;
+    secondImg?: string;
+    onAdd?: () => any;
+    onRemove?: () => any;
+    isLoading?: boolean;
+  };
 
 export const Asset = ({
+  symbol,
+  name,
+  addLabel = 'Add',
+  removeLabel = 'Remove',
   mainImgSrc = questionMarkSrc,
   secondImg,
   children,
-  title,
   onAdd,
   onRemove,
   isLoading = false,
@@ -74,33 +84,42 @@ export const Asset = ({
     >
       <Flex direction="row" alignItems="center" justifyContent="flex-start">
         {secondImg ? SecondImg : MainImg}
-        <Box as="h3" fontSize="lg" ml={4} fontWeight={700} color="#F6FCFD">
-          {title}
-        </Box>
+        <Stack ml={4}>
+          <Heading as="h3" fontSize="lg" fontWeight={700} color="#F6FCFD">
+            {symbol}
+          </Heading>
+          <Text fontSize="sm" color="gray.400">
+            {name}
+          </Text>
+        </Stack>
       </Flex>
       {children}
       <HStack>
         <SkeletonCircle h={10} w={10} isLoaded={!isLoading}>
           {onRemove && (
-            <IconButton
-              icon={<Image src={greyMinusSrc} />}
-              aria-label="Left icon"
-              isRound
-              variant="outline"
-              onClick={onRemove}
-            />
+            <Tooltip label={removeLabel}>
+              <IconButton
+                icon={<Image src={greyMinusSrc} />}
+                aria-label="Left icon"
+                isRound
+                variant="outline"
+                onClick={onRemove}
+              />
+            </Tooltip>
           )}
         </SkeletonCircle>
 
         <SkeletonCircle h={10} w={10} isLoaded={!isLoading}>
           {onAdd && (
-            <IconButton
-              icon={<PlusIcon />}
-              aria-label="Right icon"
-              isRound
-              variant="outline"
-              onClick={onAdd}
-            />
+            <Tooltip label={addLabel}>
+              <IconButton
+                icon={<PlusIcon />}
+                aria-label="Right icon"
+                isRound
+                variant="outline"
+                onClick={onAdd}
+              />
+            </Tooltip>
           )}
         </SkeletonCircle>
       </HStack>
