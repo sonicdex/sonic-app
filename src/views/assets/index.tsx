@@ -10,7 +10,7 @@ import {
   useSwapStore,
 } from '@/store';
 import { Stack } from '@chakra-ui/react';
-import { TOKEN } from '@/constants';
+import { DefaultTokensImage } from '@/constants';
 
 export const Assets = () => {
   useAssetsView();
@@ -56,7 +56,7 @@ export const Assets = () => {
             <Asset
               key={name}
               title={name}
-              mainImgSrc={TOKEN[symbol]}
+              mainImgSrc={DefaultTokensImage[symbol]}
               onAdd={() => moveToDeposit(name)}
               onRemove={() => moveToWithdraw(name)}
             />
