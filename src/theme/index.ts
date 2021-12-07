@@ -1,6 +1,7 @@
 import { extendTheme } from '@chakra-ui/react';
 import { mode } from '@chakra-ui/theme-tools';
 
+import CloseButton from './components/close-button';
 import Tabs from './components/tabs';
 import { colors } from './foundations';
 
@@ -23,6 +24,7 @@ const appTheme = {
   colors,
   components: {
     Tabs,
+    CloseButton,
   },
 };
 

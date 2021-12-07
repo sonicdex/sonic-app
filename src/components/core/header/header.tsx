@@ -18,14 +18,14 @@ export const Header = ({ title, buttonText, onButtonClick }: HeaderProps) => {
       alignItems="center"
       pb={paddingToLine}
       mt={marginTop}
-      mb="20px"
       borderBottom="1px solid #373737"
+      mb={5}
     >
-      <Box as="h3" fontSize="18px" fontWeight={700} color="#F6FCFD">
+      <Box as="h3" fontWeight={700} color="#F6FCFD">
         {title}
       </Box>
       {buttonText && onButtonClick && (
-        <Button title={buttonText} size="fit" onClick={onButtonClick} />
+        <Button onClick={onButtonClick}>{buttonText}</Button>
       )}
     </Flex>
   );

@@ -1,4 +1,4 @@
-import { Box } from '@chakra-ui/react';
+import { Text, Box } from '@chakra-ui/react';
 
 import { InformationBox, Header } from '@/components';
 
@@ -14,7 +14,7 @@ type HomeStepProps = {
 };
 
 const InformationDescription = () => (
-  <Box as="p" color="#888E8F" fontSize="16px">
+  <Text color="#888E8F">
     {INFORMATION_DESCRIPTION}
     <Box
       as="a"
@@ -28,7 +28,7 @@ const InformationDescription = () => (
       review our blog post
     </Box>
     .
-  </Box>
+  </Text>
 );
 
 export const HomeStep = ({
@@ -42,7 +42,7 @@ export const HomeStep = ({
       <InformationBox
         onClose={onCloseInformation}
         title={INFORMATION_TITLE}
-        mb="37px"
+        mb={9}
       >
         <InformationDescription />
       </InformationBox>
@@ -52,8 +52,8 @@ export const HomeStep = ({
       buttonText="Create Position"
       onButtonClick={nextStep}
     />
-    <Box as="p" mt="35px" color="#888E8F" textAlign="center" fontWeight={700}>
+    <Text mt={9} color="#888E8F" textAlign="center" fontWeight={700}>
       You have no liquidity positions
-    </Box>
+    </Text>
   </div>
 );

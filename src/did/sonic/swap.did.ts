@@ -180,6 +180,8 @@ export namespace SwapIDL {
   export interface Factory extends Swap {}
 
   export const factory: IDL.InterfaceFactory = ({ IDL }) => {
+    const TxReceipt = IDL.Variant({ ok: IDL.Nat, err: IDL.Text });
+    const Result = IDL.Variant({ ok: IDL.Bool, err: IDL.Text });
     const PairInfoExt = IDL.Record({
       id: IDL.Text,
       price0CumulativeLast: IDL.Nat,
@@ -217,14 +219,22 @@ export namespace SwapIDL {
       lpBalances: IDL.Tuple(IDL.Vec(IDL.Tuple(IDL.Text, IDL.Nat)), IDL.Nat),
       balances: IDL.Tuple(IDL.Vec(IDL.Tuple(IDL.Text, IDL.Nat)), IDL.Nat),
     });
-    const DSwap = IDL.Service({
+    const Swap = IDL.Service({
       addAuth: IDL.Func([IDL.Principal], [IDL.Bool], []),
       addLiquidity: IDL.Func(
-        [IDL.Principal, IDL.Principal, IDL.Nat, IDL.Nat, IDL.Nat, IDL.Nat],
-        [IDL.Bool],
+        [
+          IDL.Principal,
+          IDL.Principal,
+          IDL.Nat,
+          IDL.Nat,
+          IDL.Nat,
+          IDL.Nat,
+          IDL.Int,
+        ],
+        [TxReceipt],
         []
       ),
-      addToken: IDL.Func([IDL.Principal], [IDL.Bool], []),
+      addToken: IDL.Func([IDL.Principal], [Result], []),
       allowance: IDL.Func(
         [IDL.Text, IDL.Principal, IDL.Principal],
         [IDL.Nat],
@@ -232,12 +242,13 @@ export namespace SwapIDL {
       ),
       approve: IDL.Func([IDL.Text, IDL.Principal, IDL.Nat], [IDL.Bool], []),
       balanceOf: IDL.Func([IDL.Text, IDL.Principal], [IDL.Nat], ['query']),
-      createPair: IDL.Func([IDL.Principal, IDL.Principal], [IDL.Bool], []),
+      checkTxCounter: IDL.Func([], [IDL.Bool], []),
+      createPair: IDL.Func([IDL.Principal, IDL.Principal], [TxReceipt], []),
       decimals: IDL.Func([IDL.Text], [IDL.Nat8], ['query']),
-      deposit: IDL.Func([IDL.Principal, IDL.Nat], [IDL.Bool], []),
+      deposit: IDL.Func([IDL.Principal, IDL.Nat], [TxReceipt], []),
       depositTo: IDL.Func(
         [IDL.Principal, IDL.Principal, IDL.Nat],
-        [IDL.Bool],
+        [TxReceipt],
         []
       ),
       getAllPairs: IDL.Func([], [IDL.Vec(PairInfoExt)], ['query']),
@@ -305,11 +316,24 @@ export namespace SwapIDL {
         [IDL.Vec(IDL.Tuple(IDL.Text, IDL.Nat))],
         ['query']
       ),
+      lazySwap: IDL.Func(
+        [IDL.Nat, IDL.Nat, IDL.Vec(IDL.Text), IDL.Principal],
+        [TxReceipt],
+        []
+      ),
       name: IDL.Func([IDL.Text], [IDL.Text], ['query']),
       removeAuth: IDL.Func([IDL.Principal], [IDL.Bool], []),
       removeLiquidity: IDL.Func(
-        [IDL.Principal, IDL.Principal, IDL.Nat],
-        [IDL.Bool],
+        [
+          IDL.Principal,
+          IDL.Principal,
+          IDL.Nat,
+          IDL.Nat,
+          IDL.Nat,
+          IDL.Principal,
+          IDL.Int,
+        ],
+        [TxReceipt],
         []
       ),
       setAddTokenThresh: IDL.Func([IDL.Nat], [IDL.Bool], []),
@@ -321,13 +345,13 @@ export namespace SwapIDL {
       setOwner: IDL.Func([IDL.Principal], [IDL.Bool], []),
       setStorageCanisterId: IDL.Func([IDL.Principal], [IDL.Bool], []),
       swapExactTokensForTokens: IDL.Func(
-        [IDL.Nat, IDL.Nat, IDL.Vec(IDL.Text), IDL.Principal],
-        [IDL.Bool],
+        [IDL.Nat, IDL.Nat, IDL.Vec(IDL.Text), IDL.Principal, IDL.Int],
+        [TxReceipt],
         []
       ),
       swapTokensForExactTokens: IDL.Func(
-        [IDL.Nat, IDL.Nat, IDL.Vec(IDL.Text), IDL.Principal],
-        [IDL.Bool],
+        [IDL.Nat, IDL.Nat, IDL.Vec(IDL.Text), IDL.Principal, IDL.Int],
+        [TxReceipt],
         []
       ),
       symbol: IDL.Func([IDL.Text], [IDL.Text], ['query']),
@@ -338,13 +362,13 @@ export namespace SwapIDL {
         [IDL.Bool],
         []
       ),
-      withdraw: IDL.Func([IDL.Principal, IDL.Nat], [IDL.Bool], []),
+      withdraw: IDL.Func([IDL.Principal, IDL.Nat], [TxReceipt], []),
       withdrawTo: IDL.Func(
         [IDL.Principal, IDL.Principal, IDL.Nat],
-        [IDL.Bool],
+        [TxReceipt],
         []
       ),
     });
-    return DSwap;
+    return Swap;
   };
 }

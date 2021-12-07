@@ -1,58 +1,51 @@
-import { Box } from '@chakra-ui/react';
+import { useMemo } from 'react';
+import {
+  Button as ChakraButton,
+  ButtonProps as ChakraButtonProps,
+} from '@chakra-ui/react';
 
-type ButtonProps = {
-  title: string;
-  onClick: () => void;
-  size?: 'full' | 'fit';
-  borderRadius?: number;
-  fontWeight?: number;
-  fontSize?: number;
+export type ButtonProps = ChakraButtonProps & {
   gradient?: 'horizontal' | 'vertical';
-  status?: 'disabled' | 'grey-disabled';
-  wireframe?: boolean;
+  isWireframe?: boolean;
 };
 
 export const Button = ({
-  onClick,
-  title,
-  status,
-  borderRadius = 12,
-  fontWeight = 600,
-  fontSize = 16,
-  size = 'full',
   gradient = 'vertical',
-  wireframe = false,
+  isWireframe = false,
+  ...props
 }: ButtonProps) => {
-  let background =
-    gradient === 'horizontal'
+
+  const background = useMemo(() => {
+    if (isWireframe) {
+      return 'none';
+    }
+
+    return gradient === 'horizontal'
       ? 'linear-gradient(108.08deg, #3D52F4 0%, #192985 100%)'
       : 'linear-gradient(180deg, #3D52F4 0%, #192985 100%)';
+  }, [gradient, isWireframe]);
 
-  if (wireframe) background = 'none';
-  const handleOnClick = () => {
-    if (status) return;
+  const border = useMemo(() => {
+    if (isWireframe) {
+      return '1px solid #FFFFFF';
+    }
 
-    onClick();
-  };
+    return 'none';
+  }, [isWireframe]);
 
   return (
-    <Box
-      py="9px"
-      px="15px"
-      fontSize={`${fontSize}px`}
-      fontWeight={fontWeight}
-      onClick={handleOnClick}
-      borderRadius={borderRadius}
-      border={wireframe ? '1px solid #FFFFFF' : ''}
+    <ChakraButton
+      fontWeight="bold"
+      borderRadius={12}
       textAlign="center"
-      color={status === 'grey-disabled' ? '#888E8F' : '#F6FCFD'}
-      width={size === 'full' ? '100%' : 'fit-content'}
-      cursor={status ? 'not-allowed' : 'pointer'}
-      background={status === 'grey-disabled' ? '#282828' : background}
-      transition="opacity 400ms"
-      opacity={status === 'disabled' ? 0.4 : 1}
-    >
-      {title}
-    </Box>
+      border={border}
+      color="#F6FCFD"
+      cursor="pointer"
+      background={background}
+      _hover={{
+        background,
+      }}
+      {...props}
+    />
   );
 };

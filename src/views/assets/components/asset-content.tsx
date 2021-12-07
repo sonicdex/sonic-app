@@ -1,4 +1,4 @@
-import { Flex, Box } from '@chakra-ui/react';
+import { Text, Flex, Box } from '@chakra-ui/react';
 
 type AssetContentProps = {
   price: string;
@@ -6,22 +6,22 @@ type AssetContentProps = {
 };
 
 export const AssetContent = ({ price, amount }: AssetContentProps) => (
-  <Flex position="absolute" left="201px" direction="row">
+  <Flex position="absolute" left={48} direction="row">
     <Flex direction="column" alignItems="center">
-      <Box as="h4" color="#888E8F" fontSize="16px" mb="4px">
+      <Box as="h4" color="#888E8F" mb={1}>
         Amount
       </Box>
-      <Box as="p" color="#F6FCFD" fontSize="18px" fontWeight={700}>
+      <Text color="#F6FCFD" fontWeight={700}>
         {amount}
-      </Box>
+      </Text>
     </Flex>
-    <Flex direction="column" alignItems="center" ml="88px">
-      <Box as="h4" color="#888E8F" fontSize="16px" mb="4px">
+    <Flex direction="column" alignItems="center" ml={20}>
+      <Box as="h4" color="#888E8F" mb={1}>
         Price
       </Box>
-      <Box as="p" color="#F6FCFD" fontSize="18px" fontWeight={700}>
+      <Text color="#F6FCFD" fontWeight={700}>
         {price}
-      </Box>
+      </Text>
     </Flex>
   </Flex>
 );
