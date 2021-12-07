@@ -8,6 +8,7 @@ import {
   setCurrentModalData,
   setModalState,
   clearModal,
+  ModalCallback
 } from '@/store';
 
 import { useAppDispatch, useAppSelector } from '@/store';
@@ -21,7 +22,7 @@ export const useModalStore = () => {
     dispatch(setCurrentModal(currentModal));
   };
 
-  const _setModalCallbacks = (callbacks: Array<() => any>) => {
+  const _setModalCallbacks = (callbacks: ModalCallback[]) => {
     dispatch(setModalCallbacks(callbacks));
   };
 

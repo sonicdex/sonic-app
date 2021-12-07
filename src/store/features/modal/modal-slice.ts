@@ -2,20 +2,22 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { FeatureState } from '@/store';
 import type { RootState } from '@/store';
 
+export type ModalCallback = (arg0?: any) => any;
+
 // Define a type for the slice state
 interface ModalState {
   currentModal: string;
   currentModalState?: string;
   currentModalData: any;
-  callbacks?: (() => any)[];
+  callbacks?: ModalCallback[];
   onClose: () => any;
   state: FeatureState;
 }
 
 // Define the initial state using that type
 const initialState: ModalState = {
-  currentModal: 'SWAP-FAILED',
-  currentModalState: '',
+  currentModal: '',
+  currentModalState: 'swap',
   currentModalData: {},
   onClose: () => {},
   state: FeatureState?.Idle,
