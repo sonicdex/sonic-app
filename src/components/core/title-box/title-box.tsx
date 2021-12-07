@@ -21,8 +21,7 @@ export const TitleBox = ({
   return (
     <Flex direction="column">
       <Flex
-        pt={4}
-        pb={3}
+        py={3}
         px={5}
         bg="#1E1E1E"
         fontSize="lg"
@@ -32,14 +31,15 @@ export const TitleBox = ({
         borderTopRadius={20}
         borderBottomRadius={headerBottomRadius}
         direction="row"
+        align="center"
       >
         {onArrowBack && (
           <Tooltip label="Back">
             <IconButton
               size="sm"
               isRound
-              variant="outline"
               onClick={onArrowBack}
+              variant="outline"
               aria-label="back"
               icon={<FaArrowLeft />}
               mr="auto"
@@ -53,7 +53,6 @@ export const TitleBox = ({
           <Tooltip label="Settings">
             <IconButton
               isRound
-              variant="outline"
               size="sm"
               aria-label="settings"
               icon={<FaCog />}

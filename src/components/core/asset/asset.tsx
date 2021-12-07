@@ -2,7 +2,6 @@ import {
   IconButton,
   FlexProps,
   Heading,
-  Stack,
   Text,
   HStack,
   SkeletonCircle,
@@ -84,14 +83,14 @@ export const Asset = ({
     >
       <Flex direction="row" alignItems="center" justifyContent="flex-start">
         {secondImg ? SecondImg : MainImg}
-        <Stack ml={4}>
+        <Box ml={4}>
           <Heading as="h3" fontSize="lg" fontWeight={700} color="#F6FCFD">
             {symbol}
           </Heading>
           <Text fontSize="sm" color="gray.400">
             {name}
           </Text>
-        </Stack>
+        </Box>
       </Flex>
       {children}
       <HStack>
