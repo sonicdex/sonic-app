@@ -1,13 +1,8 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { FeatureState } from '@/store';
+import { SupportedTokenList } from '@/models';
+import { SwapData, SwapDataKey } from '@/models/swap';
 import type { RootState } from '@/store';
-import { SupportedToken, SupportedTokenList } from '@/models';
-
-type DataKey = 'from' | 'to';
-export interface SwapData {
-  token?: SupportedToken;
-  value: string;
-}
+import { FeatureState } from '@/store';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export enum SwapStep {
   Home,
@@ -49,14 +44,14 @@ export const swapViewSlice = createSlice({
     },
     setValue: (
       state,
-      action: PayloadAction<{ data: DataKey; value: string }>
+      action: PayloadAction<{ data: SwapDataKey; value: string }>
     ) => {
       state[action.payload.data].value = action.payload.value;
       state.step = SwapStep.Home;
     },
     setToken: (
       state,
-      action: PayloadAction<{ data: DataKey; tokenId: string | undefined }>
+      action: PayloadAction<{ data: SwapDataKey; tokenId: string | undefined }>
     ) => {
       state[action.payload.data].token =
         action.payload.tokenId && state.tokenList
