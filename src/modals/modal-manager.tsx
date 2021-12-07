@@ -7,17 +7,23 @@ import {
 
 import { useAppSelector, selectModalState, useModalStore } from '@/store';
 import { MODALS } from './modals';
-import { SwapProgress } from './contents';
+import { SwapProgress, SwapFailed } from './contents';
 
 const MODAL_MAPPING = {
   [MODALS.swapProgress]: SwapProgress,
+  [MODALS.swapFailed]: SwapFailed,
 };
 
 export const ModalManager = () => {
   const { clearModal } = useModalStore();
 
-  const { currentModal, currentModalState, currentModalData, onClose } =
-    useAppSelector(selectModalState);
+  const {
+    currentModal,
+    currentModalState,
+    currentModalData,
+    callbacks,
+    onClose,
+  } = useAppSelector(selectModalState);
 
   const ModalComponent = MODAL_MAPPING[currentModal];
   const shouldOpen = currentModal?.length > 0;
@@ -35,6 +41,7 @@ export const ModalManager = () => {
           <ModalComponent
             currentModalState={currentModalState}
             currentModalData={currentModalData}
+            callbacks={callbacks}
           />
         )}
         <ModalCloseButton />

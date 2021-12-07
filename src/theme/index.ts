@@ -21,6 +21,10 @@ const appTheme = {
     initialColorMode: 'dark',
     useSystemColorMode: false,
   },
+  sizes: {
+    modal: '420px',
+    wideModal: '444px',
+  },
   colors,
   components: {
     Tabs,
