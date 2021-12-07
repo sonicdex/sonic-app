@@ -1,4 +1,4 @@
-import { Box, Flex } from '@chakra-ui/react';
+import { Flex, Heading, Text } from '@chakra-ui/react';
 import { Button } from '@/components';
 import { ModalComponentProps } from '../modals';
 
@@ -9,35 +9,38 @@ export const SwapFailed = ({
     alignItems="center"
     direction="column"
     justifyContent="center"
-    borderRadius="20px"
-    width="420px"
+    borderRadius={20}
+    width="modal"
     bg="#1E1E1E"
-    pt="37px"
-    px="20px"
-    pb="35px"
+    pt={9}
+    px={5}
+    pb={9}
   >
-    <Box as="h1" fontWeight={700} fontSize="22px" pb="13px">
+    <Heading as="h1" fontWeight={700} fontSize={22} pb={3}>
       Swap Failed
-    </Box>
-    <Box as="p" pb="27px" fontSize="16px" color="#888E8F">
+    </Heading>
+    <Text as="p" pb={6} color="#888E8F">
       Please choose an option below
-    </Box>
+    </Text>
     <Button
-      title="Retry Swap"
       borderRadius={12}
       fontWeight={700}
       fontSize={18}
       onClick={callbacks[0]}
-    />
-    <Box mt="18px" w="100%">
-      <Button
-        title="Withdraw to Plug"
-        borderRadius={12}
-        fontWeight={700}
-        fontSize={18}
-        onClick={callbacks[1]}
-        wireframe
-      />
-    </Box>
+      width="100%"
+      mb={4}
+    >
+      Retry Swap
+    </Button>
+    <Button
+      borderRadius={12}
+      fontWeight={700}
+      fontSize={18}
+      onClick={callbacks[1]}
+      width="100%"
+      isWireframe
+    >
+      Widthdraw to Plug
+    </Button>
   </Flex>
 );
