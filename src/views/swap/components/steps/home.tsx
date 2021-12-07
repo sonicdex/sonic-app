@@ -1,57 +1,57 @@
-import { useState, useEffect } from 'react';
+import { useMemo } from 'react';
 import { Box, Flex, Image } from '@chakra-ui/react';
 
 import { TitleBox, TokenBox, Button } from '@/components';
-import { Balances, SupportedToken } from '@/models';
+import { Balances } from '@/models';
 import { getCurrencyString } from '@/utils/format';
 
 import { arrowDownSrc } from '@/assets';
+import {
+  SwapStep,
+  swapViewActions,
+  useAppDispatch,
+  useSwapViewStore,
+} from '@/store';
 
 type HomeStepProps = {
-  fromValue: string;
-  toValue: string;
-  fromToken?: SupportedToken;
-  toToken?: SupportedToken;
-  tokenOptions: object;
   balances?: Balances;
-  setFromValue: (value: string) => any;
-  setToValue: (value: string) => any;
-  setFromToken?: (token: SupportedToken) => any;
-  setToToken?: (token: SupportedToken) => any;
-  handleTokenSelect: (...args: any[]) => any;
-  nextStep: () => any;
 };
 
-export const HomeStep = ({
-  tokenOptions,
-  fromValue,
-  setFromValue,
-  toValue,
-  setToValue,
-  fromToken,
-  setFromToken,
-  toToken,
-  setToToken,
-  handleTokenSelect,
-  nextStep,
-  balances,
-}: HomeStepProps) => {
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    // Integration: Calculate swap value & fill values
-    // adjust setLoading properly
-    console.log(setLoading);
-  }, [fromValue, fromToken, toToken]);
+export const HomeStep = ({ balances }: HomeStepProps) => {
+  const { fromTokenOptions, toTokenOptions, from, to } = useSwapViewStore();
+  const dispatch = useAppDispatch();
 
   const handleButtonOnClick = () => {
     if (loading) return;
 
-    nextStep();
+    dispatch(swapViewActions.setStep(SwapStep.Review));
   };
 
-  const isReady = fromValue && parseFloat(fromValue) > 0;
-  const getStatus = () => (isReady ? 'active' : '');
+  const loading = useMemo(() => {
+    if (!balances) return true;
+    if (!from.token) return true;
+    if (!to.token) return true;
+    return false;
+  }, [balances, from.token, to.token]);
+
+  const [buttonDisabled, buttonMessage] = useMemo<[boolean, string]>(() => {
+    if (loading) return [true, 'Loading'];
+    if (!balances || !from.token || !to.token)
+      throw new Error('State is loading');
+
+    const parsedFromValue = (from.value && parseFloat(from.value)) || 0;
+    if (parsedFromValue <= 0)
+      return [true, `No ${from.token.name} value selected`];
+    if (parsedFromValue > balances[from.token.id])
+      return [true, `Insufficient ${from.token.name} Balance`];
+
+    return [false, 'Review Swap'];
+  }, [loading, balances, from.token, to.token, from.value, to.value]);
+
+  const fromValueStatus = useMemo(() => {
+    if (from.value && parseFloat(from.value) > 0) return 'active';
+    return 'inactive';
+  }, [from.value]);
 
   return (
     <>
@@ -59,17 +59,19 @@ export const HomeStep = ({
       <Flex direction="column" alignItems="center" mb={5}>
         <Box mt={5} width="100%">
           <TokenBox
-            value={fromValue}
-            setValue={setFromValue}
-            onTokenSelect={(tokenName) =>
-              handleTokenSelect(tokenName, setFromToken)
+            value={from.value}
+            setValue={(value) =>
+              dispatch(swapViewActions.setValue({ data: 'from', value }))
             }
-            tokenOptions={Object.values(tokenOptions)}
-            currentToken={fromToken}
-            status={getStatus()}
+            onTokenSelect={(tokenId) => {
+              dispatch(swapViewActions.setToken({ data: 'from', tokenId }));
+            }}
+            tokenOptions={fromTokenOptions}
+            currentToken={from.token}
+            status={fromValueStatus}
             balance={getCurrencyString(
-              fromToken && balances ? balances[fromToken.id] : 0,
-              fromToken?.decimals
+              from.token && balances ? balances[from.token.id] : 0,
+              from.token?.decimals
             )}
             amount="0.00"
           />
@@ -90,17 +92,19 @@ export const HomeStep = ({
         </Box>
         <Box mt={2.5} width="100%">
           <TokenBox
-            value={toValue}
-            setValue={setToValue}
-            onTokenSelect={(tokenName) =>
-              handleTokenSelect(tokenName, setToToken)
+            value={to.value}
+            setValue={(value) =>
+              dispatch(swapViewActions.setValue({ data: 'to', value }))
             }
-            tokenOptions={Object.values(tokenOptions)}
-            currentToken={toToken}
+            onTokenSelect={(tokenId) => {
+              dispatch(swapViewActions.setToken({ data: 'to', tokenId }));
+            }}
+            tokenOptions={toTokenOptions}
+            currentToken={to.token}
             disabled={true}
             balance={getCurrencyString(
-              toToken && balances ? balances[toToken.id] : 0,
-              toToken?.decimals
+              to.token && balances ? balances[to.token.id] : 0,
+              to.token?.decimals
             )}
             amount="0.00"
           />
@@ -110,10 +114,13 @@ export const HomeStep = ({
         isFullWidth
         size="lg"
         onClick={handleButtonOnClick}
+        fontWeight={700}
+        fontSize={22}
+        borderRadius={20}
         isLoading={loading}
-        isDisabled={!isReady}
+        isDisabled={buttonDisabled}
       >
-        Review Swap
+        {buttonMessage}
       </Button>
     </>
   );

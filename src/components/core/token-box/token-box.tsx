@@ -116,8 +116,8 @@ export const TokenBox = ({
             <MenuList>
               {tokenOptions.map((token) => (
                 <MenuItem
-                  key={token.name}
-                  onClick={() => onTokenSelect(token.name)}
+                  key={token.id}
+                  onClick={() => onTokenSelect(token.id)}
                 >
                   <TokenOption {...token} />
                 </MenuItem>
