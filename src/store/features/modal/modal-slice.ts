@@ -31,7 +31,7 @@ export const modalSlice = createSlice({
     setCurrentModal: (state, action: PayloadAction<string>) => {
       state.currentModal = action.payload;
     },
-    setModalCallbacks: (state, action: PayloadAction<(() => any)[]>) => {
+    setModalCallbacks: (state, action: PayloadAction<ModalCallback[]>) => {
       state.callbacks = action.payload;
     },
     setCurrentModalState: (state, action: PayloadAction<string>) => {
