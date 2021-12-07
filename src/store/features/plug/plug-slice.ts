@@ -6,6 +6,7 @@ import type { RootState } from '@/store';
 interface PlugState {
   isConnected: boolean;
   principalId?: string;
+  balance?: any;
   state: FeatureState;
 }
 
@@ -30,14 +31,13 @@ export const plugSlice = createSlice({
     setState: (state, action: PayloadAction<FeatureState>) => {
       state.state = action.payload;
     },
+    setBalance: (state, action: PayloadAction<any>) => {
+      state.balance = action.payload;
+    },
   },
 });
 
-export const {
-  setIsConnected,
-  setState: setPlugState,
-  setPrincipalId,
-} = plugSlice.actions;
+export const plugActions = plugSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
 export const selectPlugState = (state: RootState) => state.plug;

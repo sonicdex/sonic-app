@@ -114,9 +114,6 @@ export const HomeStep = ({ balances }: HomeStepProps) => {
         isFullWidth
         size="lg"
         onClick={handleButtonOnClick}
-        fontWeight={700}
-        fontSize={22}
-        borderRadius={20}
         isLoading={loading}
         isDisabled={buttonDisabled}
       >

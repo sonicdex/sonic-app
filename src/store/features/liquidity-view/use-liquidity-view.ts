@@ -1,12 +1,11 @@
 import { Principal } from '@dfinity/principal';
 import { parseAmount } from '@/utils/format';
-import { useActorStore } from '@/store/features/actor';
 import { useToken } from '@/hooks/use-token';
+import { useSwapActor } from '@/integrations/actor/use-swap-actor';
 
 export const useLiquidityView = () => {
-  const { actors } = useActorStore();
+  const swapActor = useSwapActor();
   const { getNotIdentifiedTokenActor } = useToken();
-  const { swap: swapActor } = actors;
 
   async function getUserLPBalances(owner: Principal) {
     try {

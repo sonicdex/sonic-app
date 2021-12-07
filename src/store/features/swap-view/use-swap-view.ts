@@ -1,12 +1,11 @@
 import { parseAmount } from '@/utils/format';
-import { useActorStore } from '@/store/features/actor';
+
 import { usePlugStore } from '@/store';
 import { Principal } from '@dfinity/principal';
+import { useSwapActor } from '@/integrations/actor/use-swap-actor';
 
 export const useSwapView = () => {
-  const { actors } = useActorStore();
-  const { swap: swapActor } = actors;
-
+  const swapActor = useSwapActor();
   const { principalId } = usePlugStore();
 
   async function swap(

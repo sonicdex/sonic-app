@@ -1,20 +1,59 @@
 import { useEffect } from 'react';
 
-import { useActorStore } from '@/store/features/actor';
+import {
+  FeatureState,
+  plugActions,
+  swapActions,
+  useAppDispatch,
+  usePlugStore,
+} from '@/store';
+import { plug } from '../plug';
+import { useSwapActor } from '../actor/use-swap-actor';
 
 export const useSwapInit = () => {
-  const { actors } = useActorStore();
-  const { swap: swapActor } = actors;
+  const { isConnected } = usePlugStore();
+  const swapActor = useSwapActor();
+
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
-    async function getSupportedTokenList() {
-      if (swapActor) {
-        const result = await swapActor.getSupportedTokenList();
-
-        console.log(result);
-      }
+    if (isConnected) {
+      getPlugBalance();
     }
+  }, [isConnected]);
 
+  useEffect(() => {
     getSupportedTokenList();
   }, [swapActor]);
+
+  async function getPlugBalance() {
+    try {
+      dispatch(plugActions.setState(FeatureState.Loading));
+      const balance = await plug?.requestBalance();
+
+      dispatch(plugActions.setBalance(balance));
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async function getSupportedTokenList() {
+    if (swapActor) {
+      try {
+        dispatch(swapActions.setState(FeatureState.Loading));
+
+        const response = await swapActor.getSupportedTokenList();
+
+        if (response) {
+          dispatch(swapActions.setSupportedTokenList(response));
+        }
+        dispatch(swapActions.setState(FeatureState.Idle));
+
+        return response;
+      } catch (error) {
+        console.log(error);
+        dispatch(swapActions.setState(FeatureState.Error));
+      }
+    }
+  }
 };

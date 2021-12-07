@@ -46,7 +46,6 @@ export const Layout: React.FC = ({ children, ...props }) => {
                 index={currentTabIndex}
                 variant="solid-rounded"
                 colorScheme="dark-blue"
-                defa
               >
                 <TabList>
                   {NAVIGATION_TABS.map(({ label, url }) => (
@@ -71,9 +70,13 @@ export const Layout: React.FC = ({ children, ...props }) => {
 
       <Container
         as="main"
+        position="relative"
         maxW="container.sm"
         h={`calc(100vh - ${NAVBAR_HEIGHT} - ${FOOTER_HEIGHT})`}
+        maxH={`calc(100vh - ${NAVBAR_HEIGHT} - ${FOOTER_HEIGHT})`}
         py="10"
+        display="flex"
+        flexDirection="column"
         {...props}
       >
         {children}
