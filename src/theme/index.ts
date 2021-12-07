@@ -22,8 +22,8 @@ const appTheme = {
     useSystemColorMode: false,
   },
   sizes: {
-    modal: "420px",
-    wideModal: "444px",
+    modal: '420px',
+    wideModal: '444px',
   },
   colors,
   components: {

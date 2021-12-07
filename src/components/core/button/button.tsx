@@ -14,7 +14,6 @@ export const Button = ({
   isWireframe = false,
   ...props
 }: ButtonProps) => {
-
   const background = useMemo(() => {
     if (isWireframe) {
       return 'none';

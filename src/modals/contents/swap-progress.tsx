@@ -1,9 +1,5 @@
 import { Heading, Text, Flex } from '@chakra-ui/react';
-import {
-  depositSrc,
-  swapSrc,
-  withdrawSrc,
-} from '@/assets';
+import { depositSrc, swapSrc, withdrawSrc } from '@/assets';
 
 import { ModalComponentProps } from '../modals';
 import { SwapStep } from './components';
@@ -44,7 +40,11 @@ export const SwapProgress = ({
         Please allow a few seconds for swap to finish
       </Text>
       <Flex direction="row" justifyContent="center">
-        <SwapStep status={getStepStatus('deposit')} iconSrc={depositSrc} chevron>
+        <SwapStep
+          status={getStepStatus('deposit')}
+          iconSrc={depositSrc}
+          chevron
+        >
           Depositing <br /> {fromToken}
         </SwapStep>
         <SwapStep status={getStepStatus('swap')} iconSrc={swapSrc} chevron>

@@ -8,7 +8,7 @@ import {
   setCurrentModalData,
   setModalState,
   clearModal,
-  ModalCallback
+  ModalCallback,
 } from '@/store';
 
 import { useAppDispatch, useAppSelector } from '@/store';
