@@ -3,6 +3,7 @@ import { FormControl, Checkbox, Box, Image, Flex } from '@chakra-ui/react';
 import { TitleBox, TokenBox, Button } from '@/components';
 import { arrowDownSrc, infoSrc } from '@/assets';
 import {
+  setCurrentModalData,
   SwapStep,
   swapViewActions,
   useAppDispatch,
@@ -10,10 +11,11 @@ import {
   useNotificationStore,
   useSwapViewStore,
 } from '@/store';
-import { getCurrencyString } from '@/utils/format';
+import { getCurrencyString, parseAmount } from '@/utils/format';
 import { Balances } from '@/models';
 import { useState } from 'react';
 import { MODALS } from '@/modals';
+import { useDepositBatch } from '@/integrations/transactions';
 
 type ReviewStepProps = {
   balances?: Balances;
@@ -25,15 +27,20 @@ export const ReviewStep = ({ balances }: ReviewStepProps) => {
   const {
     setCurrentModal,
     // setCurrentModalData,
-    clearModal,
     setOnClose,
     setCurrentModalState,
   } = useModalStore();
+
+  const depositBatch = useDepositBatch({
+    tokenId: from.token?.id || '',
+    amount: parseAmount(from.value, from.token?.decimals || 8),
+  });
 
   const [keepInSonic, setKeepInSonic] = useState<boolean>(false);
 
   const { addNotification } = useNotificationStore();
   const handleApproveSwap = () => {
+    if (!from.token || !to.token) return;
     // Integration: Do swap
     // trigger modals.
     addNotification({
@@ -44,22 +51,28 @@ export const ReviewStep = ({ balances }: ReviewStepProps) => {
     setOnClose(() => {
       console.log('Closed Modal');
     });
-    // setCurrentModalData({ fromToken: fromToken.name, toToken: toToken.name });
+    setCurrentModalData({ fromToken: from.token.name, toToken: to.token.name });
     setCurrentModalState('deposit');
     setCurrentModal(MODALS.swapProgress);
 
+    console.log('Starting deposit');
+    depositBatch.execute().then((res) => {
+      console.log('Deposit response', res);
+      setCurrentModalState('swap');
+    });
+
     // TODO: Remove after integration with batch transactions
     // TODO: Refactor in case OnClose is called to stop all effects
-    setTimeout(() => setCurrentModalState('swap'), 3000);
-    setTimeout(() => setCurrentModalState('withdraw'), 6000);
-    setTimeout(() => {
-      clearModal();
-      addNotification({
-        title: 'NOTIFICATION',
-        type: 'done',
-        id: Date.now().toString(),
-      });
-    }, 9000);
+    // setTimeout(() => setCurrentModalState('swap'), 3000);
+    // setTimeout(() => setCurrentModalState('withdraw'), 6000);
+    // setTimeout(() => {
+    //   clearModal();
+    //   addNotification({
+    //     title: 'NOTIFICATION',
+    //     type: 'done',
+    //     id: Date.now().toString(),
+    //   });
+    // }, 9000);
   };
 
   return (
