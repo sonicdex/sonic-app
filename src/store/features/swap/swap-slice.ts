@@ -2,10 +2,12 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { FeatureState } from '@/store';
 import type { RootState } from '@/store';
 import { SwapIDL } from '@/did';
+import { Balance } from '@/models';
 
 interface SwapState {
   state: FeatureState;
   supportedTokenList?: SwapIDL.TokenInfoExt[];
+  balances?: Balance;
 }
 
 const initialState: SwapState = {
@@ -18,14 +20,23 @@ export const swapSlice = createSlice({
   // `createSlice` will infer the state type from the `initialState` argument
   initialState,
   reducers: {
+    setState: (state, action: PayloadAction<FeatureState>) => {
+      state.state = action.payload;
+    },
     setSupportedTokenList: (
       state,
       action: PayloadAction<SwapIDL.TokenInfoExt[]>
     ) => {
       state.supportedTokenList = action.payload;
     },
-    setState: (state, action: PayloadAction<FeatureState>) => {
-      state.state = action.payload;
+    setBalances: (state, action: PayloadAction<[string, bigint][]>) => {
+      const parsedBalances = action.payload.reduce((acc, current) => {
+        return {
+          ...acc,
+          [current[0]]: Number(current[1]),
+        };
+      }, {} as Balance);
+      state.balances = parsedBalances;
     },
   },
 });

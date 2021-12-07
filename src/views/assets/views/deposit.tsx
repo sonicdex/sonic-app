@@ -2,34 +2,31 @@ import { useMemo, useState } from 'react';
 import { Box } from '@chakra-ui/react';
 import { TitleBox, TokenBox, Button } from '@/components';
 
-import { SupportedToken } from '@/models';
 import {
   assetsViewActions,
+  FeatureState,
   useAppDispatch,
   useAssetsViewStore,
-  usePlugStore,
+  useSwapStore,
 } from '@/store';
 import { useNavigate } from 'react-router';
+import { useQuery } from '@/hooks/use-query';
 
 export const AssetsDeposit = () => {
-  const { selectedTokenId } = useAssetsViewStore();
+  const query = useQuery();
+  const [selectedTokenId, setSelectedTokenId] = useState(query.get('tokenId'));
+
+  const { supportedTokenList, state } = useSwapStore();
+
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { balance } = usePlugStore();
+  const { depositValue } = useAssetsViewStore();
 
-  console.log('plug balances', balance);
+  const isReady = useMemo(
+    () => depositValue && parseFloat(depositValue) > 0,
+    [depositValue]
+  );
 
-  const [value, setValue] = useState('0');
-
-  const selectedToken = useMemo(() => {
-    if (selectedTokenId) {
-      return {
-        id: selectedTokenId,
-      };
-    }
-    return undefined;
-  }, [selectedTokenId]);
-  const isReady = useMemo(() => value && parseFloat(value) > 0, [value]);
   const status = useMemo(() => {
     if (isReady) {
       return 'active';
@@ -38,9 +35,8 @@ export const AssetsDeposit = () => {
     return '';
   }, [isReady]);
 
-  const handleTokenSelect = (TokenId: string) => {
-    console.log(TokenId);
-    dispatch(assetsViewActions.setSelectedTokenId(TokenId));
+  const handleTokenSelect = (tokenId: string) => {
+    setSelectedTokenId(tokenId);
   };
 
   const handleDeposit = () => {
@@ -51,23 +47,35 @@ export const AssetsDeposit = () => {
   return (
     <>
       <TitleBox title="Deposit Asset" onArrowBack={() => navigate('/assets')} />
-      <Box my={5}>
-        <TokenBox
-          value={value}
-          setValue={setValue}
-          onTokenSelect={handleTokenSelect}
-          source="plug"
-          balance="23.23"
-          amount="53.23"
-          status={status}
-          currentToken={selectedToken as SupportedToken}
-        />
-      </Box>
+      {state === FeatureState.Loading && !supportedTokenList ? (
+        <Box my={5}>
+          <TokenBox source="plug" isLoading />
+        </Box>
+      ) : supportedTokenList && selectedTokenId ? (
+        <Box my={5}>
+          <TokenBox
+            value={depositValue}
+            setValue={(value) =>
+              dispatch(assetsViewActions.setDepositValue(value))
+            }
+            onTokenSelect={handleTokenSelect}
+            source="plug"
+            balance="23.23"
+            amount="53.23"
+            status={status}
+            otherTokensMetadata={supportedTokenList}
+            selectedTokenMetadata={supportedTokenList.find(
+              ({ id }) => id === selectedTokenId
+            )}
+          />
+        </Box>
+      ) : null}
       <Button
         isFullWidth
         size="lg"
         isDisabled={!isReady}
         onClick={handleDeposit}
+        isLoading={state === FeatureState.Loading}
       >
         Deposit
       </Button>

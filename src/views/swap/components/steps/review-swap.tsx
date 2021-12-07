@@ -11,15 +11,12 @@ import {
   useSwapViewStore,
 } from '@/store';
 import { getCurrencyString } from '@/utils/format';
-import { Balances } from '@/models';
 import { useState } from 'react';
 import { MODALS } from '@/modals';
+import { useBalances } from '@/hooks/use-balances';
 
-type ReviewStepProps = {
-  balances?: Balances;
-};
-
-export const ReviewStep = ({ balances }: ReviewStepProps) => {
+export const ReviewStep = () => {
+  const { totalBalance } = useBalances();
   const { fromTokenOptions, toTokenOptions, from, to } = useSwapViewStore();
   const dispatch = useAppDispatch();
   const {
@@ -79,10 +76,10 @@ export const ReviewStep = ({ balances }: ReviewStepProps) => {
             onTokenSelect={(tokenId) => {
               dispatch(swapViewActions.setToken({ data: 'from', tokenId }));
             }}
-            tokenOptions={fromTokenOptions}
-            currentToken={from.token}
+            otherTokensMetadata={fromTokenOptions}
+            selectedTokenMetadata={from.token}
             balance={getCurrencyString(
-              from.token && balances ? balances[from.token.id] : 0,
+              from.token && totalBalance ? totalBalance[from.token.id] : 0,
               from.token?.decimals
             )}
             amount="0.00"
@@ -111,10 +108,10 @@ export const ReviewStep = ({ balances }: ReviewStepProps) => {
             onTokenSelect={(tokenId) => {
               dispatch(swapViewActions.setToken({ data: 'to', tokenId }));
             }}
-            tokenOptions={toTokenOptions}
-            currentToken={to.token}
+            otherTokensMetadata={toTokenOptions}
+            selectedTokenMetadata={to.token}
             balance={getCurrencyString(
-              to.token && balances ? balances[to.token.id] : 0,
+              to.token && totalBalance ? totalBalance[to.token.id] : 0,
               to.token?.decimals
             )}
             status="active"

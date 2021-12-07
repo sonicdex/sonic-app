@@ -1,15 +1,13 @@
 import { HomeStep, ReviewStep } from './components/steps';
-import { useUserBalances } from '@/hooks/use-user-balances';
+
 import { SwapStep, useSwapViewStore } from '@/store';
 
 export const Swap = () => {
   const { step } = useSwapViewStore();
 
-  const { totalBalances } = useUserBalances();
-
   const steps = {
-    [SwapStep.Home]: <HomeStep balances={totalBalances} />,
-    [SwapStep.Review]: <ReviewStep balances={totalBalances} />,
+    [SwapStep.Home]: <HomeStep />,
+    [SwapStep.Review]: <ReviewStep />,
   };
 
   if (steps.hasOwnProperty(step)) {
