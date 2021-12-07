@@ -1,16 +1,15 @@
 import { Principal } from '@dfinity/principal';
 
 import { parseAmount } from '@/utils/format';
-import { useActorStore } from '@/store/features/actor';
 import { usePlugStore } from '@/store';
 import { useToken } from '../../../hooks/use-token';
 import { TokenIDL } from '@/did';
+import { useSwapActor } from '@/integrations/actor/use-swap-actor';
 
 export const useAssetsView = () => {
-  const { actors } = useActorStore();
+  const swapActor = useSwapActor();
   const { principalId } = usePlugStore();
 
-  const { swap: swapActor } = actors;
   const { getTokenInfo } = useToken();
 
   async function getUserInfoByNamePageAbove(_owner: Principal) {

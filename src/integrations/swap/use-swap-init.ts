@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 
-import { useActorStore } from '@/store/features/actor';
 import {
   FeatureState,
   plugActions,
@@ -9,11 +8,11 @@ import {
   usePlugStore,
 } from '@/store';
 import { plug } from '../plug';
+import { useSwapActor } from '../actor/use-swap-actor';
 
 export const useSwapInit = () => {
-  const { actors } = useActorStore();
   const { isConnected } = usePlugStore();
-  const { swap: swapActor } = actors;
+  const swapActor = useSwapActor();
 
   const dispatch = useAppDispatch();
 

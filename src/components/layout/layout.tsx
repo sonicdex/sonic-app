@@ -46,7 +46,6 @@ export const Layout: React.FC = ({ children, ...props }) => {
                 index={currentTabIndex}
                 variant="solid-rounded"
                 colorScheme="dark-blue"
-                defa
               >
                 <TabList>
                   {NAVIGATION_TABS.map(({ label, url }) => (
