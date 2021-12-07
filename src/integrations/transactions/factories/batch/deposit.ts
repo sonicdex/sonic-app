@@ -7,15 +7,8 @@ import { Deposit } from '../..';
 
 export const useDepositBatch = (deposit: Deposit) =>
   useBatchHook({
-    states: {
-      Idle: 'idle',
-      Done: 'done',
-      Error: 'error',
-      0: 'approve',
-      1: 'deposit',
+    transactions: {
+      approve: createApproveTransaction(deposit),
+      deposit: createDepositTransaction(deposit),
     },
-    transactions: [
-      createApproveTransaction(deposit),
-      createDepositTransaction(deposit),
-    ],
   });

@@ -1,10 +1,11 @@
 import { ENV } from '@/config';
 import { SwapIDL } from '@/did';
+import { parseAmount } from '@/utils/format';
 import { Principal } from '@dfinity/principal';
 import { CreateTransaction, Deposit } from '../../models';
 
 export const createDepositTransaction: CreateTransaction<Deposit> = (
-  { amount, tokenId },
+  { amount, token },
   onSuccess,
   onFail
 ) => {
@@ -14,6 +15,6 @@ export const createDepositTransaction: CreateTransaction<Deposit> = (
     methodName: 'deposit',
     onSuccess,
     onFail,
-    args: [Principal.fromText(tokenId), amount],
+    args: [Principal.fromText(token.id), parseAmount(amount, token.decimals)],
   };
 };

@@ -1,2 +1,2 @@
-export * from './test-batch';
 export * from './deposit';
+export * from './deposit-swap';

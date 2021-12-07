@@ -3,14 +3,18 @@ import { useMemo, useState } from 'react';
 import { BatchTransactions } from '..';
 import { Batch } from '../models';
 
-export const useBatchHook: Batch.CreateHook = ({ states, transactions }) => {
-  const [state, setState] = useState<string>(states.Idle);
+export const useBatchHook: Batch.CreateHook = ({ transactions }) => {
+  const [state, setState] = useState<string>(Batch.DefaultHookStates.Idle);
   const [error, setError] = useState<unknown>();
 
   const handleError = (error: unknown): void => {
     setError(error);
-    setState(states.Error);
+    setState(Batch.DefaultHookStates.Error);
   };
+
+  const states = useMemo(() => {
+    return Object.keys(transactions);
+  }, [transactions]);
 
   const batch = useMemo(() => {
     const newBatch = new BatchTransactions(plug, async () =>
@@ -18,14 +22,15 @@ export const useBatchHook: Batch.CreateHook = ({ states, transactions }) => {
       confirm('Transaction failed, try again?')
     );
 
-    transactions.forEach((transaction, index) => {
+    const transactionsList = Object.values(transactions);
+    Object.values(transactions).forEach((transaction, index) => {
       const onSuccess = transaction.onSuccess;
       transaction.onSuccess = async (res) => {
         if (onSuccess) onSuccess(res);
-        if (index !== transactions.length - 1) {
+        if (index !== transactionsList.length - 1) {
           setState(states[index + 1]);
         } else {
-          setState(states.Done);
+          setState(Batch.DefaultHookStates.Done);
         }
       };
 
@@ -42,10 +47,7 @@ export const useBatchHook: Batch.CreateHook = ({ states, transactions }) => {
   }, []);
 
   const execute = (): Promise<unknown> => {
-    if (Object.keys(states).length !== transactions.length + 3) {
-      return Promise.reject('Invalid states');
-    }
-    if (state !== states.Idle) {
+    if (state !== Batch.DefaultHookStates.Idle) {
       return Promise.reject('Batch is not idle');
     }
     setState(states[0]);
@@ -54,7 +56,7 @@ export const useBatchHook: Batch.CreateHook = ({ states, transactions }) => {
 
   return {
     execute,
-    state: state as any,
+    state,
     error,
   };
 };

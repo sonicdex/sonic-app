@@ -1,4 +1,6 @@
+import { SupportedToken } from '@/models';
+
 export type Deposit = {
-  tokenId: string;
-  amount: bigint;
+  token: SupportedToken;
+  amount: string;
 };

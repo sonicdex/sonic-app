@@ -1,7 +1,8 @@
-import { FormControl, Checkbox, Box, Image, Flex } from '@chakra-ui/react';
-
-import { TitleBox, TokenBox, Button } from '@/components';
 import { arrowDownSrc, infoSrc } from '@/assets';
+import { Button, TitleBox, TokenBox } from '@/components';
+import { useDepositSwapBatch } from '@/integrations/transactions';
+import { MODALS } from '@/modals';
+import { Balances } from '@/models';
 import {
   setCurrentModalData,
   SwapStep,
@@ -11,11 +12,9 @@ import {
   useNotificationStore,
   useSwapViewStore,
 } from '@/store';
-import { getCurrencyString, parseAmount } from '@/utils/format';
-import { Balances } from '@/models';
-import { useState } from 'react';
-import { MODALS } from '@/modals';
-import { useDepositBatch } from '@/integrations/transactions';
+import { getCurrencyString } from '@/utils/format';
+import { Box, Checkbox, Flex, FormControl, Image } from '@chakra-ui/react';
+import { useEffect, useState } from 'react';
 
 type ReviewStepProps = {
   balances?: Balances;
@@ -31,14 +30,16 @@ export const ReviewStep = ({ balances }: ReviewStepProps) => {
     setCurrentModalState,
   } = useModalStore();
 
-  const depositBatch = useDepositBatch({
-    tokenId: from.token?.id || '',
-    amount: parseAmount(from.value, from.token?.decimals || 8),
-  });
-
   const [keepInSonic, setKeepInSonic] = useState<boolean>(false);
 
   const { addNotification } = useNotificationStore();
+
+  const depositSwapBatch = useDepositSwapBatch({
+    from,
+    to,
+    slippage: 0.1,
+  });
+
   const handleApproveSwap = () => {
     if (!from.token || !to.token) return;
     // Integration: Do swap
@@ -52,14 +53,13 @@ export const ReviewStep = ({ balances }: ReviewStepProps) => {
       console.log('Closed Modal');
     });
     setCurrentModalData({ fromToken: from.token.name, toToken: to.token.name });
-    setCurrentModalState('deposit');
     setCurrentModal(MODALS.swapProgress);
 
     console.log('Starting deposit');
-    depositBatch.execute().then((res) => {
-      console.log('Deposit response', res);
-      setCurrentModalState('swap');
-    });
+    depositSwapBatch
+      .execute()
+      .then((res) => console.log('success', res))
+      .catch((err) => console.log('error', err));
 
     // TODO: Remove after integration with batch transactions
     // TODO: Refactor in case OnClose is called to stop all effects
@@ -74,6 +74,18 @@ export const ReviewStep = ({ balances }: ReviewStepProps) => {
     //   });
     // }, 9000);
   };
+
+  useEffect(() => {
+    switch (depositSwapBatch.state) {
+      case 'approve':
+      case 'deposit':
+        setCurrentModalState('deposit');
+        break;
+      case 'swap':
+        setCurrentModalState('swap');
+        break;
+    }
+  }, [depositSwapBatch.state]);
 
   return (
     <>
