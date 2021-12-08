@@ -90,7 +90,7 @@ export const AssetTitleBlock = ({
   ...props
 }: AssetTitleBlockProps) => {
   return (
-    <Box ml={4} {...props}>
+    <Box minW={24} ml={4} {...props}>
       <Heading as="h3" fontSize="lg" fontWeight={700} color="#F6FCFD">
         {title}
       </Heading>
