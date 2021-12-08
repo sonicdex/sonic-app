@@ -1,11 +1,20 @@
-import { Text } from '@chakra-ui/layout';
+import { HStack, Text } from '@chakra-ui/layout';
 import { useNavigate } from 'react-router';
 import { Stack, Box } from '@chakra-ui/react';
 
-import { Asset, Header, InformationBox } from '@/components';
+import {
+  Asset,
+  AssetIconButton,
+  AssetImageBlock,
+  AssetTitleBlock,
+  Header,
+  InformationBox,
+} from '@/components';
 import { FeatureState, useAssetsView, useSwapStore } from '@/store';
 import { DefaultTokensImage } from '@/constants';
 import { theme } from '@/theme';
+import { FaMinus, FaPlus } from 'react-icons/fa';
+import { questionMarkSrc } from '@/assets';
 
 export const Assets = () => {
   useAssetsView();
@@ -57,22 +66,53 @@ export const Assets = () => {
           {swapState === FeatureState.Loading &&
           !isSupportedTokenListPresent ? (
             <>
-              <Asset isLoading />
-              <Asset isLoading />
-              <Asset isLoading />
+              <Asset isLoading>
+                <AssetImageBlock />
+                <HStack>
+                  <AssetIconButton aria-label="Deposit" icon={<FaPlus />} />
+                  <AssetIconButton aria-label="Withdraw" icon={<FaMinus />} />
+                </HStack>
+              </Asset>
+
+              <Asset isLoading>
+                <AssetImageBlock />
+                <HStack>
+                  <AssetIconButton aria-label="Deposit" icon={<FaPlus />} />
+                  <AssetIconButton aria-label="Withdraw" icon={<FaMinus />} />
+                </HStack>
+              </Asset>
+
+              <Asset isLoading>
+                <AssetImageBlock />
+                <HStack>
+                  <AssetIconButton aria-label="Deposit" icon={<FaPlus />} />
+                  <AssetIconButton aria-label="Withdraw" icon={<FaMinus />} />
+                </HStack>
+              </Asset>
             </>
           ) : isSupportedTokenListPresent ? (
             supportedTokenList.map(({ id, name, symbol }) => (
               <Asset
                 key={id}
-                name={name}
-                symbol={symbol}
-                addLabel={`Deposit ${symbol}`}
-                removeLabel={`Withdraw ${symbol}`}
-                mainImgSrc={DefaultTokensImage[symbol]}
-                onAdd={() => navigateToDeposit(id)}
-                onRemove={() => navigateToWithdraw(id)}
-              />
+                imageSources={[DefaultTokensImage[symbol] ?? questionMarkSrc]}
+                isLoading={swapState === FeatureState.Loading}
+              >
+                <AssetImageBlock />
+                <AssetTitleBlock title={name} subtitle={symbol} />
+                <HStack>
+                  <AssetIconButton
+                    aria-label={`Withdraw ${symbol}`}
+                    icon={<FaMinus />}
+                    onClick={() => navigateToWithdraw(id)}
+                  />
+                  <AssetIconButton
+                    colorScheme="dark-blue"
+                    aria-label={`Deposit ${symbol}`}
+                    icon={<FaPlus />}
+                    onClick={() => navigateToDeposit(id)}
+                  />
+                </HStack>
+              </Asset>
             ))
           ) : null}
         </Stack>

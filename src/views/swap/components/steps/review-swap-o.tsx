@@ -63,7 +63,7 @@ export const ReviewStep = ({
       clearModal();
       nextStep();
       addNotification({
-        title: 'NOTIFICATION',
+        title: 'Swap successfuly completed',
         type: 'done',
         id: Date.now().toString(),
       });

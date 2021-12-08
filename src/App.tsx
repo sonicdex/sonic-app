@@ -27,8 +27,8 @@ export const App = () => {
   return (
     <BrowserRouter>
       <Layout>
-        <ModalManager />
         <NotificationManager />
+        <ModalManager />
         <Routes>
           <Route path="/assets" element={<Assets />} />
           <Route path="/assets/withdraw" element={<AssetsWithdraw />} />
