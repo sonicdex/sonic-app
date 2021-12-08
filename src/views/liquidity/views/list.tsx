@@ -84,6 +84,22 @@ export const Liquidity = () => {
           <AssetImageBlock />
           <AssetTitleBlock title="XTC/WICP" />
         </HStack>
+        <Box>
+          <Text fontWeight="bold" color="gray.400">
+            LP Tokens
+          </Text>
+          <Text fontWeight="bold">6.7821</Text>
+        </Box>
+
+        <Box>
+          <Text fontWeight="bold" color="gray.400">
+            Fees Earned
+          </Text>
+          <Text fontWeight="bold" color="green.400">
+            6.7821
+          </Text>
+        </Box>
+
         <HStack>
           <AssetIconButton aria-label="Remove liquidity" icon={<FaMinus />} />
           <AssetIconButton

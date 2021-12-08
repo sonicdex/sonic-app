@@ -1,6 +1,5 @@
-import { HStack, Text } from '@chakra-ui/layout';
 import { useNavigate } from 'react-router';
-import { Stack, Box } from '@chakra-ui/react';
+import { Stack, Box, HStack, Text } from '@chakra-ui/react';
 
 import {
   Asset,
@@ -111,6 +110,20 @@ export const Assets = () => {
                 <HStack spacing={4}>
                   <AssetImageBlock />
                   <AssetTitleBlock title={name} subtitle={symbol} />
+                </HStack>
+                <HStack spacing={6}>
+                  <Box>
+                    <Text fontWeight="bold" color="gray.400">
+                      Amount
+                    </Text>
+                    <Text fontWeight="bold">0.00</Text>
+                  </Box>
+                  <Box>
+                    <Text fontWeight="bold" color="gray.400">
+                      Price
+                    </Text>
+                    <Text fontWeight="bold">$0.00</Text>
+                  </Box>
                 </HStack>
                 <HStack>
                   <AssetIconButton
