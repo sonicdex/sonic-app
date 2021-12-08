@@ -96,7 +96,7 @@ export const Liquidity = () => {
             Fees Earned
           </Text>
           <Text fontWeight="bold" color="green.400">
-            6.7821
+            $231.21
           </Text>
         </Box>
 
