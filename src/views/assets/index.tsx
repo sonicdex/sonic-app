@@ -97,8 +97,10 @@ export const Assets = () => {
                 imageSources={[DefaultTokensImage[symbol] ?? questionMarkSrc]}
                 isLoading={swapState === FeatureState.Loading}
               >
-                <AssetImageBlock />
-                <AssetTitleBlock title={name} subtitle={symbol} />
+                <HStack spacing={4}>
+                  <AssetImageBlock />
+                  <AssetTitleBlock title={name} subtitle={symbol} />
+                </HStack>
                 <HStack>
                   <AssetIconButton
                     aria-label={`Withdraw ${symbol}`}
