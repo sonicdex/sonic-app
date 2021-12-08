@@ -1,4 +1,12 @@
-import { Box, IconButton, Flex, Tooltip } from '@chakra-ui/react';
+import {
+  Box,
+  IconButton,
+  Flex,
+  Tooltip,
+  Menu,
+  MenuButton,
+  MenuList
+} from '@chakra-ui/react';
 import { FaArrowLeft, FaCog } from 'react-icons/fa';
 
 type TitleBoxProps = {
@@ -15,8 +23,8 @@ export const TitleBox = ({
   onArrowBack,
 }: TitleBoxProps) => {
   const headerBottomRadius = children ? 0 : 20;
-  const titleRightAdjustment = settings ? '-16px' : 'auto';
-  const titleLeftAdjustment = onArrowBack ? '-18px' : 'auto';
+  const titleRightAdjustment = settings ? 8 : 'auto';
+  const titleLeftAdjustment = onArrowBack ? 8 : 'auto';
 
   return (
     <Flex direction="column">
@@ -46,19 +54,31 @@ export const TitleBox = ({
             />
           </Tooltip>
         )}
-        <Box ml={titleLeftAdjustment} mr={titleRightAdjustment}>
+        <Box
+          pr={titleLeftAdjustment}
+          pl={titleRightAdjustment}
+          w="100%"
+          mx="auto"
+        >
           {title}
         </Box>
         {settings && (
-          <Tooltip label="Settings">
-            <IconButton
-              isRound
-              size="sm"
-              aria-label="settings"
-              icon={<FaCog />}
-              ml="auto"
-            />
-          </Tooltip>
+          <Box>
+            <Menu>
+              <MenuButton>
+                <IconButton
+                  isRound
+                  size="sm"
+                  aria-label="settings"
+                  icon={<FaCog />}
+                  ml="auto"
+                />
+              </MenuButton>
+              <MenuList bg="#1E1E1E" border="none" borderRadius={20} ml={-20} py={0}>
+                {settings}
+              </MenuList>
+            </Menu>
+          </Box>
         )}
       </Flex>
       {children && (
