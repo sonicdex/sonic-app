@@ -81,7 +81,7 @@ export const AssetIconButton = ({
 
 type AssetTitleBlockProps = BoxProps & {
   title: string;
-  subtitle: string;
+  subtitle?: string;
 };
 
 export const AssetTitleBlock = ({

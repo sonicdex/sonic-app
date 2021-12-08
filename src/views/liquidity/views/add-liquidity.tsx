@@ -4,19 +4,15 @@ import { Text, Flex, Image, Box } from '@chakra-ui/react';
 import { Button, TitleBox, TokenBox } from '@/components';
 
 import { plusSrc, equalSrc } from '@/assets';
-
-type AddLiquidityStepProps = {
-  onPrevious: () => any;
-  onAdd: (any: any) => any;
-};
+import { FeatureState, useSwapStore } from '@/store';
+import { useNavigate } from 'react-router';
 
 const BUTTON_TITLES = ['Review Supply', 'Confirm Supply'];
 
-export const AddLiquidityStep = ({
-  onPrevious,
-  onAdd,
-}: AddLiquidityStepProps) => {
-  // subStep 0 for review 1 for add liquidity
+export const LiquidityAdd = () => {
+  const navigate = useNavigate();
+  const { state, supportedTokenList } = useSwapStore();
+
   const [subStep, setSubStep] = useState(0);
 
   const [fromValue, setFromValue] = useState('0.00');
@@ -32,7 +28,7 @@ export const AddLiquidityStep = ({
 
   const handlePreviousStep = () => {
     if (subStep === 0) {
-      onPrevious();
+      navigate('/liquidity');
     } else {
       setSubStep(subStep - 1);
     }
@@ -62,8 +58,7 @@ export const AddLiquidityStep = ({
         setSubStep(1);
         break;
       case 1:
-        // Add liquidity integration
-        onAdd(null);
+        // TODO: add handler function
         break;
     }
   };
@@ -83,13 +78,14 @@ export const AddLiquidityStep = ({
             onTokenSelect={(tokenName) =>
               handleTokenSelect(tokenName, setFromToken)
             }
-            otherTokensMetadata={[]}
+            otherTokensMetadata={supportedTokenList}
             selectedTokenMetadata={fromToken}
             status={getActiveStatus(fromToken, fromValue)}
             disabled={subStep === 1}
             menuDisabled={subStep === 1}
             balance="0.00"
             amount="0.00"
+            isLoading={state === FeatureState.Loading}
           />
         </Box>
         <Box
@@ -113,13 +109,14 @@ export const AddLiquidityStep = ({
             onTokenSelect={(tokenName) =>
               handleTokenSelect(tokenName, setToToken)
             }
-            otherTokensMetadata={[]}
+            otherTokensMetadata={supportedTokenList}
             selectedTokenMetadata={toToken}
             status={getActiveStatus(toToken, toValue)}
             disabled={subStep === 1}
             menuDisabled={subStep === 1}
             balance="0.00"
             amount="0.00"
+            isLoading={state === FeatureState.Loading}
           />
         </Box>
         {subStep === 1 && (
@@ -176,6 +173,7 @@ export const AddLiquidityStep = ({
         size="lg"
         onClick={handleButtonClick}
         isDisabled={!shouldButtonBeActive()}
+        isLoading={state === FeatureState.Loading}
       >
         {buttonTitle}
       </Button>
