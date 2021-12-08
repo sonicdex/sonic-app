@@ -12,6 +12,7 @@ import { FaMinus, FaPlus } from 'react-icons/fa';
 import { DefaultTokensImage } from '@/constants';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
+import { ENV } from '@/config';
 
 const INFORMATION_TITLE = 'Liquidity Provider Rewards';
 const INFORMATION_DESCRIPTION =
@@ -31,7 +32,7 @@ const InformationDescription = () => (
     >
       review our blog post
     </Box>
-    .
+    .\
   </Text>
 );
 
@@ -39,8 +40,15 @@ export const Liquidity = () => {
   const navigate = useNavigate();
   const [displayInformation, setDisplayInformation] = useState(true);
 
-  const moveToCreatePosition = () => {
-    navigate('/liquidity/create-position');
+  const moveToAddLiquidityView = (tokenFrom?: string, tokenTo?: string) => {
+    const query =
+      tokenFrom || tokenTo
+        ? `?${tokenFrom ? `tokenFrom=${tokenFrom}` : ''}${
+            tokenTo ? `&tokenTo=${tokenTo}` : ''
+          }`
+        : '';
+
+    navigate(`/liquidity/add${query}`);
   };
 
   const handleInformationClose = () => {
@@ -61,7 +69,7 @@ export const Liquidity = () => {
       <Header
         title="Your Liquidity Positions"
         buttonText="Create Position"
-        onButtonClick={moveToCreatePosition}
+        onButtonClick={moveToAddLiquidityView}
       />
       {/* TODO: Replace mocks */}
 
@@ -82,6 +90,9 @@ export const Liquidity = () => {
             aria-label="Add liquidity"
             colorScheme="dark-blue"
             icon={<FaPlus />}
+            onClick={() =>
+              moveToAddLiquidityView(ENV.canisterIds.XTC, ENV.canisterIds.WICP)
+            }
           />
         </HStack>
       </Asset>

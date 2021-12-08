@@ -42,8 +42,10 @@ export const App = () => {
           <Route path="/assets/deposit" element={<AssetsDeposit />} />
 
           <Route path="/swap" element={<Swap />} />
+
           <Route path="/liquidity" element={<Liquidity />} />
           <Route path="/liquidity/add" element={<LiquidityAdd />} />
+
           <Route path="/activity" element={<Activity />} />
           <Route path="/test" element={<TestView />} />
           <Route path="*" element={<Navigate to="/assets" />} />

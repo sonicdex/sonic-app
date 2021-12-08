@@ -32,8 +32,6 @@ export const HomeStep = () => {
     return false;
   }, [totalBalance, from.token, to.token]);
 
-  console.log(totalBalance, from, to);
-
   const [buttonDisabled, buttonMessage] = useMemo<[boolean, string]>(() => {
     if (loading) return [true, 'Loading'];
     if (!totalBalance || !from.token || !to.token)

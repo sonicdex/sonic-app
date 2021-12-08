@@ -1,30 +1,32 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Text, Flex, Image, Box } from '@chakra-ui/react';
 
 import { Button, TitleBox, TokenBox } from '@/components';
 
 import { plusSrc, equalSrc } from '@/assets';
-import { FeatureState, useSwapStore } from '@/store';
+import {
+  FeatureState,
+  liquidityViewActions,
+  useAppDispatch,
+  useLiquidityViewStore,
+  useNotificationStore,
+  useSwapStore,
+} from '@/store';
 import { useNavigate } from 'react-router';
+// import { useQuery } from '@/hooks/use-query';
+import { SwapIDL } from '@/did';
 
 const BUTTON_TITLES = ['Review Supply', 'Confirm Supply'];
 
 export const LiquidityAdd = () => {
+  const { addNotification } = useNotificationStore();
+  // const query = useQuery();
+  const { from, to } = useLiquidityViewStore();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { state, supportedTokenList } = useSwapStore();
 
   const [subStep, setSubStep] = useState(0);
-
-  const [fromValue, setFromValue] = useState('0.00');
-  const [fromToken, setFromToken] = useState();
-
-  const [toValue, setToValue] = useState('0.00');
-  const [toToken, setToToken] = useState();
-
-  const handleTokenSelect = (tokenName: string, setter: any) => {
-    // TODO: add handler function
-    console.log(tokenName, setter);
-  };
 
   const handlePreviousStep = () => {
     if (subStep === 0) {
@@ -34,21 +36,22 @@ export const LiquidityAdd = () => {
     }
   };
 
-  const getActiveStatus = (token?: string, value?: string) => {
+  const getActiveStatus = (token?: SwapIDL.TokenInfoExt, value?: string) => {
     const shouldBeActive = token && value?.length && parseFloat(value) > 0;
 
     return shouldBeActive && subStep !== 1 ? 'active' : undefined;
   };
 
-  const shouldButtonBeActive = () => {
+  const shouldButtonBeActive = useMemo(() => {
+    if (!from.token || !to.token) return false;
     if (subStep === 1) return true;
 
     const fromTokenCondition =
-      getActiveStatus(fromToken, fromValue) === 'active';
-    const toTokenCondition = getActiveStatus(toToken, toValue) === 'active';
+      getActiveStatus(from.token, from.value) === 'active';
+    const toTokenCondition = getActiveStatus(to.token, to.value) === 'active';
 
     return fromTokenCondition && toTokenCondition;
-  };
+  }, [from, to, subStep]);
 
   const buttonTitle = BUTTON_TITLES[subStep];
 
@@ -58,7 +61,11 @@ export const LiquidityAdd = () => {
         setSubStep(1);
         break;
       case 1:
-        // TODO: add handler function
+        addNotification({
+          title: 'Liquidity Added',
+          type: 'done',
+          id: Date.now().toString(),
+        });
         break;
     }
   };
@@ -73,14 +80,18 @@ export const LiquidityAdd = () => {
       <Flex mt={5} direction="column" alignItems="center">
         <Box width="100%">
           <TokenBox
-            value={fromValue}
-            setValue={setFromValue}
-            onTokenSelect={(tokenName) =>
-              handleTokenSelect(tokenName, setFromToken)
+            value={from.value}
+            setValue={(value) =>
+              dispatch(liquidityViewActions.setValue({ data: 'from', value }))
             }
+            onTokenSelect={(tokenId) => {
+              dispatch(
+                liquidityViewActions.setToken({ data: 'from', tokenId })
+              );
+            }}
             otherTokensMetadata={supportedTokenList}
-            selectedTokenMetadata={fromToken}
-            status={getActiveStatus(fromToken, fromValue)}
+            selectedTokenMetadata={from.token}
+            status={getActiveStatus(from.token, from.value)}
             disabled={subStep === 1}
             menuDisabled={subStep === 1}
             balance="0.00"
@@ -104,14 +115,16 @@ export const LiquidityAdd = () => {
         </Box>
         <Box mt={2.5} width="100%">
           <TokenBox
-            value={toValue}
-            setValue={setToValue}
-            onTokenSelect={(tokenName) =>
-              handleTokenSelect(tokenName, setToToken)
+            value={to.value}
+            setValue={(value) =>
+              dispatch(liquidityViewActions.setValue({ data: 'to', value }))
             }
+            onTokenSelect={(tokenId) => {
+              dispatch(liquidityViewActions.setToken({ data: 'to', tokenId }));
+            }}
             otherTokensMetadata={supportedTokenList}
-            selectedTokenMetadata={toToken}
-            status={getActiveStatus(toToken, toValue)}
+            selectedTokenMetadata={to.token}
+            status={getActiveStatus(to.token, to.value)}
             disabled={subStep === 1}
             menuDisabled={subStep === 1}
             balance="0.00"
@@ -138,13 +151,17 @@ export const LiquidityAdd = () => {
             </Flex>
             <Box mt={2.5} width="100%">
               <TokenBox
-                value={toValue}
-                setValue={setToValue}
-                onTokenSelect={(tokenName) =>
-                  handleTokenSelect(tokenName, setToToken)
+                value={to.value}
+                setValue={(value) =>
+                  dispatch(liquidityViewActions.setValue({ data: 'to', value }))
                 }
-                otherTokensMetadata={[]}
-                selectedTokenMetadata={toToken}
+                onTokenSelect={(tokenId) => {
+                  dispatch(
+                    liquidityViewActions.setToken({ data: 'to', tokenId })
+                  );
+                }}
+                otherTokensMetadata={supportedTokenList}
+                selectedTokenMetadata={to.token}
                 status="active"
                 balance="0.00"
                 balanceText="Share of pool:"
@@ -172,7 +189,7 @@ export const LiquidityAdd = () => {
         isFullWidth
         size="lg"
         onClick={handleButtonClick}
-        isDisabled={!shouldButtonBeActive()}
+        isDisabled={!shouldButtonBeActive}
         isLoading={state === FeatureState.Loading}
       >
         {buttonTitle}
