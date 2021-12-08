@@ -32,7 +32,7 @@ const InformationDescription = () => (
     >
       review our blog post
     </Box>
-    .\
+    .
   </Text>
 );
 
