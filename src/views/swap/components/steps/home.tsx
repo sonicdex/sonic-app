@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Box, Flex, Image } from '@chakra-ui/react';
 
 import { TitleBox, TokenBox, Button } from '@/components';
@@ -51,6 +51,18 @@ export const HomeStep = ({ balances }: HomeStepProps) => {
   const fromValueStatus = useMemo(() => {
     if (from.value && parseFloat(from.value) > 0) return 'active';
     return 'inactive';
+  }, [from.value]);
+
+  useEffect(() => {
+    if (from.token && parseFloat(from.value) > 0) {
+      // TODO: find correct way to update to.value
+      dispatch(
+        swapViewActions.setValue({
+          data: 'to',
+          value: String(Number(from.value) * (1 - Number(from.token.fee))),
+        })
+      );
+    }
   }, [from.value]);
 
   return (
