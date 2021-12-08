@@ -10,6 +10,3 @@ export const ROUTES = {
 export const ERRORS = {
   PlugNotConnected: 'Plug is not connected',
 };
-
-export const DUMMY_PRINCIPAL_ID =
-  'xxxxx-xxxxx-xxxxx-xxxxx-xxxxx-xxxxx-xxxxx-xxxxx-xxxxx-xxxxx-xxx';

@@ -1,5 +1,4 @@
 import { Principal } from '@dfinity/principal';
-import { useActorStore } from '@/store/features/actor';
 import { useEffect } from 'react';
 import { usePlugStore } from '@/store';
 import { parseAmount } from '@/utils/format';
@@ -7,7 +6,7 @@ import { Actor, HttpAgent } from '@dfinity/agent';
 import { ENV } from '@/config';
 import { IDL } from '@dfinity/candid';
 import { TokenIDL } from '@/did';
-import { ActorAdapter } from '@/integrations/actor';
+import { ActorAdapter, appActors } from '@/integrations/actor';
 
 const getNotIdentifiedAgent = () => {
   return new HttpAgent({ host: ENV.host });
@@ -27,15 +26,11 @@ const getNotIdentifiedActor = (
 
 export const useToken = (canisterId?: string) => {
   const { principalId } = usePlugStore();
-  const { actors, tokenActors, setTokenActors } = useActorStore();
 
   useEffect(() => {
-    if (canisterId && !tokenActors[canisterId]) {
+    if (canisterId) {
       new ActorAdapter(window.ic?.plug)
         .createActor<TokenIDL.Factory>(canisterId, TokenIDL.factory)
-        .then((newTokenActor) => {
-          setTokenActors({ [canisterId]: newTokenActor });
-        })
         .catch((error) => console.error(error));
     }
   }, [canisterId]);
@@ -44,11 +39,9 @@ export const useToken = (canisterId?: string) => {
     return getNotIdentifiedActor(canisterId, TokenIDL.factory);
   };
 
-  const { swap: swapActor } = actors;
-
   async function getPair(token0: string, token1: string) {
     try {
-      const result = await swapActor?.getPair(
+      const result = await appActors[ENV.canisterIds.swap]?.getPair(
         Principal.fromText(token0),
         Principal.fromText(token1)
       );

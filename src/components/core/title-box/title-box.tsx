@@ -1,4 +1,4 @@
-import { Box, IconButton, Flex } from '@chakra-ui/react';
+import { Box, IconButton, Flex, Tooltip } from '@chakra-ui/react';
 import { FaArrowLeft, FaCog } from 'react-icons/fa';
 
 type TitleBoxProps = {
@@ -21,8 +21,7 @@ export const TitleBox = ({
   return (
     <Flex direction="column">
       <Flex
-        pt={4}
-        pb={3}
+        py={3}
         px={5}
         bg="#1E1E1E"
         fontSize="lg"
@@ -32,30 +31,34 @@ export const TitleBox = ({
         borderTopRadius={20}
         borderBottomRadius={headerBottomRadius}
         direction="row"
+        align="center"
       >
         {onArrowBack && (
-          <IconButton
-            size="sm"
-            isRound
-            variant="outline"
-            onClick={onArrowBack}
-            aria-label="back"
-            icon={<FaArrowLeft />}
-            mr="auto"
-          />
+          <Tooltip label="Back">
+            <IconButton
+              size="sm"
+              isRound
+              onClick={onArrowBack}
+              variant="outline"
+              aria-label="back"
+              icon={<FaArrowLeft />}
+              mr="auto"
+            />
+          </Tooltip>
         )}
         <Box ml={titleLeftAdjustment} mr={titleRightAdjustment}>
           {title}
         </Box>
         {settings && (
-          <IconButton
-            isRound
-            variant="outline"
-            size="sm"
-            aria-label="settings"
-            icon={<FaCog />}
-            ml="auto"
-          />
+          <Tooltip label="Settings">
+            <IconButton
+              isRound
+              size="sm"
+              aria-label="settings"
+              icon={<FaCog />}
+              ml="auto"
+            />
+          </Tooltip>
         )}
       </Flex>
       {children && (

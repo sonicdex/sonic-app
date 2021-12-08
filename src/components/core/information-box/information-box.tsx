@@ -1,5 +1,12 @@
 import { useState, ReactNode } from 'react';
-import { Box, BoxProps, Flex, Collapse, CloseButton } from '@chakra-ui/react';
+import {
+  Box,
+  Tooltip,
+  BoxProps,
+  Flex,
+  Collapse,
+  CloseButton,
+} from '@chakra-ui/react';
 
 type InformationBoxTypes = BoxProps & {
   title: string;
@@ -37,7 +44,9 @@ export const InformationBox = ({
           <Box as="h3" fontSize="lg" fontWeight="bold" color="#F6FCFD">
             {title}
           </Box>
-          <CloseButton size="sm" variant="rounded" onClick={handleClose} />
+          <Tooltip label="Close">
+            <CloseButton size="sm" variant="rounded" onClick={handleClose} />
+          </Tooltip>
         </Flex>
         {children}
       </Box>

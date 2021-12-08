@@ -2,22 +2,16 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { FeatureState } from '@/store';
 import type { RootState } from '@/store';
 
-export enum AssetStep {
-  Home,
-  Deposit,
-  Withdraw,
-}
-
 interface AssetsViewState {
-  step: AssetStep;
   state: FeatureState;
-  selectedTokenName?: string;
+  depositValue: string;
+  withdrawValue: string;
 }
 
 const initialState: AssetsViewState = {
-  step: AssetStep?.Home,
   state: FeatureState?.Idle,
-  selectedTokenName: undefined,
+  depositValue: '',
+  withdrawValue: '',
 };
 
 export const assetsViewSlice = createSlice({
@@ -25,14 +19,14 @@ export const assetsViewSlice = createSlice({
   // `createSlice` will infer the state type from the `initialState` argument
   initialState,
   reducers: {
-    setStep: (state, action: PayloadAction<AssetStep>) => {
-      state.step = action.payload;
-    },
     setState: (state, action: PayloadAction<FeatureState>) => {
       state.state = action.payload;
     },
-    setSelectedTokenName: (state, action: PayloadAction<string>) => {
-      state.selectedTokenName = action.payload;
+    setDepositValue: (state, action: PayloadAction<string>) => {
+      state.depositValue = action.payload;
+    },
+    setWithdrawValue: (state, action: PayloadAction<string>) => {
+      state.withdrawValue = action.payload;
     },
   },
 });

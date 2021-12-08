@@ -83,8 +83,8 @@ export const AddLiquidityStep = ({
             onTokenSelect={(tokenName) =>
               handleTokenSelect(tokenName, setFromToken)
             }
-            tokenOptions={[]}
-            currentToken={fromToken}
+            otherTokensMetadata={[]}
+            selectedTokenMetadata={fromToken}
             status={getActiveStatus(fromToken, fromValue)}
             disabled={subStep === 1}
             menuDisabled={subStep === 1}
@@ -113,8 +113,8 @@ export const AddLiquidityStep = ({
             onTokenSelect={(tokenName) =>
               handleTokenSelect(tokenName, setToToken)
             }
-            tokenOptions={[]}
-            currentToken={toToken}
+            otherTokensMetadata={[]}
+            selectedTokenMetadata={toToken}
             status={getActiveStatus(toToken, toValue)}
             disabled={subStep === 1}
             menuDisabled={subStep === 1}
@@ -146,8 +146,8 @@ export const AddLiquidityStep = ({
                 onTokenSelect={(tokenName) =>
                   handleTokenSelect(tokenName, setToToken)
                 }
-                tokenOptions={[]}
-                currentToken={toToken}
+                otherTokensMetadata={[]}
+                selectedTokenMetadata={toToken}
                 status="active"
                 balance="0.00"
                 balanceText="Share of pool:"

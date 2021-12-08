@@ -1,7 +1,7 @@
 import { SwapIDL } from '@/did';
 
-export type SupportedToken = SwapIDL.TokenInfoExt & {
+export type TokenMetadata = SwapIDL.TokenInfoExt & {
   logo?: string;
 };
 
-export type SupportedTokenList = { [canisterId: string]: SupportedToken };
+export type TokenMetadataList = { [canisterId: string]: TokenMetadata };

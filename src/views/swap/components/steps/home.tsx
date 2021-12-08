@@ -2,7 +2,6 @@ import { useEffect, useMemo } from 'react';
 import { Box, Flex, Image } from '@chakra-ui/react';
 
 import { TitleBox, TokenBox, Button } from '@/components';
-import { Balances } from '@/models';
 import { getCurrencyString } from '@/utils/format';
 
 import { arrowDownSrc } from '@/assets';
@@ -12,14 +11,13 @@ import {
   useAppDispatch,
   useSwapViewStore,
 } from '@/store';
+import { useBalances } from '@/hooks/use-balances';
 
-type HomeStepProps = {
-  balances?: Balances;
-};
-
-export const HomeStep = ({ balances }: HomeStepProps) => {
+export const HomeStep = () => {
   const { fromTokenOptions, toTokenOptions, from, to } = useSwapViewStore();
   const dispatch = useAppDispatch();
+
+  const { totalBalance } = useBalances();
 
   const handleButtonOnClick = () => {
     if (loading) return;
@@ -28,25 +26,27 @@ export const HomeStep = ({ balances }: HomeStepProps) => {
   };
 
   const loading = useMemo(() => {
-    if (!balances) return true;
+    if (!totalBalance) return true;
     if (!from.token) return true;
     if (!to.token) return true;
     return false;
-  }, [balances, from.token, to.token]);
+  }, [totalBalance, from.token, to.token]);
+
+  console.log(totalBalance, from, to);
 
   const [buttonDisabled, buttonMessage] = useMemo<[boolean, string]>(() => {
     if (loading) return [true, 'Loading'];
-    if (!balances || !from.token || !to.token)
+    if (!totalBalance || !from.token || !to.token)
       throw new Error('State is loading');
 
     const parsedFromValue = (from.value && parseFloat(from.value)) || 0;
     if (parsedFromValue <= 0)
       return [true, `No ${from.token.name} value selected`];
-    if (parsedFromValue > balances[from.token.id])
+    if (parsedFromValue > totalBalance[from.token.id])
       return [true, `Insufficient ${from.token.name} Balance`];
 
     return [false, 'Review Swap'];
-  }, [loading, balances, from.token, to.token, from.value, to.value]);
+  }, [loading, totalBalance, from.token, to.token, from.value, to.value]);
 
   const fromValueStatus = useMemo(() => {
     if (from.value && parseFloat(from.value) > 0) return 'active';
@@ -78,11 +78,11 @@ export const HomeStep = ({ balances }: HomeStepProps) => {
             onTokenSelect={(tokenId) => {
               dispatch(swapViewActions.setToken({ data: 'from', tokenId }));
             }}
-            tokenOptions={fromTokenOptions}
-            currentToken={from.token}
+            otherTokensMetadata={fromTokenOptions}
+            selectedTokenMetadata={from.token}
             status={fromValueStatus}
             balance={getCurrencyString(
-              from.token && balances ? balances[from.token.id] : 0,
+              from.token && totalBalance ? totalBalance[from.token.id] : 0,
               from.token?.decimals
             )}
             amount="0.00"
@@ -111,11 +111,11 @@ export const HomeStep = ({ balances }: HomeStepProps) => {
             onTokenSelect={(tokenId) => {
               dispatch(swapViewActions.setToken({ data: 'to', tokenId }));
             }}
-            tokenOptions={toTokenOptions}
-            currentToken={to.token}
+            otherTokensMetadata={toTokenOptions}
+            selectedTokenMetadata={to.token}
             disabled={true}
             balance={getCurrencyString(
-              to.token && balances ? balances[to.token.id] : 0,
+              to.token && totalBalance ? totalBalance[to.token.id] : 0,
               to.token?.decimals
             )}
             amount="0.00"
@@ -126,9 +126,6 @@ export const HomeStep = ({ balances }: HomeStepProps) => {
         isFullWidth
         size="lg"
         onClick={handleButtonOnClick}
-        fontWeight={700}
-        fontSize={22}
-        borderRadius={20}
         isLoading={loading}
         isDisabled={buttonDisabled}
       >

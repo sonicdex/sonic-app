@@ -2,11 +2,14 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { FeatureState } from '@/store';
 import type { RootState } from '@/store';
 
+export type ModalCallback = (arg0?: any) => any;
+
 // Define a type for the slice state
 interface ModalState {
   currentModal: string;
   currentModalState?: string;
   currentModalData: any;
+  callbacks?: ModalCallback[];
   onClose: () => any;
   state: FeatureState;
 }
@@ -28,6 +31,9 @@ export const modalSlice = createSlice({
     setCurrentModal: (state, action: PayloadAction<string>) => {
       state.currentModal = action.payload;
     },
+    setModalCallbacks: (state, action: PayloadAction<ModalCallback[]>) => {
+      state.callbacks = action.payload;
+    },
     setCurrentModalState: (state, action: PayloadAction<string>) => {
       state.currentModalState = action.payload;
     },
@@ -41,6 +47,7 @@ export const modalSlice = createSlice({
       state.currentModal = '';
       state.currentModalState = '';
       state.currentModalData = {};
+      state.callbacks = [];
     },
     setState: (state, action: PayloadAction<FeatureState>) => {
       state.state = action.payload;
@@ -52,6 +59,7 @@ export const {
   setCurrentModal,
   setCurrentModalState,
   setCurrentModalData,
+  setModalCallbacks,
   setOnClose,
   clearModal,
   setState: setModalState,

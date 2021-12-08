@@ -2,7 +2,6 @@ import { arrowDownSrc, infoSrc } from '@/assets';
 import { Button, TitleBox, TokenBox } from '@/components';
 import { useDepositSwapBatch } from '@/integrations/transactions';
 import { MODALS } from '@/modals';
-import { Balances } from '@/models';
 import {
   setCurrentModalData,
   SwapStep,
@@ -13,14 +12,15 @@ import {
   useSwapViewStore,
 } from '@/store';
 import { getCurrencyString } from '@/utils/format';
-import { Box, Checkbox, Flex, FormControl, Image } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
+import { useBalances } from '@/hooks/use-balances';
+import { Box, Flex } from '@chakra-ui/layout';
+import { Image } from '@chakra-ui/image';
+import { FormControl } from '@chakra-ui/form-control';
+import { Checkbox } from '@chakra-ui/checkbox';
 
-type ReviewStepProps = {
-  balances?: Balances;
-};
-
-export const ReviewStep = ({ balances }: ReviewStepProps) => {
+export const ReviewStep = () => {
+  const { totalBalance } = useBalances();
   const { fromTokenOptions, toTokenOptions, from, to } = useSwapViewStore();
   const dispatch = useAppDispatch();
   const {
@@ -104,10 +104,10 @@ export const ReviewStep = ({ balances }: ReviewStepProps) => {
             onTokenSelect={(tokenId) => {
               dispatch(swapViewActions.setToken({ data: 'from', tokenId }));
             }}
-            tokenOptions={fromTokenOptions}
-            currentToken={from.token}
+            otherTokensMetadata={fromTokenOptions}
+            selectedTokenMetadata={from.token}
             balance={getCurrencyString(
-              from.token && balances ? balances[from.token.id] : 0,
+              from.token && totalBalance ? totalBalance[from.token.id] : 0,
               from.token?.decimals
             )}
             amount="0.00"
@@ -136,10 +136,10 @@ export const ReviewStep = ({ balances }: ReviewStepProps) => {
             onTokenSelect={(tokenId) => {
               dispatch(swapViewActions.setToken({ data: 'to', tokenId }));
             }}
-            tokenOptions={toTokenOptions}
-            currentToken={to.token}
+            otherTokensMetadata={toTokenOptions}
+            selectedTokenMetadata={to.token}
             balance={getCurrencyString(
-              to.token && balances ? balances[to.token.id] : 0,
+              to.token && totalBalance ? totalBalance[to.token.id] : 0,
               to.token?.decimals
             )}
             status="active"

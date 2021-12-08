@@ -1,4 +1,4 @@
-import { SupportedTokenList } from '@/models';
+import { TokenMetadataList } from '@/models';
 import { SwapData, SwapDataKey } from '@/models/swap';
 import type { RootState } from '@/store';
 import { FeatureState } from '@/store';
@@ -14,7 +14,7 @@ interface SwapViewState {
   state: FeatureState;
   from: SwapData;
   to: SwapData;
-  tokenList?: SupportedTokenList;
+  tokenList?: TokenMetadataList;
 }
 
 const initialState: SwapViewState = {
@@ -68,7 +68,7 @@ export const swapViewSlice = createSlice({
       }
       state.step = SwapStep.Home;
     },
-    setTokenList: (state, action: PayloadAction<SupportedTokenList>) => {
+    setTokenList: (state, action: PayloadAction<TokenMetadataList>) => {
       state.tokenList = action.payload;
       const tokens = Object.values(action.payload);
       state.from.token = tokens[0];

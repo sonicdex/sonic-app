@@ -7,6 +7,8 @@ import { EmptyMobile, Layout } from './components';
 import { useActorsInit } from './integrations/actor/use-actors-init';
 import { usePlugInit } from './integrations/plug';
 import { useSwapInit } from './integrations/swap';
+import { AssetsWithdraw } from './views/assets/views/withdraw';
+import { AssetsDeposit } from './views/assets/views/deposit';
 
 export const App = () => {
   const isAnyMobileDevice = isMobile(window.navigator).any;
@@ -27,10 +29,13 @@ export const App = () => {
         <NotificationManager />
         <Routes>
           <Route path="/assets" element={<Assets />} />
+          <Route path="/assets/withdraw" element={<AssetsWithdraw />} />
+          <Route path="/assets/deposit" element={<AssetsDeposit />} />
+
           <Route path="/swap" element={<Swap />} />
           <Route path="/liquidity" element={<Liquidity />} />
           <Route path="/activity" element={<Activity />} />
-          <Route path="*" element={<Navigate to="/swap" />} />
+          <Route path="*" element={<Navigate to="/assets" />} />
         </Routes>
       </Layout>
     </BrowserRouter>

@@ -1,10 +1,11 @@
-// @ts-nocheck TODO: Fix types
 import type { Provider } from '@psychedelic/plug-inpage-provider';
 import { IDL } from '@dfinity/candid';
 
 import { ENV, ERRORS } from '@/config';
 
 import { ActorRepository, AppActors } from '.';
+
+export const appActors: Record<string, any> = {};
 
 export class ActorAdapter implements ActorRepository {
   constructor(private plugProvider?: Provider) {
@@ -16,13 +17,21 @@ export class ActorAdapter implements ActorRepository {
   async createActor<T extends AppActors>(
     canisterId: string,
     interfaceFactory: IDL.InterfaceFactory
-  ): Promise<T> {
+  ): Promise<any> {
+    if (appActors[canisterId]) {
+      return appActors[canisterId];
+    }
+
     await this.createAgent();
 
-    return this.plugProvider?.createActor<T>({
+    const actor = await this.plugProvider?.createActor<T>({
       canisterId,
-      interfaceFactory,
-    }) as any;
+      interfaceFactory: interfaceFactory,
+    } as any);
+
+    appActors[canisterId] = actor;
+
+    return actor;
   }
 
   private async createAgent(): Promise<any> {
