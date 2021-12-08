@@ -1,6 +1,7 @@
 import { HStack, Heading, Stack, Text } from '@chakra-ui/layout';
 
 import { Asset, AssetImageBlock, AssetTitleBlock, Header } from '@/components';
+import { DefaultTokensImage } from '@/constants';
 
 export const Activity = () => {
   return (
@@ -9,7 +10,13 @@ export const Activity = () => {
       <Stack spacing={4}>
         <Stack>
           <Text>October 18th, 2021</Text>
-          <Asset>
+          <Asset
+            type="swap"
+            imageSources={[
+              DefaultTokensImage['XTC'],
+              DefaultTokensImage['WICP'],
+            ]}
+          >
             <HStack spacing={4}>
               <AssetImageBlock />
               <AssetTitleBlock title="Swap XTC to WICP" subtitle="10:17 AM" />
@@ -22,7 +29,13 @@ export const Activity = () => {
             </Stack>
           </Asset>
 
-          <Asset>
+          <Asset
+            type="lp"
+            imageSources={[
+              DefaultTokensImage['XTC'],
+              DefaultTokensImage['WICP'],
+            ]}
+          >
             <HStack spacing={4}>
               <AssetImageBlock />
               <AssetTitleBlock title="Remove LP" subtitle="3:10 AM" />
@@ -38,7 +51,13 @@ export const Activity = () => {
 
         <Stack>
           <Text>October 17th, 2021</Text>
-          <Asset>
+          <Asset
+            type="lp"
+            imageSources={[
+              DefaultTokensImage['XTC'],
+              DefaultTokensImage['WICP'],
+            ]}
+          >
             <HStack spacing={4}>
               <AssetImageBlock />
               <AssetTitleBlock title="Add LP" subtitle="10:17 AM" />

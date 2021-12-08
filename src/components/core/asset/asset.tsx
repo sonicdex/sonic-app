@@ -111,21 +111,22 @@ export const AssetImageBlock = () => {
   const views = {
     swap: (
       <Box width={10} height={10} position="relative">
-        <SkeletonCircle h={8} w={8} isLoaded={!isLoading}>
+        <SkeletonCircle h={6} w={6} isLoaded={!isLoading}>
           <Image
             position="absolute"
-            width={8}
-            height={8}
+            width={6}
+            height={6}
             top={0}
             left={0}
             src={imageSources[0]}
           />
         </SkeletonCircle>
-        <SkeletonCircle h={8} w={8} isLoaded={!isLoading}>
+        <Text>&#x21AA;</Text>
+        <SkeletonCircle h={6} w={6} isLoaded={!isLoading}>
           <Image
             position="absolute"
-            width={8}
-            height={8}
+            width={6}
+            height={6}
             bottom={0}
             right={0}
             src={imageSources[1]}
@@ -134,22 +135,22 @@ export const AssetImageBlock = () => {
       </Box>
     ),
     lp: (
-      <Box width={10} height={10} position="relative">
-        <SkeletonCircle h={8} w={8} isLoaded={!isLoading}>
+      <Box width={9} height={9} position="relative">
+        <SkeletonCircle h={6} w={6} isLoaded={!isLoading}>
           <Image
             position="absolute"
-            width={8}
-            height={8}
+            width={6}
+            height={6}
             top={0}
             left={0}
             src={imageSources[0]}
           />
         </SkeletonCircle>
-        <SkeletonCircle h={8} w={8} isLoaded={!isLoading}>
+        <SkeletonCircle h={6} w={6} isLoaded={!isLoading}>
           <Image
             position="absolute"
-            width={8}
-            height={8}
+            width={6}
+            height={6}
             bottom={0}
             right={0}
             src={imageSources[1]}
