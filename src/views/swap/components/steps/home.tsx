@@ -1,10 +1,9 @@
 import { useMemo } from 'react';
-import { Box, Flex, Image } from '@chakra-ui/react';
+import { Center, Box, Flex } from '@chakra-ui/react';
 
 import { TitleBox, TokenBox, Button } from '@/components';
 import { getCurrencyString } from '@/utils/format';
 
-import { arrowDownSrc } from '@/assets';
 import {
   SwapStep,
   swapViewActions,
@@ -12,6 +11,7 @@ import {
   useSwapViewStore,
 } from '@/store';
 import { useBalances } from '@/hooks/use-balances';
+import { FaArrowDown } from 'react-icons/fa';
 
 export const HomeStep = () => {
   const { fromTokenOptions, toTokenOptions, from, to } = useSwapViewStore();
@@ -74,22 +74,21 @@ export const HomeStep = () => {
               from.token?.decimals
             )}
             amount="0.00"
+            isLoading={loading}
           />
         </Box>
-        <Box
-          borderRadius={4}
+        <Center
+          borderRadius={10}
           width={10}
           height={10}
           border="1px solid #373737"
-          py={3}
-          px={3}
           bg="#1E1E1E"
           mt={-4}
           mb={-6}
-          zIndex={1200}
+          zIndex="overlay"
         >
-          <Image m="auto" src={arrowDownSrc} />
-        </Box>
+          <FaArrowDown />
+        </Center>
         <Box mt={2.5} width="100%">
           <TokenBox
             value={to.value}
@@ -107,6 +106,7 @@ export const HomeStep = () => {
               to.token?.decimals
             )}
             amount="0.00"
+            isLoading={loading}
           />
         </Box>
       </Flex>
