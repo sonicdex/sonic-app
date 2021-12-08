@@ -1,6 +1,6 @@
-import { SupportedToken } from '@/models';
+import { TokenMetadata } from '@/models';
 
 export type Deposit = {
-  token: SupportedToken;
+  token: TokenMetadata;
   amount: string;
 };

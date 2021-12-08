@@ -1,8 +1,8 @@
-import { SupportedToken } from '.';
+import { TokenMetadata } from '.';
 
 export type SwapDataKey = 'from' | 'to';
 
 export interface SwapData {
-  token?: SupportedToken;
+  token?: TokenMetadata;
   value: string;
 }
