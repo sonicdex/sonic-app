@@ -111,20 +111,20 @@ export const Assets = () => {
                   <AssetImageBlock />
                   <AssetTitleBlock title={name} subtitle={symbol} />
                 </HStack>
-                <HStack spacing={6}>
-                  <Box>
-                    <Text fontWeight="bold" color="gray.400">
-                      Amount
-                    </Text>
-                    <Text fontWeight="bold">0.00</Text>
-                  </Box>
-                  <Box>
-                    <Text fontWeight="bold" color="gray.400">
-                      Price
-                    </Text>
-                    <Text fontWeight="bold">$0.00</Text>
-                  </Box>
-                </HStack>
+
+                <Box>
+                  <Text fontWeight="bold" color="gray.400">
+                    Amount
+                  </Text>
+                  <Text fontWeight="bold">0.00</Text>
+                </Box>
+                <Box>
+                  <Text fontWeight="bold" color="gray.400">
+                    Price
+                  </Text>
+                  <Text fontWeight="bold">$0.00</Text>
+                </Box>
+
                 <HStack>
                   <AssetIconButton
                     aria-label={`Withdraw ${symbol}`}
