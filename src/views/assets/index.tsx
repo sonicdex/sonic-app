@@ -62,7 +62,18 @@ export const Assets = () => {
           background: `linear-gradient(to bottom, transparent 0%, ${theme.colors.bg} 100%)`,
         }}
       >
-        <Stack spacing={4} pb={8} overflow="auto">
+        <Stack
+          css={{
+            '-ms-overflow-style': 'none',
+            scrollbarWidth: 'none',
+            '&::-webkit-scrollbar': {
+              display: 'none',
+            },
+          }}
+          spacing={4}
+          pb={8}
+          overflow="auto"
+        >
           {swapState === FeatureState.Loading &&
           !isSupportedTokenListPresent ? (
             <>
