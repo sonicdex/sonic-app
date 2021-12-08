@@ -1,18 +1,16 @@
-// @ts-nocheck TODO: fix types
 import { ENV } from '@/config';
 import { SwapIDL } from '@/did';
-import type { Transaction } from '@psychedelic/plug-inpage-provider/dist/src/Provider';
+import { parseAmount } from '@/utils/format';
+import { Principal } from '@dfinity/principal';
 import { CreateTransaction, Withdraw } from '../../models';
 
-export interface WithdrawTransaction
-  extends Transaction<SwapIDL.TxReceipt, SwapIDL.TxReceipt> {}
-
-export const createWithdrawTransaction: CreateTransaction<
-  Withdraw | null,
-  WithdrawTransaction
-> = ({ amount, tokenId }, onSuccess, onFail) => {
+export const createWithdrawTransaction: CreateTransaction<Withdraw> = (
+  { amount, token },
+  onSuccess,
+  onFail
+) => {
   return {
-    args: [tokenId, amount],
+    args: [Principal.fromText(token.id), parseAmount(amount, token.decimals)],
     canisterId: ENV.canisterIds.swap,
     idl: SwapIDL.factory,
     methodName: 'withdraw',

@@ -7,7 +7,7 @@ import { TokenMetadata } from '@/models';
 
 export type BigNumberish = BigNumber | Bytes | bigint | string | number;
 
-export const parseAmount = (val: string, decimals: number): bigint => {
+export const parseAmount = (val: string, decimals: string | number): bigint => {
   try {
     const str = parseUnits(val, decimals).toString();
     return BigInt(str);
@@ -172,10 +172,10 @@ export const formatAmount = (val: BigInt, decimals: number): string => {
   }
 };
 
-export const amountOutMin = (
-  toValue: number,
-  tolerance: number,
-  decimals: string
+export const getAmountOutMin = (
+  toValue: number | string,
+  tolerance: number | string,
+  decimals: number | string
 ) => {
   return new BigNumber('1')
     .minus(new BigNumber(tolerance))
@@ -184,10 +184,10 @@ export const amountOutMin = (
     .toString();
 };
 
-export const amountInMax = (
-  fromValue: number,
-  tolerance: number,
-  decimals: string
+export const getAmountInMax = (
+  fromValue: number | string,
+  tolerance: number | string,
+  decimals: number | string
 ) => {
   return new BigNumber('1')
     .minus(new BigNumber(tolerance))

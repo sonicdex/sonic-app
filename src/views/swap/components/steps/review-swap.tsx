@@ -1,6 +1,6 @@
 import { arrowDownSrc, infoSrc } from '@/assets';
 import { Button, TitleBox, TokenBox } from '@/components';
-import { useDepositSwapBatch } from '@/integrations/transactions';
+import { useSwapBatch } from '@/integrations/transactions';
 import { MODALS } from '@/modals';
 import {
   setCurrentModalData,
@@ -30,14 +30,15 @@ export const ReviewStep = () => {
     setCurrentModalState,
   } = useModalStore();
 
-  const [keepInSonic, setKeepInSonic] = useState<boolean>(false);
+  const [keepInSonic, setKeepInSonic] = useState<boolean>(true);
 
   const { addNotification } = useNotificationStore();
 
-  const depositSwapBatch = useDepositSwapBatch({
+  const depositSwapBatch = useSwapBatch({
     from,
     to,
-    slippage: 0.1,
+    slippage: 0.01,
+    keepInSonic,
   });
 
   const handleApproveSwap = () => {
@@ -60,29 +61,19 @@ export const ReviewStep = () => {
       .execute()
       .then((res) => console.log('success', res))
       .catch((err) => console.log('error', err));
-
-    // TODO: Remove after integration with batch transactions
-    // TODO: Refactor in case OnClose is called to stop all effects
-    // setTimeout(() => setCurrentModalState('swap'), 3000);
-    // setTimeout(() => setCurrentModalState('withdraw'), 6000);
-    // setTimeout(() => {
-    //   clearModal();
-    //   addNotification({
-    //     title: 'NOTIFICATION',
-    //     type: 'done',
-    //     id: Date.now().toString(),
-    //   });
-    // }, 9000);
   };
 
   useEffect(() => {
-    switch (depositSwapBatch.state) {
+    switch (depositSwapBatch.state as any) {
       case 'approve':
       case 'deposit':
         setCurrentModalState('deposit');
         break;
       case 'swap':
         setCurrentModalState('swap');
+        break;
+      case 'withdraw':
+        setCurrentModalState('withdraw');
         break;
     }
   }, [depositSwapBatch.state]);

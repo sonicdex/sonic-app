@@ -1,2 +1,2 @@
 export * from './deposit';
-export * from './deposit-swap';
+export * from './swap';
