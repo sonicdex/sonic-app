@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Text, Flex, Image, Box } from '@chakra-ui/react';
 
 import { Button, TitleBox, TokenBox } from '@/components';
@@ -13,14 +13,15 @@ import {
   useSwapStore,
 } from '@/store';
 import { useNavigate } from 'react-router';
-// import { useQuery } from '@/hooks/use-query';
+import { useQuery } from '@/hooks/use-query';
 import { SwapIDL } from '@/did';
 
 const BUTTON_TITLES = ['Review Supply', 'Confirm Supply'];
 
 export const LiquidityAdd = () => {
+  const query = useQuery();
+
   const { addNotification } = useNotificationStore();
-  // const query = useQuery();
   const { from, to } = useLiquidityViewStore();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -69,6 +70,29 @@ export const LiquidityAdd = () => {
         break;
     }
   };
+
+  useEffect(() => {
+    if (state !== FeatureState.Loading) {
+      const toTokenId = query.get('tokenTo');
+      const fromTokenId = query.get('tokenFrom');
+
+      if (fromTokenId) {
+        dispatch(
+          liquidityViewActions.setValue({ data: 'from', value: '0.00' })
+        );
+        dispatch(
+          liquidityViewActions.setToken({ data: 'from', tokenId: fromTokenId })
+        );
+      }
+
+      if (toTokenId) {
+        dispatch(liquidityViewActions.setValue({ data: 'to', value: '0.00' }));
+        dispatch(
+          liquidityViewActions.setToken({ data: 'to', tokenId: toTokenId })
+        );
+      }
+    }
+  }, [state]);
 
   return (
     <>
