@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 
 import {
   FeatureState,
+  liquidityViewActions,
   plugActions,
   swapActions,
   swapViewActions,
@@ -80,6 +81,9 @@ export const useSwapInit = () => {
         if (response) {
           dispatch(
             swapViewActions.setTokenList(parseResponseTokenList(response))
+          );
+          dispatch(
+            liquidityViewActions.setTokenList(parseResponseTokenList(response))
           );
           dispatch(swapActions.setSupportedTokenList(response));
         }

@@ -33,11 +33,6 @@ export const ReviewStep = () => {
   const handleApproveSwap = () => {
     // Integration: Do swap
     // trigger modals.
-    addNotification({
-      title: 'NOTIFICATION',
-      type: 'done',
-      id: Date.now().toString(),
-    });
     setOnClose(() => {
       console.log('Closed Modal');
     });
