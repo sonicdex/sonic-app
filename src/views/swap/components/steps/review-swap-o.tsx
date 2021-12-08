@@ -80,8 +80,8 @@ export const ReviewStep = ({
             value={fromValue}
             setValue={() => {}}
             onTokenSelect={() => {}}
-            tokenOptions={Object.values(tokenOptions)}
-            currentToken={fromToken}
+            otherTokensMetadata={Object.values(tokenOptions)}
+            selectedTokenMetadata={fromToken}
             balance="0.00"
             amount="0.00"
             disabled
@@ -106,8 +106,8 @@ export const ReviewStep = ({
             value={toValue}
             setValue={() => {}}
             onTokenSelect={() => {}}
-            tokenOptions={Object.values(tokenOptions)}
-            currentToken={toToken}
+            otherTokensMetadata={Object.values(tokenOptions)}
+            selectedTokenMetadata={toToken}
             status="active"
             balance="0.00"
             amount="0.00"

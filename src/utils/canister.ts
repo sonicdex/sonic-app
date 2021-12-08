@@ -1,6 +1,6 @@
 import { infoSrc } from '@/assets';
 import { SwapIDL } from '@/did';
-import { SupportedTokenList } from '@/models';
+import { TokenMetadataList } from '@/models';
 
 export const desensitizationPrincipalId = (
   principalId?: string,
@@ -20,12 +20,12 @@ export const desensitizationPrincipalId = (
 
 export const parseResponseTokenList = (
   response: SwapIDL.TokenInfoExt[]
-): SupportedTokenList => {
+): TokenMetadataList => {
   return response.reduce((list, token) => {
     list[token.id] = {
       ...token,
       logo: infoSrc,
     };
     return list;
-  }, {} as SupportedTokenList);
+  }, {} as TokenMetadataList);
 };

@@ -1,11 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { FeatureState } from '@/store';
 import type { RootState } from '@/store';
-import { SupportedToken, SupportedTokenList } from '@/models';
+import { TokenMetadata, TokenMetadataList } from '@/models';
 
 type DataKey = 'from' | 'to';
 export interface SwapData {
-  token?: SupportedToken;
+  token?: TokenMetadata;
   value: string;
 }
 
@@ -19,7 +19,7 @@ interface SwapViewState {
   state: FeatureState;
   from: SwapData;
   to: SwapData;
-  tokenList?: SupportedTokenList;
+  tokenList?: TokenMetadataList;
 }
 
 const initialState: SwapViewState = {
@@ -73,7 +73,7 @@ export const swapViewSlice = createSlice({
       }
       state.step = SwapStep.Home;
     },
-    setTokenList: (state, action: PayloadAction<SupportedTokenList>) => {
+    setTokenList: (state, action: PayloadAction<TokenMetadataList>) => {
       state.tokenList = action.payload;
       const tokens = Object.values(action.payload);
       state.from.token = tokens[0];

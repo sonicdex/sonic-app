@@ -5,7 +5,7 @@ import {
   Tooltip,
   Menu,
   MenuButton,
-  MenuList
+  MenuList,
 } from '@chakra-ui/react';
 import { FaArrowLeft, FaCog } from 'react-icons/fa';
 
@@ -74,7 +74,13 @@ export const TitleBox = ({
                   ml="auto"
                 />
               </MenuButton>
-              <MenuList bg="#1E1E1E" border="none" borderRadius={20} ml={-20} py={0}>
+              <MenuList
+                bg="#1E1E1E"
+                border="none"
+                borderRadius={20}
+                ml={-20}
+                py={0}
+              >
                 {settings}
               </MenuList>
             </Menu>

@@ -2,14 +2,8 @@ import { Text } from '@chakra-ui/layout';
 import { useNavigate } from 'react-router';
 import { Stack, Box } from '@chakra-ui/react';
 
-import { FeatureState } from '@/store';
 import { Asset, Header, InformationBox } from '@/components';
-import {
-  assetsViewActions,
-  useAppDispatch,
-  useAssetsView,
-  useSwapStore,
-} from '@/store';
+import { FeatureState, useAssetsView, useSwapStore } from '@/store';
 import { DefaultTokensImage } from '@/constants';
 import { theme } from '@/theme';
 
@@ -17,20 +11,17 @@ export const Assets = () => {
   useAssetsView();
 
   const { state: swapState, supportedTokenList } = useSwapStore();
-  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const navigateToDeposit = (tokenId?: string) => {
     if (tokenId) {
-      dispatch(assetsViewActions.setSelectedTokenId(tokenId));
-      navigate('/assets/deposit');
+      navigate(`/assets/deposit?tokenId=${tokenId}`);
     }
   };
 
   const navigateToWithdraw = (tokenId?: string) => {
     if (tokenId) {
-      dispatch(assetsViewActions.setSelectedTokenId(tokenId));
-      navigate('/assets/withdraw');
+      navigate(`/assets/withdraw?tokenId=${tokenId}`);
     }
   };
 
