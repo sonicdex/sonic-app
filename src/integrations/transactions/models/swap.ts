@@ -4,4 +4,5 @@ export type Swap = {
   from: SwapData;
   to: SwapData;
   slippage: number;
+  principalId?: string;
 };

@@ -4,6 +4,7 @@ import { usePlugStore } from '@/store';
 import { getAmountInMax, getAmountOutMin, parseAmount } from '@/utils/format';
 import { Principal } from '@dfinity/principal';
 import { Transaction } from '@psychedelic/plug-inpage-provider/dist/src/Provider';
+import { useMemo } from 'react';
 import { CreateTransaction, Swap } from '../../models';
 
 export interface SwapTransaction extends Transaction {}
@@ -13,69 +14,69 @@ export interface SwapExtraArgs {
 }
 
 export const createSwapExactTokensTransaction: CreateTransaction<Swap> = (
-  { from, to, slippage }: Swap,
+  { from, to, slippage, principalId }: Swap,
   onSuccess,
   onFail
-) => {
-  if (!from.token || !to.token) throw new Error('Tokens are required');
-  const { principalId } = usePlugStore();
-  if (!principalId) throw new Error('Principal is required');
+) =>
+  useMemo(() => {
+    if (!from.token || !to.token) throw new Error('Tokens are required');
+    if (!principalId) throw new Error('Principal is required');
 
-  const amountIn = parseAmount(from.value, from.token.decimals);
-  const amountOutMin = parseAmount(
-    getAmountOutMin(to.value, slippage, to.token.decimals),
-    to.token.decimals
-  );
-  const currentTime = (new Date().getTime() + 5 * 60 * 1000) * 10000000;
+    const amountIn = parseAmount(from.value, from.token.decimals);
+    const amountOutMin = parseAmount(
+      getAmountOutMin(to.value, slippage, to.token.decimals),
+      to.token.decimals
+    );
+    const currentTime = (new Date().getTime() + 5 * 60 * 1000) * 10000000;
 
-  console.log('amountIn:', amountIn, 'amountOutMin:', amountOutMin);
+    console.log('amountIn:', amountIn, 'amountOutMin:', amountOutMin);
 
-  return {
-    canisterId: ENV.canisterIds.swap,
-    idl: SwapIDL.factory,
-    methodName: 'swapExactTokensForTokens',
-    onFail,
-    onSuccess,
-    args: [
-      amountIn,
-      amountOutMin,
-      [from.token.id, to.token.id],
-      Principal.fromText(principalId),
-      BigInt(currentTime),
-    ],
-  };
-};
+    return {
+      canisterId: ENV.canisterIds.swap,
+      idl: SwapIDL.factory,
+      methodName: 'swapExactTokensForTokens',
+      onFail,
+      onSuccess,
+      args: [
+        amountIn,
+        amountOutMin,
+        [from.token.id, to.token.id],
+        Principal.fromText(principalId),
+        BigInt(currentTime),
+      ],
+    };
+  }, [from, to, slippage]);
 
 export const createSwapForExactTokensTransaction: CreateTransaction<Swap> = (
-  { from, to, slippage }: Swap,
+  { from, to, slippage, principalId }: Swap,
   onSuccess,
   onFail
-) => {
-  if (!from.token || !to.token) throw new Error('Tokens are required');
-  const { principalId } = usePlugStore();
-  if (!principalId) throw new Error('Principal is required');
+) =>
+  useMemo(() => {
+    if (!from.token || !to.token) throw new Error('Tokens are required');
+    if (!principalId) throw new Error('Principal is required');
 
-  const amountOut = parseAmount(to.value, to.token.decimals);
-  const amountInMin = parseAmount(
-    getAmountInMax(from.value, slippage, from.token.decimals),
-    to.token.decimals
-  );
-  const currentTime = (new Date().getTime() + 5 * 60 * 1000) * 10000000;
+    const amountOut = parseAmount(to.value, to.token.decimals);
+    const amountInMin = parseAmount(
+      getAmountInMax(from.value, slippage, from.token.decimals),
+      to.token.decimals
+    );
+    const currentTime = (new Date().getTime() + 5 * 60 * 1000) * 10000000;
 
-  console.log('amountOut:', amountOut, 'amountInMin:', amountInMin);
+    console.log('amountOut:', amountOut, 'amountInMin:', amountInMin);
 
-  return {
-    canisterId: ENV.canisterIds.swap,
-    idl: SwapIDL.factory,
-    methodName: 'swapTokensForExactTokens',
-    onFail,
-    onSuccess,
-    args: [
-      amountOut,
-      amountInMin,
-      [from.token.id, to.token.id],
-      Principal.fromText(principalId),
-      BigInt(currentTime),
-    ],
-  };
-};
+    return {
+      canisterId: ENV.canisterIds.swap,
+      idl: SwapIDL.factory,
+      methodName: 'swapTokensForExactTokens',
+      onFail,
+      onSuccess,
+      args: [
+        amountOut,
+        amountInMin,
+        [from.token.id, to.token.id],
+        Principal.fromText(principalId),
+        BigInt(currentTime),
+      ],
+    };
+  }, [from, to, slippage]);

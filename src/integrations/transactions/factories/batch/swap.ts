@@ -1,5 +1,6 @@
 import { useBalances } from '@/hooks/use-balances';
 import { parseAmount } from '@/utils/format';
+import { useMemo } from 'react';
 import {
   createApproveTransaction,
   createDepositTransaction,
@@ -15,55 +16,72 @@ export interface ExtraDepositSwapBatchOptions {
 
 export const useSwapBatch = ({
   keepInSonic,
-  ...swap
+  ...swapParams
 }: Swap & ExtraDepositSwapBatchOptions) => {
   const { sonicBalance } = useBalances();
   if (!sonicBalance) throw new Error('Sonic balance is needed');
 
-  if (!swap.from.token || !swap.to.token)
+  if (!swapParams.from.token || !swapParams.to.token)
     throw new Error('Tokens are required');
 
-  let transactions = {};
-
-  if (
-    sonicBalance[swap.from.token.id] <
-    Number(parseAmount(swap.from.value, swap.from.token.decimals))
-  ) {
-    const deposit = {
-      token: swap.from.token,
-      amount: swap.from.value,
-    };
-
-    transactions = {
-      approve: createApproveTransaction(deposit, async (res: unknown) =>
-        console.log('Approve', res)
-      ),
-      deposit: createDepositTransaction(deposit, async (res: unknown) =>
-        console.log('Deposit', res)
-      ),
-    };
-  }
-
-  transactions = {
-    ...transactions,
-    swap: createSwapExactTokensTransaction(swap, async (res: unknown) =>
-      console.log('Swap', res)
-    ),
+  const depositParams = {
+    token: swapParams.from.token,
+    amount: swapParams.from.value,
+  };
+  const withdrawParams = {
+    token: swapParams.to.token,
+    amount: swapParams.to.value,
   };
 
-  if (!keepInSonic) {
-    const withdraw = {
-      token: swap.to.token,
-      amount: swap.to.value,
+  const approve = createApproveTransaction(
+    depositParams,
+    async (res: unknown) => console.log('Approve', res)
+  );
+  const deposit = createDepositTransaction(
+    depositParams,
+    async (res: unknown) => console.log('Deposit', res)
+  );
+  const swap = createSwapExactTokensTransaction(
+    swapParams,
+    async (res: unknown) => console.log('Swap', res)
+  );
+  const withdraw = createWithdrawTransaction(
+    withdrawParams,
+    async (res: unknown) => console.log('Withdraw', res)
+  );
+
+  const transactions = useMemo(() => {
+    let _transactions = {};
+
+    if (swapParams.from.token) {
+      const sonicTokenBalance = swapParams.from.token
+        ? sonicBalance[swapParams.from.token.id]
+        : 0;
+      const neededBalance = Number(
+        parseAmount(swapParams.from.value, swapParams.from.token.decimals)
+      );
+      if (sonicTokenBalance < neededBalance) {
+        _transactions = {
+          approve,
+          deposit,
+        };
+      }
+    }
+
+    _transactions = {
+      ..._transactions,
+      swap,
     };
 
-    transactions = {
-      ...transactions,
-      withdraw: createWithdrawTransaction(withdraw, async (res: unknown) =>
-        console.log('Withdraw', res)
-      ),
-    };
-  }
+    if (!keepInSonic) {
+      _transactions = {
+        ..._transactions,
+        withdraw,
+      };
+    }
+
+    return _transactions;
+  }, [...Object.values(swapParams), keepInSonic]);
 
   return useBatchHook({ transactions });
 };

@@ -9,6 +9,7 @@ import {
   useAppDispatch,
   useModalStore,
   useNotificationStore,
+  usePlugStore,
   useSwapViewStore,
 } from '@/store';
 import { getCurrencyString } from '@/utils/format';
@@ -22,23 +23,25 @@ import { Checkbox } from '@chakra-ui/checkbox';
 export const ReviewStep = () => {
   const { totalBalance } = useBalances();
   const { fromTokenOptions, toTokenOptions, from, to } = useSwapViewStore();
+  const { principalId } = usePlugStore();
   const dispatch = useAppDispatch();
   const {
     setCurrentModal,
     // setCurrentModalData,
-    setOnClose,
+    // setOnClose,
     setCurrentModalState,
   } = useModalStore();
 
-  const [keepInSonic, setKeepInSonic] = useState<boolean>(true);
+  const [keepInSonic, setKeepInSonic] = useState<boolean>(false);
 
   const { addNotification } = useNotificationStore();
 
   const depositSwapBatch = useSwapBatch({
     from,
     to,
-    slippage: 0.01,
+    slippage: 0.1,
     keepInSonic,
+    principalId,
   });
 
   const handleApproveSwap = () => {
@@ -50,9 +53,9 @@ export const ReviewStep = () => {
       type: 'done',
       id: Date.now().toString(),
     });
-    setOnClose(() => {
-      console.log('Closed Modal');
-    });
+    // setOnClose(() => {
+    //   console.log('Closed Modal');
+    // });
     setCurrentModalData({ fromToken: from.token.name, toToken: to.token.name });
     setCurrentModal(MODALS.swapProgress);
 
