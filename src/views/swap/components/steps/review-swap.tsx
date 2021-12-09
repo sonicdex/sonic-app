@@ -20,12 +20,8 @@ export const ReviewStep = () => {
   const { totalBalance } = useBalances();
   const { fromTokenOptions, toTokenOptions, from, to } = useSwapViewStore();
   const dispatch = useAppDispatch();
-  const {
-    setCurrentModal,
-    clearModal,
-    setOnClose,
-    setCurrentModalState,
-  } = useModalStore();
+  const { setCurrentModal, clearModal, setOnClose, setCurrentModalState } =
+    useModalStore();
 
   const [keepInSonic, setKeepInSonic] = useState<boolean>(false);
   const { addNotification } = useNotificationStore();

@@ -4,9 +4,7 @@ import {
   greySonicSrc,
   questionMarkSrc,
 } from '@/assets';
-import {
-  useModalStore,
-} from '@/store';
+import { useModalStore } from '@/store';
 import { MODALS } from '@/modals';
 import { NumberInput } from '@/components';
 import { DefaultTokensImage } from '@/constants';

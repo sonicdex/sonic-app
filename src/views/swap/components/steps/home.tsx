@@ -54,7 +54,6 @@ export const HomeStep = () => {
     return 'inactive';
   }, [from.value]);
 
-
   const selectedTokenIds = useMemo(() => {
     let selectedIds = [];
     if (from?.token?.id) selectedIds.push(from.token.id);
