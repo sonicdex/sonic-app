@@ -1,4 +1,4 @@
-import { Flex, Heading, Text } from '@chakra-ui/react';
+import { Flex, Heading, Text, ModalCloseButton } from '@chakra-ui/react';
 import { Button } from '@/components';
 import { ModalComponentProps } from '../modals';
 
@@ -10,12 +10,12 @@ export const SwapFailed = ({
     direction="column"
     justifyContent="center"
     borderRadius={20}
-    width="modal"
     bg="#1E1E1E"
     pt={9}
     px={5}
     pb={9}
   >
+    <ModalCloseButton position="absolute" top="10px" right="15px" />
     <Heading as="h1" fontWeight={700} fontSize={22} pb={3}>
       Swap Failed
     </Heading>
