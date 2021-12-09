@@ -152,9 +152,7 @@ export const TokenBox = ({
               {selectedTokenMetadata?.symbol}
             </Text>
           </Skeleton>
-          { !menuDisabled && (
-            <Image width="11px" src={chevronDownSrc} />
-          )}
+          {!menuDisabled && <Image width="11px" src={chevronDownSrc} />}
         </Flex>
         <Skeleton isLoaded={!isLoading} borderRadius="full">
           <NumberInput

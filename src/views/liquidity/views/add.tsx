@@ -79,7 +79,6 @@ export const LiquidityAdd = () => {
     return selectedIds;
   }, [from?.token?.id, to?.token?.id]);
 
-
   useEffect(() => {
     if (state !== FeatureState.Loading) {
       const toTokenId = query.get('tokenTo');
