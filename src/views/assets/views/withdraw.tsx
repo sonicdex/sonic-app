@@ -7,12 +7,14 @@ import {
   FeatureState,
   useAppDispatch,
   useAssetsViewStore,
+  useNotificationStore,
   useSwapStore,
 } from '@/store';
 import { useNavigate } from 'react-router';
 import { useQuery } from '@/hooks/use-query';
 
 export const AssetsWithdraw = () => {
+  const { addNotification } = useNotificationStore();
   const query = useQuery();
   const [selectedTokenId, setSelectedTokenId] = useState(query.get('tokenId'));
   const { withdrawValue } = useAssetsViewStore();
@@ -41,8 +43,13 @@ export const AssetsWithdraw = () => {
   };
 
   const handleWithdraw = () => {
-    // Integration:
+    // TODO: Replace by a real withdraw
     // Withdraw token from Sonic
+    addNotification({
+      title: 'Withdraw successful',
+      type: 'done',
+      id: Date.now().toString(),
+    });
   };
 
   return (

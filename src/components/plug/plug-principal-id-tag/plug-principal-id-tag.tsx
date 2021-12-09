@@ -22,13 +22,16 @@ import {
 import { Emoji, GradientBox } from '@/components/core';
 import { desensitizationPrincipalId } from '@/utils/canister';
 import { chevronDownSrc, copySrc, exitSrc } from '@/assets';
+import { disconnect } from '@/integrations/plug';
 
 export const PlugPrincipalIDTag: FC<TagProps> = (props): ReactElement => {
   const { principalId, state } = usePlugStore();
   const dispatch = useAppDispatch();
 
-  const handleDisconnect = () => {
+  const handleDisconnect = async () => {
     dispatch(plugActions.setIsConnected(false));
+
+    await disconnect();
   };
 
   const shortPrincipalId = useMemo(() => {
