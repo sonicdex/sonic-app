@@ -66,12 +66,12 @@ export const TokenBox = ({
   const amountDisplay = amountText ? amountText : `$${amount}`;
 
   const toggleModal = () => {
+    if (isLoading || menuDisabled) return;
     clearModal();
     setCurrentModalData({
       tokens: stringify(otherTokensMetadata),
       onSelect: onTokenSelect,
       selectedTokenIds,
-      isLoading,
     });
     setCurrentModal(MODALS.tokenSelect);
   };
@@ -152,7 +152,9 @@ export const TokenBox = ({
               {selectedTokenMetadata?.symbol}
             </Text>
           </Skeleton>
-          <Image width="11px" src={chevronDownSrc} />
+          { !menuDisabled && (
+            <Image width="11px" src={chevronDownSrc} />
+          )}
         </Flex>
         <Skeleton isLoaded={!isLoading} borderRadius="full">
           <NumberInput
