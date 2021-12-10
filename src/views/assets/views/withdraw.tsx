@@ -23,8 +23,6 @@ export const AssetsWithdraw = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  // const selectedTokenActorData = useTokenActor({ canisterId: selectedTokenId });
-
   const isReady = useMemo(
     () => withdrawValue && parseFloat(withdrawValue) > 0,
     [withdrawValue]

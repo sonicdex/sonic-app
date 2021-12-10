@@ -9,16 +9,21 @@ import {
   Header,
   InformationBox,
 } from '@/components';
-import { FeatureState, useAssetsView, useSwapStore } from '@/store';
+import { FeatureState, useSwapStore } from '@/store';
 import { DefaultTokensImage } from '@/constants';
 import { theme } from '@/theme';
 import { FaMinus, FaPlus } from 'react-icons/fa';
 import { questionMarkSrc } from '@/assets';
+import { useTotalBalances } from '@/hooks/use-balances';
 
 export const Assets = () => {
-  useAssetsView();
+  const { totalBalances } = useTotalBalances();
+  const {
+    state: swapState,
+    balancesState,
+    supportedTokenList,
+  } = useSwapStore();
 
-  const { state: swapState, supportedTokenList } = useSwapStore();
   const navigate = useNavigate();
 
   const navigateToDeposit = (tokenId?: string) => {
@@ -35,6 +40,11 @@ export const Assets = () => {
 
   const isSupportedTokenListPresent =
     supportedTokenList && supportedTokenList.length > 0;
+
+  console.log(
+    swapState === FeatureState.Loading,
+    balancesState === FeatureState.Loading
+  );
 
   return (
     <>
@@ -73,8 +83,9 @@ export const Assets = () => {
           pb={8}
           overflow="auto"
         >
-          {swapState === FeatureState.Loading &&
-          !isSupportedTokenListPresent ? (
+          {(swapState === FeatureState.Loading &&
+            !isSupportedTokenListPresent) ||
+          balancesState === FeatureState.Loading ? (
             <>
               <Asset isLoading>
                 <AssetImageBlock />
@@ -116,13 +127,13 @@ export const Assets = () => {
                   <Text fontWeight="bold" color="gray.400">
                     Amount
                   </Text>
-                  <Text fontWeight="bold">0.00</Text>
+                  <Text fontWeight="bold">{totalBalances?.[id]}</Text>
                 </Box>
                 <Box>
                   <Text fontWeight="bold" color="gray.400">
                     Price
                   </Text>
-                  <Text fontWeight="bold">$0.00</Text>
+                  <Text fontWeight="bold">{`$0.00`}</Text>
                 </Box>
 
                 <HStack>

@@ -13,10 +13,10 @@ import {
 import { getCurrencyString } from '@/utils/format';
 import { useState } from 'react';
 import { MODALS } from '@/modals';
-import { useBalances } from '@/hooks/use-balances';
+import { useTotalBalances } from '@/hooks/use-balances';
 
 export const ReviewStep = () => {
-  const { totalBalance } = useBalances();
+  const { totalBalances } = useTotalBalances();
   const { fromTokenOptions, toTokenOptions, from, to } = useSwapViewStore();
   const dispatch = useAppDispatch();
   const {
@@ -74,7 +74,7 @@ export const ReviewStep = () => {
             otherTokensMetadata={fromTokenOptions}
             selectedTokenMetadata={from.token}
             balance={getCurrencyString(
-              from.token && totalBalance ? totalBalance[from.token.id] : 0,
+              from.token && totalBalances ? totalBalances[from.token.id] : 0,
               from.token?.decimals
             )}
             amount="0.00"
@@ -106,7 +106,7 @@ export const ReviewStep = () => {
             otherTokensMetadata={toTokenOptions}
             selectedTokenMetadata={to.token}
             balance={getCurrencyString(
-              to.token && totalBalance ? totalBalance[to.token.id] : 0,
+              to.token && totalBalances ? totalBalances[to.token.id] : 0,
               to.token?.decimals
             )}
             status="active"

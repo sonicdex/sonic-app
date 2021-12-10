@@ -3,19 +3,19 @@ import { useEffect } from 'react';
 import {
   FeatureState,
   liquidityViewActions,
-  plugActions,
   swapActions,
   swapViewActions,
   useAppDispatch,
   usePlugStore,
 } from '@/store';
-import { plug } from '../plug';
 import { useSwapActor } from '../actor/use-swap-actor';
 import { Principal } from '@dfinity/principal';
 import { parseResponseTokenList } from '@/utils/canister';
+import { useTotalBalances } from '@/hooks/use-balances';
 
 export const useSwapInit = () => {
-  const { isConnected, principalId } = usePlugStore();
+  const { getBalances } = useTotalBalances();
+  const { principalId } = usePlugStore();
 
   const swapActor = useSwapActor();
 
@@ -23,53 +23,21 @@ export const useSwapInit = () => {
 
   useEffect(() => {
     if (swapActor && principalId) {
-      getSonicBalances();
+      getBalances();
     }
-  }, [isConnected]);
-
-  useEffect(() => {
-    if (plug && isConnected) {
-      getPlugBalance();
-    }
-  }, [plug, isConnected]);
+  }, [swapActor, principalId]);
 
   useEffect(() => {
     if (swapActor && principalId) {
       swapActor
         .getUserBalances(Principal.fromText(principalId))
-        .then((response) => dispatch(swapActions.setBalance(response)));
+        .then((response) => dispatch(swapActions.setSonicBalances(response)));
     }
   }, [swapActor, principalId]);
 
   useEffect(() => {
     getSupportedTokenList();
   }, [swapActor]);
-
-  async function getSonicBalances() {
-    try {
-      dispatch(swapActions.setState(FeatureState.Loading));
-
-      if (principalId) {
-        const balance = await swapActor?.getUserBalances(
-          Principal.fromText(principalId)
-        );
-        dispatch(swapActions.setBalance(balance));
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  async function getPlugBalance() {
-    try {
-      dispatch(plugActions.setState(FeatureState.Loading));
-      const balance = await plug?.requestBalance();
-
-      dispatch(plugActions.setBalance(balance));
-    } catch (error) {
-      console.error(error);
-    }
-  }
 
   async function getSupportedTokenList() {
     if (swapActor) {

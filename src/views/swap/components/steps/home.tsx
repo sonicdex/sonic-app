@@ -10,14 +10,14 @@ import {
   useAppDispatch,
   useSwapViewStore,
 } from '@/store';
-import { useBalances } from '@/hooks/use-balances';
+import { useTotalBalances } from '@/hooks/use-balances';
 import { FaArrowDown } from 'react-icons/fa';
 
 export const HomeStep = () => {
   const { fromTokenOptions, toTokenOptions, from, to } = useSwapViewStore();
   const dispatch = useAppDispatch();
 
-  const { totalBalance } = useBalances();
+  const { totalBalances: totalBalance } = useTotalBalances();
 
   const handleButtonOnClick = () => {
     if (loading) return;
