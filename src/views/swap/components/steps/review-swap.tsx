@@ -19,6 +19,7 @@ import { Box, Flex } from '@chakra-ui/layout';
 import { Image } from '@chakra-ui/image';
 import { FormControl } from '@chakra-ui/form-control';
 import { Checkbox } from '@chakra-ui/checkbox';
+import { createCAPLink } from '@/utils/function';
 
 export const ReviewStep = () => {
   const { totalBalance } = useBalances();
@@ -30,6 +31,7 @@ export const ReviewStep = () => {
     // setCurrentModalData,
     // setOnClose,
     setCurrentModalState,
+    clearModal,
   } = useModalStore();
 
   const [keepInSonic, setKeepInSonic] = useState<boolean>(false);
@@ -46,24 +48,14 @@ export const ReviewStep = () => {
 
   const handleApproveSwap = () => {
     if (!from.token || !to.token) return;
-    // Integration: Do swap
-    // trigger modals.
-    addNotification({
-      title: 'NOTIFICATION',
-      type: 'done',
-      id: Date.now().toString(),
-    });
-    // setOnClose(() => {
-    //   console.log('Closed Modal');
-    // });
+
     setCurrentModalData({ fromToken: from.token.name, toToken: to.token.name });
     setCurrentModal(MODALS.swapProgress);
 
-    console.log('Starting deposit');
     depositSwapBatch
       .execute()
-      .then((res) => console.log('success', res))
-      .catch((err) => console.log('error', err));
+      .then((res) => console.log('Swap Completed', res))
+      .catch((err) => console.error('Swap Error', err));
   };
 
   useEffect(() => {
@@ -77,6 +69,17 @@ export const ReviewStep = () => {
         break;
       case 'withdraw':
         setCurrentModalState('withdraw');
+        break;
+      case 'done':
+        clearModal();
+        addNotification({
+          title: `Swapped ${from.value} ${from.token?.symbol} for ${to.value} ${to.token?.symbol}`,
+          type: 'done',
+          id: Date.now().toString(),
+          // TODO: add transaction id
+          transactionLink: createCAPLink('transactionId'),
+        });
+        dispatch(swapViewActions.setValue({ data: 'from', value: '0.00' }));
         break;
     }
   }, [depositSwapBatch.state]);
