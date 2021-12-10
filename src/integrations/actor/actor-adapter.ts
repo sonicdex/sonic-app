@@ -1,18 +1,15 @@
 import type { Provider } from '@psychedelic/plug-inpage-provider';
 import { IDL } from '@dfinity/candid';
 
-import { ENV, ERRORS } from '@/config';
+import { ENV } from '@/config';
 
 import { ActorRepository, AppActors } from '.';
+import { Actor } from '@dfinity/agent';
 
 export const appActors: Record<string, any> = {};
 
 export class ActorAdapter implements ActorRepository {
-  constructor(private plugProvider?: Provider) {
-    if (!plugProvider) {
-      throw new Error(ERRORS.PlugNotConnected);
-    }
-  }
+  constructor(private provider?: Provider) {}
 
   async createActor<T extends AppActors>(
     canisterId: string,
@@ -24,10 +21,18 @@ export class ActorAdapter implements ActorRepository {
 
     await this.createAgent();
 
-    const actor = await this.plugProvider?.createActor<T>({
-      canisterId,
-      interfaceFactory: interfaceFactory,
-    } as any);
+    let actor;
+
+    if (!this.provider) {
+      actor = Actor.createActor<T>(interfaceFactory, {
+        canisterId,
+      });
+    } else {
+      actor = await this.provider.createActor<T>({
+        canisterId,
+        interfaceFactory,
+      } as any);
+    }
 
     appActors[canisterId] = actor;
 
@@ -35,8 +40,8 @@ export class ActorAdapter implements ActorRepository {
   }
 
   private async createAgent(): Promise<any> {
-    if (this.plugProvider && !this.plugProvider?.agent) {
-      await this.plugProvider.createAgent({
+    if (this.provider && !this.provider?.agent) {
+      await this.provider.createAgent({
         whitelist: Object.values(ENV.canisterIds),
         host: ENV.host,
       });

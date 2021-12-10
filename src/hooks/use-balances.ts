@@ -1,30 +1,86 @@
 import { useMemo } from 'react';
 
-import { Balance } from '@/models';
-import { usePlugStore, useSwapStore } from '@/store';
+import { Balances } from '@/models';
+import {
+  FeatureState,
+  swapActions,
+  useAppDispatch,
+  usePlugStore,
+  useSwapStore,
+} from '@/store';
+import { ActorAdapter, useSwapActor } from '@/integrations/actor';
+import { Principal } from '@dfinity/principal';
+import { TokenIDL } from '@/did';
 
-export const useBalances = () => {
-  const { balance: plugBalance } = usePlugStore();
-  const { balance: sonicBalance } = useSwapStore();
+export const useTotalBalances = () => {
+  const { principalId } = usePlugStore();
+  const { sonicBalances, tokenBalances } = useSwapStore();
+  const swapActor = useSwapActor();
 
-  const totalBalance = useMemo(() => {
-    if (plugBalance && sonicBalance) {
-      return sumBalances(plugBalance, sonicBalance);
+  const dispatch = useAppDispatch();
+
+  async function getBalances() {
+    try {
+      dispatch(swapActions.setBalancesState(FeatureState.Loading));
+
+      if (principalId) {
+        const sonicBalances = await swapActor?.getUserBalances(
+          Principal.fromText(principalId)
+        );
+
+        const tokensBalances = sonicBalances
+          ? await Promise.all(
+              sonicBalances.map(async (balance) => {
+                try {
+                  const tokenActor: TokenIDL.Factory =
+                    await new ActorAdapter().createActor(
+                      balance[0],
+                      TokenIDL.factory
+                    );
+
+                  const tokenBalance = await tokenActor.balanceOf(
+                    Principal.fromText(principalId)
+                  );
+
+                  const result: [string, bigint] = [balance[0], tokenBalance];
+                  return result;
+                } catch (error) {
+                  console.error(error);
+                  const errorResult: [string, bigint] = [balance[0], BigInt(0)];
+
+                  return errorResult;
+                }
+              })
+            )
+          : undefined;
+
+        dispatch(swapActions.setSonicBalances(sonicBalances));
+        dispatch(swapActions.setTokenBalances(tokensBalances));
+        dispatch(swapActions.setBalancesState(FeatureState.Idle));
+      }
+    } catch (error) {
+      console.error(error);
+      dispatch(swapActions.setBalancesState(FeatureState.Error));
+    }
+  }
+
+  const totalBalances = useMemo(() => {
+    if (tokenBalances && sonicBalances) {
+      return sumBalances(tokenBalances, sonicBalances);
     }
 
     return undefined;
-  }, [plugBalance, sonicBalance]);
+  }, [tokenBalances, sonicBalances]);
 
   return {
-    plugBalance,
-    sonicBalance,
-    totalBalance,
+    totalBalances,
+    getBalances,
   };
 };
 
 // === UTILS ===
 
-const sumBalances = (...balances: Balance[]): Balance => {
+const sumBalances = (...balances: Balances[]): Balances => {
   return balances.reduce((acc, current) => {
     const balance = Object.entries(current);
     balance.forEach(([canisterId, amount]) => {
@@ -35,5 +91,5 @@ const sumBalances = (...balances: Balance[]): Balance => {
       }
     });
     return acc;
-  }, {} as Balance);
+  }, {} as Balances);
 };

@@ -10,7 +10,7 @@ import {
   useAppDispatch,
   useSwapViewStore,
 } from '@/store';
-import { useBalances } from '@/hooks/use-balances';
+import { useTotalBalances } from '@/hooks/use-balances';
 import { FaArrowDown } from 'react-icons/fa';
 
 import { SwapSettings } from '../index';
@@ -23,7 +23,7 @@ export const HomeStep = () => {
   const [slippage, setSlippage] = useState('0.10');
   const [autoSlippage, setAutoSlippage] = useState(true);
 
-  const { totalBalance } = useBalances();
+  const { totalBalances: totalBalance } = useTotalBalances();
 
   const handleButtonOnClick = () => {
     if (loading) return;

@@ -2,17 +2,22 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { FeatureState } from '@/store';
 import type { RootState } from '@/store';
 import { SwapIDL } from '@/did';
-import { Balance } from '@/models';
+import { Balances } from '@/models';
 
 interface SwapState {
   state: FeatureState;
+  balancesState: FeatureState;
   supportedTokenList?: SwapIDL.TokenInfoExt[];
-  balance?: Balance;
+  sonicBalances?: Balances;
+  tokenBalances?: Balances;
 }
 
 const initialState: SwapState = {
   state: 'loading' as FeatureState,
+  balancesState: 'loading' as FeatureState,
   supportedTokenList: undefined,
+  sonicBalances: undefined,
+  tokenBalances: undefined,
 };
 
 export const swapSlice = createSlice({
@@ -23,13 +28,16 @@ export const swapSlice = createSlice({
     setState: (state, action: PayloadAction<FeatureState>) => {
       state.state = action.payload;
     },
+    setBalancesState: (state, action: PayloadAction<FeatureState>) => {
+      state.balancesState = action.payload;
+    },
     setSupportedTokenList: (
       state,
       action: PayloadAction<SwapIDL.TokenInfoExt[]>
     ) => {
       state.supportedTokenList = action.payload;
     },
-    setBalance: (
+    setSonicBalances: (
       state,
       action: PayloadAction<[string, bigint][] | undefined>
     ) => {
@@ -38,8 +46,20 @@ export const swapSlice = createSlice({
           ...acc,
           [current[0]]: Number(current[1]),
         };
-      }, {} as Balance);
-      state.balance = parsedBalances;
+      }, {} as Balances);
+      state.sonicBalances = parsedBalances;
+    },
+    setTokenBalances: (
+      state,
+      action: PayloadAction<[string, bigint][] | undefined>
+    ) => {
+      const parsedBalances = action.payload?.reduce((acc, current) => {
+        return {
+          ...acc,
+          [current[0]]: Number(current[1]),
+        };
+      }, {} as Balances);
+      state.tokenBalances = parsedBalances;
     },
   },
 });
