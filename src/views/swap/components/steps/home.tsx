@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { Box, Icon, Flex, IconButton, Tooltip } from '@chakra-ui/react';
 
 import { TitleBox, TokenBox, Button } from '@/components';
@@ -13,9 +13,15 @@ import {
 import { useBalances } from '@/hooks/use-balances';
 import { FaArrowDown } from 'react-icons/fa';
 
+import { SwapSettings } from '../index';
+
 export const HomeStep = () => {
   const { fromTokenOptions, toTokenOptions, from, to } = useSwapViewStore();
   const dispatch = useAppDispatch();
+
+  // TODO: Move to useSwapViewStore
+  const [slippage, setSlippage] = useState('0.10');
+  const [autoSlippage, setAutoSlippage] = useState(true);
 
   const { totalBalance } = useBalances();
 
@@ -57,7 +63,17 @@ export const HomeStep = () => {
 
   return (
     <>
-      <TitleBox title="Swap" settings="sd" />
+      <TitleBox
+        title="Swap"
+        settings={
+          <SwapSettings
+            slippage={slippage}
+            setSlippage={setSlippage}
+            isAuto={autoSlippage}
+            setIsAuto={setAutoSlippage}
+          />
+        }
+      />
       <Flex direction="column" alignItems="center" mb={5}>
         <Box mt={5} width="100%">
           <TokenBox
