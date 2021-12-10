@@ -16,8 +16,8 @@ import { FaArrowDown } from 'react-icons/fa';
 import { SwapSettings } from '../index';
 
 export const HomeStep = () => {
-  const { fromTokenOptions, toTokenOptions, from, to } = useSwapViewStore();
   const dispatch = useAppDispatch();
+  const { fromTokenOptions, toTokenOptions, from, to } = useSwapViewStore();
 
   // TODO: Move to useSwapViewStore
   const [slippage, setSlippage] = useState('0.10');
@@ -38,6 +38,10 @@ export const HomeStep = () => {
     return false;
   }, [totalBalance, from.token, to.token]);
 
+  const handleTokenSelect = (data: any, tokenId: string) => {
+    dispatch(swapViewActions.setToken({ data, tokenId }));
+  };
+
   const [buttonDisabled, buttonMessage] = useMemo<[boolean, string]>(() => {
     if (loading) return [true, 'Loading'];
     if (!totalBalance || !from.token || !to.token)
@@ -56,6 +60,14 @@ export const HomeStep = () => {
     if (from.value && parseFloat(from.value) > 0) return 'active';
     return 'inactive';
   }, [from.value]);
+
+  const selectedTokenIds = useMemo(() => {
+    let selectedIds = [];
+    if (from?.token?.id) selectedIds.push(from.token.id);
+    if (to?.token?.id) selectedIds.push(to.token.id);
+
+    return selectedIds;
+  }, [from?.token?.id, to?.token?.id]);
 
   const switchTokens = () => {
     dispatch(swapViewActions.switchTokens());
@@ -81,18 +93,17 @@ export const HomeStep = () => {
             setValue={(value) =>
               dispatch(swapViewActions.setValue({ data: 'from', value }))
             }
-            onTokenSelect={(tokenId) => {
-              dispatch(swapViewActions.setToken({ data: 'from', tokenId }));
-            }}
             otherTokensMetadata={fromTokenOptions}
             selectedTokenMetadata={from.token}
+            onTokenSelect={(tokenId) => handleTokenSelect('from', tokenId)}
+            selectedTokenIds={selectedTokenIds}
             status={fromValueStatus}
+            isLoading={loading}
             balance={getCurrencyString(
               from.token && totalBalance ? totalBalance[from.token.id] : 0,
               from.token?.decimals
             )}
             amount="0.00"
-            isLoading={loading}
           />
         </Box>
         <Tooltip label="Swap">
@@ -118,18 +129,16 @@ export const HomeStep = () => {
             setValue={(value) =>
               dispatch(swapViewActions.setValue({ data: 'to', value }))
             }
-            onTokenSelect={(tokenId) => {
-              dispatch(swapViewActions.setToken({ data: 'to', tokenId }));
-            }}
             otherTokensMetadata={toTokenOptions}
+            onTokenSelect={(tokenId) => handleTokenSelect('to', tokenId)}
             selectedTokenMetadata={to.token}
             disabled={true}
+            isLoading={loading}
             balance={getCurrencyString(
               to.token && totalBalance ? totalBalance[to.token.id] : 0,
               to.token?.decimals
             )}
             amount="0.00"
-            isLoading={loading}
           />
         </Box>
       </Flex>

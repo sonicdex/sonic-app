@@ -70,6 +70,7 @@ export const AssetsWithdraw = () => {
               dispatch(assetsViewActions.setWithdrawValue(value))
             }
             onTokenSelect={handleTokenSelect}
+            selectedTokenIds={[selectedTokenId]}
             source="sonic"
             balance="23.23"
             amount="53.23"

@@ -71,6 +71,14 @@ export const LiquidityAdd = () => {
     }
   };
 
+  const selectedTokenIds = useMemo(() => {
+    let selectedIds = [];
+    if (from?.token?.id) selectedIds.push(from.token.id);
+    if (to?.token?.id) selectedIds.push(to.token.id);
+
+    return selectedIds;
+  }, [from?.token?.id, to?.token?.id]);
+
   useEffect(() => {
     if (state !== FeatureState.Loading) {
       const toTokenId = query.get('tokenTo');
@@ -116,6 +124,7 @@ export const LiquidityAdd = () => {
             otherTokensMetadata={supportedTokenList}
             selectedTokenMetadata={from.token}
             status={getActiveStatus(from.token, from.value)}
+            selectedTokenIds={selectedTokenIds}
             disabled={subStep === 1}
             menuDisabled={subStep === 1}
             balance="0.00"

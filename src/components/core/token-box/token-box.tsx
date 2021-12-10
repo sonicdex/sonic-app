@@ -4,26 +4,17 @@ import {
   greySonicSrc,
   questionMarkSrc,
 } from '@/assets';
+import { useModalStore } from '@/store';
+import { MODALS } from '@/modals';
 import { NumberInput } from '@/components';
 import { DefaultTokensImage } from '@/constants';
 import { TokenMetadata } from '@/models';
-import {
-  Skeleton,
-  Text,
-  Box,
-  Button,
-  Flex,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
-  Image,
-} from '@chakra-ui/react';
+import { Skeleton, Text, Box, Flex, Image } from '@chakra-ui/react';
+import { stringify } from '@/utils/format';
 
 type TokenBoxProps = {
   value?: string;
   setValue?: (value: string) => any;
-  onTokenSelect?: (token: string) => any;
   otherTokensMetadata?: Array<TokenMetadata>;
   selectedTokenMetadata?: TokenMetadata;
   balance?: string;
@@ -36,36 +27,29 @@ type TokenBoxProps = {
   status?: string;
   glow?: boolean;
   isLoading?: boolean;
+  selectedTokenIds?: string[];
+  onTokenSelect?: (arg0: string) => any;
 };
-
-const ChevronDownIcon = () => <Image src={chevronDownSrc} />;
-
-const TokenOption = ({ logo = questionMarkSrc, symbol }: TokenMetadata) => (
-  <Flex direction="row" width="fit-content" alignItems="center">
-    {logo && <Image src={DefaultTokensImage[symbol] ?? logo} height={5} />}
-    <Text fontWeight={700} color="#F6FCFD" ml={2}>
-      {symbol}
-    </Text>
-  </Flex>
-);
 
 export const TokenBox = ({
   status,
   value = '',
   setValue = () => null,
-  onTokenSelect,
   otherTokensMetadata,
+  onTokenSelect,
   selectedTokenMetadata,
   source,
   balance,
   amount,
   balanceText,
   amountText,
+  selectedTokenIds = [],
   menuDisabled = false,
   disabled = false,
   glow = false,
   isLoading = false,
 }: TokenBoxProps) => {
+  const { setCurrentModal, setCurrentModalData, clearModal } = useModalStore();
   const sourceImg = source === 'plug' ? greyPlugSrc : greySonicSrc;
 
   const border = glow ? '1px solid #3D52F4' : '1px solid #373737';
@@ -80,6 +64,20 @@ export const TokenBox = ({
   );
 
   const amountDisplay = amountText ? amountText : `$${amount}`;
+
+  const toggleModal = () => {
+    if (isLoading || menuDisabled) return;
+    clearModal();
+    setCurrentModalData({
+      tokens: stringify(otherTokensMetadata),
+      onSelect: onTokenSelect,
+      selectedTokenIds,
+    });
+    setCurrentModal(MODALS.tokenSelect);
+  };
+
+  const selectedTokenSymbol = selectedTokenMetadata?.symbol ?? '';
+  const logoSrc = DefaultTokensImage[selectedTokenSymbol] ?? questionMarkSrc;
 
   return (
     <Box
@@ -114,35 +112,48 @@ export const TokenBox = ({
         justifyContent="space-between"
         mb={3}
       >
-        <Menu>
-          <Skeleton isLoaded={!isLoading} borderRadius="full" minW={20}>
-            <MenuButton
-              as={Button}
-              rightIcon={!menuDisabled ? <ChevronDownIcon /> : null}
-              borderRadius={20}
-              py={2}
-              pl={2.5}
-              pr={3}
-            >
-              {selectedTokenMetadata && (
-                <TokenOption {...selectedTokenMetadata} />
-              )}
-            </MenuButton>
+        <Flex
+          direction="row"
+          alignItems="center"
+          borderRadius="20px"
+          bg="#282828"
+          pl="10px"
+          pr="12px"
+          py="8px"
+          cursor="pointer"
+          onClick={toggleModal}
+        >
+          <Skeleton
+            isLoaded={!isLoading}
+            height="20px"
+            width="20px"
+            borderRadius="full"
+            mr="7px"
+          >
+            <Image
+              width="20px"
+              height="20px"
+              borderRadius="20px"
+              src={logoSrc}
+            />
           </Skeleton>
-          {!menuDisabled && onTokenSelect && (
-            <MenuList>
-              {otherTokensMetadata?.map((token) => (
-                <MenuItem
-                  key={token.id}
-                  onClick={() => onTokenSelect(token.id)}
-                >
-                  <TokenOption {...token} />
-                </MenuItem>
-              ))}
-            </MenuList>
-          )}
-        </Menu>
-
+          <Skeleton
+            isLoaded={!isLoading}
+            height="25px"
+            width="fit-content"
+            mr="10px"
+          >
+            <Text
+              fontWeight={700}
+              fontSize="18px"
+              width="fit-content"
+              minWidth="40px"
+            >
+              {selectedTokenMetadata?.symbol}
+            </Text>
+          </Skeleton>
+          {!menuDisabled && <Image width="11px" src={chevronDownSrc} />}
+        </Flex>
         <Skeleton isLoaded={!isLoading} borderRadius="full">
           <NumberInput
             value={value}

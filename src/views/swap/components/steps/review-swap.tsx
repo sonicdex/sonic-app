@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { FormControl, Checkbox, Box, Image, Flex } from '@chakra-ui/react';
 
 import { TitleBox, TokenBox, Button } from '@/components';
@@ -19,17 +20,16 @@ export const ReviewStep = () => {
   const { totalBalance } = useBalances();
   const { fromTokenOptions, toTokenOptions, from, to } = useSwapViewStore();
   const dispatch = useAppDispatch();
-  const {
-    setCurrentModal,
-    // setCurrentModalData,
-    clearModal,
-    setOnClose,
-    setCurrentModalState,
-  } = useModalStore();
+  const { setCurrentModal, clearModal, setOnClose, setCurrentModalState } =
+    useModalStore();
 
   const [keepInSonic, setKeepInSonic] = useState<boolean>(false);
-
   const { addNotification } = useNotificationStore();
+
+  const handleTokenSelect = (data: any, tokenId: string) => {
+    dispatch(swapViewActions.setToken({ data, tokenId }));
+  };
+
   const handleApproveSwap = () => {
     // Integration: Do swap
     // trigger modals.
@@ -54,6 +54,14 @@ export const ReviewStep = () => {
     }, 9000);
   };
 
+  const selectedTokenIds = useMemo(() => {
+    let selectedIds = [];
+    if (from?.token?.id) selectedIds.push(from.token.id);
+    if (to?.token?.id) selectedIds.push(to.token.id);
+
+    return selectedIds;
+  }, [from?.token?.id, to?.token?.id]);
+
   return (
     <>
       <TitleBox
@@ -68,11 +76,10 @@ export const ReviewStep = () => {
             setValue={(value) =>
               dispatch(swapViewActions.setValue({ data: 'from', value }))
             }
-            onTokenSelect={(tokenId) => {
-              dispatch(swapViewActions.setToken({ data: 'from', tokenId }));
-            }}
             otherTokensMetadata={fromTokenOptions}
             selectedTokenMetadata={from.token}
+            selectedTokenIds={selectedTokenIds}
+            onTokenSelect={(tokenId) => handleTokenSelect('from', tokenId)}
             balance={getCurrencyString(
               from.token && totalBalance ? totalBalance[from.token.id] : 0,
               from.token?.decimals
@@ -100,11 +107,10 @@ export const ReviewStep = () => {
             setValue={(value) =>
               dispatch(swapViewActions.setValue({ data: 'to', value }))
             }
-            onTokenSelect={(tokenId) => {
-              dispatch(swapViewActions.setToken({ data: 'to', tokenId }));
-            }}
             otherTokensMetadata={toTokenOptions}
             selectedTokenMetadata={to.token}
+            selectedTokenIds={selectedTokenIds}
+            onTokenSelect={(tokenId) => handleTokenSelect('to', tokenId)}
             balance={getCurrencyString(
               to.token && totalBalance ? totalBalance[to.token.id] : 0,
               to.token?.decimals

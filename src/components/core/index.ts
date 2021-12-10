@@ -11,3 +11,4 @@ export * from './information-box';
 export * from './header';
 export * from './check-box';
 export * from './asset';
+export * from './search-bar';

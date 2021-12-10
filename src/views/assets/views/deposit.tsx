@@ -68,6 +68,7 @@ export const AssetsDeposit = () => {
             source="plug"
             balance="23.23"
             amount="53.23"
+            selectedTokenIds={[selectedTokenId]}
             status={status}
             otherTokensMetadata={supportedTokenList}
             selectedTokenMetadata={supportedTokenList.find(
