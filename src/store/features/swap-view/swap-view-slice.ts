@@ -74,6 +74,12 @@ export const swapViewSlice = createSlice({
       }
       state.step = SwapStep.Home;
     },
+    swapTokens: (state) => {
+      const temp = state.from.token;
+      state.from.token = state.to.token;
+      state.to.token = temp;
+      state.step = SwapStep.Home;
+    },
     setTokenList: (state, action: PayloadAction<TokenMetadataList>) => {
       state.tokenList = action.payload;
       const tokens = Object.values(action.payload);

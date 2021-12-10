@@ -1,4 +1,4 @@
-import { HStack, Text, Box } from '@chakra-ui/react';
+import { useDisclosure, HStack, Text, Box } from '@chakra-ui/react';
 
 import {
   InformationBox,
@@ -13,6 +13,7 @@ import { DefaultTokensImage } from '@/constants';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { ENV } from '@/config';
+import { RemoveLiquidityModal } from '../components/remove-liquidity-modal';
 
 const INFORMATION_TITLE = 'Liquidity Provider Rewards';
 const INFORMATION_DESCRIPTION =
@@ -38,6 +39,7 @@ const InformationDescription = () => (
 
 export const Liquidity = () => {
   const navigate = useNavigate();
+  const removeLiquidityModal = useDisclosure();
   const [displayInformation, setDisplayInformation] = useState(true);
 
   const moveToAddLiquidityView = (tokenFrom?: string, tokenTo?: string) => {
@@ -57,6 +59,7 @@ export const Liquidity = () => {
 
   return (
     <div>
+      <RemoveLiquidityModal {...removeLiquidityModal} />
       {displayInformation && (
         <InformationBox
           onClose={handleInformationClose}
@@ -101,7 +104,11 @@ export const Liquidity = () => {
         </Box>
 
         <HStack>
-          <AssetIconButton aria-label="Remove liquidity" icon={<FaMinus />} />
+          <AssetIconButton
+            aria-label="Remove liquidity"
+            icon={<FaMinus />}
+            onClick={removeLiquidityModal.onOpen}
+          />
           <AssetIconButton
             aria-label="Add liquidity"
             colorScheme="dark-blue"

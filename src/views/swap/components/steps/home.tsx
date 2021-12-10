@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Center, Box, Flex } from '@chakra-ui/react';
+import { Box, Flex, IconButton, Tooltip } from '@chakra-ui/react';
 
 import { TitleBox, TokenBox, Button } from '@/components';
 import { getCurrencyString } from '@/utils/format';
@@ -51,6 +51,10 @@ export const HomeStep = () => {
     return 'inactive';
   }, [from.value]);
 
+  const swapTokens = () => {
+    dispatch(swapViewActions.swapTokens());
+  };
+
   return (
     <>
       <TitleBox title="Swap" settings="sd" />
@@ -75,18 +79,18 @@ export const HomeStep = () => {
             isLoading={loading}
           />
         </Box>
-        <Center
-          borderRadius={10}
-          width={10}
-          height={10}
-          border="1px solid #373737"
-          bg="#1E1E1E"
-          mt={-4}
-          mb={-6}
-          zIndex="overlay"
-        >
-          <FaArrowDown />
-        </Center>
+        <Tooltip label="Swap">
+          <IconButton
+            aria-label="Swap"
+            icon={<FaArrowDown />}
+            variant="outline"
+            mt={-4}
+            mb={-6}
+            zIndex="overlay"
+            bg="gray.800"
+            onClick={swapTokens}
+          />
+        </Tooltip>
         <Box mt={2.5} width="100%">
           <TokenBox
             value={to.value}
