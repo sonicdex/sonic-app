@@ -13,22 +13,20 @@ export const useBatchHook: Batch.CreateHook = ({ transactions }) => {
   };
 
   const states = useMemo(() => {
-    console.log('updating states');
     return Object.keys(transactions);
   }, [transactions]);
 
   const batch = useMemo(() => {
-    console.log('updating batch');
-    const newBatch = new BatchTransactions(plug, async () =>
+    const newBatch = new BatchTransactions(plug, async (error) =>
       // TODO: create handle retry modal
-      confirm('Transaction failed, try again?')
+      confirm(`Transaction failed, try again? ${error}`)
     );
 
     const transactionsList = Object.values(transactions);
     Object.values(transactions).forEach((transaction, index) => {
       const onSuccess = transaction.onSuccess;
       transaction.onSuccess = async (res) => {
-        if (onSuccess) onSuccess(res);
+        if (onSuccess) await onSuccess(res);
         if (index !== transactionsList.length - 1) {
           setState(states[index + 1]);
         } else {
@@ -38,7 +36,7 @@ export const useBatchHook: Batch.CreateHook = ({ transactions }) => {
 
       const onFail = transaction.onFail;
       transaction.onFail = async (res) => {
-        if (onFail) onFail(res);
+        if (onFail) await onFail(res);
         handleError(res);
       };
       newBatch.push(transaction);

@@ -1,6 +1,5 @@
 import { ENV } from '@/config';
 import { SwapIDL } from '@/did';
-import { usePlugStore } from '@/store';
 import { getAmountInMax, getAmountOutMin, parseAmount } from '@/utils/format';
 import { Principal } from '@dfinity/principal';
 import { Transaction } from '@psychedelic/plug-inpage-provider/dist/src/Provider';
