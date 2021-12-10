@@ -3,8 +3,9 @@ import { FeatureState } from '@/store';
 import type { RootState } from '@/store';
 import { TokenMetadata, TokenMetadataList } from '@/models';
 
-type DataKey = 'from' | 'to';
-export interface SwapData {
+export type TokenDataKey = 'from' | 'to';
+
+export interface TokenData {
   token?: TokenMetadata;
   value: string;
 }
@@ -17,8 +18,8 @@ export enum SwapStep {
 interface SwapViewState {
   step: SwapStep;
   state: FeatureState;
-  from: SwapData;
-  to: SwapData;
+  from: TokenData;
+  to: TokenData;
   tokenList?: TokenMetadataList;
 }
 
@@ -49,14 +50,14 @@ export const swapViewSlice = createSlice({
     },
     setValue: (
       state,
-      action: PayloadAction<{ data: DataKey; value: string }>
+      action: PayloadAction<{ data: TokenDataKey; value: string }>
     ) => {
       state[action.payload.data].value = action.payload.value;
       state.step = SwapStep.Home;
     },
     setToken: (
       state,
-      action: PayloadAction<{ data: DataKey; tokenId: string | undefined }>
+      action: PayloadAction<{ data: TokenDataKey; tokenId: string | undefined }>
     ) => {
       state[action.payload.data].token =
         action.payload.tokenId && state.tokenList
@@ -71,6 +72,12 @@ export const swapViewSlice = createSlice({
           ? state.tokenList[anotherTokenId]
           : undefined;
       }
+      state.step = SwapStep.Home;
+    },
+    switchTokens: (state) => {
+      const temp = state.from.token;
+      state.from.token = state.to.token;
+      state.to.token = temp;
       state.step = SwapStep.Home;
     },
     setTokenList: (state, action: PayloadAction<TokenMetadataList>) => {

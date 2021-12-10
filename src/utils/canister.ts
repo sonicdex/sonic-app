@@ -1,4 +1,4 @@
-import { infoSrc } from '@/assets';
+import { questionMarkSrc } from '@/assets';
 import { SwapIDL } from '@/did';
 import { TokenMetadataList } from '@/models';
 
@@ -24,7 +24,7 @@ export const parseResponseTokenList = (
   return response.reduce((list, token) => {
     list[token.id] = {
       ...token,
-      logo: infoSrc,
+      logo: questionMarkSrc,
     };
     return list;
   }, {} as TokenMetadataList);
