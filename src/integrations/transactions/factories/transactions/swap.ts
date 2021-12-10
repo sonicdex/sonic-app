@@ -72,7 +72,10 @@ export const createSwapForExactTokensTransaction: CreateTransaction<Swap> = (
       idl: SwapIDL.factory,
       methodName: 'swapTokensForExactTokens',
       onFail,
-      onSuccess,
+      onSuccess: async (res: SwapIDL.Result) => {
+        if ('err' in res) throw new Error(res.err);
+        onSuccess(res);
+      },
       args: [
         amountOut,
         amountInMin,
