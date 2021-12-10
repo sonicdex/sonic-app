@@ -6,7 +6,7 @@ BETA_TOKEN = cfoim-fqaaa-aaaai-qbcmq-cai
 
 
 # Get balance in token canister
-$ dfx canister --network ic call wjsrf-myaaa-aaaam-qaayq-cai balanceOf "(principal \"$(dfx identity get-principal)\")"
+$ dfx canister --network ic call cfoim-fqaaa-aaaai-qbcmq-cai balanceOf "(principal \"$(dfx identity get-principal)\")"
 (883_000_000 : nat)
 
 # Approve transfer
