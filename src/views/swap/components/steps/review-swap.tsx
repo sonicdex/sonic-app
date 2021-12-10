@@ -54,8 +54,22 @@ export const ReviewStep = () => {
 
     depositSwapBatch
       .execute()
-      .then((res) => console.log('Swap Completed', res))
-      .catch((err) => console.error('Swap Error', err));
+      .then((res) => {
+        console.log('Swap Completed', res);
+        clearModal();
+        addNotification({
+          title: `Swapped ${from.value} ${from.token?.symbol} for ${to.value} ${to.token?.symbol}`,
+          type: 'done',
+          id: Date.now().toString(),
+          // TODO: add transaction id
+          transactionLink: createCAPLink('transactionId'),
+        });
+        dispatch(swapViewActions.setValue({ data: 'from', value: '0.00' }));
+      })
+      .catch((err) => {
+        console.error('Swap Error', err);
+        setCurrentModal(MODALS.swapFailed);
+      });
   };
 
   useEffect(() => {
@@ -69,17 +83,6 @@ export const ReviewStep = () => {
         break;
       case 'withdraw':
         setCurrentModalState('withdraw');
-        break;
-      case 'done':
-        clearModal();
-        addNotification({
-          title: `Swapped ${from.value} ${from.token?.symbol} for ${to.value} ${to.token?.symbol}`,
-          type: 'done',
-          id: Date.now().toString(),
-          // TODO: add transaction id
-          transactionLink: createCAPLink('transactionId'),
-        });
-        dispatch(swapViewActions.setValue({ data: 'from', value: '0.00' }));
         break;
     }
   }, [depositSwapBatch.state]);

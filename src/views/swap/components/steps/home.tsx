@@ -55,7 +55,6 @@ export const HomeStep = () => {
   useEffect(() => {
     if (!from.token) return;
     if (!to.token) return;
-    if (parseFloat(from.value) <= 0) return;
     if (!pairList) return;
 
     dispatch(
