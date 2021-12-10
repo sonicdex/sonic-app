@@ -9,7 +9,6 @@ import {
   usePlugStore,
 } from '@/store';
 import { useSwapActor } from '../actor/use-swap-actor';
-import { Principal } from '@dfinity/principal';
 import { parseResponseTokenList } from '@/utils/canister';
 import { useTotalBalances } from '@/hooks/use-balances';
 
@@ -24,14 +23,6 @@ export const useSwapInit = () => {
   useEffect(() => {
     if (swapActor && principalId) {
       getBalances();
-    }
-  }, [swapActor, principalId]);
-
-  useEffect(() => {
-    if (swapActor && principalId) {
-      swapActor
-        .getUserBalances(Principal.fromText(principalId))
-        .then((response) => dispatch(swapActions.setSonicBalances(response)));
     }
   }, [swapActor, principalId]);
 
