@@ -6,7 +6,6 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { EmptyMobile, Layout } from './components';
 import { useActorsInit } from './integrations/actor/use-actors-init';
 import { usePlugInit } from './integrations/plug';
-import { useSwapInit } from './integrations/swap';
 import { AssetsWithdraw } from './views/assets/views/withdraw';
 import { AssetsDeposit } from './views/assets/views/deposit';
 
@@ -15,7 +14,6 @@ export const App = () => {
 
   usePlugInit();
   useActorsInit();
-  useSwapInit();
 
   // TODO: Remove after plug mobile connection
   if (isAnyMobileDevice) {

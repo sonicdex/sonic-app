@@ -47,11 +47,11 @@ export const getLpAmount = (
 };
 
 export const getAmountOut = (
-  amountIn: string,
-  decimalsIn: string,
-  decimalsOut: string,
-  reserveIn: string,
-  reserveOut: string,
+  amountIn: string | number,
+  decimalsIn: string | number,
+  decimalsOut: string | number,
+  reserveIn: string | number,
+  reserveOut: string | number,
   fee = 3 // means 0.003
 ): string => {
   if (!amountIn || new BigNumber(amountIn).isZero()) return '0';

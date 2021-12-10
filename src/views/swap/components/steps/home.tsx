@@ -2,7 +2,7 @@ import { useEffect, useMemo } from 'react';
 import { Box, Flex, Image } from '@chakra-ui/react';
 
 import { TitleBox, TokenBox, Button } from '@/components';
-import { getCurrencyString } from '@/utils/format';
+import { getAmountOut, getCurrencyString } from '@/utils/format';
 
 import { arrowDownSrc } from '@/assets';
 import {
@@ -14,7 +14,8 @@ import {
 import { useBalances } from '@/hooks/use-balances';
 
 export const HomeStep = () => {
-  const { fromTokenOptions, toTokenOptions, from, to } = useSwapViewStore();
+  const { fromTokenOptions, toTokenOptions, from, to, pairList } =
+    useSwapViewStore();
   const dispatch = useAppDispatch();
 
   const { totalBalance } = useBalances();
@@ -28,16 +29,14 @@ export const HomeStep = () => {
   const loading = useMemo(() => {
     if (!totalBalance) return true;
     if (!from.token) return true;
-    if (!to.token) return true;
     return false;
-  }, [totalBalance, from.token, to.token]);
-
-  console.log(totalBalance, from, to);
+  }, [totalBalance, from.token]);
 
   const [buttonDisabled, buttonMessage] = useMemo<[boolean, string]>(() => {
     if (loading) return [true, 'Loading'];
-    if (!totalBalance || !from.token || !to.token)
-      throw new Error('State is loading');
+    if (!totalBalance || !from.token) throw new Error('State is loading');
+
+    if (!to.token) return [true, 'Select a resultant token'];
 
     const parsedFromValue = (from.value && parseFloat(from.value)) || 0;
     if (parsedFromValue <= 0)
@@ -54,15 +53,23 @@ export const HomeStep = () => {
   }, [from.value]);
 
   useEffect(() => {
-    if (from.token && parseFloat(from.value) > 0) {
-      // TODO: find correct way to update to.value
-      dispatch(
-        swapViewActions.setValue({
-          data: 'to',
-          value: String(Number(from.value) * (1 - Number(from.token.fee))),
-        })
-      );
-    }
+    if (!from.token) return;
+    if (!to.token) return;
+    if (parseFloat(from.value) <= 0) return;
+    if (!pairList) return;
+
+    dispatch(
+      swapViewActions.setValue({
+        data: 'to',
+        value: getAmountOut(
+          from.value,
+          from.token.decimals,
+          to.token.decimals,
+          String(pairList[from.token.id][to.token.id].reserve0),
+          String(pairList[from.token.id][to.token.id].reserve1)
+        ),
+      })
+    );
   }, [from.value]);
 
   return (

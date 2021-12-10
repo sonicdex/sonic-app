@@ -1,4 +1,5 @@
 import { TokenMetadataList } from '@/models';
+import { PairList } from '@/models/pair';
 import { SwapData, SwapDataKey } from '@/models/swap';
 import type { RootState } from '@/store';
 import { FeatureState } from '@/store';
@@ -15,6 +16,7 @@ interface SwapViewState {
   from: SwapData;
   to: SwapData;
   tokenList?: TokenMetadataList;
+  pairList?: PairList;
 }
 
 const initialState: SwapViewState = {
@@ -29,6 +31,7 @@ const initialState: SwapViewState = {
     value: '0.00',
   },
   tokenList: undefined,
+  pairList: undefined,
 };
 
 export const swapViewSlice = createSlice({
@@ -57,15 +60,7 @@ export const swapViewSlice = createSlice({
         action.payload.tokenId && state.tokenList
           ? state.tokenList[action.payload.tokenId]
           : undefined;
-      if (state.from.token?.id === state.to.token?.id && state.tokenList) {
-        // Change 'to.token' if it's the same as the new 'from.token'
-        const anotherTokenId = Object.keys(state.tokenList).find(
-          (tokenId) => tokenId !== state.from.token?.id
-        );
-        state.to.token = anotherTokenId
-          ? state.tokenList[anotherTokenId]
-          : undefined;
-      }
+      if (action.payload.data === 'from') state.to.token = undefined;
       state.step = SwapStep.Home;
     },
     setTokenList: (state, action: PayloadAction<TokenMetadataList>) => {
@@ -73,8 +68,11 @@ export const swapViewSlice = createSlice({
       const tokens = Object.values(action.payload);
       state.from.token = tokens[0];
       state.from.value = '0.00';
-      state.to.token = tokens[1];
       state.to.value = '0.00';
+      state.step = SwapStep.Home;
+    },
+    setPairList: (state, action: PayloadAction<PairList>) => {
+      state.pairList = action.payload;
       state.step = SwapStep.Home;
     },
   },

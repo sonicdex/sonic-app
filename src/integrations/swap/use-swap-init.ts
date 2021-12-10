@@ -11,7 +11,10 @@ import {
 import { plug } from '../plug';
 import { useSwapActor } from '../actor/use-swap-actor';
 import { Principal } from '@dfinity/principal';
-import { parseResponseTokenList } from '@/utils/canister';
+import {
+  parseResponseAllPairs,
+  parseResponseTokenList,
+} from '@/utils/canister';
 
 export const useSwapInit = () => {
   const { isConnected, principalId } = usePlugStore();
@@ -42,6 +45,7 @@ export const useSwapInit = () => {
 
   useEffect(() => {
     getSupportedTokenList();
+    getAllPairs();
   }, [swapActor]);
 
   async function getSonicBalances() {
@@ -89,6 +93,24 @@ export const useSwapInit = () => {
       } catch (error) {
         console.log(error);
         dispatch(swapActions.setState(FeatureState.Error));
+      }
+    }
+  }
+
+  async function getAllPairs() {
+    if (swapActor) {
+      try {
+        const response = await swapActor.getAllPairs();
+
+        if (response) {
+          dispatch(
+            swapViewActions.setPairList(parseResponseAllPairs(response))
+          );
+        }
+        dispatch(swapViewActions.setState(FeatureState.Idle));
+      } catch (error) {
+        console.log(error);
+        dispatch(swapViewActions.setState(FeatureState.Error));
       }
     }
   }
