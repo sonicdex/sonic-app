@@ -41,11 +41,6 @@ export const Assets = () => {
   const isSupportedTokenListPresent =
     supportedTokenList && supportedTokenList.length > 0;
 
-  console.log(
-    swapState === FeatureState.Loading,
-    balancesState === FeatureState.Loading
-  );
-
   return (
     <>
       <InformationBox title="Assets Details" mb={9}>
