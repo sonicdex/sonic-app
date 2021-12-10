@@ -93,6 +93,10 @@ export class BatchTransactions implements Batch.Controller {
   }
 
   private start(): void {
-    this.provider?.batchTransactions(this.transactions);
+    this.provider
+      ?.batchTransactions(this.transactions)
+      .catch((error) =>
+        this.handleTransactionFail(this.transactions[0], error)
+      );
   }
 }
