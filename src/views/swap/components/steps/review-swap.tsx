@@ -1,9 +1,10 @@
 import { arrowDownSrc, infoSrc } from '@/assets';
 import { Button, TitleBox, TokenBox } from '@/components';
+import { useTotalBalances } from '@/hooks/use-balances';
 import { useSwapBatch } from '@/integrations/transactions';
 import { MODALS } from '@/modals';
+import { TokenDataKey } from '@/models';
 import {
-  setCurrentModalData,
   SwapStep,
   swapViewActions,
   useAppDispatch,
@@ -13,29 +14,23 @@ import {
   useSwapViewStore,
 } from '@/store';
 import { getCurrencyString } from '@/utils/format';
-import { useEffect, useState } from 'react';
-import { useBalances } from '@/hooks/use-balances';
-import { Box, Flex } from '@chakra-ui/layout';
-import { Image } from '@chakra-ui/image';
-import { FormControl } from '@chakra-ui/form-control';
-import { Checkbox } from '@chakra-ui/checkbox';
 import { createCAPLink } from '@/utils/function';
+import { Box, Checkbox, Flex, FormControl, Image } from '@chakra-ui/react';
+import { useEffect, useMemo, useState } from 'react';
 
 export const ReviewStep = () => {
-  const { totalBalance } = useBalances();
+  const { totalBalances } = useTotalBalances();
   const { fromTokenOptions, toTokenOptions, from, to } = useSwapViewStore();
   const { principalId } = usePlugStore();
   const dispatch = useAppDispatch();
   const {
     setCurrentModal,
-    // setCurrentModalData,
-    // setOnClose,
+    setCurrentModalData,
     setCurrentModalState,
     clearModal,
   } = useModalStore();
 
   const [keepInSonic, setKeepInSonic] = useState<boolean>(false);
-
   const { addNotification } = useNotificationStore();
 
   const depositSwapBatch = useSwapBatch({
@@ -46,10 +41,18 @@ export const ReviewStep = () => {
     principalId,
   });
 
-  const handleApproveSwap = () => {
-    if (!from.token || !to.token) return;
+  const handleTokenSelect = (data: TokenDataKey, tokenId: string) => {
+    dispatch(swapViewActions.setToken({ data, tokenId }));
+  };
 
-    setCurrentModalData({ fromToken: from.token.name, toToken: to.token.name });
+  const handleApproveSwap = () => {
+    // Integration: Do swap
+    // trigger modals.
+    setCurrentModalData({
+      fromToken: from.token?.name,
+      toToken: to.token?.name,
+    });
+    setCurrentModalState('deposit');
     setCurrentModal(MODALS.swapProgress);
 
     depositSwapBatch
@@ -87,6 +90,14 @@ export const ReviewStep = () => {
     }
   }, [depositSwapBatch.state]);
 
+  const selectedTokenIds = useMemo(() => {
+    let selectedIds = [];
+    if (from?.token?.id) selectedIds.push(from.token.id);
+    if (to?.token?.id) selectedIds.push(to.token.id);
+
+    return selectedIds;
+  }, [from?.token?.id, to?.token?.id]);
+
   return (
     <>
       <TitleBox
@@ -101,13 +112,12 @@ export const ReviewStep = () => {
             setValue={(value) =>
               dispatch(swapViewActions.setValue({ data: 'from', value }))
             }
-            onTokenSelect={(tokenId) => {
-              dispatch(swapViewActions.setToken({ data: 'from', tokenId }));
-            }}
             otherTokensMetadata={fromTokenOptions}
             selectedTokenMetadata={from.token}
+            selectedTokenIds={selectedTokenIds}
+            onTokenSelect={(tokenId) => handleTokenSelect('from', tokenId)}
             balance={getCurrencyString(
-              from.token && totalBalance ? totalBalance[from.token.id] : 0,
+              from.token && totalBalances ? totalBalances[from.token.id] : 0,
               from.token?.decimals
             )}
             amount="0.00"
@@ -133,13 +143,12 @@ export const ReviewStep = () => {
             setValue={(value) =>
               dispatch(swapViewActions.setValue({ data: 'to', value }))
             }
-            onTokenSelect={(tokenId) => {
-              dispatch(swapViewActions.setToken({ data: 'to', tokenId }));
-            }}
             otherTokensMetadata={toTokenOptions}
             selectedTokenMetadata={to.token}
+            selectedTokenIds={selectedTokenIds}
+            onTokenSelect={(tokenId) => handleTokenSelect('to', tokenId)}
             balance={getCurrencyString(
-              to.token && totalBalance ? totalBalance[to.token.id] : 0,
+              to.token && totalBalances ? totalBalances[to.token.id] : 0,
               to.token?.decimals
             )}
             status="active"

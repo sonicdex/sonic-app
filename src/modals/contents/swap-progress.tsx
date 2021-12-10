@@ -1,4 +1,4 @@
-import { Heading, Text, Flex } from '@chakra-ui/react';
+import { Heading, Text, Flex, ModalCloseButton } from '@chakra-ui/react';
 import { depositSrc, swapSrc, withdrawSrc } from '@/assets';
 
 import { ModalComponentProps } from '../modals';
@@ -25,7 +25,6 @@ export const SwapProgress = ({
     <Flex
       direction="column"
       alignItems="center"
-      width="wideModal"
       height="100%"
       bg="#1E1E1E"
       pt="37px"
@@ -33,6 +32,7 @@ export const SwapProgress = ({
       pb="43px"
       borderRadius={20}
     >
+      <ModalCloseButton position="absolute" top="10px" right="15px" />
       <Heading as="h1" color="#F6FCFD" fontWeight={700} fontSize={22} mb="13px">
         Swap in Progress
       </Heading>

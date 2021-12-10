@@ -1,6 +1,6 @@
 import { TokenMetadataList } from '@/models';
 import { PairList } from '@/models/pair';
-import { SwapData, SwapDataKey } from '@/models/swap';
+import { SwapDataKey, SwapData } from '@/models/swap';
 import type { RootState } from '@/store';
 import { FeatureState } from '@/store';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
@@ -61,6 +61,12 @@ export const swapViewSlice = createSlice({
           ? state.tokenList[action.payload.tokenId]
           : undefined;
       if (action.payload.data === 'from') state.to.token = undefined;
+      state.step = SwapStep.Home;
+    },
+    switchTokens: (state) => {
+      const temp = state.from.token;
+      state.from.token = state.to.token;
+      state.to.token = temp;
       state.step = SwapStep.Home;
     },
     setTokenList: (state, action: PayloadAction<TokenMetadataList>) => {

@@ -1,23 +1,22 @@
-import { useEffect } from 'react';
-
+import { useTotalBalances } from '@/hooks/use-balances';
 import {
   FeatureState,
-  plugActions,
+  liquidityViewActions,
   swapActions,
   swapViewActions,
   useAppDispatch,
   usePlugStore,
 } from '@/store';
-import { plug } from '../plug';
-import { useSwapActor } from '../actor/use-swap-actor';
-import { Principal } from '@dfinity/principal';
 import {
   parseResponseAllPairs,
   parseResponseTokenList,
 } from '@/utils/canister';
+import { useEffect } from 'react';
+import { useSwapActor } from '../actor/use-swap-actor';
 
 export const useSwapInit = () => {
-  const { isConnected, principalId } = usePlugStore();
+  const { getBalances } = useTotalBalances();
+  const { principalId } = usePlugStore();
 
   const swapActor = useSwapActor();
 
@@ -25,21 +24,7 @@ export const useSwapInit = () => {
 
   useEffect(() => {
     if (swapActor && principalId) {
-      getSonicBalances();
-    }
-  }, [isConnected]);
-
-  useEffect(() => {
-    if (plug && isConnected) {
-      getPlugBalance();
-    }
-  }, [plug, isConnected]);
-
-  useEffect(() => {
-    if (swapActor && principalId) {
-      swapActor
-        .getUserBalances(Principal.fromText(principalId))
-        .then((response) => dispatch(swapActions.setBalance(response)));
+      getBalances();
     }
   }, [swapActor, principalId]);
 
@@ -47,32 +32,6 @@ export const useSwapInit = () => {
     getSupportedTokenList();
     getAllPairs();
   }, [swapActor]);
-
-  async function getSonicBalances() {
-    try {
-      dispatch(swapActions.setState(FeatureState.Loading));
-
-      if (principalId) {
-        const balance = await swapActor?.getUserBalances(
-          Principal.fromText(principalId)
-        );
-        dispatch(swapActions.setBalance(balance));
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  async function getPlugBalance() {
-    try {
-      dispatch(plugActions.setState(FeatureState.Loading));
-      const balance = await plug?.requestBalance();
-
-      dispatch(plugActions.setBalance(balance));
-    } catch (error) {
-      console.error(error);
-    }
-  }
 
   async function getSupportedTokenList() {
     if (swapActor) {
@@ -84,6 +43,9 @@ export const useSwapInit = () => {
         if (response) {
           dispatch(
             swapViewActions.setTokenList(parseResponseTokenList(response))
+          );
+          dispatch(
+            liquidityViewActions.setTokenList(parseResponseTokenList(response))
           );
           dispatch(swapActions.setSupportedTokenList(response));
         }

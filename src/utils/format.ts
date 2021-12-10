@@ -7,6 +7,20 @@ import { TokenMetadata } from '@/models';
 
 export type BigNumberish = BigNumber | Bytes | bigint | string | number;
 
+export const deserialize = (json: string) =>
+  JSON.parse(json, (key, value) => {
+    if (typeof value === 'string' && /^\d+n$/.test(value)) {
+      return BigInt(value.substr(0, value.length - 1));
+    }
+    return value;
+  });
+
+export const stringify = (data: any) => {
+  return JSON.stringify(data, (key, value) =>
+    typeof value === 'bigint' ? value.toString() + 'n' : value
+  );
+};
+
 export const parseAmount = (val: string, decimals: string | number): bigint => {
   try {
     const str = parseUnits(val, decimals).toString();

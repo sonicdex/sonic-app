@@ -7,12 +7,14 @@ import {
   FeatureState,
   useAppDispatch,
   useAssetsViewStore,
+  useNotificationStore,
   useSwapStore,
 } from '@/store';
 import { useNavigate } from 'react-router';
 import { useQuery } from '@/hooks/use-query';
 
 export const AssetsDeposit = () => {
+  const { addNotification } = useNotificationStore();
   const query = useQuery();
   const [selectedTokenId, setSelectedTokenId] = useState(query.get('tokenId'));
 
@@ -40,8 +42,12 @@ export const AssetsDeposit = () => {
   };
 
   const handleDeposit = () => {
-    // Integration:
-    // Deposit token to Sonic
+    // TODO: replace by real deposit logic
+    addNotification({
+      title: 'Deposit successful',
+      type: 'done',
+      id: Date.now().toString(),
+    });
   };
 
   return (
@@ -62,6 +68,7 @@ export const AssetsDeposit = () => {
             source="plug"
             balance="23.23"
             amount="53.23"
+            selectedTokenIds={[selectedTokenId]}
             status={status}
             otherTokensMetadata={supportedTokenList}
             selectedTokenMetadata={supportedTokenList.find(

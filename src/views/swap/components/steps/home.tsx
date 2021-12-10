@@ -1,24 +1,27 @@
-import { useEffect, useMemo } from 'react';
-import { Box, Flex, Image } from '@chakra-ui/react';
-
-import { TitleBox, TokenBox, Button } from '@/components';
-import { getAmountOut, getCurrencyString } from '@/utils/format';
-
-import { arrowDownSrc } from '@/assets';
+import { Button, TitleBox, TokenBox } from '@/components';
+import { useTotalBalances } from '@/hooks/use-balances';
 import {
   SwapStep,
   swapViewActions,
   useAppDispatch,
   useSwapViewStore,
 } from '@/store';
-import { useBalances } from '@/hooks/use-balances';
+import { getAmountOut, getCurrencyString } from '@/utils/format';
+import { Box, Flex, Icon, IconButton, Tooltip } from '@chakra-ui/react';
+import { useEffect, useMemo, useState } from 'react';
+import { FaArrowDown } from 'react-icons/fa';
+import { SwapSettings } from '../index';
 
 export const HomeStep = () => {
   const { fromTokenOptions, toTokenOptions, from, to, pairList } =
     useSwapViewStore();
   const dispatch = useAppDispatch();
 
-  const { totalBalance } = useBalances();
+  // TODO: Move to useSwapViewStore
+  const [slippage, setSlippage] = useState('0.10');
+  const [autoSlippage, setAutoSlippage] = useState(true);
+
+  const { totalBalances: totalBalance } = useTotalBalances();
 
   const handleButtonOnClick = () => {
     if (loading) return;
@@ -31,6 +34,10 @@ export const HomeStep = () => {
     if (!from.token) return true;
     return false;
   }, [totalBalance, from.token]);
+
+  const handleTokenSelect = (data: any, tokenId: string) => {
+    dispatch(swapViewActions.setToken({ data, tokenId }));
+  };
 
   const [buttonDisabled, buttonMessage] = useMemo<[boolean, string]>(() => {
     if (loading) return [true, 'Loading'];
@@ -71,9 +78,31 @@ export const HomeStep = () => {
     );
   }, [from.value]);
 
+  const selectedTokenIds = useMemo(() => {
+    let selectedIds = [];
+    if (from?.token?.id) selectedIds.push(from.token.id);
+    if (to?.token?.id) selectedIds.push(to.token.id);
+
+    return selectedIds;
+  }, [from?.token?.id, to?.token?.id]);
+
+  const switchTokens = () => {
+    dispatch(swapViewActions.switchTokens());
+  };
+
   return (
     <>
-      <TitleBox title="Swap" settings="sd" />
+      <TitleBox
+        title="Swap"
+        settings={
+          <SwapSettings
+            slippage={slippage}
+            setSlippage={setSlippage}
+            isAuto={autoSlippage}
+            setIsAuto={setAutoSlippage}
+          />
+        }
+      />
       <Flex direction="column" alignItems="center" mb={5}>
         <Box mt={5} width="100%">
           <TokenBox
@@ -81,12 +110,12 @@ export const HomeStep = () => {
             setValue={(value) =>
               dispatch(swapViewActions.setValue({ data: 'from', value }))
             }
-            onTokenSelect={(tokenId) => {
-              dispatch(swapViewActions.setToken({ data: 'from', tokenId }));
-            }}
             otherTokensMetadata={fromTokenOptions}
             selectedTokenMetadata={from.token}
+            onTokenSelect={(tokenId) => handleTokenSelect('from', tokenId)}
+            selectedTokenIds={selectedTokenIds}
             status={fromValueStatus}
+            isLoading={loading}
             balance={getCurrencyString(
               from.token && totalBalance ? totalBalance[from.token.id] : 0,
               from.token?.decimals
@@ -94,32 +123,34 @@ export const HomeStep = () => {
             amount="0.00"
           />
         </Box>
-        <Box
-          borderRadius={4}
-          width={10}
-          height={10}
-          border="1px solid #373737"
-          py={3}
-          px={3}
-          bg="#1E1E1E"
-          mt={-4}
-          mb={-6}
-          zIndex={1200}
-        >
-          <Image m="auto" src={arrowDownSrc} />
-        </Box>
+        <Tooltip label="Swap">
+          <IconButton
+            aria-label="Swap"
+            icon={<Icon as={FaArrowDown} transition="transform 250ms" />}
+            variant="outline"
+            mt={-4}
+            mb={-6}
+            zIndex="overlay"
+            bg="gray.800"
+            onClick={switchTokens}
+            _hover={{
+              '& > svg': {
+                transform: 'rotate(180deg)',
+              },
+            }}
+          />
+        </Tooltip>
         <Box mt={2.5} width="100%">
           <TokenBox
             value={to.value}
             setValue={(value) =>
               dispatch(swapViewActions.setValue({ data: 'to', value }))
             }
-            onTokenSelect={(tokenId) => {
-              dispatch(swapViewActions.setToken({ data: 'to', tokenId }));
-            }}
             otherTokensMetadata={toTokenOptions}
+            onTokenSelect={(tokenId) => handleTokenSelect('to', tokenId)}
             selectedTokenMetadata={to.token}
             disabled={true}
+            isLoading={loading}
             balance={getCurrencyString(
               to.token && totalBalance ? totalBalance[to.token.id] : 0,
               to.token?.decimals

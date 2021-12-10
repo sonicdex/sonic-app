@@ -25,7 +25,7 @@ export const Header = ({ title, buttonText, onButtonClick }: HeaderProps) => {
         {title}
       </Box>
       {buttonText && onButtonClick && (
-        <Button onClick={onButtonClick}>{buttonText}</Button>
+        <Button onClick={() => onButtonClick()}>{buttonText}</Button>
       )}
     </Flex>
   );
