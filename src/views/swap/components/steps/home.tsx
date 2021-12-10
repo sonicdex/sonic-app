@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Center, Box, Flex } from '@chakra-ui/react';
+import { Box, Icon, Flex, IconButton, Tooltip } from '@chakra-ui/react';
 
 import { TitleBox, TokenBox, Button } from '@/components';
 import { getCurrencyString } from '@/utils/format';
@@ -63,6 +63,10 @@ export const HomeStep = () => {
     return selectedIds;
   }, [from?.token?.id, to?.token?.id]);
 
+  const switchTokens = () => {
+    dispatch(swapViewActions.switchTokens());
+  };
+
   return (
     <>
       <TitleBox title="Swap" settings="sd" />
@@ -86,18 +90,23 @@ export const HomeStep = () => {
             amount="0.00"
           />
         </Box>
-        <Center
-          borderRadius={10}
-          width={10}
-          height={10}
-          border="1px solid #373737"
-          bg="#1E1E1E"
-          mt={-4}
-          mb={-6}
-          zIndex="overlay"
-        >
-          <FaArrowDown />
-        </Center>
+        <Tooltip label="Swap">
+          <IconButton
+            aria-label="Swap"
+            icon={<Icon as={FaArrowDown} transition="transform 250ms" />}
+            variant="outline"
+            mt={-4}
+            mb={-6}
+            zIndex="overlay"
+            bg="gray.800"
+            onClick={switchTokens}
+            _hover={{
+              '& > svg': {
+                transform: 'rotate(180deg)',
+              },
+            }}
+          />
+        </Tooltip>
         <Box mt={2.5} width="100%">
           <TokenBox
             value={to.value}

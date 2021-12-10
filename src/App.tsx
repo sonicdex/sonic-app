@@ -37,18 +37,18 @@ export const App = () => {
         <NotificationManager />
         <ModalManager />
         <Routes>
+          <Route path="/swap" element={<Swap />} />
+
           <Route path="/assets" element={<Assets />} />
           <Route path="/assets/withdraw" element={<AssetsWithdraw />} />
           <Route path="/assets/deposit" element={<AssetsDeposit />} />
-
-          <Route path="/swap" element={<Swap />} />
 
           <Route path="/liquidity" element={<Liquidity />} />
           <Route path="/liquidity/add" element={<LiquidityAdd />} />
 
           <Route path="/activity" element={<Activity />} />
           <Route path="/test" element={<TestView />} />
-          <Route path="*" element={<Navigate to="/assets" />} />
+          <Route path="*" element={<Navigate to="/swap" />} />
         </Routes>
       </Layout>
     </BrowserRouter>
