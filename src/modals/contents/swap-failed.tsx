@@ -15,7 +15,7 @@ export const SwapFailed = ({
     px={5}
     pb={9}
   >
-    <ModalCloseButton position="absolute" top="10px" right="15px" />
+    <ModalCloseButton position="absolute" top={3} right={4} />
     <Heading as="h1" fontWeight={700} fontSize={22} pb={3}>
       Swap Failed
     </Heading>

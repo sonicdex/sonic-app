@@ -14,6 +14,7 @@ import { getCurrencyString, deserialize } from '@/utils/format';
 import { theme } from '@/theme';
 import { SearchBar } from '@/components';
 import { ModalComponentProps } from '../modals';
+import { TokenMetadata } from '@/models';
 
 import { useBalances } from '@/hooks/use-balances';
 
@@ -21,27 +22,22 @@ const SkeletonToken = () => (
   <Flex
     direction="row"
     alignItems="center"
-    py="12px"
-    px="10px"
+    py={3}
+    px={2}
     cursor="pointer"
-    height="66px"
+    height={16}
     justifyContent="space-between"
     width="100%"
     transition="border 400ms"
     border="1px solid transparent"
-    borderRadius="20px"
+    borderRadius={20}
   >
     <Flex direction="row" alignItems="center">
-      <Skeleton
-        isLoaded={false}
-        height="40px"
-        width="40px"
-        borderRadius="40px"
-      />
-      <Skeleton isLoaded={false} width="47px" ml={3} height="27px" />
-      <Skeleton isLoaded={false} width="70px" height="24px" ml="6px" />
+      <Skeleton isLoaded={false} height={10} width={10} borderRadius={40} />
+      <Skeleton isLoaded={false} width={12} ml={3} height={7} />
+      <Skeleton isLoaded={false} width={18} height={6} ml={2} />
     </Flex>
-    <Skeleton isLoaded={false} minWidth="70px" height="27px" ml="6px" />
+    <Skeleton isLoaded={false} minWidth={18} height={6} ml={2} />
   </Flex>
 );
 
@@ -62,21 +58,15 @@ export const TokenSelect = ({
   const { totalBalance } = useBalances();
 
   useEffect(() => {
-    const filterFunction = ({
-      symbol,
-      name,
-    }: {
-      symbol: string;
-      name: string;
-    }) => {
+    const filterFunction = ({ symbol, name }: Partial<TokenMetadata>) => {
       if (search?.length === 0) {
         return true;
       }
       const lowerSearch = search.toLowerCase();
 
       return (
-        symbol.toLowerCase().includes(lowerSearch) ||
-        name.toLowerCase().includes(lowerSearch)
+        symbol?.toLowerCase().includes(lowerSearch) ||
+        name?.toLowerCase().includes(lowerSearch)
       );
     };
 
@@ -84,7 +74,7 @@ export const TokenSelect = ({
     setFilteredList(filteredItems);
   }, [search, parsedTokens]);
 
-  const handleSelect = (selected: boolean, tokenId: string) => {
+  const handleSelect = (selected: boolean, tokenId?: string) => {
     if (selected) return;
     onSelect(tokenId);
     onClose();
@@ -97,22 +87,22 @@ export const TokenSelect = ({
       alignItems="center"
       bg="#1E1E1E"
       borderRadius={20}
-      pt="20px"
-      px="10px"
+      pt={5}
+      px={4}
       position="relative"
     >
-      <ModalCloseButton position="absolute" top="10px" right="15px" />
+      <ModalCloseButton position="absolute" top={3} right={4} />
       <Heading as="h1" fontWeight={700} fontSize="18px">
         Select Token
       </Heading>
-      <Box px="10px" w="100%" mt="14px">
+      <Box px="10px" w="100%" mt={4}>
         <SearchBar search={search} setSearch={setSearch} />
       </Box>
       <Stack
         direction="column"
         width="100%"
         overflow="auto"
-        pb="15px"
+        pb={4}
         _after={{
           content: "''",
           position: 'absolute',
@@ -134,13 +124,7 @@ export const TokenSelect = ({
               symbol,
               name,
               decimals,
-            }: {
-              id: string;
-              logo?: string;
-              symbol: string;
-              decimals?: number | BigInt;
-              name: string;
-            }) => {
+            }: Partial<TokenMetadata>) => {
               const currentTokenSymbol = symbol ?? '';
               const currentSelected = selectedTokenIds?.includes(id);
               const tokenOpacity = currentSelected ? 0.3 : 1;
@@ -156,8 +140,8 @@ export const TokenSelect = ({
                   direction="row"
                   key={id}
                   alignItems="center"
-                  py="12px"
-                  px="10px"
+                  py={3}
+                  px={3}
                   cursor="pointer"
                   justifyContent="space-between"
                   width="100%"
@@ -182,18 +166,18 @@ export const TokenSelect = ({
                         borderRadius={40}
                       />
                     </Skeleton>
-                    <Skeleton isLoaded={!isLoading} minWidth="15px" ml={3}>
+                    <Skeleton isLoaded={!isLoading} minWidth={4} ml={3}>
                       <Box fontWeight={700} fontSize="18px" pl={3}>
                         {symbol}
                       </Box>
                     </Skeleton>
-                    <Skeleton isLoaded={!isLoading} minWidth="70px" ml="6px">
-                      <Box fontSize="16px" pl="6px">
+                    <Skeleton isLoaded={!isLoading} minWidth={17} ml={2}>
+                      <Box fontSize="16px" pl={2}>
                         {name}
                       </Box>
                     </Skeleton>
                   </Flex>
-                  <Skeleton isLoaded={!isLoading} minWidth="70px" ml="6px">
+                  <Skeleton isLoaded={!isLoading} minWidth={17} ml={2}>
                     <Box
                       as="p"
                       fontSize="18px"

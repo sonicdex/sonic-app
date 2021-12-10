@@ -18,14 +18,14 @@ export const SearchBar = ({ search, setSearch }: SearchBarProps) => {
   return (
     <Flex
       boxSizing="border-box"
-      px="16px"
-      mb="15px"
+      px={4}
+      mb={4}
       bg="#282828"
       w="100%"
-      h="42px"
+      h={10}
       borderRadius={20}
     >
-      <Image src={searchSrc} w="16px" mr={3} />
+      <Image src={searchSrc} w={4} mr={3} />
       <Box
         as="input"
         value={search}
