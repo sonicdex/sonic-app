@@ -27,13 +27,13 @@ export const SwapSettings = ({
   };
 
   return (
-    <Box px="18px" pt="13px" pb="23px">
+    <Box px={5} pt={3} pb={6}>
       <Box
         as="h1"
-        pb="9px"
+        pb={2}
         textAlign="left"
         fontSize="16px"
-        mb="10px"
+        mb={3}
         w="100%"
         borderBottom="1px solid #373737"
       >
