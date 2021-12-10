@@ -10,7 +10,7 @@ export const RemoveLiquidityModal = ({
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
-      <ModalContent>123</ModalContent>
+      <ModalContent></ModalContent>
     </Modal>
   );
 };
