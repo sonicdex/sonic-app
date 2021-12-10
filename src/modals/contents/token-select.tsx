@@ -16,7 +16,7 @@ import { SearchBar } from '@/components';
 import { ModalComponentProps } from '../modals';
 import { TokenMetadata } from '@/models';
 
-import { useBalances } from '@/hooks/use-balances';
+import { useTotalBalances } from '@/hooks/use-balances';
 
 const SkeletonToken = () => (
   <Flex
@@ -55,7 +55,7 @@ export const TokenSelect = ({
   const parsedTokens = useMemo(() => deserialize(tokens), [tokens]);
   const [search, setSearch] = useState('');
   const [filteredList, setFilteredList] = useState(parsedTokens);
-  const { totalBalance } = useBalances();
+  const { totalBalances } = useTotalBalances();
 
   useEffect(() => {
     const filterFunction = ({ symbol, name }: Partial<TokenMetadata>) => {
@@ -129,7 +129,7 @@ export const TokenSelect = ({
               const currentSelected = selectedTokenIds?.includes(id);
               const tokenOpacity = currentSelected ? 0.3 : 1;
               const currentBalance = getCurrencyString(
-                id && totalBalance ? totalBalance[id] : 0,
+                id && totalBalances ? totalBalances[id] : 0,
                 decimals
               );
               const logoSrc =

@@ -21,7 +21,7 @@ export const HomeStep = () => {
   const [slippage, setSlippage] = useState('0.10');
   const [autoSlippage, setAutoSlippage] = useState(true);
 
-  const { totalBalances: totalBalance } = useTotalBalances();
+  const { totalBalances } = useTotalBalances();
 
   const handleButtonOnClick = () => {
     if (loading) return;
@@ -30,10 +30,10 @@ export const HomeStep = () => {
   };
 
   const loading = useMemo(() => {
-    if (!totalBalance) return true;
+    if (!totalBalances) return true;
     if (!from.token) return true;
     return false;
-  }, [totalBalance, from.token]);
+  }, [totalBalances, from.token]);
 
   const handleTokenSelect = (data: any, tokenId: string) => {
     dispatch(swapViewActions.setToken({ data, tokenId }));
@@ -41,18 +41,18 @@ export const HomeStep = () => {
 
   const [buttonDisabled, buttonMessage] = useMemo<[boolean, string]>(() => {
     if (loading) return [true, 'Loading'];
-    if (!totalBalance || !from.token) throw new Error('State is loading');
+    if (!totalBalances || !from.token) throw new Error('State is loading');
 
     if (!to.token) return [true, 'Select a resultant token'];
 
     const parsedFromValue = (from.value && parseFloat(from.value)) || 0;
     if (parsedFromValue <= 0)
       return [true, `No ${from.token.name} value selected`];
-    if (parsedFromValue > totalBalance[from.token.id])
+    if (parsedFromValue > totalBalances[from.token.id])
       return [true, `Insufficient ${from.token.name} Balance`];
 
     return [false, 'Review Swap'];
-  }, [loading, totalBalance, from.token, to.token, from.value, to.value]);
+  }, [loading, totalBalances, from.token, to.token, from.value, to.value]);
 
   const fromValueStatus = useMemo(() => {
     if (from.value && parseFloat(from.value) > 0) return 'active';
@@ -76,7 +76,7 @@ export const HomeStep = () => {
         ),
       })
     );
-  }, [from.value]);
+  }, [from.value, from.token]);
 
   const selectedTokenIds = useMemo(() => {
     let selectedIds = [];
@@ -117,7 +117,7 @@ export const HomeStep = () => {
             status={fromValueStatus}
             isLoading={loading}
             balance={getCurrencyString(
-              from.token && totalBalance ? totalBalance[from.token.id] : 0,
+              from.token && totalBalances ? totalBalances[from.token.id] : 0,
               from.token?.decimals
             )}
             amount="0.00"
@@ -152,7 +152,7 @@ export const HomeStep = () => {
             disabled={true}
             isLoading={loading}
             balance={getCurrencyString(
-              to.token && totalBalance ? totalBalance[to.token.id] : 0,
+              to.token && totalBalances ? totalBalances[to.token.id] : 0,
               to.token?.decimals
             )}
             amount="0.00"
