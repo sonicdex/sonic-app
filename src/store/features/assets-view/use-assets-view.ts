@@ -2,9 +2,9 @@ import { Principal } from '@dfinity/principal';
 
 import { parseAmount } from '@/utils/format';
 import { usePlugStore } from '@/store';
-import { useToken } from '../../../hooks/use-token';
 import { TokenIDL } from '@/did';
 import { useSwapActor } from '@/integrations/actor/use-swap-actor';
+import { useToken } from '@/hooks/use-token';
 
 export const useAssetsView = () => {
   const swapActor = useSwapActor();
