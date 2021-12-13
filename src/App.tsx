@@ -1,23 +1,14 @@
-import isMobile from 'ismobilejs';
-import { Routes, Navigate, Route, BrowserRouter } from 'react-router-dom';
-
-import {
-  Activity,
-  Assets,
-  Liquidity,
-  LiquidityAdd,
-  Swap,
-  TestView,
-} from '@/views';
-import { NotificationManager } from '@/notifications';
 import { ModalManager } from '@/modals';
-
+import { NotificationManager } from '@/notifications';
+import { Activity, Assets, Liquidity, LiquidityAdd, Swap } from '@/views';
+import isMobile from 'ismobilejs';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { EmptyMobile, Layout } from './components';
+import { useActorsInit } from './integrations/actor/use-actors-init';
 import { usePlugInit } from './integrations/plug';
 import { useSwapInit } from './integrations/swap';
-import { useActorsInit } from './integrations/actor/use-actors-init';
-import { AssetsWithdraw } from './views/assets/views/withdraw';
 import { AssetsDeposit } from './views/assets/views/deposit';
+import { AssetsWithdraw } from './views/assets/views/withdraw';
 
 export const App = () => {
   const isAnyMobileDevice = isMobile(window.navigator).any;
@@ -48,7 +39,6 @@ export const App = () => {
           <Route path="/liquidity/add" element={<LiquidityAdd />} />
 
           <Route path="/activity" element={<Activity />} />
-          <Route path="/test" element={<TestView />} />
           <Route path="*" element={<Navigate to="/swap" />} />
         </Routes>
       </Layout>

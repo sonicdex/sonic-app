@@ -1,8 +1,5 @@
-import { useMemo, useState } from 'react';
-import { Box, Icon, Flex, IconButton, Tooltip } from '@chakra-ui/react';
-
 import { TitleBox, TokenBox, Button } from '@/components';
-
+import { useTotalBalances } from '@/hooks/use-balances';
 import {
   SwapStep,
   swapViewActions,
@@ -10,20 +7,19 @@ import {
   useSwapStore,
   useSwapViewStore,
 } from '@/store';
-import { useTotalBalances } from '@/hooks/use-balances';
+import { formatAmount, getCurrencyString } from '@/utils/format';
+import { Box, Flex, Icon, IconButton, Tooltip } from '@chakra-ui/react';
+import { useMemo, useState } from 'react';
 import { FaArrowDown } from 'react-icons/fa';
-
 import { SwapSettings } from '../index';
 import { sonicCircleSrc, plugCircleSrc } from '@/assets';
-import { getCurrency, getCurrencyString } from '@/utils/format';
 
 export const HomeStep = () => {
+  const { fromTokenOptions, toTokenOptions, from, to, slippage } =
+    useSwapViewStore();
   const dispatch = useAppDispatch();
   const { sonicBalances, tokenBalances } = useSwapStore();
-  const { fromTokenOptions, toTokenOptions, from, to } = useSwapViewStore();
 
-  // TODO: Move to useSwapViewStore
-  const [slippage, setSlippage] = useState('0.10');
   const [autoSlippage, setAutoSlippage] = useState(true);
 
   const { totalBalances } = useTotalBalances();
@@ -37,28 +33,25 @@ export const HomeStep = () => {
   const loading = useMemo(() => {
     if (!totalBalances) return true;
     if (!from.token) return true;
-    if (!to.token) return true;
     return false;
-  }, [totalBalances, from.token, to.token]);
-
-  const handleTokenSelect = (data: any, tokenId: string) => {
-    dispatch(swapViewActions.setToken({ data, tokenId }));
-  };
+  }, [totalBalances, from.token]);
 
   const [buttonDisabled, buttonMessage] = useMemo<[boolean, string]>(() => {
     if (loading) return [true, 'Loading'];
-    if (!totalBalances || !from.token || !to.token)
-      throw new Error('State is loading');
+    if (!totalBalances || !from.token) throw new Error('State is loading');
+
+    if (!to.token) return [true, 'Select a resultant token'];
 
     const parsedFromValue = (from.value && parseFloat(from.value)) || 0;
 
     if (parsedFromValue <= 0)
-      return [true, `No ${from.token.symbol} value selected`];
-    if (
-      parsedFromValue >
-      getCurrency(totalBalances[from.token.id], from.token.decimals)
-    )
-      return [true, `Insufficient ${from.token.symbol} Balance`];
+      return [true, `No ${from.token.name} value selected`];
+
+    const parsedBalance = parseFloat(
+      formatAmount(totalBalances[from.token.id], from.token.decimals)
+    );
+    if (parsedFromValue > parsedBalance)
+      return [true, `Insufficient ${from.token.name} Balance`];
 
     return [false, 'Review Swap'];
   }, [loading, totalBalances, from.token, to.token, from.value, to.value]);
@@ -76,6 +69,10 @@ export const HomeStep = () => {
     return selectedIds;
   }, [from?.token?.id, to?.token?.id]);
 
+  const handleTokenSelect = (data: any, tokenId: string) => {
+    dispatch(swapViewActions.setToken({ data, tokenId }));
+  };
+
   const switchTokens = () => {
     dispatch(swapViewActions.switchTokens());
   };
@@ -87,7 +84,9 @@ export const HomeStep = () => {
         settings={
           <SwapSettings
             slippage={slippage}
-            setSlippage={setSlippage}
+            setSlippage={(value) =>
+              dispatch(swapViewActions.setSlippage(value))
+            }
             isAuto={autoSlippage}
             setIsAuto={setAutoSlippage}
           />

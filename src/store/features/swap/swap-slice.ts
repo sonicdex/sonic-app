@@ -2,22 +2,26 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { FeatureState } from '@/store';
 import type { RootState } from '@/store';
 import { SwapIDL } from '@/did';
-import { Balances } from '@/models';
+import { Balances, PairList } from '@/models';
 
 interface SwapState {
-  state: FeatureState;
+  supportedTokenListState: FeatureState;
   balancesState: FeatureState;
+  allPairsState: FeatureState;
   supportedTokenList?: SwapIDL.TokenInfoExt[];
   sonicBalances?: Balances;
   tokenBalances?: Balances;
+  allPairs?: PairList;
 }
 
 const initialState: SwapState = {
-  state: 'loading' as FeatureState,
+  supportedTokenListState: 'loading' as FeatureState,
   balancesState: 'loading' as FeatureState,
+  allPairsState: 'loading' as FeatureState,
   supportedTokenList: undefined,
   sonicBalances: undefined,
   tokenBalances: undefined,
+  allPairs: undefined,
 };
 
 export const swapSlice = createSlice({
@@ -25,8 +29,11 @@ export const swapSlice = createSlice({
   // `createSlice` will infer the state type from the `initialState` argument
   initialState,
   reducers: {
-    setState: (state, action: PayloadAction<FeatureState>) => {
-      state.state = action.payload;
+    setSupportedTokensListState: (
+      state,
+      action: PayloadAction<FeatureState>
+    ) => {
+      state.supportedTokenListState = action.payload;
     },
     setBalancesState: (state, action: PayloadAction<FeatureState>) => {
       state.balancesState = action.payload;
@@ -60,6 +67,12 @@ export const swapSlice = createSlice({
         };
       }, {} as Balances);
       state.tokenBalances = parsedBalances;
+    },
+    setAllPairsState: (state, action: PayloadAction<FeatureState>) => {
+      state.allPairsState = action.payload;
+    },
+    setAllPairs: (state, action: PayloadAction<PairList>) => {
+      state.allPairs = action.payload;
     },
   },
 });

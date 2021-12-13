@@ -19,11 +19,8 @@ import { getCurrencyString } from '@/utils/format';
 
 export const Assets = () => {
   const { totalBalances } = useTotalBalances();
-  const {
-    state: swapState,
-    balancesState,
-    supportedTokenList,
-  } = useSwapStore();
+  const { supportedTokenListState, balancesState, supportedTokenList } =
+    useSwapStore();
 
   const navigate = useNavigate();
 
@@ -79,7 +76,7 @@ export const Assets = () => {
           pb={8}
           overflow="auto"
         >
-          {(swapState === FeatureState.Loading &&
+          {(supportedTokenListState === FeatureState.Loading &&
             !isSupportedTokenListPresent) ||
           balancesState === FeatureState.Loading ? (
             <>
@@ -112,7 +109,7 @@ export const Assets = () => {
               <Asset
                 key={id}
                 imageSources={[DefaultTokensImage[symbol] ?? questionMarkSrc]}
-                isLoading={swapState === FeatureState.Loading}
+                isLoading={supportedTokenListState === FeatureState.Loading}
               >
                 <HStack spacing={4}>
                   <AssetImageBlock />

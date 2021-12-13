@@ -1,6 +1,6 @@
 import { Transaction } from '@psychedelic/plug-inpage-provider/dist/src/Provider';
 
-export type CreateTransaction<M, T extends Transaction, A = any> = (
+export type CreateTransaction<M, T extends Transaction = any, A = any> = (
   model: M,
   onSuccess?: T['onSuccess'],
   onFail?: T['onFail'],

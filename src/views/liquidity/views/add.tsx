@@ -25,7 +25,7 @@ export const LiquidityAdd = () => {
   const { from, to } = useLiquidityViewStore();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { state, supportedTokenList } = useSwapStore();
+  const { supportedTokenListState, supportedTokenList } = useSwapStore();
 
   const [subStep, setSubStep] = useState(0);
 
@@ -80,7 +80,7 @@ export const LiquidityAdd = () => {
   }, [from?.token?.id, to?.token?.id]);
 
   useEffect(() => {
-    if (state !== FeatureState.Loading) {
+    if (supportedTokenListState !== FeatureState.Loading) {
       const toTokenId = query.get('tokenTo');
       const fromTokenId = query.get('tokenFrom');
 
@@ -100,7 +100,7 @@ export const LiquidityAdd = () => {
         );
       }
     }
-  }, [state]);
+  }, [supportedTokenListState]);
 
   return (
     <>
@@ -127,7 +127,6 @@ export const LiquidityAdd = () => {
             selectedTokenIds={selectedTokenIds}
             disabled={subStep === 1}
             menuDisabled={subStep === 1}
-            isLoading={state === FeatureState.Loading}
             price={53.23}
             sources={[
               {
@@ -141,6 +140,7 @@ export const LiquidityAdd = () => {
                 balance: 0,
               },
             ]}
+            isLoading={supportedTokenListState === FeatureState.Loading}
           />
         </Box>
         <Box
@@ -171,7 +171,6 @@ export const LiquidityAdd = () => {
             status={getActiveStatus(to.token, to.value)}
             disabled={subStep === 1}
             menuDisabled={subStep === 1}
-            isLoading={state === FeatureState.Loading}
             price={53.23}
             sources={[
               {
@@ -185,6 +184,7 @@ export const LiquidityAdd = () => {
                 balance: 0,
               },
             ]}
+            isLoading={supportedTokenListState === FeatureState.Loading}
           />
         </Box>
         {subStep === 1 && (
@@ -256,7 +256,7 @@ export const LiquidityAdd = () => {
         size="lg"
         onClick={handleButtonClick}
         isDisabled={!shouldButtonBeActive}
-        isLoading={state === FeatureState.Loading}
+        isLoading={supportedTokenListState === FeatureState.Loading}
       >
         {buttonTitle}
       </Button>

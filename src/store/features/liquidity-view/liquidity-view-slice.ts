@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { FeatureState, TokenData, RootState, TokenDataKey } from '@/store';
-import { TokenMetadataList } from '@/models';
+import { FeatureState, RootState } from '@/store';
+import { TokenMetadataList, TokenData, TokenDataKey } from '@/models';
 
 interface LiquidityViewState {
   state: FeatureState;

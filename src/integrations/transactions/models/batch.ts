@@ -22,25 +22,31 @@ export namespace Batch {
     getState: GetState;
   }
 
+  export type DefaultHookState = 'idle' | 'done' | 'error';
+
+  export const DefaultHookStates = {
+    Idle: 'idle',
+    Done: 'done',
+    Error: 'error',
+  };
+
   export type HookState = {
-    Idle: 'idle';
-    Done: 'done';
-    Error: 'error';
     [key: number]: string;
   };
 
-  export interface Hook<State extends HookState> {
+  export interface Hook<State extends PropertyKey> {
     execute: Batch.Execute;
-    state: State;
+    state: State | DefaultHookState;
     error: unknown;
   }
 
-  export interface HookProps<Model, State extends HookState> {
-    states: State;
-    transactions: ReturnType<CreateTransaction<Model, Transaction>>[];
+  export interface HookProps<Model> {
+    transactions: {
+      [key: string]: ReturnType<CreateTransaction<Model, Transaction>>;
+    };
   }
 
-  export type CreateHook = <Model, State extends HookState>(
-    props: Batch.HookProps<Model, State>
-  ) => Batch.Hook<State>;
+  export type CreateHook = <Model, S extends HookProps<Model>>(
+    props: S
+  ) => Hook<keyof S['transactions']>;
 }

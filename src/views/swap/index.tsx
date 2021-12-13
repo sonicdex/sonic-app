@@ -1,8 +1,9 @@
 import { HomeStep, ReviewStep } from './components/steps';
 
-import { SwapStep, useSwapViewStore } from '@/store';
+import { SwapStep, useSwapView, useSwapViewStore } from '@/store';
 
 export const Swap = () => {
+  useSwapView();
   const { step } = useSwapViewStore();
 
   const steps = {

@@ -1,6 +1,6 @@
-import { Principal } from '@dfinity/principal';
+import { TokenMetadata } from '@/models';
 
 export type Withdraw = {
-  tokenId: Principal;
-  amount: number;
+  token: TokenMetadata;
+  amount: string;
 };

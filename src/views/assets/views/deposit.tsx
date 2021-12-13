@@ -19,7 +19,7 @@ export const AssetsDeposit = () => {
   const query = useQuery();
   const [selectedTokenId, setSelectedTokenId] = useState(query.get('tokenId'));
 
-  const { supportedTokenList, state } = useSwapStore();
+  const { supportedTokenList, supportedTokenListState } = useSwapStore();
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -54,7 +54,8 @@ export const AssetsDeposit = () => {
   return (
     <>
       <TitleBox title="Deposit Asset" onArrowBack={() => navigate('/assets')} />
-      {state === FeatureState.Loading && !supportedTokenList ? (
+      {supportedTokenListState === FeatureState.Loading &&
+      !supportedTokenList ? (
         <Box my={5}>
           <TokenBox
             sources={[{ name: 'Plug Wallet', src: plugCircleSrc }]}
@@ -92,7 +93,7 @@ export const AssetsDeposit = () => {
         size="lg"
         isDisabled={!isReady}
         onClick={handleDeposit}
-        isLoading={state === FeatureState.Loading}
+        isLoading={supportedTokenListState === FeatureState.Loading}
       >
         Deposit
       </Button>
