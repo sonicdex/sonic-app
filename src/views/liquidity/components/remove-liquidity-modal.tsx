@@ -11,11 +11,12 @@ import {
 } from '@chakra-ui/modal';
 import {
   Box,
-  Button,
+  Button as ChakraButton,
   Center,
   Divider,
   Flex,
   Heading,
+  Stack,
   SimpleGrid,
   Slider,
   SliderTrack,
@@ -24,16 +25,24 @@ import {
   Tooltip,
 } from '@chakra-ui/react';
 import { FaArrowDown } from 'react-icons/fa';
+import { Button } from '@/components';
+import { RemoveLiquidityModalAsset } from './remove-liquidity-modal-asset';
 
 type RemoveLiquidityModalProps = UseDisclosureReturn;
 
 const percentagePresets = [25, 50, 75, 100];
 
+// TODO: Replace mocks by liquidity data
 export const RemoveLiquidityModal = ({
   isOpen,
   onClose,
 }: RemoveLiquidityModalProps) => {
   const [value, setValue] = useState(0);
+
+  const handleRemoveLiquidity = () => {
+    console.log('remove liquidity');
+    onClose();
+  };
 
   return (
     <Modal isCentered isOpen={isOpen} onClose={onClose}>
@@ -66,15 +75,16 @@ export const RemoveLiquidityModal = ({
             {percentagePresets.map((preset) => (
               <Tooltip
                 key={preset}
-                label={`Remove ${preset}% of liquidity position`}
+                label={`${preset}% of your liquidity position`}
               >
-                <Button
+                <ChakraButton
+                  lineHeight="1"
                   colorScheme="dark-blue"
                   variant="outline"
                   onClick={() => setValue(preset)}
                 >
                   {preset}%
-                </Button>
+                </ChakraButton>
               </Tooltip>
             ))}
           </SimpleGrid>
@@ -93,9 +103,26 @@ export const RemoveLiquidityModal = ({
 
             <Divider />
           </Flex>
+
+          <Stack spacing={4}>
+            <RemoveLiquidityModalAsset
+              name="XTC"
+              amount={5418.12}
+              price={5418.12}
+            />
+            <RemoveLiquidityModalAsset
+              name="WICP"
+              amount={5418.12}
+              price={5418.12}
+            />
+          </Stack>
         </ModalBody>
 
-        <ModalFooter></ModalFooter>
+        <ModalFooter>
+          <Button mb={3} size="lg" isFullWidth onClick={handleRemoveLiquidity}>
+            Remove
+          </Button>
+        </ModalFooter>
       </ModalContent>
     </Modal>
   );

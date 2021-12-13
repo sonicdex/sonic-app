@@ -7,6 +7,7 @@ import {
   swapViewActions,
   useAppDispatch,
   usePlugStore,
+  useSwapStore,
 } from '@/store';
 import { useSwapActor } from '../actor/use-swap-actor';
 import { parseResponseTokenList } from '@/utils/canister';
@@ -15,16 +16,18 @@ import { useTotalBalances } from '@/hooks/use-balances';
 export const useSwapInit = () => {
   const { getBalances } = useTotalBalances();
   const { principalId } = usePlugStore();
+  const { state } = useSwapStore();
 
   const swapActor = useSwapActor();
 
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (swapActor && principalId) {
+    if (swapActor && principalId && state !== FeatureState.Loading) {
+      console.log(swapActor);
       getBalances();
     }
-  }, [swapActor, principalId]);
+  }, [swapActor, principalId, state]);
 
   useEffect(() => {
     getSupportedTokenList();
