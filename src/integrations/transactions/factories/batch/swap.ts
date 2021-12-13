@@ -19,7 +19,7 @@ export const useSwapBatch = ({
   ...swapParams
 }: Swap & ExtraDepositSwapBatchOptions) => {
   const { sonicBalances } = useSwapStore();
-  if (!sonicBalances) throw new Error('Sonic balance is needed');
+  if (!sonicBalances) throw new Error('Sonic balance are required');
 
   if (!swapParams.from.token || !swapParams.to.token)
     throw new Error('Tokens are required');
