@@ -3,22 +3,27 @@ import { UseDisclosureReturn } from '@chakra-ui/hooks';
 import {
   Modal,
   ModalBody,
+  ModalCloseButton,
   ModalContent,
   ModalFooter,
-  ModalOverlay,
   ModalHeader,
+  ModalOverlay,
 } from '@chakra-ui/modal';
 import {
   Box,
   Button,
+  Center,
+  Divider,
+  Flex,
+  Heading,
   SimpleGrid,
   Slider,
   SliderTrack,
   SliderFilledTrack,
   SliderThumb,
-  Heading,
-  ModalCloseButton,
+  Tooltip,
 } from '@chakra-ui/react';
+import { FaArrowDown } from 'react-icons/fa';
 
 type RemoveLiquidityModalProps = UseDisclosureReturn;
 
@@ -31,7 +36,7 @@ export const RemoveLiquidityModal = ({
   const [value, setValue] = useState(0);
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isCentered isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
 
       <ModalContent>
@@ -59,15 +64,35 @@ export const RemoveLiquidityModal = ({
 
           <SimpleGrid columns={4} spacing={4} py={6}>
             {percentagePresets.map((preset) => (
-              <Button
-                colorScheme="dark-blue"
-                variant="outline"
-                onClick={() => setValue(preset)}
+              <Tooltip
+                key={preset}
+                label={`Remove ${preset}% of liquidity position`}
               >
-                {preset}%
-              </Button>
+                <Button
+                  colorScheme="dark-blue"
+                  variant="outline"
+                  onClick={() => setValue(preset)}
+                >
+                  {preset}%
+                </Button>
+              </Tooltip>
             ))}
           </SimpleGrid>
+
+          <Flex alignItems="center" mx={-6}>
+            <Divider />
+            <Center
+              p={2.5}
+              borderWidth="1px"
+              borderStyle="solid"
+              borderColor="gray.700"
+              borderRadius="md"
+            >
+              <FaArrowDown />
+            </Center>
+
+            <Divider />
+          </Flex>
         </ModalBody>
 
         <ModalFooter></ModalFooter>
