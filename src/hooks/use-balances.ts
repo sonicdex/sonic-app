@@ -1,5 +1,5 @@
-import { useMemo } from 'react';
-
+import { TokenIDL } from '@/did';
+import { ActorAdapter, useSwapActor } from '@/integrations/actor';
 import { Balances } from '@/models';
 import {
   FeatureState,
@@ -8,9 +8,8 @@ import {
   usePlugStore,
   useSwapStore,
 } from '@/store';
-import { ActorAdapter, useSwapActor } from '@/integrations/actor';
 import { Principal } from '@dfinity/principal';
-import { TokenIDL } from '@/did';
+import { useMemo } from 'react';
 
 export const useTotalBalances = () => {
   const { principalId } = usePlugStore();
@@ -20,45 +19,45 @@ export const useTotalBalances = () => {
   const dispatch = useAppDispatch();
 
   async function getBalances() {
-    console.log(swapActor);
     try {
+      if (!swapActor) throw new Error('Swap actor not found');
+      if (!principalId) throw new Error('Principal ID not found');
       dispatch(swapActions.setBalancesState(FeatureState.Loading));
 
-      if (principalId) {
-        const sonicBalances = await swapActor?.getUserBalances(
-          Principal.fromText(principalId)
-        );
+      const sonicBalances = await swapActor.getUserBalances(
+        Principal.fromText(principalId)
+      );
 
-        const tokensBalances = sonicBalances
-          ? await Promise.all(
-              sonicBalances.map(async (balance) => {
-                try {
-                  const tokenActor: TokenIDL.Factory =
-                    await new ActorAdapter().createActor(
-                      balance[0],
-                      TokenIDL.factory
-                    );
-
-                  const tokenBalance = await tokenActor.balanceOf(
-                    Principal.fromText(principalId)
+      const tokensBalances = sonicBalances
+        ? await Promise.all(
+            sonicBalances.map(async (balance) => {
+              try {
+                const tokenActor: TokenIDL.Factory =
+                  await new ActorAdapter().createActor(
+                    balance[0],
+                    TokenIDL.factory
                   );
 
-                  const result: [string, bigint] = [balance[0], tokenBalance];
-                  return result;
-                } catch (error) {
-                  console.error(error);
-                  const errorResult: [string, bigint] = [balance[0], BigInt(0)];
+                const tokenBalance = await tokenActor.balanceOf(
+                  Principal.fromText(principalId)
+                );
 
-                  return errorResult;
-                }
-              })
-            )
-          : undefined;
+                const result: [string, bigint] = [balance[0], tokenBalance];
 
-        dispatch(swapActions.setSonicBalances(sonicBalances));
-        dispatch(swapActions.setTokenBalances(tokensBalances));
-        dispatch(swapActions.setBalancesState(FeatureState.Idle));
-      }
+                return result;
+              } catch (error) {
+                console.error(error);
+                const errorResult: [string, bigint] = [balance[0], BigInt(0)];
+
+                return errorResult;
+              }
+            })
+          )
+        : undefined;
+
+      dispatch(swapActions.setSonicBalances(sonicBalances));
+      dispatch(swapActions.setTokenBalances(tokensBalances));
+      dispatch(swapActions.setBalancesState(FeatureState.Idle));
     } catch (error) {
       console.error(error);
       dispatch(swapActions.setBalancesState(FeatureState.Error));
@@ -75,6 +74,8 @@ export const useTotalBalances = () => {
 
   return {
     totalBalances,
+    sonicBalances,
+    tokenBalances,
     getBalances,
   };
 };
