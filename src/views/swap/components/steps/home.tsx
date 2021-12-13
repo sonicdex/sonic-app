@@ -6,7 +6,7 @@ import {
   useAppDispatch,
   useSwapViewStore,
 } from '@/store';
-import { getAmountOut, getCurrencyString } from '@/utils/format';
+import { formatAmount, getAmountOut, getCurrencyString } from '@/utils/format';
 import { Box, Flex, Icon, IconButton, Tooltip } from '@chakra-ui/react';
 import { useEffect, useMemo, useState } from 'react';
 import { FaArrowDown } from 'react-icons/fa';
@@ -48,7 +48,11 @@ export const HomeStep = () => {
     const parsedFromValue = (from.value && parseFloat(from.value)) || 0;
     if (parsedFromValue <= 0)
       return [true, `No ${from.token.name} value selected`];
-    if (parsedFromValue > totalBalances[from.token.id])
+
+    const parsedBalance = parseFloat(
+      formatAmount(totalBalances[from.token.id], from.token.decimals)
+    );
+    if (parsedFromValue > parsedBalance)
       return [true, `Insufficient ${from.token.name} Balance`];
 
     return [false, 'Review Swap'];

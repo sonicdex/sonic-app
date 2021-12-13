@@ -178,7 +178,10 @@ export const initDefaultLiquidityToken = ({
   };
 };
 
-export const formatAmount = (val: BigInt, decimals: number): string => {
+export const formatAmount = (
+  val: BigInt | number | string,
+  decimals: number
+): string => {
   try {
     return formatUnits(ethers.BigNumber.from(val.toString()), decimals);
   } catch (err) {
