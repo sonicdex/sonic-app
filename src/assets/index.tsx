@@ -27,3 +27,4 @@ export { default as transparentGreenCheckSrc } from './transparent-green-check.s
 export { default as redWarningSrc } from './red-warning.svg';
 export { default as questionMarkSrc } from './question-mark.png';
 export { default as searchSrc } from './search.svg';
+export { default as redTriangleWarningSrc } from './red-triangle-warning.svg';
