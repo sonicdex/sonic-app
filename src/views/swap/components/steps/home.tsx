@@ -6,38 +6,26 @@ import {
   useAppDispatch,
   useSwapViewStore,
 } from '@/store';
-import { formatAmount, getAmountOut, getCurrencyString } from '@/utils/format';
+import { formatAmount, getCurrencyString } from '@/utils/format';
 import { Box, Flex, Icon, IconButton, Tooltip } from '@chakra-ui/react';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { FaArrowDown } from 'react-icons/fa';
 import { SwapSettings } from '../index';
 
 export const HomeStep = () => {
-  const { fromTokenOptions, toTokenOptions, from, to, pairList } =
+  const { fromTokenOptions, toTokenOptions, from, to, slippage } =
     useSwapViewStore();
   const dispatch = useAppDispatch();
 
-  // TODO: Move to useSwapViewStore
-  const [slippage, setSlippage] = useState('0.10');
   const [autoSlippage, setAutoSlippage] = useState(true);
 
   const { totalBalances } = useTotalBalances();
-
-  const handleButtonOnClick = () => {
-    if (loading) return;
-
-    dispatch(swapViewActions.setStep(SwapStep.Review));
-  };
 
   const loading = useMemo(() => {
     if (!totalBalances) return true;
     if (!from.token) return true;
     return false;
   }, [totalBalances, from.token]);
-
-  const handleTokenSelect = (data: any, tokenId: string) => {
-    dispatch(swapViewActions.setToken({ data, tokenId }));
-  };
 
   const [buttonDisabled, buttonMessage] = useMemo<[boolean, string]>(() => {
     if (loading) return [true, 'Loading'];
@@ -63,25 +51,6 @@ export const HomeStep = () => {
     return 'inactive';
   }, [from.value]);
 
-  useEffect(() => {
-    if (!from.token) return;
-    if (!to.token) return;
-    if (!pairList) return;
-
-    dispatch(
-      swapViewActions.setValue({
-        data: 'to',
-        value: getAmountOut(
-          from.value,
-          from.token.decimals,
-          to.token.decimals,
-          String(pairList[from.token.id][to.token.id].reserve0),
-          String(pairList[from.token.id][to.token.id].reserve1)
-        ),
-      })
-    );
-  }, [from.value, from.token, to.token]);
-
   const selectedTokenIds = useMemo(() => {
     let selectedIds = [];
     if (from?.token?.id) selectedIds.push(from.token.id);
@@ -89,6 +58,16 @@ export const HomeStep = () => {
 
     return selectedIds;
   }, [from?.token?.id, to?.token?.id]);
+
+  const handleButtonOnClick = () => {
+    if (loading) return;
+
+    dispatch(swapViewActions.setStep(SwapStep.Review));
+  };
+
+  const handleTokenSelect = (data: any, tokenId: string) => {
+    dispatch(swapViewActions.setToken({ data, tokenId }));
+  };
 
   const switchTokens = () => {
     dispatch(swapViewActions.switchTokens());
@@ -101,7 +80,9 @@ export const HomeStep = () => {
         settings={
           <SwapSettings
             slippage={slippage}
-            setSlippage={setSlippage}
+            setSlippage={(value) =>
+              dispatch(swapViewActions.setSlippage(value))
+            }
             isAuto={autoSlippage}
             setIsAuto={setAutoSlippage}
           />

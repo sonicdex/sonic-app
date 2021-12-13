@@ -16,6 +16,7 @@ interface SwapViewState {
   to: TokenData;
   tokenList?: TokenMetadataList;
   pairList?: PairList;
+  slippage: string;
 }
 
 const initialState: SwapViewState = {
@@ -31,6 +32,7 @@ const initialState: SwapViewState = {
   },
   tokenList: undefined,
   pairList: undefined,
+  slippage: '0.10',
 };
 
 export const swapViewSlice = createSlice({
@@ -85,6 +87,9 @@ export const swapViewSlice = createSlice({
     setPairList: (state, action: PayloadAction<PairList>) => {
       state.pairList = action.payload;
       state.step = SwapStep.Home;
+    },
+    setSlippage: (state, action: PayloadAction<string>) => {
+      state.slippage = action.payload;
     },
   },
 });

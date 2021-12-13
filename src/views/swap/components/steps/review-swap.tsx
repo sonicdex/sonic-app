@@ -20,7 +20,8 @@ import { useEffect, useMemo, useState } from 'react';
 
 export const ReviewStep = () => {
   const { totalBalances } = useTotalBalances();
-  const { fromTokenOptions, toTokenOptions, from, to } = useSwapViewStore();
+  const { fromTokenOptions, toTokenOptions, from, to, slippage } =
+    useSwapViewStore();
   const { principalId } = usePlugStore();
   const dispatch = useAppDispatch();
   const {
@@ -36,7 +37,7 @@ export const ReviewStep = () => {
   const depositSwapBatch = useSwapBatch({
     from,
     to,
-    slippage: 0.1,
+    slippage: Number(slippage),
     keepInSonic,
     principalId,
   });

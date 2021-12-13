@@ -3,7 +3,6 @@ import {
   FeatureState,
   liquidityViewActions,
   swapActions,
-  swapViewActions,
   useAppDispatch,
   usePlugStore,
   useSwapStore,
@@ -47,9 +46,6 @@ export const useSwapInit = () => {
         const response = await swapActor.getSupportedTokenList();
 
         if (response) {
-          dispatch(
-            swapViewActions.setTokenList(parseResponseTokenList(response))
-          );
           dispatch(
             liquidityViewActions.setTokenList(parseResponseTokenList(response))
           );
