@@ -3,7 +3,7 @@ import { Text, Flex, Image, Box } from '@chakra-ui/react';
 
 import { Button, TitleBox, TokenBox } from '@/components';
 
-import { plusSrc, equalSrc } from '@/assets';
+import { plusSrc, equalSrc, plugCircleSrc, sonicCircleSrc } from '@/assets';
 import {
   FeatureState,
   liquidityViewActions,
@@ -127,9 +127,20 @@ export const LiquidityAdd = () => {
             selectedTokenIds={selectedTokenIds}
             disabled={subStep === 1}
             menuDisabled={subStep === 1}
-            balance="0.00"
-            amount="0.00"
             isLoading={state === FeatureState.Loading}
+            price={53.23}
+            sources={[
+              {
+                name: 'Plug Wallet',
+                src: plugCircleSrc,
+                balance: 0,
+              },
+              {
+                name: 'Sonic',
+                src: sonicCircleSrc,
+                balance: 0,
+              },
+            ]}
           />
         </Box>
         <Box
@@ -160,9 +171,20 @@ export const LiquidityAdd = () => {
             status={getActiveStatus(to.token, to.value)}
             disabled={subStep === 1}
             menuDisabled={subStep === 1}
-            balance="0.00"
-            amount="0.00"
             isLoading={state === FeatureState.Loading}
+            price={53.23}
+            sources={[
+              {
+                name: 'Plug Wallet',
+                src: plugCircleSrc,
+                balance: 0,
+              },
+              {
+                name: 'Sonic',
+                src: sonicCircleSrc,
+                balance: 0,
+              },
+            ]}
           />
         </Box>
         {subStep === 1 && (
@@ -196,10 +218,21 @@ export const LiquidityAdd = () => {
                 otherTokensMetadata={supportedTokenList}
                 selectedTokenMetadata={to.token}
                 status="active"
-                balance="0.00"
+                price={53.23}
+                sources={[
+                  {
+                    name: 'Plug Wallet',
+                    src: plugCircleSrc,
+                    balance: 0,
+                  },
+                  {
+                    name: 'Sonic',
+                    src: sonicCircleSrc,
+                    balance: 0,
+                  },
+                ]}
                 balanceText="Share of pool:"
-                amountText="SHARE HERE"
-                amount="0.00"
+                priceText="SHARE HERE"
                 disabled
                 menuDisabled
                 glow

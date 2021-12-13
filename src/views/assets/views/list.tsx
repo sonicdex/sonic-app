@@ -15,6 +15,7 @@ import { theme } from '@/theme';
 import { FaMinus, FaPlus } from 'react-icons/fa';
 import { questionMarkSrc } from '@/assets';
 import { useTotalBalances } from '@/hooks/use-balances';
+import { getCurrencyString } from '@/utils/format';
 
 export const Assets = () => {
   const { totalBalances } = useTotalBalances();
@@ -107,7 +108,7 @@ export const Assets = () => {
               </Asset>
             </>
           ) : isSupportedTokenListPresent ? (
-            supportedTokenList.map(({ id, name, symbol }) => (
+            supportedTokenList.map(({ id, name, symbol, decimals }) => (
               <Asset
                 key={id}
                 imageSources={[DefaultTokensImage[symbol] ?? questionMarkSrc]}
@@ -122,7 +123,9 @@ export const Assets = () => {
                   <Text fontWeight="bold" color="gray.400">
                     Amount
                   </Text>
-                  <Text fontWeight="bold">{totalBalances?.[id]}</Text>
+                  <Text fontWeight="bold">
+                    {getCurrencyString(totalBalances?.[id], decimals)}
+                  </Text>
                 </Box>
                 <Box>
                   <Text fontWeight="bold" color="gray.400">

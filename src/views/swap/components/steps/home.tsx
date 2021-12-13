@@ -2,28 +2,31 @@ import { useMemo, useState } from 'react';
 import { Box, Icon, Flex, IconButton, Tooltip } from '@chakra-ui/react';
 
 import { TitleBox, TokenBox, Button } from '@/components';
-import { getCurrencyString } from '@/utils/format';
 
 import {
   SwapStep,
   swapViewActions,
   useAppDispatch,
+  useSwapStore,
   useSwapViewStore,
 } from '@/store';
 import { useTotalBalances } from '@/hooks/use-balances';
 import { FaArrowDown } from 'react-icons/fa';
 
 import { SwapSettings } from '../index';
+import { sonicCircleSrc, plugCircleSrc } from '@/assets';
+import { getCurrency, getCurrencyString } from '@/utils/format';
 
 export const HomeStep = () => {
   const dispatch = useAppDispatch();
+  const { sonicBalances, tokenBalances } = useSwapStore();
   const { fromTokenOptions, toTokenOptions, from, to } = useSwapViewStore();
 
   // TODO: Move to useSwapViewStore
   const [slippage, setSlippage] = useState('0.10');
   const [autoSlippage, setAutoSlippage] = useState(true);
 
-  const { totalBalances: totalBalance } = useTotalBalances();
+  const { totalBalances } = useTotalBalances();
 
   const handleButtonOnClick = () => {
     if (loading) return;
@@ -32,11 +35,11 @@ export const HomeStep = () => {
   };
 
   const loading = useMemo(() => {
-    if (!totalBalance) return true;
+    if (!totalBalances) return true;
     if (!from.token) return true;
     if (!to.token) return true;
     return false;
-  }, [totalBalance, from.token, to.token]);
+  }, [totalBalances, from.token, to.token]);
 
   const handleTokenSelect = (data: any, tokenId: string) => {
     dispatch(swapViewActions.setToken({ data, tokenId }));
@@ -44,17 +47,21 @@ export const HomeStep = () => {
 
   const [buttonDisabled, buttonMessage] = useMemo<[boolean, string]>(() => {
     if (loading) return [true, 'Loading'];
-    if (!totalBalance || !from.token || !to.token)
+    if (!totalBalances || !from.token || !to.token)
       throw new Error('State is loading');
 
     const parsedFromValue = (from.value && parseFloat(from.value)) || 0;
+
     if (parsedFromValue <= 0)
-      return [true, `No ${from.token.name} value selected`];
-    if (parsedFromValue > totalBalance[from.token.id])
-      return [true, `Insufficient ${from.token.name} Balance`];
+      return [true, `No ${from.token.symbol} value selected`];
+    if (
+      parsedFromValue >
+      getCurrency(totalBalances[from.token.id], from.token.decimals)
+    )
+      return [true, `Insufficient ${from.token.symbol} Balance`];
 
     return [false, 'Review Swap'];
-  }, [loading, totalBalance, from.token, to.token, from.value, to.value]);
+  }, [loading, totalBalances, from.token, to.token, from.value, to.value]);
 
   const fromValueStatus = useMemo(() => {
     if (from.value && parseFloat(from.value) > 0) return 'active';
@@ -90,6 +97,20 @@ export const HomeStep = () => {
         <Box mt={5} width="100%">
           <TokenBox
             value={from.value}
+            onMaxClick={() =>
+              dispatch(
+                swapViewActions.setValue({
+                  data: 'from',
+                  value:
+                    totalBalances && from.token
+                      ? getCurrencyString(
+                          totalBalances[from.token?.id],
+                          from.token?.decimals
+                        )
+                      : '0.00',
+                })
+              )
+            }
             setValue={(value) =>
               dispatch(swapViewActions.setValue({ data: 'from', value }))
             }
@@ -99,11 +120,29 @@ export const HomeStep = () => {
             selectedTokenIds={selectedTokenIds}
             status={fromValueStatus}
             isLoading={loading}
-            balance={getCurrencyString(
-              from.token && totalBalance ? totalBalance[from.token.id] : 0,
-              from.token?.decimals
-            )}
-            amount="0.00"
+            price={53.23}
+            sources={[
+              {
+                name: 'Plug Wallet',
+                src: plugCircleSrc,
+                balance:
+                  from.token && tokenBalances
+                    ? tokenBalances[from.token.id]
+                    : 0,
+              },
+              {
+                name: 'Sonic',
+                src: sonicCircleSrc,
+                balance:
+                  from.token && sonicBalances
+                    ? sonicBalances[from.token.id]
+                    : 0,
+              },
+            ]}
+            // balances={getCurrencyString(
+            //   from.token && totalBalance ? totalBalance[from.token.id] : 0,
+            //   from.token?.decimals
+            // )}
           />
         </Box>
         <Tooltip label="Swap">
@@ -134,11 +173,25 @@ export const HomeStep = () => {
             selectedTokenMetadata={to.token}
             disabled={true}
             isLoading={loading}
-            balance={getCurrencyString(
-              to.token && totalBalance ? totalBalance[to.token.id] : 0,
-              to.token?.decimals
-            )}
-            amount="0.00"
+            price={53.23}
+            sources={[
+              {
+                name: 'Plug Wallet',
+                src: plugCircleSrc,
+                balance:
+                  to.token && tokenBalances ? tokenBalances[to.token.id] : 0,
+              },
+              {
+                name: 'Sonic',
+                src: sonicCircleSrc,
+                balance:
+                  to.token && sonicBalances ? sonicBalances[to.token.id] : 0,
+              },
+            ]}
+            // balances={getCurrencyString(
+            //   to.token && totalBalance ? totalBalance[to.token.id] : 0,
+            //   to.token?.decimals
+            // )}
           />
         </Box>
       </Flex>

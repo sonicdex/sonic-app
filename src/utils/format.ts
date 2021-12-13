@@ -30,15 +30,25 @@ export const parseAmount = (val: string, decimals: number): bigint => {
   }
 };
 
+export const getCurrency = (
+  amount: BigInt | undefined | string | number,
+  decimals: BigInt | undefined | number
+) => {
+  if (!amount || typeof decimals === 'undefined') return 0;
+  const num = new BigNumber(amount.toString()).div(
+    new BigNumber(10).pow(decimals.toString())
+  );
+  return num;
+};
+
 export const getCurrencyString = (
   amount: BigInt | undefined | string | number,
   decimals: BigInt | undefined | number,
   toFixed: number | undefined = undefined
 ) => {
-  if (!amount || typeof decimals === 'undefined') return '0';
-  const num = new BigNumber(amount.toString()).div(
-    new BigNumber(10).pow(decimals.toString())
-  );
+  const num = getCurrency(amount, decimals);
+
+  if (num === 0) return '0';
   return typeof toFixed === 'undefined' ? num.toString() : num.toFixed(toFixed);
 };
 

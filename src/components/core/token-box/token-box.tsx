@@ -1,34 +1,47 @@
 import {
-  chevronDownSrc,
-  greyPlugSrc,
-  greySonicSrc,
-  questionMarkSrc,
-} from '@/assets';
+  Skeleton,
+  Text,
+  Box,
+  Flex,
+  Image,
+  HStack,
+  Button,
+} from '@chakra-ui/react';
+
+import { chevronDownSrc, questionMarkSrc } from '@/assets';
 import { useModalStore } from '@/store';
 import { MODALS } from '@/modals';
 import { NumberInput } from '@/components';
 import { DefaultTokensImage } from '@/constants';
 import { TokenMetadata } from '@/models';
-import { Skeleton, Text, Box, Flex, Image } from '@chakra-ui/react';
-import { stringify } from '@/utils/format';
+import { getCurrencyString, stringify } from '@/utils/format';
+import { TokenBoxPopover } from './token-box-popover';
+import NumberFormat from 'react-number-format';
+import { useMemo } from 'react';
+
+export type TokenBoxSource = {
+  name: string;
+  src: string;
+  balance?: number;
+};
 
 type TokenBoxProps = {
   value?: string;
   setValue?: (value: string) => any;
+  price?: number;
   otherTokensMetadata?: Array<TokenMetadata>;
   selectedTokenMetadata?: TokenMetadata;
-  balance?: string;
-  amount?: string;
-  source?: 'plug' | 'sonic' | null;
   balanceText?: string;
   menuDisabled?: boolean;
   disabled?: boolean;
-  amountText?: string;
+  priceText?: string;
   status?: string;
   glow?: boolean;
   isLoading?: boolean;
   selectedTokenIds?: string[];
+  sources?: TokenBoxSource[];
   onTokenSelect?: (arg0: string) => any;
+  onMaxClick?: () => unknown | Promise<unknown>;
 };
 
 export const TokenBox = ({
@@ -36,34 +49,29 @@ export const TokenBox = ({
   value = '',
   setValue = () => null,
   otherTokensMetadata,
-  onTokenSelect,
   selectedTokenMetadata,
-  source,
-  balance,
-  amount,
+  sources,
   balanceText,
-  amountText,
+  priceText,
+  price,
   selectedTokenIds = [],
   menuDisabled = false,
   disabled = false,
   glow = false,
   isLoading = false,
+  onTokenSelect,
+  onMaxClick,
 }: TokenBoxProps) => {
   const { setCurrentModal, setCurrentModalData, clearModal } = useModalStore();
-  const sourceImg = source === 'plug' ? greyPlugSrc : greySonicSrc;
 
   const border = glow ? '1px solid #3D52F4' : '1px solid #373737';
   const background = glow ? '#151515' : '#1E1E1E';
 
-  const balanceDisplay = balanceText ? (
-    balanceText
-  ) : (
-    <>
-      Balance: {balance} {selectedTokenMetadata?.name}
-    </>
+  const totalTokenBalance = useMemo(
+    () =>
+      sources?.reduce((acc, current) => acc + (current.balance ?? 0), 0) ?? 0,
+    [sources]
   );
-
-  const amountDisplay = amountText ? amountText : `$${amount}`;
 
   const toggleModal = () => {
     if (isLoading || menuDisabled) return;
@@ -75,6 +83,20 @@ export const TokenBox = ({
     });
     setCurrentModal(MODALS.tokenSelect);
   };
+
+  const shouldRenderMaxButton = useMemo(() => {
+    if (
+      onMaxClick &&
+      totalTokenBalance > 0 &&
+      Number(
+        getCurrencyString(totalTokenBalance, selectedTokenMetadata?.decimals)
+      ) > Number(value)
+    ) {
+      return true;
+    }
+
+    return false;
+  }, [onMaxClick, totalTokenBalance, value]);
 
   const selectedTokenSymbol = selectedTokenMetadata?.symbol ?? '';
   const logoSrc = DefaultTokensImage[selectedTokenSymbol] ?? questionMarkSrc;
@@ -89,9 +111,7 @@ export const TokenBox = ({
       pb={4}
       transition="border 400ms"
       position="relative"
-      _hover={{
-        border,
-      }}
+      _hover={{ border }}
     >
       {glow && (
         <Box
@@ -115,39 +135,34 @@ export const TokenBox = ({
         <Flex
           direction="row"
           alignItems="center"
-          borderRadius="20px"
+          borderRadius={20}
           bg="#282828"
-          pl="10px"
-          pr="12px"
-          py="8px"
+          pl={2.5}
+          pr={3}
+          py={2}
           cursor="pointer"
           onClick={toggleModal}
         >
           <Skeleton
             isLoaded={!isLoading}
-            height="20px"
-            width="20px"
+            height={5}
+            width={5}
             borderRadius="full"
-            mr="7px"
+            mr={2}
           >
-            <Image
-              width="20px"
-              height="20px"
-              borderRadius="20px"
-              src={logoSrc}
-            />
+            <Image width={5} height={5} borderRadius={5} src={logoSrc} />
           </Skeleton>
           <Skeleton
             isLoaded={!isLoading}
-            height="25px"
+            height={6}
             width="fit-content"
-            mr="10px"
+            mr={2.5}
           >
             <Text
               fontWeight={700}
-              fontSize="18px"
+              fontSize="lg"
               width="fit-content"
-              minWidth="40px"
+              minWidth={10}
             >
               {selectedTokenMetadata?.symbol}
             </Text>
@@ -168,9 +183,29 @@ export const TokenBox = ({
       </Flex>
       <Flex direction="row" justifyContent="space-between">
         <Skeleton isLoaded={!isLoading} borderRadius="full" minW={20}>
-          <Flex direction="row">
-            {source && <Image src={sourceImg} mr={2} height={5} />}
-            <Text color="#888E8F">{balanceDisplay}</Text>
+          <Flex direction="row" color="#888E8F">
+            {balanceText ?? (
+              <HStack>
+                <TokenBoxPopover
+                  sources={sources}
+                  decimals={selectedTokenMetadata?.decimals}
+                  symbol={selectedTokenMetadata?.symbol}
+                />
+                <Text>
+                  Balance:{' '}
+                  {getCurrencyString(
+                    totalTokenBalance,
+                    selectedTokenMetadata?.decimals
+                  )}{' '}
+                  {selectedTokenMetadata?.symbol}{' '}
+                  {shouldRenderMaxButton && (
+                    <Button variant="link" onClick={onMaxClick}>
+                      (max)
+                    </Button>
+                  )}
+                </Text>
+              </HStack>
+            )}
           </Flex>
         </Skeleton>
         <Skeleton isLoaded={!isLoading} borderRadius="full">
@@ -178,7 +213,9 @@ export const TokenBox = ({
             transition="color 400ms"
             color={status === 'active' ? '#F6FCFD' : '#888E8F'}
           >
-            {amountDisplay}
+            {priceText ?? (
+              <NumberFormat value={price} displayType="text" prefix="$" />
+            )}
           </Box>
         </Skeleton>
       </Flex>

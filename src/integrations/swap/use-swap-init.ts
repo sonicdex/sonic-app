@@ -24,7 +24,6 @@ export const useSwapInit = () => {
 
   useEffect(() => {
     if (swapActor && principalId && state !== FeatureState.Loading) {
-      console.log(swapActor);
       getBalances();
     }
   }, [swapActor, principalId, state]);
