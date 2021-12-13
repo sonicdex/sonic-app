@@ -1,4 +1,6 @@
+import { TokenMetadata } from '@/models';
+
 export type Deposit = {
-  tokenId: string;
-  amount: number;
+  token: TokenMetadata;
+  amount: string;
 };

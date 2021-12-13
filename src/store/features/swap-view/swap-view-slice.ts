@@ -1,14 +1,8 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { FeatureState } from '@/store';
+import { TokenMetadataList } from '@/models';
+import { PairList, TokenDataKey, TokenData } from '@/models';
 import type { RootState } from '@/store';
-import { TokenMetadata, TokenMetadataList } from '@/models';
-
-export type TokenDataKey = 'from' | 'to';
-
-export interface TokenData {
-  token?: TokenMetadata;
-  value: string;
-}
+import { FeatureState } from '@/store';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export enum SwapStep {
   Home,
@@ -21,6 +15,8 @@ interface SwapViewState {
   from: TokenData;
   to: TokenData;
   tokenList?: TokenMetadataList;
+  pairList?: PairList;
+  slippage: string;
 }
 
 const initialState: SwapViewState = {
@@ -35,6 +31,8 @@ const initialState: SwapViewState = {
     value: '0.00',
   },
   tokenList: undefined,
+  pairList: undefined,
+  slippage: '0.10',
 };
 
 export const swapViewSlice = createSlice({
@@ -63,31 +61,35 @@ export const swapViewSlice = createSlice({
         action.payload.tokenId && state.tokenList
           ? state.tokenList[action.payload.tokenId]
           : undefined;
-      if (state.from.token?.id === state.to.token?.id && state.tokenList) {
-        // Change 'to.token' if it's the same as the new 'from.token'
-        const anotherTokenId = Object.keys(state.tokenList).find(
-          (tokenId) => tokenId !== state.from.token?.id
-        );
-        state.to.token = anotherTokenId
-          ? state.tokenList[anotherTokenId]
-          : undefined;
+      if (action.payload.data === 'from') {
+        state.from.value = '0.00';
+        state.to.value = '0.00';
+        state.to.token = undefined;
       }
       state.step = SwapStep.Home;
     },
     switchTokens: (state) => {
-      const temp = state.from.token;
-      state.from.token = state.to.token;
-      state.to.token = temp;
-      state.step = SwapStep.Home;
+      if (state.from.token && state.to.token) {
+        const temp = state.from.token;
+        state.from.token = state.to.token;
+        state.to.token = temp;
+        state.step = SwapStep.Home;
+      }
     },
     setTokenList: (state, action: PayloadAction<TokenMetadataList>) => {
       state.tokenList = action.payload;
       const tokens = Object.values(action.payload);
       state.from.token = tokens[0];
       state.from.value = '0.00';
-      state.to.token = tokens[1];
       state.to.value = '0.00';
       state.step = SwapStep.Home;
+    },
+    setPairList: (state, action: PayloadAction<PairList>) => {
+      state.pairList = action.payload;
+      state.step = SwapStep.Home;
+    },
+    setSlippage: (state, action: PayloadAction<string>) => {
+      state.slippage = action.payload;
     },
   },
 });

@@ -59,7 +59,7 @@ export const TokenBox = ({
     balanceText
   ) : (
     <>
-      Balance: {balance} {selectedTokenMetadata?.name}
+      Balance: {balance} {selectedTokenMetadata?.symbol}
     </>
   );
 

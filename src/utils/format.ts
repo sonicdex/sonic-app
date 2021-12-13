@@ -21,7 +21,7 @@ export const stringify = (data: any) => {
   );
 };
 
-export const parseAmount = (val: string, decimals: number): bigint => {
+export const parseAmount = (val: string, decimals: string | number): bigint => {
   try {
     const str = parseUnits(val, decimals).toString();
     return BigInt(str);
@@ -61,11 +61,11 @@ export const getLpAmount = (
 };
 
 export const getAmountOut = (
-  amountIn: string,
-  decimalsIn: string,
-  decimalsOut: string,
-  reserveIn: string,
-  reserveOut: string,
+  amountIn: string | number,
+  decimalsIn: string | number,
+  decimalsOut: string | number,
+  reserveIn: string | number,
+  reserveOut: string | number,
   fee = 3 // means 0.003
 ): string => {
   if (!amountIn || new BigNumber(amountIn).isZero()) return '0';
@@ -178,7 +178,10 @@ export const initDefaultLiquidityToken = ({
   };
 };
 
-export const formatAmount = (val: BigInt, decimals: number): string => {
+export const formatAmount = (
+  val: BigInt | number | string,
+  decimals: number
+): string => {
   try {
     return formatUnits(ethers.BigNumber.from(val.toString()), decimals);
   } catch (err) {
@@ -186,10 +189,10 @@ export const formatAmount = (val: BigInt, decimals: number): string => {
   }
 };
 
-export const amountOutMin = (
-  toValue: number,
-  tolerance: number,
-  decimals: string
+export const getAmountOutMin = (
+  toValue: number | string,
+  tolerance: number | string,
+  decimals: number | string
 ) => {
   return new BigNumber('1')
     .minus(new BigNumber(tolerance))
@@ -198,10 +201,10 @@ export const amountOutMin = (
     .toString();
 };
 
-export const amountInMax = (
-  fromValue: number,
-  tolerance: number,
-  decimals: string
+export const getAmountInMax = (
+  fromValue: number | string,
+  tolerance: number | string,
+  decimals: number | string
 ) => {
   return new BigNumber('1')
     .minus(new BigNumber(tolerance))

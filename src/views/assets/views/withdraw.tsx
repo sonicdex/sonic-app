@@ -18,7 +18,7 @@ export const AssetsWithdraw = () => {
   const query = useQuery();
   const [selectedTokenId, setSelectedTokenId] = useState(query.get('tokenId'));
   const { withdrawValue } = useAssetsViewStore();
-  const { supportedTokenList, state } = useSwapStore();
+  const { supportedTokenList, supportedTokenListState } = useSwapStore();
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -56,7 +56,8 @@ export const AssetsWithdraw = () => {
         title="Withdraw Asset"
         onArrowBack={() => navigate('/assets')}
       />
-      {state === FeatureState.Loading && !supportedTokenList ? (
+      {supportedTokenListState === FeatureState.Loading &&
+      !supportedTokenList ? (
         <Box my={5}>
           <TokenBox isLoading />
         </Box>
@@ -86,7 +87,7 @@ export const AssetsWithdraw = () => {
         size="lg"
         isDisabled={!isReady}
         onClick={handleWithdraw}
-        isLoading={state === FeatureState.Loading}
+        isLoading={supportedTokenListState === FeatureState.Loading}
       >
         Withdraw
       </Button>

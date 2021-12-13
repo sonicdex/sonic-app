@@ -9,11 +9,18 @@ export const useSwapViewStore = () => {
 
     const tokenOptions = Object.values(state.tokenList);
 
+    if (!state.pairList) return [tokenOptions, []];
+
     return [
       tokenOptions,
-      tokenOptions.filter((token) => token.id !== state.from.token?.id),
+      tokenOptions.filter((token) =>
+        Boolean(
+          state.pairList![state.from.token!.id] &&
+            state.pairList![state.from.token!.id][token.id]
+        )
+      ),
     ];
-  }, [state.tokenList, state.from.token]);
+  }, [state.tokenList, state.from.token, state.pairList]);
 
   return {
     ...state,

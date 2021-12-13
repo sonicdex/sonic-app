@@ -10,7 +10,7 @@ export class BatchTransactions implements Batch.Controller {
 
   constructor(
     private provider?: Provider,
-    private handleRetry?: () => Promise<boolean>
+    private handleRetry?: (error: unknown) => Promise<boolean>
   ) {}
 
   public push(transaction: Transaction): BatchTransactions {
@@ -48,27 +48,28 @@ export class BatchTransactions implements Batch.Controller {
     return this.state;
   }
 
-  private handleTransactionSuccess(
+  private async handleTransactionSuccess(
     transaction: Transaction,
     response: unknown
   ): Promise<unknown> {
+    const result = await transaction.onSuccess(response);
     this.pop();
     if (this.transactions.length === 0) {
       this.finishPromise(true, response);
     }
-    return transaction.onSuccess(response);
+    return result;
   }
 
   private async handleTransactionFail(
     transaction: Transaction,
     error: unknown
   ): Promise<unknown> {
-    const retry = this.handleRetry && (await this.handleRetry());
+    const retry = this.handleRetry && (await this.handleRetry(error));
     if (retry) {
       return this.start();
     } else {
+      await transaction.onFail(error);
       this.finishPromise(false, error);
-      return transaction.onFail(error);
     }
   }
 
@@ -92,6 +93,16 @@ export class BatchTransactions implements Batch.Controller {
   }
 
   private start(): void {
-    this.provider?.batchTransactions(this.transactions);
+    this.provider?.batchTransactions(this.transactions).catch((error) => {
+      if (this.handleRetry) {
+        return this.handleRetry(error).then((response) => {
+          if (response) {
+            return this.start();
+          } else {
+            this.finishPromise(false, error);
+          }
+        });
+      }
+    });
   }
 }

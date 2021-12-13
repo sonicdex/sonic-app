@@ -1,51 +1,43 @@
-import { parseAmount } from '@/utils/format';
-
-import { usePlugStore } from '@/store';
-import { Principal } from '@dfinity/principal';
-import { useSwapActor } from '@/integrations/actor/use-swap-actor';
+import { useAppDispatch } from '@/store';
+import { parseResponseTokenList } from '@/utils/canister';
+import { getAmountOut } from '@/utils/format';
+import { useEffect } from 'react';
+import { swapViewActions, useSwapViewStore } from '.';
+import { useSwapStore } from '..';
 
 export const useSwapView = () => {
-  const swapActor = useSwapActor();
-  const { principalId } = usePlugStore();
+  const dispatch = useAppDispatch();
+  const { allPairs, supportedTokenList } = useSwapStore();
+  const { from, to, pairList } = useSwapViewStore();
 
-  async function swap(
-    tokenIn: string,
-    tokenOut: string,
-    amountIn: string,
-    amountOut: string,
-    amountOutMin: string,
-    amountInMax: string,
-    decimalIn: number,
-    decimalOut: number
-  ) {
-    if (principalId) {
-      try {
-        const currentTime = (new Date().getTime() + 5 * 60 * 1000) * 10000000;
+  useEffect(() => {
+    if (!allPairs) return;
+    dispatch(swapViewActions.setPairList(allPairs));
+  }, [allPairs]);
 
-        const call = await swapActor?.swapExactTokensForTokens(
-          parseAmount(amountIn, decimalIn),
-          parseAmount(amountOutMin, decimalIn),
-          [tokenIn, tokenOut],
-          Principal.fromText(principalId),
-          BigInt(currentTime)
-        );
+  useEffect(() => {
+    if (!supportedTokenList) return;
+    dispatch(
+      swapViewActions.setTokenList(parseResponseTokenList(supportedTokenList))
+    );
+  }, [supportedTokenList]);
 
-        const call1 = await swapActor?.swapTokensForExactTokens(
-          parseAmount(amountOut, decimalOut),
-          parseAmount(amountInMax, decimalOut),
-          [tokenIn, tokenOut],
-          Principal.fromText(principalId),
-          BigInt(currentTime)
-        );
+  useEffect(() => {
+    if (!from.token) return;
+    if (!to.token) return;
+    if (!pairList) return;
 
-        return [call, call1];
-      } catch (e) {
-        console.log(e, 'swap');
-      }
-    }
-  }
-
-  return {
-    swap,
-  };
+    dispatch(
+      swapViewActions.setValue({
+        data: 'to',
+        value: getAmountOut(
+          from.value,
+          from.token.decimals,
+          to.token.decimals,
+          String(pairList[from.token.id][to.token.id].reserve0),
+          String(pairList[from.token.id][to.token.id].reserve1)
+        ),
+      })
+    );
+  }, [from.value, from.token, to.token]);
 };

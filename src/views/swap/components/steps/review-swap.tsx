@@ -1,58 +1,95 @@
-import { useMemo } from 'react';
-import { FormControl, Checkbox, Box, Image, Flex } from '@chakra-ui/react';
-
-import { TitleBox, TokenBox, Button } from '@/components';
 import { arrowDownSrc, infoSrc } from '@/assets';
+import { Button, TitleBox, TokenBox } from '@/components';
+import { useTotalBalances } from '@/hooks/use-balances';
+import { useSwapBatch } from '@/integrations/transactions';
+import { MODALS } from '@/modals';
+import { TokenDataKey } from '@/models';
 import {
   SwapStep,
   swapViewActions,
   useAppDispatch,
   useModalStore,
   useNotificationStore,
+  usePlugStore,
   useSwapViewStore,
 } from '@/store';
 import { getCurrencyString } from '@/utils/format';
-import { useState } from 'react';
-import { MODALS } from '@/modals';
-import { useTotalBalances } from '@/hooks/use-balances';
+import { createCAPLink } from '@/utils/function';
+import { Box, Checkbox, Flex, FormControl, Image } from '@chakra-ui/react';
+import { useEffect, useMemo, useState } from 'react';
 
 export const ReviewStep = () => {
   const { totalBalances } = useTotalBalances();
-  const { fromTokenOptions, toTokenOptions, from, to } = useSwapViewStore();
+  const { fromTokenOptions, toTokenOptions, from, to, slippage } =
+    useSwapViewStore();
+  const { principalId } = usePlugStore();
   const dispatch = useAppDispatch();
-  const { setCurrentModal, clearModal, setOnClose, setCurrentModalState } =
-    useModalStore();
+  const {
+    setCurrentModal,
+    setCurrentModalData,
+    setCurrentModalState,
+    clearModal,
+  } = useModalStore();
 
   const [keepInSonic, setKeepInSonic] = useState<boolean>(false);
   const { addNotification } = useNotificationStore();
 
-  const handleTokenSelect = (data: any, tokenId: string) => {
+  const depositSwapBatch = useSwapBatch({
+    from,
+    to,
+    slippage: Number(slippage),
+    keepInSonic,
+    principalId,
+  });
+
+  const handleTokenSelect = (data: TokenDataKey, tokenId: string) => {
     dispatch(swapViewActions.setToken({ data, tokenId }));
   };
 
   const handleApproveSwap = () => {
     // Integration: Do swap
     // trigger modals.
-    setOnClose(() => {
-      console.log('Closed Modal');
+    setCurrentModalData({
+      fromToken: from.token?.name,
+      toToken: to.token?.name,
     });
-    // setCurrentModalData({ fromToken: fromToken.name, toToken: toToken.name });
     setCurrentModalState('deposit');
     setCurrentModal(MODALS.swapProgress);
 
-    // TODO: Remove after integration with batch transactions
-    // TODO: Refactor in case OnClose is called to stop all effects
-    setTimeout(() => setCurrentModalState('swap'), 3000);
-    setTimeout(() => setCurrentModalState('withdraw'), 6000);
-    setTimeout(() => {
-      clearModal();
-      addNotification({
-        title: 'NOTIFICATION',
-        type: 'done',
-        id: Date.now().toString(),
+    depositSwapBatch
+      .execute()
+      .then((res) => {
+        console.log('Swap Completed', res);
+        clearModal();
+        addNotification({
+          title: `Swapped ${from.value} ${from.token?.symbol} for ${to.value} ${to.token?.symbol}`,
+          type: 'done',
+          id: Date.now().toString(),
+          // TODO: add transaction id
+          transactionLink: createCAPLink('transactionId'),
+        });
+        dispatch(swapViewActions.setValue({ data: 'from', value: '0.00' }));
+      })
+      .catch((err) => {
+        console.error('Swap Error', err);
+        setCurrentModal(MODALS.swapFailed);
       });
-    }, 9000);
   };
+
+  useEffect(() => {
+    switch (depositSwapBatch.state as any) {
+      case 'approve':
+      case 'deposit':
+        setCurrentModalState('deposit');
+        break;
+      case 'swap':
+        setCurrentModalState('swap');
+        break;
+      case 'withdraw':
+        setCurrentModalState('withdraw');
+        break;
+    }
+  }, [depositSwapBatch.state]);
 
   const selectedTokenIds = useMemo(() => {
     let selectedIds = [];
