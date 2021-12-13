@@ -20,6 +20,7 @@ export const useTotalBalances = () => {
   const dispatch = useAppDispatch();
 
   async function getBalances() {
+    console.log(swapActor);
     try {
       dispatch(swapActions.setBalancesState(FeatureState.Loading));
 

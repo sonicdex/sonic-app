@@ -28,7 +28,7 @@ const baseStyleDialog: SystemStyleFunction = (props) => {
   const { scrollBehavior } = props;
 
   return {
-    borderRadius: 'md',
+    borderRadius: 'xl',
     bg: mode('white', 'gray.800')(props),
     color: 'inherit',
     my: '3.75rem',
