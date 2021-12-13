@@ -5,7 +5,7 @@ import { Principal } from '@dfinity/principal';
 import { useMemo } from 'react';
 import { CreateTransaction, Withdraw } from '../../models';
 
-export const createWithdrawTransaction: CreateTransaction<Withdraw> = (
+export const useMemorizedWithdrawTransaction: CreateTransaction<Withdraw> = (
   { amount, token },
   onSuccess,
   onFail

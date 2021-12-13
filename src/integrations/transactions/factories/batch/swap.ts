@@ -2,10 +2,10 @@ import { useSwapStore } from '@/store';
 import { parseAmount } from '@/utils/format';
 import { useMemo } from 'react';
 import {
-  createApproveTransaction,
-  createDepositTransaction,
-  createSwapExactTokensTransaction,
-  createWithdrawTransaction,
+  useMemorizedApproveTransaction,
+  useMemorizedDepositTransaction,
+  useMemorizedSwapExactTokensTransaction,
+  useMemorizedWithdrawTransaction,
   useBatchHook,
 } from '..';
 import { Swap } from '../..';
@@ -33,19 +33,19 @@ export const useSwapBatch = ({
     amount: swapParams.to.value,
   };
 
-  const approve = createApproveTransaction(
+  const approve = useMemorizedApproveTransaction(
     depositParams,
     async (res: unknown) => console.log('Approve', res)
   );
-  const deposit = createDepositTransaction(
+  const deposit = useMemorizedDepositTransaction(
     depositParams,
     async (res: unknown) => console.log('Deposit', res)
   );
-  const swap = createSwapExactTokensTransaction(
+  const swap = useMemorizedSwapExactTokensTransaction(
     swapParams,
     async (res: unknown) => console.log('Swap', res)
   );
-  const withdraw = createWithdrawTransaction(
+  const withdraw = useMemorizedWithdrawTransaction(
     withdrawParams,
     async (res: unknown) => console.log('Withdraw', res)
   );

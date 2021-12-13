@@ -5,7 +5,7 @@ import { Principal } from '@dfinity/principal';
 import { useMemo } from 'react';
 import { CreateTransaction, Deposit } from '../../models';
 
-export const createDepositTransaction: CreateTransaction<Deposit> = (
+export const useMemorizedDepositTransaction: CreateTransaction<Deposit> = (
   { amount, token },
   onSuccess,
   onFail
