@@ -128,7 +128,7 @@ export const TokenSelect = ({
               const currentTokenSymbol = symbol ?? '';
               const currentSelected = selectedTokenIds?.includes(id);
               const tokenOpacity = currentSelected ? 0.3 : 1;
-              const currentBalance = getCurrencyString(
+              const currentBalances = getCurrencyString(
                 id && totalBalances ? totalBalances[id] : 0,
                 decimals
               );
@@ -184,7 +184,7 @@ export const TokenSelect = ({
                       fontWeight={700}
                       textAlign="right"
                     >
-                      {currentBalance}
+                      {currentBalances}
                     </Box>
                   </Skeleton>
                 </Flex>
