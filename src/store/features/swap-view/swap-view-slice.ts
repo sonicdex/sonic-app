@@ -59,14 +59,20 @@ export const swapViewSlice = createSlice({
         action.payload.tokenId && state.tokenList
           ? state.tokenList[action.payload.tokenId]
           : undefined;
-      if (action.payload.data === 'from') state.to.token = undefined;
+      if (action.payload.data === 'from') {
+        state.from.value = '0.00';
+        state.to.value = '0.00';
+        state.to.token = undefined;
+      }
       state.step = SwapStep.Home;
     },
     switchTokens: (state) => {
-      const temp = state.from.token;
-      state.from.token = state.to.token;
-      state.to.token = temp;
-      state.step = SwapStep.Home;
+      if (state.from.token && state.to.token) {
+        const temp = state.from.token;
+        state.from.token = state.to.token;
+        state.to.token = temp;
+        state.step = SwapStep.Home;
+      }
     },
     setTokenList: (state, action: PayloadAction<TokenMetadataList>) => {
       state.tokenList = action.payload;

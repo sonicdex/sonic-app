@@ -80,7 +80,7 @@ export const HomeStep = () => {
         ),
       })
     );
-  }, [from.value, from.token]);
+  }, [from.value, from.token, to.token]);
 
   const selectedTokenIds = useMemo(() => {
     let selectedIds = [];
