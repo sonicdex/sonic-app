@@ -6,6 +6,7 @@ import {
   swapViewActions,
   useAppDispatch,
   usePlugStore,
+  useSwapStore,
 } from '@/store';
 import {
   parseResponseAllPairs,
@@ -17,16 +18,18 @@ import { useSwapActor } from '../actor/use-swap-actor';
 export const useSwapInit = () => {
   const { getBalances } = useTotalBalances();
   const { principalId } = usePlugStore();
+  const { state } = useSwapStore();
 
   const swapActor = useSwapActor();
 
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (swapActor && principalId) {
+    if (swapActor && principalId && state !== FeatureState.Loading) {
+      console.log(swapActor);
       getBalances();
     }
-  }, [swapActor, principalId]);
+  }, [swapActor, principalId, state]);
 
   useEffect(() => {
     getSupportedTokenList();
