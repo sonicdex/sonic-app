@@ -5,6 +5,7 @@ import { useSwapBatch } from '@/integrations/transactions';
 import { MODALS } from '@/modals';
 import { TokenDataKey } from '@/models';
 import {
+  NotificationType,
   SwapStep,
   swapViewActions,
   useAppDispatch,
@@ -19,7 +20,7 @@ import { Box, Checkbox, Flex, FormControl, Image } from '@chakra-ui/react';
 import { useEffect, useMemo, useState } from 'react';
 
 export const ReviewStep = () => {
-  const { totalBalances } = useTotalBalances();
+  const { totalBalances, getBalances } = useTotalBalances();
   const { fromTokenOptions, toTokenOptions, from, to, slippage } =
     useSwapViewStore();
   const { principalId } = usePlugStore();
@@ -32,9 +33,9 @@ export const ReviewStep = () => {
   } = useModalStore();
 
   const [keepInSonic, setKeepInSonic] = useState<boolean>(false);
-  const { addNotification } = useNotificationStore();
+  const { addNotification, popNotification } = useNotificationStore();
 
-  const depositSwapBatch = useSwapBatch({
+  const swapBatch = useSwapBatch({
     from,
     to,
     slippage: Number(slippage),
@@ -53,22 +54,29 @@ export const ReviewStep = () => {
       fromToken: from.token?.name,
       toToken: to.token?.name,
     });
-    setCurrentModalState('deposit');
     setCurrentModal(MODALS.swapProgress);
 
-    depositSwapBatch
+    addNotification({
+      title: `Swapping ${from.token?.symbol} for ${to.token?.symbol}`,
+      type: NotificationType.Swap,
+      id: 'swap',
+    });
+
+    swapBatch
       .execute()
       .then((res) => {
         console.log('Swap Completed', res);
         clearModal();
         addNotification({
           title: `Swapped ${from.value} ${from.token?.symbol} for ${to.value} ${to.token?.symbol}`,
-          type: 'done',
+          type: NotificationType.Done,
           id: Date.now().toString(),
           // TODO: add transaction id
           transactionLink: createCAPLink('transactionId'),
         });
         dispatch(swapViewActions.setValue({ data: 'from', value: '0.00' }));
+        getBalances();
+        popNotification('swap');
       })
       .catch((err) => {
         console.error('Swap Error', err);
@@ -77,7 +85,7 @@ export const ReviewStep = () => {
   };
 
   useEffect(() => {
-    switch (depositSwapBatch.state as any) {
+    switch (swapBatch.state as any) {
       case 'approve':
       case 'deposit':
         setCurrentModalState('deposit');
@@ -89,7 +97,7 @@ export const ReviewStep = () => {
         setCurrentModalState('withdraw');
         break;
     }
-  }, [depositSwapBatch.state]);
+  }, [swapBatch.state]);
 
   const selectedTokenIds = useMemo(() => {
     let selectedIds = [];

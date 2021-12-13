@@ -5,6 +5,7 @@ import { TitleBox, TokenBox, Button } from '@/components';
 import {
   assetsViewActions,
   FeatureState,
+  NotificationType,
   useAppDispatch,
   useAssetsViewStore,
   useNotificationStore,
@@ -45,7 +46,7 @@ export const AssetsDeposit = () => {
     // TODO: replace by real deposit logic
     addNotification({
       title: 'Deposit successful',
-      type: 'done',
+      type: NotificationType.Done,
       id: Date.now().toString(),
     });
   };

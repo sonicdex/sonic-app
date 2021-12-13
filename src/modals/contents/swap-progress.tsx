@@ -1,18 +1,20 @@
 import { Heading, Text, Flex, ModalCloseButton } from '@chakra-ui/react';
 import { depositSrc, swapSrc, withdrawSrc } from '@/assets';
 
-import { ModalComponentProps } from '../modals';
 import { SwapStep } from './components';
+import { useSwapViewStore } from '@/store';
+import { ModalComponentProps } from '..';
 
 const STEPS = ['deposit', 'swap', 'withdraw'];
 
 export const SwapProgress = ({
-  currentModalState = 'deposit',
+  currentModalState,
   currentModalData,
 }: Partial<ModalComponentProps>) => {
-  const { fromToken, toToken } = currentModalData;
+  const { from, to } = useSwapViewStore();
+
   const getStepStatus = (step: string) => {
-    const currentStepIndex = STEPS.indexOf(currentModalState);
+    const currentStepIndex = STEPS.indexOf(currentModalState || 'idle');
     const stepIndex = STEPS.indexOf(step);
 
     if (currentStepIndex > stepIndex) return 'done';
@@ -45,13 +47,13 @@ export const SwapProgress = ({
           iconSrc={depositSrc}
           chevron
         >
-          Depositing <br /> {fromToken}
+          Depositing <br /> {from.token?.symbol}
         </SwapStep>
         <SwapStep status={getStepStatus('swap')} iconSrc={swapSrc} chevron>
-          Swapping <br /> {fromToken} to {toToken}
+          Swapping <br /> {from.token?.symbol} to {to.token?.symbol}
         </SwapStep>
         <SwapStep status={getStepStatus('withdraw')} iconSrc={withdrawSrc}>
-          Withdrawing <br /> {toToken}
+          Withdrawing <br /> {to.token?.symbol}
         </SwapStep>
       </Flex>
     </Flex>

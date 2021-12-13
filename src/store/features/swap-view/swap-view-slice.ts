@@ -1,5 +1,4 @@
-import { TokenMetadataList } from '@/models';
-import { PairList, TokenDataKey, TokenData } from '@/models';
+import { PairList, TokenData, TokenDataKey, TokenMetadataList } from '@/models';
 import type { RootState } from '@/store';
 import { FeatureState } from '@/store';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';

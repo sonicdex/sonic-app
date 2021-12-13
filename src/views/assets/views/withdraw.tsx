@@ -5,6 +5,7 @@ import { TitleBox, TokenBox, Button } from '@/components';
 import {
   assetsViewActions,
   FeatureState,
+  NotificationType,
   useAppDispatch,
   useAssetsViewStore,
   useNotificationStore,
@@ -45,7 +46,7 @@ export const AssetsWithdraw = () => {
     // Withdraw token from Sonic
     addNotification({
       title: 'Withdraw successful',
-      type: 'done',
+      type: NotificationType.Done,
       id: Date.now().toString(),
     });
   };
