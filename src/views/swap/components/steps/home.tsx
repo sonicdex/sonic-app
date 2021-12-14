@@ -1,3 +1,7 @@
+import { Box, Flex, Icon, IconButton, Tooltip } from '@chakra-ui/react';
+import { useMemo, useState } from 'react';
+import { FaArrowDown } from 'react-icons/fa';
+
 import { TitleBox, TokenBox, Button } from '@/components';
 import { useTotalBalances } from '@/hooks/use-balances';
 import {
@@ -8,11 +12,9 @@ import {
   useSwapViewStore,
 } from '@/store';
 import { formatAmount, getCurrencyString } from '@/utils/format';
-import { Box, Flex, Icon, IconButton, Tooltip } from '@chakra-ui/react';
-import { useMemo, useState } from 'react';
-import { FaArrowDown } from 'react-icons/fa';
+import { getAppAssetsSources } from '@/config/utils';
+
 import { SwapSettings } from '../index';
-import { sonicCircleSrc, plugCircleSrc } from '@/assets';
 
 export const HomeStep = () => {
   const { fromTokenOptions, toTokenOptions, from, to, slippage } =
@@ -120,24 +122,18 @@ export const HomeStep = () => {
             status={fromValueStatus}
             isLoading={loading}
             price={53.23}
-            sources={[
-              {
-                name: 'Plug Wallet',
-                src: plugCircleSrc,
-                balance:
+            sources={getAppAssetsSources({
+              balances: {
+                plug:
                   from.token && tokenBalances
                     ? tokenBalances[from.token.id]
                     : 0,
-              },
-              {
-                name: 'Sonic',
-                src: sonicCircleSrc,
-                balance:
+                sonic:
                   from.token && sonicBalances
                     ? sonicBalances[from.token.id]
                     : 0,
               },
-            ]}
+            })}
             // balances={getCurrencyString(
             //   from.token && totalBalance ? totalBalance[from.token.id] : 0,
             //   from.token?.decimals
@@ -173,20 +169,14 @@ export const HomeStep = () => {
             disabled={true}
             isLoading={loading}
             price={53.23}
-            sources={[
-              {
-                name: 'Plug Wallet',
-                src: plugCircleSrc,
-                balance:
+            sources={getAppAssetsSources({
+              balances: {
+                plug:
                   to.token && tokenBalances ? tokenBalances[to.token.id] : 0,
-              },
-              {
-                name: 'Sonic',
-                src: sonicCircleSrc,
-                balance:
+                sonic:
                   to.token && sonicBalances ? sonicBalances[to.token.id] : 0,
               },
-            ]}
+            })}
             // balances={getCurrencyString(
             //   to.token && totalBalance ? totalBalance[to.token.id] : 0,
             //   to.token?.decimals

@@ -1,5 +1,7 @@
-import { arrowDownSrc, infoSrc, plugCircleSrc, sonicCircleSrc } from '@/assets';
+import { arrowDownSrc, infoSrc } from '@/assets';
 import { Button, TitleBox, TokenBox } from '@/components';
+import { getAppAssetsSources } from '@/config/utils';
+
 import { useSwapBatch } from '@/integrations/transactions';
 import { MODALS } from '@/modals';
 import { TokenDataKey } from '@/models';
@@ -118,24 +120,18 @@ export const ReviewStep = () => {
             selectedTokenIds={selectedTokenIds}
             onTokenSelect={(tokenId) => handleTokenSelect('from', tokenId)}
             price={53.23}
-            sources={[
-              {
-                name: 'Plug Wallet',
-                src: plugCircleSrc,
-                balance:
+            sources={getAppAssetsSources({
+              balances: {
+                plug:
                   from.token && tokenBalances
                     ? tokenBalances[from.token.id]
                     : 0,
-              },
-              {
-                name: 'Sonic',
-                src: sonicCircleSrc,
-                balance:
+                sonic:
                   from.token && sonicBalances
                     ? sonicBalances[from.token.id]
                     : 0,
               },
-            ]}
+            })}
             status="active"
             // balances={getCurrencyString(
             //   from.token && totalBalances ? totalBalances[from.token.id] : 0,
@@ -167,20 +163,14 @@ export const ReviewStep = () => {
             selectedTokenIds={selectedTokenIds}
             onTokenSelect={(tokenId) => handleTokenSelect('to', tokenId)}
             price={53.23}
-            sources={[
-              {
-                name: 'Plug Wallet',
-                src: plugCircleSrc,
-                balance:
+            sources={getAppAssetsSources({
+              balances: {
+                plug:
                   to.token && tokenBalances ? tokenBalances[to.token.id] : 0,
-              },
-              {
-                name: 'Sonic',
-                src: sonicCircleSrc,
-                balance:
+                sonic:
                   to.token && sonicBalances ? sonicBalances[to.token.id] : 0,
               },
-            ]}
+            })}
             // balances={getCurrencyString(
             //   to.token && totalBalances ? totalBalances[to.token.id] : 0,
             //   to.token?.decimals

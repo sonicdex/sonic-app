@@ -3,7 +3,7 @@ import { Text, Flex, Image, Box } from '@chakra-ui/react';
 
 import { Button, TitleBox, TokenBox } from '@/components';
 
-import { plusSrc, equalSrc, plugCircleSrc, sonicCircleSrc } from '@/assets';
+import { plusSrc, equalSrc } from '@/assets';
 import {
   FeatureState,
   liquidityViewActions,
@@ -15,6 +15,7 @@ import {
 import { useNavigate } from 'react-router';
 import { useQuery } from '@/hooks/use-query';
 import { SwapIDL } from '@/did';
+import { getAppAssetsSources } from '@/config/utils';
 
 const BUTTON_TITLES = ['Review Supply', 'Confirm Supply'];
 
@@ -128,18 +129,7 @@ export const LiquidityAdd = () => {
             disabled={subStep === 1}
             menuDisabled={subStep === 1}
             price={53.23}
-            sources={[
-              {
-                name: 'Plug Wallet',
-                src: plugCircleSrc,
-                balance: 0,
-              },
-              {
-                name: 'Sonic',
-                src: sonicCircleSrc,
-                balance: 0,
-              },
-            ]}
+            sources={getAppAssetsSources({ balances: { plug: 0, sonic: 0 } })}
             isLoading={supportedTokenListState === FeatureState.Loading}
           />
         </Box>
@@ -157,7 +147,7 @@ export const LiquidityAdd = () => {
         >
           <Image m="auto" src={plusSrc} />
         </Box>
-        <Box mt={2.5} width="100%">
+        <Box mt={2.5} mb={5} width="100%">
           <TokenBox
             value={to.value}
             setValue={(value) =>
@@ -172,18 +162,7 @@ export const LiquidityAdd = () => {
             disabled={subStep === 1}
             menuDisabled={subStep === 1}
             price={53.23}
-            sources={[
-              {
-                name: 'Plug Wallet',
-                src: plugCircleSrc,
-                balance: 0,
-              },
-              {
-                name: 'Sonic',
-                src: sonicCircleSrc,
-                balance: 0,
-              },
-            ]}
+            sources={getAppAssetsSources({ balances: { plug: 0, sonic: 0 } })}
             isLoading={supportedTokenListState === FeatureState.Loading}
           />
         </Box>
@@ -219,18 +198,9 @@ export const LiquidityAdd = () => {
                 selectedTokenMetadata={to.token}
                 status="active"
                 price={53.23}
-                sources={[
-                  {
-                    name: 'Plug Wallet',
-                    src: plugCircleSrc,
-                    balance: 0,
-                  },
-                  {
-                    name: 'Sonic',
-                    src: sonicCircleSrc,
-                    balance: 0,
-                  },
-                ]}
+                sources={getAppAssetsSources({
+                  balances: { plug: 0, sonic: 0 },
+                })}
                 balanceText="Share of pool:"
                 priceText="SHARE HERE"
                 disabled
@@ -238,18 +208,18 @@ export const LiquidityAdd = () => {
                 glow
               />
             </Box>
+            <Flex
+              direction="row"
+              justifyContent="space-between"
+              width="100%"
+              my={2.5}
+              px={5}
+            >
+              <Text color="#888E8F">{`${'fromToken'} + ${'toToken'}`}</Text>
+              <Text color="#888E8F">{`1 ${'fromToken'} = 0.23 ${'toToken'}`}</Text>
+            </Flex>
           </>
         )}
-        <Flex
-          direction="row"
-          justifyContent="space-between"
-          width="100%"
-          my={2.5}
-          px={5}
-        >
-          <Text color="#888E8F">{`${'fromToken'} + ${'toToken'}`}</Text>
-          <Text color="#888E8F">{`1 ${'fromToken'} = 0.23 ${'toToken'}`}</Text>
-        </Flex>
       </Flex>
       <Button
         isFullWidth

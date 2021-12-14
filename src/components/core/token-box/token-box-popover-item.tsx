@@ -2,10 +2,12 @@ import { FC } from 'react';
 import { Flex, HStack, Text, Image } from '@chakra-ui/react';
 
 import { questionMarkSrc } from '@/assets';
-import { TokenBoxSource } from '@/components';
 import { getCurrencyString } from '@/utils/format';
 
-type TokenBoxPopoverItemProps = TokenBoxSource & {
+type TokenBoxPopoverItemProps = {
+  src?: string;
+  name?: string;
+  balance?: number;
   symbol?: string;
   decimals?: number;
 };
