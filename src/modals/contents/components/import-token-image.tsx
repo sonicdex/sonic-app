@@ -22,4 +22,4 @@ export const TokenImg = ({ logo = questionMarkSrc }: ImportTokenImageProps) => {
   }
 
   return <Image borderRadius={26} w={10} h={10} src={logo} />;
-}
+};

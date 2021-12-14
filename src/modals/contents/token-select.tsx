@@ -1,6 +1,7 @@
 import { useMemo, useState, useEffect } from 'react';
 import {
   Heading,
+  Text,
   Flex,
   ModalCloseButton,
   Box,
@@ -43,6 +44,18 @@ const SkeletonToken = () => (
   </Flex>
 );
 
+type SelectTokenProps = {
+  search: string;
+  setSearch: (arg0: string) => any;
+  filteredList: Partial<TokenMetadata>[];
+  selectedTokenIds: Array<string>;
+  totalBalances: any;
+  handleSelect: (arg0: any, arg1?: string) => any;
+  onTokenImport: (arg0: object) => any;
+  allowAddToken: boolean;
+  isLoading?: boolean;
+};
+
 const SelectToken = ({
   search,
   setSearch,
@@ -53,17 +66,7 @@ const SelectToken = ({
   handleSelect,
   onTokenImport,
   allowAddToken,
-}: {
-  search: string;
-  setSearch: (arg0?: any) => any;
-  isLoading?: boolean;
-  filteredList: Partial<TokenMetadata>[];
-  selectedTokenIds: Array<string>;
-  totalBalances: any;
-  handleSelect: (arg0: any, arg1?: string) => any;
-  onTokenImport: (arg0: object) => any;
-  allowAddToken: boolean;
-}) => {
+}: SelectTokenProps) => {
   // TODO: Dab integration
   const importTokenData = {
     img: questionMarkSrc,
@@ -154,34 +157,26 @@ const SelectToken = ({
                 >
                   <Flex direction="row" alignItems="center">
                     <Skeleton isLoaded={!isLoading} borderRadius={40}>
-                      <Box
-                        as="img"
-                        src={logoSrc}
-                        w={10}
-                        h={10}
-                        borderRadius={40}
-                      />
+                      <Image src={logoSrc} w={10} h={10} borderRadius={40} />
                     </Skeleton>
                     <Skeleton isLoaded={!isLoading} minWidth={4} ml={3}>
-                      <Box fontWeight={700} fontSize="18px" pl={3}>
+                      <Text fontWeight={700} fontSize="18px" pl={3}>
                         {symbol}
-                      </Box>
+                      </Text>
                     </Skeleton>
                     <Skeleton isLoaded={!isLoading} minWidth={17} ml={2}>
-                      <Box fontSize="16px" pl={2}>
-                        {name}
-                      </Box>
+                      <Text pl={2}>{name}</Text>
                     </Skeleton>
                   </Flex>
                   <Skeleton isLoaded={!isLoading} minWidth={17} ml={2}>
-                    <Box
+                    <Text
                       as="p"
                       fontSize="18px"
                       fontWeight={700}
                       textAlign="right"
                     >
                       {currentBalances}
-                    </Box>
+                    </Text>
                   </Skeleton>
                 </Flex>
               );
@@ -202,8 +197,7 @@ const SelectToken = ({
           >
             <Flex direction="row" alignItems="center">
               <Skeleton isLoaded={!isLoading} borderRadius={40}>
-                <Box
-                  as="img"
+                <Image
                   src={importTokenData.img}
                   w={10}
                   h={10}
@@ -211,14 +205,14 @@ const SelectToken = ({
                 />
               </Skeleton>
               <Skeleton isLoaded={!isLoading} minWidth={4} ml={3}>
-                <Box fontWeight={700} fontSize="18px" pl={3}>
+                <Text fontWeight={700} fontSize="18px" pl={3}>
                   {importTokenData.symbol}
-                </Box>
+                </Text>
               </Skeleton>
               <Skeleton isLoaded={!isLoading} minWidth={17} ml={2}>
-                <Box fontSize="16px" pl={2} color="#888E8F">
+                <Text pl={2} color="#888E8F">
                   {importTokenData.name}
-                </Box>
+                </Text>
               </Skeleton>
             </Flex>
             <Skeleton isLoaded={!isLoading} minWidth={17} ml={2}>
@@ -300,7 +294,6 @@ export const TokenSelect = ({
 
   return (
     <Flex
-      heigth="modalHeight"
       direction="column"
       alignItems="center"
       bg="#1E1E1E"

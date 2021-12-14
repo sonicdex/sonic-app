@@ -2,40 +2,24 @@ import { useState } from 'react';
 import { Image, Box, Flex, Text, Checkbox, Heading } from '@chakra-ui/react';
 
 import { Button } from '@/components';
-import { questionMarkSrc, redTriangleWarningSrc } from '@/assets';
+import { redTriangleWarningSrc } from '@/assets';
+import { TokenImg } from './import-token-image';
 
-const TokenImg = ({ logo }: { logo: string }) => {
-  if (logo === questionMarkSrc) {
-    return (
-      <Flex
-        borderRadius={26}
-        bg="#6B7280"
-        w={10}
-        h={10}
-        alignItems="center"
-        justifyContent="center"
-      >
-        <Image w={6} h={6} src={logo} />
-      </Flex>
-    );
-  }
-
-  return <Image borderRadius={26} w={10} h={10} src={logo} />;
-};
-
-export const ImportToken = ({
-  logo = questionMarkSrc,
-  id,
-  symbol,
-  name,
-  handleImport,
-}: {
+type ImportTokenProps = {
   logo?: string;
   id: string;
   symbol: string;
   name: string;
   handleImport: (arg0?: any) => any;
-}) => {
+};
+
+export const ImportToken = ({
+  logo,
+  id,
+  symbol,
+  name,
+  handleImport,
+}: ImportTokenProps) => {
   const [understandRisk, setUnderstandRisk] = useState(false);
 
   return (
