@@ -20,7 +20,6 @@ export const useSwapInit = () => {
   const { supportedTokenListState } = useSwapStore();
 
   const swapActor = useSwapActor();
-  console.log('sa', swapActor);
 
   const dispatch = useAppDispatch();
 
