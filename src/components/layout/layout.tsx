@@ -70,7 +70,7 @@ export const Layout: React.FC = ({ children, ...props }) => {
 
       <Container
         as="main"
-        maxW="container.sm"
+        maxW="xl"
         h={`calc(100vh - ${NAVBAR_HEIGHT} - ${FOOTER_HEIGHT})`}
         maxH={`calc(100vh - ${NAVBAR_HEIGHT} - ${FOOTER_HEIGHT})`}
         py="10"
