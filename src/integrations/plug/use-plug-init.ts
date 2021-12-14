@@ -48,10 +48,10 @@ export const usePlugInit = () => {
               dispatch(plugActions.setPrincipalId(principal.toText()));
             }
           }
+          dispatch(plugActions.setState(FeatureState.Idle));
         } catch (err) {
           console.error(err);
-        } finally {
-          dispatch(plugActions.setState(FeatureState.Idle));
+          dispatch(plugActions.setState(FeatureState.Error));
         }
       };
 
