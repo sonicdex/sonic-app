@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Text, Flex, Image, Box } from '@chakra-ui/react';
 
-import { Button, TitleBox, TokenBox } from '@/components';
+import { Button, PlugButton, TitleBox, TokenBox } from '@/components';
 
 import { plusSrc, equalSrc } from '@/assets';
 import {
@@ -10,6 +10,7 @@ import {
   useAppDispatch,
   useLiquidityViewStore,
   useNotificationStore,
+  usePlugStore,
   useSwapStore,
 } from '@/store';
 import { useNavigate } from 'react-router';
@@ -21,6 +22,8 @@ const BUTTON_TITLES = ['Review Supply', 'Confirm Supply'];
 
 export const LiquidityAdd = () => {
   const query = useQuery();
+
+  const { isConnected } = usePlugStore();
 
   const { addNotification } = useNotificationStore();
   const { from, to } = useLiquidityViewStore();
@@ -221,15 +224,19 @@ export const LiquidityAdd = () => {
           </>
         )}
       </Flex>
-      <Button
-        isFullWidth
-        size="lg"
-        onClick={handleButtonClick}
-        isDisabled={!shouldButtonBeActive}
-        isLoading={supportedTokenListState === FeatureState.Loading}
-      >
-        {buttonTitle}
-      </Button>
+      {!isConnected ? (
+        <PlugButton />
+      ) : (
+        <Button
+          isFullWidth
+          size="lg"
+          onClick={handleButtonClick}
+          isDisabled={!shouldButtonBeActive}
+          isLoading={supportedTokenListState === FeatureState.Loading}
+        >
+          {buttonTitle}
+        </Button>
+      )}
     </>
   );
 };

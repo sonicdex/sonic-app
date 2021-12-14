@@ -29,7 +29,6 @@ export const usePlugInit = () => {
         .catch((err) => {
           console.error(err);
           dispatch(plugActions.setIsConnected(false));
-          dispatch(plugActions.setState(FeatureState.Error));
         });
     }
   }, []);

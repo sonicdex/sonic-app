@@ -16,12 +16,21 @@ import { useSwapActor } from '../actor/use-swap-actor';
 
 export const useSwapInit = () => {
   const { getBalances } = useTotalBalances();
-  const { principalId } = usePlugStore();
+  const { principalId, isConnected, state: plugState } = usePlugStore();
   const { supportedTokenListState } = useSwapStore();
 
   const swapActor = useSwapActor();
 
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    if (
+      !isConnected &&
+      (plugState === FeatureState.Error || plugState === FeatureState.Idle)
+    ) {
+      dispatch(swapActions.setBalancesState(FeatureState.Idle));
+    }
+  }, [isConnected, plugState]);
 
   useEffect(() => {
     if (
@@ -55,7 +64,7 @@ export const useSwapInit = () => {
 
         return response;
       } catch (error) {
-        console.log(error);
+        console.error('getSupportedTokenList: ', error);
         dispatch(swapActions.setSupportedTokensListState(FeatureState.Error));
       }
     }
@@ -75,7 +84,7 @@ export const useSwapInit = () => {
 
         dispatch(swapActions.setAllPairsState(FeatureState.Idle));
       } catch (error) {
-        console.log(error);
+        console.error('getAllPairs: ', error);
         dispatch(swapActions.setAllPairsState(FeatureState.Error));
       }
     }
