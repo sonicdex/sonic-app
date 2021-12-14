@@ -16,6 +16,7 @@ interface SwapViewState {
   tokenList?: TokenMetadataList;
   pairList?: PairList;
   slippage: string;
+  keepInSonic: boolean;
 }
 
 const initialState: SwapViewState = {
@@ -32,6 +33,7 @@ const initialState: SwapViewState = {
   tokenList: undefined,
   pairList: undefined,
   slippage: '0.10',
+  keepInSonic: false,
 };
 
 export const swapViewSlice = createSlice({
@@ -78,9 +80,12 @@ export const swapViewSlice = createSlice({
     setTokenList: (state, action: PayloadAction<TokenMetadataList>) => {
       state.tokenList = action.payload;
       const tokens = Object.values(action.payload);
-      state.from.token = tokens[0];
-      state.from.value = '0.00';
-      state.to.value = '0.00';
+      if (!state.from.token) {
+        // TODO: set default token
+        state.from.token = tokens[0];
+        state.from.value = '0.00';
+        state.to.value = '0.00';
+      }
       state.step = SwapStep.Home;
     },
     setPairList: (state, action: PayloadAction<PairList>) => {
@@ -89,6 +94,9 @@ export const swapViewSlice = createSlice({
     },
     setSlippage: (state, action: PayloadAction<string>) => {
       state.slippage = action.payload;
+    },
+    setKeepInSonic: (state, action: PayloadAction<boolean>) => {
+      state.keepInSonic = action.payload;
     },
   },
 });

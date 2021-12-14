@@ -1,4 +1,4 @@
-import { useModalStore, useSwapStore } from '@/store';
+import { useSwapStore } from '@/store';
 import { parseAmount } from '@/utils/format';
 import { useMemo } from 'react';
 import {
@@ -24,8 +24,6 @@ export const useSwapBatch = ({
   if (!swapParams.from.token || !swapParams.to.token)
     throw new Error('Tokens are required');
 
-  const { setCurrentModalState, clearModal } = useModalStore();
-
   const depositParams = {
     token: swapParams.from.token,
     amount: swapParams.from.value,
@@ -35,18 +33,10 @@ export const useSwapBatch = ({
     amount: swapParams.to.value,
   };
 
-  const approve = useMemorizedApproveTransaction(depositParams, () =>
-    setCurrentModalState('deposit')
-  );
-  const deposit = useMemorizedDepositTransaction(depositParams, () =>
-    setCurrentModalState('swap')
-  );
-  const swap = useMemorizedSwapExactTokensTransaction(swapParams, () =>
-    setCurrentModalState('withdraw')
-  );
-  const withdraw = useMemorizedWithdrawTransaction(withdrawParams, () =>
-    clearModal()
-  );
+  const approve = useMemorizedApproveTransaction(depositParams);
+  const deposit = useMemorizedDepositTransaction(depositParams);
+  const swap = useMemorizedSwapExactTokensTransaction(swapParams);
+  const withdraw = useMemorizedWithdrawTransaction(withdrawParams);
 
   const transactions = useMemo(() => {
     let _transactions = {};
