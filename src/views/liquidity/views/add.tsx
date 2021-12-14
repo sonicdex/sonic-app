@@ -7,6 +7,7 @@ import { plusSrc, equalSrc } from '@/assets';
 import {
   FeatureState,
   liquidityViewActions,
+  NotificationType,
   useAppDispatch,
   useLiquidityViewStore,
   useNotificationStore,
@@ -68,7 +69,7 @@ export const LiquidityAdd = () => {
       case 1:
         addNotification({
           title: 'Liquidity Added',
-          type: 'done',
+          type: NotificationType.Done,
           id: Date.now().toString(),
         });
         break;

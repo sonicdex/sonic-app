@@ -1,19 +1,22 @@
 import { Heading, Text, Flex, ModalCloseButton } from '@chakra-ui/react';
 import { depositSrc, swapSrc, withdrawSrc } from '@/assets';
 
-import { ModalComponentProps } from '../modals';
 import { SwapStep } from './components';
-
-const STEPS = ['deposit', 'swap', 'withdraw'];
+import { ModalComponentProps } from '..';
 
 export const SwapProgress = ({
-  currentModalState = 'deposit',
+  currentModalState,
   currentModalData,
 }: Partial<ModalComponentProps>) => {
-  const { fromToken, toToken } = currentModalData;
+  const {
+    fromToken,
+    toToken,
+    steps = ['deposit', 'swap', 'withdraw'],
+  } = currentModalData;
+
   const getStepStatus = (step: string) => {
-    const currentStepIndex = STEPS.indexOf(currentModalState);
-    const stepIndex = STEPS.indexOf(step);
+    const currentStepIndex = steps.indexOf(currentModalState || 'idle');
+    const stepIndex = steps.indexOf(step);
 
     if (currentStepIndex > stepIndex) return 'done';
     if (currentStepIndex === stepIndex) return 'active';
@@ -40,19 +43,27 @@ export const SwapProgress = ({
         Please allow a few seconds for swap to finish
       </Text>
       <Flex direction="row" justifyContent="center">
+        {steps.includes('deposit') && (
+          <SwapStep
+            status={getStepStatus('deposit')}
+            iconSrc={depositSrc}
+            chevron
+          >
+            Depositing <br /> {fromToken}
+          </SwapStep>
+        )}
         <SwapStep
-          status={getStepStatus('deposit')}
-          iconSrc={depositSrc}
-          chevron
+          status={getStepStatus('swap')}
+          iconSrc={swapSrc}
+          chevron={steps.includes('withdraw')}
         >
-          Depositing <br /> {fromToken}
-        </SwapStep>
-        <SwapStep status={getStepStatus('swap')} iconSrc={swapSrc} chevron>
           Swapping <br /> {fromToken} to {toToken}
         </SwapStep>
-        <SwapStep status={getStepStatus('withdraw')} iconSrc={withdrawSrc}>
-          Withdrawing <br /> {toToken}
-        </SwapStep>
+        {steps.includes('withdraw') && (
+          <SwapStep status={getStepStatus('withdraw')} iconSrc={withdrawSrc}>
+            Withdrawing <br /> {toToken}
+          </SwapStep>
+        )}
       </Flex>
     </Flex>
   );

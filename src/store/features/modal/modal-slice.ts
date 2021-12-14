@@ -10,7 +10,7 @@ interface ModalState {
   currentModalState?: string;
   currentModalData: any;
   callbacks?: ModalCallback[];
-  onClose: string;
+  onClose: () => void;
   state: FeatureState;
 }
 
@@ -19,7 +19,7 @@ const initialState: ModalState = {
   currentModal: '',
   currentModalState: '',
   currentModalData: {},
-  onClose: '() => {}',
+  onClose: () => {},
   state: FeatureState?.Idle,
 };
 
@@ -38,7 +38,7 @@ export const modalSlice = createSlice({
       state.currentModalState = action.payload;
     },
     setOnClose: (state, action: PayloadAction<() => any>) => {
-      state.onClose = action.payload.toString();
+      state.onClose = action.payload;
     },
     setCurrentModalData: (state, action: PayloadAction<any>) => {
       state.currentModalData = action.payload;

@@ -1,97 +1,44 @@
 import { arrowDownSrc, infoSrc } from '@/assets';
 import { Button, TitleBox, TokenBox } from '@/components';
 import { getAppAssetsSources } from '@/config/utils';
-
-import { useSwapBatch } from '@/integrations/transactions';
-import { MODALS } from '@/modals';
 import { TokenDataKey } from '@/models';
 import {
+  NotificationType,
   SwapStep,
   swapViewActions,
   useAppDispatch,
-  useModalStore,
   useNotificationStore,
-  usePlugStore,
   useSwapStore,
   useSwapViewStore,
 } from '@/store';
-import { createCAPLink } from '@/utils/function';
+import { debounce } from '@/utils/function';
 import { Box, Checkbox, Flex, FormControl, Image } from '@chakra-ui/react';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
 export const ReviewStep = () => {
   const { sonicBalances, tokenBalances } = useSwapStore();
 
-  const { fromTokenOptions, toTokenOptions, from, to, slippage } =
+  const { fromTokenOptions, toTokenOptions, from, to, keepInSonic } =
     useSwapViewStore();
-  const { principalId } = usePlugStore();
   const dispatch = useAppDispatch();
-  const {
-    setCurrentModal,
-    setCurrentModalData,
-    setCurrentModalState,
-    clearModal,
-  } = useModalStore();
 
-  const [keepInSonic, setKeepInSonic] = useState<boolean>(false);
   const { addNotification } = useNotificationStore();
-
-  const depositSwapBatch = useSwapBatch({
-    from,
-    to,
-    slippage: Number(slippage),
-    keepInSonic,
-    principalId,
-  });
 
   const handleTokenSelect = (data: TokenDataKey, tokenId: string) => {
     dispatch(swapViewActions.setToken({ data, tokenId }));
   };
 
   const handleApproveSwap = () => {
-    // Integration: Do swap
-    // trigger modals.
-    setCurrentModalData({
-      fromToken: from.token?.name,
-      toToken: to.token?.name,
+    addNotification({
+      title: `Swapping ${from.token?.symbol} for ${to.token?.symbol}`,
+      type: NotificationType.Swap,
+      id: String(new Date().getTime()),
     });
-    setCurrentModalState('deposit');
-    setCurrentModal(MODALS.swapProgress);
-
-    depositSwapBatch
-      .execute()
-      .then((res) => {
-        console.log('Swap Completed', res);
-        clearModal();
-        addNotification({
-          title: `Swapped ${from.value} ${from.token?.symbol} for ${to.value} ${to.token?.symbol}`,
-          type: 'done',
-          id: Date.now().toString(),
-          // TODO: add transaction id
-          transactionLink: createCAPLink('transactionId'),
-        });
-        dispatch(swapViewActions.setValue({ data: 'from', value: '0.00' }));
-      })
-      .catch((err) => {
-        console.error('Swap Error', err);
-        setCurrentModal(MODALS.swapFailed);
-      });
+    debounce(
+      () => dispatch(swapViewActions.setValue({ data: 'from', value: '0.00' })),
+      300
+    );
   };
-
-  useEffect(() => {
-    switch (depositSwapBatch.state as any) {
-      case 'approve':
-      case 'deposit':
-        setCurrentModalState('deposit');
-        break;
-      case 'swap':
-        setCurrentModalState('swap');
-        break;
-      case 'withdraw':
-        setCurrentModalState('withdraw');
-        break;
-    }
-  }, [depositSwapBatch.state]);
 
   const selectedTokenIds = useMemo(() => {
     let selectedIds = [];
@@ -194,7 +141,9 @@ export const ReviewStep = () => {
         <FormControl direction="row" alignItems="center">
           <Checkbox
             isChecked={keepInSonic}
-            onChange={(e) => setKeepInSonic(e.target.checked)}
+            onChange={(e) =>
+              dispatch(swapViewActions.setKeepInSonic(e.target.checked))
+            }
             colorScheme="dark-blue"
             size="lg"
             color={keepInSonic ? '#FFFFFF' : '#888E8F'}

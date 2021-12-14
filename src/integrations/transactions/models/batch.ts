@@ -44,9 +44,10 @@ export namespace Batch {
     transactions: {
       [key: string]: ReturnType<CreateTransaction<Model, Transaction>>;
     };
+    handleRetry?: (error: unknown) => Promise<boolean>;
   }
 
-  export type CreateHook = <Model, S extends HookProps<Model>>(
-    props: S
-  ) => Hook<keyof S['transactions']>;
+  export type CreateHook = <Model>(
+    props: HookProps<Model>
+  ) => Hook<keyof HookProps<Model>['transactions']>;
 }

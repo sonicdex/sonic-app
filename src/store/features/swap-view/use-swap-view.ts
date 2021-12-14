@@ -27,17 +27,21 @@ export const useSwapView = () => {
     if (!to.token) return;
     if (!pairList) return;
 
-    dispatch(
-      swapViewActions.setValue({
-        data: 'to',
-        value: getAmountOut(
-          from.value,
-          from.token.decimals,
-          to.token.decimals,
-          String(pairList[from.token.id][to.token.id].reserve0),
-          String(pairList[from.token.id][to.token.id].reserve1)
-        ),
-      })
-    );
+    if (pairList[from.token.id] && !pairList[from.token.id][to.token.id]) {
+      dispatch(swapViewActions.setToken({ data: 'to', tokenId: undefined }));
+    } else {
+      dispatch(
+        swapViewActions.setValue({
+          data: 'to',
+          value: getAmountOut(
+            from.value,
+            from.token.decimals,
+            to.token.decimals,
+            String(pairList[from.token.id][to.token.id].reserve0),
+            String(pairList[from.token.id][to.token.id].reserve1)
+          ),
+        })
+      );
+    }
   }, [from.value, from.token, to.token]);
 };

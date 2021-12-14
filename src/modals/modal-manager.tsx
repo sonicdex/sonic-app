@@ -1,8 +1,7 @@
-import { Modal, ModalOverlay, ModalContent } from '@chakra-ui/react';
-
-import { useAppSelector, selectModalState, useModalStore } from '@/store';
+import { useModalStore } from '@/store';
+import { Modal, ModalContent, ModalOverlay } from '@chakra-ui/react';
+import { SwapFailed, SwapProgress, TokenSelect } from './contents';
 import { MODALS } from './modals';
-import { SwapProgress, SwapFailed, TokenSelect } from './contents';
 
 const MODAL_MAPPING = {
   [MODALS.swapProgress]: SwapProgress,
@@ -11,23 +10,21 @@ const MODAL_MAPPING = {
 };
 
 export const ModalManager = () => {
-  const { clearModal } = useModalStore();
-
   const {
+    clearModal,
     currentModal,
-    currentModalState,
     currentModalData,
-    callbacks,
+    currentModalState,
     onClose,
-  } = useAppSelector(selectModalState);
+    callbacks,
+  } = useModalStore();
 
   const ModalComponent = MODAL_MAPPING[currentModal];
   const shouldOpen = currentModal?.length > 0;
 
   const handleOnClose = () => {
-    const callableOnClose = new Function(`return ${onClose}`);
     clearModal();
-    callableOnClose();
+    onClose();
   };
 
   return (

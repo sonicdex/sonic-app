@@ -1,10 +1,11 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Box } from '@chakra-ui/react';
 import { TitleBox, TokenBox, Button } from '@/components';
 
 import {
   assetsViewActions,
   FeatureState,
+  NotificationType,
   useAppDispatch,
   useAssetsViewStore,
   useNotificationStore,
@@ -46,10 +47,21 @@ export const AssetsDeposit = () => {
     // TODO: replace by real deposit logic
     addNotification({
       title: 'Deposit successful',
-      type: 'done',
+      type: NotificationType.Done,
       id: Date.now().toString(),
     });
   };
+
+  useEffect(() => {
+    const fromQueryValue = query.get('amount');
+    if (fromQueryValue) {
+      dispatch(assetsViewActions.setDepositValue(fromQueryValue));
+    }
+
+    return () => {
+      dispatch(assetsViewActions.setDepositValue('0.00'));
+    };
+  }, []);
 
   return (
     <>

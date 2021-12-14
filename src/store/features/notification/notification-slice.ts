@@ -2,11 +2,17 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { FeatureState } from '@/store';
 import type { RootState } from '@/store';
 
+export enum NotificationType {
+  Done,
+  Error,
+  Swap,
+}
+
 export interface Notification {
   id: string;
   title: string;
   errorMessage?: string;
-  type: 'done' | 'error';
+  type: NotificationType;
   transactionLink?: string;
 }
 

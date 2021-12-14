@@ -8,9 +8,9 @@ export const NotificationManager = () => {
   const { notifications, popNotification } = useNotificationStore();
 
   return (
-    <Flex position="absolute" right={12} direction="column" zIndex={0}>
+    <Flex position="absolute" right={12} direction="column" zIndex={99}>
       {notifications.map((notification) => {
-        const { errorMessage, id, title, type, transactionLink } = notification;
+        const { errorMessage } = notification;
         const errorBody =
           errorMessage && ERRORS.hasOwnProperty(errorMessage)
             ? ERRORS[errorMessage as ErrorNotificationType]
@@ -18,10 +18,7 @@ export const NotificationManager = () => {
 
         return (
           <NotificationBox
-            key={id}
-            title={title}
-            transactionLink={transactionLink}
-            type={type}
+            {...notification}
             onClose={() => popNotification(notification.id)}
           >
             {errorBody}
