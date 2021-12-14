@@ -59,7 +59,6 @@ export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
   });
 
   const handleOpenModal = () => {
-    console.log(from.token, to.token);
     handleStateChange();
     setCurrentModalData({
       fromToken: from.token.symbol,
@@ -93,6 +92,8 @@ export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
         });
       })
       .finally(() => popNotification(id));
+
+    handleOpenModal();
   }, []);
 
   useEffect(handleStateChange, [swapBatch.state]);

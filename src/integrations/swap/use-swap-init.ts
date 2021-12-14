@@ -15,7 +15,7 @@ import { useEffect } from 'react';
 import { useSwapActor } from '../actor/use-swap-actor';
 
 export const useSwapInit = () => {
-  const { getBalances } = useTotalBalances();
+  const { getBalances, totalBalances } = useTotalBalances();
   const { principalId, isConnected, state: plugState } = usePlugStore();
   const { supportedTokenListState } = useSwapStore();
 
@@ -46,6 +46,12 @@ export const useSwapInit = () => {
     getSupportedTokenList();
     getAllPairs();
   }, [swapActor]);
+
+  useEffect(() => {
+    if (swapActor && totalBalances) {
+      getAllPairs();
+    }
+  }, [totalBalances, swapActor]);
 
   async function getSupportedTokenList() {
     if (swapActor) {
