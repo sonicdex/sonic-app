@@ -14,8 +14,14 @@ import {
 import { useAppDispatch, useAppSelector } from '@/store';
 
 export const useModalStore = () => {
-  const { currentModal, currentModalData, currentModalState, state } =
-    useAppSelector(selectModalState);
+  const {
+    currentModal,
+    currentModalData,
+    currentModalState,
+    state,
+    callbacks,
+    onClose,
+  } = useAppSelector(selectModalState);
   const dispatch = useAppDispatch();
 
   const _setCurrentModal = (currentModal: string) => {
@@ -51,6 +57,8 @@ export const useModalStore = () => {
     currentModalState,
     currentModalData,
     state,
+    callbacks,
+    onClose,
     setModalCallbacks: _setModalCallbacks,
     setOnClose: _setOnClose,
     setCurrentModalData: _setCurrentModalData,

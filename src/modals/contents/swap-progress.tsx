@@ -2,7 +2,6 @@ import { Heading, Text, Flex, ModalCloseButton } from '@chakra-ui/react';
 import { depositSrc, swapSrc, withdrawSrc } from '@/assets';
 
 import { SwapStep } from './components';
-import { useSwapViewStore } from '@/store';
 import { ModalComponentProps } from '..';
 
 const STEPS = ['deposit', 'swap', 'withdraw'];
@@ -11,7 +10,7 @@ export const SwapProgress = ({
   currentModalState,
   currentModalData,
 }: Partial<ModalComponentProps>) => {
-  const { from, to } = useSwapViewStore();
+  const { fromToken, toToken } = currentModalData;
 
   const getStepStatus = (step: string) => {
     const currentStepIndex = STEPS.indexOf(currentModalState || 'idle');
@@ -47,13 +46,13 @@ export const SwapProgress = ({
           iconSrc={depositSrc}
           chevron
         >
-          Depositing <br /> {from.token?.symbol}
+          Depositing <br /> {fromToken}
         </SwapStep>
         <SwapStep status={getStepStatus('swap')} iconSrc={swapSrc} chevron>
-          Swapping <br /> {from.token?.symbol} to {to.token?.symbol}
+          Swapping <br /> {fromToken} to {toToken}
         </SwapStep>
         <SwapStep status={getStepStatus('withdraw')} iconSrc={withdrawSrc}>
-          Withdrawing <br /> {to.token?.symbol}
+          Withdrawing <br /> {toToken}
         </SwapStep>
       </Flex>
     </Flex>

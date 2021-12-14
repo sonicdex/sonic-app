@@ -16,6 +16,7 @@ export const NotificationBox = ({
   type,
   children,
   transactionLink,
+  id,
 }: NotificationBoxProps) => {
   const [show, setShow] = useState(true);
 
@@ -42,6 +43,7 @@ export const NotificationBox = ({
           title={title}
           type={type}
           transactionLink={transactionLink}
+          id={id}
         >
           {children}
         </NotificationContent>

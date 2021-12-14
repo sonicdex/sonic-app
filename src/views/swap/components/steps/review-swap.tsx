@@ -1,18 +1,17 @@
 import { arrowDownSrc, infoSrc } from '@/assets';
 import { Button, TitleBox, TokenBox } from '@/components';
 import { getAppAssetsSources } from '@/config/utils';
-import { MODALS } from '@/modals';
 import { TokenDataKey } from '@/models';
 import {
   NotificationType,
   SwapStep,
   swapViewActions,
   useAppDispatch,
-  useModalStore,
   useNotificationStore,
   useSwapStore,
   useSwapViewStore,
 } from '@/store';
+import { debounce } from '@/utils/function';
 import { Box, Checkbox, Flex, FormControl, Image } from '@chakra-ui/react';
 import { useMemo } from 'react';
 
@@ -22,7 +21,6 @@ export const ReviewStep = () => {
   const { fromTokenOptions, toTokenOptions, from, to, keepInSonic } =
     useSwapViewStore();
   const dispatch = useAppDispatch();
-  const { setCurrentModal, setCurrentModalData } = useModalStore();
 
   const { addNotification } = useNotificationStore();
 
@@ -31,19 +29,15 @@ export const ReviewStep = () => {
   };
 
   const handleApproveSwap = () => {
-    // Integration: Do swap
-    // trigger modals.
-    setCurrentModalData({
-      fromToken: from.token?.name,
-      toToken: to.token?.name,
-    });
-    setCurrentModal(MODALS.swapProgress);
-
     addNotification({
       title: `Swapping ${from.token?.symbol} for ${to.token?.symbol}`,
       type: NotificationType.Swap,
-      id: 'swap',
+      id: String(new Date().getTime()),
     });
+    debounce(
+      () => dispatch(swapViewActions.setValue({ data: 'from', value: '0.00' })),
+      300
+    );
   };
 
   const selectedTokenIds = useMemo(() => {

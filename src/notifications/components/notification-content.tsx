@@ -1,18 +1,7 @@
-import { useSwapBatch } from '@/integrations/transactions';
-import { MODALS } from '@/modals';
-import {
-  NotificationType,
-  swapViewActions,
-  useAppDispatch,
-  useModalStore,
-  useNotificationStore,
-  usePlugStore,
-  useSwapViewStore,
-} from '@/store';
-import { createCAPLink } from '@/utils/function';
+import { NotificationType } from '@/store';
 import { Box, Flex, Text } from '@chakra-ui/react';
-import { useEffect } from 'react';
 import { NotificationBoxProps } from '..';
+import { SwapLink } from './swap-link';
 
 const TransactionLink = ({ transactionLink }: { transactionLink?: string }) => {
   return (
@@ -28,84 +17,9 @@ const TransactionLink = ({ transactionLink }: { transactionLink?: string }) => {
   );
 };
 
-const SwapLink = () => {
-  const { setCurrentModal, clearModal, setCurrentModalState } = useModalStore();
-  const { from, to, slippage, keepInSonic } = useSwapViewStore();
-  const { addNotification, popNotification } = useNotificationStore();
-  const dispatch = useAppDispatch();
-  const { principalId } = usePlugStore();
-
-  const handleStateChange = () => {
-    console.log('state change', swapBatch.state);
-    switch (swapBatch.state as any) {
-      case 'approve':
-      case 'deposit':
-        setCurrentModalState('deposit');
-        break;
-      case 'swap':
-        setCurrentModalState('swap');
-        break;
-      case 'withdraw':
-        setCurrentModalState('withdraw');
-        break;
-    }
-  };
-
-  const swapBatch = useSwapBatch({
-    from,
-    to,
-    slippage: Number(slippage),
-    keepInSonic,
-    principalId,
-  });
-
-  const handleOpenModal = () => {
-    handleStateChange();
-    setCurrentModal(MODALS.swapProgress);
-  };
-
-  useEffect(() => {
-    swapBatch
-      .execute()
-      .then((res) => {
-        console.log('Swap Completed', res);
-        clearModal();
-        addNotification({
-          title: `Swapped ${from.value} ${from.token?.symbol} for ${to.value} ${to.token?.symbol}`,
-          type: NotificationType.Done,
-          id: Date.now().toString(),
-          // TODO: add transaction id
-          transactionLink: createCAPLink('transactionId'),
-        });
-        dispatch(swapViewActions.setValue({ data: 'from', value: '0.00' }));
-        // getBalances();
-        popNotification('swap');
-      })
-      .catch((err) => {
-        console.error('Swap Error', err);
-        setCurrentModal(MODALS.swapFailed);
-      });
-  }, []);
-
-  useEffect(handleStateChange, [swapBatch.state]);
-
-  return (
-    <Box
-      as="a"
-      target="_blank"
-      rel="noreferrer"
-      color="#3D52F4"
-      onClick={handleOpenModal}
-      cursor="pointer"
-    >
-      View progress
-    </Box>
-  );
-};
-
 export type NotificationContentProps = Pick<
   NotificationBoxProps,
-  'type' | 'children' | 'title' | 'transactionLink'
+  'type' | 'children' | 'title' | 'transactionLink' | 'id'
 >;
 
 export const NotificationContent: React.FC<NotificationContentProps> = ({
@@ -113,6 +27,7 @@ export const NotificationContent: React.FC<NotificationContentProps> = ({
   title,
   children,
   transactionLink,
+  id,
 }) => {
   return (
     <Flex direction="column" alignItems="flex-start">
@@ -121,7 +36,7 @@ export const NotificationContent: React.FC<NotificationContentProps> = ({
       </Text>
 
       {type === NotificationType.Swap ? (
-        <SwapLink />
+        <SwapLink id={id} />
       ) : type === NotificationType.Done ? (
         <TransactionLink transactionLink={transactionLink} />
       ) : null}
