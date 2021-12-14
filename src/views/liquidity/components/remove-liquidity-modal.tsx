@@ -107,12 +107,12 @@ export const RemoveLiquidityModal = ({
           <Stack spacing={4}>
             <RemoveLiquidityModalAsset
               name="XTC"
-              amount={5418.12}
+              balance={5418.12}
               price={5418.12}
             />
             <RemoveLiquidityModalAsset
               name="WICP"
-              amount={5418.12}
+              balance={5418.12}
               price={5418.12}
             />
           </Stack>

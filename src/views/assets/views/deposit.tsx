@@ -13,6 +13,7 @@ import {
 } from '@/store';
 import { useNavigate } from 'react-router';
 import { useQuery } from '@/hooks/use-query';
+import { plugCircleSrc } from '@/assets';
 
 export const AssetsDeposit = () => {
   const { addNotification } = useNotificationStore();
@@ -57,19 +58,28 @@ export const AssetsDeposit = () => {
       {supportedTokenListState === FeatureState.Loading &&
       !supportedTokenList ? (
         <Box my={5}>
-          <TokenBox source="plug" isLoading />
+          <TokenBox
+            sources={[{ name: 'Plug Wallet', src: plugCircleSrc }]}
+            isLoading
+          />
         </Box>
       ) : supportedTokenList && selectedTokenId ? (
         <Box my={5}>
           <TokenBox
             value={depositValue}
+            onMaxClick={() => dispatch(assetsViewActions.setDepositValue(''))}
             setValue={(value) =>
               dispatch(assetsViewActions.setDepositValue(value))
             }
             onTokenSelect={handleTokenSelect}
-            source="plug"
-            balance="23.23"
-            amount="53.23"
+            price={53.23}
+            sources={[
+              {
+                name: 'Plug Wallet',
+                src: plugCircleSrc,
+                balance: 0,
+              },
+            ]}
             selectedTokenIds={[selectedTokenId]}
             status={status}
             otherTokensMetadata={supportedTokenList}

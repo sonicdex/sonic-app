@@ -13,6 +13,7 @@ import {
 } from '@/store';
 import { useNavigate } from 'react-router';
 import { useQuery } from '@/hooks/use-query';
+import { sonicCircleSrc } from '@/assets';
 
 export const AssetsWithdraw = () => {
   const { addNotification } = useNotificationStore();
@@ -60,7 +61,10 @@ export const AssetsWithdraw = () => {
       {supportedTokenListState === FeatureState.Loading &&
       !supportedTokenList ? (
         <Box my={5}>
-          <TokenBox isLoading />
+          <TokenBox
+            sources={[{ name: 'Sonic', src: sonicCircleSrc }]}
+            isLoading
+          />
         </Box>
       ) : supportedTokenList && selectedTokenId ? (
         <Box my={5}>
@@ -71,14 +75,19 @@ export const AssetsWithdraw = () => {
             }
             onTokenSelect={handleTokenSelect}
             selectedTokenIds={[selectedTokenId]}
-            source="sonic"
-            balance="23.23"
-            amount="53.23"
             status={status}
             otherTokensMetadata={supportedTokenList}
             selectedTokenMetadata={supportedTokenList.find(
               ({ id }) => id === selectedTokenId
             )}
+            price={53.23}
+            sources={[
+              {
+                name: 'Sonic',
+                src: sonicCircleSrc,
+                balance: 0,
+              },
+            ]}
           />
         </Box>
       ) : null}

@@ -1,6 +1,8 @@
 import { arrowDownSrc, infoSrc } from '@/assets';
 import { Button, TitleBox, TokenBox } from '@/components';
+import { getAppAssetsSources } from '@/config/utils';
 import { useTotalBalances } from '@/hooks/use-balances';
+
 import { useSwapBatch } from '@/integrations/transactions';
 import { MODALS } from '@/modals';
 import { TokenDataKey } from '@/models';
@@ -12,15 +14,17 @@ import {
   useModalStore,
   useNotificationStore,
   usePlugStore,
+  useSwapStore,
   useSwapViewStore,
 } from '@/store';
-import { getCurrencyString } from '@/utils/format';
 import { createCAPLink } from '@/utils/function';
 import { Box, Checkbox, Flex, FormControl, Image } from '@chakra-ui/react';
 import { useEffect, useMemo, useState } from 'react';
 
 export const ReviewStep = () => {
-  const { totalBalances, getBalances } = useTotalBalances();
+  const { getBalances } = useTotalBalances();
+  const { sonicBalances, tokenBalances } = useSwapStore();
+
   const { fromTokenOptions, toTokenOptions, from, to, slippage } =
     useSwapViewStore();
   const { principalId } = usePlugStore();
@@ -125,12 +129,24 @@ export const ReviewStep = () => {
             selectedTokenMetadata={from.token}
             selectedTokenIds={selectedTokenIds}
             onTokenSelect={(tokenId) => handleTokenSelect('from', tokenId)}
-            balance={getCurrencyString(
-              from.token && totalBalances ? totalBalances[from.token.id] : 0,
-              from.token?.decimals
-            )}
-            amount="0.00"
+            price={53.23}
+            sources={getAppAssetsSources({
+              balances: {
+                plug:
+                  from.token && tokenBalances
+                    ? tokenBalances[from.token.id]
+                    : 0,
+                sonic:
+                  from.token && sonicBalances
+                    ? sonicBalances[from.token.id]
+                    : 0,
+              },
+            })}
             status="active"
+            // balances={getCurrencyString(
+            //   from.token && totalBalances ? totalBalances[from.token.id] : 0,
+            //   from.token?.decimals
+            // )}
           />
         </Box>
         <Box
@@ -156,12 +172,20 @@ export const ReviewStep = () => {
             selectedTokenMetadata={to.token}
             selectedTokenIds={selectedTokenIds}
             onTokenSelect={(tokenId) => handleTokenSelect('to', tokenId)}
-            balance={getCurrencyString(
-              to.token && totalBalances ? totalBalances[to.token.id] : 0,
-              to.token?.decimals
-            )}
+            price={53.23}
+            sources={getAppAssetsSources({
+              balances: {
+                plug:
+                  to.token && tokenBalances ? tokenBalances[to.token.id] : 0,
+                sonic:
+                  to.token && sonicBalances ? sonicBalances[to.token.id] : 0,
+              },
+            })}
+            // balances={getCurrencyString(
+            //   to.token && totalBalances ? totalBalances[to.token.id] : 0,
+            //   to.token?.decimals
+            // )}
             status="active"
-            amount="0.00"
             glow
             disabled
           />
