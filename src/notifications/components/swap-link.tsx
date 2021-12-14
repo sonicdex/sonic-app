@@ -10,7 +10,7 @@ import {
 } from '@/store';
 import { deserialize, stringify } from '@/utils/format';
 import { createCAPLink } from '@/utils/function';
-import { Box } from '@chakra-ui/react';
+import { Link } from '@chakra-ui/react';
 import { useEffect, useMemo } from 'react';
 
 export interface SwapLinkProps {
@@ -91,15 +91,13 @@ export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
   }, []);
 
   return (
-    <Box
-      as="a"
+    <Link
       target="_blank"
       rel="noreferrer"
       color="#3D52F4"
       onClick={handleOpenModal}
-      cursor="pointer"
     >
       View progress
-    </Box>
+    </Link>
   );
 };
