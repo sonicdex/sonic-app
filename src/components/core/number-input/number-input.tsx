@@ -1,4 +1,4 @@
-import { Box } from '@chakra-ui/react';
+import { Input } from '@chakra-ui/react';
 import { ChangeEvent } from 'react';
 
 type NumberInputProps = {
@@ -25,8 +25,8 @@ export const NumberInput = ({
   };
 
   return (
-    <Box
-      as="input"
+    <Input
+      variant="unstyled"
       type="text"
       bg="#1E1E1E"
       textAlign="right"

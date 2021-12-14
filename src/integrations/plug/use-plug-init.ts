@@ -29,7 +29,6 @@ export const usePlugInit = () => {
         .catch((err) => {
           console.error(err);
           dispatch(plugActions.setIsConnected(false));
-          dispatch(plugActions.setState(FeatureState.Error));
         });
     }
   }, []);
@@ -49,10 +48,10 @@ export const usePlugInit = () => {
               dispatch(plugActions.setPrincipalId(principal.toText()));
             }
           }
-          dispatch(plugActions.setState(FeatureState.Idle));
         } catch (err) {
           console.error(err);
-          dispatch(plugActions.setState(FeatureState.Error));
+        } finally {
+          dispatch(plugActions.setState(FeatureState.Idle));
         }
       };
 

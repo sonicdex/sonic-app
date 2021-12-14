@@ -4,7 +4,7 @@ import { IDL } from '@dfinity/candid';
 import { ENV } from '@/config';
 
 import { ActorRepository, AppActors } from '.';
-import { Actor } from '@dfinity/agent';
+import { Actor, HttpAgent } from '@dfinity/agent';
 
 export const appActors: Record<string, any> = {};
 
@@ -24,7 +24,10 @@ export class ActorAdapter implements ActorRepository {
     let actor;
 
     if (!this.provider) {
+      const agent = new HttpAgent({ host: ENV.host });
+
       actor = Actor.createActor<T>(interfaceFactory, {
+        agent,
         canisterId,
       });
     } else {

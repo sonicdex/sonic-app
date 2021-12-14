@@ -2,12 +2,13 @@ import { Box, Flex, Icon, IconButton, Tooltip } from '@chakra-ui/react';
 import { useMemo, useState } from 'react';
 import { FaArrowDown } from 'react-icons/fa';
 
-import { TitleBox, TokenBox, Button } from '@/components';
+import { TitleBox, TokenBox, Button, PlugButton } from '@/components';
 import { useTotalBalances } from '@/hooks/use-balances';
 import {
   SwapStep,
   swapViewActions,
   useAppDispatch,
+  usePlugStore,
   useSwapStore,
   useSwapViewStore,
 } from '@/store';
@@ -21,42 +22,39 @@ export const HomeStep = () => {
     useSwapViewStore();
   const dispatch = useAppDispatch();
   const { sonicBalances, tokenBalances } = useSwapStore();
+  const { isConnected } = usePlugStore();
 
   const [autoSlippage, setAutoSlippage] = useState(true);
 
   const { totalBalances } = useTotalBalances();
 
-  const handleButtonOnClick = () => {
-    if (loading) return;
-
-    dispatch(swapViewActions.setStep(SwapStep.Review));
-  };
-
-  const loading = useMemo(() => {
-    if (!totalBalances) return true;
+  const isLoading = useMemo(() => {
     if (!from.token) return true;
     return false;
   }, [totalBalances, from.token]);
 
   const [buttonDisabled, buttonMessage] = useMemo<[boolean, string]>(() => {
-    if (loading) return [true, 'Loading'];
-    if (!totalBalances || !from.token) throw new Error('State is loading');
-
-    if (!to.token) return [true, 'Select a resultant token'];
+    if (isLoading) return [true, 'Loading'];
+    if (!from.token) throw new Error('State is loading');
+    if (!to.token) return [true, 'Select the token'];
 
     const parsedFromValue = (from.value && parseFloat(from.value)) || 0;
 
     if (parsedFromValue <= 0)
       return [true, `No ${from.token.name} value selected`];
 
-    const parsedBalance = parseFloat(
-      formatAmount(totalBalances[from.token.id], from.token.decimals)
-    );
-    if (parsedFromValue > parsedBalance)
-      return [true, `Insufficient ${from.token.name} Balance`];
+    if (totalBalances) {
+      const parsedBalance = parseFloat(
+        formatAmount(totalBalances[from.token.id], from.token.decimals)
+      );
+
+      if (parsedFromValue > parsedBalance) {
+        return [true, `Insufficient ${from.token.name} Balance`];
+      }
+    }
 
     return [false, 'Review Swap'];
-  }, [loading, totalBalances, from.token, to.token, from.value, to.value]);
+  }, [isLoading, totalBalances, from.token, to.token, from.value, to.value]);
 
   const fromValueStatus = useMemo(() => {
     if (from.value && parseFloat(from.value) > 0) return 'active';
@@ -70,6 +68,12 @@ export const HomeStep = () => {
 
     return selectedIds;
   }, [from?.token?.id, to?.token?.id]);
+
+  const handleButtonOnClick = () => {
+    if (isLoading) return;
+
+    dispatch(swapViewActions.setStep(SwapStep.Review));
+  };
 
   const handleTokenSelect = (data: any, tokenId: string) => {
     dispatch(swapViewActions.setToken({ data, tokenId }));
@@ -120,7 +124,7 @@ export const HomeStep = () => {
             onTokenSelect={(tokenId) => handleTokenSelect('from', tokenId)}
             selectedTokenIds={selectedTokenIds}
             status={fromValueStatus}
-            isLoading={loading}
+            isLoading={isLoading}
             price={53.23}
             sources={getAppAssetsSources({
               balances: {
@@ -167,7 +171,7 @@ export const HomeStep = () => {
             onTokenSelect={(tokenId) => handleTokenSelect('to', tokenId)}
             selectedTokenMetadata={to.token}
             disabled={true}
-            isLoading={loading}
+            isLoading={isLoading}
             price={53.23}
             sources={getAppAssetsSources({
               balances: {
@@ -184,15 +188,19 @@ export const HomeStep = () => {
           />
         </Box>
       </Flex>
-      <Button
-        isFullWidth
-        size="lg"
-        onClick={handleButtonOnClick}
-        isLoading={loading}
-        isDisabled={buttonDisabled}
-      >
-        {buttonMessage}
-      </Button>
+      {!isConnected ? (
+        <PlugButton />
+      ) : (
+        <Button
+          isFullWidth
+          size="lg"
+          onClick={handleButtonOnClick}
+          isLoading={isLoading}
+          isDisabled={buttonDisabled}
+        >
+          {buttonMessage}
+        </Button>
+      )}
     </>
   );
 };
