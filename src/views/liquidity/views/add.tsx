@@ -15,6 +15,7 @@ import {
 import { useNavigate } from 'react-router';
 import { useQuery } from '@/hooks/use-query';
 import { SwapIDL } from '@/did';
+import { getAppAssetsSources } from '@/config/utils';
 
 const BUTTON_TITLES = ['Review Supply', 'Confirm Supply'];
 
@@ -127,8 +128,8 @@ export const LiquidityAdd = () => {
             selectedTokenIds={selectedTokenIds}
             disabled={subStep === 1}
             menuDisabled={subStep === 1}
-            balance="0.00"
-            amount="0.00"
+            price={53.23}
+            sources={getAppAssetsSources({ balances: { plug: 0, sonic: 0 } })}
             isLoading={supportedTokenListState === FeatureState.Loading}
           />
         </Box>
@@ -146,7 +147,7 @@ export const LiquidityAdd = () => {
         >
           <Image m="auto" src={plusSrc} />
         </Box>
-        <Box mt={2.5} width="100%">
+        <Box mt={2.5} mb={5} width="100%">
           <TokenBox
             value={to.value}
             setValue={(value) =>
@@ -160,8 +161,8 @@ export const LiquidityAdd = () => {
             status={getActiveStatus(to.token, to.value)}
             disabled={subStep === 1}
             menuDisabled={subStep === 1}
-            balance="0.00"
-            amount="0.00"
+            price={53.23}
+            sources={getAppAssetsSources({ balances: { plug: 0, sonic: 0 } })}
             isLoading={supportedTokenListState === FeatureState.Loading}
           />
         </Box>
@@ -196,27 +197,29 @@ export const LiquidityAdd = () => {
                 otherTokensMetadata={supportedTokenList}
                 selectedTokenMetadata={to.token}
                 status="active"
-                balance="0.00"
+                price={53.23}
+                sources={getAppAssetsSources({
+                  balances: { plug: 0, sonic: 0 },
+                })}
                 balanceText="Share of pool:"
-                amountText="SHARE HERE"
-                amount="0.00"
+                priceText="SHARE HERE"
                 disabled
                 menuDisabled
                 glow
               />
             </Box>
+            <Flex
+              direction="row"
+              justifyContent="space-between"
+              width="100%"
+              my={2.5}
+              px={5}
+            >
+              <Text color="#888E8F">{`${'fromToken'} + ${'toToken'}`}</Text>
+              <Text color="#888E8F">{`1 ${'fromToken'} = 0.23 ${'toToken'}`}</Text>
+            </Flex>
           </>
         )}
-        <Flex
-          direction="row"
-          justifyContent="space-between"
-          width="100%"
-          my={2.5}
-          px={5}
-        >
-          <Text color="#888E8F">{`${'fromToken'} + ${'toToken'}`}</Text>
-          <Text color="#888E8F">{`1 ${'fromToken'} = 0.23 ${'toToken'}`}</Text>
-        </Flex>
       </Flex>
       <Button
         isFullWidth

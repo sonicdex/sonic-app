@@ -1,25 +1,36 @@
-import { Button, TitleBox, TokenBox } from '@/components';
+import { Box, Flex, Icon, IconButton, Tooltip } from '@chakra-ui/react';
+import { useMemo, useState } from 'react';
+import { FaArrowDown } from 'react-icons/fa';
+
+import { TitleBox, TokenBox, Button } from '@/components';
 import { useTotalBalances } from '@/hooks/use-balances';
 import {
   SwapStep,
   swapViewActions,
   useAppDispatch,
+  useSwapStore,
   useSwapViewStore,
 } from '@/store';
 import { formatAmount, getCurrencyString } from '@/utils/format';
-import { Box, Flex, Icon, IconButton, Tooltip } from '@chakra-ui/react';
-import { useMemo, useState } from 'react';
-import { FaArrowDown } from 'react-icons/fa';
+import { getAppAssetsSources } from '@/config/utils';
+
 import { SwapSettings } from '../index';
 
 export const HomeStep = () => {
   const { fromTokenOptions, toTokenOptions, from, to, slippage } =
     useSwapViewStore();
   const dispatch = useAppDispatch();
+  const { sonicBalances, tokenBalances } = useSwapStore();
 
   const [autoSlippage, setAutoSlippage] = useState(true);
 
   const { totalBalances } = useTotalBalances();
+
+  const handleButtonOnClick = () => {
+    if (loading) return;
+
+    dispatch(swapViewActions.setStep(SwapStep.Review));
+  };
 
   const loading = useMemo(() => {
     if (!totalBalances) return true;
@@ -34,6 +45,7 @@ export const HomeStep = () => {
     if (!to.token) return [true, 'Select a resultant token'];
 
     const parsedFromValue = (from.value && parseFloat(from.value)) || 0;
+
     if (parsedFromValue <= 0)
       return [true, `No ${from.token.name} value selected`];
 
@@ -58,12 +70,6 @@ export const HomeStep = () => {
 
     return selectedIds;
   }, [from?.token?.id, to?.token?.id]);
-
-  const handleButtonOnClick = () => {
-    if (loading) return;
-
-    dispatch(swapViewActions.setStep(SwapStep.Review));
-  };
 
   const handleTokenSelect = (data: any, tokenId: string) => {
     dispatch(swapViewActions.setToken({ data, tokenId }));
@@ -92,6 +98,20 @@ export const HomeStep = () => {
         <Box mt={5} width="100%">
           <TokenBox
             value={from.value}
+            onMaxClick={() =>
+              dispatch(
+                swapViewActions.setValue({
+                  data: 'from',
+                  value:
+                    totalBalances && from.token
+                      ? getCurrencyString(
+                          totalBalances[from.token?.id],
+                          from.token?.decimals
+                        )
+                      : '0.00',
+                })
+              )
+            }
             setValue={(value) =>
               dispatch(swapViewActions.setValue({ data: 'from', value }))
             }
@@ -101,11 +121,23 @@ export const HomeStep = () => {
             selectedTokenIds={selectedTokenIds}
             status={fromValueStatus}
             isLoading={loading}
-            balance={getCurrencyString(
-              from.token && totalBalances ? totalBalances[from.token.id] : 0,
-              from.token?.decimals
-            )}
-            amount="0.00"
+            price={53.23}
+            sources={getAppAssetsSources({
+              balances: {
+                plug:
+                  from.token && tokenBalances
+                    ? tokenBalances[from.token.id]
+                    : 0,
+                sonic:
+                  from.token && sonicBalances
+                    ? sonicBalances[from.token.id]
+                    : 0,
+              },
+            })}
+            // balances={getCurrencyString(
+            //   from.token && totalBalance ? totalBalance[from.token.id] : 0,
+            //   from.token?.decimals
+            // )}
           />
         </Box>
         <Tooltip label="Swap">
@@ -136,11 +168,19 @@ export const HomeStep = () => {
             selectedTokenMetadata={to.token}
             disabled={true}
             isLoading={loading}
-            balance={getCurrencyString(
-              to.token && totalBalances ? totalBalances[to.token.id] : 0,
-              to.token?.decimals
-            )}
-            amount="0.00"
+            price={53.23}
+            sources={getAppAssetsSources({
+              balances: {
+                plug:
+                  to.token && tokenBalances ? tokenBalances[to.token.id] : 0,
+                sonic:
+                  to.token && sonicBalances ? sonicBalances[to.token.id] : 0,
+              },
+            })}
+            // balances={getCurrencyString(
+            //   to.token && totalBalance ? totalBalance[to.token.id] : 0,
+            //   to.token?.decimals
+            // )}
           />
         </Box>
       </Flex>

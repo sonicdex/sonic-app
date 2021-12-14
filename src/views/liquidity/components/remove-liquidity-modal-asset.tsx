@@ -7,14 +7,14 @@ import NumberFormat from 'react-number-format';
 type RemoveLiquidityModalAssetProps = {
   name: string;
   src?: string;
-  amount?: number;
+  balance?: number;
   price?: number;
 };
 
 export const RemoveLiquidityModalAsset: FC<RemoveLiquidityModalAssetProps> = ({
   name,
   src = questionMarkSrc,
-  amount = 0,
+  balance = 0,
   price = 0,
 }) => {
   return (
@@ -32,12 +32,15 @@ export const RemoveLiquidityModalAsset: FC<RemoveLiquidityModalAssetProps> = ({
       </HStack>
       <Box textAlign="end">
         <Text fontSize="xl" fontWeight="bold">
-          <NumberFormat value={amount} displayType="text"></NumberFormat>
+          <NumberFormat value={balance} displayType="text"></NumberFormat>
         </Text>
         <Text fontSize="xs">
-          <NumberFormat value={amount} displayType="text" prefix="$">
-            {price}
-          </NumberFormat>
+          <NumberFormat
+            value={price}
+            displayType="text"
+            prefix="$"
+            decimalScale={0}
+          />
         </Text>
       </Box>
     </Flex>

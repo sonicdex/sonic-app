@@ -1,3 +1,6 @@
+export { default as sonicCircleSrc } from './sonic-circle.svg';
+export { default as plugCircleSrc } from './plug-circle.svg';
+
 export { default as logoSrc } from './logo.png';
 export { default as arrowBackSrc } from './arrow-back.svg';
 export { default as chevronDownSrc } from './chevron-down.svg';
