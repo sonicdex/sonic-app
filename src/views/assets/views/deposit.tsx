@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Box } from '@chakra-ui/react';
 import { TitleBox, TokenBox, Button } from '@/components';
 
@@ -51,6 +51,17 @@ export const AssetsDeposit = () => {
       id: Date.now().toString(),
     });
   };
+
+  useEffect(() => {
+    const fromQueryValue = query.get('amount');
+    if (fromQueryValue) {
+      dispatch(assetsViewActions.setDepositValue(fromQueryValue));
+    }
+
+    return () => {
+      dispatch(assetsViewActions.setDepositValue('0.00'));
+    };
+  }, []);
 
   return (
     <>

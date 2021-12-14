@@ -1,3 +1,4 @@
+import { useTotalBalances } from '@/hooks/use-balances';
 import { useSwapBatch } from '@/integrations/transactions';
 import { MODALS } from '@/modals';
 import {
@@ -26,6 +27,7 @@ export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
   const swapViewStore = useSwapViewStore();
   const { addNotification, popNotification } = useNotificationStore();
   const { principalId } = usePlugStore();
+  const { getBalances } = useTotalBalances();
 
   const { from, to, slippage, keepInSonic } = useMemo(() => {
     // Clone current state just for this batch
@@ -34,8 +36,7 @@ export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
   }, []);
 
   const handleStateChange = () => {
-    console.log('state change', swapBatch.state);
-    switch (swapBatch.state as any) {
+    switch (swapBatch.state) {
       case 'approve':
       case 'deposit':
         setCurrentModalState('deposit');
@@ -80,13 +81,18 @@ export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
           // TODO: add transaction id
           transactionLink: createCAPLink('transactionId'),
         });
-        // getBalances();
-        popNotification(id);
+        getBalances();
       })
       .catch((err) => {
         console.error('Swap Error', err);
-        setCurrentModal(MODALS.swapFailed);
-      });
+        clearModal();
+        addNotification({
+          title: `Failed swapping ${from.value} ${from.token?.symbol} for ${to.value} ${to.token?.symbol}`,
+          type: NotificationType.Error,
+          id: Date.now().toString(),
+        });
+      })
+      .finally(() => popNotification(id));
   }, []);
 
   useEffect(handleStateChange, [swapBatch.state]);

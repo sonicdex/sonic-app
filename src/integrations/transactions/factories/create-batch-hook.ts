@@ -3,7 +3,10 @@ import { useMemo, useState } from 'react';
 import { BatchTransactions } from '..';
 import { Batch } from '../models';
 
-export const useBatchHook: Batch.CreateHook = ({ transactions }) => {
+export const useBatchHook: Batch.CreateHook = ({
+  transactions,
+  handleRetry,
+}) => {
   const [state, setState] = useState<string>(Batch.DefaultHookStates.Idle);
   const [error, setError] = useState<unknown>();
 
@@ -17,10 +20,7 @@ export const useBatchHook: Batch.CreateHook = ({ transactions }) => {
   }, [transactions]);
 
   const batch = useMemo(() => {
-    const newBatch = new BatchTransactions(plug, async (error) =>
-      // TODO: create handle retry modal
-      confirm(`Transaction failed, try again? ${error}`)
-    );
+    const newBatch = new BatchTransactions(plug, handleRetry);
 
     const transactionsList = Object.values(transactions);
     Object.values(transactions).forEach((transaction, index) => {

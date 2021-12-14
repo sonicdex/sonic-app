@@ -23,9 +23,8 @@ export const ModalManager = () => {
   const shouldOpen = currentModal?.length > 0;
 
   const handleOnClose = () => {
-    const callableOnClose = new Function(`return ${onClose}`);
     clearModal();
-    callableOnClose();
+    onClose();
   };
 
   return (

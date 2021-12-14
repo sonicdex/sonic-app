@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Box } from '@chakra-ui/react';
 import { TitleBox, TokenBox, Button } from '@/components';
 
@@ -37,6 +37,17 @@ export const AssetsWithdraw = () => {
 
     return '';
   }, [isReady]);
+
+  useEffect(() => {
+    const fromQueryValue = query.get('amount');
+    if (fromQueryValue) {
+      dispatch(assetsViewActions.setWithdrawValue(fromQueryValue));
+    }
+
+    return () => {
+      dispatch(assetsViewActions.setWithdrawValue('0.00'));
+    };
+  }, []);
 
   const handleTokenSelect = (tokenId: string) => {
     setSelectedTokenId(tokenId);
