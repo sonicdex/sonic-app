@@ -10,7 +10,7 @@ import {
   useMemorizedWithdrawTransaction,
   useBatchHook,
 } from '..';
-import { Swap } from '../..';
+import { Batch, Swap } from '../..';
 
 type SwapBatchStep = 'approve' | 'deposit' | 'swap' | 'withdraw';
 export interface ExtraDepositSwapBatchOptions {
@@ -89,11 +89,7 @@ export const useSwapBatch = ({
       setModalCallbacks([
         // Retry callback
         () => {
-          setCurrentModalData({
-            fromToken: swapParams.from.token?.symbol,
-            toToken: swapParams.to.token?.symbol,
-          });
-          setCurrentModal(MODALS.swapProgress);
+          openSwapModal();
           resolve(true);
         },
         // Not retry callback
@@ -109,5 +105,17 @@ export const useSwapBatch = ({
     });
   };
 
-  return useBatchHook<SwapBatchStep>({ transactions, handleRetry });
+  const openSwapModal = () => {
+    setCurrentModalData({
+      steps: Object.keys(transactions),
+      fromToken: swapParams.from.token?.symbol,
+      toToken: swapParams.to.token?.symbol,
+    });
+    setCurrentModal(MODALS.swapProgress);
+  };
+
+  return [
+    useBatchHook<SwapBatchStep>({ transactions, handleRetry }),
+    openSwapModal,
+  ] as [Batch.Hook<SwapBatchStep>, () => void];
 };

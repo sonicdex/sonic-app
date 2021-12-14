@@ -18,12 +18,7 @@ export interface SwapLinkProps {
 }
 
 export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
-  const {
-    setCurrentModal,
-    clearModal,
-    setCurrentModalState,
-    setCurrentModalData,
-  } = useModalStore();
+  const { setCurrentModal, clearModal, setCurrentModalState } = useModalStore();
   const swapViewStore = useSwapViewStore();
   const { addNotification, popNotification } = useNotificationStore();
   const { principalId } = usePlugStore();
@@ -50,7 +45,13 @@ export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
     }
   };
 
-  const swapBatch = useSwapBatch({
+  const handleOpenModal = () => {
+    handleStateChange();
+    openSwapModal();
+    setCurrentModal(MODALS.swapProgress);
+  };
+
+  const [swapBatch, openSwapModal] = useSwapBatch({
     from,
     to,
     slippage: Number(slippage),
@@ -58,14 +59,7 @@ export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
     principalId,
   });
 
-  const handleOpenModal = () => {
-    handleStateChange();
-    setCurrentModalData({
-      fromToken: from.token.symbol,
-      toToken: to.token.symbol,
-    });
-    setCurrentModal(MODALS.swapProgress);
-  };
+  useEffect(handleStateChange, [swapBatch.state]);
 
   useEffect(() => {
     swapBatch
@@ -95,8 +89,6 @@ export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
 
     handleOpenModal();
   }, []);
-
-  useEffect(handleStateChange, [swapBatch.state]);
 
   return (
     <Box
