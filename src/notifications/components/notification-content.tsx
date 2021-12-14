@@ -1,21 +1,8 @@
 import { NotificationType } from '@/store';
-import { Box, Flex, Text } from '@chakra-ui/react';
+import { Flex, Text } from '@chakra-ui/react';
 import { NotificationBoxProps } from '..';
 import { SwapLink } from './swap-link';
-
-const TransactionLink = ({ transactionLink }: { transactionLink?: string }) => {
-  return (
-    <Box
-      as="a"
-      href={transactionLink}
-      target="_blank"
-      rel="noreferrer"
-      color="#3D52F4"
-    >
-      View on explorer
-    </Box>
-  );
-};
+import { TransactionLink } from './transaction-link';
 
 export type NotificationContentProps = Pick<
   NotificationBoxProps,
