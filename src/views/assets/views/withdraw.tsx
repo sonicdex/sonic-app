@@ -14,6 +14,8 @@ import {
 import { useNavigate } from 'react-router';
 import { useQuery } from '@/hooks/use-query';
 import { sonicCircleSrc } from '@/assets';
+import { useWithdrawBatch } from '@/integrations/transactions/factories/batch/withdraw';
+import { useTotalBalances } from '@/hooks/use-balances';
 
 export const AssetsWithdraw = () => {
   const { addNotification } = useNotificationStore();
@@ -24,6 +26,7 @@ export const AssetsWithdraw = () => {
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const { getBalances } = useTotalBalances();
 
   const isReady = useMemo(
     () => withdrawValue && parseFloat(withdrawValue) > 0,
@@ -53,14 +56,33 @@ export const AssetsWithdraw = () => {
     setSelectedTokenId(tokenId);
   };
 
-  const handleWithdraw = () => {
-    // TODO: Replace by a real withdraw
-    // Withdraw token from Sonic
-    addNotification({
-      title: 'Withdraw successful',
-      type: NotificationType.Done,
-      id: Date.now().toString(),
-    });
+  const selectedToken = useMemo(() => {
+    return supportedTokenList?.find((token) => token.id === selectedTokenId);
+  }, [selectedTokenId]);
+
+  const withdrawBatch = useWithdrawBatch({
+    token: selectedToken,
+    amount: withdrawValue,
+  });
+
+  const handleWithdraw = async () => {
+    try {
+      await withdrawBatch.execute();
+
+      addNotification({
+        title: 'Withdraw successful',
+        type: NotificationType.Done,
+        id: Date.now().toString(),
+      });
+
+      getBalances();
+    } catch (error) {
+      addNotification({
+        title: `Withdraw failed ${withdrawValue} ${selectedToken?.symbol}`,
+        type: NotificationType.Error,
+        id: Date.now().toString(),
+      });
+    }
   };
 
   return (

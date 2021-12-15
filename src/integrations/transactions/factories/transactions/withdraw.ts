@@ -11,6 +11,8 @@ export const useMemorizedWithdrawTransaction: CreateTransaction<Withdraw> = (
   onFail
 ) =>
   useMemo(() => {
+    if (!token?.id) throw new Error('Token is required');
+
     return {
       args: [Principal.fromText(token.id), parseAmount(amount, token.decimals)],
       canisterId: ENV.canisterIds.swap,

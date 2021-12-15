@@ -14,11 +14,16 @@ import {
 import { useNavigate } from 'react-router';
 import { useQuery } from '@/hooks/use-query';
 import { plugCircleSrc } from '@/assets';
+import { useDepositBatch } from '@/integrations/transactions';
+import { useTotalBalances } from '@/hooks/use-balances';
 
 export const AssetsDeposit = () => {
   const { addNotification } = useNotificationStore();
+  const { getBalances } = useTotalBalances();
   const query = useQuery();
-  const [selectedTokenId, setSelectedTokenId] = useState(query.get('tokenId'));
+  const [selectedTokenId, setSelectedTokenId] = useState(
+    query.get('tokenId') ?? ''
+  );
 
   const { supportedTokenList, supportedTokenListState } = useSwapStore();
 
@@ -43,13 +48,33 @@ export const AssetsDeposit = () => {
     setSelectedTokenId(tokenId);
   };
 
-  const handleDeposit = () => {
-    // TODO: replace by real deposit logic
-    addNotification({
-      title: 'Deposit successful',
-      type: NotificationType.Done,
-      id: Date.now().toString(),
-    });
+  const selectedToken = useMemo(() => {
+    return supportedTokenList?.find((token) => token.id === selectedTokenId);
+  }, [selectedTokenId]);
+
+  const depositBatch = useDepositBatch({
+    token: selectedToken,
+    amount: depositValue,
+  });
+
+  const handleDeposit = async () => {
+    try {
+      await depositBatch.execute();
+
+      addNotification({
+        title: 'Deposit successful',
+        type: NotificationType.Done,
+        id: Date.now().toString(),
+      });
+
+      getBalances();
+    } catch (error) {
+      addNotification({
+        title: `Deposit failed ${depositValue} ${selectedToken?.symbol}`,
+        type: NotificationType.Error,
+        id: Date.now().toString(),
+      });
+    }
   };
 
   useEffect(() => {
