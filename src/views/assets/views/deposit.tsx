@@ -83,7 +83,7 @@ export const AssetsDeposit = () => {
               dispatch(assetsViewActions.setDepositValue(value))
             }
             onTokenSelect={handleTokenSelect}
-            price={53.23}
+            price={0}
             sources={[
               {
                 name: 'Plug Wallet',

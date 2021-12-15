@@ -65,17 +65,14 @@ export const SwapSettings = ({
           <NumberInput
             value={slippage}
             setValue={setSlippage}
-            style={{
-              paddingTop: '10px',
-              paddingBottom: '10px',
-              width: '195px',
-              fontSize: '14px',
-              fontWeight: 600,
-              color: inputColor,
-              border: `1px solid ${inputBorderColor}`,
-              borderRadius: '100px',
-              paddingRight: '30px',
-            }}
+            py={2.5}
+            fontSize="sm"
+            fontWeight={600}
+            color={inputColor}
+            borderColor={inputBorderColor}
+            borderStyle="solid"
+            borderWidth="1px"
+            borderRadius="full"
           />
         </Box>
       </Flex>

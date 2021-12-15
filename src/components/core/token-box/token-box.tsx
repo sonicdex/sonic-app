@@ -173,7 +173,7 @@ export const TokenBox = ({
           <NumberInput
             value={value}
             setValue={setValue}
-            disabled={disabled}
+            isDisabled={disabled}
             style={{
               color: status === 'active' ? '#F6FCFD' : '#888E8F',
               background,

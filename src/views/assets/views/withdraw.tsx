@@ -91,7 +91,7 @@ export const AssetsWithdraw = () => {
             selectedTokenMetadata={supportedTokenList.find(
               ({ id }) => id === selectedTokenId
             )}
-            price={53.23}
+            price={0}
             sources={[
               {
                 name: 'Sonic',

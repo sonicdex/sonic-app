@@ -23,6 +23,7 @@ export const useBatchHook: Batch.CreateHook = ({
     const newBatch = new BatchTransactions(plug, handleRetry);
 
     const transactionsList = Object.values(transactions);
+
     Object.values(transactions).forEach((transaction, index) => {
       const onSuccess = transaction.onSuccess;
       transaction.onSuccess = async (res) => {

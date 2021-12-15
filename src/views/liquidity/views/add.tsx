@@ -132,7 +132,7 @@ export const LiquidityAdd = () => {
             selectedTokenIds={selectedTokenIds}
             disabled={subStep === 1}
             menuDisabled={subStep === 1}
-            price={53.23}
+            price={0}
             sources={getAppAssetsSources({ balances: { plug: 0, sonic: 0 } })}
             isLoading={supportedTokenListState === FeatureState.Loading}
           />
@@ -165,7 +165,7 @@ export const LiquidityAdd = () => {
             status={getActiveStatus(to.token, to.value)}
             disabled={subStep === 1}
             menuDisabled={subStep === 1}
-            price={53.23}
+            price={0}
             sources={getAppAssetsSources({ balances: { plug: 0, sonic: 0 } })}
             isLoading={supportedTokenListState === FeatureState.Loading}
           />
@@ -201,7 +201,7 @@ export const LiquidityAdd = () => {
                 otherTokensMetadata={supportedTokenList}
                 selectedTokenMetadata={to.token}
                 status="active"
-                price={53.23}
+                price={0}
                 sources={getAppAssetsSources({
                   balances: { plug: 0, sonic: 0 },
                 })}

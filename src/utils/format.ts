@@ -199,26 +199,14 @@ export const formatAmount = (
   }
 };
 
-export const getAmountOutMin = (
-  toValue: number | string,
+export const getMinAmount = (
+  value: number | string,
   tolerance: number | string,
   decimals: number | string
 ) => {
   return new BigNumber('1')
     .minus(new BigNumber(tolerance))
-    .multipliedBy(new BigNumber(toValue))
-    .dp(Number(decimals))
-    .toString();
-};
-
-export const getAmountInMax = (
-  fromValue: number | string,
-  tolerance: number | string,
-  decimals: number | string
-) => {
-  return new BigNumber('1')
-    .minus(new BigNumber(tolerance))
-    .multipliedBy(new BigNumber(fromValue))
+    .multipliedBy(new BigNumber(value))
     .dp(Number(decimals))
     .toString();
 };

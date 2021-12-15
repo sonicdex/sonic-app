@@ -66,7 +66,7 @@ export const ReviewStep = () => {
             selectedTokenMetadata={from.token}
             selectedTokenIds={selectedTokenIds}
             onTokenSelect={(tokenId) => handleTokenSelect('from', tokenId)}
-            price={53.23}
+            price={0}
             sources={getAppAssetsSources({
               balances: {
                 plug:
@@ -109,7 +109,7 @@ export const ReviewStep = () => {
             selectedTokenMetadata={to.token}
             selectedTokenIds={selectedTokenIds}
             onTokenSelect={(tokenId) => handleTokenSelect('to', tokenId)}
-            price={53.23}
+            price={0}
             sources={getAppAssetsSources({
               balances: {
                 plug:
