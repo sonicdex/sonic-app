@@ -1,6 +1,6 @@
 # Canister ids
 SWAP_CANISTER = goeik-taaaa-aaaah-qcduq-cai
-WICP_TEST = wjsrf-myaaa-aaaam-qaayq-cai
+WICP_TEST = xe4vl-dqaaa-aaaam-qaa7a-cai 
 TEST_TOKEN = a7saq-3aaaa-aaaai-qbcdq-cai
 BETA_TOKEN = cfoim-fqaaa-aaaai-qbcmq-cai
 
@@ -27,5 +27,5 @@ $ dfx canister --network ic call goeik-taaaa-aaaah-qcduq-cai createPair "(princi
 
 # Add Liquidity (token0: Principal, token1: Principal, amount0Desired: Nat, amount1Desired: Nat, amount0Min: Nat, amount1Min: Nat, deadline: Int)
 # deadline = (new Date().getTime() + 5 * 60 * 1000) * 10000000
-$ dfx canister --network ic call goeik-taaaa-aaaah-qcduq-cai addLiquidity "(principal \"cfoim-fqaaa-aaaai-qbcmq-cai\", principal \"a7saq-3aaaa-aaaai-qbcdq-cai\", 1_000_000_000:nat, 1_000_000_000:nat, 100_000_000:nat, 100_000_000:nat, 16390543510320000000)"
+$ dfx canister --network ic call goeik-taaaa-aaaah-qcduq-cai addLiquidity "(principal \"cfoim-fqaaa-aaaai-qbcmq-cai\", principal \"a7saq-3aaaa-aaaai-qbcdq-cai\", 1_000_000_000:nat, 1_000_000_000:nat, 100_000_000:nat, 100_000_000:nat, 16395218241880000000)"
 (variant { 24_860 = 56 : nat })
