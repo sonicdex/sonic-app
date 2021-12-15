@@ -35,7 +35,7 @@ export const useMemorizedAddLiquidityTransaction: CreateTransaction<AddLiquidity
       return {
         canisterId: ENV.canisterIds.swap,
         idl: SwapIDL.factory,
-        methodName: 'swapExactTokensForTokens',
+        methodName: 'addLiquidity',
         onFail,
         onSuccess: async (res: SwapIDL.Result) => {
           if ('err' in res) throw new Error(res.err);
