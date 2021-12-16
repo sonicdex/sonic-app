@@ -1,9 +1,9 @@
 import { Notification } from '@/store';
 import { Box, Collapse } from '@chakra-ui/react';
 import { useState } from 'react';
-import { NotificationContent } from './components/notification-content';
-import { NotificationHeader } from './components/notification-header';
-import { NotificationTimer } from './components/notification-timer';
+import { NotificationContent } from './notification-content';
+import { NotificationHeader } from './notification-header';
+import { NotificationTimer } from './notification-timer';
 
 export type NotificationBoxProps = Notification & {
   children?: React.ReactNode;

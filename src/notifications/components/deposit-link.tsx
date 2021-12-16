@@ -6,7 +6,6 @@ import {
   useDepositViewStore,
   useModalStore,
   useNotificationStore,
-  usePlugStore,
   useSwapStore,
 } from '@/store';
 import { createCAPLink } from '@/utils/function';
@@ -20,7 +19,6 @@ export interface DepositLinkProps {
 export const DepositLink: React.FC<DepositLinkProps> = ({ id }) => {
   const { setCurrentModal, clearModal, setCurrentModalState } = useModalStore();
   const { addNotification, popNotification } = useNotificationStore();
-  const { principalId } = usePlugStore();
   const { getBalances } = useTotalBalances();
 
   const { value, tokenId } = useDepositViewStore();
@@ -48,7 +46,7 @@ export const DepositLink: React.FC<DepositLinkProps> = ({ id }) => {
 
   const handleOpenModal = () => {
     handleStateChange();
-    setCurrentModal(Modals.SwapProgress);
+    setCurrentModal(Modals.Deposit);
   };
 
   useEffect(handleStateChange, [depositBatch.state]);

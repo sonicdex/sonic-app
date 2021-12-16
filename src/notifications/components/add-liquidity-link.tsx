@@ -13,11 +13,11 @@ import { createCAPLink } from '@/utils/function';
 import { Link } from '@chakra-ui/react';
 import { useEffect, useMemo } from 'react';
 
-export interface SwapLinkProps {
+export interface AddLiquidityLinkProps {
   id: string;
 }
 
-export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
+export const AddLiquidityLink: React.FC<AddLiquidityLinkProps> = ({ id }) => {
   const { setCurrentModal, clearModal, setCurrentModalState } = useModalStore();
   const swapViewStore = useSwapViewStore();
   const { addNotification, popNotification } = useNotificationStore();

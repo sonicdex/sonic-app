@@ -1,8 +1,9 @@
 import { NotificationType } from '@/store';
 import { Flex, Text } from '@chakra-ui/react';
-import { NotificationBoxProps } from '..';
-import { SwapLink } from './swap-link';
-import { TransactionLink } from './transaction-link';
+import { NotificationBoxProps } from '.';
+
+import { SwapLink } from './components/swap-link';
+import { TransactionLink } from './components/transaction-link';
 
 export type NotificationContentProps = Pick<
   NotificationBoxProps,
