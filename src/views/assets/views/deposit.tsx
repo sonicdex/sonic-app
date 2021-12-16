@@ -14,11 +14,13 @@ import {
 import { useNavigate } from 'react-router';
 import { useQuery } from '@/hooks/use-query';
 import { plugCircleSrc } from '@/assets';
+import { getCurrencyString } from '@/utils/format';
 
 export const AssetsDeposit = () => {
   const query = useQuery();
 
-  const { supportedTokenList, supportedTokenListState } = useSwapStore();
+  const { supportedTokenList, tokenBalances, supportedTokenListState } =
+    useSwapStore();
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -51,6 +53,14 @@ export const AssetsDeposit = () => {
     });
   };
 
+  const tokenBalance = useMemo(() => {
+    if (tokenBalances && tokenId) {
+      return tokenBalances[tokenId];
+    }
+
+    return 0;
+  }, [tokenBalances, tokenId]);
+
   useEffect(() => {
     const tokenId = query.get('tokenId');
     const fromQueryValue = query.get('amount');
@@ -79,11 +89,20 @@ export const AssetsDeposit = () => {
             isLoading
           />
         </Box>
-      ) : selectedTokenMetadata ? (
+      ) : selectedTokenMetadata && tokenId ? (
         <Box my={5}>
           <TokenBox
             value={value}
-            onMaxClick={() => dispatch(depositViewActions.setAmount(''))}
+            onMaxClick={() =>
+              dispatch(
+                depositViewActions.setAmount(
+                  getCurrencyString(
+                    tokenBalance,
+                    selectedTokenMetadata.decimals
+                  )
+                )
+              )
+            }
             setValue={(value) => dispatch(depositViewActions.setAmount(value))}
             onTokenSelect={handleTokenSelect}
             price={0}
@@ -91,7 +110,7 @@ export const AssetsDeposit = () => {
               {
                 name: 'Plug Wallet',
                 src: plugCircleSrc,
-                balance: 0,
+                balance: tokenBalance,
               },
             ]}
             selectedTokenIds={[tokenId as string]}

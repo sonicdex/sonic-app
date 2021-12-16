@@ -14,11 +14,13 @@ import {
 import { useNavigate } from 'react-router';
 import { useQuery } from '@/hooks/use-query';
 import { sonicCircleSrc } from '@/assets';
+import { getCurrencyString } from '@/utils/format';
 
 export const AssetsWithdraw = () => {
   const query = useQuery();
   const { amount: value, tokenId } = useWithdrawViewStore();
-  const { supportedTokenList, supportedTokenListState } = useSwapStore();
+  const { supportedTokenList, sonicBalances, supportedTokenListState } =
+    useSwapStore();
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -41,6 +43,14 @@ export const AssetsWithdraw = () => {
   const handleTokenSelect = (tokenId: string) => {
     dispatch(withdrawViewActions.setTokenId(tokenId));
   };
+
+  const tokenBalance = useMemo(() => {
+    if (sonicBalances && tokenId) {
+      return sonicBalances[tokenId];
+    }
+
+    return 0;
+  }, [sonicBalances, tokenId]);
 
   useEffect(() => {
     const tokenId = query.get('tokenId');
@@ -81,7 +91,7 @@ export const AssetsWithdraw = () => {
             isLoading
           />
         </Box>
-      ) : supportedTokenList && tokenId ? (
+      ) : selectedTokenMetadata && tokenId ? (
         <Box my={5}>
           <TokenBox
             value={value}
@@ -92,11 +102,21 @@ export const AssetsWithdraw = () => {
             otherTokensMetadata={supportedTokenList}
             selectedTokenMetadata={selectedTokenMetadata}
             price={0}
+            onMaxClick={() =>
+              dispatch(
+                withdrawViewActions.setAmount(
+                  getCurrencyString(
+                    tokenBalance,
+                    selectedTokenMetadata.decimals
+                  )
+                )
+              )
+            }
             sources={[
               {
                 name: 'Sonic',
                 src: sonicCircleSrc,
-                balance: 0,
+                balance: tokenBalance,
               },
             ]}
           />
