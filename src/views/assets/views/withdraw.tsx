@@ -1,9 +1,8 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Box } from '@chakra-ui/react';
 import { TitleBox, TokenBox, Button } from '@/components';
 
 import {
-  assetsViewActions,
   FeatureState,
   NotificationType,
   useAppDispatch,
@@ -110,9 +109,7 @@ export const AssetsWithdraw = () => {
         <Box my={5}>
           <TokenBox
             value={value}
-            setValue={(value) =>
-              dispatch(assetsViewActions.setWithdrawValue(value))
-            }
+            setValue={(value) => dispatch(withdrawViewActions.setValue(value))}
             onTokenSelect={handleTokenSelect}
             selectedTokenIds={[tokenId]}
             status={status}
