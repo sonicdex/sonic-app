@@ -22,7 +22,6 @@ export const TransactionProgressModalContent: React.FC<ModalContentProps> = ({
       as={Flex}
       direction="column"
       alignItems="center"
-      height="100%"
       bg="#1E1E1E"
       pt="37px"
       px="37px"

@@ -1,4 +1,4 @@
-import { Modal, ModalOverlay } from '@chakra-ui/react';
+import { HStack, Modal, ModalOverlay } from '@chakra-ui/react';
 
 import { TransactionProgressModalContent, TransactionStep } from './components';
 import {
@@ -35,30 +35,32 @@ export const SwapProgressModal = () => {
     <Modal onClose={handleClose} isOpen={isSwapProgressOpened} isCentered>
       <ModalOverlay />
       <TransactionProgressModalContent>
-        {steps?.includes('deposit') && (
+        <HStack>
+          {steps?.includes('deposit') && (
+            <TransactionStep
+              status={getStepStatus('deposit')}
+              iconSrc={depositSrc}
+              chevron
+            >
+              Depositing <br /> {fromTokenSymbol}
+            </TransactionStep>
+          )}
           <TransactionStep
-            status={getStepStatus('deposit')}
-            iconSrc={depositSrc}
-            chevron
+            status={getStepStatus('swap')}
+            iconSrc={swapSrc}
+            chevron={steps?.includes('withdraw')}
           >
-            Depositing <br /> {fromTokenSymbol}
+            Swapping <br /> {fromTokenSymbol} to {toTokenSymbol}
           </TransactionStep>
-        )}
-        <TransactionStep
-          status={getStepStatus('swap')}
-          iconSrc={swapSrc}
-          chevron={steps?.includes('withdraw')}
-        >
-          Swapping <br /> {fromTokenSymbol} to {toTokenSymbol}
-        </TransactionStep>
-        {steps?.includes('withdraw') && (
-          <TransactionStep
-            status={getStepStatus('withdraw')}
-            iconSrc={withdrawSrc}
-          >
-            Withdrawing <br /> {toTokenSymbol}
-          </TransactionStep>
-        )}
+          {steps?.includes('withdraw') && (
+            <TransactionStep
+              status={getStepStatus('withdraw')}
+              iconSrc={withdrawSrc}
+            >
+              Withdrawing <br /> {toTokenSymbol}
+            </TransactionStep>
+          )}
+        </HStack>
       </TransactionProgressModalContent>
     </Modal>
   );
