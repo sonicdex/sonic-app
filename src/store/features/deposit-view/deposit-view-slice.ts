@@ -4,13 +4,13 @@ import type { RootState } from '@/store';
 
 interface DepositViewState {
   state: FeatureState;
-  value: string;
+  amount: string;
   tokenId?: string;
 }
 
 const initialState: DepositViewState = {
   state: FeatureState?.Idle,
-  value: '',
+  amount: '',
   tokenId: undefined,
 };
 
@@ -22,8 +22,8 @@ export const depositViewSlice = createSlice({
     setState: (state, action: PayloadAction<FeatureState>) => {
       state.state = action.payload;
     },
-    setValue: (state, action: PayloadAction<string>) => {
-      state.value = action.payload;
+    setAmount: (state, action: PayloadAction<string>) => {
+      state.amount = action.payload;
     },
     setTokenId: (state, action: PayloadAction<string>) => {
       state.tokenId = action.payload;

@@ -21,7 +21,7 @@ export const WithdrawLink: React.FC<WithdrawLinkProps> = ({ id }) => {
   const { addNotification, popNotification } = useNotificationStore();
   const { getBalances } = useTotalBalances();
 
-  const { value, tokenId } = useWithdrawViewStore();
+  const { amount: value, tokenId } = useWithdrawViewStore();
   const { supportedTokenList } = useSwapStore();
 
   const selectedToken = useMemo(() => {

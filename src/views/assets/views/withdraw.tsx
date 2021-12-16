@@ -14,18 +14,15 @@ import {
 import { useNavigate } from 'react-router';
 import { useQuery } from '@/hooks/use-query';
 import { sonicCircleSrc } from '@/assets';
-import { useWithdrawBatch } from '@/integrations/transactions/factories/batch/withdraw';
-import { useTotalBalances } from '@/hooks/use-balances';
 
 export const AssetsWithdraw = () => {
-  const { addNotification } = useNotificationStore();
   const query = useQuery();
-  const { value, tokenId } = useWithdrawViewStore();
+  const { amount: value, tokenId } = useWithdrawViewStore();
   const { supportedTokenList, supportedTokenListState } = useSwapStore();
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { getBalances } = useTotalBalances();
+  const { addNotification } = useNotificationStore();
 
   const selectedTokenMetadata = useMemo(() => {
     return supportedTokenList?.find(({ id }) => id === tokenId);
@@ -47,10 +44,10 @@ export const AssetsWithdraw = () => {
 
   useEffect(() => {
     const tokenId = query.get('tokenId');
-    const fromQueryValue = query.get('amount');
+    const amount = query.get('amount');
 
-    if (fromQueryValue) {
-      dispatch(withdrawViewActions.setValue(fromQueryValue));
+    if (amount) {
+      dispatch(withdrawViewActions.setAmount(amount));
     }
 
     if (tokenId) {
@@ -58,37 +55,16 @@ export const AssetsWithdraw = () => {
     }
 
     return () => {
-      dispatch(withdrawViewActions.setValue('0.00'));
+      dispatch(withdrawViewActions.setAmount('0.00'));
     };
   }, []);
 
-  const selectedToken = useMemo(() => {
-    return supportedTokenList?.find((token) => token.id === tokenId);
-  }, [tokenId]);
-
-  const withdrawBatch = useWithdrawBatch({
-    token: selectedToken,
-    amount: value,
-  });
-
-  const handleWithdraw = async () => {
-    try {
-      await withdrawBatch.execute();
-
-      addNotification({
-        title: 'Withdraw successful',
-        type: NotificationType.Done,
-        id: Date.now().toString(),
-      });
-
-      getBalances();
-    } catch (error) {
-      addNotification({
-        title: `Withdraw failed ${value} ${selectedToken?.symbol}`,
-        type: NotificationType.Error,
-        id: Date.now().toString(),
-      });
-    }
+  const handleWithdraw = () => {
+    addNotification({
+      title: `Withdrawing ${selectedTokenMetadata?.symbol}`,
+      type: NotificationType.Withdraw,
+      id: String(new Date().getTime()),
+    });
   };
 
   return (
@@ -109,7 +85,7 @@ export const AssetsWithdraw = () => {
         <Box my={5}>
           <TokenBox
             value={value}
-            setValue={(value) => dispatch(withdrawViewActions.setValue(value))}
+            setValue={(value) => dispatch(withdrawViewActions.setAmount(value))}
             onTokenSelect={handleTokenSelect}
             selectedTokenIds={[tokenId]}
             status={status}

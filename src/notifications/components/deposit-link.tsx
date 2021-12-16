@@ -21,7 +21,7 @@ export const DepositLink: React.FC<DepositLinkProps> = ({ id }) => {
   const { addNotification, popNotification } = useNotificationStore();
   const { getBalances } = useTotalBalances();
 
-  const { value, tokenId } = useDepositViewStore();
+  const { amount: value, tokenId } = useDepositViewStore();
   const { supportedTokenList } = useSwapStore();
 
   const selectedToken = useMemo(() => {

@@ -22,7 +22,7 @@ export const AssetsDeposit = () => {
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { value, tokenId } = useDepositViewStore();
+  const { amount: value, tokenId } = useDepositViewStore();
   const { addNotification } = useNotificationStore();
 
   const isReady = useMemo(() => value && parseFloat(value) > 0, [value]);
@@ -56,7 +56,7 @@ export const AssetsDeposit = () => {
     const fromQueryValue = query.get('amount');
 
     if (fromQueryValue) {
-      dispatch(depositViewActions.setValue(fromQueryValue));
+      dispatch(depositViewActions.setAmount(fromQueryValue));
     }
 
     if (tokenId) {
@@ -64,7 +64,7 @@ export const AssetsDeposit = () => {
     }
 
     return () => {
-      dispatch(depositViewActions.setValue('0.00'));
+      dispatch(depositViewActions.setAmount('0.00'));
     };
   }, []);
 
@@ -83,8 +83,8 @@ export const AssetsDeposit = () => {
         <Box my={5}>
           <TokenBox
             value={value}
-            onMaxClick={() => dispatch(depositViewActions.setValue(''))}
-            setValue={(value) => dispatch(depositViewActions.setValue(value))}
+            onMaxClick={() => dispatch(depositViewActions.setAmount(''))}
+            setValue={(value) => dispatch(depositViewActions.setAmount(value))}
             onTokenSelect={handleTokenSelect}
             price={0}
             sources={[

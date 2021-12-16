@@ -1,7 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { FeatureState, RootState } from '@/store';
-import { TokenMetadataList, TokenData, TokenDataKey } from '@/models';
+import { TokenMetadataList, TokenData } from '@/models';
+
+export type LiquidityTokenDataKey = 'token0' | 'token1';
 
 interface LiquidityViewState {
   state: FeatureState;
@@ -35,13 +37,16 @@ export const liquidityViewSlice = createSlice({
     },
     setValue: (
       state,
-      action: PayloadAction<{ data: TokenDataKey; value: string }>
+      action: PayloadAction<{ data: LiquidityTokenDataKey; value: string }>
     ) => {
       state[action.payload.data].value = action.payload.value;
     },
     setToken: (
       state,
-      action: PayloadAction<{ data: TokenDataKey; tokenId: string | undefined }>
+      action: PayloadAction<{
+        data: LiquidityTokenDataKey;
+        tokenId: string | undefined;
+      }>
     ) => {
       state[action.payload.data].token =
         action.payload.tokenId && state.tokenList
