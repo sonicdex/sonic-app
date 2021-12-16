@@ -29,7 +29,7 @@ export const AssetsDeposit = () => {
 
   const selectedTokenMetadata = useMemo(() => {
     return supportedTokenList?.find(({ id }) => id === tokenId);
-  }, [supportedTokenList]);
+  }, [supportedTokenList, tokenId]);
 
   const status = useMemo(() => {
     if (isReady) {

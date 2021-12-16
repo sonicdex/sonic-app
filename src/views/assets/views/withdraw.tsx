@@ -26,7 +26,7 @@ export const AssetsWithdraw = () => {
 
   const selectedTokenMetadata = useMemo(() => {
     return supportedTokenList?.find(({ id }) => id === tokenId);
-  }, [supportedTokenList]);
+  }, [supportedTokenList, tokenId]);
 
   const isReady = useMemo(() => value && parseFloat(value) > 0, [value]);
 
