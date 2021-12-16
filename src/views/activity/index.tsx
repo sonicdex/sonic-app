@@ -17,9 +17,19 @@ import {
 } from '@/components';
 import { DefaultTokensImage } from '@/constants';
 import { usePlugStore } from '@/store';
+import { useEffect } from 'react';
+import { getUserTransactions } from '@/integrations/cap';
 
 export const Activity = () => {
-  const { isConnected } = usePlugStore();
+  const { isConnected, principalId } = usePlugStore();
+
+  useEffect(() => {
+    if (principalId) {
+      getUserTransactions(principalId)
+        .then((res) => console.log('getUserTransactions', res))
+        .catch((err) => console.error('getUserTransactions', err));
+    }
+  }, [principalId]);
 
   return (
     <>
