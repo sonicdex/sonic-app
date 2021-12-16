@@ -9,5 +9,7 @@ export type AddLiquidity = {
 export type RemoveLiquidity = {
   token0: TokenData;
   token1: TokenData;
-  principalId: string;
+  slippage: number;
+  lpAmount: number;
+  principalId?: string;
 };

@@ -1,12 +1,13 @@
 import { useTotalBalances } from '@/hooks/use-balances';
-import { useSwapBatch } from '@/integrations/transactions';
-import { Modals } from '@/components/modals';
+import { useRemoveLiquidityBatch } from '@/integrations/transactions';
+
 import {
+  modalsSliceActions,
   NotificationType,
-  useModalsStore,
+  useAppDispatch,
+  useLiquidityViewStore,
   useNotificationStore,
   usePlugStore,
-  useSwapViewStore,
 } from '@/store';
 import { deserialize, stringify } from '@/utils/format';
 import { createCAPLink } from '@/utils/function';
@@ -20,31 +21,34 @@ export interface RemoveLiquidityLinkProps {
 export const RemoveLiquidityLink: React.FC<RemoveLiquidityLinkProps> = ({
   id,
 }) => {
-  const { setCurrentModal, clearModal, setCurrentModalState } =
-    useModalsStore();
-  const swapViewStore = useSwapViewStore();
+  const dispatch = useAppDispatch();
+  const liquidityViewStore = useLiquidityViewStore();
   const { addNotification, popNotification } = useNotificationStore();
   const { principalId } = usePlugStore();
   const { getBalances } = useTotalBalances();
 
-  const { from, to, slippage, keepInSonic } = useMemo(() => {
+  const { token0, token1, slippage, keepInSonic } = useMemo(() => {
     // Clone current state just for this batch
-    const { from, to, slippage, keepInSonic } = swapViewStore;
+    const { token0, token1, slippage, keepInSonic } = liquidityViewStore;
 
-    return deserialize(stringify({ from, to, slippage, keepInSonic }));
+    return deserialize(stringify({ token0, token1, slippage, keepInSonic }));
   }, []);
 
   const handleStateChange = () => {
-    switch (swapBatch.state) {
-      case 'approve':
-      case 'deposit':
-        setCurrentModalState('deposit');
-        break;
-      case 'swap':
-        setCurrentModalState('swap');
+    switch (removeLiquidityBatch.state) {
+      case 'removeLiquidity':
+        dispatch(
+          modalsSliceActions.setRemoveLiquidityData({
+            step: 'removeLiquidity',
+          })
+        );
         break;
       case 'withdraw':
-        setCurrentModalState('withdraw');
+        dispatch(
+          modalsSliceActions.setRemoveLiquidityData({
+            step: 'withdraw',
+          })
+        );
         break;
     }
   };
@@ -52,27 +56,28 @@ export const RemoveLiquidityLink: React.FC<RemoveLiquidityLinkProps> = ({
   const handleOpenModal = () => {
     handleStateChange();
     openSwapModal();
-    setCurrentModal(Modals.SwapProgress);
+    dispatch(modalsSliceActions.openRemoveLiquidityProgressModal());
   };
 
-  const [swapBatch, openSwapModal] = useSwapBatch({
-    from,
-    to,
+  const [removeLiquidityBatch, openSwapModal] = useRemoveLiquidityBatch({
+    token0,
+    token1,
+    lpAmount: 0, // TODO: get lpAmount from store
     slippage: Number(slippage),
     keepInSonic,
     principalId,
   });
 
-  useEffect(handleStateChange, [swapBatch.state]);
+  useEffect(handleStateChange, [removeLiquidityBatch.state]);
 
   useEffect(() => {
-    swapBatch
+    removeLiquidityBatch
       .execute()
       .then((res) => {
         console.log('Remove liqudity Completed', res);
-        clearModal();
+        dispatch(modalsSliceActions.clearRemoveLiquidityData());
         addNotification({
-          title: `Successfuly removed liquidity: ${from.value} ${from.token?.symbol} + ${to.value} ${to.token?.symbol}`,
+          title: `Successfuly removed liquidity: ${token0.value} ${token0.token?.symbol} + ${token1.value} ${token1.token?.symbol}`,
           type: NotificationType.Done,
           id: Date.now().toString(),
           // TODO: add transaction id
@@ -82,9 +87,9 @@ export const RemoveLiquidityLink: React.FC<RemoveLiquidityLinkProps> = ({
       })
       .catch((err) => {
         console.error('Remove liqudity Error', err);
-        clearModal();
+        dispatch(modalsSliceActions.clearRemoveLiquidityData());
         addNotification({
-          title: `Remove liquidity failed - ${from.value} ${from.token?.symbol} + ${to.value} ${to.token?.symbol}`,
+          title: `Remove liquidity failed - ${token0.value} ${token0.token?.symbol} + ${token1.value} ${token1.token?.symbol}`,
           type: NotificationType.Error,
           id: Date.now().toString(),
         });

@@ -1,5 +1,5 @@
-import { selectModalState } from '@/store';
+import { selectModalsState } from '@/store';
 
 import { useAppSelector } from '@/store';
 
-export const useModalsStore = () => useAppSelector(selectModalState);
+export const useModalsStore = () => useAppSelector(selectModalsState);

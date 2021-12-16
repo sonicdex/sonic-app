@@ -1,11 +1,10 @@
 import { useTotalBalances } from '@/hooks/use-balances';
 import { useSwapBatch } from '@/integrations/transactions';
-import { Modals } from '@/components/modals';
+
 import {
   modalsSliceActions,
   NotificationType,
   useAppDispatch,
-  useModalsStore,
   useNotificationStore,
   usePlugStore,
   useSwapViewStore,
@@ -37,26 +36,15 @@ export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
     switch (swapBatch.state) {
       case 'approve':
       case 'deposit':
-        dispatch(
-          modalsSliceActions.setSwapData({
-            state: 'deposit',
-          })
-        );
+        dispatch(modalsSliceActions.setSwapData({ step: 'deposit' }));
+
         break;
       case 'swap':
-        dispatch(
-          modalsSliceActions.setSwapData({
-            state: 'swap',
-          })
-        );
+        dispatch(modalsSliceActions.setSwapData({ step: 'swap' }));
 
         break;
       case 'withdraw':
-        dispatch(
-          modalsSliceActions.setSwapData({
-            state: 'withdraw',
-          })
-        );
+        dispatch(modalsSliceActions.setSwapData({ step: 'withdraw' }));
 
         break;
     }
@@ -83,7 +71,8 @@ export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
       .execute()
       .then((res) => {
         console.log('Swap Completed', res);
-        clearModal();
+        dispatch(modalsSliceActions.clearSwapData());
+
         addNotification({
           title: `Swapped ${from.value} ${from.token?.symbol} for ${to.value} ${to.token?.symbol}`,
           type: NotificationType.Done,
@@ -95,7 +84,8 @@ export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
       })
       .catch((err) => {
         console.error('Swap Error', err);
-        clearModal();
+        dispatch(modalsSliceActions.clearSwapData());
+
         addNotification({
           title: `Failed swapping ${from.value} ${from.token?.symbol} for ${to.value} ${to.token?.symbol}`,
           type: NotificationType.Error,

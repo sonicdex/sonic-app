@@ -4,58 +4,121 @@ import type { RootState } from '@/store';
 
 export type ModalsCallback = (arg0?: any) => any;
 
-type SwapData = {};
-type DepositData = {};
-type WithdrawData = {};
-type AddLiquidityData = {};
-type RemoveLiquidityData = {};
+export type SwapModalDataStep = 'approve' | 'deposit' | 'swap' | 'withdraw';
+export type SwapModalData = {
+  step?: SwapModalDataStep;
+  fromTokenSymbol?: string;
+  toTokenSymbol?: string;
+  callbacks?: [ModalsCallback, ModalsCallback];
+};
+
+export type DepositModalDataStep = 'approve' | 'deposit';
+export type DepositModalData = {
+  step?: DepositModalDataStep;
+  callbacks?: [ModalsCallback, ModalsCallback];
+};
+
+export type WithdrawModalDataStep = 'withdraw';
+export type WithdrawModalData = {
+  step?: WithdrawModalDataStep;
+  callbacks?: [ModalsCallback, ModalsCallback];
+};
+
+export type AddLiquidityModalDataStep = 'approve' | 'deposit' | 'addLiquidity';
+export type AddLiquidityModalData = {
+  step?: AddLiquidityModalDataStep;
+  token0Symbol?: string;
+  token1Symbol?: string;
+  callbacks?: [ModalsCallback, ModalsCallback];
+};
+
+export type RemoveLiquidityModalDataStep = 'removeLiquidity' | 'withdraw';
+export type RemoveLiquidityModalData = {
+  step?: RemoveLiquidityModalDataStep;
+  token0Symbol?: string;
+  token1Symbol?: string;
+  callbacks?: [ModalsCallback, ModalsCallback];
+};
+
+type TokenSelectData = {
+  [key: string]: any;
+};
 
 // Define a type for the slice state
 interface ModalsState {
   isSwapProgressOpened: boolean;
   isSwapFailOpened: boolean;
-  swapData: SwapData;
+  swapData: SwapModalData;
 
   isDepositProgressOpened: boolean;
   isDepositFailOpened: boolean;
-  depositData: DepositData;
+  depositData: DepositModalData;
 
   isWithdrawProgressOpened: boolean;
   isWithdrawFailOpened: boolean;
-  withdrawData: WithdrawData;
+  withdrawData: WithdrawModalData;
 
   isAddLiquidityProgressOpened: boolean;
   isAddLiquidityFailOpened: boolean;
-  addLiquidityData: AddLiquidityData;
+  addLiquidityData: AddLiquidityModalData;
 
   isRemoveLiquidityProgressOpened: boolean;
   isRemoveLiquidityFailOpened: boolean;
-  removeLiquidityData: RemoveLiquidityData;
+  removeLiquidityData: RemoveLiquidityModalData;
+
+  isTokenSelectOpened: boolean;
+  tokenSelectData: TokenSelectData;
 
   state: FeatureState;
 }
+
+const initialSwapData: SwapModalData = {
+  step: undefined,
+};
+
+const initialDepositData: DepositModalData = {
+  step: undefined,
+};
+
+const initialWithdrawData: WithdrawModalData = {
+  step: undefined,
+};
+
+const initialAddLiquidityData: AddLiquidityModalData = {
+  step: undefined,
+};
+
+const initialRemoveLiquidityData: RemoveLiquidityModalData = {
+  step: undefined,
+};
+
+const initialTokenSelectData: TokenSelectData = {};
 
 // Define the initial state using that type
 const initialState: ModalsState = {
   isSwapProgressOpened: false,
   isSwapFailOpened: false,
-  swapData: {},
+  swapData: initialSwapData,
 
   isDepositProgressOpened: false,
   isDepositFailOpened: false,
-  depositData: {},
+  depositData: initialDepositData,
 
   isWithdrawProgressOpened: false,
   isWithdrawFailOpened: false,
-  withdrawData: {},
+  withdrawData: initialWithdrawData,
 
   isAddLiquidityProgressOpened: false,
   isAddLiquidityFailOpened: false,
-  addLiquidityData: {},
+  addLiquidityData: initialAddLiquidityData,
 
   isRemoveLiquidityProgressOpened: false,
   isRemoveLiquidityFailOpened: false,
-  removeLiquidityData: {},
+  removeLiquidityData: initialRemoveLiquidityData,
+
+  isTokenSelectOpened: false,
+  tokenSelectData: initialTokenSelectData,
+
   state: FeatureState?.Idle,
 };
 
@@ -76,7 +139,10 @@ export const modalsSlice = createSlice({
     closeSwapFailModal: (state) => {
       state.isSwapFailOpened = false;
     },
-    setSwapData: (state, action: PayloadAction<{}>) => {
+    clearSwapData: (state) => {
+      state.swapData = initialSwapData;
+    },
+    setSwapData: (state, action: PayloadAction<SwapModalData>) => {
       state.swapData = {
         ...state.swapData,
         ...action.payload,
@@ -95,7 +161,10 @@ export const modalsSlice = createSlice({
     closeDepositFailModal: (state) => {
       state.isDepositFailOpened = false;
     },
-    setDepositData: (state, action: PayloadAction<{}>) => {
+    clearDepositData: (state) => {
+      state.depositData = initialDepositData;
+    },
+    setDepositData: (state, action: PayloadAction<DepositModalData>) => {
       state.depositData = {
         ...state.depositData,
         ...action.payload,
@@ -114,7 +183,10 @@ export const modalsSlice = createSlice({
     closeWithdrawFailModal: (state) => {
       state.isWithdrawFailOpened = false;
     },
-    setWithdrawData: (state, action: PayloadAction<{}>) => {
+    clearWithdrawData: (state) => {
+      state.withdrawData = initialWithdrawData;
+    },
+    setWithdrawData: (state, action: PayloadAction<WithdrawModalData>) => {
       state.withdrawData = {
         ...state.withdrawData,
         ...action.payload,
@@ -133,7 +205,13 @@ export const modalsSlice = createSlice({
     closeAddLiquidityFailModal: (state) => {
       state.isAddLiquidityFailOpened = false;
     },
-    setAddLiquidityData: (state, action: PayloadAction<{}>) => {
+    clearAddLiquidityData: (state) => {
+      state.addLiquidityData = initialAddLiquidityData;
+    },
+    setAddLiquidityData: (
+      state,
+      action: PayloadAction<AddLiquidityModalData>
+    ) => {
       state.addLiquidityData = {
         ...state.addLiquidityData,
         ...action.payload,
@@ -152,11 +230,30 @@ export const modalsSlice = createSlice({
     closeRemoveLiquidityFailModal: (state) => {
       state.isRemoveLiquidityFailOpened = false;
     },
-    setRemoveLiquidityData: (state, action: PayloadAction<{}>) => {
+    clearRemoveLiquidityData: (state) => {
+      state.removeLiquidityData = initialRemoveLiquidityData;
+    },
+    setRemoveLiquidityData: (
+      state,
+      action: PayloadAction<RemoveLiquidityModalData>
+    ) => {
       state.removeLiquidityData = {
         ...state.removeLiquidityData,
         ...action.payload,
       };
+    },
+
+    openTokenSelectModal: (state) => {
+      state.isTokenSelectOpened = true;
+    },
+    closeTokenSelectModal: (state) => {
+      state.isTokenSelectOpened = false;
+    },
+    clearTokenSelectData: (state) => {
+      state.tokenSelectData = initialTokenSelectData;
+    },
+    setTokenSelectData: (state, action: PayloadAction<TokenSelectData>) => {
+      state.tokenSelectData = action.payload;
     },
 
     setState: (state, action: PayloadAction<FeatureState>) => {

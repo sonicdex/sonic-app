@@ -1,13 +1,20 @@
-import { Heading, Text, Flex, ModalCloseButton } from '@chakra-ui/react';
+import {
+  Heading,
+  Text,
+  Flex,
+  ModalContent,
+  ModalContentProps,
+} from '@chakra-ui/react';
 import { depositSrc, swapSrc, withdrawSrc } from '@/assets';
+import { TransactionStep } from '.';
+import React from 'react';
 
-import { SwapStep } from './components';
-import { ModalComponentProps } from '..';
+export const TransactionProgressModalContent: React.FC<ModalContentProps> = ({
+  children,
+  ...props
+}) => {
+  const batchData = {};
 
-export const TransactionProgress = ({
-  currentModalState,
-  currentModalData,
-}: Partial<ModalComponentProps>) => {
   const {
     fromToken,
     toToken,
@@ -25,7 +32,8 @@ export const TransactionProgress = ({
   };
 
   return (
-    <Flex
+    <ModalContent
+      as={Flex}
       direction="column"
       alignItems="center"
       height="100%"
@@ -34,9 +42,9 @@ export const TransactionProgress = ({
       px="37px"
       pb="43px"
       borderRadius={20}
+      {...props}
     >
-      <ModalCloseButton position="absolute" top="10px" right="15px" />
-      <Heading as="h1" color="#F6FCFD" fontWeight={700} fontSize={22} mb="13px">
+      <Heading as="h1" color="#F6FCFD" fontWeight={700} fontSize={22} mb={3}>
         Swap in Progress
       </Heading>
       <Text as="p" color="#888E8F" mb="33px">
@@ -44,27 +52,31 @@ export const TransactionProgress = ({
       </Text>
       <Flex direction="row" justifyContent="center">
         {steps.includes('deposit') && (
-          <SwapStep
+          <TransactionStep
             status={getStepStatus('deposit')}
             iconSrc={depositSrc}
             chevron
           >
             Depositing <br /> {fromToken}
-          </SwapStep>
+          </TransactionStep>
         )}
-        <SwapStep
+        <TransactionStep
           status={getStepStatus('swap')}
           iconSrc={swapSrc}
           chevron={steps.includes('withdraw')}
         >
           Swapping <br /> {fromToken} to {toToken}
-        </SwapStep>
+        </TransactionStep>
         {steps.includes('withdraw') && (
-          <SwapStep status={getStepStatus('withdraw')} iconSrc={withdrawSrc}>
+          <TransactionStep
+            status={getStepStatus('withdraw')}
+            iconSrc={withdrawSrc}
+          >
             Withdrawing <br /> {toToken}
-          </SwapStep>
+          </TransactionStep>
         )}
+        {children}
       </Flex>
-    </Flex>
+    </ModalContent>
   );
 };

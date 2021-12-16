@@ -9,8 +9,7 @@ import {
 } from '@chakra-ui/react';
 
 import { chevronDownSrc, questionMarkSrc } from '@/assets';
-import { useModalsStore } from '@/store';
-import { Modals } from '@/components/modals';
+import { modalsSliceActions, useAppDispatch } from '@/store';
 import { NumberInput } from '@/components';
 import { DefaultTokensImage } from '@/constants';
 import { TokenMetadata } from '@/models';
@@ -62,8 +61,7 @@ export const TokenBox = ({
   onTokenSelect,
   onMaxClick,
 }: TokenBoxProps) => {
-  const { setCurrentModal, setCurrentModalData, clearModal } = useModalsStore();
-
+  const dispatch = useAppDispatch();
   const border = glow ? '1px solid #3D52F4' : '1px solid #373737';
   const background = glow ? '#151515' : '#1E1E1E';
 
@@ -75,13 +73,15 @@ export const TokenBox = ({
 
   const toggleModal = () => {
     if (isLoading || menuDisabled) return;
-    clearModal();
-    setCurrentModalData({
-      tokens: stringify(otherTokensMetadata),
-      onSelect: onTokenSelect,
-      selectedTokenIds,
-    });
-    setCurrentModal(Modals.TokenSelect);
+    dispatch(modalsSliceActions.clearTokenSelectData());
+    dispatch(
+      modalsSliceActions.setTokenSelectData({
+        tokens: stringify(otherTokensMetadata),
+        onSelect: onTokenSelect,
+        selectedTokenIds,
+      })
+    );
+    dispatch(modalsSliceActions.openTokenSelectModal());
   };
 
   const shouldRenderMaxButton = useMemo(() => {

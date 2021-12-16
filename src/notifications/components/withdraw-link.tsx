@@ -1,9 +1,9 @@
 import { useTotalBalances } from '@/hooks/use-balances';
 import { useWithdrawBatch } from '@/integrations/transactions/factories/batch/withdraw';
-import { Modals } from '@/components/modals';
 import {
+  modalsSliceActions,
   NotificationType,
-  useModalsStore,
+  useAppDispatch,
   useNotificationStore,
   useSwapStore,
   useWithdrawViewStore,
@@ -17,8 +17,7 @@ export interface WithdrawLinkProps {
 }
 
 export const WithdrawLink: React.FC<WithdrawLinkProps> = ({ id }) => {
-  const { setCurrentModal, clearModal, setCurrentModalState } =
-    useModalsStore();
+  const dispatch = useAppDispatch();
   const { addNotification, popNotification } = useNotificationStore();
   const { getBalances } = useTotalBalances();
 
@@ -37,14 +36,15 @@ export const WithdrawLink: React.FC<WithdrawLinkProps> = ({ id }) => {
   const handleStateChange = () => {
     switch (withdrawBatch.state) {
       case 'withdraw':
-        setCurrentModalState('withdraw');
+        dispatch(modalsSliceActions.setWithdrawData({ step: 'withdraw' }));
+
         break;
     }
   };
 
   const handleOpenModal = () => {
     handleStateChange();
-    setCurrentModal(Modals.Withdraw);
+    dispatch(modalsSliceActions.openWithdrawProgressModal());
   };
 
   useEffect(handleStateChange, [withdrawBatch.state]);
@@ -54,7 +54,7 @@ export const WithdrawLink: React.FC<WithdrawLinkProps> = ({ id }) => {
       .execute()
       .then((res) => {
         console.log('Withdraw Completed', res);
-        clearModal();
+        dispatch(modalsSliceActions.clearWithdrawData());
         addNotification({
           title: 'Withdraw successful',
           type: NotificationType.Done,
@@ -66,7 +66,7 @@ export const WithdrawLink: React.FC<WithdrawLinkProps> = ({ id }) => {
       })
       .catch((err) => {
         console.error('Withdraw Error', err);
-        clearModal();
+        dispatch(modalsSliceActions.clearWithdrawData());
         addNotification({
           title: `Withdraw failed ${value} ${selectedToken?.symbol}`,
           type: NotificationType.Error,

@@ -1,5 +1,9 @@
-import { Modals } from '@/components/modals';
-import { useModalsStore, useSwapStore } from '@/store';
+import {
+  modalsSliceActions,
+  SwapModalDataStep,
+  useAppDispatch,
+  useSwapStore,
+} from '@/store';
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -12,7 +16,6 @@ import {
 import { Batch, Swap } from '../..';
 import { getToDepositAmount } from './utils';
 
-type SwapBatchStep = 'approve' | 'deposit' | 'swap' | 'withdraw';
 export interface ExtraDepositSwapBatchOptions {
   keepInSonic: boolean;
 }
@@ -21,14 +24,8 @@ export const useSwapBatch = ({
   keepInSonic,
   ...swapParams
 }: Swap & ExtraDepositSwapBatchOptions) => {
+  const dispatch = useAppDispatch();
   const { sonicBalances } = useSwapStore();
-
-  const {
-    setCurrentModal,
-    setModalCallbacks,
-    setCurrentModalData,
-    setOnClose,
-  } = useModalsStore();
 
   if (!sonicBalances) throw new Error('Sonic balance are required');
 
@@ -85,36 +82,42 @@ export const useSwapBatch = ({
 
   const handleRetry = async () => {
     return new Promise<boolean>((resolve) => {
-      setModalCallbacks([
-        // Retry callback
-        () => {
-          openSwapModal();
-          resolve(true);
-        },
-        // Not retry callback
-        () => {
-          navigate(
-            `/assets/withdraw?tokenId=${swapParams.from.token?.id}&amount=${swapParams.from.value}`
-          );
-          resolve(false);
-        },
-      ]);
-      setOnClose(() => resolve(false));
-      setCurrentModal(Modals.SwapFailed);
+      dispatch(
+        modalsSliceActions.setSwapData({
+          callbacks: [
+            // Retry callback
+            () => {
+              openSwapModal();
+              resolve(true);
+            },
+            // Not retry callback
+            () => {
+              navigate(
+                `/assets/withdraw?tokenId=${swapParams.from.token?.id}&amount=${swapParams.from.value}`
+              );
+              resolve(false);
+            },
+          ],
+        })
+      );
+
+      dispatch(modalsSliceActions.openSwapFailModal());
     });
   };
 
   const openSwapModal = () => {
-    setCurrentModalData({
-      steps: Object.keys(transactions),
-      fromToken: swapParams.from.token?.symbol,
-      toToken: swapParams.to.token?.symbol,
-    });
-    setCurrentModal(Modals.SwapProgress);
+    dispatch(
+      modalsSliceActions.setSwapData({
+        fromTokenSymbol: swapParams.from.token?.symbol,
+        toTokenSymbol: swapParams.to.token?.symbol,
+      })
+    );
+
+    dispatch(modalsSliceActions.openSwapProgressModal());
   };
 
   return [
-    useBatchHook<SwapBatchStep>({ transactions, handleRetry }),
+    useBatchHook<SwapModalDataStep>({ transactions, handleRetry }),
     openSwapModal,
-  ] as [Batch.Hook<SwapBatchStep>, () => void];
+  ] as [Batch.Hook<SwapModalDataStep>, () => void];
 };

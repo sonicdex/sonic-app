@@ -1,11 +1,24 @@
-import { Flex, Heading, Text, ModalCloseButton } from '@chakra-ui/react';
+import {
+  Flex,
+  Heading,
+  Text,
+  ModalCloseButton,
+  ModalContent,
+} from '@chakra-ui/react';
 import { Button } from '@/components';
-import { ModalComponentProps } from '../modals';
+import { ModalsCallback } from '@/store';
 
-export const TransactionFailed = ({
+type TransactionFailedModalContentProps = {
+  title: string;
+  callbacks: [ModalsCallback, ModalsCallback];
+};
+
+export const TransactionFailedModalContent = ({
+  title,
   callbacks = [() => {}, () => {}],
-}: Partial<ModalComponentProps>) => (
-  <Flex
+}: TransactionFailedModalContentProps) => (
+  <ModalContent
+    as={Flex}
     alignItems="center"
     direction="column"
     justifyContent="center"
@@ -17,7 +30,7 @@ export const TransactionFailed = ({
   >
     <ModalCloseButton position="absolute" top={3} right={4} />
     <Heading as="h1" fontWeight={700} fontSize={22} pb={3}>
-      Swap Failed
+      {title}
     </Heading>
     <Text as="p" pb={6} color="#888E8F">
       Please choose an option below
@@ -40,7 +53,7 @@ export const TransactionFailed = ({
       width="100%"
       isWireframe
     >
-      Widthdraw to Plug
+      Withdraw to Plug
     </Button>
-  </Flex>
+  </ModalContent>
 );

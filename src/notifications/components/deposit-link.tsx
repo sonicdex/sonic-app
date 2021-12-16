@@ -1,10 +1,10 @@
 import { useTotalBalances } from '@/hooks/use-balances';
 import { useDepositBatch } from '@/integrations/transactions';
-import { Modals } from '@/components/modals';
 import {
+  modalsSliceActions,
   NotificationType,
+  useAppDispatch,
   useDepositViewStore,
-  useModalsStore,
   useNotificationStore,
   useSwapStore,
 } from '@/store';
@@ -17,8 +17,7 @@ export interface DepositLinkProps {
 }
 
 export const DepositLink: React.FC<DepositLinkProps> = ({ id }) => {
-  const { setCurrentModal, clearModal, setCurrentModalState } =
-    useModalsStore();
+  const dispatch = useAppDispatch();
   const { addNotification, popNotification } = useNotificationStore();
   const { getBalances } = useTotalBalances();
 
@@ -37,17 +36,17 @@ export const DepositLink: React.FC<DepositLinkProps> = ({ id }) => {
   const handleStateChange = () => {
     switch (depositBatch.state) {
       case 'approve':
-        setCurrentModalState('approve');
+        dispatch(modalsSliceActions.setDepositData({ step: 'approve' }));
         break;
       case 'deposit':
-        setCurrentModalState('deposit');
+        dispatch(modalsSliceActions.setDepositData({ step: 'deposit' }));
         break;
     }
   };
 
   const handleOpenModal = () => {
     handleStateChange();
-    setCurrentModal(Modals.Deposit);
+    dispatch(modalsSliceActions.openDepositProgressModal());
   };
 
   useEffect(handleStateChange, [depositBatch.state]);
@@ -57,7 +56,7 @@ export const DepositLink: React.FC<DepositLinkProps> = ({ id }) => {
       .execute()
       .then((res) => {
         console.log('Deposit Completed', res);
-        clearModal();
+        dispatch(modalsSliceActions.clearDepositData());
         addNotification({
           title: 'Deposit successful',
           type: NotificationType.Done,
@@ -69,7 +68,7 @@ export const DepositLink: React.FC<DepositLinkProps> = ({ id }) => {
       })
       .catch((err) => {
         console.error('Deposit Error', err);
-        clearModal();
+        dispatch(modalsSliceActions.clearDepositData());
         addNotification({
           title: `Deposit failed ${value} ${selectedToken?.symbol}`,
           type: NotificationType.Error,

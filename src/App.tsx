@@ -1,9 +1,11 @@
-import { ModalManager } from '@/components/modals';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import isMobile from 'ismobilejs';
+
 import { NotificationManager } from '@/notifications';
 import { Activity, Assets, Liquidity, LiquidityAdd, Swap } from '@/views';
-import isMobile from 'ismobilejs';
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+
 import { EmptyMobile, Layout } from './components';
+import { SwapProgressModal, TokenSelectModal } from './components/modals';
 import { useActorsInit } from './integrations/actor/use-actors-init';
 import { usePlugInit } from './integrations/plug';
 import { useSwapInit } from './integrations/swap';
@@ -26,7 +28,9 @@ export const App = () => {
     <BrowserRouter>
       <Layout>
         <NotificationManager />
-        <ModalManager />
+
+        <SwapProgressModal />
+        <TokenSelectModal />
         <Routes>
           <Route path="/swap" element={<Swap />} />
 

@@ -1,5 +1,4 @@
-import { Modals } from '@/components/modals';
-import { useModalsStore, useSwapStore } from '@/store';
+import { modalsSliceActions, useAppDispatch, useSwapStore } from '@/store';
 
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -20,14 +19,8 @@ export const useRemoveLiquidityBatch = ({
   keepInSonic,
   ...removeLiquidityParams
 }: UseRemoveLiquidityBatchOptions) => {
+  const dispatch = useAppDispatch();
   const { sonicBalances } = useSwapStore();
-
-  const {
-    setCurrentModal,
-    setModalCallbacks,
-    setCurrentModalData,
-    setOnClose,
-  } = useModalsStore();
 
   if (!sonicBalances) {
     throw new Error('Sonic balance are required');
@@ -69,32 +62,37 @@ export const useRemoveLiquidityBatch = ({
 
   const handleRetry = async () => {
     return new Promise<boolean>((resolve) => {
-      setModalCallbacks([
-        // Retry callback
-        () => {
-          openRemoveLiqudityModal();
-          resolve(true);
-        },
-        // Not retry callback
-        () => {
-          navigate(
-            `/assets/withdraw?tokenId=${removeLiquidityParams.token0.token?.id}&amount=${removeLiquidityParams.token0.value}`
-          );
-          resolve(false);
-        },
-      ]);
-      setOnClose(() => resolve(false));
-      setCurrentModal(Modals.SwapFailed);
+      dispatch(
+        modalsSliceActions.setRemoveLiquidityData({
+          callbacks: [
+            // Retry callback
+            () => {
+              openRemoveLiqudityModal();
+              resolve(true);
+            },
+            // Not retry callback
+            () => {
+              navigate(
+                `/assets/withdraw?tokenId=${removeLiquidityParams.token0.token?.id}&amount=${removeLiquidityParams.token0.value}`
+              );
+              resolve(false);
+            },
+          ],
+        })
+      );
+      dispatch(modalsSliceActions.openRemoveLiquidityFailModal());
     });
   };
 
   const openRemoveLiqudityModal = () => {
-    setCurrentModalData({
-      steps: Object.keys(transactions),
-      token0: removeLiquidityParams.token0.token?.symbol,
-      token1: removeLiquidityParams.token1.token?.symbol,
-    });
-    setCurrentModal(Modals.SwapProgress);
+    dispatch(
+      modalsSliceActions.setRemoveLiquidityData({
+        token0Symbol: removeLiquidityParams.token0.token?.symbol,
+        token1Symbol: removeLiquidityParams.token1.token?.symbol,
+      })
+    );
+
+    dispatch(modalsSliceActions.openRemoveLiquidityProgressModal());
   };
 
   return [
