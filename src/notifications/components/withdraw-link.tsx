@@ -1,6 +1,6 @@
 import { useTotalBalances } from '@/hooks/use-balances';
 import { useSwapBatch } from '@/integrations/transactions';
-import { MODALS } from '@/modals';
+import { Modals } from '@/modals';
 import {
   NotificationType,
   useModalStore,
@@ -48,7 +48,7 @@ export const WithdrawLink: React.FC<WithdrawLinkProps> = ({ id }) => {
   const handleOpenModal = () => {
     handleStateChange();
     openSwapModal();
-    setCurrentModal(MODALS.swapProgress);
+    setCurrentModal(Modals.SwapProgress);
   };
 
   const [swapBatch, openSwapModal] = useSwapBatch({

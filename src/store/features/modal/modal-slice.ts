@@ -1,12 +1,13 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { FeatureState } from '@/store';
 import type { RootState } from '@/store';
+import { Modals } from '@/modals';
 
 export type ModalCallback = (arg0?: any) => any;
 
 // Define a type for the slice state
 interface ModalState {
-  currentModal: string;
+  currentModal?: Modals;
   currentModalState?: string;
   currentModalData: any;
   callbacks?: ModalCallback[];
@@ -16,7 +17,7 @@ interface ModalState {
 
 // Define the initial state using that type
 const initialState: ModalState = {
-  currentModal: '',
+  currentModal: undefined,
   currentModalState: '',
   currentModalData: {},
   onClose: () => {},
@@ -28,7 +29,7 @@ export const modalSlice = createSlice({
   // `createSlice` will infer the state type from the `initialState` argument
   initialState,
   reducers: {
-    setCurrentModal: (state, action: PayloadAction<string>) => {
+    setCurrentModal: (state, action: PayloadAction<Modals>) => {
       state.currentModal = action.payload;
     },
     setModalCallbacks: (state, action: PayloadAction<ModalCallback[]>) => {
@@ -44,7 +45,7 @@ export const modalSlice = createSlice({
       state.currentModalData = action.payload;
     },
     clearModal: (state) => {
-      state.currentModal = '';
+      state.currentModal = undefined;
       state.currentModalState = '';
       state.currentModalData = {};
       state.callbacks = [];

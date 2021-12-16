@@ -1,4 +1,4 @@
-import { MODALS } from '@/modals';
+import { Modals } from '@/modals';
 import { useModalStore, useSwapStore } from '@/store';
 
 import { useMemo } from 'react';
@@ -86,7 +86,7 @@ export const useRemoveLiquidityBatch = ({
         },
       ]);
       setOnClose(() => resolve(false));
-      setCurrentModal(MODALS.swapFailed);
+      setCurrentModal(Modals.SwapFailed);
     });
   };
 
@@ -96,7 +96,7 @@ export const useRemoveLiquidityBatch = ({
       fromToken: removeLiquidityParams.token0.token?.symbol,
       toToken: removeLiquidityParams.token1.token?.symbol,
     });
-    setCurrentModal(MODALS.swapProgress);
+    setCurrentModal(Modals.SwapProgress);
   };
 
   return useBatchHook<RemoveLiquidityBatchStep>({ transactions, handleRetry });

@@ -1,12 +1,16 @@
-export const MODALS = {
-  swapProgress: 'SWAP-PROGRESS',
-  swapFailed: 'SWAP-FAILED',
-  tokenSelect: 'TOKEN-SELECT',
-};
+export enum Modals {
+  SwapProgress,
+  SwapFailed,
+  Deposit,
+  Withdraw,
+  AddLiquidity,
+  RemoveLiquidity,
+  TokenSelect,
+}
 
 export type ModalComponentProps = {
   currentModalState?: string;
   currentModalData?: any;
   callbacks: (() => any)[];
-  onClose: () => any;
+  onClose: () => void;
 };

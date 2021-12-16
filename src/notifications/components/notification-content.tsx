@@ -17,18 +17,16 @@ export const NotificationContent: React.FC<NotificationContentProps> = ({
   id,
 }) => {
   const notificationComponents = {
-    [NotificationType.Swap]: (
-      <SwapLink id={id} />
+    [NotificationType.Swap]: <SwapLink id={id} />,
+    [NotificationType.AddLiquidity]: <SwapLink id={id} />,
+    [NotificationType.RemoveLiquidity]: <SwapLink id={id} />,
+    [NotificationType.Withdraw]: <SwapLink id={id} />,
+    [NotificationType.Deposit]: <SwapLink id={id} />,
+    [NotificationType.Done]: (
+      <TransactionLink transactionLink={transactionLink} />
     ),
-    [NotificationType.AddLiquidity]: (
-    ),
-    [NotificationType.RemoveLiquidity]: (
-    ),
-    [NotificationType.Withdraw]: (
-    ),
-    [NotificationType.Deposit]: (
-    ),
-  }
+    [NotificationType.Error]: <></>, // TODO: Add error
+  };
 
   return (
     <Flex direction="column" alignItems="flex-start">
@@ -36,11 +34,7 @@ export const NotificationContent: React.FC<NotificationContentProps> = ({
         {title}
       </Text>
 
-      {type === NotificationType.Swap ? (
-        <SwapLink id={id} />
-      ) : type === NotificationType.Done ? (
-        <TransactionLink transactionLink={transactionLink} />
-      ) : null}
+      {notificationComponents[type]}
 
       {children}
     </Flex>

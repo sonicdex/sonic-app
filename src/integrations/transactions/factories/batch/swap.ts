@@ -1,4 +1,4 @@
-import { MODALS } from '@/modals';
+import { Modals } from '@/modals';
 import { useModalStore, useSwapStore } from '@/store';
 import { getCurrency } from '@/utils/format';
 import { useMemo } from 'react';
@@ -100,7 +100,7 @@ export const useSwapBatch = ({
         },
       ]);
       setOnClose(() => resolve(false));
-      setCurrentModal(MODALS.swapFailed);
+      setCurrentModal(Modals.SwapFailed);
     });
   };
 
@@ -110,7 +110,7 @@ export const useSwapBatch = ({
       fromToken: swapParams.from.token?.symbol,
       toToken: swapParams.to.token?.symbol,
     });
-    setCurrentModal(MODALS.swapProgress);
+    setCurrentModal(Modals.SwapProgress);
   };
 
   return [

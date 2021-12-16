@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { MODALS } from '@/modals';
+import { Modals } from '@/modals';
 import { useModalStore, useSwapStore } from '@/store';
 import { parseAmount } from '@/utils/format';
 
@@ -90,7 +90,7 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
         },
       ]);
       setOnClose(() => resolve(false));
-      setCurrentModal(MODALS.swapFailed);
+      setCurrentModal(Modals.SwapFailed);
     });
   };
 
@@ -100,7 +100,7 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
       token0Token: addLiquidityParams.token0.token?.symbol,
       toToken: addLiquidityParams.token1.token?.symbol,
     });
-    setCurrentModal(MODALS.swapProgress);
+    setCurrentModal(Modals.SwapProgress);
   };
 
   return useBatchHook<AddLiquidityBatchStep>({ transactions, handleRetry });

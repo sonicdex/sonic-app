@@ -1,6 +1,6 @@
 import { useTotalBalances } from '@/hooks/use-balances';
 import { useSwapBatch } from '@/integrations/transactions';
-import { MODALS } from '@/modals';
+import { Modals } from '@/modals';
 import {
   NotificationType,
   useModalStore,
@@ -49,7 +49,7 @@ export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
   const handleOpenModal = () => {
     handleStateChange();
     openSwapModal();
-    setCurrentModal(MODALS.swapProgress);
+    setCurrentModal(Modals.SwapProgress);
   };
 
   const [swapBatch, openSwapModal] = useSwapBatch({

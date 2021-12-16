@@ -1,41 +1,42 @@
 import { useTotalBalances } from '@/hooks/use-balances';
-import { useDepositBatch, useSwapBatch } from '@/integrations/transactions';
-import { MODALS } from '@/modals';
+import { useDepositBatch } from '@/integrations/transactions';
+import { Modals } from '@/modals';
 import {
   NotificationType,
-  useAssetsViewStore,
+  useDepositViewStore,
   useModalStore,
   useNotificationStore,
   usePlugStore,
-  useSwapViewStore,
+  useSwapStore,
 } from '@/store';
-import { deserialize, stringify } from '@/utils/format';
 import { createCAPLink } from '@/utils/function';
 import { Link } from '@chakra-ui/react';
 import { useEffect, useMemo } from 'react';
 
-export interface SwapLinkProps {
+export interface DepositLinkProps {
   id: string;
 }
 
-export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
+export const DepositLink: React.FC<DepositLinkProps> = ({ id }) => {
   const { setCurrentModal, clearModal, setCurrentModalState } = useModalStore();
-  const assetsViewStore = useAssetsViewStore();
   const { addNotification, popNotification } = useNotificationStore();
   const { principalId } = usePlugStore();
   const { getBalances } = useTotalBalances();
 
-  const { from, to, slippage, keepInSonic } = useMemo(() => {
-    // Clone current state just for this batch
-    const { depositValue, de } = assetsViewStore;
+  const { value, tokenId } = useDepositViewStore();
+  const { supportedTokenList } = useSwapStore();
 
-    return deserialize(stringify({ from, to, slippage, keepInSonic }));
-  }, []);
+  const selectedToken = useMemo(() => {
+    return supportedTokenList?.find(({ id }) => id === tokenId);
+  }, [supportedTokenList, tokenId]);
 
-  const {} = useDepositBatch();
+  const depositBatch = useDepositBatch({
+    amount: value,
+    token: selectedToken,
+  });
 
   const handleStateChange = () => {
-    switch (swapBatch.state) {
+    switch (depositBatch.state) {
       case 'approve':
         setCurrentModalState('approve');
         break;
@@ -45,42 +46,21 @@ export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
     }
   };
 
-  const handleDeposit = async () => {
-    try {
-      await depositBatch.execute();
-
-      addNotification({
-        title: 'Deposit successful',
-        type: NotificationType.Done,
-        id: Date.now().toString(),
-      });
-
-      getBalances();
-    } catch (error) {
-      addNotification({
-        title: `Deposit failed ${depositValue} ${selectedToken?.symbol}`,
-        type: NotificationType.Error,
-        id: Date.now().toString(),
-      });
-    }
-  };
-
   const handleOpenModal = () => {
     handleStateChange();
-    openSwapModal();
-    setCurrentModal(MODALS.swapProgress);
+    setCurrentModal(Modals.SwapProgress);
   };
 
-  useEffect(handleStateChange, [swapBatch.state]);
+  useEffect(handleStateChange, [depositBatch.state]);
 
   useEffect(() => {
-    swapBatch
+    depositBatch
       .execute()
       .then((res) => {
         console.log('Swap Completed', res);
         clearModal();
         addNotification({
-          title: `Swapped ${from.value} ${from.token?.symbol} for ${to.value} ${to.token?.symbol}`,
+          title: 'Deposit successful',
           type: NotificationType.Done,
           id: Date.now().toString(),
           // TODO: add transaction id
@@ -92,7 +72,7 @@ export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
         console.error('Swap Error', err);
         clearModal();
         addNotification({
-          title: `Failed swapping ${from.value} ${from.token?.symbol} for ${to.value} ${to.token?.symbol}`,
+          title: `Deposit failed ${value} ${selectedToken?.symbol}`,
           type: NotificationType.Error,
           id: Date.now().toString(),
         });

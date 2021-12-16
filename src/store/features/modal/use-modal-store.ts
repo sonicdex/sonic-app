@@ -1,3 +1,4 @@
+import { Modals } from '@/modals';
 import {
   FeatureState,
   selectModalState,
@@ -24,7 +25,7 @@ export const useModalStore = () => {
   } = useAppSelector(selectModalState);
   const dispatch = useAppDispatch();
 
-  const _setCurrentModal = (currentModal: string) => {
+  const _setCurrentModal = (currentModal: Modals) => {
     dispatch(setCurrentModal(currentModal));
   };
 
