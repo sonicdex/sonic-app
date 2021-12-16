@@ -30,8 +30,14 @@ export const AddLiquidityLink: React.FC<AddLiquidityLinkProps> = ({ id }) => {
     return deserialize(stringify({ token0, token1, slippage }));
   }, []);
 
+  const [addLiquidityBatch, openAddLiquidityModal] = useAddLiquidityBatch({
+    token0,
+    token1,
+    slippage: Number(slippage),
+  });
+
   const handleStateChange = () => {
-    switch (swapBatch.state) {
+    switch (addLiquidityBatch.state) {
       case 'approve':
       case 'deposit':
         setCurrentModalState('deposit');
@@ -42,25 +48,19 @@ export const AddLiquidityLink: React.FC<AddLiquidityLinkProps> = ({ id }) => {
     }
   };
 
-  const [swapBatch, openAddLiquidityModal] = useAddLiquidityBatch({
-    token0,
-    token1,
-    slippage: Number(slippage),
-  });
-
   const handleOpenModal = () => {
     handleStateChange();
     openAddLiquidityModal();
     setCurrentModal(Modals.SwapProgress);
   };
 
-  useEffect(handleStateChange, [swapBatch.state]);
+  useEffect(handleStateChange, [addLiquidityBatch.state]);
 
   useEffect(() => {
-    swapBatch
+    addLiquidityBatch
       .execute()
       .then((res) => {
-        console.log('Swap Completed', res);
+        console.log('Add Liquidity Completed', res);
         clearModal();
         addNotification({
           title: `Added liquidity ${token0.value} ${token0.token?.symbol} + ${token1.value} ${token1.token?.symbol}`,
@@ -72,7 +72,7 @@ export const AddLiquidityLink: React.FC<AddLiquidityLinkProps> = ({ id }) => {
         getBalances();
       })
       .catch((err) => {
-        console.error('Swap Error', err);
+        console.error('Add Liquidity Error', err);
         clearModal();
         addNotification({
           title: `Failed add liquidity ${token0.value} ${token0.token?.symbol} + ${token1.value} ${token1.token?.symbol}`,

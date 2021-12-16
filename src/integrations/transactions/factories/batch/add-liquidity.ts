@@ -13,7 +13,7 @@ import {
 } from '..';
 import { AddLiquidity, Batch } from '../..';
 
-type AddLiquidityBatchStep = 'deposit' | 'addLiquidity';
+type AddLiquidityBatchStep = 'approve' | 'deposit' | 'addLiquidity';
 
 export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
   const { sonicBalances } = useSwapStore();
