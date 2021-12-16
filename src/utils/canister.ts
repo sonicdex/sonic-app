@@ -38,9 +38,11 @@ export const parseResponseAllPairs = (
     return {
       ...list,
       [token0]: {
+        ...list[token0],
         [token1]: pair,
       },
       [token1]: {
+        ...list[token1],
         [token0]: {
           ...pair,
           token0: token1,

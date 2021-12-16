@@ -23,7 +23,8 @@ export const stringify = (data: any) => {
 
 export const parseAmount = (val: string, decimals: string | number): bigint => {
   try {
-    const str = parseUnits(val, decimals).toString();
+    const fixedVal = new BigNumber(val).toFixed(Number(decimals)); // Fix for scientific notation string
+    const str = parseUnits(fixedVal, decimals).toString();
     return BigInt(str);
   } catch (err) {
     return BigInt(0);
