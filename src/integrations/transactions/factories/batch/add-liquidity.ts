@@ -12,6 +12,7 @@ import {
   useMemorizedApproveTransaction,
 } from '..';
 import { AddLiquidity, Batch } from '../..';
+import { getToDepositAmount } from './utils';
 
 type AddLiquidityBatchStep = 'approve' | 'deposit' | 'addLiquidity';
 
@@ -37,7 +38,11 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
 
   const depositParams = {
     token: addLiquidityParams.token0.token,
-    amount: addLiquidityParams.token0.value,
+    amount: getToDepositAmount(
+      sonicBalances[addLiquidityParams.token0.token.id],
+      addLiquidityParams.token0.token.decimals,
+      addLiquidityParams.token0.value
+    ),
   };
 
   const approve = useMemorizedApproveTransaction(depositParams);
