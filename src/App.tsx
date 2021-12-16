@@ -15,7 +15,6 @@ export const App = () => {
 
   usePlugInit();
   useActorsInit();
-
   useSwapInit();
 
   // TODO: Remove after plug mobile connection
