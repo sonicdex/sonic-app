@@ -6,6 +6,10 @@ export enum NotificationType {
   Done,
   Error,
   Swap,
+  Deposit,
+  Withdraw,
+  AddLiquidity,
+  RemoveLiquidity,
 }
 
 export interface Notification {

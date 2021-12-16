@@ -16,6 +16,20 @@ export const NotificationContent: React.FC<NotificationContentProps> = ({
   transactionLink,
   id,
 }) => {
+  const notificationComponents = {
+    [NotificationType.Swap]: (
+      <SwapLink id={id} />
+    ),
+    [NotificationType.AddLiquidity]: (
+    ),
+    [NotificationType.RemoveLiquidity]: (
+    ),
+    [NotificationType.Withdraw]: (
+    ),
+    [NotificationType.Deposit]: (
+    ),
+  }
+
   return (
     <Flex direction="column" alignItems="flex-start">
       <Text color="#F6FCFD" fontSize="md" fontWeight={700} maxWidth={60}>

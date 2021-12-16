@@ -13,21 +13,20 @@ import { createCAPLink } from '@/utils/function';
 import { Link } from '@chakra-ui/react';
 import { useEffect, useMemo } from 'react';
 
-export interface SwapLinkProps {
+export interface WithdrawLinkProps {
   id: string;
 }
 
-export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
+export const WithdrawLink: React.FC<WithdrawLinkProps> = ({ id }) => {
   const { setCurrentModal, clearModal, setCurrentModalState } = useModalStore();
-  const swapViewStore = useSwapViewStore();
   const { addNotification, popNotification } = useNotificationStore();
   const { principalId } = usePlugStore();
   const { getBalances } = useTotalBalances();
+  const swapViewStore = useSwapViewStore();
 
   const { from, to, slippage, keepInSonic } = useMemo(() => {
     // Clone current state just for this batch
     const { from, to, slippage, keepInSonic } = swapViewStore;
-
     return deserialize(stringify({ from, to, slippage, keepInSonic }));
   }, []);
 

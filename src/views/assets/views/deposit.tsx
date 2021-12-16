@@ -52,35 +52,16 @@ export const AssetsDeposit = () => {
     return supportedTokenList?.find((token) => token.id === selectedTokenId);
   }, [selectedTokenId]);
 
-  const depositBatch = useDepositBatch({
-    token: selectedToken,
-    amount: depositValue,
-  });
-
-  const handleDeposit = async () => {
-    try {
-      await depositBatch.execute();
-
-      addNotification({
-        title: 'Deposit successful',
-        type: NotificationType.Done,
-        id: Date.now().toString(),
-      });
-
-      getBalances();
-    } catch (error) {
-      addNotification({
-        title: `Deposit failed ${depositValue} ${selectedToken?.symbol}`,
-        type: NotificationType.Error,
-        id: Date.now().toString(),
-      });
-    }
-  };
-
   useEffect(() => {
+    const tokenId = query.get('tokenId');
     const fromQueryValue = query.get('amount');
+
     if (fromQueryValue) {
       dispatch(assetsViewActions.setDepositValue(fromQueryValue));
+    }
+
+    if (tokenId) {
+      dispatch(assetsViewActions.setDepositTokenId(tokenId));
     }
 
     return () => {

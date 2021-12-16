@@ -1,8 +1,9 @@
 import { useTotalBalances } from '@/hooks/use-balances';
-import { useSwapBatch } from '@/integrations/transactions';
+import { useDepositBatch, useSwapBatch } from '@/integrations/transactions';
 import { MODALS } from '@/modals';
 import {
   NotificationType,
+  useAssetsViewStore,
   useModalStore,
   useNotificationStore,
   usePlugStore,
@@ -19,30 +20,48 @@ export interface SwapLinkProps {
 
 export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
   const { setCurrentModal, clearModal, setCurrentModalState } = useModalStore();
-  const swapViewStore = useSwapViewStore();
+  const assetsViewStore = useAssetsViewStore();
   const { addNotification, popNotification } = useNotificationStore();
   const { principalId } = usePlugStore();
   const { getBalances } = useTotalBalances();
 
   const { from, to, slippage, keepInSonic } = useMemo(() => {
     // Clone current state just for this batch
-    const { from, to, slippage, keepInSonic } = swapViewStore;
+    const { depositValue, de } = assetsViewStore;
 
     return deserialize(stringify({ from, to, slippage, keepInSonic }));
   }, []);
 
+  const {} = useDepositBatch();
+
   const handleStateChange = () => {
     switch (swapBatch.state) {
       case 'approve':
+        setCurrentModalState('approve');
+        break;
       case 'deposit':
         setCurrentModalState('deposit');
         break;
-      case 'swap':
-        setCurrentModalState('swap');
-        break;
-      case 'withdraw':
-        setCurrentModalState('withdraw');
-        break;
+    }
+  };
+
+  const handleDeposit = async () => {
+    try {
+      await depositBatch.execute();
+
+      addNotification({
+        title: 'Deposit successful',
+        type: NotificationType.Done,
+        id: Date.now().toString(),
+      });
+
+      getBalances();
+    } catch (error) {
+      addNotification({
+        title: `Deposit failed ${depositValue} ${selectedToken?.symbol}`,
+        type: NotificationType.Error,
+        id: Date.now().toString(),
+      });
     }
   };
 
@@ -51,14 +70,6 @@ export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
     openSwapModal();
     setCurrentModal(MODALS.swapProgress);
   };
-
-  const [swapBatch, openSwapModal] = useSwapBatch({
-    from,
-    to,
-    slippage: Number(slippage),
-    keepInSonic,
-    principalId,
-  });
 
   useEffect(handleStateChange, [swapBatch.state]);
 
