@@ -1,4 +1,9 @@
-import { modalsSliceActions, useAppDispatch, useSwapStore } from '@/store';
+import {
+  modalsSliceActions,
+  RemoveLiquidityModalDataStep,
+  useAppDispatch,
+  useSwapStore,
+} from '@/store';
 
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -87,6 +92,7 @@ export const useRemoveLiquidityBatch = ({
   const openRemoveLiqudityModal = () => {
     dispatch(
       modalsSliceActions.setRemoveLiquidityData({
+        steps: Object.keys(transactions) as RemoveLiquidityModalDataStep[],
         token0Symbol: removeLiquidityParams.token0.token?.symbol,
         token1Symbol: removeLiquidityParams.token1.token?.symbol,
       })

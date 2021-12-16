@@ -7,6 +7,7 @@ export type ModalsCallback = (arg0?: any) => any;
 export type SwapModalDataStep = 'approve' | 'deposit' | 'swap' | 'withdraw';
 export type SwapModalData = {
   step?: SwapModalDataStep;
+  steps?: SwapModalDataStep[];
   fromTokenSymbol?: string;
   toTokenSymbol?: string;
   callbacks?: [ModalsCallback, ModalsCallback];
@@ -15,6 +16,7 @@ export type SwapModalData = {
 export type DepositModalDataStep = 'approve' | 'deposit';
 export type DepositModalData = {
   step?: DepositModalDataStep;
+  steps?: DepositModalDataStep[];
   callbacks?: [ModalsCallback, ModalsCallback];
 };
 
@@ -27,6 +29,7 @@ export type WithdrawModalData = {
 export type AddLiquidityModalDataStep = 'approve' | 'deposit' | 'addLiquidity';
 export type AddLiquidityModalData = {
   step?: AddLiquidityModalDataStep;
+  steps?: AddLiquidityModalDataStep[];
   token0Symbol?: string;
   token1Symbol?: string;
   callbacks?: [ModalsCallback, ModalsCallback];
@@ -35,6 +38,7 @@ export type AddLiquidityModalData = {
 export type RemoveLiquidityModalDataStep = 'removeLiquidity' | 'withdraw';
 export type RemoveLiquidityModalData = {
   step?: RemoveLiquidityModalDataStep;
+  steps?: RemoveLiquidityModalDataStep[];
   token0Symbol?: string;
   token1Symbol?: string;
   callbacks?: [ModalsCallback, ModalsCallback];
@@ -92,7 +96,13 @@ const initialRemoveLiquidityData: RemoveLiquidityModalData = {
   step: undefined,
 };
 
-const initialTokenSelectData: TokenSelectData = {};
+const initialTokenSelectData: TokenSelectData = {
+  tokens: '[]',
+  onSelect: () => null,
+  selectedTokenIds: [],
+  isLoading: false,
+  allowAddToken: true,
+};
 
 // Define the initial state using that type
 const initialState: ModalsState = {

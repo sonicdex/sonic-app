@@ -25,7 +25,7 @@ import { ImportToken } from './components';
 
 export const TokenSelectModal = () => {
   const dispatch = useAppDispatch();
-  const { tokenSelectData } = useModalsStore();
+  const { tokenSelectData, isTokenSelectOpened } = useModalsStore();
 
   const {
     tokens,
@@ -78,11 +78,19 @@ export const TokenSelectModal = () => {
   const importToken = () => {
     // TODO: Import token integration
     // TODO: Set selected token to imported token id
+    handleTokenSelectClose();
+  };
+
+  const handleTokenSelectClose = () => {
     dispatch(modalsSliceActions.closeTokenSelectModal());
   };
 
   return (
-    <Modal isOpen={false} onClose={() => null} isCentered>
+    <Modal
+      isOpen={isTokenSelectOpened}
+      onClose={handleTokenSelectClose}
+      isCentered
+    >
       <ModalOverlay />
       <ModalContent
         as={Flex}

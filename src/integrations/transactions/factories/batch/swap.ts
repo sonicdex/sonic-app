@@ -108,6 +108,7 @@ export const useSwapBatch = ({
   const openSwapModal = () => {
     dispatch(
       modalsSliceActions.setSwapData({
+        steps: Object.keys(transactions) as SwapModalDataStep[],
         fromTokenSymbol: swapParams.from.token?.symbol,
         toTokenSymbol: swapParams.to.token?.symbol,
       })

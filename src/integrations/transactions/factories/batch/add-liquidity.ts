@@ -102,6 +102,7 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
   const openAddLiquidityModal = () => {
     dispatch(
       modalsSliceActions.setAddLiquidityData({
+        steps: Object.keys(transactions) as AddLiquidityModalDataStep[],
         token0Symbol: addLiquidityParams.token0.token?.symbol,
         token1Symbol: addLiquidityParams.token1.token?.symbol,
       })
