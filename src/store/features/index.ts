@@ -2,7 +2,7 @@ export * from './activity-view';
 export * from './assets-view';
 export * from './deposit-view';
 export * from './liquidity-view';
-export * from './modal';
+export * from './modals';
 export * from './notification';
 export * from './plug';
 export * from './swap';

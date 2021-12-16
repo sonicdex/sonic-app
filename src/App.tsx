@@ -1,4 +1,4 @@
-import { ModalManager } from '@/modals';
+import { ModalManager } from '@/components/modals';
 import { NotificationManager } from '@/notifications';
 import { Activity, Assets, Liquidity, LiquidityAdd, Swap } from '@/views';
 import isMobile from 'ismobilejs';

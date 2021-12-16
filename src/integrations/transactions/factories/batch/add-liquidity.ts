@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { Modals } from '@/modals';
-import { useModalStore, useSwapStore } from '@/store';
+import { Modals } from '@/components/modals';
+import { useModalsStore, useSwapStore } from '@/store';
 import { parseAmount } from '@/utils/format';
 
 import {
@@ -24,7 +24,7 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
     setModalCallbacks,
     setCurrentModalData,
     setOnClose,
-  } = useModalStore();
+  } = useModalsStore();
 
   if (!sonicBalances) {
     throw new Error('Sonic balance are required');

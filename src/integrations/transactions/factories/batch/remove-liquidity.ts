@@ -1,5 +1,5 @@
-import { Modals } from '@/modals';
-import { useModalStore, useSwapStore } from '@/store';
+import { Modals } from '@/components/modals';
+import { useModalsStore, useSwapStore } from '@/store';
 
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -27,7 +27,7 @@ export const useRemoveLiquidityBatch = ({
     setModalCallbacks,
     setCurrentModalData,
     setOnClose,
-  } = useModalStore();
+  } = useModalsStore();
 
   if (!sonicBalances) {
     throw new Error('Sonic balance are required');
@@ -53,9 +53,7 @@ export const useRemoveLiquidityBatch = ({
   const withdraw = useMemorizedWithdrawTransaction(withdrawParams);
 
   const transactions = useMemo(() => {
-    let _transactions = {};
-
-    _transactions = {
+    let _transactions: any = {
       removeLiquidity,
     };
 

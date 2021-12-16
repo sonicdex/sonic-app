@@ -1,5 +1,5 @@
-import { Modals } from '@/modals';
-import { useModalStore, useSwapStore } from '@/store';
+import { Modals } from '@/components/modals';
+import { useModalsStore, useSwapStore } from '@/store';
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -28,7 +28,7 @@ export const useSwapBatch = ({
     setModalCallbacks,
     setCurrentModalData,
     setOnClose,
-  } = useModalStore();
+  } = useModalsStore();
 
   if (!sonicBalances) throw new Error('Sonic balance are required');
 

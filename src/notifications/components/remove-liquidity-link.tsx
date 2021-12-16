@@ -1,9 +1,9 @@
 import { useTotalBalances } from '@/hooks/use-balances';
 import { useSwapBatch } from '@/integrations/transactions';
-import { Modals } from '@/modals';
+import { Modals } from '@/components/modals';
 import {
   NotificationType,
-  useModalStore,
+  useModalsStore,
   useNotificationStore,
   usePlugStore,
   useSwapViewStore,
@@ -20,7 +20,8 @@ export interface RemoveLiquidityLinkProps {
 export const RemoveLiquidityLink: React.FC<RemoveLiquidityLinkProps> = ({
   id,
 }) => {
-  const { setCurrentModal, clearModal, setCurrentModalState } = useModalStore();
+  const { setCurrentModal, clearModal, setCurrentModalState } =
+    useModalsStore();
   const swapViewStore = useSwapViewStore();
   const { addNotification, popNotification } = useNotificationStore();
   const { principalId } = usePlugStore();
@@ -68,7 +69,7 @@ export const RemoveLiquidityLink: React.FC<RemoveLiquidityLinkProps> = ({
     swapBatch
       .execute()
       .then((res) => {
-        console.log('Swap Completed', res);
+        console.log('Remove liqudity Completed', res);
         clearModal();
         addNotification({
           title: `Successfuly removed liquidity: ${from.value} ${from.token?.symbol} + ${to.value} ${to.token?.symbol}`,
@@ -80,7 +81,7 @@ export const RemoveLiquidityLink: React.FC<RemoveLiquidityLinkProps> = ({
         getBalances();
       })
       .catch((err) => {
-        console.error('Swap Error', err);
+        console.error('Remove liqudity Error', err);
         clearModal();
         addNotification({
           title: `Remove liquidity failed - ${from.value} ${from.token?.symbol} + ${to.value} ${to.token?.symbol}`,

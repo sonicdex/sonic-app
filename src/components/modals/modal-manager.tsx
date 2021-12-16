@@ -1,4 +1,4 @@
-import { useModalStore } from '@/store';
+import { useModalsStore } from '@/store';
 import { Modal, ModalContent, ModalOverlay } from '@chakra-ui/react';
 import {
   TransactionFailed,
@@ -12,8 +12,10 @@ const MODAL_MAPPING = {
   [Modals.Deposit]: TransactionProgress,
   [Modals.Withdraw]: TransactionProgress,
   [Modals.RemoveLiquidity]: TransactionProgress,
+
   [Modals.SwapProgress]: TransactionProgress,
   [Modals.SwapFailed]: TransactionFailed,
+
   [Modals.TokenSelect]: TokenSelect,
 };
 
@@ -25,7 +27,7 @@ export const ModalManager = () => {
     currentModalState,
     onClose,
     callbacks,
-  } = useModalStore();
+  } = useModalsStore();
 
   const ModalComponent = currentModal ? MODAL_MAPPING[currentModal] : null;
 

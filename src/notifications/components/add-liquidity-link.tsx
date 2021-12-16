@@ -3,11 +3,11 @@ import { Link } from '@chakra-ui/react';
 
 import { useTotalBalances } from '@/hooks/use-balances';
 import { useAddLiquidityBatch } from '@/integrations/transactions';
-import { Modals } from '@/modals';
+import { Modals } from '@/components/modals';
 import {
   NotificationType,
   useLiquidityViewStore,
-  useModalStore,
+  useModalsStore,
   useNotificationStore,
 } from '@/store';
 import { deserialize, stringify } from '@/utils/format';
@@ -18,7 +18,8 @@ export interface AddLiquidityLinkProps {
 }
 
 export const AddLiquidityLink: React.FC<AddLiquidityLinkProps> = ({ id }) => {
-  const { setCurrentModal, clearModal, setCurrentModalState } = useModalStore();
+  const { setCurrentModal, clearModal, setCurrentModalState } =
+    useModalsStore();
   const liquidityViewStore = useLiquidityViewStore();
   const { addNotification, popNotification } = useNotificationStore();
   const { getBalances } = useTotalBalances();

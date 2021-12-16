@@ -27,7 +27,7 @@ export const LiquidityAdd = () => {
   const { isConnected } = usePlugStore();
 
   const { addNotification } = useNotificationStore();
-  const { token0: from, token1: to } = useLiquidityViewStore();
+  const { token0, token1 } = useLiquidityViewStore();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { supportedTokenListState, supportedTokenList } = useSwapStore();
@@ -49,15 +49,16 @@ export const LiquidityAdd = () => {
   };
 
   const shouldButtonBeActive = useMemo(() => {
-    if (!from.token || !to.token) return false;
+    if (!token0.token || !token1.token) return false;
     if (subStep === 1) return true;
 
     const fromTokenCondition =
-      getActiveStatus(from.token, from.value) === 'active';
-    const toTokenCondition = getActiveStatus(to.token, to.value) === 'active';
+      getActiveStatus(token0.token, token0.value) === 'active';
+    const toTokenCondition =
+      getActiveStatus(token1.token, token1.value) === 'active';
 
     return fromTokenCondition && toTokenCondition;
-  }, [from, to, subStep]);
+  }, [token0, token1, subStep]);
 
   const buttonTitle = BUTTON_TITLES[subStep];
 
@@ -78,11 +79,11 @@ export const LiquidityAdd = () => {
 
   const selectedTokenIds = useMemo(() => {
     let selectedIds = [];
-    if (from?.token?.id) selectedIds.push(from.token.id);
-    if (to?.token?.id) selectedIds.push(to.token.id);
+    if (token0?.token?.id) selectedIds.push(token0.token.id);
+    if (token1?.token?.id) selectedIds.push(token1.token.id);
 
     return selectedIds;
-  }, [from?.token?.id, to?.token?.id]);
+  }, [token0?.token?.id, token1?.token?.id]);
 
   useEffect(() => {
     if (supportedTokenListState !== FeatureState.Loading) {
@@ -122,7 +123,7 @@ export const LiquidityAdd = () => {
       <Flex mt={5} direction="column" alignItems="center">
         <Box width="100%">
           <TokenBox
-            value={from.value}
+            value={token0.value}
             setValue={(value) =>
               dispatch(liquidityViewActions.setValue({ data: 'token0', value }))
             }
@@ -132,8 +133,8 @@ export const LiquidityAdd = () => {
               );
             }}
             otherTokensMetadata={supportedTokenList}
-            selectedTokenMetadata={from.token}
-            status={getActiveStatus(from.token, from.value)}
+            selectedTokenMetadata={token0.token}
+            status={getActiveStatus(token0.token, token0.value)}
             selectedTokenIds={selectedTokenIds}
             disabled={subStep === 1}
             menuDisabled={subStep === 1}
@@ -158,7 +159,7 @@ export const LiquidityAdd = () => {
         </Box>
         <Box mt={2.5} mb={5} width="100%">
           <TokenBox
-            value={to.value}
+            value={token1.value}
             setValue={(value) =>
               dispatch(liquidityViewActions.setValue({ data: 'token1', value }))
             }
@@ -168,8 +169,8 @@ export const LiquidityAdd = () => {
               );
             }}
             otherTokensMetadata={supportedTokenList}
-            selectedTokenMetadata={to.token}
-            status={getActiveStatus(to.token, to.value)}
+            selectedTokenMetadata={token1.token}
+            status={getActiveStatus(token1.token, token1.value)}
             disabled={subStep === 1}
             menuDisabled={subStep === 1}
             price={0}
@@ -196,7 +197,7 @@ export const LiquidityAdd = () => {
             </Flex>
             <Box mt={2.5} width="100%">
               <TokenBox
-                value={to.value}
+                value={token1.value}
                 setValue={(value) =>
                   dispatch(
                     liquidityViewActions.setValue({ data: 'token1', value })
@@ -208,7 +209,7 @@ export const LiquidityAdd = () => {
                   );
                 }}
                 otherTokensMetadata={supportedTokenList}
-                selectedTokenMetadata={to.token}
+                selectedTokenMetadata={token1.token}
                 status="active"
                 price={0}
                 sources={getAppAssetsSources({

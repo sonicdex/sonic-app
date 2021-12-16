@@ -1,9 +1,9 @@
 import { useTotalBalances } from '@/hooks/use-balances';
 import { useWithdrawBatch } from '@/integrations/transactions/factories/batch/withdraw';
-import { Modals } from '@/modals';
+import { Modals } from '@/components/modals';
 import {
   NotificationType,
-  useModalStore,
+  useModalsStore,
   useNotificationStore,
   useSwapStore,
   useWithdrawViewStore,
@@ -17,7 +17,8 @@ export interface WithdrawLinkProps {
 }
 
 export const WithdrawLink: React.FC<WithdrawLinkProps> = ({ id }) => {
-  const { setCurrentModal, clearModal, setCurrentModalState } = useModalStore();
+  const { setCurrentModal, clearModal, setCurrentModalState } =
+    useModalsStore();
   const { addNotification, popNotification } = useNotificationStore();
   const { getBalances } = useTotalBalances();
 

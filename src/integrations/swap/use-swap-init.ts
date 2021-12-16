@@ -110,7 +110,7 @@ export const useSwapInit = () => {
         if (response) {
           dispatch(swapActions.setUserLPBalances(response as any));
         } else {
-          throw new Error('No "getAllPairs" response');
+          throw new Error('No "getUserLPBalancesAbove" response');
         }
 
         dispatch(swapActions.setUserLPBalancesState(FeatureState.Idle));

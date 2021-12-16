@@ -1,10 +1,10 @@
 import { useTotalBalances } from '@/hooks/use-balances';
 import { useDepositBatch } from '@/integrations/transactions';
-import { Modals } from '@/modals';
+import { Modals } from '@/components/modals';
 import {
   NotificationType,
   useDepositViewStore,
-  useModalStore,
+  useModalsStore,
   useNotificationStore,
   useSwapStore,
 } from '@/store';
@@ -17,7 +17,8 @@ export interface DepositLinkProps {
 }
 
 export const DepositLink: React.FC<DepositLinkProps> = ({ id }) => {
-  const { setCurrentModal, clearModal, setCurrentModalState } = useModalStore();
+  const { setCurrentModal, clearModal, setCurrentModalState } =
+    useModalsStore();
   const { addNotification, popNotification } = useNotificationStore();
   const { getBalances } = useTotalBalances();
 

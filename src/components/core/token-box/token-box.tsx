@@ -9,8 +9,8 @@ import {
 } from '@chakra-ui/react';
 
 import { chevronDownSrc, questionMarkSrc } from '@/assets';
-import { useModalStore } from '@/store';
-import { Modals } from '@/modals';
+import { useModalsStore } from '@/store';
+import { Modals } from '@/components/modals';
 import { NumberInput } from '@/components';
 import { DefaultTokensImage } from '@/constants';
 import { TokenMetadata } from '@/models';
@@ -62,7 +62,7 @@ export const TokenBox = ({
   onTokenSelect,
   onMaxClick,
 }: TokenBoxProps) => {
-  const { setCurrentModal, setCurrentModalData, clearModal } = useModalStore();
+  const { setCurrentModal, setCurrentModalData, clearModal } = useModalsStore();
 
   const border = glow ? '1px solid #3D52F4' : '1px solid #373737';
   const background = glow ? '#151515' : '#1E1E1E';

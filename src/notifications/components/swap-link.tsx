@@ -1,9 +1,11 @@
 import { useTotalBalances } from '@/hooks/use-balances';
 import { useSwapBatch } from '@/integrations/transactions';
-import { Modals } from '@/modals';
+import { Modals } from '@/components/modals';
 import {
+  modalsSliceActions,
   NotificationType,
-  useModalStore,
+  useAppDispatch,
+  useModalsStore,
   useNotificationStore,
   usePlugStore,
   useSwapViewStore,
@@ -18,7 +20,7 @@ export interface SwapLinkProps {
 }
 
 export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
-  const { setCurrentModal, clearModal, setCurrentModalState } = useModalStore();
+  const dispatch = useAppDispatch();
   const swapViewStore = useSwapViewStore();
   const { addNotification, popNotification } = useNotificationStore();
   const { principalId } = usePlugStore();
@@ -35,13 +37,27 @@ export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
     switch (swapBatch.state) {
       case 'approve':
       case 'deposit':
-        setCurrentModalState('deposit');
+        dispatch(
+          modalsSliceActions.setSwapData({
+            state: 'deposit',
+          })
+        );
         break;
       case 'swap':
-        setCurrentModalState('swap');
+        dispatch(
+          modalsSliceActions.setSwapData({
+            state: 'swap',
+          })
+        );
+
         break;
       case 'withdraw':
-        setCurrentModalState('withdraw');
+        dispatch(
+          modalsSliceActions.setSwapData({
+            state: 'withdraw',
+          })
+        );
+
         break;
     }
   };
@@ -49,7 +65,7 @@ export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
   const handleOpenModal = () => {
     handleStateChange();
     openSwapModal();
-    setCurrentModal(Modals.SwapProgress);
+    dispatch(modalsSliceActions.openSwapProgressModal());
   };
 
   const [swapBatch, openSwapModal] = useSwapBatch({
