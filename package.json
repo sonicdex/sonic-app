@@ -57,6 +57,7 @@
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
     "@ethersproject/bytes": "^5.5.0",
+    "@psychedelic/cap-js": "^0.0.7",
     "@reduxjs/toolkit": "^1.6.2",
     "axios": "^0.24.0",
     "bignumber.js": "^9.0.1",
