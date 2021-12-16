@@ -45,7 +45,7 @@ export const AssetsDeposit = () => {
 
   const handleDeposit = () => {
     addNotification({
-      title: `Deposition ${selectedTokenMetadata?.symbol}`,
+      title: `Depositing ${selectedTokenMetadata?.symbol}`,
       type: NotificationType.Deposit,
       id: String(new Date().getTime()),
     });
