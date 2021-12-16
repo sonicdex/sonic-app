@@ -1,9 +1,16 @@
-import { NotificationType } from '@/store';
 import { Flex, Text } from '@chakra-ui/react';
-import { NotificationBoxProps } from '.';
 
-import { SwapLink } from './components/swap-link';
-import { TransactionLink } from './components/transaction-link';
+import { NotificationType } from '@/store';
+
+import {
+  AddLiquidityLink,
+  DepositLink,
+  RemoveLiquidityLink,
+  WithdrawLink,
+  SwapLink,
+  TransactionLink,
+} from './components';
+import { NotificationBoxProps } from '.';
 
 export type NotificationContentProps = Pick<
   NotificationBoxProps,
@@ -19,10 +26,10 @@ export const NotificationContent: React.FC<NotificationContentProps> = ({
 }) => {
   const notificationComponents = {
     [NotificationType.Swap]: <SwapLink id={id} />,
-    [NotificationType.AddLiquidity]: <SwapLink id={id} />,
-    [NotificationType.RemoveLiquidity]: <SwapLink id={id} />,
-    [NotificationType.Withdraw]: <SwapLink id={id} />,
-    [NotificationType.Deposit]: <SwapLink id={id} />,
+    [NotificationType.AddLiquidity]: <AddLiquidityLink id={id} />,
+    [NotificationType.RemoveLiquidity]: <RemoveLiquidityLink id={id} />,
+    [NotificationType.Withdraw]: <WithdrawLink id={id} />,
+    [NotificationType.Deposit]: <DepositLink id={id} />,
     [NotificationType.Done]: (
       <TransactionLink transactionLink={transactionLink} />
     ),

@@ -11,7 +11,7 @@ import {
   useBatchHook,
   useMemorizedApproveTransaction,
 } from '..';
-import { AddLiquidity } from '../..';
+import { AddLiquidity, Batch } from '../..';
 
 type AddLiquidityBatchStep = 'deposit' | 'addLiquidity';
 
@@ -78,7 +78,7 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
       setModalCallbacks([
         // Retry callback
         () => {
-          openSwapModal();
+          openAddLiquidityModal();
           resolve(true);
         },
         // Not retry callback
@@ -94,14 +94,17 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
     });
   };
 
-  const openSwapModal = () => {
+  const openAddLiquidityModal = () => {
     setCurrentModalData({
       steps: Object.keys(transactions),
-      token0Token: addLiquidityParams.token0.token?.symbol,
-      toToken: addLiquidityParams.token1.token?.symbol,
+      token0: addLiquidityParams.token0.token?.symbol,
+      token1: addLiquidityParams.token1.token?.symbol,
     });
     setCurrentModal(Modals.SwapProgress);
   };
 
-  return useBatchHook<AddLiquidityBatchStep>({ transactions, handleRetry });
+  return [
+    useBatchHook<AddLiquidityBatchStep>({ transactions, handleRetry }),
+    openAddLiquidityModal,
+  ] as [Batch.Hook<AddLiquidityBatchStep>, () => void];
 };

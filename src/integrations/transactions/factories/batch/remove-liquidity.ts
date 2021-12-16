@@ -8,7 +8,7 @@ import {
   useMemorizedWithdrawTransaction,
   useMemorizedRemoveLiquidityTransaction,
 } from '..';
-import { RemoveLiquidity } from '../..';
+import { Batch, RemoveLiquidity } from '../..';
 
 type RemoveLiquidityBatchStep = 'removeLiquidity' | 'withdraw';
 
@@ -74,7 +74,7 @@ export const useRemoveLiquidityBatch = ({
       setModalCallbacks([
         // Retry callback
         () => {
-          openSwapModal();
+          openRemoveLiqudityModal();
           resolve(true);
         },
         // Not retry callback
@@ -90,14 +90,17 @@ export const useRemoveLiquidityBatch = ({
     });
   };
 
-  const openSwapModal = () => {
+  const openRemoveLiqudityModal = () => {
     setCurrentModalData({
       steps: Object.keys(transactions),
-      fromToken: removeLiquidityParams.token0.token?.symbol,
-      toToken: removeLiquidityParams.token1.token?.symbol,
+      token0: removeLiquidityParams.token0.token?.symbol,
+      token1: removeLiquidityParams.token1.token?.symbol,
     });
     setCurrentModal(Modals.SwapProgress);
   };
 
-  return useBatchHook<RemoveLiquidityBatchStep>({ transactions, handleRetry });
+  return [
+    useBatchHook<RemoveLiquidityBatchStep>({ transactions, handleRetry }),
+    openRemoveLiqudityModal,
+  ] as [Batch.Hook<RemoveLiquidityBatchStep>, () => void];
 };

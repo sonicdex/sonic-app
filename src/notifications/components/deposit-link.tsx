@@ -55,7 +55,7 @@ export const DepositLink: React.FC<DepositLinkProps> = ({ id }) => {
     depositBatch
       .execute()
       .then((res) => {
-        console.log('Swap Completed', res);
+        console.log('Deposit Completed', res);
         clearModal();
         addNotification({
           title: 'Deposit successful',
@@ -67,7 +67,7 @@ export const DepositLink: React.FC<DepositLinkProps> = ({ id }) => {
         getBalances();
       })
       .catch((err) => {
-        console.error('Swap Error', err);
+        console.error('Deposit Error', err);
         clearModal();
         addNotification({
           title: `Deposit failed ${value} ${selectedToken?.symbol}`,

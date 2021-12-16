@@ -1,12 +1,12 @@
 import { useTotalBalances } from '@/hooks/use-balances';
-import { useDepositBatch } from '@/integrations/transactions';
+import { useWithdrawBatch } from '@/integrations/transactions/factories/batch/withdraw';
 import { Modals } from '@/modals';
 import {
   NotificationType,
-  useDepositViewStore,
   useModalStore,
   useNotificationStore,
   useSwapStore,
+  useWithdrawViewStore,
 } from '@/store';
 import { createCAPLink } from '@/utils/function';
 import { Link } from '@chakra-ui/react';
@@ -21,20 +21,20 @@ export const WithdrawLink: React.FC<WithdrawLinkProps> = ({ id }) => {
   const { addNotification, popNotification } = useNotificationStore();
   const { getBalances } = useTotalBalances();
 
-  const { value, tokenId } = useDepositViewStore();
+  const { value, tokenId } = useWithdrawViewStore();
   const { supportedTokenList } = useSwapStore();
 
   const selectedToken = useMemo(() => {
     return supportedTokenList?.find(({ id }) => id === tokenId);
   }, [supportedTokenList, tokenId]);
 
-  const depositBatch = useDepositBatch({
+  const withdrawBatch = useWithdrawBatch({
     amount: value,
     token: selectedToken,
   });
 
   const handleStateChange = () => {
-    switch (depositBatch.state) {
+    switch (withdrawBatch.state) {
       case 'approve':
         setCurrentModalState('approve');
         break;
@@ -46,19 +46,19 @@ export const WithdrawLink: React.FC<WithdrawLinkProps> = ({ id }) => {
 
   const handleOpenModal = () => {
     handleStateChange();
-    setCurrentModal(Modals.SwapProgress);
+    setCurrentModal(Modals.Withdraw);
   };
 
-  useEffect(handleStateChange, [depositBatch.state]);
+  useEffect(handleStateChange, [withdrawBatch.state]);
 
   useEffect(() => {
-    depositBatch
+    withdrawBatch
       .execute()
       .then((res) => {
-        console.log('Swap Completed', res);
+        console.log('Withdraw Completed', res);
         clearModal();
         addNotification({
-          title: 'Deposit successful',
+          title: 'Withdraw successful',
           type: NotificationType.Done,
           id: Date.now().toString(),
           // TODO: add transaction id
@@ -67,10 +67,10 @@ export const WithdrawLink: React.FC<WithdrawLinkProps> = ({ id }) => {
         getBalances();
       })
       .catch((err) => {
-        console.error('Swap Error', err);
+        console.error('Withdraw Error', err);
         clearModal();
         addNotification({
-          title: `Deposit failed ${value} ${selectedToken?.symbol}`,
+          title: `Withdraw failed ${value} ${selectedToken?.symbol}`,
           type: NotificationType.Error,
           id: Date.now().toString(),
         });

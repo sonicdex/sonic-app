@@ -27,7 +27,7 @@ export const LiquidityAdd = () => {
   const { isConnected } = usePlugStore();
 
   const { addNotification } = useNotificationStore();
-  const { from, to } = useLiquidityViewStore();
+  const { token0: from, token1: to } = useLiquidityViewStore();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { supportedTokenListState, supportedTokenList } = useSwapStore();
