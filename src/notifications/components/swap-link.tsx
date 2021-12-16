@@ -72,6 +72,7 @@ export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
       .then((res) => {
         console.log('Swap Completed', res);
         dispatch(modalsSliceActions.clearSwapData());
+        dispatch(modalsSliceActions.closeSwapProgressModal());
 
         addNotification({
           title: `Swapped ${from.value} ${from.token?.symbol} for ${to.value} ${to.token?.symbol}`,
