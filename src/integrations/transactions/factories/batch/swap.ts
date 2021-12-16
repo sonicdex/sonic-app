@@ -1,6 +1,6 @@
 import { MODALS } from '@/modals';
 import { useModalStore, useSwapStore } from '@/store';
-import { parseAmount } from '@/utils/format';
+import { getCurrency } from '@/utils/format';
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -39,7 +39,11 @@ export const useSwapBatch = ({
 
   const depositParams = {
     token: swapParams.from.token,
-    amount: swapParams.from.value,
+    amount: getToDepositAmount(
+      sonicBalances[swapParams.from.token.id],
+      swapParams.from.token.decimals,
+      swapParams.from.value
+    ),
   };
   const withdrawParams = {
     token: swapParams.to.token,
@@ -55,13 +59,8 @@ export const useSwapBatch = ({
     let _transactions = {};
 
     if (swapParams.from.token) {
-      const sonicTokenBalance = swapParams.from.token
-        ? sonicBalances[swapParams.from.token.id]
-        : 0;
-      const neededBalance = Number(
-        parseAmount(swapParams.from.value, swapParams.from.token.decimals)
-      );
-      if (sonicTokenBalance < neededBalance) {
+      const neededBalance = Number(parseFloat(depositParams.amount));
+      if (neededBalance > 0) {
         _transactions = {
           approve,
           deposit,
@@ -118,4 +117,14 @@ export const useSwapBatch = ({
     useBatchHook<SwapBatchStep>({ transactions, handleRetry }),
     openSwapModal,
   ] as [Batch.Hook<SwapBatchStep>, () => void];
+};
+
+const getToDepositAmount = (
+  tokenBalance: number,
+  tokenDecimals: number,
+  fromValue: string
+): string => {
+  const parsedFromValue = parseFloat(fromValue);
+  const parsedTokenBalance = Number(getCurrency(tokenBalance, tokenDecimals));
+  return (parsedFromValue - parsedTokenBalance).toString();
 };
