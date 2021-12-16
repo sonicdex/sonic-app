@@ -1,15 +1,19 @@
 import { useModalStore } from '@/store';
 import { Modal, ModalContent, ModalOverlay } from '@chakra-ui/react';
-import { SwapFailed, SwapProgress, TokenSelect } from './contents';
+import {
+  TransactionFailed,
+  TransactionProgress,
+  TokenSelect,
+} from './contents';
 import { Modals } from './modals';
 
 const MODAL_MAPPING = {
-  [Modals.AddLiquidity]: SwapProgress,
-  [Modals.Deposit]: SwapProgress,
-  [Modals.Withdraw]: SwapProgress,
-  [Modals.RemoveLiquidity]: SwapProgress,
-  [Modals.SwapProgress]: SwapProgress,
-  [Modals.SwapFailed]: SwapFailed,
+  [Modals.AddLiquidity]: TransactionProgress,
+  [Modals.Deposit]: TransactionProgress,
+  [Modals.Withdraw]: TransactionProgress,
+  [Modals.RemoveLiquidity]: TransactionProgress,
+  [Modals.SwapProgress]: TransactionProgress,
+  [Modals.SwapFailed]: TransactionFailed,
   [Modals.TokenSelect]: TokenSelect,
 };
 

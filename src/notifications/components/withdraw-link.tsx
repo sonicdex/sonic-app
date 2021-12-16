@@ -35,9 +35,6 @@ export const WithdrawLink: React.FC<WithdrawLinkProps> = ({ id }) => {
 
   const handleStateChange = () => {
     switch (withdrawBatch.state) {
-      case 'approve':
-        setCurrentModalState('approve');
-        break;
       case 'withdraw':
         setCurrentModalState('withdraw');
         break;
