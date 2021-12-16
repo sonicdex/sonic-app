@@ -63,7 +63,7 @@ export const AddLiquidityLink: React.FC<AddLiquidityLinkProps> = ({ id }) => {
         console.log('Add Liquidity Completed', res);
         clearModal();
         addNotification({
-          title: `Added liquidity ${token0.value} ${token0.token?.symbol} + ${token1.value} ${token1.token?.symbol}`,
+          title: `Successfuly added liquidity: ${token0.value} ${token0.token?.symbol} + ${token1.value} ${token1.token?.symbol}`,
           type: NotificationType.Done,
           id: Date.now().toString(),
           // TODO: add transaction id

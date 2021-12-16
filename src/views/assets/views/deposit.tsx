@@ -1,40 +1,35 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Box } from '@chakra-ui/react';
 import { TitleBox, TokenBox, Button } from '@/components';
 
 import {
-  assetsViewActions,
+  depositViewActions,
   FeatureState,
   NotificationType,
   useAppDispatch,
-  useAssetsViewStore,
+  useDepositViewStore,
   useNotificationStore,
   useSwapStore,
 } from '@/store';
 import { useNavigate } from 'react-router';
 import { useQuery } from '@/hooks/use-query';
 import { plugCircleSrc } from '@/assets';
-import { useDepositBatch } from '@/integrations/transactions';
-import { useTotalBalances } from '@/hooks/use-balances';
 
 export const AssetsDeposit = () => {
-  const { addNotification } = useNotificationStore();
-  const { getBalances } = useTotalBalances();
   const query = useQuery();
-  const [selectedTokenId, setSelectedTokenId] = useState(
-    query.get('tokenId') ?? ''
-  );
 
   const { supportedTokenList, supportedTokenListState } = useSwapStore();
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { depositValue } = useAssetsViewStore();
+  const { value, tokenId } = useDepositViewStore();
+  const { addNotification } = useNotificationStore();
 
-  const isReady = useMemo(
-    () => depositValue && parseFloat(depositValue) > 0,
-    [depositValue]
-  );
+  const isReady = useMemo(() => value && parseFloat(value) > 0, [value]);
+
+  const selectedTokenMetadata = useMemo(() => {
+    return supportedTokenList?.find(({ id }) => id === tokenId);
+  }, [supportedTokenList]);
 
   const status = useMemo(() => {
     if (isReady) {
@@ -45,27 +40,31 @@ export const AssetsDeposit = () => {
   }, [isReady]);
 
   const handleTokenSelect = (tokenId: string) => {
-    setSelectedTokenId(tokenId);
+    dispatch(depositViewActions.setTokenId(tokenId));
   };
 
-  const selectedToken = useMemo(() => {
-    return supportedTokenList?.find((token) => token.id === selectedTokenId);
-  }, [selectedTokenId]);
+  const handleDeposit = () => {
+    addNotification({
+      title: `Deposition ${selectedTokenMetadata?.symbol}`,
+      type: NotificationType.Deposit,
+      id: String(new Date().getTime()),
+    });
+  };
 
   useEffect(() => {
     const tokenId = query.get('tokenId');
     const fromQueryValue = query.get('amount');
 
     if (fromQueryValue) {
-      dispatch(assetsViewActions.setDepositValue(fromQueryValue));
+      dispatch(depositViewActions.setValue(fromQueryValue));
     }
 
     if (tokenId) {
-      dispatch(assetsViewActions.setDepositTokenId(tokenId));
+      handleTokenSelect(tokenId);
     }
 
     return () => {
-      dispatch(assetsViewActions.setDepositValue('0.00'));
+      dispatch(depositViewActions.setValue('0.00'));
     };
   }, []);
 
@@ -80,14 +79,12 @@ export const AssetsDeposit = () => {
             isLoading
           />
         </Box>
-      ) : supportedTokenList && selectedTokenId ? (
+      ) : selectedTokenMetadata ? (
         <Box my={5}>
           <TokenBox
-            value={depositValue}
-            onMaxClick={() => dispatch(assetsViewActions.setDepositValue(''))}
-            setValue={(value) =>
-              dispatch(assetsViewActions.setDepositValue(value))
-            }
+            value={value}
+            onMaxClick={() => dispatch(depositViewActions.setValue(''))}
+            setValue={(value) => dispatch(depositViewActions.setValue(value))}
             onTokenSelect={handleTokenSelect}
             price={0}
             sources={[
@@ -97,12 +94,10 @@ export const AssetsDeposit = () => {
                 balance: 0,
               },
             ]}
-            selectedTokenIds={[selectedTokenId]}
+            selectedTokenIds={[tokenId as string]}
             status={status}
             otherTokensMetadata={supportedTokenList}
-            selectedTokenMetadata={supportedTokenList.find(
-              ({ id }) => id === selectedTokenId
-            )}
+            selectedTokenMetadata={selectedTokenMetadata}
           />
         </Box>
       ) : null}

@@ -71,7 +71,7 @@ export const RemoveLiquidityLink: React.FC<RemoveLiquidityLinkProps> = ({
         console.log('Swap Completed', res);
         clearModal();
         addNotification({
-          title: `Swapped ${from.value} ${from.token?.symbol} for ${to.value} ${to.token?.symbol}`,
+          title: `Successfuly removed liquidity: ${from.value} ${from.token?.symbol} + ${to.value} ${to.token?.symbol}`,
           type: NotificationType.Done,
           id: Date.now().toString(),
           // TODO: add transaction id
@@ -83,7 +83,7 @@ export const RemoveLiquidityLink: React.FC<RemoveLiquidityLinkProps> = ({
         console.error('Swap Error', err);
         clearModal();
         addNotification({
-          title: `Failed swapping ${from.value} ${from.token?.symbol} for ${to.value} ${to.token?.symbol}`,
+          title: `Remove liquidity failed - ${from.value} ${from.token?.symbol} + ${to.value} ${to.token?.symbol}`,
           type: NotificationType.Error,
           id: Date.now().toString(),
         });

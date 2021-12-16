@@ -7,9 +7,10 @@ import {
   FeatureState,
   NotificationType,
   useAppDispatch,
-  useAssetsViewStore,
   useNotificationStore,
   useSwapStore,
+  useWithdrawViewStore,
+  withdrawViewActions,
 } from '@/store';
 import { useNavigate } from 'react-router';
 import { useQuery } from '@/hooks/use-query';
@@ -20,18 +21,18 @@ import { useTotalBalances } from '@/hooks/use-balances';
 export const AssetsWithdraw = () => {
   const { addNotification } = useNotificationStore();
   const query = useQuery();
-  const [selectedTokenId, setSelectedTokenId] = useState(query.get('tokenId'));
-  const { withdrawValue } = useAssetsViewStore();
+  const { value, tokenId } = useWithdrawViewStore();
   const { supportedTokenList, supportedTokenListState } = useSwapStore();
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { getBalances } = useTotalBalances();
 
-  const isReady = useMemo(
-    () => withdrawValue && parseFloat(withdrawValue) > 0,
-    [withdrawValue]
-  );
+  const selectedTokenMetadata = useMemo(() => {
+    return supportedTokenList?.find(({ id }) => id === tokenId);
+  }, [supportedTokenList]);
+
+  const isReady = useMemo(() => value && parseFloat(value) > 0, [value]);
 
   const status = useMemo(() => {
     if (isReady) {
@@ -41,28 +42,34 @@ export const AssetsWithdraw = () => {
     return '';
   }, [isReady]);
 
+  const handleTokenSelect = (tokenId: string) => {
+    dispatch(withdrawViewActions.setTokenId(tokenId));
+  };
+
   useEffect(() => {
+    const tokenId = query.get('tokenId');
     const fromQueryValue = query.get('amount');
+
     if (fromQueryValue) {
-      dispatch(assetsViewActions.setWithdrawValue(fromQueryValue));
+      dispatch(withdrawViewActions.setValue(fromQueryValue));
+    }
+
+    if (tokenId) {
+      handleTokenSelect(tokenId);
     }
 
     return () => {
-      dispatch(assetsViewActions.setWithdrawValue('0.00'));
+      dispatch(withdrawViewActions.setValue('0.00'));
     };
   }, []);
 
-  const handleTokenSelect = (tokenId: string) => {
-    setSelectedTokenId(tokenId);
-  };
-
   const selectedToken = useMemo(() => {
-    return supportedTokenList?.find((token) => token.id === selectedTokenId);
-  }, [selectedTokenId]);
+    return supportedTokenList?.find((token) => token.id === tokenId);
+  }, [tokenId]);
 
   const withdrawBatch = useWithdrawBatch({
     token: selectedToken,
-    amount: withdrawValue,
+    amount: value,
   });
 
   const handleWithdraw = async () => {
@@ -78,7 +85,7 @@ export const AssetsWithdraw = () => {
       getBalances();
     } catch (error) {
       addNotification({
-        title: `Withdraw failed ${withdrawValue} ${selectedToken?.symbol}`,
+        title: `Withdraw failed ${value} ${selectedToken?.symbol}`,
         type: NotificationType.Error,
         id: Date.now().toString(),
       });
@@ -99,20 +106,18 @@ export const AssetsWithdraw = () => {
             isLoading
           />
         </Box>
-      ) : supportedTokenList && selectedTokenId ? (
+      ) : supportedTokenList && tokenId ? (
         <Box my={5}>
           <TokenBox
-            value={withdrawValue}
+            value={value}
             setValue={(value) =>
               dispatch(assetsViewActions.setWithdrawValue(value))
             }
             onTokenSelect={handleTokenSelect}
-            selectedTokenIds={[selectedTokenId]}
+            selectedTokenIds={[tokenId]}
             status={status}
             otherTokensMetadata={supportedTokenList}
-            selectedTokenMetadata={supportedTokenList.find(
-              ({ id }) => id === selectedTokenId
-            )}
+            selectedTokenMetadata={selectedTokenMetadata}
             price={0}
             sources={[
               {
