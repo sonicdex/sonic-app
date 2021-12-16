@@ -27,7 +27,7 @@ export const LiquidityAdd = () => {
   const { isConnected } = usePlugStore();
 
   const { addNotification } = useNotificationStore();
-  const { from, to } = useLiquidityViewStore();
+  const { token0: from, token1: to } = useLiquidityViewStore();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { supportedTokenListState, supportedTokenList } = useSwapStore();
@@ -91,17 +91,22 @@ export const LiquidityAdd = () => {
 
       if (fromTokenId) {
         dispatch(
-          liquidityViewActions.setValue({ data: 'from', value: '0.00' })
+          liquidityViewActions.setValue({ data: 'token0', value: '0.00' })
         );
         dispatch(
-          liquidityViewActions.setToken({ data: 'from', tokenId: fromTokenId })
+          liquidityViewActions.setToken({
+            data: 'token0',
+            tokenId: fromTokenId,
+          })
         );
       }
 
       if (toTokenId) {
-        dispatch(liquidityViewActions.setValue({ data: 'to', value: '0.00' }));
         dispatch(
-          liquidityViewActions.setToken({ data: 'to', tokenId: toTokenId })
+          liquidityViewActions.setValue({ data: 'token1', value: '0.00' })
+        );
+        dispatch(
+          liquidityViewActions.setToken({ data: 'token1', tokenId: toTokenId })
         );
       }
     }
@@ -119,11 +124,11 @@ export const LiquidityAdd = () => {
           <TokenBox
             value={from.value}
             setValue={(value) =>
-              dispatch(liquidityViewActions.setValue({ data: 'from', value }))
+              dispatch(liquidityViewActions.setValue({ data: 'token0', value }))
             }
             onTokenSelect={(tokenId) => {
               dispatch(
-                liquidityViewActions.setToken({ data: 'from', tokenId })
+                liquidityViewActions.setToken({ data: 'token0', tokenId })
               );
             }}
             otherTokensMetadata={supportedTokenList}
@@ -132,7 +137,7 @@ export const LiquidityAdd = () => {
             selectedTokenIds={selectedTokenIds}
             disabled={subStep === 1}
             menuDisabled={subStep === 1}
-            price={53.23}
+            price={0}
             sources={getAppAssetsSources({ balances: { plug: 0, sonic: 0 } })}
             isLoading={supportedTokenListState === FeatureState.Loading}
           />
@@ -155,17 +160,19 @@ export const LiquidityAdd = () => {
           <TokenBox
             value={to.value}
             setValue={(value) =>
-              dispatch(liquidityViewActions.setValue({ data: 'to', value }))
+              dispatch(liquidityViewActions.setValue({ data: 'token1', value }))
             }
             onTokenSelect={(tokenId) => {
-              dispatch(liquidityViewActions.setToken({ data: 'to', tokenId }));
+              dispatch(
+                liquidityViewActions.setToken({ data: 'token1', tokenId })
+              );
             }}
             otherTokensMetadata={supportedTokenList}
             selectedTokenMetadata={to.token}
             status={getActiveStatus(to.token, to.value)}
             disabled={subStep === 1}
             menuDisabled={subStep === 1}
-            price={53.23}
+            price={0}
             sources={getAppAssetsSources({ balances: { plug: 0, sonic: 0 } })}
             isLoading={supportedTokenListState === FeatureState.Loading}
           />
@@ -191,17 +198,19 @@ export const LiquidityAdd = () => {
               <TokenBox
                 value={to.value}
                 setValue={(value) =>
-                  dispatch(liquidityViewActions.setValue({ data: 'to', value }))
+                  dispatch(
+                    liquidityViewActions.setValue({ data: 'token1', value })
+                  )
                 }
                 onTokenSelect={(tokenId) => {
                   dispatch(
-                    liquidityViewActions.setToken({ data: 'to', tokenId })
+                    liquidityViewActions.setToken({ data: 'token1', tokenId })
                   );
                 }}
                 otherTokensMetadata={supportedTokenList}
                 selectedTokenMetadata={to.token}
                 status="active"
-                price={53.23}
+                price={0}
                 sources={getAppAssetsSources({
                   balances: { plug: 0, sonic: 0 },
                 })}

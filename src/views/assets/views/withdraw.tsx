@@ -1,34 +1,36 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Box } from '@chakra-ui/react';
 import { TitleBox, TokenBox, Button } from '@/components';
 
 import {
-  assetsViewActions,
   FeatureState,
   NotificationType,
   useAppDispatch,
-  useAssetsViewStore,
   useNotificationStore,
   useSwapStore,
+  useWithdrawViewStore,
+  withdrawViewActions,
 } from '@/store';
 import { useNavigate } from 'react-router';
 import { useQuery } from '@/hooks/use-query';
 import { sonicCircleSrc } from '@/assets';
+import { getCurrencyString } from '@/utils/format';
 
 export const AssetsWithdraw = () => {
-  const { addNotification } = useNotificationStore();
   const query = useQuery();
-  const [selectedTokenId, setSelectedTokenId] = useState(query.get('tokenId'));
-  const { withdrawValue } = useAssetsViewStore();
-  const { supportedTokenList, supportedTokenListState } = useSwapStore();
+  const { amount: value, tokenId } = useWithdrawViewStore();
+  const { supportedTokenList, sonicBalances, supportedTokenListState } =
+    useSwapStore();
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const { addNotification } = useNotificationStore();
 
-  const isReady = useMemo(
-    () => withdrawValue && parseFloat(withdrawValue) > 0,
-    [withdrawValue]
-  );
+  const selectedTokenMetadata = useMemo(() => {
+    return supportedTokenList?.find(({ id }) => id === tokenId);
+  }, [supportedTokenList, tokenId]);
+
+  const isReady = useMemo(() => value && parseFloat(value) > 0, [value]);
 
   const status = useMemo(() => {
     if (isReady) {
@@ -38,28 +40,40 @@ export const AssetsWithdraw = () => {
     return '';
   }, [isReady]);
 
+  const handleTokenSelect = (tokenId: string) => {
+    dispatch(withdrawViewActions.setTokenId(tokenId));
+  };
+
+  const tokenBalance = useMemo(() => {
+    if (sonicBalances && tokenId) {
+      return sonicBalances[tokenId];
+    }
+
+    return 0;
+  }, [sonicBalances, tokenId]);
+
   useEffect(() => {
-    const fromQueryValue = query.get('amount');
-    if (fromQueryValue) {
-      dispatch(assetsViewActions.setWithdrawValue(fromQueryValue));
+    const tokenId = query.get('tokenId');
+    const amount = query.get('amount');
+
+    if (amount) {
+      dispatch(withdrawViewActions.setAmount(amount));
+    }
+
+    if (tokenId) {
+      handleTokenSelect(tokenId);
     }
 
     return () => {
-      dispatch(assetsViewActions.setWithdrawValue('0.00'));
+      dispatch(withdrawViewActions.setAmount('0.00'));
     };
   }, []);
 
-  const handleTokenSelect = (tokenId: string) => {
-    setSelectedTokenId(tokenId);
-  };
-
   const handleWithdraw = () => {
-    // TODO: Replace by a real withdraw
-    // Withdraw token from Sonic
     addNotification({
-      title: 'Withdraw successful',
-      type: NotificationType.Done,
-      id: Date.now().toString(),
+      title: `Withdrawing ${selectedTokenMetadata?.symbol}`,
+      type: NotificationType.Withdraw,
+      id: String(new Date().getTime()),
     });
   };
 
@@ -77,26 +91,32 @@ export const AssetsWithdraw = () => {
             isLoading
           />
         </Box>
-      ) : supportedTokenList && selectedTokenId ? (
+      ) : selectedTokenMetadata && tokenId ? (
         <Box my={5}>
           <TokenBox
-            value={withdrawValue}
-            setValue={(value) =>
-              dispatch(assetsViewActions.setWithdrawValue(value))
-            }
+            value={value}
+            setValue={(value) => dispatch(withdrawViewActions.setAmount(value))}
             onTokenSelect={handleTokenSelect}
-            selectedTokenIds={[selectedTokenId]}
+            selectedTokenIds={[tokenId]}
             status={status}
             otherTokensMetadata={supportedTokenList}
-            selectedTokenMetadata={supportedTokenList.find(
-              ({ id }) => id === selectedTokenId
-            )}
-            price={53.23}
+            selectedTokenMetadata={selectedTokenMetadata}
+            price={0}
+            onMaxClick={() =>
+              dispatch(
+                withdrawViewActions.setAmount(
+                  getCurrencyString(
+                    tokenBalance,
+                    selectedTokenMetadata.decimals
+                  )
+                )
+              )
+            }
             sources={[
               {
                 name: 'Sonic',
                 src: sonicCircleSrc,
-                balance: 0,
+                balance: tokenBalance,
               },
             ]}
           />

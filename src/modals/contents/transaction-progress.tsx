@@ -4,7 +4,7 @@ import { depositSrc, swapSrc, withdrawSrc } from '@/assets';
 import { SwapStep } from './components';
 import { ModalComponentProps } from '..';
 
-export const SwapProgress = ({
+export const TransactionProgress = ({
   currentModalState,
   currentModalData,
 }: Partial<ModalComponentProps>) => {

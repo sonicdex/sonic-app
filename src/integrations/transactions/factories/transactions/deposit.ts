@@ -10,14 +10,18 @@ export const useMemorizedDepositTransaction: CreateTransaction<Deposit> = (
   onSuccess,
   onFail
 ) =>
-  useMemo(
-    () => ({
+  useMemo(() => {
+    if (!token?.id) throw new Error('Token is required');
+
+    return {
       canisterId: ENV.canisterIds.swap,
       idl: SwapIDL.factory,
       methodName: 'deposit',
       onSuccess,
       onFail,
-      args: [Principal.fromText(token.id), parseAmount(amount, token.decimals)],
-    }),
-    [amount, token]
-  );
+      args: [
+        Principal.fromText(token?.id),
+        parseAmount(amount, token?.decimals),
+      ],
+    };
+  }, [amount, token]);

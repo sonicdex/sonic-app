@@ -10,8 +10,10 @@ export const useMemorizedApproveTransaction: CreateTransaction<Deposit> = (
   onSuccess,
   onFail
 ) =>
-  useMemo(
-    () => ({
+  useMemo(() => {
+    if (!token?.id) throw new Error('Token is required');
+
+    return {
       canisterId: token.id,
       idl: TokenIDL.factory,
       methodName: 'approve',
@@ -21,6 +23,5 @@ export const useMemorizedApproveTransaction: CreateTransaction<Deposit> = (
         Principal.fromText(ENV.canisterIds.swap),
         parseAmount(amount, token.decimals),
       ],
-    }),
-    [amount, token]
-  );
+    };
+  }, [amount, token]);

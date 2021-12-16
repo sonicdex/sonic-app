@@ -2,7 +2,7 @@ import { Flex, Heading, Text, ModalCloseButton } from '@chakra-ui/react';
 import { Button } from '@/components';
 import { ModalComponentProps } from '../modals';
 
-export const SwapFailed = ({
+export const TransactionFailed = ({
   callbacks = [() => {}, () => {}],
 }: Partial<ModalComponentProps>) => (
   <Flex

@@ -13,11 +13,13 @@ import { createCAPLink } from '@/utils/function';
 import { Link } from '@chakra-ui/react';
 import { useEffect, useMemo } from 'react';
 
-export interface SwapLinkProps {
+export interface RemoveLiquidityLinkProps {
   id: string;
 }
 
-export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
+export const RemoveLiquidityLink: React.FC<RemoveLiquidityLinkProps> = ({
+  id,
+}) => {
   const { setCurrentModal, clearModal, setCurrentModalState } = useModalStore();
   const swapViewStore = useSwapViewStore();
   const { addNotification, popNotification } = useNotificationStore();
@@ -69,7 +71,7 @@ export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
         console.log('Swap Completed', res);
         clearModal();
         addNotification({
-          title: `Swapped ${from.value} ${from.token?.symbol} for ${to.value} ${to.token?.symbol}`,
+          title: `Successfuly removed liquidity: ${from.value} ${from.token?.symbol} + ${to.value} ${to.token?.symbol}`,
           type: NotificationType.Done,
           id: Date.now().toString(),
           // TODO: add transaction id
@@ -81,7 +83,7 @@ export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
         console.error('Swap Error', err);
         clearModal();
         addNotification({
-          title: `Failed swapping ${from.value} ${from.token?.symbol} for ${to.value} ${to.token?.symbol}`,
+          title: `Remove liquidity failed - ${from.value} ${from.token?.symbol} + ${to.value} ${to.token?.symbol}`,
           type: NotificationType.Error,
           id: Date.now().toString(),
         });

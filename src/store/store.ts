@@ -8,6 +8,8 @@ import activityViewReducer from '@/store/features/activity-view/activity-view-sl
 import assetsViewReducer from '@/store/features/assets-view/assets-view-slice';
 import liquidityViewReducer from '@/store/features/liquidity-view/liquidity-view-slice';
 import swapViewReducer from '@/store/features/swap-view/swap-view-slice';
+import depositViewReducer from '@/store/features/deposit-view/deposit-view-slice';
+import withdrawViewReducer from '@/store/features/withdraw-view/withdraw-view-slice';
 
 import swapReducer from '@/store/features/swap/swap-slice';
 
@@ -17,10 +19,12 @@ export const store = configureStore({
     modal: modalReducer,
     notification: notificationReducer,
     swap: swapReducer,
-    swapView: swapViewReducer,
-    assetsView: assetsViewReducer,
-    liquidityView: liquidityViewReducer,
     activityView: activityViewReducer,
+    assetsView: assetsViewReducer,
+    depositView: depositViewReducer,
+    liquidityView: liquidityViewReducer,
+    swapView: swapViewReducer,
+    withdrawView: withdrawViewReducer,
   },
 });
 

@@ -1,6 +1,5 @@
-import { MODALS } from '@/modals';
+import { Modals } from '@/modals';
 import { useModalStore, useSwapStore } from '@/store';
-import { getCurrency } from '@/utils/format';
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -11,6 +10,7 @@ import {
   useBatchHook,
 } from '..';
 import { Batch, Swap } from '../..';
+import { getToDepositAmount } from './utils';
 
 type SwapBatchStep = 'approve' | 'deposit' | 'swap' | 'withdraw';
 export interface ExtraDepositSwapBatchOptions {
@@ -100,7 +100,7 @@ export const useSwapBatch = ({
         },
       ]);
       setOnClose(() => resolve(false));
-      setCurrentModal(MODALS.swapFailed);
+      setCurrentModal(Modals.SwapFailed);
     });
   };
 
@@ -110,21 +110,11 @@ export const useSwapBatch = ({
       fromToken: swapParams.from.token?.symbol,
       toToken: swapParams.to.token?.symbol,
     });
-    setCurrentModal(MODALS.swapProgress);
+    setCurrentModal(Modals.SwapProgress);
   };
 
   return [
     useBatchHook<SwapBatchStep>({ transactions, handleRetry }),
     openSwapModal,
   ] as [Batch.Hook<SwapBatchStep>, () => void];
-};
-
-const getToDepositAmount = (
-  tokenBalance: number,
-  tokenDecimals: number,
-  fromValue: string
-): string => {
-  const parsedFromValue = parseFloat(fromValue);
-  const parsedTokenBalance = Number(getCurrency(tokenBalance, tokenDecimals));
-  return (parsedFromValue - parsedTokenBalance).toString();
 };

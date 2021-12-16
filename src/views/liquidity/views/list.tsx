@@ -6,6 +6,7 @@ import {
   Alert,
   AlertIcon,
   AlertTitle,
+  Stack,
 } from '@chakra-ui/react';
 
 import {
@@ -23,7 +24,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { ENV } from '@/config';
 import { RemoveLiquidityModal } from '../components/remove-liquidity-modal';
-import { usePlugStore } from '@/store';
+import { FeatureState, usePlugStore, useSwapStore } from '@/store';
 
 const INFORMATION_TITLE = 'Liquidity Provider Rewards';
 const INFORMATION_DESCRIPTION =
@@ -52,6 +53,7 @@ export const Liquidity = () => {
   const removeLiquidityModal = useDisclosure();
   const [displayInformation, setDisplayInformation] = useState(true);
   const { isConnected } = usePlugStore();
+  const { userLPBalances, userLPBalancesState } = useSwapStore();
 
   const moveToAddLiquidityView = (tokenFrom?: string, tokenTo?: string) => {
     const query =
@@ -95,50 +97,88 @@ export const Liquidity = () => {
 
           <PlugButton />
         </>
-      ) : (
-        <Asset
-          type="lp"
-          imageSources={[DefaultTokensImage['XTC'], DefaultTokensImage['WICP']]}
-        >
-          <HStack spacing={4}>
+      ) : userLPBalancesState === FeatureState.Loading ? (
+        <Stack spacing={4}>
+          <Asset isLoading>
             <AssetImageBlock />
-            <AssetTitleBlock title="XTC/WICP" />
-          </HStack>
-          <Box>
-            <Text fontWeight="bold" color="gray.400">
-              LP Tokens
-            </Text>
-            <Text fontWeight="bold">6.7821</Text>
-          </Box>
+            <HStack>
+              <AssetIconButton aria-label="Deposit" icon={<FaPlus />} />
+              <AssetIconButton aria-label="Withdraw" icon={<FaMinus />} />
+            </HStack>
+          </Asset>
 
-          <Box>
-            <Text fontWeight="bold" color="gray.400">
-              Fees Earned
-            </Text>
-            <Text fontWeight="bold" color="green.400">
-              $231.21
-            </Text>
-          </Box>
+          <Asset isLoading>
+            <AssetImageBlock />
+            <HStack>
+              <AssetIconButton aria-label="Deposit" icon={<FaPlus />} />
+              <AssetIconButton aria-label="Withdraw" icon={<FaMinus />} />
+            </HStack>
+          </Asset>
 
-          <HStack>
-            <AssetIconButton
-              aria-label="Remove liquidity"
-              icon={<FaMinus />}
-              onClick={removeLiquidityModal.onOpen}
-            />
-            <AssetIconButton
-              aria-label="Add liquidity"
-              colorScheme="dark-blue"
-              icon={<FaPlus />}
-              onClick={() =>
-                moveToAddLiquidityView(
-                  ENV.canisterIds.XTC,
-                  ENV.canisterIds.WICP
-                )
-              }
-            />
-          </HStack>
-        </Asset>
+          <Asset isLoading>
+            <AssetImageBlock />
+            <HStack>
+              <AssetIconButton aria-label="Deposit" icon={<FaPlus />} />
+              <AssetIconButton aria-label="Withdraw" icon={<FaMinus />} />
+            </HStack>
+          </Asset>
+        </Stack>
+      ) : !userLPBalances?.length ? (
+        <Text textAlign="center" color="gray.400">
+          You have no liquidity positions
+        </Text>
+      ) : (
+        <>
+          {(userLPBalances as unknown as any[]).map((_, index) => (
+            <Asset
+              key={index}
+              type="lp"
+              imageSources={[
+                DefaultTokensImage['XTC'],
+                DefaultTokensImage['WICP'],
+              ]}
+            >
+              <HStack spacing={4}>
+                <AssetImageBlock />
+                <AssetTitleBlock title="XTC/WICP" />
+              </HStack>
+              <Box>
+                <Text fontWeight="bold" color="gray.400">
+                  LP Tokens
+                </Text>
+                <Text fontWeight="bold">6.7821</Text>
+              </Box>
+
+              <Box>
+                <Text fontWeight="bold" color="gray.400">
+                  Fees Earned
+                </Text>
+                <Text fontWeight="bold" color="green.400">
+                  $231.21
+                </Text>
+              </Box>
+
+              <HStack>
+                <AssetIconButton
+                  aria-label="Remove liquidity"
+                  icon={<FaMinus />}
+                  onClick={removeLiquidityModal.onOpen}
+                />
+                <AssetIconButton
+                  aria-label="Add liquidity"
+                  colorScheme="dark-blue"
+                  icon={<FaPlus />}
+                  onClick={() =>
+                    moveToAddLiquidityView(
+                      ENV.canisterIds.XTC,
+                      ENV.canisterIds.WICP
+                    )
+                  }
+                />
+              </HStack>
+            </Asset>
+          ))}
+        </>
       )}
     </>
   );

@@ -1,35 +1,37 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Box } from '@chakra-ui/react';
 import { TitleBox, TokenBox, Button } from '@/components';
 
 import {
-  assetsViewActions,
+  depositViewActions,
   FeatureState,
   NotificationType,
   useAppDispatch,
-  useAssetsViewStore,
+  useDepositViewStore,
   useNotificationStore,
   useSwapStore,
 } from '@/store';
 import { useNavigate } from 'react-router';
 import { useQuery } from '@/hooks/use-query';
 import { plugCircleSrc } from '@/assets';
+import { getCurrencyString } from '@/utils/format';
 
 export const AssetsDeposit = () => {
-  const { addNotification } = useNotificationStore();
   const query = useQuery();
-  const [selectedTokenId, setSelectedTokenId] = useState(query.get('tokenId'));
 
-  const { supportedTokenList, supportedTokenListState } = useSwapStore();
+  const { supportedTokenList, tokenBalances, supportedTokenListState } =
+    useSwapStore();
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { depositValue } = useAssetsViewStore();
+  const { amount: value, tokenId } = useDepositViewStore();
+  const { addNotification } = useNotificationStore();
 
-  const isReady = useMemo(
-    () => depositValue && parseFloat(depositValue) > 0,
-    [depositValue]
-  );
+  const isReady = useMemo(() => value && parseFloat(value) > 0, [value]);
+
+  const selectedTokenMetadata = useMemo(() => {
+    return supportedTokenList?.find(({ id }) => id === tokenId);
+  }, [supportedTokenList, tokenId]);
 
   const status = useMemo(() => {
     if (isReady) {
@@ -40,26 +42,39 @@ export const AssetsDeposit = () => {
   }, [isReady]);
 
   const handleTokenSelect = (tokenId: string) => {
-    setSelectedTokenId(tokenId);
+    dispatch(depositViewActions.setTokenId(tokenId));
   };
 
   const handleDeposit = () => {
-    // TODO: replace by real deposit logic
     addNotification({
-      title: 'Deposit successful',
-      type: NotificationType.Done,
-      id: Date.now().toString(),
+      title: `Depositing ${selectedTokenMetadata?.symbol}`,
+      type: NotificationType.Deposit,
+      id: String(new Date().getTime()),
     });
   };
 
+  const tokenBalance = useMemo(() => {
+    if (tokenBalances && tokenId) {
+      return tokenBalances[tokenId];
+    }
+
+    return 0;
+  }, [tokenBalances, tokenId]);
+
   useEffect(() => {
+    const tokenId = query.get('tokenId');
     const fromQueryValue = query.get('amount');
+
     if (fromQueryValue) {
-      dispatch(assetsViewActions.setDepositValue(fromQueryValue));
+      dispatch(depositViewActions.setAmount(fromQueryValue));
+    }
+
+    if (tokenId) {
+      handleTokenSelect(tokenId);
     }
 
     return () => {
-      dispatch(assetsViewActions.setDepositValue('0.00'));
+      dispatch(depositViewActions.setAmount('0.00'));
     };
   }, []);
 
@@ -74,29 +89,34 @@ export const AssetsDeposit = () => {
             isLoading
           />
         </Box>
-      ) : supportedTokenList && selectedTokenId ? (
+      ) : selectedTokenMetadata && tokenId ? (
         <Box my={5}>
           <TokenBox
-            value={depositValue}
-            onMaxClick={() => dispatch(assetsViewActions.setDepositValue(''))}
-            setValue={(value) =>
-              dispatch(assetsViewActions.setDepositValue(value))
+            value={value}
+            onMaxClick={() =>
+              dispatch(
+                depositViewActions.setAmount(
+                  getCurrencyString(
+                    tokenBalance,
+                    selectedTokenMetadata.decimals
+                  )
+                )
+              )
             }
+            setValue={(value) => dispatch(depositViewActions.setAmount(value))}
             onTokenSelect={handleTokenSelect}
-            price={53.23}
+            price={0}
             sources={[
               {
                 name: 'Plug Wallet',
                 src: plugCircleSrc,
-                balance: 0,
+                balance: tokenBalance,
               },
             ]}
-            selectedTokenIds={[selectedTokenId]}
+            selectedTokenIds={[tokenId as string]}
             status={status}
             otherTokensMetadata={supportedTokenList}
-            selectedTokenMetadata={supportedTokenList.find(
-              ({ id }) => id === selectedTokenId
-            )}
+            selectedTokenMetadata={selectedTokenMetadata}
           />
         </Box>
       ) : null}

@@ -8,20 +8,26 @@ interface SwapState {
   supportedTokenListState: FeatureState;
   balancesState: FeatureState;
   allPairsState: FeatureState;
+  userLPBalancesState: FeatureState;
+
   supportedTokenList?: SwapIDL.TokenInfoExt[];
   sonicBalances?: Balances;
   tokenBalances?: Balances;
   allPairs?: PairList;
+  userLPBalances?: Balances;
 }
 
 const initialState: SwapState = {
   supportedTokenListState: 'loading' as FeatureState,
   balancesState: 'loading' as FeatureState,
   allPairsState: 'loading' as FeatureState,
+  userLPBalancesState: 'loading' as FeatureState,
+
   supportedTokenList: undefined,
   sonicBalances: undefined,
   tokenBalances: undefined,
   allPairs: undefined,
+  userLPBalances: undefined,
 };
 
 export const swapSlice = createSlice({
@@ -73,6 +79,12 @@ export const swapSlice = createSlice({
     },
     setAllPairs: (state, action: PayloadAction<PairList>) => {
       state.allPairs = action.payload;
+    },
+    setUserLPBalancesState: (state, action: PayloadAction<FeatureState>) => {
+      state.userLPBalancesState = action.payload;
+    },
+    setUserLPBalances: (state, action: PayloadAction<Balances>) => {
+      state.userLPBalances = action.payload;
     },
   },
 });

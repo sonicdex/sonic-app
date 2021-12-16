@@ -125,7 +125,7 @@ export const HomeStep = () => {
             selectedTokenIds={selectedTokenIds}
             status={fromValueStatus}
             isLoading={isLoading}
-            price={53.23}
+            price={0}
             sources={getAppAssetsSources({
               balances: {
                 plug:
@@ -172,7 +172,7 @@ export const HomeStep = () => {
             selectedTokenMetadata={to.token}
             disabled={true}
             isLoading={isLoading}
-            price={53.23}
+            price={0}
             sources={getAppAssetsSources({
               balances: {
                 plug:

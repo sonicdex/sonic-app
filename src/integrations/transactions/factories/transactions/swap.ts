@@ -1,6 +1,6 @@
 import { ENV } from '@/config';
 import { SwapIDL } from '@/did';
-import { getAmountInMax, getAmountOutMin, parseAmount } from '@/utils/format';
+import { getMinAmount, parseAmount } from '@/utils/format';
 import { Principal } from '@dfinity/principal';
 import { Transaction } from '@psychedelic/plug-inpage-provider/dist/src/Provider';
 import { useMemo } from 'react';
@@ -23,7 +23,7 @@ export const useMemorizedSwapExactTokensTransaction: CreateTransaction<Swap> = (
 
     const amountIn = parseAmount(from.value, from.token.decimals);
     const amountOutMin = parseAmount(
-      getAmountOutMin(to.value, slippage, to.token.decimals),
+      getMinAmount(to.value, slippage, to.token.decimals),
       to.token.decimals
     );
     const currentTime = (new Date().getTime() + 5 * 60 * 1000) * 10000000;
@@ -57,7 +57,7 @@ export const useMemorizedSwapForExactTokensTransaction: CreateTransaction<Swap> 
 
       const amountOut = parseAmount(to.value, to.token.decimals);
       const amountInMin = parseAmount(
-        getAmountInMax(from.value, slippage, from.token.decimals),
+        getMinAmount(from.value, slippage, from.token.decimals),
         to.token.decimals
       );
       const currentTime = (new Date().getTime() + 5 * 60 * 1000) * 10000000;

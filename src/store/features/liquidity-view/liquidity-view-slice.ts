@@ -1,25 +1,29 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { FeatureState, RootState } from '@/store';
-import { TokenMetadataList, TokenData, TokenDataKey } from '@/models';
+import { TokenMetadataList, TokenData } from '@/models';
+
+export type LiquidityTokenDataKey = 'token0' | 'token1';
 
 interface LiquidityViewState {
   state: FeatureState;
-  from: TokenData;
-  to: TokenData;
+  token0: TokenData;
+  token1: TokenData;
   tokenList?: TokenMetadataList;
+  slippage: string;
 }
 
 const initialState: LiquidityViewState = {
   state: FeatureState?.Idle,
-  from: {
+  token0: {
     token: undefined,
     value: '0.00',
   },
-  to: {
+  token1: {
     token: undefined,
     value: '0.00',
   },
+  slippage: '0.10',
   tokenList: undefined,
 };
 
@@ -33,35 +37,44 @@ export const liquidityViewSlice = createSlice({
     },
     setValue: (
       state,
-      action: PayloadAction<{ data: TokenDataKey; value: string }>
+      action: PayloadAction<{ data: LiquidityTokenDataKey; value: string }>
     ) => {
       state[action.payload.data].value = action.payload.value;
     },
     setToken: (
       state,
-      action: PayloadAction<{ data: TokenDataKey; tokenId: string | undefined }>
+      action: PayloadAction<{
+        data: LiquidityTokenDataKey;
+        tokenId: string | undefined;
+      }>
     ) => {
       state[action.payload.data].token =
         action.payload.tokenId && state.tokenList
           ? state.tokenList[action.payload.tokenId]
           : undefined;
-      if (state.from.token?.id === state.to.token?.id && state.tokenList) {
+      if (
+        state.token0.token?.id === state.token1.token?.id &&
+        state.tokenList
+      ) {
         // Change 'to.token' if it's the same as the new 'from.token'
         const anotherTokenId = Object.keys(state.tokenList).find(
-          (tokenId) => tokenId !== state.from.token?.id
+          (tokenId) => tokenId !== state.token0.token?.id
         );
-        state.to.token = anotherTokenId
+        state.token1.token = anotherTokenId
           ? state.tokenList[anotherTokenId]
           : undefined;
       }
     },
+    setSlippage: (state, action: PayloadAction<string>) => {
+      state.slippage = action.payload;
+    },
     setTokenList: (state, action: PayloadAction<TokenMetadataList>) => {
       state.tokenList = action.payload;
       const tokens = Object.values(action.payload);
-      state.from.token = tokens[0];
-      state.from.value = '0.00';
-      state.to.token = tokens[1];
-      state.to.value = '0.00';
+      state.token0.token = tokens[0];
+      state.token0.value = '0.00';
+      state.token1.token = tokens[1];
+      state.token1.value = '0.00';
     },
   },
 });

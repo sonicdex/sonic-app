@@ -9,7 +9,6 @@ import {
   PopoverBody,
 } from '@chakra-ui/popover';
 
-import { plugCircleSrc, sonicCircleSrc } from '@/assets';
 import { TokenBoxPopoverItem } from './token-box-popover-item';
 import { TokenBoxSource } from '@/components';
 
@@ -28,8 +27,9 @@ export const TokenBoxPopover: FC<TokenBoxPopoverProps> = ({
     <Popover trigger="hover">
       <PopoverTrigger>
         <HStack spacing={1}>
-          <Image src={plugCircleSrc} />
-          <Image src={sonicCircleSrc} />
+          {sources?.map((source) => (
+            <Image src={source?.src} />
+          ))}
         </HStack>
       </PopoverTrigger>
       <PopoverContent color="gray.50">

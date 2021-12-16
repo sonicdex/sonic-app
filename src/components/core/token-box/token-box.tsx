@@ -10,7 +10,7 @@ import {
 
 import { chevronDownSrc, questionMarkSrc } from '@/assets';
 import { useModalStore } from '@/store';
-import { MODALS } from '@/modals';
+import { Modals } from '@/modals';
 import { NumberInput } from '@/components';
 import { DefaultTokensImage } from '@/constants';
 import { TokenMetadata } from '@/models';
@@ -81,7 +81,7 @@ export const TokenBox = ({
       onSelect: onTokenSelect,
       selectedTokenIds,
     });
-    setCurrentModal(MODALS.tokenSelect);
+    setCurrentModal(Modals.TokenSelect);
   };
 
   const shouldRenderMaxButton = useMemo(() => {
@@ -173,7 +173,7 @@ export const TokenBox = ({
           <NumberInput
             value={value}
             setValue={setValue}
-            disabled={disabled}
+            isDisabled={disabled}
             style={{
               color: status === 'active' ? '#F6FCFD' : '#888E8F',
               background,

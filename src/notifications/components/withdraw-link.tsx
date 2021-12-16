@@ -1,45 +1,40 @@
 import { useTotalBalances } from '@/hooks/use-balances';
-import { useSwapBatch } from '@/integrations/transactions';
+import { useWithdrawBatch } from '@/integrations/transactions/factories/batch/withdraw';
 import { Modals } from '@/modals';
 import {
   NotificationType,
   useModalStore,
   useNotificationStore,
-  usePlugStore,
-  useSwapViewStore,
+  useSwapStore,
+  useWithdrawViewStore,
 } from '@/store';
-import { deserialize, stringify } from '@/utils/format';
 import { createCAPLink } from '@/utils/function';
 import { Link } from '@chakra-ui/react';
 import { useEffect, useMemo } from 'react';
 
-export interface SwapLinkProps {
+export interface WithdrawLinkProps {
   id: string;
 }
 
-export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
+export const WithdrawLink: React.FC<WithdrawLinkProps> = ({ id }) => {
   const { setCurrentModal, clearModal, setCurrentModalState } = useModalStore();
-  const swapViewStore = useSwapViewStore();
   const { addNotification, popNotification } = useNotificationStore();
-  const { principalId } = usePlugStore();
   const { getBalances } = useTotalBalances();
 
-  const { from, to, slippage, keepInSonic } = useMemo(() => {
-    // Clone current state just for this batch
-    const { from, to, slippage, keepInSonic } = swapViewStore;
+  const { amount: value, tokenId } = useWithdrawViewStore();
+  const { supportedTokenList } = useSwapStore();
 
-    return deserialize(stringify({ from, to, slippage, keepInSonic }));
-  }, []);
+  const selectedToken = useMemo(() => {
+    return supportedTokenList?.find(({ id }) => id === tokenId);
+  }, [supportedTokenList, tokenId]);
+
+  const withdrawBatch = useWithdrawBatch({
+    amount: value,
+    token: selectedToken,
+  });
 
   const handleStateChange = () => {
-    switch (swapBatch.state) {
-      case 'approve':
-      case 'deposit':
-        setCurrentModalState('deposit');
-        break;
-      case 'swap':
-        setCurrentModalState('swap');
-        break;
+    switch (withdrawBatch.state) {
       case 'withdraw':
         setCurrentModalState('withdraw');
         break;
@@ -48,28 +43,19 @@ export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
 
   const handleOpenModal = () => {
     handleStateChange();
-    openSwapModal();
-    setCurrentModal(Modals.SwapProgress);
+    setCurrentModal(Modals.Withdraw);
   };
 
-  const [swapBatch, openSwapModal] = useSwapBatch({
-    from,
-    to,
-    slippage: Number(slippage),
-    keepInSonic,
-    principalId,
-  });
-
-  useEffect(handleStateChange, [swapBatch.state]);
+  useEffect(handleStateChange, [withdrawBatch.state]);
 
   useEffect(() => {
-    swapBatch
+    withdrawBatch
       .execute()
       .then((res) => {
-        console.log('Swap Completed', res);
+        console.log('Withdraw Completed', res);
         clearModal();
         addNotification({
-          title: `Swapped ${from.value} ${from.token?.symbol} for ${to.value} ${to.token?.symbol}`,
+          title: 'Withdraw successful',
           type: NotificationType.Done,
           id: Date.now().toString(),
           // TODO: add transaction id
@@ -78,10 +64,10 @@ export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
         getBalances();
       })
       .catch((err) => {
-        console.error('Swap Error', err);
+        console.error('Withdraw Error', err);
         clearModal();
         addNotification({
-          title: `Failed swapping ${from.value} ${from.token?.symbol} for ${to.value} ${to.token?.symbol}`,
+          title: `Withdraw failed ${value} ${selectedToken?.symbol}`,
           type: NotificationType.Error,
           id: Date.now().toString(),
         });
