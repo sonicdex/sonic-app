@@ -53,7 +53,6 @@ export const ReviewStep = () => {
     <>
       <TitleBox
         title="Swap"
-        settings="sd"
         onArrowBack={() => dispatch(swapViewActions.setStep(SwapStep.Home))}
       />
       <Flex direction="column" alignItems="center" mb={5}>
