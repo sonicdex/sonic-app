@@ -105,17 +105,18 @@ export const SwapHomeStep = () => {
     );
   };
 
-  const handleToMaxClick = () => {
-    dispatch(
-      swapViewActions.setValue({
-        data: 'to',
-        value:
-          totalBalances && to.token
-            ? getCurrencyString(totalBalances[to.token?.id], to.token?.decimals)
-            : '0.00',
-      })
-    );
-  };
+  // TODO: add if 2nd input will be unblocked
+  // const handleToMaxClick = () => {
+  //   dispatch(
+  //     swapViewActions.setValue({
+  //       data: 'to',
+  //       value:
+  //         totalBalances && to.token
+  //           ? getCurrencyString(totalBalances[to.token?.id], to.token?.decimals)
+  //           : '0.00',
+  //     })
+  //   );
+  // };
 
   const handleSelectFromToken = () => {
     openSelectTokenModal({
@@ -239,7 +240,7 @@ export const SwapHomeStep = () => {
               <TokenInput />
             </TokenContent>
             <TokenBalances>
-              <TokenBalancesDetails onMaxClick={handleToMaxClick} />
+              <TokenBalancesDetails />
               <TokenBalancesPrice />
             </TokenBalances>
           </Token>

@@ -71,6 +71,23 @@ export const getLpAmount = (
   return Math.min(Number(one), Number(two)).toFixed(3);
 };
 
+type GetAddLpEqualAmountOptions = {
+  token0: string;
+  reserve0: string;
+  reserve1: string;
+};
+
+export const getEqualLpAmount = ({
+  token0,
+  reserve0,
+  reserve1,
+}: GetAddLpEqualAmountOptions) => {
+  return new BigNumber(token0)
+    .multipliedBy(reserve0)
+    .dividedBy(reserve1)
+    .toFixed(3);
+};
+
 export const getAmountOut = (
   amountIn: string | number,
   decimalsIn: string | number,
