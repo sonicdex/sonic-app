@@ -60,7 +60,6 @@ export const TokenSelectModal = () => {
       );
     };
 
-    console.log(parsedTokens);
     const filteredItems = parsedTokens.filter(filterFunction);
     setFilteredList(filteredItems);
   }, [search, parsedTokens]);

@@ -1,4 +1,4 @@
-import { PairList, TokenData, TokenMetadataList } from '@/models';
+import { TokenData, TokenMetadataList } from '@/models';
 import type { RootState } from '@/store';
 import { FeatureState } from '@/store';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
@@ -16,7 +16,6 @@ interface SwapViewState {
   from: TokenData;
   to: TokenData;
   tokenList?: TokenMetadataList;
-  pairList?: PairList;
   slippage: string;
   keepInSonic: boolean;
 }
@@ -35,7 +34,6 @@ const initialState: SwapViewState = {
     value: '0.00',
   },
   tokenList: undefined,
-  pairList: undefined,
   slippage: INITIAL_SWAP_SLIPPAGE,
   keepInSonic: false,
 };
@@ -93,10 +91,6 @@ export const swapViewSlice = createSlice({
         state.from.value = '0.00';
         state.to.value = '0.00';
       }
-      state.step = SwapStep.Home;
-    },
-    setPairList: (state, action: PayloadAction<PairList>) => {
-      state.pairList = action.payload;
       state.step = SwapStep.Home;
     },
     setSlippage: (state, action: PayloadAction<string>) => {

@@ -5,7 +5,7 @@ import {
   AddLiquidityModalDataStep,
   modalsSliceActions,
   useAppDispatch,
-  useSwapStore,
+  useSwapCanisterStore,
 } from '@/store';
 import { parseAmount } from '@/utils/format';
 
@@ -20,7 +20,7 @@ import { getToDepositAmount } from './utils';
 
 export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
   const dispatch = useAppDispatch();
-  const { sonicBalances } = useSwapStore();
+  const { sonicBalances } = useSwapCanisterStore();
 
   if (!sonicBalances) {
     throw new Error('Sonic balance are required');

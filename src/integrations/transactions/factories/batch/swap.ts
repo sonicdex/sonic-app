@@ -2,7 +2,7 @@ import {
   modalsSliceActions,
   SwapModalDataStep,
   useAppDispatch,
-  useSwapStore,
+  useSwapCanisterStore,
 } from '@/store';
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -25,7 +25,7 @@ export const useSwapBatch = ({
   ...swapParams
 }: Swap & ExtraDepositSwapBatchOptions) => {
   const dispatch = useAppDispatch();
-  const { sonicBalances } = useSwapStore();
+  const { sonicBalances } = useSwapCanisterStore();
 
   if (!sonicBalances) throw new Error('Sonic balance are required');
 

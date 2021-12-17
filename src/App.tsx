@@ -8,7 +8,7 @@ import { EmptyMobile, Layout } from './components';
 import { SwapProgressModal, TokenSelectModal } from './components/modals';
 import { useActorsInit } from './integrations/actor/use-actors-init';
 import { usePlugInit } from './integrations/plug';
-import { useSwapInit } from './integrations/swap';
+import { useSwapInit } from './integrations/swap-canister';
 import { AssetsDeposit } from './views/assets/views/deposit';
 import { AssetsWithdraw } from './views/assets/views/withdraw';
 import { WithdrawProgressModal } from './components/modals/withdraw-modal';

@@ -2,7 +2,7 @@ import {
   modalsSliceActions,
   RemoveLiquidityModalDataStep,
   useAppDispatch,
-  useSwapStore,
+  useSwapCanisterStore,
 } from '@/store';
 
 import { useMemo } from 'react';
@@ -25,7 +25,7 @@ export const useRemoveLiquidityBatch = ({
   ...removeLiquidityParams
 }: UseRemoveLiquidityBatchOptions) => {
   const dispatch = useAppDispatch();
-  const { sonicBalances } = useSwapStore();
+  const { sonicBalances } = useSwapCanisterStore();
 
   if (!sonicBalances) {
     throw new Error('Sonic balance are required');

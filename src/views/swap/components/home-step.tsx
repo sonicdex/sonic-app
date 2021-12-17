@@ -24,7 +24,7 @@ import {
   swapViewActions,
   useAppDispatch,
   usePlugStore,
-  useSwapStore,
+  useSwapCanisterStore,
   useSwapViewStore,
   useTokenModalOpener,
 } from '@/store';
@@ -35,7 +35,7 @@ export const SwapHomeStep = () => {
   const { fromTokenOptions, toTokenOptions, from, to, slippage } =
     useSwapViewStore();
   const dispatch = useAppDispatch();
-  const { sonicBalances, tokenBalances } = useSwapStore();
+  const { sonicBalances, tokenBalances } = useSwapCanisterStore();
   const { isConnected } = usePlugStore();
 
   const openSelectTokenModal = useTokenModalOpener();

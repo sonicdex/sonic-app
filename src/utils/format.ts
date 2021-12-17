@@ -71,17 +71,17 @@ export const getLpAmount = (
   return Math.min(Number(one), Number(two)).toFixed(3);
 };
 
-type GetAddLpEqualAmountOptions = {
+type GetEqualLPTokenAmount = {
   token0: string;
   reserve0: string;
   reserve1: string;
 };
 
-export const getEqualLpAmount = ({
+export const getEqualLPTokenAmount = ({
   token0,
   reserve0,
   reserve1,
-}: GetAddLpEqualAmountOptions) => {
+}: GetEqualLPTokenAmount) => {
   return new BigNumber(token0)
     .multipliedBy(reserve0)
     .dividedBy(reserve1)

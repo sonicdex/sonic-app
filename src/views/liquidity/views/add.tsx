@@ -23,10 +23,11 @@ import {
   liquidityViewActions,
   NotificationType,
   useAppDispatch,
+  useLiquidityView,
   useLiquidityViewStore,
   useNotificationStore,
   usePlugStore,
-  useSwapStore,
+  useSwapCanisterStore,
   useTokenModalOpener,
 } from '@/store';
 import { useNavigate } from 'react-router';
@@ -41,6 +42,7 @@ const BUTTON_TITLES = ['Review Supply', 'Confirm Supply'];
 
 export const LiquidityAdd = () => {
   const query = useQuery();
+  useLiquidityView();
 
   const { isConnected } = usePlugStore();
 
@@ -49,7 +51,8 @@ export const LiquidityAdd = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { tokenBalances, sonicBalances, totalBalances } = useBalances();
-  const { supportedTokenListState, supportedTokenList } = useSwapStore();
+  const { supportedTokenListState, supportedTokenList } =
+    useSwapCanisterStore();
   const openSelectTokenModal = useTokenModalOpener();
 
   const [isReviewing, setIsReviewing] = useState(false);

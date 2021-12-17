@@ -3,17 +3,12 @@ import { parseResponseTokenList } from '@/utils/canister';
 import { getAmountOut } from '@/utils/format';
 import { useEffect } from 'react';
 import { swapViewActions, useSwapViewStore } from '.';
-import { useSwapStore } from '..';
+import { useSwapCanisterStore } from '..';
 
 export const useSwapView = () => {
   const dispatch = useAppDispatch();
-  const { allPairs, supportedTokenList } = useSwapStore();
-  const { from, to, pairList } = useSwapViewStore();
-
-  useEffect(() => {
-    if (!allPairs) return;
-    dispatch(swapViewActions.setPairList(allPairs));
-  }, [allPairs]);
+  const { allPairs, supportedTokenList } = useSwapCanisterStore();
+  const { from, to } = useSwapViewStore();
 
   useEffect(() => {
     if (!supportedTokenList) return;
@@ -25,9 +20,9 @@ export const useSwapView = () => {
   useEffect(() => {
     if (!from.token) return;
     if (!to.token) return;
-    if (!pairList) return;
+    if (!allPairs) return;
 
-    if (pairList[from.token.id] && !pairList[from.token.id][to.token.id]) {
+    if (allPairs[from.token.id] && !allPairs[from.token.id][to.token.id]) {
       dispatch(swapViewActions.setToken({ data: 'to', tokenId: undefined }));
     } else {
       dispatch(
@@ -37,8 +32,8 @@ export const useSwapView = () => {
             from.value,
             from.token.decimals,
             to.token.decimals,
-            String(pairList[from.token.id][to.token.id].reserve0),
-            String(pairList[from.token.id][to.token.id].reserve1)
+            String(allPairs[from.token.id][to.token.id].reserve0),
+            String(allPairs[from.token.id][to.token.id].reserve1)
           ),
         })
       );

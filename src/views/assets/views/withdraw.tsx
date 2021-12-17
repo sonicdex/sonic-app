@@ -19,7 +19,7 @@ import {
   NotificationType,
   useAppDispatch,
   useNotificationStore,
-  useSwapStore,
+  useSwapCanisterStore,
   useTokenModalOpener,
   useWithdrawViewStore,
   withdrawViewActions,
@@ -34,7 +34,7 @@ export const AssetsWithdraw = () => {
   const query = useQuery();
   const { amount, tokenId } = useWithdrawViewStore();
   const { supportedTokenList, sonicBalances, supportedTokenListState } =
-    useSwapStore();
+    useSwapCanisterStore();
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();

@@ -2,10 +2,10 @@ import { useBalances } from '@/hooks/use-balances';
 import {
   FeatureState,
   liquidityViewActions,
-  swapActions,
+  swapCanisterActions,
   useAppDispatch,
   usePlugStore,
-  useSwapStore,
+  useSwapCanisterStore,
 } from '@/store';
 import {
   parseResponseAllPairs,
@@ -18,7 +18,7 @@ import { useSwapActor } from '../actor/use-swap-actor';
 export const useSwapInit = () => {
   const { getBalances, totalBalances } = useBalances();
   const { principalId, isConnected, state: plugState } = usePlugStore();
-  const { supportedTokenListState } = useSwapStore();
+  const { supportedTokenListState } = useSwapCanisterStore();
 
   const swapActor = useSwapActor();
 
@@ -29,7 +29,7 @@ export const useSwapInit = () => {
       !isConnected &&
       (plugState === FeatureState.Error || plugState === FeatureState.Idle)
     ) {
-      dispatch(swapActions.setBalancesState(FeatureState.Idle));
+      dispatch(swapCanisterActions.setBalancesState(FeatureState.Idle));
     }
   }, [isConnected, plugState]);
 
@@ -58,7 +58,9 @@ export const useSwapInit = () => {
   async function getSupportedTokenList() {
     if (swapActor) {
       try {
-        dispatch(swapActions.setSupportedTokensListState(FeatureState.Loading));
+        dispatch(
+          swapCanisterActions.setSupportedTokensListState(FeatureState.Loading)
+        );
 
         const response = await swapActor.getSupportedTokenList();
 
@@ -66,14 +68,18 @@ export const useSwapInit = () => {
           dispatch(
             liquidityViewActions.setTokenList(parseResponseTokenList(response))
           );
-          dispatch(swapActions.setSupportedTokenList(response));
+          dispatch(swapCanisterActions.setSupportedTokenList(response));
         }
-        dispatch(swapActions.setSupportedTokensListState(FeatureState.Idle));
+        dispatch(
+          swapCanisterActions.setSupportedTokensListState(FeatureState.Idle)
+        );
 
         return response;
       } catch (error) {
         console.error('getSupportedTokenList: ', error);
-        dispatch(swapActions.setSupportedTokensListState(FeatureState.Error));
+        dispatch(
+          swapCanisterActions.setSupportedTokensListState(FeatureState.Error)
+        );
       }
     }
   }
@@ -81,19 +87,21 @@ export const useSwapInit = () => {
   async function getAllPairs() {
     if (swapActor) {
       try {
-        dispatch(swapActions.setAllPairsState(FeatureState.Loading));
+        dispatch(swapCanisterActions.setAllPairsState(FeatureState.Loading));
         const response = await swapActor.getAllPairs();
 
         if (response) {
-          dispatch(swapActions.setAllPairs(parseResponseAllPairs(response)));
+          dispatch(
+            swapCanisterActions.setAllPairs(parseResponseAllPairs(response))
+          );
         } else {
           throw new Error('No "getAllPairs" response');
         }
 
-        dispatch(swapActions.setAllPairsState(FeatureState.Idle));
+        dispatch(swapCanisterActions.setAllPairsState(FeatureState.Idle));
       } catch (error) {
         console.error('getAllPairs: ', error);
-        dispatch(swapActions.setAllPairsState(FeatureState.Error));
+        dispatch(swapCanisterActions.setAllPairsState(FeatureState.Error));
       }
     }
   }
@@ -101,22 +109,26 @@ export const useSwapInit = () => {
   async function getUserPositiveLPBalances() {
     if (swapActor && principalId) {
       try {
-        dispatch(swapActions.setUserLPBalancesState(FeatureState.Loading));
+        dispatch(
+          swapCanisterActions.setUserLPBalancesState(FeatureState.Loading)
+        );
         const response = await swapActor.getUserLPBalancesAbove(
           Principal.fromText(principalId),
           BigInt(0)
         );
 
         if (response) {
-          dispatch(swapActions.setUserLPBalances(response as any));
+          dispatch(swapCanisterActions.setUserLPBalances(response as any));
         } else {
           throw new Error('No "getUserLPBalancesAbove" response');
         }
 
-        dispatch(swapActions.setUserLPBalancesState(FeatureState.Idle));
+        dispatch(swapCanisterActions.setUserLPBalancesState(FeatureState.Idle));
       } catch (error) {
         console.error('getUserLPBalancesAbove: ', error);
-        dispatch(swapActions.setUserLPBalancesState(FeatureState.Error));
+        dispatch(
+          swapCanisterActions.setUserLPBalancesState(FeatureState.Error)
+        );
       }
     }
   }

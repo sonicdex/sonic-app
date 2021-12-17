@@ -4,7 +4,7 @@ import type { RootState } from '@/store';
 import { SwapIDL } from '@/did';
 import { Balances, PairList } from '@/models';
 
-interface SwapState {
+export interface SwapCanisterState {
   supportedTokenListState: FeatureState;
   balancesState: FeatureState;
   allPairsState: FeatureState;
@@ -17,7 +17,7 @@ interface SwapState {
   userLPBalances?: Balances;
 }
 
-const initialState: SwapState = {
+const initialState: SwapCanisterState = {
   supportedTokenListState: 'loading' as FeatureState,
   balancesState: 'loading' as FeatureState,
   allPairsState: 'loading' as FeatureState,
@@ -30,8 +30,8 @@ const initialState: SwapState = {
   userLPBalances: undefined,
 };
 
-export const swapSlice = createSlice({
-  name: 'swap',
+export const swapCanisterSlice = createSlice({
+  name: 'swapCanister',
   // `createSlice` will infer the state type from the `initialState` argument
   initialState,
   reducers: {
@@ -89,9 +89,9 @@ export const swapSlice = createSlice({
   },
 });
 
-export const swapActions = swapSlice.actions;
+export const swapCanisterActions = swapCanisterSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
-export const selectSwapState = (state: RootState) => state.swap;
+export const selectSwapCanisterState = (state: RootState) => state.swap;
 
-export default swapSlice.reducer;
+export default swapCanisterSlice.reducer;

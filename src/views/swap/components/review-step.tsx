@@ -21,7 +21,7 @@ import {
   swapViewActions,
   useAppDispatch,
   useNotificationStore,
-  useSwapStore,
+  useSwapCanisterStore,
   useSwapViewStore,
 } from '@/store';
 import { getCurrencyString } from '@/utils/format';
@@ -29,7 +29,7 @@ import { debounce } from '@/utils/function';
 import { Box, Checkbox, Flex, FormControl, Image } from '@chakra-ui/react';
 
 export const SwapReviewStep = () => {
-  const { sonicBalances, tokenBalances } = useSwapStore();
+  const { sonicBalances, tokenBalances } = useSwapCanisterStore();
   const { totalBalances } = useBalances();
   const { addNotification } = useNotificationStore();
   const { fromTokenOptions, toTokenOptions, from, to, keepInSonic } =

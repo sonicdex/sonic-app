@@ -6,7 +6,7 @@ import {
   useAppDispatch,
   useDepositViewStore,
   useNotificationStore,
-  useSwapStore,
+  useSwapCanisterStore,
 } from '@/store';
 import { createCAPLink } from '@/utils/function';
 import { Link } from '@chakra-ui/react';
@@ -22,7 +22,7 @@ export const DepositLink: React.FC<DepositLinkProps> = ({ id }) => {
   const { getBalances } = useBalances();
 
   const { amount: value, tokenId } = useDepositViewStore();
-  const { supportedTokenList } = useSwapStore();
+  const { supportedTokenList } = useSwapCanisterStore();
 
   const selectedToken = useMemo(() => {
     return supportedTokenList?.find(({ id }) => id === tokenId);

@@ -21,7 +21,7 @@ import {
   useAppDispatch,
   useDepositViewStore,
   useNotificationStore,
-  useSwapStore,
+  useSwapCanisterStore,
   useTokenModalOpener,
 } from '@/store';
 import { useNavigate } from 'react-router';
@@ -34,7 +34,7 @@ export const AssetsDeposit = () => {
   const query = useQuery();
 
   const { supportedTokenList, tokenBalances, supportedTokenListState } =
-    useSwapStore();
+    useSwapCanisterStore();
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();

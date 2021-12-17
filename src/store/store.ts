@@ -11,7 +11,7 @@ import swapViewReducer from '@/store/features/swap-view/swap-view-slice';
 import depositViewReducer from '@/store/features/deposit-view/deposit-view-slice';
 import withdrawViewReducer from '@/store/features/withdraw-view/withdraw-view-slice';
 
-import swapReducer from '@/store/features/swap/swap-slice';
+import swapReducer from '@/store/features/swap-canister/swap-canister-slice';
 
 export const store = configureStore({
   reducer: {
