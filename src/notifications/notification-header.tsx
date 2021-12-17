@@ -25,6 +25,10 @@ const NotificationIcon = ({ type }: { type: NotificationType }) => {
         />
       );
     case NotificationType.Swap:
+    case NotificationType.AddLiquidity:
+    case NotificationType.RemoveLiquidity:
+    case NotificationType.Deposit:
+    case NotificationType.Withdraw:
       return <Spinner position="absolute" top={4} left={4} />;
     default:
       return null;
@@ -43,7 +47,7 @@ export const NotificationHeader: React.FC<NotificationHeaderProps> = ({
   return (
     <>
       <NotificationIcon type={type} />
-      {type !== NotificationType.Swap && (
+      {(type === NotificationType.Error || type === NotificationType.Done) && (
         <Box
           cursor="pointer"
           onClick={handleClose}

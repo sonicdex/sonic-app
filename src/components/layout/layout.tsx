@@ -50,9 +50,9 @@ export const Layout: React.FC = ({ children, ...props }) => {
                 <TabList>
                   {NAVIGATION_TABS.map(({ label, url }) => (
                     <Tab
+                      as={Link}
                       key={label}
                       isSelected={location.pathname === url}
-                      as={Link}
                       to={url}
                     >
                       {label}

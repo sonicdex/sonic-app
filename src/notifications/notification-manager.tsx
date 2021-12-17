@@ -18,6 +18,7 @@ export const NotificationManager = () => {
 
         return (
           <NotificationBox
+            key={notification.id}
             {...notification}
             onClose={() => popNotification(notification.id)}
           >

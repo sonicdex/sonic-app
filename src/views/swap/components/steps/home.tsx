@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react';
 import { FaArrowDown } from 'react-icons/fa';
 
 import { TitleBox, TokenBox, Button, PlugButton } from '@/components';
-import { useTotalBalances } from '@/hooks/use-balances';
+import { useBalances } from '@/hooks/use-balances';
 import {
   SwapStep,
   swapViewActions,
@@ -26,7 +26,7 @@ export const HomeStep = () => {
 
   const [autoSlippage, setAutoSlippage] = useState(true);
 
-  const { totalBalances } = useTotalBalances();
+  const { totalBalances } = useBalances();
 
   const isLoading = useMemo(() => {
     if (!from.token) return true;

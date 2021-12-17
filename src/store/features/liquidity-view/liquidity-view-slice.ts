@@ -11,6 +11,7 @@ interface LiquidityViewState {
   token1: TokenData;
   tokenList?: TokenMetadataList;
   slippage: string;
+  keepInSonic: boolean;
 }
 
 const initialState: LiquidityViewState = {
@@ -25,6 +26,7 @@ const initialState: LiquidityViewState = {
   },
   slippage: '0.10',
   tokenList: undefined,
+  keepInSonic: true,
 };
 
 export const liquidityViewSlice = createSlice({

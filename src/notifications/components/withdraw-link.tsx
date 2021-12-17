@@ -1,9 +1,9 @@
-import { useTotalBalances } from '@/hooks/use-balances';
+import { useBalances } from '@/hooks/use-balances';
 import { useWithdrawBatch } from '@/integrations/transactions/factories/batch/withdraw';
-import { Modals } from '@/modals';
 import {
+  modalsSliceActions,
   NotificationType,
-  useModalStore,
+  useAppDispatch,
   useNotificationStore,
   useSwapStore,
   useWithdrawViewStore,
@@ -17,9 +17,9 @@ export interface WithdrawLinkProps {
 }
 
 export const WithdrawLink: React.FC<WithdrawLinkProps> = ({ id }) => {
-  const { setCurrentModal, clearModal, setCurrentModalState } = useModalStore();
+  const dispatch = useAppDispatch();
   const { addNotification, popNotification } = useNotificationStore();
-  const { getBalances } = useTotalBalances();
+  const { getBalances } = useBalances();
 
   const { amount: value, tokenId } = useWithdrawViewStore();
   const { supportedTokenList } = useSwapStore();
@@ -28,32 +28,34 @@ export const WithdrawLink: React.FC<WithdrawLinkProps> = ({ id }) => {
     return supportedTokenList?.find(({ id }) => id === tokenId);
   }, [supportedTokenList, tokenId]);
 
-  const withdrawBatch = useWithdrawBatch({
+  const [batch, openModal] = useWithdrawBatch({
     amount: value,
     token: selectedToken,
   });
 
   const handleStateChange = () => {
-    switch (withdrawBatch.state) {
+    switch (batch.state) {
       case 'withdraw':
-        setCurrentModalState('withdraw');
+        dispatch(modalsSliceActions.setWithdrawData({ step: 'withdraw' }));
+
         break;
     }
   };
 
   const handleOpenModal = () => {
     handleStateChange();
-    setCurrentModal(Modals.Withdraw);
+    openModal();
   };
 
-  useEffect(handleStateChange, [withdrawBatch.state]);
+  useEffect(handleStateChange, [batch.state]);
 
   useEffect(() => {
-    withdrawBatch
+    batch
       .execute()
       .then((res) => {
         console.log('Withdraw Completed', res);
-        clearModal();
+        dispatch(modalsSliceActions.clearWithdrawData());
+        dispatch(modalsSliceActions.closeWithdrawProgressModal());
         addNotification({
           title: 'Withdraw successful',
           type: NotificationType.Done,
@@ -65,7 +67,7 @@ export const WithdrawLink: React.FC<WithdrawLinkProps> = ({ id }) => {
       })
       .catch((err) => {
         console.error('Withdraw Error', err);
-        clearModal();
+        dispatch(modalsSliceActions.clearWithdrawData());
         addNotification({
           title: `Withdraw failed ${value} ${selectedToken?.symbol}`,
           type: NotificationType.Error,

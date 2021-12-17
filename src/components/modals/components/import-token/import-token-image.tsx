@@ -5,7 +5,9 @@ type ImportTokenImageProps = {
   logo?: string;
 };
 
-export const TokenImg = ({ logo = questionMarkSrc }: ImportTokenImageProps) => {
+export const ImportTokenImage = ({
+  logo = questionMarkSrc,
+}: ImportTokenImageProps) => {
   if (logo === questionMarkSrc) {
     return (
       <Flex

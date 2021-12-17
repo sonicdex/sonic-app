@@ -24,11 +24,11 @@ import { DefaultTokensImage } from '@/constants';
 import { theme } from '@/theme';
 import { FaMinus, FaPlus } from 'react-icons/fa';
 import { questionMarkSrc } from '@/assets';
-import { useTotalBalances } from '@/hooks/use-balances';
+import { useBalances } from '@/hooks/use-balances';
 import { getCurrencyString } from '@/utils/format';
 
 export const Assets = () => {
-  const { totalBalances } = useTotalBalances();
+  const { totalBalances } = useBalances();
   const { supportedTokenListState, balancesState, supportedTokenList } =
     useSwapStore();
   const { isConnected } = usePlugStore();
@@ -92,7 +92,7 @@ export const Assets = () => {
         >
           <Stack
             css={{
-              '-ms-overflow-style': 'none',
+              msOverflowStyle: 'none',
               scrollbarWidth: 'none',
               '&::-webkit-scrollbar': {
                 display: 'none',

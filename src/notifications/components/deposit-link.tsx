@@ -1,10 +1,10 @@
-import { useTotalBalances } from '@/hooks/use-balances';
+import { useBalances } from '@/hooks/use-balances';
 import { useDepositBatch } from '@/integrations/transactions';
-import { Modals } from '@/modals';
 import {
+  modalsSliceActions,
   NotificationType,
+  useAppDispatch,
   useDepositViewStore,
-  useModalStore,
   useNotificationStore,
   useSwapStore,
 } from '@/store';
@@ -17,9 +17,9 @@ export interface DepositLinkProps {
 }
 
 export const DepositLink: React.FC<DepositLinkProps> = ({ id }) => {
-  const { setCurrentModal, clearModal, setCurrentModalState } = useModalStore();
+  const dispatch = useAppDispatch();
   const { addNotification, popNotification } = useNotificationStore();
-  const { getBalances } = useTotalBalances();
+  const { getBalances } = useBalances();
 
   const { amount: value, tokenId } = useDepositViewStore();
   const { supportedTokenList } = useSwapStore();
@@ -28,7 +28,7 @@ export const DepositLink: React.FC<DepositLinkProps> = ({ id }) => {
     return supportedTokenList?.find(({ id }) => id === tokenId);
   }, [supportedTokenList, tokenId]);
 
-  const depositBatch = useDepositBatch({
+  const [depositBatch, openDepositModal] = useDepositBatch({
     amount: value,
     token: selectedToken,
   });
@@ -36,17 +36,17 @@ export const DepositLink: React.FC<DepositLinkProps> = ({ id }) => {
   const handleStateChange = () => {
     switch (depositBatch.state) {
       case 'approve':
-        setCurrentModalState('approve');
+        dispatch(modalsSliceActions.setDepositData({ step: 'approve' }));
         break;
       case 'deposit':
-        setCurrentModalState('deposit');
+        dispatch(modalsSliceActions.setDepositData({ step: 'deposit' }));
         break;
     }
   };
 
   const handleOpenModal = () => {
     handleStateChange();
-    setCurrentModal(Modals.Deposit);
+    openDepositModal();
   };
 
   useEffect(handleStateChange, [depositBatch.state]);
@@ -56,7 +56,9 @@ export const DepositLink: React.FC<DepositLinkProps> = ({ id }) => {
       .execute()
       .then((res) => {
         console.log('Deposit Completed', res);
-        clearModal();
+        dispatch(modalsSliceActions.clearDepositData());
+        dispatch(modalsSliceActions.closeDepositProgressModal());
+        getBalances();
         addNotification({
           title: 'Deposit successful',
           type: NotificationType.Done,
@@ -64,11 +66,10 @@ export const DepositLink: React.FC<DepositLinkProps> = ({ id }) => {
           // TODO: add transaction id
           transactionLink: createCAPLink('transactionId'),
         });
-        getBalances();
       })
       .catch((err) => {
         console.error('Deposit Error', err);
-        clearModal();
+        dispatch(modalsSliceActions.clearDepositData());
         addNotification({
           title: `Deposit failed ${value} ${selectedToken?.symbol}`,
           type: NotificationType.Error,

@@ -1,8 +1,12 @@
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { Modals } from '@/modals';
-import { useModalStore, useSwapStore } from '@/store';
+import {
+  AddLiquidityModalDataStep,
+  modalsSliceActions,
+  useAppDispatch,
+  useSwapStore,
+} from '@/store';
 import { parseAmount } from '@/utils/format';
 
 import {
@@ -14,17 +18,9 @@ import {
 import { AddLiquidity, Batch } from '../..';
 import { getToDepositAmount } from './utils';
 
-type AddLiquidityBatchStep = 'approve' | 'deposit' | 'addLiquidity';
-
 export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
+  const dispatch = useAppDispatch();
   const { sonicBalances } = useSwapStore();
-
-  const {
-    setCurrentModal,
-    setModalCallbacks,
-    setCurrentModalData,
-    setOnClose,
-  } = useModalStore();
 
   if (!sonicBalances) {
     throw new Error('Sonic balance are required');
@@ -80,36 +76,43 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
 
   const handleRetry = async () => {
     return new Promise<boolean>((resolve) => {
-      setModalCallbacks([
-        // Retry callback
-        () => {
-          openAddLiquidityModal();
-          resolve(true);
-        },
-        // Not retry callback
-        () => {
-          navigate(
-            `/assets/withdraw?tokenId=${addLiquidityParams.token0.token?.id}&amount=${addLiquidityParams.token0.value}`
-          );
-          resolve(false);
-        },
-      ]);
-      setOnClose(() => resolve(false));
-      setCurrentModal(Modals.SwapFailed);
+      dispatch(
+        modalsSliceActions.setAddLiquidityData({
+          callbacks: [
+            // Retry callback
+            () => {
+              openAddLiquidityModal();
+              resolve(true);
+            },
+            // Not retry callback
+            () => {
+              navigate(
+                `/assets/withdraw?tokenId=${addLiquidityParams.token0.token?.id}&amount=${addLiquidityParams.token0.value}`
+              );
+              resolve(false);
+            },
+          ],
+        })
+      );
+
+      dispatch(modalsSliceActions.openAddLiquidityFailModal());
     });
   };
 
   const openAddLiquidityModal = () => {
-    setCurrentModalData({
-      steps: Object.keys(transactions),
-      token0: addLiquidityParams.token0.token?.symbol,
-      token1: addLiquidityParams.token1.token?.symbol,
-    });
-    setCurrentModal(Modals.SwapProgress);
+    dispatch(
+      modalsSliceActions.setAddLiquidityData({
+        steps: Object.keys(transactions) as AddLiquidityModalDataStep[],
+        token0Symbol: addLiquidityParams.token0.token?.symbol,
+        token1Symbol: addLiquidityParams.token1.token?.symbol,
+      })
+    );
+
+    dispatch(modalsSliceActions.openAddLiquidityProgressModal());
   };
 
   return [
-    useBatchHook<AddLiquidityBatchStep>({ transactions, handleRetry }),
+    useBatchHook<AddLiquidityModalDataStep>({ transactions, handleRetry }),
     openAddLiquidityModal,
-  ] as [Batch.Hook<AddLiquidityBatchStep>, () => void];
+  ] as [Batch.Hook<AddLiquidityModalDataStep>, () => void];
 };

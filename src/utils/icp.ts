@@ -1,6 +1,4 @@
 import BigNumber from 'bignumber.js';
-import { ethers } from 'ethers';
-import { formatUnits } from 'ethers/lib/utils';
 import axios from 'axios';
 
 import { principalToAccountIdentifier } from './common';
@@ -15,14 +13,6 @@ export const formatICP = (val: BigInt): string => {
     return new BigNumber(val.toString())
       .div(new BigNumber('100000000'))
       .toString();
-  } catch (err) {
-    return '0';
-  }
-};
-
-export const formatAmount = (val: BigInt, decimals: number): string => {
-  try {
-    return formatUnits(ethers.BigNumber.from(val.toString()), decimals);
   } catch (err) {
     return '0';
   }

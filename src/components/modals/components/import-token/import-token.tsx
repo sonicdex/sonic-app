@@ -3,7 +3,7 @@ import { Image, Box, Flex, Text, Checkbox, Heading } from '@chakra-ui/react';
 
 import { Button } from '@/components';
 import { redTriangleWarningSrc } from '@/assets';
-import { TokenImg } from './import-token-image';
+import { ImportTokenImage } from './import-token-image';
 
 type ImportTokenProps = {
   logo?: string;
@@ -27,7 +27,7 @@ export const ImportToken = ({
       <Heading as="h1" fontWeight={700} fontSize={18} mb={6}>
         Import Token
       </Heading>
-      <TokenImg logo={logo} />
+      <ImportTokenImage logo={logo} />
       <Text mt={2} fontSize={18} fontWeight={700} color="#F6FCFD">
         {symbol}
       </Text>

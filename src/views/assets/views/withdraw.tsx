@@ -14,11 +14,12 @@ import {
 import { useNavigate } from 'react-router';
 import { useQuery } from '@/hooks/use-query';
 import { sonicCircleSrc } from '@/assets';
-import { getCurrencyString } from '@/utils/format';
+import { formatAmount, getCurrencyString } from '@/utils/format';
+import { debounce } from '@/utils/function';
 
 export const AssetsWithdraw = () => {
   const query = useQuery();
-  const { amount: value, tokenId } = useWithdrawViewStore();
+  const { amount, tokenId } = useWithdrawViewStore();
   const { supportedTokenList, sonicBalances, supportedTokenListState } =
     useSwapStore();
 
@@ -30,19 +31,33 @@ export const AssetsWithdraw = () => {
     return supportedTokenList?.find(({ id }) => id === tokenId);
   }, [supportedTokenList, tokenId]);
 
-  const isReady = useMemo(() => value && parseFloat(value) > 0, [value]);
-
-  const status = useMemo(() => {
-    if (isReady) {
-      return 'active';
-    }
-
-    return '';
-  }, [isReady]);
-
   const handleTokenSelect = (tokenId: string) => {
     dispatch(withdrawViewActions.setTokenId(tokenId));
   };
+
+  const [buttonDisabled, buttonMessage] = useMemo<[boolean, string]>(() => {
+    if (!selectedTokenMetadata?.id) return [true, 'Select the token'];
+
+    const parsedFromValue = (amount && parseFloat(amount)) || 0;
+
+    if (parsedFromValue <= 0)
+      return [true, `No ${selectedTokenMetadata?.name} value selected`];
+
+    if (sonicBalances && selectedTokenMetadata) {
+      const parsedBalance = parseFloat(
+        formatAmount(
+          sonicBalances[selectedTokenMetadata.id],
+          selectedTokenMetadata.decimals
+        )
+      );
+
+      if (parsedFromValue > parsedBalance) {
+        return [true, `Insufficient ${selectedTokenMetadata.name} Balance`];
+      }
+    }
+
+    return [false, 'Withdraw'];
+  }, [amount, sonicBalances, selectedTokenMetadata]);
 
   const tokenBalance = useMemo(() => {
     if (sonicBalances && tokenId) {
@@ -75,6 +90,8 @@ export const AssetsWithdraw = () => {
       type: NotificationType.Withdraw,
       id: String(new Date().getTime()),
     });
+
+    debounce(() => dispatch(withdrawViewActions.setAmount('0.00')), 300);
   };
 
   return (
@@ -94,11 +111,11 @@ export const AssetsWithdraw = () => {
       ) : selectedTokenMetadata && tokenId ? (
         <Box my={5}>
           <TokenBox
-            value={value}
+            value={amount}
             setValue={(value) => dispatch(withdrawViewActions.setAmount(value))}
             onTokenSelect={handleTokenSelect}
             selectedTokenIds={[tokenId]}
-            status={status}
+            status={buttonDisabled ? 'disabled' : 'active'}
             otherTokensMetadata={supportedTokenList}
             selectedTokenMetadata={selectedTokenMetadata}
             price={0}
@@ -126,11 +143,11 @@ export const AssetsWithdraw = () => {
       <Button
         isFullWidth
         size="lg"
-        isDisabled={!isReady}
+        isDisabled={buttonDisabled}
         onClick={handleWithdraw}
         isLoading={supportedTokenListState === FeatureState.Loading}
       >
-        Withdraw
+        {buttonMessage}
       </Button>
     </>
   );
