@@ -15,7 +15,7 @@ export const SwapProgressModal = () => {
   const { steps, fromTokenSymbol, toTokenSymbol, step: activeStep } = swapData;
 
   const handleClose = () => {
-    dispatch(modalsSliceActions.closeSwapProgressModal);
+    dispatch(modalsSliceActions.closeSwapProgressModal());
   };
 
   const getStepStatus = (step: SwapModalDataStep) => {
