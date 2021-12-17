@@ -1,4 +1,4 @@
-import { useTotalBalances } from '@/hooks/use-balances';
+import { useBalances } from '@/hooks/use-balances';
 import { useRemoveLiquidityBatch } from '@/integrations/transactions';
 
 import {
@@ -25,7 +25,7 @@ export const RemoveLiquidityLink: React.FC<RemoveLiquidityLinkProps> = ({
   const liquidityViewStore = useLiquidityViewStore();
   const { addNotification, popNotification } = useNotificationStore();
   const { principalId } = usePlugStore();
-  const { getBalances } = useTotalBalances();
+  const { getBalances } = useBalances();
 
   const { token0, token1, slippage, keepInSonic } = useMemo(() => {
     // Clone current state just for this batch
@@ -56,7 +56,6 @@ export const RemoveLiquidityLink: React.FC<RemoveLiquidityLinkProps> = ({
   const handleOpenModal = () => {
     handleStateChange();
     openSwapModal();
-    dispatch(modalsSliceActions.openRemoveLiquidityProgressModal());
   };
 
   const [removeLiquidityBatch, openSwapModal] = useRemoveLiquidityBatch({
@@ -76,6 +75,7 @@ export const RemoveLiquidityLink: React.FC<RemoveLiquidityLinkProps> = ({
       .then((res) => {
         console.log('Remove liqudity Completed', res);
         dispatch(modalsSliceActions.clearRemoveLiquidityData());
+        dispatch(modalsSliceActions.closeRemoveLiquidityProgressModal());
         addNotification({
           title: `Successfuly removed liquidity: ${token0.value} ${token0.token?.symbol} + ${token1.value} ${token1.token?.symbol}`,
           type: NotificationType.Done,

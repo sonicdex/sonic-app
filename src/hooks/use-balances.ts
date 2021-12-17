@@ -1,5 +1,6 @@
-import { TokenIDL } from '@/did';
-import { ActorAdapter, useSwapActor } from '@/integrations/actor';
+import { ENV } from '@/config';
+import { SwapIDL, TokenIDL } from '@/did';
+import { ActorAdapter, appActors, useSwapActor } from '@/integrations/actor';
 import { Balances } from '@/models';
 import {
   FeatureState,
@@ -9,17 +10,20 @@ import {
   useSwapStore,
 } from '@/store';
 import { Principal } from '@dfinity/principal';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 
-export const useTotalBalances = () => {
+export const useBalances = () => {
   const { principalId } = usePlugStore();
   const { sonicBalances, tokenBalances } = useSwapStore();
-  const swapActor = useSwapActor();
+  const _swapActor = useSwapActor();
 
   const dispatch = useAppDispatch();
 
-  async function getBalances() {
+  const getBalances = useCallback(async () => {
     try {
+      const swapActor =
+        _swapActor ?? (appActors[ENV.canisterIds.swap] as SwapIDL.Factory);
+
       if (!swapActor) throw new Error('Swap actor not found');
       if (!principalId) throw new Error('Principal ID not found');
       dispatch(swapActions.setBalancesState(FeatureState.Loading));
@@ -28,7 +32,7 @@ export const useTotalBalances = () => {
         Principal.fromText(principalId)
       );
 
-      const tokensBalances = sonicBalances
+      const tokenBalances = sonicBalances
         ? await Promise.all(
             sonicBalances.map(async (balance) => {
               try {
@@ -56,13 +60,13 @@ export const useTotalBalances = () => {
         : undefined;
 
       dispatch(swapActions.setSonicBalances(sonicBalances));
-      dispatch(swapActions.setTokenBalances(tokensBalances));
+      dispatch(swapActions.setTokenBalances(tokenBalances));
       dispatch(swapActions.setBalancesState(FeatureState.Idle));
     } catch (error) {
       console.error(error);
       dispatch(swapActions.setBalancesState(FeatureState.Error));
     }
-  }
+  }, [_swapActor, sonicBalances, tokenBalances, principalId, dispatch]);
 
   const totalBalances = useMemo(() => {
     if (tokenBalances && sonicBalances) {

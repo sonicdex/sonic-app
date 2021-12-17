@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import { Link } from '@chakra-ui/react';
 
-import { useTotalBalances } from '@/hooks/use-balances';
+import { useBalances } from '@/hooks/use-balances';
 import { useAddLiquidityBatch } from '@/integrations/transactions';
 import {
   modalsSliceActions,
@@ -21,7 +21,7 @@ export const AddLiquidityLink: React.FC<AddLiquidityLinkProps> = ({ id }) => {
   const dispatch = useAppDispatch();
   const liquidityViewStore = useLiquidityViewStore();
   const { addNotification, popNotification } = useNotificationStore();
-  const { getBalances } = useTotalBalances();
+  const { getBalances } = useBalances();
 
   const { token0, token1, slippage } = useMemo(() => {
     // Clone current state just for this batch
@@ -53,7 +53,6 @@ export const AddLiquidityLink: React.FC<AddLiquidityLinkProps> = ({ id }) => {
   const handleOpenModal = () => {
     handleStateChange();
     openAddLiquidityModal();
-    dispatch(modalsSliceActions.openAddLiquidityProgressModal());
   };
 
   useEffect(handleStateChange, [addLiquidityBatch.state]);
@@ -64,6 +63,7 @@ export const AddLiquidityLink: React.FC<AddLiquidityLinkProps> = ({ id }) => {
       .then((res) => {
         console.log('Add Liquidity Completed', res);
         dispatch(modalsSliceActions.clearAddLiquidityData());
+        dispatch(modalsSliceActions.closeAddLiquidityProgressModal());
         addNotification({
           title: `Successfuly added liquidity: ${token0.value} ${token0.token?.symbol} + ${token1.value} ${token1.token?.symbol}`,
           type: NotificationType.Done,

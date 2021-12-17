@@ -14,7 +14,8 @@ import {
 import { useNavigate } from 'react-router';
 import { useQuery } from '@/hooks/use-query';
 import { plugCircleSrc } from '@/assets';
-import { getCurrencyString } from '@/utils/format';
+import { formatAmount, getCurrencyString } from '@/utils/format';
+import { debounce } from '@/utils/function';
 
 export const AssetsDeposit = () => {
   const query = useQuery();
@@ -24,22 +25,12 @@ export const AssetsDeposit = () => {
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { amount: value, tokenId } = useDepositViewStore();
+  const { amount, tokenId } = useDepositViewStore();
   const { addNotification } = useNotificationStore();
-
-  const isReady = useMemo(() => value && parseFloat(value) > 0, [value]);
 
   const selectedTokenMetadata = useMemo(() => {
     return supportedTokenList?.find(({ id }) => id === tokenId);
   }, [supportedTokenList, tokenId]);
-
-  const status = useMemo(() => {
-    if (isReady) {
-      return 'active';
-    }
-
-    return '';
-  }, [isReady]);
 
   const handleTokenSelect = (tokenId: string) => {
     dispatch(depositViewActions.setTokenId(tokenId));
@@ -51,7 +42,32 @@ export const AssetsDeposit = () => {
       type: NotificationType.Deposit,
       id: String(new Date().getTime()),
     });
+    debounce(() => dispatch(depositViewActions.setAmount('0.00')), 300);
   };
+
+  const [buttonDisabled, buttonMessage] = useMemo<[boolean, string]>(() => {
+    if (!selectedTokenMetadata?.id) return [true, 'Select the token'];
+
+    const parsedFromValue = (amount && parseFloat(amount)) || 0;
+
+    if (parsedFromValue <= 0)
+      return [true, `No ${selectedTokenMetadata?.name} value selected`];
+
+    if (tokenBalances && selectedTokenMetadata) {
+      const parsedBalance = parseFloat(
+        formatAmount(
+          tokenBalances[selectedTokenMetadata.id],
+          selectedTokenMetadata.decimals
+        )
+      );
+
+      if (parsedFromValue > parsedBalance) {
+        return [true, `Insufficient ${selectedTokenMetadata.name} Balance`];
+      }
+    }
+
+    return [false, 'Withdraw'];
+  }, [amount, tokenBalances, selectedTokenMetadata]);
 
   const tokenBalance = useMemo(() => {
     if (tokenBalances && tokenId) {
@@ -92,7 +108,7 @@ export const AssetsDeposit = () => {
       ) : selectedTokenMetadata && tokenId ? (
         <Box my={5}>
           <TokenBox
-            value={value}
+            value={amount}
             onMaxClick={() =>
               dispatch(
                 depositViewActions.setAmount(
@@ -114,7 +130,7 @@ export const AssetsDeposit = () => {
               },
             ]}
             selectedTokenIds={[tokenId as string]}
-            status={status}
+            status={buttonDisabled ? 'disabled' : 'active'}
             otherTokensMetadata={supportedTokenList}
             selectedTokenMetadata={selectedTokenMetadata}
           />
@@ -123,11 +139,11 @@ export const AssetsDeposit = () => {
       <Button
         isFullWidth
         size="lg"
-        isDisabled={!isReady}
+        isDisabled={buttonDisabled}
         onClick={handleDeposit}
         isLoading={supportedTokenListState === FeatureState.Loading}
       >
-        Deposit
+        {buttonMessage}
       </Button>
     </>
   );

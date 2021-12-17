@@ -1,4 +1,4 @@
-import { useTotalBalances } from '@/hooks/use-balances';
+import { useBalances } from '@/hooks/use-balances';
 import { useSwapBatch } from '@/integrations/transactions';
 
 import {
@@ -23,7 +23,7 @@ export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
   const swapViewStore = useSwapViewStore();
   const { addNotification, popNotification } = useNotificationStore();
   const { principalId } = usePlugStore();
-  const { getBalances } = useTotalBalances();
+  const { getBalances } = useBalances();
 
   const { from, to, slippage, keepInSonic } = useMemo(() => {
     // Clone current state just for this batch
@@ -53,7 +53,6 @@ export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
   const handleOpenModal = () => {
     handleStateChange();
     openSwapModal();
-    dispatch(modalsSliceActions.openSwapProgressModal());
   };
 
   const [swapBatch, openSwapModal] = useSwapBatch({

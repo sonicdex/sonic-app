@@ -23,8 +23,7 @@ export const SwapProgressModal = () => {
       const currentStepIndex = steps?.indexOf(activeStep);
       const stepIndex = steps?.indexOf(step);
 
-      if (!currentStepIndex || !stepIndex) return 'disabled';
-      if (currentStepIndex > stepIndex) return 'done';
+      if (currentStepIndex! > stepIndex!) return 'done';
       if (currentStepIndex === stepIndex) return 'active';
     }
 
@@ -34,7 +33,7 @@ export const SwapProgressModal = () => {
   return (
     <Modal onClose={handleClose} isOpen={isSwapProgressOpened} isCentered>
       <ModalOverlay />
-      <TransactionProgressModalContent>
+      <TransactionProgressModalContent title="Swap in Progress">
         <HStack>
           {steps?.includes('deposit') && (
             <TransactionStep

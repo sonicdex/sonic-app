@@ -28,7 +28,7 @@ export const TokenBoxPopover: FC<TokenBoxPopoverProps> = ({
       <PopoverTrigger>
         <HStack spacing={1}>
           {sources?.map((source) => (
-            <Image src={source?.src} />
+            <Image key={source?.src} src={source?.src} />
           ))}
         </HStack>
       </PopoverTrigger>

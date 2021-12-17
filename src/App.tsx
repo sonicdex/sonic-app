@@ -11,6 +11,8 @@ import { usePlugInit } from './integrations/plug';
 import { useSwapInit } from './integrations/swap';
 import { AssetsDeposit } from './views/assets/views/deposit';
 import { AssetsWithdraw } from './views/assets/views/withdraw';
+import { WithdrawProgressModal } from './components/modals/withdraw-modal';
+import { DepositProgressModal } from './components/modals/deposit-modal';
 
 export const App = () => {
   const isAnyMobileDevice = isMobile(window.navigator).any;
@@ -29,8 +31,11 @@ export const App = () => {
       <Layout>
         <NotificationManager />
 
-        <SwapProgressModal />
         <TokenSelectModal />
+        <SwapProgressModal />
+        <WithdrawProgressModal />
+        <DepositProgressModal />
+
         <Routes>
           <Route path="/swap" element={<Swap />} />
 

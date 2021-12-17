@@ -17,7 +17,9 @@ export const NotificationTimer: React.FC<NotificationTimerProps> = ({
   type,
   handleClose,
 }) => {
-  if (type === NotificationType.Swap) return null;
+  if (type !== NotificationType.Done && type !== NotificationType.Error) {
+    return null;
+  }
 
   const color = useMemo(() => {
     switch (type) {

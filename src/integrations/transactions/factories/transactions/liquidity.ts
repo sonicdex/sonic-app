@@ -64,8 +64,6 @@ export const useMemorizedRemoveLiquidityTransaction: CreateTransaction<RemoveLiq
         throw new Error('Tokens are required');
       if (!principalId) throw new Error('Principal is required');
 
-      console.log(slippage);
-
       const currentTime = (new Date().getTime() + 5 * 60 * 1000) * 10000000;
 
       const amount0Desired = parseAmount(token0.value, token0.token.decimals);

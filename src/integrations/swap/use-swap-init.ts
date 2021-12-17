@@ -1,4 +1,4 @@
-import { useTotalBalances } from '@/hooks/use-balances';
+import { useBalances } from '@/hooks/use-balances';
 import {
   FeatureState,
   liquidityViewActions,
@@ -16,7 +16,7 @@ import { useEffect } from 'react';
 import { useSwapActor } from '../actor/use-swap-actor';
 
 export const useSwapInit = () => {
-  const { getBalances, totalBalances } = useTotalBalances();
+  const { getBalances, totalBalances } = useBalances();
   const { principalId, isConnected, state: plugState } = usePlugStore();
   const { supportedTokenListState } = useSwapStore();
 

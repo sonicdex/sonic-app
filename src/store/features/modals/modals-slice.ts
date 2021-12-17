@@ -17,12 +17,14 @@ export type DepositModalDataStep = 'approve' | 'deposit';
 export type DepositModalData = {
   step?: DepositModalDataStep;
   steps?: DepositModalDataStep[];
+  tokenSymbol?: string;
   callbacks?: [ModalsCallback, ModalsCallback];
 };
 
 export type WithdrawModalDataStep = 'withdraw';
 export type WithdrawModalData = {
   step?: WithdrawModalDataStep;
+  tokenSymbol?: string;
   callbacks?: [ModalsCallback, ModalsCallback];
 };
 

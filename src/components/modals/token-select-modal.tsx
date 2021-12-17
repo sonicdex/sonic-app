@@ -1,6 +1,6 @@
 import { arrowBackSrc, questionMarkSrc } from '@/assets';
 import { DefaultTokensImage } from '@/constants';
-import { useTotalBalances } from '@/hooks/use-balances';
+import { useBalances } from '@/hooks/use-balances';
 import { TokenMetadata } from '@/models';
 import { modalsSliceActions, useAppDispatch, useModalsStore } from '@/store';
 import { theme } from '@/theme';
@@ -45,7 +45,7 @@ export const TokenSelectModal = () => {
   const parsedTokens = useMemo(() => deserialize(tokens), [tokens]);
   const [search, setSearch] = useState('');
   const [filteredList, setFilteredList] = useState(parsedTokens);
-  const { totalBalances } = useTotalBalances();
+  const { totalBalances } = useBalances();
 
   useEffect(() => {
     const filterFunction = ({ symbol, name }: Partial<TokenMetadata>) => {
