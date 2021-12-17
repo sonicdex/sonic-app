@@ -165,21 +165,25 @@ export const LiquidityAdd = () => {
   };
 
   const handleSelectToken0 = () => {
-    openSelectTokenModal({
-      metadata: supportedTokenList,
-      onSelect: (tokenId) =>
-        dispatch(liquidityViewActions.setToken({ data: 'token0', tokenId })),
-      selectedTokenIds,
-    });
+    if (!isReviewing) {
+      openSelectTokenModal({
+        metadata: supportedTokenList,
+        onSelect: (tokenId) =>
+          dispatch(liquidityViewActions.setToken({ data: 'token0', tokenId })),
+        selectedTokenIds,
+      });
+    }
   };
 
   const handleSelectToken1 = () => {
-    openSelectTokenModal({
-      metadata: supportedTokenList,
-      onSelect: (tokenId) =>
-        dispatch(liquidityViewActions.setToken({ data: 'token1', tokenId })),
-      selectedTokenIds,
-    });
+    if (!isReviewing) {
+      openSelectTokenModal({
+        metadata: supportedTokenList,
+        onSelect: (tokenId) =>
+          dispatch(liquidityViewActions.setToken({ data: 'token1', tokenId })),
+        selectedTokenIds,
+      });
+    }
   };
 
   return (
@@ -212,7 +216,7 @@ export const LiquidityAdd = () => {
             }
             tokenListMetadata={supportedTokenList}
             tokenMetadata={token0.token}
-            isDisabled={!shouldButtonBeActive || isReviewing}
+            isDisabled={isReviewing}
             price={0}
             sources={getAppAssetsSources({
               balances: {
@@ -264,6 +268,7 @@ export const LiquidityAdd = () => {
             }
             tokenListMetadata={supportedTokenList}
             tokenMetadata={token1.token}
+            isDisabled={isReviewing}
             price={0}
             sources={getAppAssetsSources({
               balances: {
@@ -336,7 +341,7 @@ export const LiquidityAdd = () => {
               px={5}
             >
               <Text color="#888E8F">{`${token0.value} + ${token1.value}`}</Text>
-              <Text color="#888E8F">{`1 ${token0.value} = 0.23 ${token1.value}`}</Text>
+              <Text color="#888E8F">{`1 ${token0.token?.symbol} = 0.23 ${token1.token?.symbol}`}</Text>
             </Flex>
           </>
         )}
