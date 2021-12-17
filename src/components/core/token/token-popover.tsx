@@ -9,16 +9,16 @@ import {
   PopoverBody,
 } from '@chakra-ui/popover';
 
-import { TokenBoxPopoverItem } from './token-box-popover-item';
-import { TokenBoxSource } from '@/components';
+import { TokenPopoverItem } from './token-popover-item';
+import { TokenSource } from '@/components';
 
-type TokenBoxPopoverProps = {
+type TokenPopoverProps = {
   symbol?: string;
   decimals?: number;
-  sources?: TokenBoxSource[];
+  sources?: TokenSource[];
 };
 
-export const TokenBoxPopover: FC<TokenBoxPopoverProps> = ({
+export const TokenPopover: FC<TokenPopoverProps> = ({
   symbol,
   decimals,
   sources = [],
@@ -41,7 +41,7 @@ export const TokenBoxPopover: FC<TokenBoxPopoverProps> = ({
         </PopoverHeader>
         <PopoverBody>
           {sources?.map((source) => (
-            <TokenBoxPopoverItem
+            <TokenPopoverItem
               key={source.name}
               decimals={decimals}
               symbol={symbol}

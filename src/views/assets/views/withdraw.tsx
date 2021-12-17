@@ -1,6 +1,18 @@
 import { useEffect, useMemo } from 'react';
 import { Box } from '@chakra-ui/react';
-import { TitleBox, TokenBox, Button } from '@/components';
+import {
+  TitleBox,
+  Token,
+  Button,
+  TokenContent,
+  TokenDetails,
+  TokenDetailsLogo,
+  TokenDetailsSymbol,
+  TokenBalancesDetails,
+  TokenBalancesPrice,
+  TokenBalances,
+  TokenInput,
+} from '@/components';
 
 import {
   FeatureState,
@@ -94,6 +106,14 @@ export const AssetsWithdraw = () => {
     debounce(() => dispatch(withdrawViewActions.setAmount('0.00')), 300);
   };
 
+  const handleMaxClick = () => {
+    dispatch(
+      withdrawViewActions.setAmount(
+        getCurrencyString(tokenBalance, selectedTokenMetadata?.decimals)
+      )
+    );
+  };
+
   return (
     <>
       <TitleBox
@@ -103,32 +123,17 @@ export const AssetsWithdraw = () => {
       {supportedTokenListState === FeatureState.Loading &&
       !supportedTokenList ? (
         <Box my={5}>
-          <TokenBox
-            sources={[{ name: 'Sonic', src: sonicCircleSrc }]}
-            isLoading
-          />
+          <Token sources={[{ name: 'Sonic', src: sonicCircleSrc }]} isLoading />
         </Box>
       ) : selectedTokenMetadata && tokenId ? (
         <Box my={5}>
-          <TokenBox
+          <Token
             value={amount}
             setValue={(value) => dispatch(withdrawViewActions.setAmount(value))}
             onTokenSelect={handleTokenSelect}
-            selectedTokenIds={[tokenId]}
-            status={buttonDisabled ? 'disabled' : 'active'}
-            otherTokensMetadata={supportedTokenList}
-            selectedTokenMetadata={selectedTokenMetadata}
+            tokenListMetadata={supportedTokenList}
+            tokenMetadata={selectedTokenMetadata}
             price={0}
-            onMaxClick={() =>
-              dispatch(
-                withdrawViewActions.setAmount(
-                  getCurrencyString(
-                    tokenBalance,
-                    selectedTokenMetadata.decimals
-                  )
-                )
-              )
-            }
             sources={[
               {
                 name: 'Sonic',
@@ -136,7 +141,21 @@ export const AssetsWithdraw = () => {
                 balance: tokenBalance,
               },
             ]}
-          />
+          >
+            <TokenContent>
+              <TokenDetails>
+                <TokenDetailsLogo />
+                <TokenDetailsSymbol />
+              </TokenDetails>
+
+              <TokenBalances>
+                <TokenBalancesDetails onMaxClick={handleMaxClick} />
+                <TokenBalancesPrice />
+              </TokenBalances>
+
+              <TokenInput />
+            </TokenContent>
+          </Token>
         </Box>
       ) : null}
 

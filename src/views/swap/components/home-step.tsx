@@ -4,7 +4,7 @@ import { FaArrowDown } from 'react-icons/fa';
 
 import {
   TitleBox,
-  TokenBox,
+  Token,
   Button,
   PlugButton,
   SlippageSettings,
@@ -108,7 +108,7 @@ export const SwapHomeStep = () => {
       />
       <Flex direction="column" alignItems="center" mb={5}>
         <Box mt={5} width="100%">
-          <TokenBox
+          <Token
             value={from.value}
             onMaxClick={() =>
               dispatch(
@@ -127,8 +127,8 @@ export const SwapHomeStep = () => {
             setValue={(value) =>
               dispatch(swapViewActions.setValue({ data: 'from', value }))
             }
-            otherTokensMetadata={fromTokenOptions}
-            selectedTokenMetadata={from.token}
+            tokenListMetadata={fromTokenOptions}
+            tokenMetadata={from.token}
             onTokenSelect={(tokenId) => handleTokenSelect('from', tokenId)}
             selectedTokenIds={selectedTokenIds}
             status={fromValueStatus}
@@ -170,15 +170,15 @@ export const SwapHomeStep = () => {
           />
         </Tooltip>
         <Box mt={2.5} width="100%">
-          <TokenBox
+          <Token
             value={to.value}
             setValue={(value) =>
               dispatch(swapViewActions.setValue({ data: 'to', value }))
             }
-            otherTokensMetadata={toTokenOptions}
+            tokenListMetadata={toTokenOptions}
             onTokenSelect={(tokenId) => handleTokenSelect('to', tokenId)}
-            selectedTokenMetadata={to.token}
-            disabled={true}
+            tokenMetadata={to.token}
+            isDisabled={true}
             isLoading={isLoading}
             price={0}
             sources={getAppAssetsSources({

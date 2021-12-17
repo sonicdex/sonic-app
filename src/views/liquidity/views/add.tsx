@@ -1,7 +1,20 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Text, Flex, Image, Box } from '@chakra-ui/react';
 
-import { Button, PlugButton, TitleBox, TokenBox } from '@/components';
+import {
+  Button,
+  PlugButton,
+  TitleBox,
+  Token,
+  TokenBalances,
+  TokenBalancesDetails,
+  TokenBalancesPrice,
+  TokenContent,
+  TokenDetails,
+  TokenDetailsLogo,
+  TokenDetailsSymbol,
+  TokenInput,
+} from '@/components';
 
 import { plusSrc, equalSrc } from '@/assets';
 import {
@@ -20,6 +33,7 @@ import { useQuery } from '@/hooks/use-query';
 import { SwapIDL } from '@/did';
 import { getAppAssetsSources } from '@/config/utils';
 import { SlippageSettings } from '@/components';
+import { useBalances } from '@/hooks/use-balances';
 
 const BUTTON_TITLES = ['Review Supply', 'Confirm Supply'];
 
@@ -32,28 +46,29 @@ export const LiquidityAdd = () => {
   const { token0, token1, slippage } = useLiquidityViewStore();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const { tokenBalances, sonicBalances } = useBalances();
   const { supportedTokenListState, supportedTokenList } = useSwapStore();
 
-  const [subStep, setSubStep] = useState(0);
+  const [isReviewing, setIsReviewing] = useState(false);
   const [autoSlippage, setAutoSlippage] = useState(true);
 
   const handlePreviousStep = () => {
-    if (subStep === 0) {
-      navigate('/liquidity');
+    if (isReviewing) {
+      setIsReviewing(false);
     } else {
-      setSubStep(subStep - 1);
+      navigate('/liquidity');
     }
   };
 
   const getActiveStatus = (token?: SwapIDL.TokenInfoExt, value?: string) => {
     const shouldBeActive = token && value?.length && parseFloat(value) > 0;
 
-    return shouldBeActive && subStep !== 1 ? 'active' : undefined;
+    return shouldBeActive && !isReviewing ? 'active' : undefined;
   };
 
   const shouldButtonBeActive = useMemo(() => {
     if (!token0.token || !token1.token) return false;
-    if (subStep === 1) return true;
+    if (isReviewing) return true;
 
     const fromTokenCondition =
       getActiveStatus(token0.token, token0.value) === 'active';
@@ -61,22 +76,22 @@ export const LiquidityAdd = () => {
       getActiveStatus(token1.token, token1.value) === 'active';
 
     return fromTokenCondition && toTokenCondition;
-  }, [token0, token1, subStep]);
+  }, [token0, token1, isReviewing]);
 
-  const buttonTitle = BUTTON_TITLES[subStep];
+  const buttonTitle = BUTTON_TITLES[isReviewing ? 1 : 0];
 
   const handleButtonClick = () => {
-    switch (subStep) {
-      case 0:
-        setSubStep(1);
-        break;
-      case 1:
-        addNotification({
-          title: 'Liquidity Added',
-          type: NotificationType.Success,
-          id: Date.now().toString(),
-        });
-        break;
+    if (!isReviewing) {
+      setIsReviewing(true);
+    }
+
+    if (isReviewing) {
+      // TODO: Add liqudity batch run
+      addNotification({
+        title: 'Liquidity Added',
+        type: NotificationType.Success,
+        id: Date.now().toString(),
+      });
     }
   };
 
@@ -116,6 +131,14 @@ export const LiquidityAdd = () => {
     }
   }, [supportedTokenListState]);
 
+  const handleMaxClick = () => {
+    dispatch(
+      withdrawViewActions.setAmount(
+        getCurrencyString(tokenBalance, token0.token?.decimals)
+      )
+    );
+  };
+
   return (
     <>
       <TitleBox
@@ -139,7 +162,7 @@ export const LiquidityAdd = () => {
       />
       <Flex mt={5} direction="column" alignItems="center">
         <Box width="100%">
-          <TokenBox
+          <Token
             value={token0.value}
             setValue={(value) =>
               dispatch(liquidityViewActions.setValue({ data: 'token0', value }))
@@ -149,16 +172,38 @@ export const LiquidityAdd = () => {
                 liquidityViewActions.setToken({ data: 'token0', tokenId })
               );
             }}
-            otherTokensMetadata={supportedTokenList}
-            selectedTokenMetadata={token0.token}
-            status={getActiveStatus(token0.token, token0.value)}
-            selectedTokenIds={selectedTokenIds}
-            disabled={subStep === 1}
-            menuDisabled={subStep === 1}
+            tokenListMetadata={supportedTokenList}
+            tokenMetadata={token0.token}
+            isDisabled={!shouldButtonBeActive || isReviewing}
             price={0}
-            sources={getAppAssetsSources({ balances: { plug: 0, sonic: 0 } })}
+            sources={getAppAssetsSources({
+              balances: {
+                plug:
+                  token0.token && tokenBalances
+                    ? tokenBalances[token0.token.id]
+                    : 0,
+                sonic:
+                  token0.token && sonicBalances
+                    ? sonicBalances[token0.token.id]
+                    : 0,
+              },
+            })}
             isLoading={supportedTokenListState === FeatureState.Loading}
-          />
+          >
+            <TokenContent>
+              <TokenDetails>
+                <TokenDetailsLogo />
+                <TokenDetailsSymbol />
+              </TokenDetails>
+
+              <TokenBalances>
+                <TokenBalancesDetails onMaxClick={handleMaxClick} />
+                <TokenBalancesPrice />
+              </TokenBalances>
+
+              <TokenInput />
+            </TokenContent>
+          </Token>
         </Box>
         <Box
           borderRadius={4}
@@ -175,7 +220,7 @@ export const LiquidityAdd = () => {
           <Image m="auto" src={plusSrc} />
         </Box>
         <Box mt={2.5} mb={5} width="100%">
-          <TokenBox
+          <Token
             value={token1.value}
             setValue={(value) =>
               dispatch(liquidityViewActions.setValue({ data: 'token1', value }))
@@ -185,17 +230,41 @@ export const LiquidityAdd = () => {
                 liquidityViewActions.setToken({ data: 'token1', tokenId })
               );
             }}
-            otherTokensMetadata={supportedTokenList}
-            selectedTokenMetadata={token1.token}
-            status={getActiveStatus(token1.token, token1.value)}
-            disabled={subStep === 1}
-            menuDisabled={subStep === 1}
+            tokenListMetadata={supportedTokenList}
+            tokenMetadata={token1.token}
+            isDisabled={!shouldButtonBeActive || isReviewing}
             price={0}
-            sources={getAppAssetsSources({ balances: { plug: 0, sonic: 0 } })}
+            sources={getAppAssetsSources({
+              balances: {
+                plug:
+                  token1.token && tokenBalances
+                    ? tokenBalances[token1.token.id]
+                    : 0,
+                sonic:
+                  token1.token && sonicBalances
+                    ? sonicBalances[token1.token.id]
+                    : 0,
+              },
+            })}
             isLoading={supportedTokenListState === FeatureState.Loading}
-          />
+          >
+            <TokenContent>
+              <TokenDetails>
+                <TokenDetailsLogo />
+                <TokenDetailsSymbol />
+              </TokenDetails>
+
+              <TokenBalances>
+                <TokenBalancesDetails onMaxClick={handleMaxClick} />
+                <TokenBalancesPrice />
+              </TokenBalances>
+
+              <TokenInput />
+            </TokenContent>
+          </Token>
         </Box>
-        {subStep === 1 && (
+
+        {isReviewing && (
           <>
             <Flex
               direction="column"
@@ -206,38 +275,29 @@ export const LiquidityAdd = () => {
               py={3}
               px={3}
               bg="#3D52F4"
-              mt={-4}
+              mt={-8}
               mb={-6}
               zIndex={1200}
             >
               <Image m="auto" src={equalSrc} />
             </Flex>
             <Box mt={2.5} width="100%">
-              <TokenBox
-                value={token1.value}
-                setValue={(value) =>
-                  dispatch(
-                    liquidityViewActions.setValue({ data: 'token1', value })
-                  )
-                }
-                onTokenSelect={(tokenId) => {
-                  dispatch(
-                    liquidityViewActions.setToken({ data: 'token1', tokenId })
-                  );
-                }}
-                otherTokensMetadata={supportedTokenList}
-                selectedTokenMetadata={token1.token}
-                status="active"
-                price={0}
-                sources={getAppAssetsSources({
-                  balances: { plug: 0, sonic: 0 },
-                })}
-                balanceText="Share of pool:"
-                priceText="SHARE HERE"
-                disabled
-                menuDisabled
-                glow
-              />
+              <Token value={token1.value} price={0} isDisabled shouldGlow>
+                <TokenContent>
+                  <TokenDetails>
+                    <TokenDetailsLogo />
+                    <TokenDetailsSymbol />
+                  </TokenDetails>
+
+                  <TokenBalances>
+                    <Text>Share of pool:</Text>
+
+                    <Text>SHARE HERE</Text>
+                  </TokenBalances>
+
+                  <TokenInput />
+                </TokenContent>
+              </Token>
             </Box>
             <Flex
               direction="row"
@@ -246,12 +306,13 @@ export const LiquidityAdd = () => {
               my={2.5}
               px={5}
             >
-              <Text color="#888E8F">{`${'fromToken'} + ${'toToken'}`}</Text>
-              <Text color="#888E8F">{`1 ${'fromToken'} = 0.23 ${'toToken'}`}</Text>
+              <Text color="#888E8F">{`${token0.value} + ${token1.value}`}</Text>
+              <Text color="#888E8F">{`1 ${token0.value} = 0.23 ${token1.value}`}</Text>
             </Flex>
           </>
         )}
       </Flex>
+
       {!isConnected ? (
         <PlugButton />
       ) : (

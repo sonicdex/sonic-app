@@ -13,4 +13,4 @@ export * from './search-bar';
 export * from './slippage-settings';
 export * from './title-box';
 export * from './toggle';
-export * from './token-box';
+export * from './token';

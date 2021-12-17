@@ -1,5 +1,5 @@
 import { arrowDownSrc, infoSrc } from '@/assets';
-import { Button, TitleBox, TokenBox } from '@/components';
+import { Button, TitleBox, Token } from '@/components';
 import { getAppAssetsSources } from '@/config/utils';
 
 import {
@@ -58,13 +58,13 @@ export const SwapReviewStep = () => {
       />
       <Flex direction="column" alignItems="center" mb={5}>
         <Box mt={5} width="100%">
-          <TokenBox
+          <Token
             value={from.value}
             setValue={(value) =>
               dispatch(swapViewActions.setValue({ data: 'from', value }))
             }
-            otherTokensMetadata={fromTokenOptions}
-            selectedTokenMetadata={from.token}
+            tokenListMetadata={fromTokenOptions}
+            tokenMetadata={from.token}
             selectedTokenIds={selectedTokenIds}
             onTokenSelect={(tokenId) => handleTokenSelect('from', tokenId)}
             price={0}
@@ -101,13 +101,13 @@ export const SwapReviewStep = () => {
           <Image m="auto" src={arrowDownSrc} />
         </Box>
         <Box mt={2.5} width="100%">
-          <TokenBox
+          <Token
             value={to.value}
             setValue={(value) =>
               dispatch(swapViewActions.setValue({ data: 'to', value }))
             }
-            otherTokensMetadata={toTokenOptions}
-            selectedTokenMetadata={to.token}
+            tokenListMetadata={toTokenOptions}
+            tokenMetadata={to.token}
             selectedTokenIds={selectedTokenIds}
             onTokenSelect={(tokenId) => handleTokenSelect('to', tokenId)}
             price={0}
@@ -124,8 +124,8 @@ export const SwapReviewStep = () => {
             //   to.token?.decimals
             // )}
             status="active"
-            glow
-            disabled
+            shouldGlow
+            isDisabled
           />
         </Box>
       </Flex>
