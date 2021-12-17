@@ -90,17 +90,22 @@ export const useSwapBatch = ({
               openSwapModal();
               resolve(true);
             },
-            // Not retry callback
+            // Withdraw callback
             () => {
               navigate(
                 `/assets/withdraw?tokenId=${swapParams.from.token?.id}&amount=${swapParams.from.value}`
               );
               resolve(false);
             },
+            // Close callback
+            () => {
+              resolve(false);
+            },
           ],
         })
       );
 
+      dispatch(modalsSliceActions.closeSwapProgressModal());
       dispatch(modalsSliceActions.openSwapFailModal());
     });
   };
