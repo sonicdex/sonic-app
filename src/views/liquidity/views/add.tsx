@@ -340,8 +340,8 @@ export const LiquidityAdd = () => {
               my={2.5}
               px={5}
             >
-              <Text color="#888E8F">{`${token0.value} + ${token1.value}`}</Text>
-              <Text color="#888E8F">{`1 ${token0.token?.symbol} = 0.23 ${token1.token?.symbol}`}</Text>
+              <Text color="#888E8F">{`${token0.token?.symbol} + ${token1.token?.symbol}`}</Text>
+              <Text color="#888E8F">{`N ${token0.token?.symbol} = M ${token1.token?.symbol}`}</Text>
             </Flex>
           </>
         )}
