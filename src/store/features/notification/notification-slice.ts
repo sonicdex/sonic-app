@@ -3,7 +3,7 @@ import { FeatureState } from '@/store';
 import type { RootState } from '@/store';
 
 export enum NotificationType {
-  Done,
+  Success,
   Error,
   Swap,
   Deposit,

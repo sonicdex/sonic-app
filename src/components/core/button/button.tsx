@@ -24,23 +24,15 @@ export const Button = ({
       : 'linear-gradient(180deg, #3D52F4 0%, #192985 100%)';
   }, [gradient, isWireframe]);
 
-  const border = useMemo(() => {
-    if (isWireframe) {
-      return '1px solid #FFFFFF';
-    }
-
-    return 'none';
-  }, [isWireframe]);
-
   return (
     <ChakraButton
       fontWeight="bold"
       borderRadius={12}
       textAlign="center"
-      border={border}
       color="#F6FCFD"
       cursor="pointer"
       background={background}
+      variant={isWireframe ? 'outline' : 'solid'}
       _hover={{
         background,
       }}

@@ -78,7 +78,7 @@ export const RemoveLiquidityLink: React.FC<RemoveLiquidityLinkProps> = ({
         dispatch(modalsSliceActions.closeRemoveLiquidityProgressModal());
         addNotification({
           title: `Successfuly removed liquidity: ${token0.value} ${token0.token?.symbol} + ${token1.value} ${token1.token?.symbol}`,
-          type: NotificationType.Done,
+          type: NotificationType.Success,
           id: Date.now().toString(),
           // TODO: add transaction id
           transactionLink: createCAPLink('transactionId'),

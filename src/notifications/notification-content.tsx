@@ -30,9 +30,9 @@ export const NotificationContent: React.FC<NotificationContentProps> = ({
     [NotificationType.RemoveLiquidity]: <RemoveLiquidityLink id={id} />,
     [NotificationType.Withdraw]: <WithdrawLink id={id} />,
     [NotificationType.Deposit]: <DepositLink id={id} />,
-    [NotificationType.Done]: (
+    [NotificationType.Success]: transactionLink ? (
       <TransactionLink transactionLink={transactionLink} />
-    ),
+    ) : null,
     [NotificationType.Error]: <></>, // TODO: Add error
   };
 

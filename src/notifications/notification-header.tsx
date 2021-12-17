@@ -4,7 +4,7 @@ import { Box, Spinner } from '@chakra-ui/react';
 
 const NotificationIcon = ({ type }: { type: NotificationType }) => {
   switch (type) {
-    case NotificationType.Done:
+    case NotificationType.Success:
       return (
         <Box
           as="img"
@@ -47,7 +47,8 @@ export const NotificationHeader: React.FC<NotificationHeaderProps> = ({
   return (
     <>
       <NotificationIcon type={type} />
-      {(type === NotificationType.Error || type === NotificationType.Done) && (
+      {(type === NotificationType.Error ||
+        type === NotificationType.Success) && (
         <Box
           cursor="pointer"
           onClick={handleClose}

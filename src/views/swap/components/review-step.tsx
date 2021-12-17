@@ -16,7 +16,7 @@ import { debounce } from '@/utils/function';
 import { Box, Checkbox, Flex, FormControl, Image } from '@chakra-ui/react';
 import { useMemo } from 'react';
 
-export const ReviewStep = () => {
+export const SwapReviewStep = () => {
   const { sonicBalances, tokenBalances } = useSwapStore();
 
   const { fromTokenOptions, toTokenOptions, from, to, keepInSonic } =

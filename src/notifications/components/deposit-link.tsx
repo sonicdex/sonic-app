@@ -61,7 +61,7 @@ export const DepositLink: React.FC<DepositLinkProps> = ({ id }) => {
         getBalances();
         addNotification({
           title: 'Deposit successful',
-          type: NotificationType.Done,
+          type: NotificationType.Success,
           id: Date.now().toString(),
           // TODO: add transaction id
           transactionLink: createCAPLink('transactionId'),

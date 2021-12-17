@@ -21,6 +21,8 @@ interface SwapViewState {
   keepInSonic: boolean;
 }
 
+export const INITIAL_SWAP_SLIPPAGE = '0.5';
+
 const initialState: SwapViewState = {
   step: SwapStep?.Home,
   state: FeatureState?.Idle,
@@ -34,7 +36,7 @@ const initialState: SwapViewState = {
   },
   tokenList: undefined,
   pairList: undefined,
-  slippage: '0.10',
+  slippage: INITIAL_SWAP_SLIPPAGE,
   keepInSonic: false,
 };
 

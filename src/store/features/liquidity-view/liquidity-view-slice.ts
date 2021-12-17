@@ -14,6 +14,8 @@ interface LiquidityViewState {
   keepInSonic: boolean;
 }
 
+export const INITIAL_LIQUIDITY_SLIPPAGE = '0.50';
+
 const initialState: LiquidityViewState = {
   state: FeatureState?.Idle,
   token0: {
@@ -24,7 +26,7 @@ const initialState: LiquidityViewState = {
     token: undefined,
     value: '0.00',
   },
-  slippage: '0.10',
+  slippage: INITIAL_LIQUIDITY_SLIPPAGE,
   tokenList: undefined,
   keepInSonic: true,
 };

@@ -58,7 +58,7 @@ export const WithdrawLink: React.FC<WithdrawLinkProps> = ({ id }) => {
         dispatch(modalsSliceActions.closeWithdrawProgressModal());
         addNotification({
           title: 'Withdraw successful',
-          type: NotificationType.Done,
+          type: NotificationType.Success,
           id: Date.now().toString(),
           // TODO: add transaction id
           transactionLink: createCAPLink('transactionId'),

@@ -1,29 +1,28 @@
 import { Box, Flex } from '@chakra-ui/react';
 import { NumberInput, Button } from '@/components';
 
-type SwapSettingsProps = {
+type SlippageSettingsProps = {
   slippage: string;
-  isAuto: boolean;
-  setSlippage: (arg0: string) => any;
-  setIsAuto: (arg0: boolean) => any;
+  isAutoSlippage: boolean;
+  setSlippage: (slippage: string) => any;
+  setIsAutoSlippage: (isAutoSlippage: boolean) => any;
 };
 
-export const SwapSettings = ({
+export const SlippageSettings = ({
   slippage,
   setSlippage,
-  isAuto,
-  setIsAuto,
-}: SwapSettingsProps) => {
-  const inputBorderColor = isAuto ? '#373737' : '#3D52F4';
-  const inputColor = isAuto ? '#888E8F' : '#F6FCFD';
-  const buttonOpacity = isAuto ? 1 : 0.3;
+  isAutoSlippage,
+  setIsAutoSlippage,
+}: SlippageSettingsProps) => {
+  const inputBorderColor = isAutoSlippage ? '#373737' : '#3D52F4';
+  const inputColor = isAutoSlippage ? '#888E8F' : '#F6FCFD';
 
   const handleInputClick = () => {
-    if (isAuto) setIsAuto(false);
+    if (isAutoSlippage) setIsAutoSlippage(false);
   };
 
   const handleButtonClick = () => {
-    if (!isAuto) setIsAuto(true);
+    if (!isAutoSlippage) setIsAutoSlippage(true);
   };
 
   return (
@@ -46,9 +45,8 @@ export const SwapSettings = ({
         <Button
           gradient="horizontal"
           borderRadius={100}
-          opacity={buttonOpacity}
           onClick={handleButtonClick}
-          isWireframe={!isAuto}
+          isWireframe={!isAutoSlippage}
           mr={3}
         >
           Auto
@@ -66,6 +64,7 @@ export const SwapSettings = ({
             value={slippage}
             setValue={setSlippage}
             py={2.5}
+            px={2.5}
             fontSize="sm"
             fontWeight={600}
             color={inputColor}

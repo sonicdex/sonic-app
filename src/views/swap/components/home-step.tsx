@@ -2,9 +2,16 @@ import { Box, Flex, Icon, IconButton, Tooltip } from '@chakra-ui/react';
 import { useMemo, useState } from 'react';
 import { FaArrowDown } from 'react-icons/fa';
 
-import { TitleBox, TokenBox, Button, PlugButton } from '@/components';
+import {
+  TitleBox,
+  TokenBox,
+  Button,
+  PlugButton,
+  SlippageSettings,
+} from '@/components';
 import { useBalances } from '@/hooks/use-balances';
 import {
+  INITIAL_SWAP_SLIPPAGE,
   SwapStep,
   swapViewActions,
   useAppDispatch,
@@ -15,9 +22,7 @@ import {
 import { formatAmount, getCurrencyString } from '@/utils/format';
 import { getAppAssetsSources } from '@/config/utils';
 
-import { SwapSettings } from '../index';
-
-export const HomeStep = () => {
+export const SwapHomeStep = () => {
   const { fromTokenOptions, toTokenOptions, from, to, slippage } =
     useSwapViewStore();
   const dispatch = useAppDispatch();
@@ -88,13 +93,16 @@ export const HomeStep = () => {
       <TitleBox
         title="Swap"
         settings={
-          <SwapSettings
+          <SlippageSettings
             slippage={slippage}
+            isAutoSlippage={autoSlippage}
             setSlippage={(value) =>
               dispatch(swapViewActions.setSlippage(value))
             }
-            isAuto={autoSlippage}
-            setIsAuto={setAutoSlippage}
+            setIsAutoSlippage={(value) => {
+              setAutoSlippage(value);
+              dispatch(swapViewActions.setSlippage(INITIAL_SWAP_SLIPPAGE));
+            }}
           />
         }
       />

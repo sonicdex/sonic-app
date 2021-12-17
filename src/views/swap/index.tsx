@@ -1,4 +1,4 @@
-import { HomeStep, ReviewStep } from './components/steps';
+import { SwapHomeStep, SwapReviewStep } from './components';
 
 import { SwapStep, useSwapView, useSwapViewStore } from '@/store';
 
@@ -7,8 +7,8 @@ export const Swap = () => {
   const { step } = useSwapViewStore();
 
   const steps = {
-    [SwapStep.Home]: <HomeStep />,
-    [SwapStep.Review]: <ReviewStep />,
+    [SwapStep.Home]: <SwapHomeStep />,
+    [SwapStep.Review]: <SwapReviewStep />,
   };
 
   if (steps.hasOwnProperty(step)) {

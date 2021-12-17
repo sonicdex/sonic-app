@@ -6,6 +6,7 @@ import { Button, PlugButton, TitleBox, TokenBox } from '@/components';
 import { plusSrc, equalSrc } from '@/assets';
 import {
   FeatureState,
+  INITIAL_LIQUIDITY_SLIPPAGE,
   liquidityViewActions,
   NotificationType,
   useAppDispatch,
@@ -18,6 +19,7 @@ import { useNavigate } from 'react-router';
 import { useQuery } from '@/hooks/use-query';
 import { SwapIDL } from '@/did';
 import { getAppAssetsSources } from '@/config/utils';
+import { SlippageSettings } from '@/components';
 
 const BUTTON_TITLES = ['Review Supply', 'Confirm Supply'];
 
@@ -27,12 +29,13 @@ export const LiquidityAdd = () => {
   const { isConnected } = usePlugStore();
 
   const { addNotification } = useNotificationStore();
-  const { token0, token1 } = useLiquidityViewStore();
+  const { token0, token1, slippage } = useLiquidityViewStore();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { supportedTokenListState, supportedTokenList } = useSwapStore();
 
   const [subStep, setSubStep] = useState(0);
+  const [autoSlippage, setAutoSlippage] = useState(true);
 
   const handlePreviousStep = () => {
     if (subStep === 0) {
@@ -70,7 +73,7 @@ export const LiquidityAdd = () => {
       case 1:
         addNotification({
           title: 'Liquidity Added',
-          type: NotificationType.Done,
+          type: NotificationType.Success,
           id: Date.now().toString(),
         });
         break;
@@ -118,7 +121,21 @@ export const LiquidityAdd = () => {
       <TitleBox
         onArrowBack={handlePreviousStep}
         title="Add Liquidity"
-        settings={true}
+        settings={
+          <SlippageSettings
+            slippage={slippage}
+            setSlippage={(value) =>
+              dispatch(liquidityViewActions.setSlippage(value))
+            }
+            isAutoSlippage={autoSlippage}
+            setIsAutoSlippage={(value) => {
+              setAutoSlippage(value);
+              dispatch(
+                liquidityViewActions.setSlippage(INITIAL_LIQUIDITY_SLIPPAGE)
+              );
+            }}
+          />
+        }
       />
       <Flex mt={5} direction="column" alignItems="center">
         <Box width="100%">
