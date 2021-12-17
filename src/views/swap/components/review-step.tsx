@@ -1,33 +1,40 @@
 import { arrowDownSrc, infoSrc } from '@/assets';
-import { Button, TitleBox, Token } from '@/components';
+import {
+  Button,
+  TitleBox,
+  Token,
+  TokenBalances,
+  TokenBalancesDetails,
+  TokenBalancesPrice,
+  TokenContent,
+  TokenDetails,
+  TokenDetailsLogo,
+  TokenDetailsSymbol,
+  TokenInput,
+} from '@/components';
 import { getAppAssetsSources } from '@/config/utils';
+import { useBalances } from '@/hooks/use-balances';
 
 import {
   NotificationType,
   SwapStep,
-  SwapTokenDataKey,
   swapViewActions,
   useAppDispatch,
   useNotificationStore,
   useSwapStore,
   useSwapViewStore,
 } from '@/store';
+import { getCurrencyString } from '@/utils/format';
 import { debounce } from '@/utils/function';
 import { Box, Checkbox, Flex, FormControl, Image } from '@chakra-ui/react';
-import { useMemo } from 'react';
 
 export const SwapReviewStep = () => {
   const { sonicBalances, tokenBalances } = useSwapStore();
-
+  const { totalBalances } = useBalances();
+  const { addNotification } = useNotificationStore();
   const { fromTokenOptions, toTokenOptions, from, to, keepInSonic } =
     useSwapViewStore();
   const dispatch = useAppDispatch();
-
-  const { addNotification } = useNotificationStore();
-
-  const handleTokenSelect = (data: SwapTokenDataKey, tokenId: string) => {
-    dispatch(swapViewActions.setToken({ data, tokenId }));
-  };
 
   const handleApproveSwap = () => {
     addNotification({
@@ -41,13 +48,17 @@ export const SwapReviewStep = () => {
     );
   };
 
-  const selectedTokenIds = useMemo(() => {
-    let selectedIds = [];
-    if (from?.token?.id) selectedIds.push(from.token.id);
-    if (to?.token?.id) selectedIds.push(to.token.id);
-
-    return selectedIds;
-  }, [from?.token?.id, to?.token?.id]);
+  const handleMaxClick = () => {
+    dispatch(
+      swapViewActions.setValue({
+        data: 'to',
+        value:
+          totalBalances && to.token
+            ? getCurrencyString(totalBalances[to.token?.id], to.token?.decimals)
+            : '0.00',
+      })
+    );
+  };
 
   return (
     <>
@@ -65,8 +76,6 @@ export const SwapReviewStep = () => {
             }
             tokenListMetadata={fromTokenOptions}
             tokenMetadata={from.token}
-            selectedTokenIds={selectedTokenIds}
-            onTokenSelect={(tokenId) => handleTokenSelect('from', tokenId)}
             price={0}
             sources={getAppAssetsSources({
               balances: {
@@ -80,12 +89,20 @@ export const SwapReviewStep = () => {
                     : 0,
               },
             })}
-            status="active"
-            // balances={getCurrencyString(
-            //   from.token && totalBalances ? totalBalances[from.token.id] : 0,
-            //   from.token?.decimals
-            // )}
-          />
+          >
+            <TokenContent>
+              <TokenDetails>
+                <TokenDetailsLogo />
+                <TokenDetailsSymbol />
+              </TokenDetails>
+
+              <TokenInput />
+            </TokenContent>
+            <TokenBalances>
+              <TokenBalancesDetails onMaxClick={handleMaxClick} />
+              <TokenBalancesPrice />
+            </TokenBalances>
+          </Token>
         </Box>
         <Box
           borderRadius={4}
@@ -108,8 +125,6 @@ export const SwapReviewStep = () => {
             }
             tokenListMetadata={toTokenOptions}
             tokenMetadata={to.token}
-            selectedTokenIds={selectedTokenIds}
-            onTokenSelect={(tokenId) => handleTokenSelect('to', tokenId)}
             price={0}
             sources={getAppAssetsSources({
               balances: {
@@ -119,14 +134,22 @@ export const SwapReviewStep = () => {
                   to.token && sonicBalances ? sonicBalances[to.token.id] : 0,
               },
             })}
-            // balances={getCurrencyString(
-            //   to.token && totalBalances ? totalBalances[to.token.id] : 0,
-            //   to.token?.decimals
-            // )}
-            status="active"
             shouldGlow
             isDisabled
-          />
+          >
+            <TokenContent>
+              <TokenDetails>
+                <TokenDetailsLogo />
+                <TokenDetailsSymbol />
+              </TokenDetails>
+
+              <TokenInput />
+            </TokenContent>
+            <TokenBalances>
+              <TokenBalancesDetails onMaxClick={handleMaxClick} />
+              <TokenBalancesPrice />
+            </TokenBalances>
+          </Token>
         </Box>
       </Flex>
       <Flex

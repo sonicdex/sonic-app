@@ -48,6 +48,7 @@ export type RemoveLiquidityModalData = {
 
 type TokenSelectData = {
   [key: string]: any;
+  onSelect: (tokenId?: string) => void;
 };
 
 // Define a type for the slice state

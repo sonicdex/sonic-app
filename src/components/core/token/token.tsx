@@ -32,7 +32,6 @@ export type TokenUniqueProps = {
   tokenListMetadata?: Array<TokenMetadata>;
   sources?: TokenSource[];
   setValue?: (value: string) => any;
-  onTokenSelect?: (arg0: string) => any;
   isDisabled?: boolean;
   isLoading?: boolean;
   shouldGlow?: boolean;
@@ -164,13 +163,21 @@ export const TokenBalances = (props: FlexProps) => {
 };
 
 export const TokenBalancesPrice: React.FC<BoxProps> = (props) => {
-  const { isLoading, isDisabled, price } = useTokenContext();
+  const { isLoading, isDisabled, price, value } = useTokenContext();
+
+  const isActive = useMemo(() => {
+    if (isLoading || isDisabled || parseFloat(value ?? '0') <= 0) {
+      return false;
+    }
+
+    return true;
+  }, [isLoading, isDisabled, value]);
 
   return (
     <Skeleton isLoaded={!isLoading} borderRadius="full">
       <Box
         transition="color 400ms"
-        color={!isDisabled ? '#F6FCFD' : '#888E8F'}
+        color={isActive ? '#F6FCFD' : '#888E8F'}
         {...props}
       >
         <NumberFormat value={price} displayType="text" prefix="$" />
@@ -238,13 +245,25 @@ export const TokenBalancesDetails: React.FC<TokenBalancesDetailsProps> = ({
 type TokenInputProps = NumberInputProps;
 
 export const TokenInput: React.FC<TokenInputProps> = (props) => {
-  const { isLoading, shouldGlow, isDisabled } = useTokenContext();
+  const { isLoading, isDisabled, shouldGlow, value, setValue } =
+    useTokenContext();
   const background = shouldGlow ? '#151515' : '#1E1E1E';
+
+  const isActive = useMemo(() => {
+    if (isLoading || isDisabled || parseFloat(value ?? '0') <= 0) {
+      return false;
+    }
+
+    return true;
+  }, [isLoading, isDisabled, value]);
 
   return (
     <Skeleton isLoaded={!isLoading} borderRadius="full">
       <NumberInput
-        color={!isDisabled ? '#F6FCFD' : '#888E8F'}
+        isDisabled={isDisabled}
+        value={value}
+        setValue={setValue}
+        color={isActive ? '#F6FCFD' : '#888E8F'}
         background={background}
         {...props}
       />

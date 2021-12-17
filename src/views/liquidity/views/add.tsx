@@ -27,6 +27,7 @@ import {
   useNotificationStore,
   usePlugStore,
   useSwapStore,
+  useTokenModalOpener,
 } from '@/store';
 import { useNavigate } from 'react-router';
 import { useQuery } from '@/hooks/use-query';
@@ -34,6 +35,7 @@ import { SwapIDL } from '@/did';
 import { getAppAssetsSources } from '@/config/utils';
 import { SlippageSettings } from '@/components';
 import { useBalances } from '@/hooks/use-balances';
+import { getCurrencyString } from '@/utils/format';
 
 const BUTTON_TITLES = ['Review Supply', 'Confirm Supply'];
 
@@ -46,8 +48,9 @@ export const LiquidityAdd = () => {
   const { token0, token1, slippage } = useLiquidityViewStore();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { tokenBalances, sonicBalances } = useBalances();
+  const { tokenBalances, sonicBalances, totalBalances } = useBalances();
   const { supportedTokenListState, supportedTokenList } = useSwapStore();
+  const openSelectTokenModal = useTokenModalOpener();
 
   const [isReviewing, setIsReviewing] = useState(false);
   const [autoSlippage, setAutoSlippage] = useState(true);
@@ -131,12 +134,52 @@ export const LiquidityAdd = () => {
     }
   }, [supportedTokenListState]);
 
-  const handleMaxClick = () => {
+  const handleToken0MaxClick = () => {
     dispatch(
-      withdrawViewActions.setAmount(
-        getCurrencyString(tokenBalance, token0.token?.decimals)
-      )
+      liquidityViewActions.setValue({
+        data: 'token0',
+        value:
+          totalBalances && token0.token
+            ? getCurrencyString(
+                totalBalances[token0.token?.id],
+                token0.token?.decimals
+              )
+            : '0.00',
+      })
     );
+  };
+
+  const handleToken1MaxClick = () => {
+    dispatch(
+      liquidityViewActions.setValue({
+        data: 'token1',
+        value:
+          totalBalances && token1.token
+            ? getCurrencyString(
+                totalBalances[token1.token?.id],
+                token1.token?.decimals
+              )
+            : '0.00',
+      })
+    );
+  };
+
+  const handleSelectToken0 = () => {
+    openSelectTokenModal({
+      metadata: supportedTokenList,
+      onSelect: (tokenId) =>
+        dispatch(liquidityViewActions.setToken({ data: 'token0', tokenId })),
+      selectedTokenIds,
+    });
+  };
+
+  const handleSelectToken1 = () => {
+    openSelectTokenModal({
+      metadata: supportedTokenList,
+      onSelect: (tokenId) =>
+        dispatch(liquidityViewActions.setToken({ data: 'token1', tokenId })),
+      selectedTokenIds,
+    });
   };
 
   return (
@@ -167,11 +210,6 @@ export const LiquidityAdd = () => {
             setValue={(value) =>
               dispatch(liquidityViewActions.setValue({ data: 'token0', value }))
             }
-            onTokenSelect={(tokenId) => {
-              dispatch(
-                liquidityViewActions.setToken({ data: 'token0', tokenId })
-              );
-            }}
             tokenListMetadata={supportedTokenList}
             tokenMetadata={token0.token}
             isDisabled={!shouldButtonBeActive || isReviewing}
@@ -191,18 +229,17 @@ export const LiquidityAdd = () => {
             isLoading={supportedTokenListState === FeatureState.Loading}
           >
             <TokenContent>
-              <TokenDetails>
+              <TokenDetails onClick={handleSelectToken0}>
                 <TokenDetailsLogo />
                 <TokenDetailsSymbol />
               </TokenDetails>
 
-              <TokenBalances>
-                <TokenBalancesDetails onMaxClick={handleMaxClick} />
-                <TokenBalancesPrice />
-              </TokenBalances>
-
               <TokenInput />
             </TokenContent>
+            <TokenBalances>
+              <TokenBalancesDetails onMaxClick={handleToken0MaxClick} />
+              <TokenBalancesPrice />
+            </TokenBalances>
           </Token>
         </Box>
         <Box
@@ -225,14 +262,8 @@ export const LiquidityAdd = () => {
             setValue={(value) =>
               dispatch(liquidityViewActions.setValue({ data: 'token1', value }))
             }
-            onTokenSelect={(tokenId) => {
-              dispatch(
-                liquidityViewActions.setToken({ data: 'token1', tokenId })
-              );
-            }}
             tokenListMetadata={supportedTokenList}
             tokenMetadata={token1.token}
-            isDisabled={!shouldButtonBeActive || isReviewing}
             price={0}
             sources={getAppAssetsSources({
               balances: {
@@ -249,18 +280,17 @@ export const LiquidityAdd = () => {
             isLoading={supportedTokenListState === FeatureState.Loading}
           >
             <TokenContent>
-              <TokenDetails>
+              <TokenDetails onClick={handleSelectToken1}>
                 <TokenDetailsLogo />
                 <TokenDetailsSymbol />
               </TokenDetails>
 
-              <TokenBalances>
-                <TokenBalancesDetails onMaxClick={handleMaxClick} />
-                <TokenBalancesPrice />
-              </TokenBalances>
-
               <TokenInput />
             </TokenContent>
+            <TokenBalances>
+              <TokenBalancesDetails onMaxClick={handleToken1MaxClick} />
+              <TokenBalancesPrice />
+            </TokenBalances>
           </Token>
         </Box>
 
@@ -289,14 +319,13 @@ export const LiquidityAdd = () => {
                     <TokenDetailsSymbol />
                   </TokenDetails>
 
-                  <TokenBalances>
-                    <Text>Share of pool:</Text>
-
-                    <Text>SHARE HERE</Text>
-                  </TokenBalances>
-
                   <TokenInput />
                 </TokenContent>
+                <TokenBalances>
+                  <Text>Share of pool:</Text>
+
+                  <Text>SHARE HERE</Text>
+                </TokenBalances>
               </Token>
             </Box>
             <Flex

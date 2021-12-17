@@ -22,6 +22,7 @@ import {
   useDepositViewStore,
   useNotificationStore,
   useSwapStore,
+  useTokenModalOpener,
 } from '@/store';
 import { useNavigate } from 'react-router';
 import { useQuery } from '@/hooks/use-query';
@@ -39,13 +40,22 @@ export const AssetsDeposit = () => {
   const navigate = useNavigate();
   const { amount, tokenId } = useDepositViewStore();
   const { addNotification } = useNotificationStore();
+  const openSelectTokenModal = useTokenModalOpener();
 
   const selectedTokenMetadata = useMemo(() => {
     return supportedTokenList?.find(({ id }) => id === tokenId);
   }, [supportedTokenList, tokenId]);
 
-  const handleTokenSelect = (tokenId: string) => {
-    dispatch(depositViewActions.setTokenId(tokenId));
+  const handleSelectTokenId = (tokenId?: string) => {
+    dispatch(depositViewActions.setTokenId(tokenId!));
+  };
+
+  const handleOpenSelectTokenModal = () => {
+    openSelectTokenModal({
+      metadata: supportedTokenList,
+      onSelect: (tokenId) => handleSelectTokenId(tokenId),
+      selectedTokenIds: [],
+    });
   };
 
   const handleDeposit = () => {
@@ -98,7 +108,7 @@ export const AssetsDeposit = () => {
     }
 
     if (tokenId) {
-      handleTokenSelect(tokenId);
+      handleSelectTokenId(tokenId);
     }
 
     return () => {
@@ -128,7 +138,6 @@ export const AssetsDeposit = () => {
           isLoading={isLoading}
           value={amount}
           setValue={(value) => dispatch(depositViewActions.setAmount(value))}
-          onTokenSelect={handleTokenSelect}
           price={0}
           sources={[
             {
@@ -142,18 +151,17 @@ export const AssetsDeposit = () => {
           tokenMetadata={selectedTokenMetadata}
         >
           <TokenContent>
-            <TokenDetails>
+            <TokenDetails onClick={handleOpenSelectTokenModal}>
               <TokenDetailsLogo />
               <TokenDetailsSymbol />
             </TokenDetails>
 
-            <TokenBalances>
-              <TokenBalancesDetails onMaxClick={handleMaxClick} />
-              <TokenBalancesPrice />
-            </TokenBalances>
-
             <TokenInput />
           </TokenContent>
+          <TokenBalances>
+            <TokenBalancesDetails onMaxClick={handleMaxClick} />
+            <TokenBalancesPrice />
+          </TokenBalances>
         </Token>
       </Box>
       <Button

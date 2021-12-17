@@ -8,6 +8,14 @@ import {
   Button,
   PlugButton,
   SlippageSettings,
+  TokenContent,
+  TokenDetails,
+  TokenDetailsLogo,
+  TokenDetailsSymbol,
+  TokenBalances,
+  TokenBalancesDetails,
+  TokenBalancesPrice,
+  TokenInput,
 } from '@/components';
 import { useBalances } from '@/hooks/use-balances';
 import {
@@ -18,6 +26,7 @@ import {
   usePlugStore,
   useSwapStore,
   useSwapViewStore,
+  useTokenModalOpener,
 } from '@/store';
 import { formatAmount, getCurrencyString } from '@/utils/format';
 import { getAppAssetsSources } from '@/config/utils';
@@ -28,6 +37,8 @@ export const SwapHomeStep = () => {
   const dispatch = useAppDispatch();
   const { sonicBalances, tokenBalances } = useSwapStore();
   const { isConnected } = usePlugStore();
+
+  const openSelectTokenModal = useTokenModalOpener();
 
   const [autoSlippage, setAutoSlippage] = useState(true);
 
@@ -61,11 +72,6 @@ export const SwapHomeStep = () => {
     return [false, 'Review Swap'];
   }, [isLoading, totalBalances, from.token, to.token, from.value, to.value]);
 
-  const fromValueStatus = useMemo(() => {
-    if (from.value && parseFloat(from.value) > 0) return 'active';
-    return 'inactive';
-  }, [from.value]);
-
   const selectedTokenIds = useMemo(() => {
     let selectedIds = [];
     if (from?.token?.id) selectedIds.push(from.token.id);
@@ -80,12 +86,53 @@ export const SwapHomeStep = () => {
     dispatch(swapViewActions.setStep(SwapStep.Review));
   };
 
-  const handleTokenSelect = (data: any, tokenId: string) => {
-    dispatch(swapViewActions.setToken({ data, tokenId }));
-  };
-
   const switchTokens = () => {
     dispatch(swapViewActions.switchTokens());
+  };
+
+  const handleFromMaxClick = () => {
+    dispatch(
+      swapViewActions.setValue({
+        data: 'from',
+        value:
+          totalBalances && from.token
+            ? getCurrencyString(
+                totalBalances[from.token?.id],
+                from.token?.decimals
+              )
+            : '0.00',
+      })
+    );
+  };
+
+  const handleToMaxClick = () => {
+    dispatch(
+      swapViewActions.setValue({
+        data: 'to',
+        value:
+          totalBalances && to.token
+            ? getCurrencyString(totalBalances[to.token?.id], to.token?.decimals)
+            : '0.00',
+      })
+    );
+  };
+
+  const handleSelectFromToken = () => {
+    openSelectTokenModal({
+      metadata: fromTokenOptions,
+      onSelect: (tokenId) =>
+        dispatch(swapViewActions.setToken({ data: 'from', tokenId })),
+      selectedTokenIds,
+    });
+  };
+
+  const handleSelectToToken = () => {
+    openSelectTokenModal({
+      metadata: toTokenOptions,
+      onSelect: (tokenId) =>
+        dispatch(swapViewActions.setToken({ data: 'to', tokenId })),
+      selectedTokenIds,
+    });
   };
 
   return (
@@ -110,28 +157,11 @@ export const SwapHomeStep = () => {
         <Box mt={5} width="100%">
           <Token
             value={from.value}
-            onMaxClick={() =>
-              dispatch(
-                swapViewActions.setValue({
-                  data: 'from',
-                  value:
-                    totalBalances && from.token
-                      ? getCurrencyString(
-                          totalBalances[from.token?.id],
-                          from.token?.decimals
-                        )
-                      : '0.00',
-                })
-              )
-            }
             setValue={(value) =>
               dispatch(swapViewActions.setValue({ data: 'from', value }))
             }
             tokenListMetadata={fromTokenOptions}
             tokenMetadata={from.token}
-            onTokenSelect={(tokenId) => handleTokenSelect('from', tokenId)}
-            selectedTokenIds={selectedTokenIds}
-            status={fromValueStatus}
             isLoading={isLoading}
             price={0}
             sources={getAppAssetsSources({
@@ -146,12 +176,22 @@ export const SwapHomeStep = () => {
                     : 0,
               },
             })}
-            // balances={getCurrencyString(
-            //   from.token && totalBalance ? totalBalance[from.token.id] : 0,
-            //   from.token?.decimals
-            // )}
-          />
+          >
+            <TokenContent>
+              <TokenDetails onClick={handleSelectFromToken}>
+                <TokenDetailsLogo />
+                <TokenDetailsSymbol />
+              </TokenDetails>
+
+              <TokenInput />
+            </TokenContent>
+            <TokenBalances>
+              <TokenBalancesDetails onMaxClick={handleFromMaxClick} />
+              <TokenBalancesPrice />
+            </TokenBalances>
+          </Token>
         </Box>
+
         <Tooltip label="Swap">
           <IconButton
             aria-label="Swap"
@@ -169,6 +209,7 @@ export const SwapHomeStep = () => {
             }}
           />
         </Tooltip>
+
         <Box mt={2.5} width="100%">
           <Token
             value={to.value}
@@ -176,11 +217,10 @@ export const SwapHomeStep = () => {
               dispatch(swapViewActions.setValue({ data: 'to', value }))
             }
             tokenListMetadata={toTokenOptions}
-            onTokenSelect={(tokenId) => handleTokenSelect('to', tokenId)}
             tokenMetadata={to.token}
-            isDisabled={true}
             isLoading={isLoading}
             price={0}
+            isDisabled={true}
             sources={getAppAssetsSources({
               balances: {
                 plug:
@@ -189,13 +229,23 @@ export const SwapHomeStep = () => {
                   to.token && sonicBalances ? sonicBalances[to.token.id] : 0,
               },
             })}
-            // balances={getCurrencyString(
-            //   to.token && totalBalance ? totalBalance[to.token.id] : 0,
-            //   to.token?.decimals
-            // )}
-          />
+          >
+            <TokenContent>
+              <TokenDetails onClick={handleSelectToToken}>
+                <TokenDetailsLogo />
+                <TokenDetailsSymbol />
+              </TokenDetails>
+
+              <TokenInput />
+            </TokenContent>
+            <TokenBalances>
+              <TokenBalancesDetails onMaxClick={handleToMaxClick} />
+              <TokenBalancesPrice />
+            </TokenBalances>
+          </Token>
         </Box>
       </Flex>
+
       {!isConnected ? (
         <PlugButton />
       ) : (
