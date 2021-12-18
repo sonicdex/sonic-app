@@ -1,6 +1,6 @@
 import { ENV } from '@/config';
 import { SwapIDL } from '@/did';
-import { getMinAmount, parseAmount } from '@/utils/format';
+import { getAmountMin, parseAmount } from '@/utils/format';
 import { Principal } from '@dfinity/principal';
 import { Transaction } from '@psychedelic/plug-inpage-provider/dist/src/Provider';
 import { useMemo } from 'react';
@@ -22,11 +22,11 @@ export const useMemorizedAddLiquidityTransaction: CreateTransaction<AddLiquidity
       const amount1Desired = parseAmount(token1.value, token1.token.decimals);
 
       const amount0Min = parseAmount(
-        getMinAmount(token1.value, slippage, token1.token.decimals),
+        getAmountMin(token1.value, slippage, token1.token.decimals),
         token1.token.decimals
       );
       const amount1Min = parseAmount(
-        getMinAmount(token1.value, slippage, token1.token.decimals),
+        getAmountMin(token1.value, slippage, token1.token.decimals),
         token1.token.decimals
       );
 

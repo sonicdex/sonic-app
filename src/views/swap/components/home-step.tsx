@@ -198,8 +198,8 @@ export const SwapHomeStep = () => {
             aria-label="Swap"
             icon={<Icon as={FaArrowDown} transition="transform 250ms" />}
             variant="outline"
-            mt={-4}
-            mb={-6}
+            mt={-2}
+            mb={-2}
             zIndex="overlay"
             bg="gray.800"
             onClick={switchTokens}
@@ -211,7 +211,7 @@ export const SwapHomeStep = () => {
           />
         </Tooltip>
 
-        <Box mt={2.5} width="100%">
+        <Box width="100%">
           <Token
             value={to.value}
             setValue={(value) =>

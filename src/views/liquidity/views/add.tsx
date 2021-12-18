@@ -23,7 +23,6 @@ import {
   liquidityViewActions,
   NotificationType,
   useAppDispatch,
-  useLiquidityView,
   useLiquidityViewStore,
   useNotificationStore,
   usePlugStore,
@@ -36,15 +35,16 @@ import { SwapIDL } from '@/did';
 import { getAppAssetsSources } from '@/config/utils';
 import { SlippageSettings } from '@/components';
 import { useBalances } from '@/hooks/use-balances';
-import { getCurrencyString } from '@/utils/format';
+import { getCurrencyString, getAmountEqualLPToken } from '@/utils/format';
+import BigNumber from 'bignumber.js';
 
 const BUTTON_TITLES = ['Review Supply', 'Confirm Supply'];
 
 export const LiquidityAdd = () => {
   const query = useQuery();
-  useLiquidityView();
 
   const { isConnected } = usePlugStore();
+  const { allPairs } = useSwapCanisterStore();
 
   const { addNotification } = useNotificationStore();
   const { token0, token1, slippage } = useLiquidityViewStore();
@@ -57,57 +57,6 @@ export const LiquidityAdd = () => {
 
   const [isReviewing, setIsReviewing] = useState(false);
   const [autoSlippage, setAutoSlippage] = useState(true);
-
-  const handlePreviousStep = () => {
-    if (isReviewing) {
-      setIsReviewing(false);
-    } else {
-      navigate('/liquidity');
-    }
-  };
-
-  const getActiveStatus = (token?: SwapIDL.TokenInfoExt, value?: string) => {
-    const shouldBeActive = token && value?.length && parseFloat(value) > 0;
-
-    return shouldBeActive && !isReviewing ? 'active' : undefined;
-  };
-
-  const shouldButtonBeActive = useMemo(() => {
-    if (!token0.token || !token1.token) return false;
-    if (isReviewing) return true;
-
-    const fromTokenCondition =
-      getActiveStatus(token0.token, token0.value) === 'active';
-    const toTokenCondition =
-      getActiveStatus(token1.token, token1.value) === 'active';
-
-    return fromTokenCondition && toTokenCondition;
-  }, [token0, token1, isReviewing]);
-
-  const buttonTitle = BUTTON_TITLES[isReviewing ? 1 : 0];
-
-  const handleButtonClick = () => {
-    if (!isReviewing) {
-      setIsReviewing(true);
-    }
-
-    if (isReviewing) {
-      // TODO: Add liqudity batch run
-      addNotification({
-        title: 'Liquidity Added',
-        type: NotificationType.Success,
-        id: Date.now().toString(),
-      });
-    }
-  };
-
-  const selectedTokenIds = useMemo(() => {
-    let selectedIds = [];
-    if (token0?.token?.id) selectedIds.push(token0.token.id);
-    if (token1?.token?.id) selectedIds.push(token1.token.id);
-
-    return selectedIds;
-  }, [token0?.token?.id, token1?.token?.id]);
 
   useEffect(() => {
     if (supportedTokenListState !== FeatureState.Loading) {
@@ -137,37 +86,60 @@ export const LiquidityAdd = () => {
     }
   }, [supportedTokenListState]);
 
+  const handlePreviousStep = () => {
+    if (isReviewing) {
+      setIsReviewing(false);
+    } else {
+      navigate('/liquidity');
+    }
+  };
+
+  const getActiveStatus = (token?: SwapIDL.TokenInfoExt, value?: string) => {
+    const shouldBeActive = token && value?.length && parseFloat(value) > 0;
+
+    return shouldBeActive && !isReviewing ? 'active' : undefined;
+  };
+
+  const handleButtonClick = () => {
+    if (!isReviewing) {
+      setIsReviewing(true);
+    }
+
+    if (isReviewing) {
+      // TODO: Add liqudity batch run
+      addNotification({
+        title: 'Liquidity Added',
+        type: NotificationType.Success,
+        id: Date.now().toString(),
+      });
+    }
+  };
+
   const handleToken0MaxClick = () => {
-    dispatch(
-      liquidityViewActions.setValue({
-        data: 'token0',
-        value:
-          totalBalances && token0.token
-            ? getCurrencyString(
-                totalBalances[token0.token?.id],
-                token0.token?.decimals
-              )
-            : '0.00',
-      })
-    );
+    const value =
+      totalBalances && token0.token
+        ? getCurrencyString(
+            totalBalances[token0.token?.id],
+            token0.token?.decimals
+          )
+        : '0.00';
+
+    dispatch(liquidityViewActions.setValue({ data: 'token0', value }));
   };
 
   const handleToken1MaxClick = () => {
-    dispatch(
-      liquidityViewActions.setValue({
-        data: 'token1',
-        value:
-          totalBalances && token1.token
-            ? getCurrencyString(
-                totalBalances[token1.token?.id],
-                token1.token?.decimals
-              )
-            : '0.00',
-      })
-    );
+    const value =
+      totalBalances && token1.token
+        ? getCurrencyString(
+            totalBalances[token1.token?.id],
+            token1.token?.decimals
+          )
+        : '0.00';
+
+    dispatch(liquidityViewActions.setValue({ data: 'token1', value }));
   };
 
-  const handleSelectToken0 = () => {
+  const handleToken0Select = () => {
     if (!isReviewing) {
       openSelectTokenModal({
         metadata: supportedTokenList,
@@ -178,7 +150,7 @@ export const LiquidityAdd = () => {
     }
   };
 
-  const handleSelectToken1 = () => {
+  const handleToken1Select = () => {
     if (!isReviewing) {
       openSelectTokenModal({
         metadata: supportedTokenList,
@@ -188,6 +160,91 @@ export const LiquidityAdd = () => {
       });
     }
   };
+
+  const handleSetToken0Value = (value: string) => {
+    dispatch(liquidityViewActions.setValue({ data: 'token0', value }));
+    const lpValue = getLPValue(value);
+
+    if (lpValue) {
+      dispatch(
+        liquidityViewActions.setValue({
+          data: 'token1',
+          value: lpValue,
+        })
+      );
+    }
+  };
+
+  const handleSetToken1Value = (value: string) => {
+    dispatch(liquidityViewActions.setValue({ data: 'token1', value }));
+    const lpValue = getLPValue(value);
+
+    if (lpValue) {
+      dispatch(
+        liquidityViewActions.setValue({
+          data: 'token0',
+          value: lpValue,
+        })
+      );
+    }
+  };
+
+  // Utils
+
+  const getLPValue = (value: string) => {
+    if (
+      token0.token &&
+      token1.token &&
+      allPairs?.[token0.token.id]?.[token1.token.id]
+    ) {
+      return getAmountEqualLPToken({
+        amountIn: value,
+        reserveIn: String(pairData?.reserve0),
+        reserveOut: String(pairData?.reserve1),
+        decimalsOut: token0.token?.decimals,
+      });
+    }
+  };
+
+  // Memorized values
+
+  const shouldButtonBeActive = useMemo(() => {
+    if (!token0.token || !token1.token) return false;
+    if (isReviewing) return true;
+
+    const fromTokenCondition =
+      getActiveStatus(token0.token, token0.value) === 'active';
+    const toTokenCondition =
+      getActiveStatus(token1.token, token1.value) === 'active';
+
+    return fromTokenCondition && toTokenCondition;
+  }, [token0, token1, isReviewing]);
+
+  const buttonTitle = BUTTON_TITLES[isReviewing ? 1 : 0];
+
+  const selectedTokenIds = useMemo(() => {
+    let selectedIds = [];
+    if (token0?.token?.id) selectedIds.push(token0.token.id);
+    if (token1?.token?.id) selectedIds.push(token1.token.id);
+
+    return selectedIds;
+  }, [token0?.token?.id, token1?.token?.id]);
+
+  const pairData = useMemo(() => {
+    if (allPairs && token0.token && token1.token) {
+      return allPairs[token0.token.id][token1.token.id];
+    }
+    return undefined;
+  }, [allPairs, token0.token, token1.token]);
+
+  const token1Price = useMemo(() => {
+    if (pairData && pairData.reserve0 && pairData.reserve0 && token1.token) {
+      return new BigNumber(String(pairData.reserve0))
+        .div(new BigNumber(String(pairData.reserve1)))
+        .dp(Number(token1.token.decimals));
+    }
+    return '1';
+  }, [pairData, token1.token]);
 
   return (
     <>
@@ -214,9 +271,7 @@ export const LiquidityAdd = () => {
         <Box width="100%">
           <Token
             value={token0.value}
-            setValue={(value) =>
-              dispatch(liquidityViewActions.setValue({ data: 'token0', value }))
-            }
+            setValue={handleSetToken0Value}
             tokenListMetadata={supportedTokenList}
             tokenMetadata={token0.token}
             isDisabled={isReviewing}
@@ -236,7 +291,7 @@ export const LiquidityAdd = () => {
             isLoading={supportedTokenListState === FeatureState.Loading}
           >
             <TokenContent>
-              <TokenDetails onClick={handleSelectToken0}>
+              <TokenDetails onClick={handleToken0Select}>
                 <TokenDetailsLogo />
                 <TokenDetailsSymbol />
               </TokenDetails>
@@ -257,18 +312,16 @@ export const LiquidityAdd = () => {
           py={3}
           px={3}
           bg="#1E1E1E"
-          mt={-4}
-          mb={-6}
+          mt={-2}
+          mb={-2}
           zIndex={1200}
         >
           <Image m="auto" src={plusSrc} />
         </Box>
-        <Box mt={2.5} mb={5} width="100%">
+        <Box width="100%">
           <Token
             value={token1.value}
-            setValue={(value) =>
-              dispatch(liquidityViewActions.setValue({ data: 'token1', value }))
-            }
+            setValue={handleSetToken1Value}
             tokenListMetadata={supportedTokenList}
             tokenMetadata={token1.token}
             isDisabled={isReviewing}
@@ -288,7 +341,7 @@ export const LiquidityAdd = () => {
             isLoading={supportedTokenListState === FeatureState.Loading}
           >
             <TokenContent>
-              <TokenDetails onClick={handleSelectToken1}>
+              <TokenDetails onClick={handleToken1Select}>
                 <TokenDetailsLogo />
                 <TokenDetailsSymbol />
               </TokenDetails>
@@ -313,13 +366,13 @@ export const LiquidityAdd = () => {
               py={3}
               px={3}
               bg="#3D52F4"
-              mt={-8}
-              mb={-6}
+              mt={-2}
+              mb={-2}
               zIndex={1200}
             >
               <Image m="auto" src={equalSrc} />
             </Flex>
-            <Box mt={2.5} width="100%">
+            <Box width="100%">
               <Token value={token1.value} price={0} isDisabled shouldGlow>
                 <TokenContent>
                   <TokenDetails>
@@ -336,18 +389,18 @@ export const LiquidityAdd = () => {
                 </TokenBalances>
               </Token>
             </Box>
-            <Flex
-              direction="row"
-              justifyContent="space-between"
-              width="100%"
-              my={2.5}
-              px={5}
-            >
-              <Text color="#888E8F">{`${token0.token?.symbol} + ${token1.token?.symbol}`}</Text>
-              <Text color="#888E8F">{`N ${token0.token?.symbol} = M ${token1.token?.symbol}`}</Text>
-            </Flex>
           </>
         )}
+        <Flex
+          direction="row"
+          justifyContent="space-between"
+          width="100%"
+          my={2.5}
+          px={5}
+        >
+          <Text color="#888E8F">{`${token0.token?.symbol} + ${token1.token?.symbol}`}</Text>
+          <Text color="#888E8F">{`1 ${token0.token?.symbol} = ${token1Price} ${token1.token?.symbol}`}</Text>
+        </Flex>
       </Flex>
 
       {!isConnected ? (

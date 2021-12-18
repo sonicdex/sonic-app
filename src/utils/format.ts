@@ -53,7 +53,7 @@ export const getCurrencyString = (
   return typeof toFixed === 'undefined' ? num.toString() : num.toFixed(toFixed);
 };
 
-export const getLpAmount = (
+export const getAmountLP = (
   fromTokenAmount: string,
   toTokenAmount: string,
   reserve0: string,
@@ -72,20 +72,34 @@ export const getLpAmount = (
 };
 
 type GetEqualLPTokenAmount = {
-  token0: string;
-  reserve0: string;
-  reserve1: string;
+  amountIn: string;
+  reserveIn: string;
+  reserveOut: string;
+  decimalsOut: number;
 };
 
-export const getEqualLPTokenAmount = ({
-  token0,
-  reserve0,
-  reserve1,
+export const getAmountEqualLPToken = ({
+  amountIn,
+  reserveIn,
+  reserveOut,
+  decimalsOut,
 }: GetEqualLPTokenAmount) => {
-  return new BigNumber(token0)
-    .multipliedBy(reserve0)
-    .dividedBy(reserve1)
-    .toFixed(3);
+  if (
+    !amountIn ||
+    new BigNumber(amountIn).isNaN() ||
+    new BigNumber(reserveIn).isZero() ||
+    new BigNumber(reserveOut).isZero()
+  ) {
+    return '0.00';
+  }
+
+  const amountOut = new BigNumber(amountIn)
+    .multipliedBy(new BigNumber(reserveIn))
+    .dividedBy(new BigNumber(reserveOut))
+    .dp(decimalsOut)
+    .toString();
+
+  return amountOut;
 };
 
 export const getAmountOut = (
@@ -135,6 +149,18 @@ export const getAmountIn = (
     .toFixed(Number(decimalsIn));
 };
 
+export const getAmountMin = (
+  value: number | string,
+  tolerance: number | string,
+  decimals: number | string
+) => {
+  return new BigNumber('1')
+    .minus(new BigNumber(tolerance))
+    .multipliedBy(new BigNumber(value))
+    .dp(Number(decimals))
+    .toString();
+};
+
 export const calculatePriceImpact = (
   amountIn: string,
   decimalsIn: string,
@@ -165,19 +191,19 @@ export const calculatePriceImpact = (
   return impact;
 };
 
-type InitDefaultLiquidityTokenOptions = {
+type FormatDefaultLiquidityTokenOptions = {
   fromToken: TokenMetadata;
   toToken: TokenMetadata;
   token0: TokenMetadata;
   token1: TokenMetadata;
 };
 
-export const initDefaultLiquidityToken = ({
+export const formatDefaultLiquidityToken = ({
   fromToken,
   toToken,
   token0,
   token1,
-}: InitDefaultLiquidityTokenOptions) => {
+}: FormatDefaultLiquidityTokenOptions) => {
   const defaultFromToken = fromToken
     ? {
         decimals: fromToken.decimals,
@@ -215,16 +241,4 @@ export const formatAmount = (
   } catch (err) {
     return '0';
   }
-};
-
-export const getMinAmount = (
-  value: number | string,
-  tolerance: number | string,
-  decimals: number | string
-) => {
-  return new BigNumber('1')
-    .minus(new BigNumber(tolerance))
-    .multipliedBy(new BigNumber(value))
-    .dp(Number(decimals))
-    .toString();
 };

@@ -111,13 +111,13 @@ export const SwapReviewStep = () => {
           py={3}
           px={3}
           bg="#3D52F4"
-          mt={-4}
-          mb={-6}
+          mt={-2}
+          mb={-2}
           zIndex={1200}
         >
           <Image m="auto" src={arrowDownSrc} />
         </Box>
-        <Box mt={2.5} width="100%">
+        <Box width="100%">
           <Token
             value={to.value}
             setValue={(value) =>
