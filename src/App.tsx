@@ -5,14 +5,18 @@ import { NotificationManager } from '@/notifications';
 import { Activity, Assets, Liquidity, LiquidityAdd, Swap } from '@/views';
 
 import { EmptyMobile, Layout } from './components';
-import { SwapProgressModal, TokenSelectModal } from './components/modals';
+import {
+  SwapFailModal,
+  SwapProgressModal,
+  TokenSelectModal,
+  WithdrawProgressModal,
+  DepositProgressModal,
+} from './components/modals';
 import { useActorsInit } from './integrations/actor/use-actors-init';
 import { usePlugInit } from './integrations/plug';
 import { useSwapInit } from './integrations/swap';
 import { AssetsDeposit } from './views/assets/views/deposit';
 import { AssetsWithdraw } from './views/assets/views/withdraw';
-import { WithdrawProgressModal } from './components/modals/withdraw-modal';
-import { DepositProgressModal } from './components/modals/deposit-modal';
 
 export const App = () => {
   const isAnyMobileDevice = isMobile(window.navigator).any;
@@ -35,6 +39,8 @@ export const App = () => {
         <SwapProgressModal />
         <WithdrawProgressModal />
         <DepositProgressModal />
+
+        <SwapFailModal />
 
         <Routes>
           <Route path="/swap" element={<Swap />} />

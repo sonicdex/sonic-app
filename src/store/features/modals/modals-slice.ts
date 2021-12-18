@@ -10,7 +10,7 @@ export type SwapModalData = {
   steps?: SwapModalDataStep[];
   fromTokenSymbol?: string;
   toTokenSymbol?: string;
-  callbacks?: [ModalsCallback, ModalsCallback];
+  callbacks?: [ModalsCallback, ModalsCallback, ModalsCallback];
 };
 
 export type DepositModalDataStep = 'approve' | 'deposit';
