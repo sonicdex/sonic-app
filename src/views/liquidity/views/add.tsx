@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Text, Flex, Image, Box } from '@chakra-ui/react';
+import { Text, Flex, Image, Box, Stack, SimpleGrid } from '@chakra-ui/react';
 
 import {
   Button,
+  LPImageBlock,
   PlugButton,
   TitleBox,
   Token,
@@ -16,7 +17,7 @@ import {
   TokenInput,
 } from '@/components';
 
-import { plusSrc, equalSrc } from '@/assets';
+import { plusSrc } from '@/assets';
 import {
   FeatureState,
   INITIAL_LIQUIDITY_SLIPPAGE,
@@ -139,31 +140,36 @@ export const LiquidityAdd = () => {
     dispatch(liquidityViewActions.setValue({ data: 'token1', value }));
   };
 
-  const handleToken0Select = () => {
+  const handleSelectToken0 = () => {
     if (!isReviewing) {
       openSelectTokenModal({
         metadata: supportedTokenList,
-        onSelect: (tokenId) =>
-          dispatch(liquidityViewActions.setToken({ data: 'token0', tokenId })),
+        onSelect: (tokenId) => {
+          handleSetToken1LPValue(token0.value);
+          dispatch(liquidityViewActions.setToken({ data: 'token0', tokenId }));
+        },
         selectedTokenIds,
       });
     }
   };
 
-  const handleToken1Select = () => {
+  const handleSelectToken1 = () => {
     if (!isReviewing) {
       openSelectTokenModal({
         metadata: supportedTokenList,
-        onSelect: (tokenId) =>
-          dispatch(liquidityViewActions.setToken({ data: 'token1', tokenId })),
+        onSelect: (tokenId) => {
+          dispatch(liquidityViewActions.setToken({ data: 'token1', tokenId }));
+        },
         selectedTokenIds,
       });
     }
   };
 
-  const handleSetToken0Value = (value: string) => {
-    dispatch(liquidityViewActions.setValue({ data: 'token0', value }));
-    const lpValue = getLPValue(value);
+  const handleSetToken0LPValue = (token1Value: string) => {
+    dispatch(
+      liquidityViewActions.setValue({ data: 'token0', value: token1Value })
+    );
+    const lpValue = getLPValue(token1Value);
 
     if (lpValue) {
       dispatch(
@@ -175,9 +181,11 @@ export const LiquidityAdd = () => {
     }
   };
 
-  const handleSetToken1Value = (value: string) => {
-    dispatch(liquidityViewActions.setValue({ data: 'token1', value }));
-    const lpValue = getLPValue(value);
+  const handleSetToken1LPValue = (token0Value: string) => {
+    dispatch(
+      liquidityViewActions.setValue({ data: 'token1', value: token0Value })
+    );
+    const lpValue = getLPValue(token0Value);
 
     if (lpValue) {
       dispatch(
@@ -271,7 +279,7 @@ export const LiquidityAdd = () => {
         <Box width="100%">
           <Token
             value={token0.value}
-            setValue={handleSetToken0Value}
+            setValue={handleSetToken0LPValue}
             tokenListMetadata={supportedTokenList}
             tokenMetadata={token0.token}
             isDisabled={isReviewing}
@@ -291,7 +299,7 @@ export const LiquidityAdd = () => {
             isLoading={supportedTokenListState === FeatureState.Loading}
           >
             <TokenContent>
-              <TokenDetails onClick={handleToken0Select}>
+              <TokenDetails onClick={handleSelectToken0}>
                 <TokenDetailsLogo />
                 <TokenDetailsSymbol />
               </TokenDetails>
@@ -321,7 +329,7 @@ export const LiquidityAdd = () => {
         <Box width="100%">
           <Token
             value={token1.value}
-            setValue={handleSetToken1Value}
+            setValue={handleSetToken1LPValue}
             tokenListMetadata={supportedTokenList}
             tokenMetadata={token1.token}
             isDisabled={isReviewing}
@@ -341,7 +349,7 @@ export const LiquidityAdd = () => {
             isLoading={supportedTokenListState === FeatureState.Loading}
           >
             <TokenContent>
-              <TokenDetails onClick={handleToken1Select}>
+              <TokenDetails onClick={handleSelectToken1}>
                 <TokenDetailsLogo />
                 <TokenDetailsSymbol />
               </TokenDetails>
@@ -355,52 +363,61 @@ export const LiquidityAdd = () => {
           </Token>
         </Box>
 
-        {isReviewing && (
-          <>
-            <Flex
-              direction="column"
-              alignItems="center"
-              borderRadius={4}
-              width={10}
-              height={10}
-              py={3}
-              px={3}
-              bg="#3D52F4"
-              mt={-2}
-              mb={-2}
-              zIndex={1200}
-            >
-              <Image m="auto" src={equalSrc} />
-            </Flex>
-            <Box width="100%">
-              <Token value={token1.value} price={0} isDisabled shouldGlow>
-                <TokenContent>
-                  <TokenDetails>
-                    <TokenDetailsLogo />
-                    <TokenDetailsSymbol />
-                  </TokenDetails>
-
-                  <TokenInput />
-                </TokenContent>
-                <TokenBalances>
-                  <Text>Share of pool:</Text>
-
-                  <Text>SHARE HERE</Text>
-                </TokenBalances>
-              </Token>
-            </Box>
-          </>
-        )}
-        <Flex
+        <Stack
           direction="row"
-          justifyContent="space-between"
-          width="100%"
-          my={2.5}
-          px={5}
+          alignItems="center"
+          pl={3}
+          pr={5}
+          py={2}
+          borderRadius="full"
+          w="fit-content"
+          mt={-4}
+          mb={-4}
+          zIndex={1200}
+          bg={isReviewing ? '#3D52F4' : '#1E1E1E'}
+          border={`1px solid ${isReviewing ? '#3D52F4' : '#373737'}`}
         >
-          <Text color="#888E8F">{`${token0.token?.symbol} + ${token1.token?.symbol}`}</Text>
-          <Text color="#888E8F">{`1 ${token0.token?.symbol} = ${token1Price} ${token1.token?.symbol}`}</Text>
-        </Flex>
+          <LPImageBlock
+            size="sm"
+            imageSources={[token0.token?.logo, token1.token?.logo]}
+          />
+
+          <Text fontWeight="bold">
+            {token0.token?.symbol} - {token1.token?.symbol}
+          </Text>
+        </Stack>
+
+        <Box width="100%">
+          <Token
+            value={token1.value}
+            price={0}
+            isDisabled
+            shouldGlow={isReviewing}
+          >
+            <SimpleGrid columns={3}>
+              <Box>
+                <Text color="gray.300">Share of pool:</Text>
+                <Text>6.7821 (0.012%)</Text>
+              </Box>
+              <Box textAlign="center">
+                <Text color="gray.300">
+                  {token0.token?.symbol} per {token1.token?.symbol}
+                </Text>
+                <Text>1.00</Text>
+              </Box>
+              <Box textAlign="right">
+                <Text color="gray.300">
+                  {token1.token?.symbol} per {token0.token?.symbol}
+                </Text>
+                <Text>80670.1</Text>
+              </Box>
+            </SimpleGrid>
+          </Token>
+        </Box>
+        <Text
+          my={2}
+          color="#888E8F"
+        >{`1 ${token0.token?.symbol} = ${token1Price} ${token1.token?.symbol}`}</Text>
       </Flex>
 
       {!isConnected ? (

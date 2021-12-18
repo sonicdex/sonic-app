@@ -5,6 +5,7 @@ export * from './emoji';
 export * from './empty-mobile';
 export * from './gradient-box';
 export * from './header';
+export * from './image-block';
 export * from './information-box';
 export * from './logo';
 export * from './logo-box';
