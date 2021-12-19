@@ -27,7 +27,7 @@ import { NumberInputProps } from '..';
 
 export type TokenUniqueProps = {
   value?: string;
-  price?: number;
+  price?: string | number;
   tokenMetadata?: TokenMetadata;
   tokenListMetadata?: Array<TokenMetadata>;
   sources?: TokenSource[];

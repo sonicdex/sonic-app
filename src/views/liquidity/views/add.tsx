@@ -21,6 +21,7 @@ import { plusSrc } from '@/assets';
 import {
   FeatureState,
   INITIAL_LIQUIDITY_SLIPPAGE,
+  LiquidityTokenDataKey,
   liquidityViewActions,
   NotificationType,
   useAppDispatch,
@@ -63,11 +64,7 @@ export const LiquidityAdd = () => {
   const [autoSlippage, setAutoSlippage] = useState(true);
 
   useEffect(() => {
-    if (
-      supportedTokenListState !== FeatureState.Loading &&
-      supportedTokenList &&
-      supportedTokenList.length > 0
-    ) {
+    if (!isLoading && supportedTokenList && supportedTokenList.length > 0) {
       const toTokenId = query.get('token0');
       const fromTokenId = query.get('token1');
 
@@ -76,27 +73,41 @@ export const LiquidityAdd = () => {
           (token) => token.id === fromTokenId
         );
         dispatch(
-          liquidityViewActions.setValue({ data: 'token0', value: '0.00' })
-        );
-        dispatch(
           liquidityViewActions.setToken({
             data: 'token0',
             token: token0,
           })
         );
+      } else {
+        dispatch(
+          liquidityViewActions.setToken({
+            data: 'token0',
+            token: supportedTokenList[0],
+          })
+        );
       }
+      dispatch(
+        liquidityViewActions.setValue({ data: 'token0', value: '0.00' })
+      );
 
       if (toTokenId) {
         const token1 = supportedTokenList!.find(
           (token) => token.id === toTokenId
         );
         dispatch(
-          liquidityViewActions.setValue({ data: 'token1', value: '0.00' })
-        );
-        dispatch(
           liquidityViewActions.setToken({ data: 'token1', token: token1 })
         );
+      } else {
+        dispatch(
+          liquidityViewActions.setToken({
+            data: 'token1',
+            token: supportedTokenList[1],
+          })
+        );
       }
+      dispatch(
+        liquidityViewActions.setValue({ data: 'token1', value: '0.00' })
+      );
     }
   }, [supportedTokenListState, supportedTokenList]);
 
@@ -132,13 +143,7 @@ export const LiquidityAdd = () => {
           )
         : '0.00';
 
-    const lpValue = getLPValue(value);
-    dispatch(liquidityViewActions.setValue({ data: 'token0', value }));
-    if (lpValue) {
-      dispatch(
-        liquidityViewActions.setValue({ data: 'token1', value: lpValue })
-      );
-    }
+    setTokenValueAndLPTokenValue('token0', value);
   };
 
   const handleToken1MaxClick = () => {
@@ -150,111 +155,86 @@ export const LiquidityAdd = () => {
           )
         : '0.00';
 
-    const lpValue = getLPValue(value);
-    dispatch(liquidityViewActions.setValue({ data: 'token1', value }));
-    if (lpValue) {
-      dispatch(
-        liquidityViewActions.setValue({ data: 'token0', value: lpValue })
-      );
-    }
+    setTokenValueAndLPTokenValue('token1', value);
   };
 
-  const handleSelectToken0 = () => {
+  const handleSelectToken = (dataKey: LiquidityTokenDataKey) => {
     if (!isReviewing) {
       openSelectTokenModal({
         metadata: supportedTokenList,
         onSelect: (tokenId) => {
-          handleSetToken1LPValue(token0.value);
-          const foundToken0 = supportedTokenList!.find(
+          const foundToken = supportedTokenList!.find(
             (token) => token.id === tokenId
           );
           dispatch(
             liquidityViewActions.setToken({
-              data: 'token0',
-              token: foundToken0,
+              data: dataKey,
+              token: foundToken,
             })
-          );
-        },
-        selectedTokenIds,
-      });
-    }
-  };
-
-  const handleSelectToken1 = () => {
-    if (!isReviewing) {
-      openSelectTokenModal({
-        metadata: supportedTokenList,
-        onSelect: (tokenId) => {
-          handleSetToken0LPValue(token1.value);
-          const foundToken1 = supportedTokenList!.find(
-            (token) => token.id === tokenId
           );
           dispatch(
-            liquidityViewActions.setToken({
-              data: 'token1',
-              token: foundToken1,
-            })
+            liquidityViewActions.setValue({ data: 'token0', value: '0.00' })
+          );
+          dispatch(
+            liquidityViewActions.setValue({ data: 'token1', value: '0.00' })
           );
         },
         selectedTokenIds,
       });
-    }
-  };
-
-  const handleSetToken0LPValue = (token1Value: string) => {
-    dispatch(
-      liquidityViewActions.setValue({ data: 'token0', value: token1Value })
-    );
-
-    const lpValue = getLPValue(token1Value);
-    if (lpValue) {
-      dispatch(
-        liquidityViewActions.setValue({
-          data: 'token1',
-          value: lpValue,
-        })
-      );
-    }
-  };
-
-  const handleSetToken1LPValue = (token0Value: string) => {
-    dispatch(
-      liquidityViewActions.setValue({ data: 'token1', value: token0Value })
-    );
-
-    const lpValue = getLPValue(token0Value);
-    if (lpValue) {
-      dispatch(
-        liquidityViewActions.setValue({
-          data: 'token0',
-          value: lpValue,
-        })
-      );
     }
   };
 
   // Utils
 
-  const getLPValue = (value: string) => {
+  const setTokenValueAndLPTokenValue = (
+    dataKey: LiquidityTokenDataKey,
+    value?: string
+  ) => {
+    const amountIn =
+      value ?? (dataKey === 'token0' ? token0.value : token1.value);
+
+    const reserveIn = String(
+      dataKey === 'token0' ? pairData?.reserve0 : pairData?.reserve1
+    );
+    const reserveOut = String(
+      dataKey === 'token1' ? pairData?.reserve0 : pairData?.reserve1
+    );
+
+    dispatch(liquidityViewActions.setValue({ data: dataKey, value: amountIn }));
+
     if (
       token0.token &&
       token1.token &&
       allPairs?.[token0.token.id]?.[token1.token.id]
     ) {
-      return getAmountEqualLPToken({
-        amountIn: value,
-        reserveIn: String(pairData?.reserve0),
-        reserveOut: String(pairData?.reserve1),
-        decimalsOut: token0.token?.decimals,
+      const decimalsOut =
+        dataKey === 'token0' ? token1.token?.decimals : token0.token?.decimals;
+
+      const lpValue = getAmountEqualLPToken({
+        amountIn,
+        reserveIn,
+        reserveOut,
+        decimalsOut,
       });
+
+      const reversedDataKey = dataKey === 'token0' ? 'token1' : 'token0';
+
+      if (lpValue) {
+        dispatch(
+          liquidityViewActions.setValue({
+            data: reversedDataKey,
+            value: lpValue,
+          })
+        );
+      }
     }
   };
 
   // Memorized values
 
   const isLoading = useMemo(() => {
-    return false;
-  }, []);
+    return supportedTokenListState === FeatureState.Loading;
+  }, [supportedTokenListState]);
 
   const [buttonDisabled, buttonMessage] = useMemo<[boolean, string]>(() => {
     if (isLoading) return [true, 'Loading'];
@@ -307,63 +287,83 @@ export const LiquidityAdd = () => {
 
   const liquidityAmounts = useMemo(() => {
     if (
-      token0.value &&
-      token1.value &&
+      Number(token0.value) &&
+      Number(token1.value) &&
       token0.token?.decimals &&
-      token1.token?.decimals &&
-      pair
+      token1.token?.decimals
     ) {
-      const getAmountLPOptions = {
-        token0Amount: token0.value,
-        token1Amount: token1.value,
-        reserve0: String(pair.reserve0),
-        reserve1: String(pair.reserve1),
-        totalSupply: String(pair.totalSupply),
-      };
+      if (pair) {
+        const getAmountLPOptions = {
+          token0Amount: token0.value,
+          token1Amount: token1.value,
+          reserve0: String(pair.reserve0),
+          reserve1: String(pair.reserve1),
+          totalSupply: String(pair.totalSupply),
+        };
 
-      const getPercentageLPOptions = {
-        ...getAmountLPOptions,
-        token0Decimals: token0.token?.decimals,
-        token1Decimals: token1.token?.decimals,
-      };
+        const getPercentageLPOptions = {
+          ...getAmountLPOptions,
+          token0Decimals: token0.token?.decimals,
+          token1Decimals: token1.token?.decimals,
+        };
 
-      const value = getAmountLP(getAmountLPOptions);
-      const percentage = getLPPercentageString(getPercentageLPOptions);
+        const value = getAmountLP(getAmountLPOptions);
+        const percentage = getLPPercentageString(getPercentageLPOptions);
 
-      return { value, percentage };
+        return { value, percentage };
+      }
+
+      if (!pair) {
+        return {
+          value: new BigNumber(token0.value)
+            .plus(new BigNumber(token1.value))
+            .div(2)
+            .toFixed(3),
+          percentage: '100%',
+        };
+      }
     }
 
     return { value: '0.00', percentage: '0%' };
-  }, [token0.value, token1.value, pair]);
+  }, [token0, token1, pair]);
 
-  const { token0Price, token1Price } = useMemo(() => {
-    if (
-      token0.token &&
-      token1.token &&
-      pairData &&
-      pairData.reserve0 &&
-      pairData.reserve1
-    ) {
-      const token0Price = new BigNumber(String(pairData.reserve0))
-        .div(new BigNumber(String(pairData.reserve1)))
-        .dp(Number(token0.token.decimals))
-        .toFixed(3);
+  const { token0Price, token1Price, token0USDPrice, token1USDPrice } =
+    useMemo(() => {
+      if (token0.token && token1.token) {
+        if (pairData && pairData.reserve0 && pairData.reserve1) {
+          const token0Price = new BigNumber(String(pairData.reserve0))
+            .div(new BigNumber(String(pairData.reserve1)))
+            .dp(Number(token0.token.decimals))
+            .toFixed(3);
 
-      const token1Price = new BigNumber(String(pairData.reserve1))
-        .div(new BigNumber(String(pairData.reserve0)))
-        .dp(Number(token1.token.decimals))
-        .toFixed(3);
+          const token1Price = new BigNumber(String(pairData.reserve1))
+            .div(new BigNumber(String(pairData.reserve0)))
+            .dp(Number(token1.token.decimals))
+            .toFixed(3);
+
+          return {
+            token0Price,
+            token1Price,
+            token0USDPrice: '0.00',
+            token1USDPrice: '0.00',
+          };
+        } else {
+          return {
+            token0Price: token0.value,
+            token1Price: token1.value,
+            token0USDPrice: '0.00',
+            token1USDPrice: '0.00',
+          };
+        }
+      }
 
       return {
-        token0Price,
-        token1Price,
+        token0Price: '0.00',
+        token1Price: '0.00',
         token0USDPrice: '0.00',
         token1USDPrice: '0.00',
       };
-    }
-
-    return { token0Price: '0.00', token1Price: '0.00' };
-  }, [token0.token, token1.token, pairData]);
+    }, [token0, token1, pairData]);
 
   return (
     <>
@@ -386,15 +386,15 @@ export const LiquidityAdd = () => {
           />
         }
       />
-      <Flex mt={5} direction="column" alignItems="center">
+      <Flex my={5} direction="column" alignItems="center">
         <Box width="100%">
           <Token
             value={token0.value}
-            setValue={handleSetToken0LPValue}
+            setValue={(value) => setTokenValueAndLPTokenValue('token0', value)}
             tokenListMetadata={supportedTokenList}
             tokenMetadata={token0.token}
             isDisabled={isReviewing}
-            price={0}
+            price={token0USDPrice}
             sources={getAppAssetsSources({
               balances: {
                 plug:
@@ -407,10 +407,10 @@ export const LiquidityAdd = () => {
                     : 0,
               },
             })}
-            isLoading={supportedTokenListState === FeatureState.Loading}
+            isLoading={isLoading}
           >
             <TokenContent>
-              <TokenDetails onClick={handleSelectToken0}>
+              <TokenDetails onClick={() => handleSelectToken('token0')}>
                 <TokenDetailsLogo />
                 <TokenDetailsSymbol />
               </TokenDetails>
@@ -440,11 +440,11 @@ export const LiquidityAdd = () => {
         <Box width="100%">
           <Token
             value={token1.value}
-            setValue={handleSetToken1LPValue}
+            setValue={(value) => setTokenValueAndLPTokenValue('token1', value)}
             tokenListMetadata={supportedTokenList}
             tokenMetadata={token1.token}
             isDisabled={isReviewing}
-            price={0}
+            price={token1USDPrice}
             sources={getAppAssetsSources({
               balances: {
                 plug:
@@ -457,10 +457,10 @@ export const LiquidityAdd = () => {
                     : 0,
               },
             })}
-            isLoading={supportedTokenListState === FeatureState.Loading}
+            isLoading={isLoading}
           >
             <TokenContent>
-              <TokenDetails onClick={handleSelectToken1}>
+              <TokenDetails onClick={() => handleSelectToken('token1')}>
                 <TokenDetailsLogo />
                 <TokenDetailsSymbol />
               </TokenDetails>
@@ -499,12 +499,7 @@ export const LiquidityAdd = () => {
         </Stack>
 
         <Box width="100%">
-          <Token
-            value={token1.value}
-            price={0}
-            isDisabled
-            shouldGlow={isReviewing}
-          >
+          <Token value={token1.value} isDisabled shouldGlow={isReviewing}>
             <SimpleGrid columns={3}>
               <Box>
                 <Text color="gray.300">Share of pool:</Text>
@@ -527,10 +522,6 @@ export const LiquidityAdd = () => {
             </SimpleGrid>
           </Token>
         </Box>
-        <Text
-          my={2}
-          color="#888E8F"
-        >{`1 ${token0.token?.symbol} = ${token1Price} ${token1.token?.symbol}`}</Text>
       </Flex>
 
       {!isConnected ? (
@@ -541,7 +532,7 @@ export const LiquidityAdd = () => {
           size="lg"
           onClick={handleButtonClick}
           isDisabled={buttonDisabled}
-          isLoading={supportedTokenListState === FeatureState.Loading}
+          isLoading={isLoading}
         >
           {buttonMessage}
         </Button>

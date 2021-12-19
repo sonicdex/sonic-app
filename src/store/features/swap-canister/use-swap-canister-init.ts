@@ -9,9 +9,9 @@ import {
 import { parseResponseAllPairs } from '@/utils/canister';
 import { Principal } from '@dfinity/principal';
 import { useEffect } from 'react';
-import { useSwapActor } from '../actor/use-swap-actor';
+import { useSwapActor } from '../../../integrations/actor/use-swap-actor';
 
-export const useSwapInit = () => {
+export const useSwapCanisterInit = () => {
   const { getBalances, totalBalances } = useBalances();
   const { principalId, isConnected, state: plugState } = usePlugStore();
   const { supportedTokenListState } = useSwapCanisterStore();

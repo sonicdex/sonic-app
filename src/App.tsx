@@ -8,19 +8,19 @@ import { EmptyMobile, Layout } from './components';
 import { SwapProgressModal, TokenSelectModal } from './components/modals';
 import { useActorsInit } from './integrations/actor/use-actors-init';
 import { usePlugInit } from './integrations/plug';
-import { useSwapInit } from './integrations/swap-canister';
 import { AssetsDeposit } from './views/assets/views/deposit';
 import { AssetsWithdraw } from './views/assets/views/withdraw';
 import { WithdrawProgressModal } from './components/modals/withdraw-modal';
 import { DepositProgressModal } from './components/modals/deposit-modal';
-import { useLiquidityViewInit } from './store';
+import { useLiquidityViewInit, useSwapCanisterInit } from './store';
 
 export const App = () => {
   const isAnyMobileDevice = isMobile(window.navigator).any;
 
   usePlugInit();
   useActorsInit();
-  useSwapInit();
+  useSwapCanisterInit();
+
   useLiquidityViewInit();
 
   // TODO: Remove after plug mobile connection

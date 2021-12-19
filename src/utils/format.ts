@@ -141,8 +141,8 @@ export const getAmountEqualLPToken = ({
   }
 
   const amountOut = new BigNumber(amountIn)
-    .multipliedBy(new BigNumber(reserveIn))
-    .dividedBy(new BigNumber(reserveOut))
+    .multipliedBy(new BigNumber(reserveOut))
+    .dividedBy(new BigNumber(reserveIn))
     .dp(decimalsOut)
     .toString();
 
