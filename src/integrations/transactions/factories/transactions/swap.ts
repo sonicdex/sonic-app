@@ -28,8 +28,6 @@ export const useMemorizedSwapExactTokensTransaction: CreateTransaction<Swap> = (
     );
     const currentTime = (new Date().getTime() + 5 * 60 * 1000) * 10000000;
 
-    console.log('amountIn:', amountIn, 'amountOutMin:', amountOutMin);
-
     return {
       canisterId: ENV.canisterIds.swap,
       idl: SwapIDL.factory,
@@ -61,8 +59,6 @@ export const useMemorizedSwapForExactTokensTransaction: CreateTransaction<Swap> 
         to.token.decimals
       );
       const currentTime = (new Date().getTime() + 5 * 60 * 1000) * 10000000;
-
-      console.log('amountOut:', amountOut, 'amountInMin:', amountInMin);
 
       return {
         canisterId: ENV.canisterIds.swap,

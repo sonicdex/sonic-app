@@ -26,8 +26,6 @@ export const useLiquidityViewInit = () => {
           Principal.fromText(token1.token.id)
         );
 
-        console.log('lpr', parseResponsePair(response));
-
         dispatch(liquidityViewActions.setPair(parseResponsePair(response)));
         dispatch(liquidityViewActions.setPairState(FeatureState.Idle));
 
