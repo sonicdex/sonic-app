@@ -65,8 +65,8 @@ export const LiquidityAdd = () => {
       supportedTokenList &&
       supportedTokenList.length > 0
     ) {
-      const toTokenId = query.get('tokenTo');
-      const fromTokenId = query.get('tokenFrom');
+      const toTokenId = query.get('token0');
+      const fromTokenId = query.get('token1');
 
       if (fromTokenId) {
         const token0 = supportedTokenList!.find(
@@ -135,7 +135,13 @@ export const LiquidityAdd = () => {
           )
         : '0.00';
 
+    const lpValue = getLPValue(value);
     dispatch(liquidityViewActions.setValue({ data: 'token0', value }));
+    if (lpValue) {
+      dispatch(
+        liquidityViewActions.setValue({ data: 'token1', value: lpValue })
+      );
+    }
   };
 
   const handleToken1MaxClick = () => {
@@ -147,7 +153,13 @@ export const LiquidityAdd = () => {
           )
         : '0.00';
 
+    const lpValue = getLPValue(value);
     dispatch(liquidityViewActions.setValue({ data: 'token1', value }));
+    if (lpValue) {
+      dispatch(
+        liquidityViewActions.setValue({ data: 'token0', value: lpValue })
+      );
+    }
   };
 
   const handleSelectToken0 = () => {
