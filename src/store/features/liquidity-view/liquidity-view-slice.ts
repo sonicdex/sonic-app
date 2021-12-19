@@ -1,15 +1,16 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { FeatureState, RootState } from '@/store';
-import { TokenMetadataList, TokenData } from '@/models';
+import { TokenData, Pair, TokenMetadata } from '@/models';
 
 export type LiquidityTokenDataKey = 'token0' | 'token1';
 
 interface LiquidityViewState {
+  pairState: FeatureState;
   state: FeatureState;
   token0: TokenData;
   token1: TokenData;
-  tokenList?: TokenMetadataList;
+  pair?: Pair;
   slippage: string;
   keepInSonic: boolean;
 }
@@ -17,7 +18,9 @@ interface LiquidityViewState {
 export const INITIAL_LIQUIDITY_SLIPPAGE = '0.50';
 
 const initialState: LiquidityViewState = {
-  state: FeatureState?.Idle,
+  pair: undefined,
+  pairState: 'idle' as FeatureState,
+  state: 'idle' as FeatureState,
   token0: {
     token: undefined,
     value: '0.00',
@@ -27,7 +30,6 @@ const initialState: LiquidityViewState = {
     value: '0.00',
   },
   slippage: INITIAL_LIQUIDITY_SLIPPAGE,
-  tokenList: undefined,
   keepInSonic: true,
 };
 
@@ -39,6 +41,9 @@ export const liquidityViewSlice = createSlice({
     setState: (state, action: PayloadAction<FeatureState>) => {
       state.state = action.payload;
     },
+    setPairState: (state, action: PayloadAction<FeatureState>) => {
+      state.pairState = action.payload;
+    },
     setValue: (
       state,
       action: PayloadAction<{ data: LiquidityTokenDataKey; value: string }>
@@ -49,36 +54,16 @@ export const liquidityViewSlice = createSlice({
       state,
       action: PayloadAction<{
         data: LiquidityTokenDataKey;
-        tokenId: string | undefined;
+        token?: TokenMetadata;
       }>
     ) => {
-      state[action.payload.data].token =
-        action.payload.tokenId && state.tokenList
-          ? state.tokenList[action.payload.tokenId]
-          : undefined;
-      if (
-        state.token0.token?.id === state.token1.token?.id &&
-        state.tokenList
-      ) {
-        // Change 'to.token' if it's the same as the new 'from.token'
-        const anotherTokenId = Object.keys(state.tokenList).find(
-          (tokenId) => tokenId !== state.token0.token?.id
-        );
-        state.token1.token = anotherTokenId
-          ? state.tokenList[anotherTokenId]
-          : undefined;
-      }
+      state[action.payload.data].token = action.payload.token;
+    },
+    setPair: (state, action: PayloadAction<Pair | undefined>) => {
+      state.pair = action.payload;
     },
     setSlippage: (state, action: PayloadAction<string>) => {
       state.slippage = action.payload;
-    },
-    setTokenList: (state, action: PayloadAction<TokenMetadataList>) => {
-      state.tokenList = action.payload;
-      const tokens = Object.values(action.payload);
-      state.token0.token = tokens[0];
-      state.token0.value = '0.00';
-      state.token1.token = tokens[1];
-      state.token1.value = '0.00';
     },
   },
 });

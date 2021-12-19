@@ -52,7 +52,7 @@ export const LiquidityAdd = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { tokenBalances, sonicBalances, totalBalances } = useBalances();
-  const { supportedTokenListState, supportedTokenList } =
+  const { supportedTokenList, supportedTokenListState } =
     useSwapCanisterStore();
   const openSelectTokenModal = useTokenModalOpener();
 
@@ -60,32 +60,42 @@ export const LiquidityAdd = () => {
   const [autoSlippage, setAutoSlippage] = useState(true);
 
   useEffect(() => {
-    if (supportedTokenListState !== FeatureState.Loading) {
+    if (
+      supportedTokenListState !== FeatureState.Loading &&
+      supportedTokenList &&
+      supportedTokenList.length > 0
+    ) {
       const toTokenId = query.get('tokenTo');
       const fromTokenId = query.get('tokenFrom');
 
       if (fromTokenId) {
+        const token0 = supportedTokenList!.find(
+          (token) => token.id === fromTokenId
+        );
         dispatch(
           liquidityViewActions.setValue({ data: 'token0', value: '0.00' })
         );
         dispatch(
           liquidityViewActions.setToken({
             data: 'token0',
-            tokenId: fromTokenId,
+            token: token0,
           })
         );
       }
 
       if (toTokenId) {
+        const token1 = supportedTokenList!.find(
+          (token) => token.id === toTokenId
+        );
         dispatch(
           liquidityViewActions.setValue({ data: 'token1', value: '0.00' })
         );
         dispatch(
-          liquidityViewActions.setToken({ data: 'token1', tokenId: toTokenId })
+          liquidityViewActions.setToken({ data: 'token1', token: token1 })
         );
       }
     }
-  }, [supportedTokenListState]);
+  }, [supportedTokenListState, supportedTokenList]);
 
   const handlePreviousStep = () => {
     if (isReviewing) {
@@ -146,7 +156,15 @@ export const LiquidityAdd = () => {
         metadata: supportedTokenList,
         onSelect: (tokenId) => {
           handleSetToken1LPValue(token0.value);
-          dispatch(liquidityViewActions.setToken({ data: 'token0', tokenId }));
+          const foundToken0 = supportedTokenList!.find(
+            (token) => token.id === tokenId
+          );
+          dispatch(
+            liquidityViewActions.setToken({
+              data: 'token0',
+              token: foundToken0,
+            })
+          );
         },
         selectedTokenIds,
       });
@@ -158,7 +176,16 @@ export const LiquidityAdd = () => {
       openSelectTokenModal({
         metadata: supportedTokenList,
         onSelect: (tokenId) => {
-          dispatch(liquidityViewActions.setToken({ data: 'token1', tokenId }));
+          handleSetToken0LPValue(token0.value);
+          const foundToken1 = supportedTokenList!.find(
+            (token) => token.id === tokenId
+          );
+          dispatch(
+            liquidityViewActions.setToken({
+              data: 'token1',
+              token: foundToken1,
+            })
+          );
         },
         selectedTokenIds,
       });

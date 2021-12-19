@@ -1,16 +1,12 @@
 import { useBalances } from '@/hooks/use-balances';
 import {
   FeatureState,
-  liquidityViewActions,
   swapCanisterActions,
   useAppDispatch,
   usePlugStore,
   useSwapCanisterStore,
 } from '@/store';
-import {
-  parseResponseAllPairs,
-  parseResponseTokenList,
-} from '@/utils/canister';
+import { parseResponseAllPairs } from '@/utils/canister';
 import { Principal } from '@dfinity/principal';
 import { useEffect } from 'react';
 import { useSwapActor } from '../actor/use-swap-actor';
@@ -65,9 +61,6 @@ export const useSwapInit = () => {
         const response = await swapActor.getSupportedTokenList();
 
         if (response) {
-          dispatch(
-            liquidityViewActions.setTokenList(parseResponseTokenList(response))
-          );
           dispatch(swapCanisterActions.setSupportedTokenList(response));
         }
         dispatch(

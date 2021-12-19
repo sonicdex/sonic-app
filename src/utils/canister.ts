@@ -30,6 +30,16 @@ export const parseResponseTokenList = (
   }, {} as TokenMetadataList);
 };
 
+export const parseResponsePair = (
+  pair: [] | [SwapIDL.PairInfoExt]
+): SwapIDL.PairInfoExt | undefined => {
+  if (pair.length === 0) {
+    return undefined;
+  }
+
+  return pair[0];
+};
+
 export const parseResponseAllPairs = (
   response: SwapIDL.PairInfoExt[]
 ): PairList => {
