@@ -13,6 +13,7 @@ import { AssetsDeposit } from './views/assets/views/deposit';
 import { AssetsWithdraw } from './views/assets/views/withdraw';
 import { WithdrawProgressModal } from './components/modals/withdraw-modal';
 import { DepositProgressModal } from './components/modals/deposit-modal';
+import { useLiquidityViewInit } from './store';
 
 export const App = () => {
   const isAnyMobileDevice = isMobile(window.navigator).any;
@@ -20,6 +21,7 @@ export const App = () => {
   usePlugInit();
   useActorsInit();
   useSwapInit();
+  useLiquidityViewInit();
 
   // TODO: Remove after plug mobile connection
   if (isAnyMobileDevice) {

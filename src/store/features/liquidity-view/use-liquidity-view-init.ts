@@ -11,8 +11,10 @@ export const useLiquidityViewInit = () => {
   const swapActor = useSwapActor();
 
   useEffect(() => {
-    getPair();
-  }, []);
+    if (token0.token?.id && token1.token?.id) {
+      getPair();
+    }
+  }, [token0.token?.id, token1.token?.id]);
 
   async function getPair() {
     if (swapActor && token0.token?.id && token1.token?.id) {
@@ -24,9 +26,9 @@ export const useLiquidityViewInit = () => {
           Principal.fromText(token1.token.id)
         );
 
-        if (response && response.length > 0) {
-          dispatch(liquidityViewActions.setPair(parseResponsePair(response)));
-        }
+        console.log('lpr', parseResponsePair(response));
+
+        dispatch(liquidityViewActions.setPair(parseResponsePair(response)));
         dispatch(liquidityViewActions.setPairState(FeatureState.Idle));
 
         return response;

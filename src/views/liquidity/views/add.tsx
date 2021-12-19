@@ -36,7 +36,12 @@ import { SwapIDL } from '@/did';
 import { getAppAssetsSources } from '@/config/utils';
 import { SlippageSettings } from '@/components';
 import { useBalances } from '@/hooks/use-balances';
-import { getCurrencyString, getAmountEqualLPToken } from '@/utils/format';
+import {
+  getCurrencyString,
+  getAmountEqualLPToken,
+  getAmountLP,
+  getLPPercentageString,
+} from '@/utils/format';
 import BigNumber from 'bignumber.js';
 
 const BUTTON_TITLES = ['Review Supply', 'Confirm Supply'];
@@ -48,7 +53,7 @@ export const LiquidityAdd = () => {
   const { allPairs } = useSwapCanisterStore();
 
   const { addNotification } = useNotificationStore();
-  const { token0, token1, slippage } = useLiquidityViewStore();
+  const { token0, token1, slippage, pair } = useLiquidityViewStore();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { tokenBalances, sonicBalances, totalBalances } = useBalances();
@@ -188,7 +193,7 @@ export const LiquidityAdd = () => {
       openSelectTokenModal({
         metadata: supportedTokenList,
         onSelect: (tokenId) => {
-          handleSetToken0LPValue(token0.value);
+          handleSetToken0LPValue(token1.value);
           const foundToken1 = supportedTokenList!.find(
             (token) => token.id === tokenId
           );
@@ -292,6 +297,37 @@ export const LiquidityAdd = () => {
     }
     return '1';
   }, [pairData, token1.token]);
+
+  const liquidityAmounts = useMemo(() => {
+    if (
+      token0.value &&
+      token1.value &&
+      token0.token?.decimals &&
+      token1.token?.decimals &&
+      pair
+    ) {
+      const getAmountLPOptions = {
+        token0Amount: token0.value,
+        token1Amount: token1.value,
+        reserve0: String(pair.reserve0),
+        reserve1: String(pair.reserve1),
+        totalSupply: String(pair.totalSupply),
+      };
+
+      const getPercentageLPOptions = {
+        ...getAmountLPOptions,
+        token0Decimals: token0.token?.decimals,
+        token1Decimals: token1.token?.decimals,
+      };
+
+      const value = getAmountLP(getAmountLPOptions);
+      const percentage = getLPPercentageString(getPercentageLPOptions);
+
+      return { value, percentage };
+    }
+
+    return { value: '0.00', percentage: '0%' };
+  }, [token0.value, token1.value, pair]);
 
   return (
     <>
@@ -436,7 +472,9 @@ export const LiquidityAdd = () => {
             <SimpleGrid columns={3}>
               <Box>
                 <Text color="gray.300">Share of pool:</Text>
-                <Text>6.7821 (0.012%)</Text>
+                <Text>
+                  {liquidityAmounts.value} ({liquidityAmounts.percentage})
+                </Text>
               </Box>
               <Box textAlign="center">
                 <Text color="gray.300">
