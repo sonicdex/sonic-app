@@ -44,6 +44,7 @@ import {
   formatAmount,
 } from '@/utils/format';
 import BigNumber from 'bignumber.js';
+import { debounce } from '@/utils/function';
 
 export const LiquidityAdd = () => {
   const query = useQuery();
@@ -119,43 +120,38 @@ export const LiquidityAdd = () => {
     }
   };
 
-  const handleButtonClick = () => {
+  const handleAddLiquidity = () => {
     if (!isReviewing) {
       setIsReviewing(true);
     }
 
-    if (isReviewing) {
-      // TODO: Add liqudity batch run
-      addNotification({
-        title: 'Liquidity Added',
-        type: NotificationType.Success,
-        id: Date.now().toString(),
-      });
-    }
+    addNotification({
+      title: `Adding liquidity: ${token0.token?.symbol} + ${token1.token?.symbol}`,
+      type: NotificationType.AddLiquidity,
+      id: String(new Date().getTime()),
+    });
+    debounce(() => {
+      dispatch(
+        liquidityViewActions.setValue({ data: 'token0', value: '0.00' })
+      );
+      dispatch(
+        liquidityViewActions.setValue({ data: 'token1', value: '0.00' })
+      );
+    }, 300);
   };
 
-  const handleToken0MaxClick = () => {
+  const handleTokenMaxClick = (dataKey: LiquidityTokenDataKey) => {
+    const token = dataKey === 'token0' ? token0 : token1;
+
     const value =
-      totalBalances && token0.token
+      totalBalances && token.token
         ? getCurrencyString(
-            totalBalances[token0.token?.id],
-            token0.token?.decimals
+            totalBalances[token.token?.id],
+            token.token?.decimals
           )
         : '0.00';
 
-    setTokenValueAndLPTokenValue('token0', value);
-  };
-
-  const handleToken1MaxClick = () => {
-    const value =
-      totalBalances && token1.token
-        ? getCurrencyString(
-            totalBalances[token1.token?.id],
-            token1.token?.decimals
-          )
-        : '0.00';
-
-    setTokenValueAndLPTokenValue('token1', value);
+    setTokenValueAndLPTokenValue(dataKey, value);
   };
 
   const handleSelectToken = (dataKey: LiquidityTokenDataKey) => {
@@ -267,7 +263,7 @@ export const LiquidityAdd = () => {
     }
 
     if (isReviewing) return [false, 'Confirm Supply'];
-    return [false, 'Review Swap'];
+    return [false, 'Review Supply'];
   }, [isLoading, isReviewing, totalBalances, token0, token1]);
 
   const selectedTokenIds = useMemo(() => {
@@ -348,9 +344,28 @@ export const LiquidityAdd = () => {
             token1USDPrice: '0.00',
           };
         } else {
+          const token0Value = new BigNumber(token0.value)
+            .div(new BigNumber(token1.value))
+            .dp(token0.token?.decimals)
+            .toString();
+          const token1Value = new BigNumber(token1.value)
+            .div(new BigNumber(token0.value))
+            .dp(token1.token?.decimals)
+            .toString();
+
           return {
-            token0Price: token0.value,
-            token1Price: token1.value,
+            token0Price:
+              !token0Value ||
+              new BigNumber(token0Value).isNaN() ||
+              !new BigNumber(token0Value).isFinite()
+                ? '0.00'
+                : token0Value,
+            token1Price:
+              !token1Value ||
+              new BigNumber(token1Value).isNaN() ||
+              !new BigNumber(token1Value).isFinite()
+                ? '0.00'
+                : token1Value,
             token0USDPrice: '0.00',
             token1USDPrice: '0.00',
           };
@@ -418,7 +433,9 @@ export const LiquidityAdd = () => {
               <TokenInput />
             </TokenContent>
             <TokenBalances>
-              <TokenBalancesDetails onMaxClick={handleToken0MaxClick} />
+              <TokenBalancesDetails
+                onMaxClick={() => handleTokenMaxClick('token0')}
+              />
               <TokenBalancesPrice />
             </TokenBalances>
           </Token>
@@ -468,7 +485,9 @@ export const LiquidityAdd = () => {
               <TokenInput />
             </TokenContent>
             <TokenBalances>
-              <TokenBalancesDetails onMaxClick={handleToken1MaxClick} />
+              <TokenBalancesDetails
+                onMaxClick={() => handleTokenMaxClick('token1')}
+              />
               <TokenBalancesPrice />
             </TokenBalances>
           </Token>
@@ -509,13 +528,13 @@ export const LiquidityAdd = () => {
               </Box>
               <Box textAlign="center">
                 <Text color="gray.300">
-                  {token0.token?.symbol} per {token1.token?.symbol}
+                  {token1.token?.symbol} per {token0.token?.symbol}
                 </Text>
                 <Text>{token0Price}</Text>
               </Box>
               <Box textAlign="right">
                 <Text color="gray.300">
-                  {token1.token?.symbol} per {token0.token?.symbol}
+                  {token0.token?.symbol} per {token1.token?.symbol}
                 </Text>
                 <Text>{token1Price}</Text>
               </Box>
@@ -530,7 +549,7 @@ export const LiquidityAdd = () => {
         <Button
           isFullWidth
           size="lg"
-          onClick={handleButtonClick}
+          onClick={handleAddLiquidity}
           isDisabled={buttonDisabled}
           isLoading={isLoading}
         >
