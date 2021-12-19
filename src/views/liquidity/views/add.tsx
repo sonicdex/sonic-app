@@ -32,7 +32,6 @@ import {
 } from '@/store';
 import { useNavigate } from 'react-router';
 import { useQuery } from '@/hooks/use-query';
-import { SwapIDL } from '@/did';
 import { getAppAssetsSources } from '@/config/utils';
 import { SlippageSettings } from '@/components';
 import { useBalances } from '@/hooks/use-balances';
@@ -41,10 +40,9 @@ import {
   getAmountEqualLPToken,
   getAmountLP,
   getLPPercentageString,
+  formatAmount,
 } from '@/utils/format';
 import BigNumber from 'bignumber.js';
-
-const BUTTON_TITLES = ['Review Supply', 'Confirm Supply'];
 
 export const LiquidityAdd = () => {
   const query = useQuery();
@@ -108,12 +106,6 @@ export const LiquidityAdd = () => {
     } else {
       navigate('/liquidity');
     }
-  };
-
-  const getActiveStatus = (token?: SwapIDL.TokenInfoExt, value?: string) => {
-    const shouldBeActive = token && value?.length && parseFloat(value) > 0;
-
-    return shouldBeActive && !isReviewing ? 'active' : undefined;
   };
 
   const handleButtonClick = () => {
@@ -213,8 +205,8 @@ export const LiquidityAdd = () => {
     dispatch(
       liquidityViewActions.setValue({ data: 'token0', value: token1Value })
     );
-    const lpValue = getLPValue(token1Value);
 
+    const lpValue = getLPValue(token1Value);
     if (lpValue) {
       dispatch(
         liquidityViewActions.setValue({
@@ -229,8 +221,8 @@ export const LiquidityAdd = () => {
     dispatch(
       liquidityViewActions.setValue({ data: 'token1', value: token0Value })
     );
-    const lpValue = getLPValue(token0Value);
 
+    const lpValue = getLPValue(token0Value);
     if (lpValue) {
       dispatch(
         liquidityViewActions.setValue({
@@ -260,19 +252,43 @@ export const LiquidityAdd = () => {
 
   // Memorized values
 
-  const shouldButtonBeActive = useMemo(() => {
-    if (!token0.token || !token1.token) return false;
-    if (isReviewing) return true;
+  const isLoading = useMemo(() => {
+    return false;
+  }, []);
 
-    const fromTokenCondition =
-      getActiveStatus(token0.token, token0.value) === 'active';
-    const toTokenCondition =
-      getActiveStatus(token1.token, token1.value) === 'active';
+  const [buttonDisabled, buttonMessage] = useMemo<[boolean, string]>(() => {
+    if (isLoading) return [true, 'Loading'];
+    if (!token0.token || !token1.token) return [true, 'Select tokens'];
 
-    return fromTokenCondition && toTokenCondition;
-  }, [token0, token1, isReviewing]);
+    const parsedToken0Value = (token0.value && parseFloat(token0.value)) || 0;
+    const parsedToken1Value = (token1.value && parseFloat(token1.value)) || 0;
 
-  const buttonTitle = BUTTON_TITLES[isReviewing ? 1 : 0];
+    if (parsedToken0Value <= 0)
+      return [true, `No ${token0.token.name} value selected`];
+
+    if (parsedToken1Value <= 0)
+      return [true, `No ${token1.token.name} value selected`];
+
+    if (totalBalances) {
+      const parsedToken0Balance = parseFloat(
+        formatAmount(totalBalances[token0.token.id], token0.token.decimals)
+      );
+      const parsedToken1Balance = parseFloat(
+        formatAmount(totalBalances[token1.token.id], token1.token.decimals)
+      );
+
+      if (parsedToken0Value > parsedToken0Balance) {
+        return [true, `Insufficient ${token0.token.name} Balance`];
+      }
+
+      if (parsedToken1Balance > parsedToken1Balance) {
+        return [true, `Insufficient ${token1.token.name} Balance`];
+      }
+    }
+
+    if (isReviewing) return [false, 'Confirm Supply'];
+    return [false, 'Review Swap'];
+  }, [isLoading, isReviewing, totalBalances, token0, token1]);
 
   const selectedTokenIds = useMemo(() => {
     let selectedIds = [];
@@ -288,15 +304,6 @@ export const LiquidityAdd = () => {
     }
     return undefined;
   }, [allPairs, token0.token, token1.token]);
-
-  const token1Price = useMemo(() => {
-    if (pairData && pairData.reserve0 && pairData.reserve0 && token1.token) {
-      return new BigNumber(String(pairData.reserve0))
-        .div(new BigNumber(String(pairData.reserve1)))
-        .dp(Number(token1.token.decimals));
-    }
-    return '1';
-  }, [pairData, token1.token]);
 
   const liquidityAmounts = useMemo(() => {
     if (
@@ -328,6 +335,35 @@ export const LiquidityAdd = () => {
 
     return { value: '0.00', percentage: '0%' };
   }, [token0.value, token1.value, pair]);
+
+  const { token0Price, token1Price } = useMemo(() => {
+    if (
+      token0.token &&
+      token1.token &&
+      pairData &&
+      pairData.reserve0 &&
+      pairData.reserve1
+    ) {
+      const token0Price = new BigNumber(String(pairData.reserve0))
+        .div(new BigNumber(String(pairData.reserve1)))
+        .dp(Number(token0.token.decimals))
+        .toFixed(3);
+
+      const token1Price = new BigNumber(String(pairData.reserve1))
+        .div(new BigNumber(String(pairData.reserve0)))
+        .dp(Number(token1.token.decimals))
+        .toFixed(3);
+
+      return {
+        token0Price,
+        token1Price,
+        token0USDPrice: '0.00',
+        token1USDPrice: '0.00',
+      };
+    }
+
+    return { token0Price: '0.00', token1Price: '0.00' };
+  }, [token0.token, token1.token, pairData]);
 
   return (
     <>
@@ -480,13 +516,13 @@ export const LiquidityAdd = () => {
                 <Text color="gray.300">
                   {token0.token?.symbol} per {token1.token?.symbol}
                 </Text>
-                <Text>1.00</Text>
+                <Text>{token0Price}</Text>
               </Box>
               <Box textAlign="right">
                 <Text color="gray.300">
                   {token1.token?.symbol} per {token0.token?.symbol}
                 </Text>
-                <Text>80670.1</Text>
+                <Text>{token1Price}</Text>
               </Box>
             </SimpleGrid>
           </Token>
@@ -504,10 +540,10 @@ export const LiquidityAdd = () => {
           isFullWidth
           size="lg"
           onClick={handleButtonClick}
-          isDisabled={!shouldButtonBeActive}
+          isDisabled={buttonDisabled}
           isLoading={supportedTokenListState === FeatureState.Loading}
         >
-          {buttonTitle}
+          {buttonMessage}
         </Button>
       )}
     </>
