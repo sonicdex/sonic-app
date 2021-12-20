@@ -12,7 +12,7 @@ import {
 } from '@chakra-ui/react';
 import { createContext } from '@chakra-ui/react-utils';
 import NumberFormat from 'react-number-format';
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 
 import { chevronDownSrc, questionMarkSrc } from '@/assets';
 import { NumberInput } from '@/components';
@@ -254,7 +254,7 @@ export const TokenBalancesDetails: React.FC<TokenBalancesDetailsProps> = ({
 type TokenInputProps = NumberInputProps;
 
 export const TokenInput: React.FC<TokenInputProps> = (props) => {
-  const { isLoading, isDisabled, shouldGlow, value, setValue } =
+  const { isLoading, isDisabled, shouldGlow, value, setValue, tokenMetadata } =
     useTokenContext();
   const background = shouldGlow ? '#151515' : '#1E1E1E';
 
@@ -266,12 +266,32 @@ export const TokenInput: React.FC<TokenInputProps> = (props) => {
     return true;
   }, [isLoading, isDisabled, value]);
 
+  const handleChange = useCallback(
+    (_value: string) => {
+      // Handle zeros on left
+      // Handle only one dot in input
+      // Handle only token decimals in input
+      if (tokenMetadata && setValue) {
+        const [nat, decimals] = _value.split('.');
+        let newValue = parseInt(nat) > 0 ? nat.replace(/^0+/, '') : '0';
+        if (_value.includes('.')) {
+          newValue += '.';
+        }
+        if (decimals) {
+          newValue += `${decimals.slice(0, tokenMetadata.decimals)}`;
+        }
+        setValue(newValue);
+      }
+    },
+    [value, tokenMetadata]
+  );
+
   return (
     <Skeleton isLoaded={!isLoading} borderRadius="full">
       <NumberInput
         isDisabled={isDisabled}
         value={value}
-        setValue={setValue}
+        setValue={handleChange}
         color={isActive ? '#F6FCFD' : '#888E8F'}
         background={background}
         {...props}
