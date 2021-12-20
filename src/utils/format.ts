@@ -157,7 +157,7 @@ export const getAmountOut = (
   reserveOut: string | number,
   fee = 3 // means 0.003
 ): string => {
-  if (!amountIn || new BigNumber(amountIn).isZero()) return '0';
+  if (!amountIn || new BigNumber(amountIn).isZero()) return '';
   const amountInWithFee = new BigNumber(amountIn) // amountIn * 997;
     .multipliedBy(new BigNumber(10).pow(decimalsIn))
     .multipliedBy(new BigNumber('1000').minus(fee));
@@ -178,7 +178,7 @@ export const getAmountIn = (
   reserveIn: string,
   reserveOut: string
 ): string => {
-  if (!amountOut || new BigNumber(amountOut).isZero()) return '0';
+  if (!amountOut || new BigNumber(amountOut).isZero()) return '';
   const numerator = new BigNumber(reserveIn) // reserveIn * amountOut * 1000;
     .multipliedBy(
       new BigNumber(amountOut).multipliedBy(new BigNumber(10).pow(decimalsOut))
