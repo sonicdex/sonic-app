@@ -146,7 +146,6 @@ export const AssetsDeposit = () => {
               balance: tokenBalance,
             },
           ]}
-          isDisabled={buttonDisabled}
           tokenListMetadata={supportedTokenList}
           tokenMetadata={selectedTokenMetadata}
         >
