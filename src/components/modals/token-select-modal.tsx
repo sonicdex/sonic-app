@@ -47,6 +47,8 @@ const TokenSelectItem = ({
 }: TokenSelectItemProps) => {
   const tokenOpacity = isSelected ? 0.3 : 1;
 
+  console.log(logoSrc);
+
   return (
     <Flex
       direction="row"
@@ -261,7 +263,7 @@ export const TokenSelectModal = () => {
                       }
                       isLoading={isLoading}
                       isSelected={selectedTokenIds?.includes(id)}
-                      logoSrc={logo || DefaultTokensImage[symbol]}
+                      logoSrc={DefaultTokensImage[symbol] || logo}
                     />
                   )
                 )}
