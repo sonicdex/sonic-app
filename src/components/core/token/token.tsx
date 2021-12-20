@@ -115,6 +115,7 @@ export const TokenDetails: React.FC<TokenDetailsProps> = ({
       pr={3}
       py={2}
       cursor="pointer"
+      minW="fit-content"
       {...props}
     >
       {children}
@@ -139,7 +140,15 @@ export const TokenDetailsLogo: React.FC<TokenDetailsLogo> = (props) => {
       borderRadius="full"
       mr={2}
     >
-      <Image width={5} height={5} borderRadius={5} src={logoSrc} {...props} />
+      <Image
+        width={5}
+        minW={5}
+        height={5}
+        minH={5}
+        borderRadius={5}
+        src={logoSrc}
+        {...props}
+      />
     </Skeleton>
   );
 };
