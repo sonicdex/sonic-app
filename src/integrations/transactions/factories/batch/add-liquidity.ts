@@ -60,8 +60,6 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
     }
   }, [sonicBalances, addLiquidityParams.token1]) as Deposit;
 
-  console.log(deposit0Params, deposit1Params);
-
   const approve0 = useMemorizedApproveTransaction(deposit0Params);
   const deposit0 = useMemorizedDepositTransaction(deposit0Params);
 
@@ -141,8 +139,6 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
 
     dispatch(modalsSliceActions.openAddLiquidityProgressModal());
   };
-
-  console.log(transactions);
 
   return [
     useBatchHook<AddLiquidityModalDataStep>({ transactions, handleRetry }),
