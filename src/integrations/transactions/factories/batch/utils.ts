@@ -16,7 +16,6 @@ type GetKeysDepositTransactionsOptions = {
   depositTx: any;
   txNames?: [string, string];
   token: TokenData;
-  balance: number;
 };
 
 export const getDepositTransactions = ({
@@ -24,14 +23,13 @@ export const getDepositTransactions = ({
   depositTx,
   txNames = ['approve', 'deposit'],
   token,
-  balance,
 }: GetKeysDepositTransactionsOptions) => {
   const neededBalance = Number(
     // TODO: remove this hack
     parseAmount(token.value, token.metadata!.decimals)
   );
 
-  if (balance < neededBalance) {
+  if (neededBalance > 0) {
     return {
       [txNames[0]]: approveTx,
       [txNames[1]]: depositTx,

@@ -78,7 +78,6 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
           approveTx: approve0,
           depositTx: deposit0,
           token: addLiquidityParams.token0,
-          balance: sonicBalances[addLiquidityParams.token0.metadata.id],
         }),
       };
     }
@@ -90,7 +89,6 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
           approveTx: approve1,
           depositTx: deposit1,
           token: addLiquidityParams.token1,
-          balance: sonicBalances[addLiquidityParams.token1.metadata.id],
         }),
       };
     }

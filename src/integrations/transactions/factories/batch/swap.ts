@@ -61,7 +61,6 @@ export const useSwapBatch = ({
           approveTx: approve,
           depositTx: deposit,
           token: swapParams.from,
-          balance: sonicBalances[swapParams.from.metadata.id],
         }),
       };
     }
