@@ -77,7 +77,7 @@ export const RemoveLiquidityLink: React.FC<RemoveLiquidityLinkProps> = ({
         dispatch(modalsSliceActions.clearRemoveLiquidityData());
         dispatch(modalsSliceActions.closeRemoveLiquidityProgressModal());
         addNotification({
-          title: `Successfuly removed liquidity: ${token0.value} ${token0.token?.symbol} + ${token1.value} ${token1.token?.symbol}`,
+          title: `Successfuly removed liquidity: ${token0.value} ${token0.metadata.symbol} + ${token1.value} ${token1.metadata.symbol}`,
           type: NotificationType.Success,
           id: Date.now().toString(),
           // TODO: add transaction id
@@ -89,7 +89,7 @@ export const RemoveLiquidityLink: React.FC<RemoveLiquidityLinkProps> = ({
         console.error('Remove liqudity Error', err);
         dispatch(modalsSliceActions.clearRemoveLiquidityData());
         addNotification({
-          title: `Remove liquidity failed - ${token0.value} ${token0.token?.symbol} + ${token1.value} ${token1.token?.symbol}`,
+          title: `Remove liquidity failed - ${token0.value} ${token0.metadata.symbol} + ${token1.value} ${token1.metadata.symbol}`,
           type: NotificationType.Error,
           id: Date.now().toString(),
         });

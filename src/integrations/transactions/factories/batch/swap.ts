@@ -60,7 +60,6 @@ export const useSwapBatch = ({
         ...getDepositTransactions({
           approveTx: approve,
           depositTx: deposit,
-          token: swapParams.from,
         }),
       };
     }

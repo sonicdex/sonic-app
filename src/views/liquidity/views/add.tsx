@@ -87,9 +87,7 @@ export const LiquidityAdd = () => {
           })
         );
       }
-      dispatch(
-        liquidityViewActions.setValue({ data: 'token0', value: '0.00' })
-      );
+      dispatch(liquidityViewActions.setValue({ data: 'token0', value: '' }));
 
       if (toTokenId) {
         const token1 = supportedTokenList!.find(
@@ -106,9 +104,7 @@ export const LiquidityAdd = () => {
           })
         );
       }
-      dispatch(
-        liquidityViewActions.setValue({ data: 'token1', value: '0.00' })
-      );
+      dispatch(liquidityViewActions.setValue({ data: 'token1', value: '' }));
     }
   }, [supportedTokenListState, supportedTokenList]);
 
@@ -132,12 +128,8 @@ export const LiquidityAdd = () => {
       id: String(new Date().getTime()),
     });
     debounce(() => {
-      dispatch(
-        liquidityViewActions.setValue({ data: 'token0', value: '0.00' })
-      );
-      dispatch(
-        liquidityViewActions.setValue({ data: 'token1', value: '0.00' })
-      );
+      dispatch(liquidityViewActions.setValue({ data: 'token0', value: '' }));
+      dispatch(liquidityViewActions.setValue({ data: 'token1', value: '' }));
     }, 300);
   };
 
@@ -150,7 +142,7 @@ export const LiquidityAdd = () => {
             totalBalances[token.metadata?.id],
             token.metadata?.decimals
           )
-        : '0.00';
+        : '';
 
     setTokenValueAndLPTokenValue(dataKey, value);
   };
@@ -170,10 +162,10 @@ export const LiquidityAdd = () => {
             })
           );
           dispatch(
-            liquidityViewActions.setValue({ data: 'token0', value: '0.00' })
+            liquidityViewActions.setValue({ data: 'token0', value: '' })
           );
           dispatch(
-            liquidityViewActions.setValue({ data: 'token1', value: '0.00' })
+            liquidityViewActions.setValue({ data: 'token1', value: '' })
           );
         },
         selectedTokenIds,
@@ -447,7 +439,7 @@ export const LiquidityAdd = () => {
                 <TokenDetailsSymbol />
               </TokenDetails>
 
-              <TokenInput />
+              <TokenInput autoFocus />
             </TokenContent>
             <TokenBalances>
               <TokenBalancesDetails

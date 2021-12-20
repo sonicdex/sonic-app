@@ -1,5 +1,4 @@
-import { TokenData } from '@/models';
-import { getCurrency, parseAmount } from '@/utils/format';
+import { getCurrency } from '@/utils/format';
 
 export const getToDepositAmount = (
   tokenBalance: number,
@@ -15,19 +14,14 @@ type GetKeysDepositTransactionsOptions = {
   approveTx: any;
   depositTx: any;
   txNames?: [string, string];
-  token: TokenData;
 };
 
 export const getDepositTransactions = ({
   approveTx,
   depositTx,
   txNames = ['approve', 'deposit'],
-  token,
 }: GetKeysDepositTransactionsOptions) => {
-  const neededBalance = Number(
-    // TODO: remove this hack
-    parseAmount(token.value, token.metadata!.decimals)
-  );
+  const neededBalance = Number(depositTx.args[1]);
 
   if (neededBalance > 0) {
     return {

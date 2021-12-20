@@ -107,7 +107,7 @@ export const SwapHomeStep = () => {
                 totalBalances[from.metadata?.id],
                 from.metadata?.decimals
               )
-            : '0.00',
+            : '',
       })
     );
   };
@@ -191,7 +191,7 @@ export const SwapHomeStep = () => {
                 <TokenDetailsSymbol />
               </TokenDetails>
 
-              <TokenInput />
+              <TokenInput autoFocus />
             </TokenContent>
             <TokenBalances>
               <TokenBalancesDetails onMaxClick={handleFromMaxClick} />

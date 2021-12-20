@@ -77,7 +77,6 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
           txNames: ['approve0', 'deposit0'],
           approveTx: approve0,
           depositTx: deposit0,
-          token: addLiquidityParams.token0,
         }),
       };
     }
@@ -88,7 +87,6 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
           txNames: ['approve1', 'deposit1'],
           approveTx: approve1,
           depositTx: deposit1,
-          token: addLiquidityParams.token1,
         }),
       };
     }

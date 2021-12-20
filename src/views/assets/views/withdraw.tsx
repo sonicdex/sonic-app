@@ -102,7 +102,7 @@ export const AssetsWithdraw = () => {
     }
 
     return () => {
-      dispatch(withdrawViewActions.setAmount('0.00'));
+      dispatch(withdrawViewActions.setAmount(''));
     };
   }, []);
 
@@ -113,7 +113,7 @@ export const AssetsWithdraw = () => {
       id: String(new Date().getTime()),
     });
 
-    debounce(() => dispatch(withdrawViewActions.setAmount('0.00')), 300);
+    debounce(() => dispatch(withdrawViewActions.setAmount('')), 300);
   };
 
   const handleMaxClick = () => {
@@ -158,7 +158,7 @@ export const AssetsWithdraw = () => {
               <TokenDetailsSymbol />
             </TokenDetails>
 
-            <TokenInput />
+            <TokenInput autoFocus />
           </TokenContent>
           <TokenBalances>
             <TokenBalancesDetails onMaxClick={handleMaxClick} />

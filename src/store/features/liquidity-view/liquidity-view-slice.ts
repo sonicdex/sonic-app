@@ -23,11 +23,11 @@ const initialState: LiquidityViewState = {
   state: 'idle' as FeatureState,
   token0: {
     metadata: undefined,
-    value: '0.00',
+    value: '',
   },
   token1: {
     metadata: undefined,
-    value: '0.00',
+    value: '',
   },
   slippage: INITIAL_LIQUIDITY_SLIPPAGE,
   keepInSonic: true,
