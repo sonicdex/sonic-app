@@ -165,7 +165,7 @@ export const SwapReviewStep = () => {
               <TokenInput />
             </TokenContent>
             <TokenBalances>
-              <TokenBalancesDetails onMaxClick={handleMaxClick} />
+              <TokenBalancesDetails />
               <TokenBalancesPrice />
             </TokenBalances>
           </Token>
