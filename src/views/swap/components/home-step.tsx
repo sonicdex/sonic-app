@@ -191,7 +191,7 @@ export const SwapHomeStep = () => {
                 <TokenDetailsSymbol />
               </TokenDetails>
 
-              <TokenInput />
+              <TokenInput autoFocus />
             </TokenContent>
             <TokenBalances>
               <TokenBalancesDetails onMaxClick={handleFromMaxClick} />

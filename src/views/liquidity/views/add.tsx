@@ -439,7 +439,7 @@ export const LiquidityAdd = () => {
                 <TokenDetailsSymbol />
               </TokenDetails>
 
-              <TokenInput />
+              <TokenInput autoFocus />
             </TokenContent>
             <TokenBalances>
               <TokenBalancesDetails

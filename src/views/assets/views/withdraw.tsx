@@ -158,7 +158,7 @@ export const AssetsWithdraw = () => {
               <TokenDetailsSymbol />
             </TokenDetails>
 
-            <TokenInput />
+            <TokenInput autoFocus />
           </TokenContent>
           <TokenBalances>
             <TokenBalancesDetails onMaxClick={handleMaxClick} />

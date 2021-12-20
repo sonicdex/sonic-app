@@ -155,7 +155,7 @@ export const AssetsDeposit = () => {
               <TokenDetailsSymbol />
             </TokenDetails>
 
-            <TokenInput />
+            <TokenInput autoFocus />
           </TokenContent>
           <TokenBalances>
             <TokenBalancesDetails onMaxClick={handleMaxClick} />
