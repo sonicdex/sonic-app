@@ -128,7 +128,18 @@ export const Liquidity = () => {
           You have no liquidity positions
         </Text>
       ) : (
-        <>
+        <Stack
+          css={{
+            msOverflowStyle: 'none',
+            scrollbarWidth: 'none',
+            '&::-webkit-scrollbar': {
+              display: 'none',
+            },
+          }}
+          spacing={4}
+          pb={8}
+          overflow="auto"
+        >
           {(userLPBalances as unknown as any[]).map((_, index) => (
             <Asset
               key={index}
@@ -178,7 +189,7 @@ export const Liquidity = () => {
               </HStack>
             </Asset>
           ))}
-        </>
+        </Stack>
       )}
     </>
   );
