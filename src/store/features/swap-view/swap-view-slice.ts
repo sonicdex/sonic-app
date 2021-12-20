@@ -27,11 +27,11 @@ const initialState: SwapViewState = {
   state: FeatureState?.Idle,
   from: {
     metadata: undefined,
-    value: '0.00',
+    value: '',
   },
   to: {
     metadata: undefined,
-    value: '0.00',
+    value: '',
   },
   tokenList: undefined,
   slippage: INITIAL_SWAP_SLIPPAGE,
@@ -68,8 +68,8 @@ export const swapViewSlice = createSlice({
           ? state.tokenList[action.payload.tokenId]
           : undefined;
       if (action.payload.data === 'from') {
-        state.from.value = '0.00';
-        state.to.value = '0.00';
+        state.from.value = '';
+        state.to.value = '';
         state.to.metadata = undefined;
       }
       state.step = SwapStep.Home;
@@ -88,8 +88,8 @@ export const swapViewSlice = createSlice({
       if (!state.from.metadata) {
         // TODO: set default token
         state.from.metadata = tokens[0];
-        state.from.value = '0.00';
-        state.to.value = '0.00';
+        state.from.value = '';
+        state.to.value = '';
       }
       state.step = SwapStep.Home;
     },

@@ -64,7 +64,7 @@ export const AssetsDeposit = () => {
       type: NotificationType.Deposit,
       id: String(new Date().getTime()),
     });
-    debounce(() => dispatch(depositViewActions.setAmount('0.00')), 300);
+    debounce(() => dispatch(depositViewActions.setAmount('')), 300);
   };
 
   const [buttonDisabled, buttonMessage] = useMemo<[boolean, string]>(() => {
@@ -112,7 +112,7 @@ export const AssetsDeposit = () => {
     }
 
     return () => {
-      dispatch(depositViewActions.setAmount('0.00'));
+      dispatch(depositViewActions.setAmount(''));
     };
   }, []);
 

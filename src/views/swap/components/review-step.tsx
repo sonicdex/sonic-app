@@ -56,7 +56,7 @@ export const SwapReviewStep = () => {
       id: String(new Date().getTime()),
     });
     debounce(
-      () => dispatch(swapViewActions.setValue({ data: 'from', value: '0.00' })),
+      () => dispatch(swapViewActions.setValue({ data: 'from', value: '' })),
       300
     );
   };
@@ -71,7 +71,7 @@ export const SwapReviewStep = () => {
                 totalBalances[to.metadata?.id],
                 to.metadata?.decimals
               )
-            : '0.00',
+            : '',
       })
     );
   };
