@@ -332,6 +332,14 @@ export const LiquidityAdd = () => {
     return { value: '0.00', percentage: '0%' };
   }, [token0, token1, pair]);
 
+  const shouldShowSumUp = useMemo(() => {
+    if (Number(token0.value) > 0 && Number(token1.value) > 0) {
+      return true;
+    }
+
+    return false;
+  }, [token0.value, token1.value]);
+
   const { token0Price, token1Price, token0USDPrice, token1USDPrice } =
     useMemo(() => {
       if (token0.metadata && token1.metadata) {
@@ -501,57 +509,59 @@ export const LiquidityAdd = () => {
             </TokenBalances>
           </Token>
         </Box>
+        {shouldShowSumUp && (
+          <>
+            <Stack
+              direction="row"
+              alignItems="center"
+              pl={3}
+              pr={5}
+              py={2}
+              borderRadius="full"
+              w="fit-content"
+              mt={-3}
+              mb={-3}
+              zIndex={1200}
+              bg={isReviewing ? '#3D52F4' : '#1E1E1E'}
+              border={`1px solid ${isReviewing ? '#3D52F4' : '#373737'}`}
+            >
+              <LPImageBlock
+                size="sm"
+                imageSources={[token0.metadata?.logo, token1.metadata?.logo]}
+              />
 
-        <Stack
-          direction="row"
-          alignItems="center"
-          pl={3}
-          pr={5}
-          py={2}
-          borderRadius="full"
-          w="fit-content"
-          mt={-3}
-          mb={-3}
-          zIndex={1200}
-          bg={isReviewing ? '#3D52F4' : '#1E1E1E'}
-          border={`1px solid ${isReviewing ? '#3D52F4' : '#373737'}`}
-        >
-          <LPImageBlock
-            size="sm"
-            imageSources={[token0.metadata?.logo, token1.metadata?.logo]}
-          />
+              <Text fontWeight="bold">
+                {token0.metadata?.symbol} - {token1.metadata?.symbol}
+              </Text>
+            </Stack>
 
-          <Text fontWeight="bold">
-            {token0.metadata?.symbol} - {token1.metadata?.symbol}
-          </Text>
-        </Stack>
-
-        <Box width="100%">
-          <Token value={token1.value} isDisabled shouldGlow={isReviewing}>
-            <SimpleGrid columns={3}>
-              <Box>
-                <Text color="gray.300">Share of pool:</Text>
-                <Text>
-                  {liquidityAmounts.value} ({liquidityAmounts.percentage})
-                </Text>
-              </Box>
-              <Box textAlign="center">
-                <Text color="gray.300">
-                  {token1.metadata?.symbol} per {token0.metadata?.symbol}
-                </Text>
-                <Text>{token0Price}</Text>
-              </Box>
-              <Box textAlign="right">
-                <Text color="gray.300">
-                  {token0.metadata?.symbol} per {token1.metadata?.symbol}
-                </Text>
-                <Text>{token1Price}</Text>
-              </Box>
-            </SimpleGrid>
-          </Token>
-        </Box>
+            <Box width="100%">
+              <Token value={token1.value} isDisabled shouldGlow={isReviewing}>
+                <SimpleGrid columns={3}>
+                  <Box>
+                    <Text color="gray.300">Share of pool:</Text>
+                    <Text>
+                      {liquidityAmounts.value} ({liquidityAmounts.percentage})
+                    </Text>
+                  </Box>
+                  <Box textAlign="center">
+                    <Text color="gray.300">
+                      {token1.metadata?.symbol} per {token0.metadata?.symbol}
+                    </Text>
+                    <Text>{token0Price}</Text>
+                  </Box>
+                  <Box textAlign="right">
+                    <Text color="gray.300">
+                      {token0.metadata?.symbol} per {token1.metadata?.symbol}
+                    </Text>
+                    <Text>{token1Price}</Text>
+                  </Box>
+                </SimpleGrid>
+              </Token>
+            </Box>
+          </>
+        )}
       </Flex>
-
       {!isConnected ? (
         <PlugButton />
       ) : (
