@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { UseDisclosureReturn } from '@chakra-ui/hooks';
 import {
   Modal,
@@ -27,21 +26,41 @@ import {
 import { FaArrowDown } from 'react-icons/fa';
 import { Button } from '@/components';
 import { RemoveLiquidityModalAsset } from './remove-liquidity-modal-asset';
+import {
+  liquidityViewActions,
+  NotificationType,
+  useAppDispatch,
+  useLiquidityViewStore,
+  useNotificationStore,
+} from '@/store';
+import { debounce } from '@/utils/function';
 
 type RemoveLiquidityModalProps = UseDisclosureReturn;
 
-const percentagePresets = [25, 50, 75, 100];
+const PERCENTAGE_PRESETS = [25, 50, 75, 100];
 
 // TODO: Replace mocks by liquidity data
 export const RemoveLiquidityModal = ({
   isOpen,
   onClose,
 }: RemoveLiquidityModalProps) => {
-  const [value, setValue] = useState(0);
+  const dispatch = useAppDispatch();
+  const { addNotification } = useNotificationStore();
+  const { token0, token1, removeAmountPercentage } = useLiquidityViewStore();
 
   const handleRemoveLiquidity = () => {
-    console.log('remove liquidity');
-    onClose();
+    addNotification({
+      title: `Adding liquidity: ${token0.metadata?.symbol} + ${token1.metadata?.symbol}`,
+      type: NotificationType.RemoveLiquidity,
+      id: String(new Date().getTime()),
+    });
+    debounce(() => {
+      dispatch(liquidityViewActions.setRemoveAmountPercentage(0));
+    }, 300);
+  };
+
+  const handleSliderChange = (value: number) => {
+    dispatch(liquidityViewActions.setRemoveAmountPercentage(value));
   };
 
   return (
@@ -60,10 +79,14 @@ export const RemoveLiquidityModal = ({
             Amount
           </Heading>
           <Heading as="h6" size="xl" fontWeight="bold" mt={2} mb={4}>
-            {value}%
+            {removeAmountPercentage}%
           </Heading>
           <Box px={6}>
-            <Slider value={value} onChange={setValue} colorScheme="dark-blue">
+            <Slider
+              value={Number(removeAmountPercentage)}
+              onChange={handleSliderChange}
+              colorScheme="dark-blue"
+            >
               <SliderTrack>
                 <SliderFilledTrack />
               </SliderTrack>
@@ -72,7 +95,7 @@ export const RemoveLiquidityModal = ({
           </Box>
 
           <SimpleGrid columns={4} spacing={4} py={6}>
-            {percentagePresets.map((preset) => (
+            {PERCENTAGE_PRESETS.map((preset) => (
               <Tooltip
                 key={preset}
                 label={`${preset}% of your liquidity position`}
@@ -81,7 +104,7 @@ export const RemoveLiquidityModal = ({
                   lineHeight="1"
                   colorScheme="dark-blue"
                   variant="outline"
-                  onClick={() => setValue(preset)}
+                  onClick={() => handleSliderChange(preset)}
                 >
                   {preset}%
                 </ChakraButton>
@@ -106,12 +129,12 @@ export const RemoveLiquidityModal = ({
 
           <Stack spacing={4}>
             <RemoveLiquidityModalAsset
-              name="XTC"
+              symbol="XTC"
               balance={5418.12}
               price={5418.12}
             />
             <RemoveLiquidityModalAsset
-              name="WICP"
+              symbol="WICP"
               balance={5418.12}
               price={5418.12}
             />

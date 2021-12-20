@@ -1,6 +1,6 @@
 import { questionMarkSrc } from '@/assets';
 import { SwapIDL } from '@/did';
-import { TokenMetadataList, PairList } from '@/models';
+import { TokenMetadataList, PairList, Balances } from '@/models';
 
 export const desensitizationPrincipalId = (
   principalId?: string,
@@ -63,4 +63,15 @@ export const parseResponseAllPairs = (
       },
     };
   }, {} as PairList);
+};
+
+export const parseResponseUserLPBalances = (
+  response: [canisterId: string, amount: bigint][]
+): Balances => {
+  return response.reduce((balances, [canisterId, amount]) => {
+    return {
+      ...balances,
+      [canisterId]: Number(amount),
+    };
+  }, {} as Balances);
 };
