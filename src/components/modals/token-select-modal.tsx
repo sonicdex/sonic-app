@@ -153,7 +153,7 @@ export const TokenSelectModal = () => {
   const handleSelect = (selected: boolean, tokenId?: string) => {
     if (selected) return;
     onSelect(tokenId);
-    dispatch(modalsSliceActions.closeTokenSelectModal());
+    handleTokenSelectClose();
   };
 
   const handleImportToken = (tokenData: any) => {
@@ -168,6 +168,7 @@ export const TokenSelectModal = () => {
   };
 
   const handleTokenSelectClose = () => {
+    setSearch('');
     dispatch(modalsSliceActions.closeTokenSelectModal());
   };
 
