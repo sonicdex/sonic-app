@@ -28,7 +28,12 @@ export type WithdrawModalData = {
   callbacks?: [ModalsCallback, ModalsCallback];
 };
 
-export type AddLiquidityModalDataStep = 'approve' | 'deposit' | 'addLiquidity';
+export type AddLiquidityModalDataStep =
+  | 'approve0'
+  | 'deposit0'
+  | 'approve1'
+  | 'deposit1'
+  | 'addLiquidity';
 export type AddLiquidityModalData = {
   step?: AddLiquidityModalDataStep;
   steps?: AddLiquidityModalDataStep[];
@@ -48,6 +53,7 @@ export type RemoveLiquidityModalData = {
 
 type TokenSelectData = {
   [key: string]: any;
+  onSelect: (tokenId?: string) => void;
 };
 
 // Define a type for the slice state

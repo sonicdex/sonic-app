@@ -38,9 +38,13 @@ export const AddLiquidityLink: React.FC<AddLiquidityLinkProps> = ({ id }) => {
 
   const handleStateChange = () => {
     switch (addLiquidityBatch.state) {
-      case 'approve':
-      case 'deposit':
-        dispatch(modalsSliceActions.setAddLiquidityData({ step: 'deposit' }));
+      case 'approve0':
+      case 'deposit0':
+        dispatch(modalsSliceActions.setAddLiquidityData({ step: 'deposit0' }));
+        break;
+      case 'approve1':
+      case 'deposit1':
+        dispatch(modalsSliceActions.setAddLiquidityData({ step: 'deposit1' }));
         break;
       case 'addLiquidity':
         dispatch(
@@ -66,7 +70,7 @@ export const AddLiquidityLink: React.FC<AddLiquidityLinkProps> = ({ id }) => {
         dispatch(modalsSliceActions.closeAddLiquidityProgressModal());
         addNotification({
           title: `Successfuly added liquidity: ${token0.value} ${token0.token?.symbol} + ${token1.value} ${token1.token?.symbol}`,
-          type: NotificationType.Done,
+          type: NotificationType.Success,
           id: Date.now().toString(),
           // TODO: add transaction id
           transactionLink: createCAPLink('transactionId'),

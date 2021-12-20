@@ -3,17 +3,12 @@ import { parseResponseTokenList } from '@/utils/canister';
 import { getAmountOut } from '@/utils/format';
 import { useEffect } from 'react';
 import { swapViewActions, useSwapViewStore } from '.';
-import { useSwapStore } from '..';
+import { useSwapCanisterStore } from '..';
 
 export const useSwapView = () => {
   const dispatch = useAppDispatch();
-  const { allPairs, supportedTokenList } = useSwapStore();
-  const { from, to, pairList } = useSwapViewStore();
-
-  useEffect(() => {
-    if (!allPairs) return;
-    dispatch(swapViewActions.setPairList(allPairs));
-  }, [allPairs]);
+  const { allPairs, supportedTokenList } = useSwapCanisterStore();
+  const { from, to } = useSwapViewStore();
 
   useEffect(() => {
     if (!supportedTokenList) return;
@@ -23,11 +18,14 @@ export const useSwapView = () => {
   }, [supportedTokenList]);
 
   useEffect(() => {
-    if (!from.token) return;
-    if (!to.token) return;
-    if (!pairList) return;
+    if (!from.metadata) return;
+    if (!to.metadata) return;
+    if (!allPairs) return;
 
-    if (pairList[from.token.id] && !pairList[from.token.id][to.token.id]) {
+    if (
+      allPairs[from.metadata.id] &&
+      !allPairs[from.metadata.id][to.metadata.id]
+    ) {
       dispatch(swapViewActions.setToken({ data: 'to', tokenId: undefined }));
     } else {
       dispatch(
@@ -35,13 +33,13 @@ export const useSwapView = () => {
           data: 'to',
           value: getAmountOut(
             from.value,
-            from.token.decimals,
-            to.token.decimals,
-            String(pairList[from.token.id][to.token.id].reserve0),
-            String(pairList[from.token.id][to.token.id].reserve1)
+            from.metadata.decimals,
+            to.metadata.decimals,
+            String(allPairs[from.metadata.id][to.metadata.id].reserve0),
+            String(allPairs[from.metadata.id][to.metadata.id].reserve1)
           ),
         })
       );
     }
-  }, [from.value, from.token, to.token]);
+  }, [from.value, from.metadata, to.metadata]);
 };

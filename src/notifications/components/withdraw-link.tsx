@@ -5,7 +5,7 @@ import {
   NotificationType,
   useAppDispatch,
   useNotificationStore,
-  useSwapStore,
+  useSwapCanisterStore,
   useWithdrawViewStore,
 } from '@/store';
 import { createCAPLink } from '@/utils/function';
@@ -22,7 +22,7 @@ export const WithdrawLink: React.FC<WithdrawLinkProps> = ({ id }) => {
   const { getBalances } = useBalances();
 
   const { amount: value, tokenId } = useWithdrawViewStore();
-  const { supportedTokenList } = useSwapStore();
+  const { supportedTokenList } = useSwapCanisterStore();
 
   const selectedToken = useMemo(() => {
     return supportedTokenList?.find(({ id }) => id === tokenId);
@@ -58,7 +58,7 @@ export const WithdrawLink: React.FC<WithdrawLinkProps> = ({ id }) => {
         dispatch(modalsSliceActions.closeWithdrawProgressModal());
         addNotification({
           title: 'Withdraw successful',
-          type: NotificationType.Done,
+          type: NotificationType.Success,
           id: Date.now().toString(),
           // TODO: add transaction id
           transactionLink: createCAPLink('transactionId'),

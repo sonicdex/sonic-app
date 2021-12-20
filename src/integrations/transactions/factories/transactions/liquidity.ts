@@ -1,6 +1,6 @@
 import { ENV } from '@/config';
 import { SwapIDL } from '@/did';
-import { getMinAmount, parseAmount } from '@/utils/format';
+import { getAmountMin, parseAmount } from '@/utils/format';
 import { Principal } from '@dfinity/principal';
 import { Transaction } from '@psychedelic/plug-inpage-provider/dist/src/Provider';
 import { useMemo } from 'react';
@@ -15,19 +15,25 @@ export interface LiquidityExtraArgs {
 export const useMemorizedAddLiquidityTransaction: CreateTransaction<AddLiquidity> =
   ({ token0, token1, slippage }: AddLiquidity, onSuccess, onFail) =>
     useMemo(() => {
-      if (!token0.token || !token1.token)
+      if (!token0.metadata || !token1.metadata)
         throw new Error('Tokens are required');
 
-      const amount0Desired = parseAmount(token0.value, token0.token.decimals);
-      const amount1Desired = parseAmount(token1.value, token1.token.decimals);
+      const amount0Desired = parseAmount(
+        token0.value,
+        token0.metadata.decimals
+      );
+      const amount1Desired = parseAmount(
+        token1.value,
+        token1.metadata.decimals
+      );
 
       const amount0Min = parseAmount(
-        getMinAmount(token1.value, slippage, token1.token.decimals),
-        token1.token.decimals
+        getAmountMin(token1.value, slippage, token1.metadata.decimals),
+        token1.metadata.decimals
       );
       const amount1Min = parseAmount(
-        getMinAmount(token1.value, slippage, token1.token.decimals),
-        token1.token.decimals
+        getAmountMin(token1.value, slippage, token1.metadata.decimals),
+        token1.metadata.decimals
       );
 
       const currentTime = (new Date().getTime() + 5 * 60 * 1000) * 10000000;
@@ -42,8 +48,8 @@ export const useMemorizedAddLiquidityTransaction: CreateTransaction<AddLiquidity
           if (onSuccess) onSuccess(res);
         },
         args: [
-          Principal.fromText(token0.token?.id),
-          Principal.fromText(token1.token?.id),
+          Principal.fromText(token0.metadata?.id),
+          Principal.fromText(token1.metadata?.id),
           amount0Desired,
           amount1Desired,
           amount0Min,
@@ -60,14 +66,20 @@ export const useMemorizedRemoveLiquidityTransaction: CreateTransaction<RemoveLiq
     onFail
   ) =>
     useMemo(() => {
-      if (!token0.token || !token1.token)
+      if (!token0.metadata || !token1.metadata)
         throw new Error('Tokens are required');
       if (!principalId) throw new Error('Principal is required');
 
       const currentTime = (new Date().getTime() + 5 * 60 * 1000) * 10000000;
 
-      const amount0Desired = parseAmount(token0.value, token0.token.decimals);
-      const amount1Desired = parseAmount(token1.value, token1.token.decimals);
+      const amount0Desired = parseAmount(
+        token0.value,
+        token0.metadata.decimals
+      );
+      const amount1Desired = parseAmount(
+        token1.value,
+        token1.metadata.decimals
+      );
 
       return {
         canisterId: ENV.canisterIds.swap,
@@ -79,8 +91,8 @@ export const useMemorizedRemoveLiquidityTransaction: CreateTransaction<RemoveLiq
           if (onSuccess) onSuccess(res);
         },
         args: [
-          Principal.fromText(token0.token?.id),
-          Principal.fromText(token1.token?.id),
+          Principal.fromText(token0.metadata?.id),
+          Principal.fromText(token1.metadata?.id),
           lpAmount,
           amount0Desired,
           amount1Desired,

@@ -19,7 +19,7 @@ import {
   InformationBox,
   PlugButton,
 } from '@/components';
-import { FeatureState, usePlugStore, useSwapStore } from '@/store';
+import { FeatureState, usePlugStore, useSwapCanisterStore } from '@/store';
 import { DefaultTokensImage } from '@/constants';
 import { theme } from '@/theme';
 import { FaMinus, FaPlus } from 'react-icons/fa';
@@ -30,7 +30,7 @@ import { getCurrencyString } from '@/utils/format';
 export const Assets = () => {
   const { totalBalances } = useBalances();
   const { supportedTokenListState, balancesState, supportedTokenList } =
-    useSwapStore();
+    useSwapCanisterStore();
   const { isConnected } = usePlugStore();
 
   const navigate = useNavigate();

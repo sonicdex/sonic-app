@@ -24,7 +24,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { ENV } from '@/config';
 import { RemoveLiquidityModal } from '../components/remove-liquidity-modal';
-import { FeatureState, usePlugStore, useSwapStore } from '@/store';
+import { FeatureState, usePlugStore, useSwapCanisterStore } from '@/store';
 
 const INFORMATION_TITLE = 'Liquidity Provider Rewards';
 const INFORMATION_DESCRIPTION =
@@ -53,7 +53,7 @@ export const Liquidity = () => {
   const removeLiquidityModal = useDisclosure();
   const [displayInformation, setDisplayInformation] = useState(true);
   const { isConnected } = usePlugStore();
-  const { userLPBalances, userLPBalancesState } = useSwapStore();
+  const { userLPBalances, userLPBalancesState } = useSwapCanisterStore();
 
   const moveToAddLiquidityView = (tokenFrom?: string, tokenTo?: string) => {
     const query =
@@ -154,7 +154,7 @@ export const Liquidity = () => {
                   Fees Earned
                 </Text>
                 <Text fontWeight="bold" color="green.400">
-                  $231.21
+                  ~$231.21
                 </Text>
               </Box>
 

@@ -1,13 +1,26 @@
 import { useEffect, useMemo } from 'react';
 import { Box } from '@chakra-ui/react';
-import { TitleBox, TokenBox, Button } from '@/components';
+import {
+  TitleBox,
+  Token,
+  Button,
+  TokenContent,
+  TokenDetails,
+  TokenDetailsLogo,
+  TokenDetailsSymbol,
+  TokenBalancesDetails,
+  TokenBalancesPrice,
+  TokenBalances,
+  TokenInput,
+} from '@/components';
 
 import {
   FeatureState,
   NotificationType,
   useAppDispatch,
   useNotificationStore,
-  useSwapStore,
+  useSwapCanisterStore,
+  useTokenModalOpener,
   useWithdrawViewStore,
   withdrawViewActions,
 } from '@/store';
@@ -21,18 +34,27 @@ export const AssetsWithdraw = () => {
   const query = useQuery();
   const { amount, tokenId } = useWithdrawViewStore();
   const { supportedTokenList, sonicBalances, supportedTokenListState } =
-    useSwapStore();
+    useSwapCanisterStore();
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { addNotification } = useNotificationStore();
+  const openSelectTokenModal = useTokenModalOpener();
 
   const selectedTokenMetadata = useMemo(() => {
     return supportedTokenList?.find(({ id }) => id === tokenId);
   }, [supportedTokenList, tokenId]);
 
-  const handleTokenSelect = (tokenId: string) => {
-    dispatch(withdrawViewActions.setTokenId(tokenId));
+  const handleSelectTokenId = (tokenId?: string) => {
+    dispatch(withdrawViewActions.setTokenId(tokenId!));
+  };
+
+  const handleOpenSelectTokenModal = () => {
+    openSelectTokenModal({
+      metadata: supportedTokenList,
+      onSelect: (tokenId) => handleSelectTokenId(tokenId),
+      selectedTokenIds: [],
+    });
   };
 
   const [buttonDisabled, buttonMessage] = useMemo<[boolean, string]>(() => {
@@ -76,7 +98,7 @@ export const AssetsWithdraw = () => {
     }
 
     if (tokenId) {
-      handleTokenSelect(tokenId);
+      handleSelectTokenId(tokenId);
     }
 
     return () => {
@@ -94,58 +116,63 @@ export const AssetsWithdraw = () => {
     debounce(() => dispatch(withdrawViewActions.setAmount('0.00')), 300);
   };
 
+  const handleMaxClick = () => {
+    dispatch(
+      withdrawViewActions.setAmount(
+        getCurrencyString(tokenBalance, selectedTokenMetadata?.decimals)
+      )
+    );
+  };
+
+  const isLoading =
+    supportedTokenListState === FeatureState.Loading &&
+    !supportedTokenList &&
+    !selectedTokenMetadata &&
+    !tokenId;
+
   return (
     <>
       <TitleBox
         title="Withdraw Asset"
         onArrowBack={() => navigate('/assets')}
       />
-      {supportedTokenListState === FeatureState.Loading &&
-      !supportedTokenList ? (
-        <Box my={5}>
-          <TokenBox
-            sources={[{ name: 'Sonic', src: sonicCircleSrc }]}
-            isLoading
-          />
-        </Box>
-      ) : selectedTokenMetadata && tokenId ? (
-        <Box my={5}>
-          <TokenBox
-            value={amount}
-            setValue={(value) => dispatch(withdrawViewActions.setAmount(value))}
-            onTokenSelect={handleTokenSelect}
-            selectedTokenIds={[tokenId]}
-            status={buttonDisabled ? 'disabled' : 'active'}
-            otherTokensMetadata={supportedTokenList}
-            selectedTokenMetadata={selectedTokenMetadata}
-            price={0}
-            onMaxClick={() =>
-              dispatch(
-                withdrawViewActions.setAmount(
-                  getCurrencyString(
-                    tokenBalance,
-                    selectedTokenMetadata.decimals
-                  )
-                )
-              )
-            }
-            sources={[
-              {
-                name: 'Sonic',
-                src: sonicCircleSrc,
-                balance: tokenBalance,
-              },
-            ]}
-          />
-        </Box>
-      ) : null}
+      <Box my={5}>
+        <Token
+          value={amount}
+          setValue={(value) => dispatch(withdrawViewActions.setAmount(value))}
+          tokenListMetadata={supportedTokenList}
+          tokenMetadata={selectedTokenMetadata}
+          price={0}
+          isLoading={isLoading}
+          sources={[
+            {
+              name: 'Sonic',
+              src: sonicCircleSrc,
+              balance: tokenBalance,
+            },
+          ]}
+        >
+          <TokenContent>
+            <TokenDetails onClick={handleOpenSelectTokenModal}>
+              <TokenDetailsLogo />
+              <TokenDetailsSymbol />
+            </TokenDetails>
+
+            <TokenInput />
+          </TokenContent>
+          <TokenBalances>
+            <TokenBalancesDetails onMaxClick={handleMaxClick} />
+            <TokenBalancesPrice />
+          </TokenBalances>
+        </Token>
+      </Box>
 
       <Button
         isFullWidth
         size="lg"
-        isDisabled={buttonDisabled}
         onClick={handleWithdraw}
-        isLoading={supportedTokenListState === FeatureState.Loading}
+        isLoading={isLoading}
+        isDisabled={buttonDisabled}
       >
         {buttonMessage}
       </Button>

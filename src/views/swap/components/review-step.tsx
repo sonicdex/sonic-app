@@ -1,16 +1,30 @@
 import { arrowDownSrc, infoSrc } from '@/assets';
-import { Button, TitleBox, TokenBox } from '@/components';
+import {
+  Button,
+  TitleBox,
+  Token,
+  TokenBalances,
+  TokenBalancesDetails,
+  TokenBalancesPrice,
+  TokenContent,
+  TokenDetails,
+  TokenDetailsLogo,
+  TokenDetailsSymbol,
+  TokenInput,
+} from '@/components';
 import { getAppAssetsSources } from '@/config/utils';
+import { useBalances } from '@/hooks/use-balances';
+
 import {
   NotificationType,
   SwapStep,
-  SwapTokenDataKey,
   swapViewActions,
   useAppDispatch,
   useNotificationStore,
-  useSwapStore,
+  useSwapCanisterStore,
   useSwapViewStore,
 } from '@/store';
+import { getCurrencyString } from '@/utils/format';
 import { debounce } from '@/utils/function';
 import {
   Box,
@@ -26,24 +40,18 @@ import {
   PopoverTrigger,
   Portal,
 } from '@chakra-ui/react';
-import { useMemo } from 'react';
 
-export const ReviewStep = () => {
-  const { sonicBalances, tokenBalances } = useSwapStore();
-
+export const SwapReviewStep = () => {
+  const { sonicBalances, tokenBalances } = useSwapCanisterStore();
+  const { totalBalances } = useBalances();
+  const { addNotification } = useNotificationStore();
   const { fromTokenOptions, toTokenOptions, from, to, keepInSonic } =
     useSwapViewStore();
   const dispatch = useAppDispatch();
 
-  const { addNotification } = useNotificationStore();
-
-  const handleTokenSelect = (data: SwapTokenDataKey, tokenId: string) => {
-    dispatch(swapViewActions.setToken({ data, tokenId }));
-  };
-
   const handleApproveSwap = () => {
     addNotification({
-      title: `Swapping ${from.token?.symbol} for ${to.token?.symbol}`,
+      title: `Swapping ${from.metadata?.symbol} for ${to.metadata?.symbol}`,
       type: NotificationType.Swap,
       id: String(new Date().getTime()),
     });
@@ -53,13 +61,20 @@ export const ReviewStep = () => {
     );
   };
 
-  const selectedTokenIds = useMemo(() => {
-    let selectedIds = [];
-    if (from?.token?.id) selectedIds.push(from.token.id);
-    if (to?.token?.id) selectedIds.push(to.token.id);
-
-    return selectedIds;
-  }, [from?.token?.id, to?.token?.id]);
+  const handleMaxClick = () => {
+    dispatch(
+      swapViewActions.setValue({
+        data: 'to',
+        value:
+          totalBalances && to.metadata
+            ? getCurrencyString(
+                totalBalances[to.metadata?.id],
+                to.metadata?.decimals
+              )
+            : '0.00',
+      })
+    );
+  };
 
   return (
     <>
@@ -69,34 +84,40 @@ export const ReviewStep = () => {
       />
       <Flex direction="column" alignItems="center" mb={5}>
         <Box mt={5} width="100%">
-          <TokenBox
+          <Token
             value={from.value}
             setValue={(value) =>
               dispatch(swapViewActions.setValue({ data: 'from', value }))
             }
-            otherTokensMetadata={fromTokenOptions}
-            selectedTokenMetadata={from.token}
-            selectedTokenIds={selectedTokenIds}
-            onTokenSelect={(tokenId) => handleTokenSelect('from', tokenId)}
+            tokenListMetadata={fromTokenOptions}
+            tokenMetadata={from.metadata}
             price={0}
             sources={getAppAssetsSources({
               balances: {
                 plug:
-                  from.token && tokenBalances
-                    ? tokenBalances[from.token.id]
+                  from.metadata && tokenBalances
+                    ? tokenBalances[from.metadata.id]
                     : 0,
                 sonic:
-                  from.token && sonicBalances
-                    ? sonicBalances[from.token.id]
+                  from.metadata && sonicBalances
+                    ? sonicBalances[from.metadata.id]
                     : 0,
               },
             })}
-            status="active"
-            // balances={getCurrencyString(
-            //   from.token && totalBalances ? totalBalances[from.token.id] : 0,
-            //   from.token?.decimals
-            // )}
-          />
+          >
+            <TokenContent>
+              <TokenDetails>
+                <TokenDetailsLogo />
+                <TokenDetailsSymbol />
+              </TokenDetails>
+
+              <TokenInput />
+            </TokenContent>
+            <TokenBalances>
+              <TokenBalancesDetails onMaxClick={handleMaxClick} />
+              <TokenBalancesPrice />
+            </TokenBalances>
+          </Token>
         </Box>
         <Box
           borderRadius={4}
@@ -105,39 +126,49 @@ export const ReviewStep = () => {
           py={3}
           px={3}
           bg="#3D52F4"
-          mt={-4}
-          mb={-6}
+          mt={-2}
+          mb={-2}
           zIndex={1200}
         >
           <Image m="auto" src={arrowDownSrc} />
         </Box>
-        <Box mt={2.5} width="100%">
-          <TokenBox
+        <Box width="100%">
+          <Token
             value={to.value}
             setValue={(value) =>
               dispatch(swapViewActions.setValue({ data: 'to', value }))
             }
-            otherTokensMetadata={toTokenOptions}
-            selectedTokenMetadata={to.token}
-            selectedTokenIds={selectedTokenIds}
-            onTokenSelect={(tokenId) => handleTokenSelect('to', tokenId)}
+            tokenListMetadata={toTokenOptions}
+            tokenMetadata={to.metadata}
             price={0}
             sources={getAppAssetsSources({
               balances: {
                 plug:
-                  to.token && tokenBalances ? tokenBalances[to.token.id] : 0,
+                  to.metadata && tokenBalances
+                    ? tokenBalances[to.metadata.id]
+                    : 0,
                 sonic:
-                  to.token && sonicBalances ? sonicBalances[to.token.id] : 0,
+                  to.metadata && sonicBalances
+                    ? sonicBalances[to.metadata.id]
+                    : 0,
               },
             })}
-            // balances={getCurrencyString(
-            //   to.token && totalBalances ? totalBalances[to.token.id] : 0,
-            //   to.token?.decimals
-            // )}
-            status="active"
-            glow
-            disabled
-          />
+            shouldGlow
+            isDisabled
+          >
+            <TokenContent>
+              <TokenDetails>
+                <TokenDetailsLogo />
+                <TokenDetailsSymbol />
+              </TokenDetails>
+
+              <TokenInput />
+            </TokenContent>
+            <TokenBalances>
+              <TokenBalancesDetails onMaxClick={handleMaxClick} />
+              <TokenBalancesPrice />
+            </TokenBalances>
+          </Token>
         </Box>
       </Flex>
       <Flex

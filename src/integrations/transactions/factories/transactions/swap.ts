@@ -1,6 +1,6 @@
 import { ENV } from '@/config';
 import { SwapIDL } from '@/did';
-import { getMinAmount, parseAmount } from '@/utils/format';
+import { getAmountMin, parseAmount } from '@/utils/format';
 import { Principal } from '@dfinity/principal';
 import { Transaction } from '@psychedelic/plug-inpage-provider/dist/src/Provider';
 import { useMemo } from 'react';
@@ -18,17 +18,15 @@ export const useMemorizedSwapExactTokensTransaction: CreateTransaction<Swap> = (
   onFail
 ) =>
   useMemo(() => {
-    if (!from.token || !to.token) throw new Error('Tokens are required');
+    if (!from.metadata || !to.metadata) throw new Error('Tokens are required');
     if (!principalId) throw new Error('Principal is required');
 
-    const amountIn = parseAmount(from.value, from.token.decimals);
+    const amountIn = parseAmount(from.value, from.metadata.decimals);
     const amountOutMin = parseAmount(
-      getMinAmount(to.value, slippage, to.token.decimals),
-      to.token.decimals
+      getAmountMin(to.value, slippage, to.metadata.decimals),
+      to.metadata.decimals
     );
     const currentTime = (new Date().getTime() + 5 * 60 * 1000) * 10000000;
-
-    console.log('amountIn:', amountIn, 'amountOutMin:', amountOutMin);
 
     return {
       canisterId: ENV.canisterIds.swap,
@@ -42,7 +40,7 @@ export const useMemorizedSwapExactTokensTransaction: CreateTransaction<Swap> = (
       args: [
         amountIn,
         amountOutMin,
-        [from.token.id, to.token.id],
+        [from.metadata.id, to.metadata.id],
         Principal.fromText(principalId),
         BigInt(currentTime),
       ],
@@ -52,17 +50,16 @@ export const useMemorizedSwapExactTokensTransaction: CreateTransaction<Swap> = (
 export const useMemorizedSwapForExactTokensTransaction: CreateTransaction<Swap> =
   ({ from, to, slippage, principalId }: Swap, onSuccess, onFail) =>
     useMemo(() => {
-      if (!from.token || !to.token) throw new Error('Tokens are required');
+      if (!from.metadata || !to.metadata)
+        throw new Error('Tokens are required');
       if (!principalId) throw new Error('Principal is required');
 
-      const amountOut = parseAmount(to.value, to.token.decimals);
+      const amountOut = parseAmount(to.value, to.metadata.decimals);
       const amountInMin = parseAmount(
-        getMinAmount(from.value, slippage, from.token.decimals),
-        to.token.decimals
+        getAmountMin(from.value, slippage, from.metadata.decimals),
+        to.metadata.decimals
       );
       const currentTime = (new Date().getTime() + 5 * 60 * 1000) * 10000000;
-
-      console.log('amountOut:', amountOut, 'amountInMin:', amountInMin);
 
       return {
         canisterId: ENV.canisterIds.swap,
@@ -76,7 +73,7 @@ export const useMemorizedSwapForExactTokensTransaction: CreateTransaction<Swap> 
         args: [
           amountOut,
           amountInMin,
-          [from.token.id, to.token.id],
+          [from.metadata.id, to.metadata.id],
           Principal.fromText(principalId),
           BigInt(currentTime),
         ],

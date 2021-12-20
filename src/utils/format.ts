@@ -53,22 +53,100 @@ export const getCurrencyString = (
   return typeof toFixed === 'undefined' ? num.toString() : num.toFixed(toFixed);
 };
 
-export const getLpAmount = (
-  fromTokenAmount: string,
-  toTokenAmount: string,
-  reserve0: string,
-  reserve1: string,
-  pairTotalSupply: string
-) => {
-  const one = new BigNumber(fromTokenAmount)
-    .times(new BigNumber(pairTotalSupply))
+interface GetAmountLPOptions {
+  token0Amount: string;
+  token1Amount: string;
+  reserve0: string;
+  reserve1: string;
+  totalSupply: string;
+}
+
+export const getAmountLP = ({
+  token0Amount,
+  token1Amount,
+  reserve0,
+  reserve1,
+  totalSupply,
+}: GetAmountLPOptions) => {
+  const one = new BigNumber(token0Amount)
+    .times(new BigNumber(totalSupply))
     .div(new BigNumber(reserve0))
     .toFixed(3);
-  const two = new BigNumber(toTokenAmount)
-    .times(new BigNumber(pairTotalSupply))
+  const two = new BigNumber(token1Amount)
+    .times(new BigNumber(totalSupply))
     .div(new BigNumber(reserve1))
     .toFixed(3);
   return Math.min(Number(one), Number(two)).toFixed(3);
+};
+
+interface GetLPPercentageString extends GetAmountLPOptions {
+  token0Decimals: number | bigint;
+  token1Decimals: number | bigint;
+}
+
+export const getLPPercentageString = ({
+  token0Amount,
+  token0Decimals,
+  token1Amount,
+  token1Decimals,
+  reserve0,
+  reserve1,
+  totalSupply,
+}: GetLPPercentageString) => {
+  const amountLp = getAmountLP({
+    token0Amount: new BigNumber(token0Amount.toString())
+      .multipliedBy(new BigNumber(10).pow(token0Decimals.toString()))
+      .toString(),
+    token1Amount: new BigNumber(token1Amount.toString())
+      .multipliedBy(new BigNumber(10).pow(token1Decimals.toString()))
+      .toString(),
+    reserve0,
+    reserve1,
+    totalSupply,
+  });
+
+  const result = new BigNumber(amountLp)
+    .dividedBy(new BigNumber(amountLp).plus(new BigNumber(totalSupply)))
+    .multipliedBy(100);
+
+  if (result.isEqualTo(0)) return '0%';
+
+  if (result.isLessThanOrEqualTo(0.01)) {
+    return '<0.01%';
+  }
+
+  return `${result.toFixed(2)}%`;
+};
+
+type GetEqualLPTokenAmount = {
+  amountIn: string;
+  reserveIn: string;
+  reserveOut: string;
+  decimalsOut: number;
+};
+
+export const getAmountEqualLPToken = ({
+  amountIn,
+  reserveIn,
+  reserveOut,
+  decimalsOut,
+}: GetEqualLPTokenAmount) => {
+  if (
+    !amountIn ||
+    new BigNumber(amountIn).isNaN() ||
+    new BigNumber(reserveIn).isZero() ||
+    new BigNumber(reserveOut).isZero()
+  ) {
+    return '0.00';
+  }
+
+  const amountOut = new BigNumber(amountIn)
+    .multipliedBy(new BigNumber(reserveOut))
+    .dividedBy(new BigNumber(reserveIn))
+    .dp(decimalsOut)
+    .toString();
+
+  return amountOut;
 };
 
 export const getAmountOut = (
@@ -118,6 +196,18 @@ export const getAmountIn = (
     .toFixed(Number(decimalsIn));
 };
 
+export const getAmountMin = (
+  value: number | string,
+  tolerance: number | string,
+  decimals: number | string
+) => {
+  return new BigNumber('1')
+    .minus(new BigNumber(tolerance))
+    .multipliedBy(new BigNumber(value))
+    .dp(Number(decimals))
+    .toString();
+};
+
 export const calculatePriceImpact = (
   amountIn: string,
   decimalsIn: string,
@@ -148,19 +238,19 @@ export const calculatePriceImpact = (
   return impact;
 };
 
-type InitDefaultLiquidityTokenOptions = {
+type FormatDefaultLiquidityTokenOptions = {
   fromToken: TokenMetadata;
   toToken: TokenMetadata;
   token0: TokenMetadata;
   token1: TokenMetadata;
 };
 
-export const initDefaultLiquidityToken = ({
+export const formatDefaultLiquidityToken = ({
   fromToken,
   toToken,
   token0,
   token1,
-}: InitDefaultLiquidityTokenOptions) => {
+}: FormatDefaultLiquidityTokenOptions) => {
   const defaultFromToken = fromToken
     ? {
         decimals: fromToken.decimals,
@@ -198,16 +288,4 @@ export const formatAmount = (
   } catch (err) {
     return '0';
   }
-};
-
-export const getMinAmount = (
-  value: number | string,
-  tolerance: number | string,
-  decimals: number | string
-) => {
-  return new BigNumber('1')
-    .minus(new BigNumber(tolerance))
-    .multipliedBy(new BigNumber(value))
-    .dp(Number(decimals))
-    .toString();
 };

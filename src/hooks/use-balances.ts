@@ -4,17 +4,17 @@ import { ActorAdapter, appActors, useSwapActor } from '@/integrations/actor';
 import { Balances } from '@/models';
 import {
   FeatureState,
-  swapActions,
+  swapCanisterActions,
   useAppDispatch,
   usePlugStore,
-  useSwapStore,
+  useSwapCanisterStore,
 } from '@/store';
 import { Principal } from '@dfinity/principal';
 import { useCallback, useMemo } from 'react';
 
 export const useBalances = () => {
   const { principalId } = usePlugStore();
-  const { sonicBalances, tokenBalances } = useSwapStore();
+  const { sonicBalances, tokenBalances } = useSwapCanisterStore();
   const _swapActor = useSwapActor();
 
   const dispatch = useAppDispatch();
@@ -26,7 +26,7 @@ export const useBalances = () => {
 
       if (!swapActor) throw new Error('Swap actor not found');
       if (!principalId) throw new Error('Principal ID not found');
-      dispatch(swapActions.setBalancesState(FeatureState.Loading));
+      dispatch(swapCanisterActions.setBalancesState(FeatureState.Loading));
 
       const sonicBalances = await swapActor.getUserBalances(
         Principal.fromText(principalId)
@@ -59,12 +59,12 @@ export const useBalances = () => {
           )
         : undefined;
 
-      dispatch(swapActions.setSonicBalances(sonicBalances));
-      dispatch(swapActions.setTokenBalances(tokenBalances));
-      dispatch(swapActions.setBalancesState(FeatureState.Idle));
+      dispatch(swapCanisterActions.setSonicBalances(sonicBalances));
+      dispatch(swapCanisterActions.setTokenBalances(tokenBalances));
+      dispatch(swapCanisterActions.setBalancesState(FeatureState.Idle));
     } catch (error) {
       console.error(error);
-      dispatch(swapActions.setBalancesState(FeatureState.Error));
+      dispatch(swapCanisterActions.setBalancesState(FeatureState.Error));
     }
   }, [_swapActor, sonicBalances, tokenBalances, principalId, dispatch]);
 

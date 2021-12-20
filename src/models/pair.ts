@@ -1,6 +1,6 @@
 import { SwapIDL } from '@/did';
 
-export type Pair = Omit<SwapIDL.PairInfoExt, ''>;
+export type Pair = SwapIDL.PairInfoExt;
 
 export type PairList = {
   [canisterId: string]: {

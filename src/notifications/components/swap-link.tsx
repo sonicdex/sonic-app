@@ -75,7 +75,7 @@ export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
 
         addNotification({
           title: `Swapped ${from.value} ${from.token?.symbol} for ${to.value} ${to.token?.symbol}`,
-          type: NotificationType.Done,
+          type: NotificationType.Success,
           id: Date.now().toString(),
           // TODO: add transaction id
           transactionLink: createCAPLink('transactionId'),

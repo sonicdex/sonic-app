@@ -1,6 +1,18 @@
 import { useEffect, useMemo } from 'react';
 import { Box } from '@chakra-ui/react';
-import { TitleBox, TokenBox, Button } from '@/components';
+import {
+  TitleBox,
+  Token,
+  Button,
+  TokenContent,
+  TokenInput,
+  TokenDetails,
+  TokenDetailsLogo,
+  TokenDetailsSymbol,
+  TokenBalances,
+  TokenBalancesDetails,
+  TokenBalancesPrice,
+} from '@/components';
 
 import {
   depositViewActions,
@@ -9,7 +21,8 @@ import {
   useAppDispatch,
   useDepositViewStore,
   useNotificationStore,
-  useSwapStore,
+  useSwapCanisterStore,
+  useTokenModalOpener,
 } from '@/store';
 import { useNavigate } from 'react-router';
 import { useQuery } from '@/hooks/use-query';
@@ -21,19 +34,28 @@ export const AssetsDeposit = () => {
   const query = useQuery();
 
   const { supportedTokenList, tokenBalances, supportedTokenListState } =
-    useSwapStore();
+    useSwapCanisterStore();
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { amount, tokenId } = useDepositViewStore();
   const { addNotification } = useNotificationStore();
+  const openSelectTokenModal = useTokenModalOpener();
 
   const selectedTokenMetadata = useMemo(() => {
     return supportedTokenList?.find(({ id }) => id === tokenId);
   }, [supportedTokenList, tokenId]);
 
-  const handleTokenSelect = (tokenId: string) => {
-    dispatch(depositViewActions.setTokenId(tokenId));
+  const handleSelectTokenId = (tokenId?: string) => {
+    dispatch(depositViewActions.setTokenId(tokenId!));
+  };
+
+  const handleOpenSelectTokenModal = () => {
+    openSelectTokenModal({
+      metadata: supportedTokenList,
+      onSelect: (tokenId) => handleSelectTokenId(tokenId),
+      selectedTokenIds: [],
+    });
   };
 
   const handleDeposit = () => {
@@ -86,7 +108,7 @@ export const AssetsDeposit = () => {
     }
 
     if (tokenId) {
-      handleTokenSelect(tokenId);
+      handleSelectTokenId(tokenId);
     }
 
     return () => {
@@ -94,48 +116,54 @@ export const AssetsDeposit = () => {
     };
   }, []);
 
+  const handleMaxClick = () => {
+    dispatch(
+      depositViewActions.setAmount(
+        getCurrencyString(tokenBalance, selectedTokenMetadata?.decimals)
+      )
+    );
+  };
+
+  const isLoading =
+    supportedTokenListState === FeatureState.Loading &&
+    !supportedTokenList &&
+    !selectedTokenMetadata &&
+    !tokenId;
+
   return (
     <>
       <TitleBox title="Deposit Asset" onArrowBack={() => navigate('/assets')} />
-      {supportedTokenListState === FeatureState.Loading &&
-      !supportedTokenList ? (
-        <Box my={5}>
-          <TokenBox
-            sources={[{ name: 'Plug Wallet', src: plugCircleSrc }]}
-            isLoading
-          />
-        </Box>
-      ) : selectedTokenMetadata && tokenId ? (
-        <Box my={5}>
-          <TokenBox
-            value={amount}
-            onMaxClick={() =>
-              dispatch(
-                depositViewActions.setAmount(
-                  getCurrencyString(
-                    tokenBalance,
-                    selectedTokenMetadata.decimals
-                  )
-                )
-              )
-            }
-            setValue={(value) => dispatch(depositViewActions.setAmount(value))}
-            onTokenSelect={handleTokenSelect}
-            price={0}
-            sources={[
-              {
-                name: 'Plug Wallet',
-                src: plugCircleSrc,
-                balance: tokenBalance,
-              },
-            ]}
-            selectedTokenIds={[tokenId as string]}
-            status={buttonDisabled ? 'disabled' : 'active'}
-            otherTokensMetadata={supportedTokenList}
-            selectedTokenMetadata={selectedTokenMetadata}
-          />
-        </Box>
-      ) : null}
+      <Box my={5}>
+        <Token
+          isLoading={isLoading}
+          value={amount}
+          setValue={(value) => dispatch(depositViewActions.setAmount(value))}
+          price={0}
+          sources={[
+            {
+              name: 'Plug Wallet',
+              src: plugCircleSrc,
+              balance: tokenBalance,
+            },
+          ]}
+          isDisabled={buttonDisabled}
+          tokenListMetadata={supportedTokenList}
+          tokenMetadata={selectedTokenMetadata}
+        >
+          <TokenContent>
+            <TokenDetails onClick={handleOpenSelectTokenModal}>
+              <TokenDetailsLogo />
+              <TokenDetailsSymbol />
+            </TokenDetails>
+
+            <TokenInput />
+          </TokenContent>
+          <TokenBalances>
+            <TokenBalancesDetails onMaxClick={handleMaxClick} />
+            <TokenBalancesPrice />
+          </TokenBalances>
+        </Token>
+      </Box>
       <Button
         isFullWidth
         size="lg"

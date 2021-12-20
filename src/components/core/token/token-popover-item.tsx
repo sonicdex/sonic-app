@@ -4,7 +4,7 @@ import { Flex, HStack, Text, Image } from '@chakra-ui/react';
 import { questionMarkSrc } from '@/assets';
 import { getCurrencyString } from '@/utils/format';
 
-type TokenBoxPopoverItemProps = {
+type TokenPopoverItemProps = {
   src?: string;
   name?: string;
   balance?: number;
@@ -12,7 +12,7 @@ type TokenBoxPopoverItemProps = {
   decimals?: number;
 };
 
-export const TokenBoxPopoverItem: FC<TokenBoxPopoverItemProps> = ({
+export const TokenPopoverItem: FC<TokenPopoverItemProps> = ({
   src = questionMarkSrc,
   symbol,
   balance,

@@ -37,7 +37,7 @@ export const TransactionProgressModalContent: React.FC<ModalContentProps> = ({
         {title}
       </Heading>
       <Text as="p" color="#888E8F" mb="33px">
-        Please allow a few seconds for swap to finish
+        Please wait some time for transactions to finish
       </Text>
       <Flex direction="row" justifyContent="center">
         {children}

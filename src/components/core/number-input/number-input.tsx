@@ -1,22 +1,24 @@
 import { Input, InputProps } from '@chakra-ui/react';
 import { ChangeEvent } from 'react';
 
-type NumberInputProps = InputProps & {
-  setValue: (value: string) => any;
+export type NumberInputProps = InputProps & {
+  setValue?: (value: string) => void;
   placeholder?: string;
 };
 
 export const NumberInput = ({
-  setValue,
   placeholder = '0.00',
+  setValue,
   ...props
 }: NumberInputProps) => {
   const handleValueChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const inputValue = event.target.value;
-    // const parsedInputValue = parseFloat(inputValue);
+    const value = event.target.value;
 
-    if (isNaN(Number(inputValue))) return;
-    setValue(inputValue);
+    if (isNaN(Number(value))) return;
+
+    if (setValue) {
+      setValue(value);
+    }
   };
 
   return (

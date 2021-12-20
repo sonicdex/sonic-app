@@ -2,7 +2,7 @@ import {
   modalsSliceActions,
   SwapModalDataStep,
   useAppDispatch,
-  useSwapStore,
+  useSwapCanisterStore,
 } from '@/store';
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -14,7 +14,7 @@ import {
   useBatchHook,
 } from '..';
 import { Batch, Swap } from '../..';
-import { getToDepositAmount } from './utils';
+import { getDepositTransactions, getToDepositAmount } from './utils';
 
 export interface ExtraDepositSwapBatchOptions {
   keepInSonic: boolean;
@@ -25,25 +25,25 @@ export const useSwapBatch = ({
   ...swapParams
 }: Swap & ExtraDepositSwapBatchOptions) => {
   const dispatch = useAppDispatch();
-  const { sonicBalances } = useSwapStore();
+  const { sonicBalances } = useSwapCanisterStore();
 
   if (!sonicBalances) throw new Error('Sonic balance are required');
 
-  if (!swapParams.from.token || !swapParams.to.token)
+  if (!swapParams.from.metadata || !swapParams.to.metadata)
     throw new Error('Tokens are required');
 
   const navigate = useNavigate();
 
   const depositParams = {
-    token: swapParams.from.token,
+    token: swapParams.from.metadata,
     amount: getToDepositAmount(
-      sonicBalances[swapParams.from.token.id],
-      swapParams.from.token.decimals,
+      sonicBalances[swapParams.from.metadata.id],
+      swapParams.from.metadata.decimals,
       swapParams.from.value
     ),
   };
   const withdrawParams = {
-    token: swapParams.to.token,
+    token: swapParams.to.metadata,
     amount: swapParams.to.value,
   };
 
@@ -55,14 +55,14 @@ export const useSwapBatch = ({
   const transactions = useMemo(() => {
     let _transactions = {};
 
-    if (swapParams.from.token) {
-      const neededBalance = Number(parseFloat(depositParams.amount));
-      if (neededBalance > 0) {
-        _transactions = {
-          approve,
-          deposit,
-        };
-      }
+    if (swapParams.from.metadata) {
+      _transactions = {
+        ...getDepositTransactions({
+          approveTx: approve,
+          depositTx: deposit,
+          token: swapParams.from,
+        }),
+      };
     }
 
     _transactions = {
@@ -93,7 +93,7 @@ export const useSwapBatch = ({
             // Withdraw callback
             () => {
               navigate(
-                `/assets/withdraw?tokenId=${swapParams.from.token?.id}&amount=${swapParams.from.value}`
+                `/assets/withdraw?tokenId=${swapParams.from.metadata?.id}&amount=${swapParams.from.value}`
               );
               resolve(false);
             },
@@ -114,8 +114,8 @@ export const useSwapBatch = ({
     dispatch(
       modalsSliceActions.setSwapData({
         steps: Object.keys(transactions) as SwapModalDataStep[],
-        fromTokenSymbol: swapParams.from.token?.symbol,
-        toTokenSymbol: swapParams.to.token?.symbol,
+        fromTokenSymbol: swapParams.from.metadata?.symbol,
+        toTokenSymbol: swapParams.to.metadata?.symbol,
       })
     );
 

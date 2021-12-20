@@ -6,6 +6,7 @@ import { Activity, Assets, Liquidity, LiquidityAdd, Swap } from '@/views';
 
 import { EmptyMobile, Layout } from './components';
 import {
+  AddLiquidityProgressModal,
   SwapFailModal,
   SwapProgressModal,
   TokenSelectModal,
@@ -14,16 +15,18 @@ import {
 } from './components/modals';
 import { useActorsInit } from './integrations/actor/use-actors-init';
 import { usePlugInit } from './integrations/plug';
-import { useSwapInit } from './integrations/swap';
 import { AssetsDeposit } from './views/assets/views/deposit';
 import { AssetsWithdraw } from './views/assets/views/withdraw';
+import { useLiquidityViewInit, useSwapCanisterInit } from './store';
 
 export const App = () => {
   const isAnyMobileDevice = isMobile(window.navigator).any;
 
   usePlugInit();
   useActorsInit();
-  useSwapInit();
+  useSwapCanisterInit();
+
+  useLiquidityViewInit();
 
   // TODO: Remove after plug mobile connection
   if (isAnyMobileDevice) {
@@ -35,10 +38,12 @@ export const App = () => {
       <Layout>
         <NotificationManager />
 
-        <TokenSelectModal />
         <SwapProgressModal />
+        <SwapFailModal />
+        <TokenSelectModal />
         <WithdrawProgressModal />
         <DepositProgressModal />
+        <AddLiquidityProgressModal />
 
         <SwapFailModal />
 

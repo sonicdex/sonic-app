@@ -5,6 +5,6 @@ export * from './liquidity-view';
 export * from './modals';
 export * from './notification';
 export * from './plug';
-export * from './swap';
+export * from './swap-canister';
 export * from './swap-view';
 export * from './withdraw-view';
