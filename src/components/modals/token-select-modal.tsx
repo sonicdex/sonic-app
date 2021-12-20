@@ -4,7 +4,7 @@ import { useBalances } from '@/hooks/use-balances';
 import { TokenMetadata } from '@/models';
 import { modalsSliceActions, useAppDispatch, useModalsStore } from '@/store';
 import { theme } from '@/theme';
-import { deserialize, getCurrencyString } from '@/utils/format';
+import { deserialize } from '@/utils/format';
 import {
   Box,
   Flex,
@@ -17,11 +17,97 @@ import {
   Skeleton,
   Stack,
   Text,
+  Tooltip,
 } from '@chakra-ui/react';
 import { useEffect, useMemo, useState } from 'react';
-import { Button, SearchBar } from '..';
+import { Button, DisplayCurrency, SearchBar } from '..';
 
 import { ImportToken } from './components';
+
+type TokenSelectItemProps = Partial<{
+  balance: number;
+  onSelect: any;
+  name: string;
+  symbol: string;
+  decimals: number;
+  isSelected: boolean;
+  isLoading: boolean;
+  logoSrc: string;
+}>;
+
+const TokenSelectItem = ({
+  balance = 0,
+  onSelect,
+  name = '',
+  symbol = '',
+  decimals = 0,
+  isSelected = false,
+  isLoading = false,
+  logoSrc = questionMarkSrc,
+}: TokenSelectItemProps) => {
+  const tokenOpacity = isSelected ? 0.3 : 1;
+
+  console.log(logoSrc);
+
+  return (
+    <Flex
+      direction="row"
+      alignItems="center"
+      justifyContent="flex-start"
+      py={3}
+      px={3}
+      cursor="pointer"
+      width="100%"
+      transition="border 400ms"
+      border="1px solid transparent"
+      opacity={tokenOpacity}
+      borderRadius="20px"
+      onClick={onSelect}
+      _hover={{
+        border: !isSelected && '1px solid #4F4F4F',
+      }}
+      maxWidth="400px"
+    >
+      <Skeleton
+        isLoaded={!isLoading}
+        borderRadius={40}
+        minWidth="40px"
+        maxWidth="40px"
+      >
+        <Image src={logoSrc} w={10} h={10} borderRadius={40} />
+      </Skeleton>
+      <Skeleton isLoaded={!isLoading} minWidth="fit-content" ml={5}>
+        <Text fontWeight={700} fontSize="18px" pl={3} maxWidth="100%">
+          {symbol}
+        </Text>
+      </Skeleton>
+      <Skeleton isLoaded={!isLoading} flex={1} overflow="hidden">
+        <Tooltip label={name} openDelay={1000}>
+          <Text
+            pl={2}
+            whiteSpace="nowrap"
+            overflow="hidden"
+            textOverflow="ellipsis"
+            width="fit-content"
+            maxWidth="100%"
+          >
+            {name}
+          </Text>
+        </Tooltip>
+      </Skeleton>
+      <Skeleton isLoaded={!isLoading} minWidth="fit-content" ml={3}>
+        <DisplayCurrency
+          balance={balance}
+          decimals={decimals}
+          as="p"
+          fontSize="18px"
+          fontWeight={700}
+          textAlign="right"
+        />
+      </Skeleton>
+    </Flex>
+  );
+};
 
 export const TokenSelectModal = () => {
   const dispatch = useAppDispatch();
@@ -67,7 +153,7 @@ export const TokenSelectModal = () => {
   const handleSelect = (selected: boolean, tokenId?: string) => {
     if (selected) return;
     onSelect(tokenId);
-    dispatch(modalsSliceActions.closeTokenSelectModal());
+    handleTokenSelectClose();
   };
 
   const handleImportToken = (tokenData: any) => {
@@ -82,6 +168,7 @@ export const TokenSelectModal = () => {
   };
 
   const handleTokenSelectClose = () => {
+    setSearch('');
     dispatch(modalsSliceActions.closeTokenSelectModal());
   };
 
@@ -165,76 +252,21 @@ export const TokenSelectModal = () => {
               {isLoading && [...Array(4)].map(() => <SkeletonToken />)}
               {!isLoading &&
                 filteredList.map(
-                  ({
-                    id,
-                    logo = questionMarkSrc,
-                    symbol,
-                    name,
-                    decimals,
-                  }: Partial<TokenMetadata>) => {
-                    const currentTokenSymbol = symbol ?? '';
-                    const currentSelected =
-                      id && selectedTokenIds?.includes(id);
-                    const tokenOpacity = currentSelected ? 0.3 : 1;
-                    const currentBalances = getCurrencyString(
-                      id && totalBalances ? totalBalances[id] : 0,
-                      decimals
-                    );
-                    const logoSrc =
-                      DefaultTokensImage[currentTokenSymbol] ?? questionMarkSrc;
-
-                    return (
-                      <Flex
-                        direction="row"
-                        key={id}
-                        alignItems="center"
-                        py={3}
-                        px={3}
-                        cursor="pointer"
-                        justifyContent="space-between"
-                        width="100%"
-                        transition="border 400ms"
-                        border="1px solid transparent"
-                        opacity={tokenOpacity}
-                        borderRadius="20px"
-                        onClick={() => {
-                          handleSelect(currentSelected, id);
-                        }}
-                        _hover={{
-                          border: !currentSelected && '1px solid #4F4F4F',
-                        }}
-                      >
-                        <Flex direction="row" alignItems="center">
-                          <Skeleton isLoaded={!isLoading} borderRadius={40}>
-                            <Image
-                              src={logoSrc}
-                              w={10}
-                              h={10}
-                              borderRadius={40}
-                            />
-                          </Skeleton>
-                          <Skeleton isLoaded={!isLoading} minWidth={4} ml={3}>
-                            <Text fontWeight={700} fontSize="18px" pl={3}>
-                              {symbol}
-                            </Text>
-                          </Skeleton>
-                          <Skeleton isLoaded={!isLoading} minWidth={17} ml={2}>
-                            <Text pl={2}>{name}</Text>
-                          </Skeleton>
-                        </Flex>
-                        <Skeleton isLoaded={!isLoading} minWidth={17} ml={2}>
-                          <Text
-                            as="p"
-                            fontSize="18px"
-                            fontWeight={700}
-                            textAlign="right"
-                          >
-                            {currentBalances}
-                          </Text>
-                        </Skeleton>
-                      </Flex>
-                    );
-                  }
+                  ({ id, logo, symbol, decimals, name }: TokenMetadata) => (
+                    <TokenSelectItem
+                      key={id}
+                      balance={totalBalances && totalBalances[id]}
+                      symbol={symbol}
+                      decimals={decimals}
+                      name={name}
+                      onSelect={() =>
+                        handleSelect(id && selectedTokenIds?.includes(id), id)
+                      }
+                      isLoading={isLoading}
+                      isSelected={selectedTokenIds?.includes(id)}
+                      logoSrc={DefaultTokensImage[symbol] || logo}
+                    />
+                  )
                 )}
               {allowAddToken && filteredList.length === 0 && (
                 <Flex
