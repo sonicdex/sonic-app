@@ -289,3 +289,25 @@ export const formatAmount = (
     return '0';
   }
 };
+
+const fixStringEnding = (str: string) => {
+  return str.replace(/0+$/, '').replace(/\.$/, '');
+};
+
+export const getDisplayNumber = (value: string): string => {
+  const [nat = '0', decimals = '0'] = value.replace(/^0+/, '').split('.');
+  const thousands = Math.floor(Math.log10(Number(nat)));
+
+  if (thousands < 3) {
+    if (!nat && /^00/.test(decimals)) {
+      return `< 0.01`;
+    }
+    return fixStringEnding(`${nat || 0}.${decimals.slice(0, 2)}`);
+  } else if (thousands < 6) {
+    return fixStringEnding(`${nat.slice(0, -3)}.${nat.slice(-3, -1)}`) + 'k';
+  } else if (thousands < 9) {
+    return fixStringEnding(`${nat.slice(0, -6)}.${nat.slice(-6, -4)}`) + 'M';
+  } else {
+    return `> 999M`;
+  }
+};
