@@ -74,7 +74,7 @@ export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
         dispatch(modalsSliceActions.closeSwapProgressModal());
 
         addNotification({
-          title: `Swapped ${from.value} ${from.token?.symbol} for ${to.value} ${to.token?.symbol}`,
+          title: `Swapped ${from.value} ${from.metadata.symbol} for ${to.value} ${to.metadata.symbol}`,
           type: NotificationType.Success,
           id: Date.now().toString(),
           // TODO: add transaction id
@@ -87,7 +87,7 @@ export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
         dispatch(modalsSliceActions.clearSwapData());
 
         addNotification({
-          title: `Failed swapping ${from.value} ${from.token?.symbol} for ${to.value} ${to.token?.symbol}`,
+          title: `Failed swapping ${from.value} ${from.metadata.symbol} for ${to.value} ${to.metadata.symbol}`,
           type: NotificationType.Error,
           id: Date.now().toString(),
         });
