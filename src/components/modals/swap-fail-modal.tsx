@@ -3,17 +3,17 @@ import { Button, Modal, ModalOverlay } from '@chakra-ui/react';
 import { TransactionFailedModalContent } from './components';
 import { modalsSliceActions, useAppDispatch, useModalsStore } from '@/store';
 
-export const SwapProgressModal = () => {
+export const SwapFailModal = () => {
   const dispatch = useAppDispatch();
-  const { isSwapProgressOpened, swapData } = useModalsStore();
+  const { isSwapFailOpened, swapData } = useModalsStore();
   const { callbacks } = swapData;
 
   const handleClose = () => {
-    dispatch(modalsSliceActions.closeSwapProgressModal);
+    dispatch(modalsSliceActions.closeSwapFailModal());
   };
 
   return (
-    <Modal onClose={handleClose} isOpen={isSwapProgressOpened} isCentered>
+    <Modal onClose={handleClose} isOpen={isSwapFailOpened} isCentered>
       <ModalOverlay />
       <TransactionFailedModalContent title="Swap Failed">
         <Button

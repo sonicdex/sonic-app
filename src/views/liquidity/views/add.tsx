@@ -123,10 +123,11 @@ export const LiquidityAdd = () => {
   const handleAddLiquidity = () => {
     if (!isReviewing) {
       setIsReviewing(true);
+      return;
     }
 
     addNotification({
-      title: `Adding liquidity: ${token0.token?.symbol} + ${token1.token?.symbol}`,
+      title: `Adding liquidity: ${token0.metadata?.symbol} + ${token1.metadata?.symbol}`,
       type: NotificationType.AddLiquidity,
       id: String(new Date().getTime()),
     });
@@ -144,10 +145,10 @@ export const LiquidityAdd = () => {
     const token = dataKey === 'token0' ? token0 : token1;
 
     const value =
-      totalBalances && token.token
+      totalBalances && token.metadata
         ? getCurrencyString(
-            totalBalances[token.token?.id],
-            token.token?.decimals
+            totalBalances[token.metadata?.id],
+            token.metadata?.decimals
           )
         : '0.00';
 
@@ -199,12 +200,14 @@ export const LiquidityAdd = () => {
     dispatch(liquidityViewActions.setValue({ data: dataKey, value: amountIn }));
 
     if (
-      token0.token &&
-      token1.token &&
-      allPairs?.[token0.token.id]?.[token1.token.id]
+      token0.metadata &&
+      token1.metadata &&
+      allPairs?.[token0.metadata.id]?.[token1.metadata.id]
     ) {
       const decimalsOut =
-        dataKey === 'token0' ? token1.token?.decimals : token0.token?.decimals;
+        dataKey === 'token0'
+          ? token1.metadata?.decimals
+          : token0.metadata?.decimals;
 
       const lpValue = getAmountEqualLPToken({
         amountIn,
@@ -234,31 +237,37 @@ export const LiquidityAdd = () => {
 
   const [buttonDisabled, buttonMessage] = useMemo<[boolean, string]>(() => {
     if (isLoading) return [true, 'Loading'];
-    if (!token0.token || !token1.token) return [true, 'Select tokens'];
+    if (!token0.metadata || !token1.metadata) return [true, 'Select tokens'];
 
     const parsedToken0Value = (token0.value && parseFloat(token0.value)) || 0;
     const parsedToken1Value = (token1.value && parseFloat(token1.value)) || 0;
 
     if (parsedToken0Value <= 0)
-      return [true, `No ${token0.token.name} value selected`];
+      return [true, `No ${token0.metadata.name} value selected`];
 
     if (parsedToken1Value <= 0)
-      return [true, `No ${token1.token.name} value selected`];
+      return [true, `No ${token1.metadata.name} value selected`];
 
     if (totalBalances) {
       const parsedToken0Balance = parseFloat(
-        formatAmount(totalBalances[token0.token.id], token0.token.decimals)
+        formatAmount(
+          totalBalances[token0.metadata.id],
+          token0.metadata.decimals
+        )
       );
       const parsedToken1Balance = parseFloat(
-        formatAmount(totalBalances[token1.token.id], token1.token.decimals)
+        formatAmount(
+          totalBalances[token1.metadata.id],
+          token1.metadata.decimals
+        )
       );
 
       if (parsedToken0Value > parsedToken0Balance) {
-        return [true, `Insufficient ${token0.token.name} Balance`];
+        return [true, `Insufficient ${token0.metadata.name} Balance`];
       }
 
       if (parsedToken1Balance > parsedToken1Balance) {
-        return [true, `Insufficient ${token1.token.name} Balance`];
+        return [true, `Insufficient ${token1.metadata.name} Balance`];
       }
     }
 
@@ -268,25 +277,25 @@ export const LiquidityAdd = () => {
 
   const selectedTokenIds = useMemo(() => {
     let selectedIds = [];
-    if (token0?.token?.id) selectedIds.push(token0.token.id);
-    if (token1?.token?.id) selectedIds.push(token1.token.id);
+    if (token0?.metadata?.id) selectedIds.push(token0.metadata.id);
+    if (token1?.metadata?.id) selectedIds.push(token1.metadata.id);
 
     return selectedIds;
-  }, [token0?.token?.id, token1?.token?.id]);
+  }, [token0?.metadata?.id, token1?.metadata?.id]);
 
   const pairData = useMemo(() => {
-    if (allPairs && token0.token && token1.token) {
-      return allPairs[token0.token.id][token1.token.id];
+    if (allPairs && token0.metadata && token1.metadata) {
+      return allPairs[token0.metadata.id][token1.metadata.id];
     }
     return undefined;
-  }, [allPairs, token0.token, token1.token]);
+  }, [allPairs, token0.metadata, token1.metadata]);
 
   const liquidityAmounts = useMemo(() => {
     if (
       Number(token0.value) &&
       Number(token1.value) &&
-      token0.token?.decimals &&
-      token1.token?.decimals
+      token0.metadata?.decimals &&
+      token1.metadata?.decimals
     ) {
       if (pair) {
         const getAmountLPOptions = {
@@ -299,8 +308,8 @@ export const LiquidityAdd = () => {
 
         const getPercentageLPOptions = {
           ...getAmountLPOptions,
-          token0Decimals: token0.token?.decimals,
-          token1Decimals: token1.token?.decimals,
+          token0Decimals: token0.metadata?.decimals,
+          token1Decimals: token1.metadata?.decimals,
         };
 
         const value = getAmountLP(getAmountLPOptions);
@@ -325,16 +334,16 @@ export const LiquidityAdd = () => {
 
   const { token0Price, token1Price, token0USDPrice, token1USDPrice } =
     useMemo(() => {
-      if (token0.token && token1.token) {
+      if (token0.metadata && token1.metadata) {
         if (pairData && pairData.reserve0 && pairData.reserve1) {
           const token0Price = new BigNumber(String(pairData.reserve0))
             .div(new BigNumber(String(pairData.reserve1)))
-            .dp(Number(token0.token.decimals))
+            .dp(Number(token0.metadata.decimals))
             .toFixed(3);
 
           const token1Price = new BigNumber(String(pairData.reserve1))
             .div(new BigNumber(String(pairData.reserve0)))
-            .dp(Number(token1.token.decimals))
+            .dp(Number(token1.metadata.decimals))
             .toFixed(3);
 
           return {
@@ -344,13 +353,13 @@ export const LiquidityAdd = () => {
             token1USDPrice: '0.00',
           };
         } else {
-          const token0Value = new BigNumber(token0.value)
-            .div(new BigNumber(token1.value))
-            .dp(token0.token?.decimals)
-            .toString();
-          const token1Value = new BigNumber(token1.value)
+          const token0Value = new BigNumber(token1.value)
             .div(new BigNumber(token0.value))
-            .dp(token1.token?.decimals)
+            .dp(token0.metadata?.decimals)
+            .toString();
+          const token1Value = new BigNumber(token0.value)
+            .div(new BigNumber(token1.value))
+            .dp(token1.metadata?.decimals)
             .toString();
 
           return {
@@ -407,18 +416,18 @@ export const LiquidityAdd = () => {
             value={token0.value}
             setValue={(value) => setTokenValueAndLPTokenValue('token0', value)}
             tokenListMetadata={supportedTokenList}
-            tokenMetadata={token0.token}
+            tokenMetadata={token0.metadata}
             isDisabled={isReviewing}
             price={token0USDPrice}
             sources={getAppAssetsSources({
               balances: {
                 plug:
-                  token0.token && tokenBalances
-                    ? tokenBalances[token0.token.id]
+                  token0.metadata && tokenBalances
+                    ? tokenBalances[token0.metadata.id]
                     : 0,
                 sonic:
-                  token0.token && sonicBalances
-                    ? sonicBalances[token0.token.id]
+                  token0.metadata && sonicBalances
+                    ? sonicBalances[token0.metadata.id]
                     : 0,
               },
             })}
@@ -459,18 +468,18 @@ export const LiquidityAdd = () => {
             value={token1.value}
             setValue={(value) => setTokenValueAndLPTokenValue('token1', value)}
             tokenListMetadata={supportedTokenList}
-            tokenMetadata={token1.token}
+            tokenMetadata={token1.metadata}
             isDisabled={isReviewing}
             price={token1USDPrice}
             sources={getAppAssetsSources({
               balances: {
                 plug:
-                  token1.token && tokenBalances
-                    ? tokenBalances[token1.token.id]
+                  token1.metadata && tokenBalances
+                    ? tokenBalances[token1.metadata.id]
                     : 0,
                 sonic:
-                  token1.token && sonicBalances
-                    ? sonicBalances[token1.token.id]
+                  token1.metadata && sonicBalances
+                    ? sonicBalances[token1.metadata.id]
                     : 0,
               },
             })}
@@ -501,19 +510,19 @@ export const LiquidityAdd = () => {
           py={2}
           borderRadius="full"
           w="fit-content"
-          mt={-4}
-          mb={-4}
+          mt={-3}
+          mb={-3}
           zIndex={1200}
           bg={isReviewing ? '#3D52F4' : '#1E1E1E'}
           border={`1px solid ${isReviewing ? '#3D52F4' : '#373737'}`}
         >
           <LPImageBlock
             size="sm"
-            imageSources={[token0.token?.logo, token1.token?.logo]}
+            imageSources={[token0.metadata?.logo, token1.metadata?.logo]}
           />
 
           <Text fontWeight="bold">
-            {token0.token?.symbol} - {token1.token?.symbol}
+            {token0.metadata?.symbol} - {token1.metadata?.symbol}
           </Text>
         </Stack>
 
@@ -528,13 +537,13 @@ export const LiquidityAdd = () => {
               </Box>
               <Box textAlign="center">
                 <Text color="gray.300">
-                  {token1.token?.symbol} per {token0.token?.symbol}
+                  {token1.metadata?.symbol} per {token0.metadata?.symbol}
                 </Text>
                 <Text>{token0Price}</Text>
               </Box>
               <Box textAlign="right">
                 <Text color="gray.300">
-                  {token0.token?.symbol} per {token1.token?.symbol}
+                  {token0.metadata?.symbol} per {token1.metadata?.symbol}
                 </Text>
                 <Text>{token1Price}</Text>
               </Box>

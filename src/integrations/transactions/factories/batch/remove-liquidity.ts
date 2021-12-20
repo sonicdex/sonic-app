@@ -32,8 +32,8 @@ export const useRemoveLiquidityBatch = ({
   }
 
   if (
-    !removeLiquidityParams.token0.token ||
-    !removeLiquidityParams.token1.token
+    !removeLiquidityParams.token0.metadata ||
+    !removeLiquidityParams.token1.metadata
   ) {
     throw new Error('Tokens are required');
   }
@@ -41,7 +41,7 @@ export const useRemoveLiquidityBatch = ({
   const navigate = useNavigate();
 
   const withdrawParams = {
-    token: removeLiquidityParams.token1.token,
+    token: removeLiquidityParams.token1.metadata,
     amount: removeLiquidityParams.token1.value,
   };
 
@@ -78,7 +78,7 @@ export const useRemoveLiquidityBatch = ({
             // Not retry callback
             () => {
               navigate(
-                `/assets/withdraw?tokenId=${removeLiquidityParams.token0.token?.id}&amount=${removeLiquidityParams.token0.value}`
+                `/assets/withdraw?tokenId=${removeLiquidityParams.token0.metadata?.id}&amount=${removeLiquidityParams.token0.value}`
               );
               resolve(false);
             },
@@ -93,8 +93,8 @@ export const useRemoveLiquidityBatch = ({
     dispatch(
       modalsSliceActions.setRemoveLiquidityData({
         steps: Object.keys(transactions) as RemoveLiquidityModalDataStep[],
-        token0Symbol: removeLiquidityParams.token0.token?.symbol,
-        token1Symbol: removeLiquidityParams.token1.token?.symbol,
+        token0Symbol: removeLiquidityParams.token0.metadata?.symbol,
+        token1Symbol: removeLiquidityParams.token1.metadata?.symbol,
       })
     );
 

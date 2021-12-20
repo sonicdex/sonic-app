@@ -26,11 +26,11 @@ const initialState: SwapViewState = {
   step: SwapStep?.Home,
   state: FeatureState?.Idle,
   from: {
-    token: undefined,
+    metadata: undefined,
     value: '0.00',
   },
   to: {
-    token: undefined,
+    metadata: undefined,
     value: '0.00',
   },
   tokenList: undefined,
@@ -63,31 +63,31 @@ export const swapViewSlice = createSlice({
         tokenId: string | undefined;
       }>
     ) => {
-      state[action.payload.data].token =
+      state[action.payload.data].metadata =
         action.payload.tokenId && state.tokenList
           ? state.tokenList[action.payload.tokenId]
           : undefined;
       if (action.payload.data === 'from') {
         state.from.value = '0.00';
         state.to.value = '0.00';
-        state.to.token = undefined;
+        state.to.metadata = undefined;
       }
       state.step = SwapStep.Home;
     },
     switchTokens: (state) => {
-      if (state.from.token && state.to.token) {
-        const temp = state.from.token;
-        state.from.token = state.to.token;
-        state.to.token = temp;
+      if (state.from.metadata && state.to.metadata) {
+        const temp = state.from.metadata;
+        state.from.metadata = state.to.metadata;
+        state.to.metadata = temp;
         state.step = SwapStep.Home;
       }
     },
     setTokenList: (state, action: PayloadAction<TokenMetadataList>) => {
       state.tokenList = action.payload;
       const tokens = Object.values(action.payload);
-      if (!state.from.token) {
+      if (!state.from.metadata) {
         // TODO: set default token
-        state.from.token = tokens[0];
+        state.from.metadata = tokens[0];
         state.from.value = '0.00';
         state.to.value = '0.00';
       }

@@ -38,7 +38,7 @@ export const SwapReviewStep = () => {
 
   const handleApproveSwap = () => {
     addNotification({
-      title: `Swapping ${from.token?.symbol} for ${to.token?.symbol}`,
+      title: `Swapping ${from.metadata?.symbol} for ${to.metadata?.symbol}`,
       type: NotificationType.Swap,
       id: String(new Date().getTime()),
     });
@@ -53,8 +53,11 @@ export const SwapReviewStep = () => {
       swapViewActions.setValue({
         data: 'to',
         value:
-          totalBalances && to.token
-            ? getCurrencyString(totalBalances[to.token?.id], to.token?.decimals)
+          totalBalances && to.metadata
+            ? getCurrencyString(
+                totalBalances[to.metadata?.id],
+                to.metadata?.decimals
+              )
             : '0.00',
       })
     );
@@ -75,17 +78,17 @@ export const SwapReviewStep = () => {
               dispatch(swapViewActions.setValue({ data: 'from', value }))
             }
             tokenListMetadata={fromTokenOptions}
-            tokenMetadata={from.token}
+            tokenMetadata={from.metadata}
             price={0}
             sources={getAppAssetsSources({
               balances: {
                 plug:
-                  from.token && tokenBalances
-                    ? tokenBalances[from.token.id]
+                  from.metadata && tokenBalances
+                    ? tokenBalances[from.metadata.id]
                     : 0,
                 sonic:
-                  from.token && sonicBalances
-                    ? sonicBalances[from.token.id]
+                  from.metadata && sonicBalances
+                    ? sonicBalances[from.metadata.id]
                     : 0,
               },
             })}
@@ -124,14 +127,18 @@ export const SwapReviewStep = () => {
               dispatch(swapViewActions.setValue({ data: 'to', value }))
             }
             tokenListMetadata={toTokenOptions}
-            tokenMetadata={to.token}
+            tokenMetadata={to.metadata}
             price={0}
             sources={getAppAssetsSources({
               balances: {
                 plug:
-                  to.token && tokenBalances ? tokenBalances[to.token.id] : 0,
+                  to.metadata && tokenBalances
+                    ? tokenBalances[to.metadata.id]
+                    : 0,
                 sonic:
-                  to.token && sonicBalances ? sonicBalances[to.token.id] : 0,
+                  to.metadata && sonicBalances
+                    ? sonicBalances[to.metadata.id]
+                    : 0,
               },
             })}
             shouldGlow

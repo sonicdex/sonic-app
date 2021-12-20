@@ -45,40 +45,47 @@ export const SwapHomeStep = () => {
   const { totalBalances } = useBalances();
 
   const isLoading = useMemo(() => {
-    if (!from.token) return true;
+    if (!from.metadata) return true;
     return false;
-  }, [totalBalances, from.token]);
+  }, [totalBalances, from.metadata]);
 
   const [buttonDisabled, buttonMessage] = useMemo<[boolean, string]>(() => {
     if (isLoading) return [true, 'Loading'];
-    if (!from.token) throw new Error('State is loading');
-    if (!to.token) return [true, 'Select the token'];
+    if (!from.metadata) throw new Error('State is loading');
+    if (!to.metadata) return [true, 'Select the token'];
 
     const parsedFromValue = (from.value && parseFloat(from.value)) || 0;
 
     if (parsedFromValue <= 0)
-      return [true, `No ${from.token.name} value selected`];
+      return [true, `No ${from.metadata.name} value selected`];
 
     if (totalBalances) {
       const parsedBalance = parseFloat(
-        formatAmount(totalBalances[from.token.id], from.token.decimals)
+        formatAmount(totalBalances[from.metadata.id], from.metadata.decimals)
       );
 
       if (parsedFromValue > parsedBalance) {
-        return [true, `Insufficient ${from.token.name} Balance`];
+        return [true, `Insufficient ${from.metadata.name} Balance`];
       }
     }
 
     return [false, 'Review Swap'];
-  }, [isLoading, totalBalances, from.token, to.token, from.value, to.value]);
+  }, [
+    isLoading,
+    totalBalances,
+    from.metadata,
+    to.metadata,
+    from.value,
+    to.value,
+  ]);
 
   const selectedTokenIds = useMemo(() => {
     let selectedIds = [];
-    if (from?.token?.id) selectedIds.push(from.token.id);
-    if (to?.token?.id) selectedIds.push(to.token.id);
+    if (from?.metadata?.id) selectedIds.push(from.metadata.id);
+    if (to?.metadata?.id) selectedIds.push(to.metadata.id);
 
     return selectedIds;
-  }, [from?.token?.id, to?.token?.id]);
+  }, [from?.metadata?.id, to?.metadata?.id]);
 
   const handleButtonOnClick = () => {
     if (isLoading) return;
@@ -95,10 +102,10 @@ export const SwapHomeStep = () => {
       swapViewActions.setValue({
         data: 'from',
         value:
-          totalBalances && from.token
+          totalBalances && from.metadata
             ? getCurrencyString(
-                totalBalances[from.token?.id],
-                from.token?.decimals
+                totalBalances[from.metadata?.id],
+                from.metadata?.decimals
               )
             : '0.00',
       })
@@ -162,18 +169,18 @@ export const SwapHomeStep = () => {
               dispatch(swapViewActions.setValue({ data: 'from', value }))
             }
             tokenListMetadata={fromTokenOptions}
-            tokenMetadata={from.token}
+            tokenMetadata={from.metadata}
             isLoading={isLoading}
             price={0}
             sources={getAppAssetsSources({
               balances: {
                 plug:
-                  from.token && tokenBalances
-                    ? tokenBalances[from.token.id]
+                  from.metadata && tokenBalances
+                    ? tokenBalances[from.metadata.id]
                     : 0,
                 sonic:
-                  from.token && sonicBalances
-                    ? sonicBalances[from.token.id]
+                  from.metadata && sonicBalances
+                    ? sonicBalances[from.metadata.id]
                     : 0,
               },
             })}
@@ -218,16 +225,20 @@ export const SwapHomeStep = () => {
               dispatch(swapViewActions.setValue({ data: 'to', value }))
             }
             tokenListMetadata={toTokenOptions}
-            tokenMetadata={to.token}
+            tokenMetadata={to.metadata}
             isLoading={isLoading}
             price={0}
             isDisabled={true}
             sources={getAppAssetsSources({
               balances: {
                 plug:
-                  to.token && tokenBalances ? tokenBalances[to.token.id] : 0,
+                  to.metadata && tokenBalances
+                    ? tokenBalances[to.metadata.id]
+                    : 0,
                 sonic:
-                  to.token && sonicBalances ? sonicBalances[to.token.id] : 0,
+                  to.metadata && sonicBalances
+                    ? sonicBalances[to.metadata.id]
+                    : 0,
               },
             })}
           >

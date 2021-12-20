@@ -38,9 +38,13 @@ export const AddLiquidityLink: React.FC<AddLiquidityLinkProps> = ({ id }) => {
 
   const handleStateChange = () => {
     switch (addLiquidityBatch.state) {
-      case 'approve':
-      case 'deposit':
-        dispatch(modalsSliceActions.setAddLiquidityData({ step: 'deposit' }));
+      case 'approve0':
+      case 'deposit0':
+        dispatch(modalsSliceActions.setAddLiquidityData({ step: 'deposit0' }));
+        break;
+      case 'approve1':
+      case 'deposit1':
+        dispatch(modalsSliceActions.setAddLiquidityData({ step: 'deposit1' }));
         break;
       case 'addLiquidity':
         dispatch(

@@ -5,7 +5,12 @@ import { NotificationManager } from '@/notifications';
 import { Activity, Assets, Liquidity, LiquidityAdd, Swap } from '@/views';
 
 import { EmptyMobile, Layout } from './components';
-import { SwapProgressModal, TokenSelectModal } from './components/modals';
+import {
+  AddLiquidityProgressModal,
+  SwapFailModal,
+  SwapProgressModal,
+  TokenSelectModal,
+} from './components/modals';
 import { useActorsInit } from './integrations/actor/use-actors-init';
 import { usePlugInit } from './integrations/plug';
 import { AssetsDeposit } from './views/assets/views/deposit';
@@ -33,10 +38,12 @@ export const App = () => {
       <Layout>
         <NotificationManager />
 
-        <TokenSelectModal />
         <SwapProgressModal />
+        <SwapFailModal />
+        <TokenSelectModal />
         <WithdrawProgressModal />
         <DepositProgressModal />
+        <AddLiquidityProgressModal />
 
         <Routes>
           <Route path="/swap" element={<Swap />} />

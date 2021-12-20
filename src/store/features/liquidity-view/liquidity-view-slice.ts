@@ -22,11 +22,11 @@ const initialState: LiquidityViewState = {
   pairState: 'idle' as FeatureState,
   state: 'idle' as FeatureState,
   token0: {
-    token: undefined,
+    metadata: undefined,
     value: '0.00',
   },
   token1: {
-    token: undefined,
+    metadata: undefined,
     value: '0.00',
   },
   slippage: INITIAL_LIQUIDITY_SLIPPAGE,
@@ -57,7 +57,7 @@ export const liquidityViewSlice = createSlice({
         token?: TokenMetadata;
       }>
     ) => {
-      state[action.payload.data].token = action.payload.token;
+      state[action.payload.data].metadata = action.payload.token;
     },
     setPair: (state, action: PayloadAction<Pair | undefined>) => {
       state.pair = action.payload;

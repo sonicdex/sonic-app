@@ -7,7 +7,7 @@ export const useSwapViewStore = () => {
   const { allPairs } = useSwapCanisterStore();
 
   const [fromTokenOptions, toTokenOptions] = useMemo(() => {
-    if (!state.from.token || !state.tokenList) return [[], []];
+    if (!state.from.metadata || !state.tokenList) return [[], []];
 
     const tokenOptions = Object.values(state.tokenList);
 
@@ -17,12 +17,12 @@ export const useSwapViewStore = () => {
       tokenOptions,
       tokenOptions.filter((token) =>
         Boolean(
-          allPairs![state.from.token!.id] &&
-            allPairs![state.from.token!.id][token.id]
+          allPairs![state.from.metadata!.id] &&
+            allPairs![state.from.metadata!.id][token.id]
         )
       ),
     ];
-  }, [state.tokenList, state.from.token, allPairs]);
+  }, [state.tokenList, state.from.metadata, allPairs]);
 
   return {
     ...state,
