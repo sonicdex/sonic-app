@@ -26,7 +26,20 @@ import {
 } from '@/store';
 import { getCurrencyString } from '@/utils/format';
 import { debounce } from '@/utils/function';
-import { Box, Checkbox, Flex, FormControl, Image } from '@chakra-ui/react';
+import {
+  Box,
+  Checkbox,
+  Flex,
+  FormControl,
+  Image,
+  Link,
+  Popover,
+  PopoverArrow,
+  PopoverBody,
+  PopoverContent,
+  PopoverTrigger,
+  Portal,
+} from '@chakra-ui/react';
 
 export const SwapReviewStep = () => {
   const { sonicBalances, tokenBalances } = useSwapCanisterStore();
@@ -67,7 +80,6 @@ export const SwapReviewStep = () => {
     <>
       <TitleBox
         title="Swap"
-        settings="sd"
         onArrowBack={() => dispatch(swapViewActions.setStep(SwapStep.Home))}
       />
       <Flex direction="column" alignItems="center" mb={5}>
@@ -183,12 +195,37 @@ export const SwapReviewStep = () => {
             Keep tokens in Sonic after swap
           </Checkbox>
         </FormControl>
-        <Image
-          src={infoSrc}
-          width={5}
-          transition="opacity 200ms"
-          opacity={keepInSonic ? 1 : 0.5}
-        />
+        <Popover trigger="hover">
+          <PopoverTrigger>
+            <Image
+              src={infoSrc}
+              width={5}
+              transition="opacity 200ms"
+              opacity={keepInSonic ? 1 : 0.5}
+            />
+          </PopoverTrigger>
+          <Portal>
+            <PopoverContent
+              p={2}
+              bgColor="#292929"
+              border="none"
+              borderRadius={20}
+            >
+              <PopoverArrow bgColor="#292929" border="none" />
+              <PopoverBody display="inline-block">
+                Keeping tokens in Sonic (instead of withdrawing to Plug) is good
+                for high frequency trading where a few extra seconds matters a
+                lot. By doing this you can skip the deposit step on your next
+                trade and save the 2-3 extra seconds.&nbsp;
+                <Link href="/#" color="#3D52F4">
+                  {/* TODO: add correct href */}
+                  Learn More
+                </Link>
+                .
+              </PopoverBody>
+            </PopoverContent>
+          </Portal>
+        </Popover>
       </Flex>
       <Button isFullWidth size="lg" onClick={handleApproveSwap}>
         Confirm Swap

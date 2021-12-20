@@ -56,22 +56,28 @@ export const SlippageSettings = ({
             content: '"%"',
             fontWeight: 600,
             fontSize: '14px',
-            marginLeft: '-25px',
+            ml: 1,
+            mr: 4,
           }}
           onClick={handleInputClick}
+          borderColor={inputBorderColor}
+          borderStyle="solid"
+          borderWidth="1px"
+          borderRadius="full"
+          display="inline-block"
         >
           <NumberInput
             value={slippage}
             setValue={setSlippage}
+            ml={4}
             py={2.5}
             px={2.5}
             fontSize="sm"
             fontWeight={600}
             color={inputColor}
-            borderColor={inputBorderColor}
-            borderStyle="solid"
-            borderWidth="1px"
             borderRadius="full"
+            margin-right="25px"
+            w="unset"
           />
         </Box>
       </Flex>

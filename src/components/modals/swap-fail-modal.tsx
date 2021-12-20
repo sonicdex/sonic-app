@@ -6,9 +6,11 @@ import { modalsSliceActions, useAppDispatch, useModalsStore } from '@/store';
 export const SwapFailModal = () => {
   const dispatch = useAppDispatch();
   const { isSwapFailOpened, swapData } = useModalsStore();
-  const { callbacks } = swapData;
+  const { callbacks: [retryCallback, withdrawCallback, closeCallback] = [] } =
+    swapData;
 
   const handleClose = () => {
+    if (closeCallback) closeCallback();
     dispatch(modalsSliceActions.closeSwapFailModal());
   };
 
@@ -20,8 +22,8 @@ export const SwapFailModal = () => {
           borderRadius={12}
           fontWeight={700}
           fontSize={18}
-          onClick={callbacks?.[0]}
-          width="100%"
+          onClick={retryCallback}
+          isFullWidth
           mb={4}
         >
           Retry Swap
@@ -30,8 +32,8 @@ export const SwapFailModal = () => {
           borderRadius={12}
           fontWeight={700}
           fontSize={18}
-          onClick={callbacks?.[1]}
-          width="100%"
+          onClick={withdrawCallback}
+          isFullWidth
           isWireframe
         >
           Withdraw to Plug

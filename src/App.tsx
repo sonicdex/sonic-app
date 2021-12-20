@@ -10,13 +10,13 @@ import {
   SwapFailModal,
   SwapProgressModal,
   TokenSelectModal,
+  WithdrawProgressModal,
+  DepositProgressModal,
 } from './components/modals';
 import { useActorsInit } from './integrations/actor/use-actors-init';
 import { usePlugInit } from './integrations/plug';
 import { AssetsDeposit } from './views/assets/views/deposit';
 import { AssetsWithdraw } from './views/assets/views/withdraw';
-import { WithdrawProgressModal } from './components/modals/withdraw-modal';
-import { DepositProgressModal } from './components/modals/deposit-modal';
 import { useLiquidityViewInit, useSwapCanisterInit } from './store';
 
 export const App = () => {
@@ -44,6 +44,8 @@ export const App = () => {
         <WithdrawProgressModal />
         <DepositProgressModal />
         <AddLiquidityProgressModal />
+
+        <SwapFailModal />
 
         <Routes>
           <Route path="/swap" element={<Swap />} />
