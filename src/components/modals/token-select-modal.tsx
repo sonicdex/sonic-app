@@ -19,7 +19,7 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { useEffect, useMemo, useState } from 'react';
-import { Button, DisplayNumber, SearchBar } from '..';
+import { Button, DisplayCurrency, SearchBar } from '..';
 
 import { ImportToken } from './components';
 
@@ -78,7 +78,7 @@ const TokenSelectItem = ({
         </Skeleton>
       </Flex>
       <Skeleton isLoaded={!isLoading} minWidth={17} ml={2}>
-        <DisplayNumber
+        <DisplayCurrency
           balance={balance}
           decimals={decimals}
           as="p"

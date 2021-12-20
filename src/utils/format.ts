@@ -294,8 +294,8 @@ const fixStringEnding = (str: string) => {
   return str.replace(/0+$/, '').replace(/\.$/, '');
 };
 
-export const getDisplayNumber = (value: string): string => {
-  const [nat = '0', decimals = '0'] = value.replace(/^0+/, '').split('.');
+export const getDisplayCurrency = (currency: string): string => {
+  const [nat = '0', decimals = '0'] = currency.replace(/^0+/, '').split('.');
   const thousands = Math.floor(Math.log10(Number(nat)));
 
   if (thousands < 3) {

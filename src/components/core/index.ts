@@ -15,4 +15,4 @@ export * from './slippage-settings';
 export * from './title-box';
 export * from './toggle';
 export * from './token';
-export * from './display-number';
+export * from './display-currency';

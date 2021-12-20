@@ -15,6 +15,7 @@ import {
   AssetIconButton,
   AssetImageBlock,
   AssetTitleBlock,
+  DisplayCurrency,
   Header,
   InformationBox,
   PlugButton,
@@ -25,7 +26,6 @@ import { theme } from '@/theme';
 import { FaMinus, FaPlus } from 'react-icons/fa';
 import { questionMarkSrc } from '@/assets';
 import { useBalances } from '@/hooks/use-balances';
-import { getCurrencyString } from '@/utils/format';
 
 export const Assets = () => {
   const { totalBalances } = useBalances();
@@ -144,9 +144,11 @@ export const Assets = () => {
                     <Text fontWeight="bold" color="gray.400">
                       Amount
                     </Text>
-                    <Text fontWeight="bold">
-                      {getCurrencyString(totalBalances?.[id], decimals)}
-                    </Text>
+                    <DisplayCurrency
+                      balance={totalBalances?.[id]}
+                      decimals={decimals}
+                      fontWeight="bold"
+                    />
                   </Box>
                   <Box>
                     <Text fontWeight="bold" color="gray.400">
