@@ -17,6 +17,7 @@ import {
   Skeleton,
   Stack,
   Text,
+  Tooltip,
 } from '@chakra-ui/react';
 import { useEffect, useMemo, useState } from 'react';
 import { Button, DisplayCurrency, SearchBar } from '..';
@@ -50,10 +51,10 @@ const TokenSelectItem = ({
     <Flex
       direction="row"
       alignItems="center"
+      justifyContent="flex-start"
       py={3}
       px={3}
       cursor="pointer"
-      justifyContent="space-between"
       width="100%"
       transition="border 400ms"
       border="1px solid transparent"
@@ -63,21 +64,36 @@ const TokenSelectItem = ({
       _hover={{
         border: !isSelected && '1px solid #4F4F4F',
       }}
+      maxWidth="400px"
     >
-      <Flex direction="row" alignItems="center" maxWidth={400}>
-        <Skeleton isLoaded={!isLoading} borderRadius={40}>
-          <Image src={logoSrc} w={10} h={10} borderRadius={40} />
-        </Skeleton>
-        <Skeleton isLoaded={!isLoading} minWidth={4} ml={3}>
-          <Text fontWeight={700} fontSize="18px" pl={3}>
-            {symbol}
+      <Skeleton
+        isLoaded={!isLoading}
+        borderRadius={40}
+        minWidth="40px"
+        maxWidth="40px"
+      >
+        <Image src={logoSrc} w={10} h={10} borderRadius={40} />
+      </Skeleton>
+      <Skeleton isLoaded={!isLoading} minWidth="fit-content" ml={5}>
+        <Text fontWeight={700} fontSize="18px" pl={3} maxWidth="100%">
+          {symbol}
+        </Text>
+      </Skeleton>
+      <Skeleton isLoaded={!isLoading} flex={1} overflow="hidden">
+        <Tooltip label={name} openDelay={1000}>
+          <Text
+            pl={2}
+            whiteSpace="nowrap"
+            overflow="hidden"
+            textOverflow="ellipsis"
+            width="fit-content"
+            maxWidth="100%"
+          >
+            {name}
           </Text>
-        </Skeleton>
-        <Skeleton isLoaded={!isLoading} minWidth={17} ml={2}>
-          <Text pl={2}>{name}</Text>
-        </Skeleton>
-      </Flex>
-      <Skeleton isLoaded={!isLoading} minWidth={17} ml={2}>
+        </Tooltip>
+      </Skeleton>
+      <Skeleton isLoaded={!isLoading} minWidth="fit-content" ml={3}>
         <DisplayCurrency
           balance={balance}
           decimals={decimals}
