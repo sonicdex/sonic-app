@@ -79,6 +79,7 @@ export const swapViewSlice = createSlice({
         const temp = state.from.metadata;
         state.from.metadata = state.to.metadata;
         state.to.metadata = temp;
+        state.from.value = '';
         state.step = SwapStep.Home;
       }
     },
