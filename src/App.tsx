@@ -42,7 +42,6 @@ export const App = () => {
 
         <RemoveLiquidityModal />
         <SwapProgressModal />
-        <SwapFailModal />
         <TokenSelectModal />
         <WithdrawProgressModal />
         <DepositProgressModal />

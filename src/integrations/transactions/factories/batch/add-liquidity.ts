@@ -17,6 +17,10 @@ import {
 import { AddLiquidity, Batch, Deposit } from '../..';
 import { getDepositTransactions, getToDepositAmount } from './utils';
 
+interface Transactions {
+  [transactionName: string]: any;
+}
+
 export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
   const dispatch = useAppDispatch();
   const { sonicBalances } = useSwapCanisterStore();
@@ -69,7 +73,7 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
   const addLiquidity = useMemorizedAddLiquidityTransaction(addLiquidityParams);
 
   const transactions = useMemo(() => {
-    let _transactions = {};
+    let _transactions: Transactions = {};
 
     if (addLiquidityParams.token0.metadata) {
       _transactions = {
@@ -111,9 +115,11 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
             },
             // Not retry callback
             () => {
-              navigate(
-                `/assets/withdraw?tokenId=${addLiquidityParams.token0.metadata?.id}&amount=${addLiquidityParams.token0.value}`
-              );
+              if (transactions.deposit) {
+                navigate(
+                  `/assets/withdraw?tokenId=${addLiquidityParams.token0.metadata?.id}&amount=${addLiquidityParams.token0.value}`
+                );
+              }
               resolve(false);
             },
           ],

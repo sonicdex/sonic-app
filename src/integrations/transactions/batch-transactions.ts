@@ -102,6 +102,8 @@ export class BatchTransactions implements Batch.Controller {
             this.finishPromise(false, error);
           }
         });
+      } else {
+        this.finishPromise(false, error);
       }
     });
   }

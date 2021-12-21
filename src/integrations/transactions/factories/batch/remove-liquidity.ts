@@ -4,9 +4,8 @@ import {
   useAppDispatch,
   useSwapCanisterStore,
 } from '@/store';
-
 import { useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+
 import {
   useBatchHook,
   useMemorizedWithdrawTransaction,
@@ -35,8 +34,6 @@ export const useRemoveLiquidityBatch = ({
   ) {
     throw new Error('Tokens are required');
   }
-
-  const navigate = useNavigate();
 
   const withdrawParams = {
     token: removeLiquidityParams.token1.metadata,
@@ -75,14 +72,13 @@ export const useRemoveLiquidityBatch = ({
             },
             // Not retry callback
             () => {
-              navigate(
-                `/assets/withdraw?tokenId=${removeLiquidityParams.token0.metadata?.id}&amount=${removeLiquidityParams.token0.value}`
-              );
+              modalsSliceActions.closeRemoveLiquidityModal();
               resolve(false);
             },
           ],
         })
       );
+      resolve(false);
       dispatch(modalsSliceActions.openRemoveLiquidityFailModal());
     });
   };

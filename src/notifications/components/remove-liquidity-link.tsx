@@ -10,7 +10,7 @@ import {
   usePlugStore,
   useSwapCanisterStore,
 } from '@/store';
-import { deserialize, stringify } from '@/utils/format';
+import { deserialize, getCurrency, stringify } from '@/utils/format';
 import { createCAPLink } from '@/utils/function';
 import { Link } from '@chakra-ui/react';
 import BigNumber from 'bignumber.js';
@@ -45,24 +45,33 @@ export const RemoveLiquidityLink: React.FC<RemoveLiquidityLinkProps> = ({
         userLPBalances[token0.metadata.id]?.[token1.metadata.id];
       const lpAmount = (removeAmountPercentage / 100) * tokensLPBalance;
 
-      const amount0Desired = new BigNumber(pair.reserve0.toString())
+      const amount0Desired = new BigNumber(lpAmount)
         .dividedBy(pair.reserve1.toString())
-        .multipliedBy(lpAmount)
+        .multipliedBy(pair.reserve0.toString())
         .multipliedBy(removeAmountPercentage / 100)
         .multipliedBy(Number(slippage));
 
-      const amount1Desired = new BigNumber(pair.reserve1.toString())
+      const amount1Desired = new BigNumber(lpAmount)
         .dividedBy(pair.reserve0.toString())
-        .multipliedBy(lpAmount)
+        .multipliedBy(pair.reserve1.toString())
         .multipliedBy(removeAmountPercentage / 100)
         .multipliedBy(Number(slippage));
 
-      const amount0Min = amount0Desired
-        .minus(amount0Desired.multipliedBy(Number(slippage)))
-        .toString();
-      const amount1Min = amount1Desired
-        .minus(amount1Desired.multipliedBy(Number(slippage)))
-        .toString();
+      const amount0Min = getCurrency(
+        amount0Desired
+          .minus(amount0Desired.multipliedBy(Number(slippage)))
+          .toString(),
+        token0.metadata.decimals
+      );
+
+      const amount1Min = getCurrency(
+        amount1Desired
+          .minus(amount1Desired.multipliedBy(Number(slippage)))
+          .toString(),
+        token1.metadata.decimals
+      );
+
+      console.log(amount0Desired);
 
       return deserialize(
         stringify({
@@ -77,7 +86,11 @@ export const RemoveLiquidityLink: React.FC<RemoveLiquidityLinkProps> = ({
     }
 
     return {};
-  }, [liquidityViewStore, userLPBalances]);
+  }, [
+    liquidityViewStore.token0.metadata,
+    liquidityViewStore.token1.metadata,
+    userLPBalances,
+  ]);
 
   const handleStateChange = () => {
     switch (removeLiquidityBatch.state) {
@@ -120,7 +133,6 @@ export const RemoveLiquidityLink: React.FC<RemoveLiquidityLinkProps> = ({
   useEffect(handleStateChange, [removeLiquidityBatch.state]);
 
   useEffect(() => {
-    console.log('yes');
     removeLiquidityBatch
       .execute()
       .then((res) => {
