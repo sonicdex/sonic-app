@@ -16,3 +16,4 @@ export * from './title-box';
 export * from './toggle';
 export * from './token';
 export * from './display-currency';
+export * from './exchange-box';
