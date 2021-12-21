@@ -28,7 +28,7 @@ export const RemoveLiquidityLink: React.FC<RemoveLiquidityLinkProps> = ({
   const { userLPBalances } = useSwapCanisterStore();
   const { addNotification, popNotification } = useNotificationStore();
   const { principalId } = usePlugStore();
-  const { getBalances } = useBalances();
+  const { getBalances, getUserPositiveLPBalances } = useBalances();
 
   const { token0, token1, ...removeLiquidityBatchParams } = useMemo(() => {
     const {
@@ -46,14 +46,14 @@ export const RemoveLiquidityLink: React.FC<RemoveLiquidityLinkProps> = ({
       const lpAmount = (removeAmountPercentage / 100) * tokensLPBalance;
 
       const amount0Desired = new BigNumber(lpAmount)
-        .dividedBy(pair.reserve1.toString())
         .multipliedBy(pair.reserve0.toString())
+        .dividedBy(pair.totalSupply.toString())
         .multipliedBy(removeAmountPercentage / 100)
         .multipliedBy(Number(slippage));
 
       const amount1Desired = new BigNumber(lpAmount)
-        .dividedBy(pair.reserve0.toString())
         .multipliedBy(pair.reserve1.toString())
+        .dividedBy(pair.totalSupply.toString())
         .multipliedBy(removeAmountPercentage / 100)
         .multipliedBy(Number(slippage));
 
@@ -71,7 +71,7 @@ export const RemoveLiquidityLink: React.FC<RemoveLiquidityLinkProps> = ({
         token1.metadata.decimals
       );
 
-      console.log(amount0Desired);
+      console.log(amount0Min.toString(), amount1Min.toString(), lpAmount);
 
       return deserialize(
         stringify({
@@ -146,6 +146,7 @@ export const RemoveLiquidityLink: React.FC<RemoveLiquidityLinkProps> = ({
           // TODO: add transaction id
           transactionLink: createCAPLink('transactionId'),
         });
+        getUserPositiveLPBalances();
         getBalances();
       })
       .catch((err) => {

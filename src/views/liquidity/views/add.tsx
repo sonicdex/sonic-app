@@ -86,6 +86,7 @@ export const LiquidityAdd = () => {
     debounce(() => {
       dispatch(liquidityViewActions.setValue({ data: 'token0', value: '' }));
       dispatch(liquidityViewActions.setValue({ data: 'token1', value: '' }));
+      setIsReviewing(false);
     }, 300);
   };
 
@@ -177,7 +178,7 @@ export const LiquidityAdd = () => {
     }
   };
 
-  // Memorized values
+  // Memorized valuesp
 
   const isLoading = useMemo(() => {
     return supportedTokenListState === FeatureState.Loading;

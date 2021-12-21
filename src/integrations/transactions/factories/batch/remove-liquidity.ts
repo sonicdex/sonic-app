@@ -78,7 +78,9 @@ export const useRemoveLiquidityBatch = ({
           ],
         })
       );
+
       resolve(false);
+      dispatch(modalsSliceActions.closeRemoveLiquidityProgressModal());
       dispatch(modalsSliceActions.openRemoveLiquidityFailModal());
     });
   };

@@ -29,6 +29,7 @@ export type WithdrawModalData = {
 };
 
 export type AddLiquidityModalDataStep =
+  | 'createPair'
   | 'approve0'
   | 'deposit0'
   | 'approve1'

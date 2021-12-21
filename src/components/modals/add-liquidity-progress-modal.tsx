@@ -7,7 +7,7 @@ import {
   useAppDispatch,
   useModalsStore,
 } from '@/store';
-import { depositSrc, swapSrc } from '@/assets';
+import { depositSrc, plusSrc, swapSrc } from '@/assets';
 
 export const AddLiquidityProgressModal = () => {
   const dispatch = useAppDispatch();
@@ -44,6 +44,15 @@ export const AddLiquidityProgressModal = () => {
       <ModalOverlay />
       <TransactionProgressModalContent title="Adding Liquidity">
         <HStack>
+          {steps?.includes('createPair') && (
+            <TransactionStep
+              status={getStepStatus('createPair')}
+              iconSrc={plusSrc}
+              chevron
+            >
+              Creating pair <br /> {token0Symbol} - {token1Symbol}
+            </TransactionStep>
+          )}
           {steps?.includes('deposit0') && (
             <TransactionStep
               status={getStepStatus('deposit0')}
