@@ -43,9 +43,9 @@ export const getCurrency = (
 };
 
 export const getCurrencyString = (
-  amount: BigInt | undefined | string | number,
-  decimals: BigInt | undefined | number,
-  toFixed: number | undefined = undefined
+  amount?: BigInt | string | number,
+  decimals?: BigInt | number,
+  toFixed?: number
 ) => {
   const num = getCurrency(amount, decimals);
 

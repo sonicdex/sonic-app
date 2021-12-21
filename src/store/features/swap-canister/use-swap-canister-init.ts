@@ -6,7 +6,11 @@ import {
   usePlugStore,
   useSwapCanisterStore,
 } from '@/store';
-import { parseResponseAllPairs } from '@/utils/canister';
+import {
+  parseResponseAllPairs,
+  parseResponseSupportedTokenList,
+  parseResponseUserLPBalances,
+} from '@/utils/canister';
 import { Principal } from '@dfinity/principal';
 import { useEffect } from 'react';
 import { useSwapActor } from '../../../integrations/actor/use-swap-actor';
@@ -61,7 +65,11 @@ export const useSwapCanisterInit = () => {
         const response = await swapActor.getSupportedTokenList();
 
         if (response) {
-          dispatch(swapCanisterActions.setSupportedTokenList(response));
+          dispatch(
+            swapCanisterActions.setSupportedTokenList(
+              parseResponseSupportedTokenList(response)
+            )
+          );
         }
         dispatch(
           swapCanisterActions.setSupportedTokensListState(FeatureState.Idle)
@@ -111,7 +119,11 @@ export const useSwapCanisterInit = () => {
         );
 
         if (response) {
-          dispatch(swapCanisterActions.setUserLPBalances(response as any));
+          dispatch(
+            swapCanisterActions.setUserLPBalances(
+              parseResponseUserLPBalances(response)
+            )
+          );
         } else {
           throw new Error('No "getUserLPBalancesAbove" response');
         }

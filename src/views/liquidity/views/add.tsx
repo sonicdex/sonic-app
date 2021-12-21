@@ -64,50 +64,6 @@ export const LiquidityAdd = () => {
   const [isReviewing, setIsReviewing] = useState(false);
   const [autoSlippage, setAutoSlippage] = useState(true);
 
-  useEffect(() => {
-    if (!isLoading && supportedTokenList && supportedTokenList.length > 0) {
-      const toTokenId = query.get('token0');
-      const fromTokenId = query.get('token1');
-
-      if (fromTokenId) {
-        const token0 = supportedTokenList!.find(
-          (token) => token.id === fromTokenId
-        );
-        dispatch(
-          liquidityViewActions.setToken({
-            data: 'token0',
-            token: token0,
-          })
-        );
-      } else {
-        dispatch(
-          liquidityViewActions.setToken({
-            data: 'token0',
-            token: supportedTokenList[0],
-          })
-        );
-      }
-      dispatch(liquidityViewActions.setValue({ data: 'token0', value: '' }));
-
-      if (toTokenId) {
-        const token1 = supportedTokenList!.find(
-          (token) => token.id === toTokenId
-        );
-        dispatch(
-          liquidityViewActions.setToken({ data: 'token1', token: token1 })
-        );
-      } else {
-        dispatch(
-          liquidityViewActions.setToken({
-            data: 'token1',
-            token: supportedTokenList[1],
-          })
-        );
-      }
-      dispatch(liquidityViewActions.setValue({ data: 'token1', value: '' }));
-    }
-  }, [supportedTokenListState, supportedTokenList]);
-
   const handlePreviousStep = () => {
     if (isReviewing) {
       setIsReviewing(false);
@@ -277,7 +233,7 @@ export const LiquidityAdd = () => {
 
   const pairData = useMemo(() => {
     if (allPairs && token0.metadata && token1.metadata) {
-      return allPairs[token0.metadata.id][token1.metadata.id];
+      return allPairs?.[token0.metadata.id]?.[token1.metadata.id];
     }
     return undefined;
   }, [allPairs, token0.metadata, token1.metadata]);
@@ -388,6 +344,50 @@ export const LiquidityAdd = () => {
         token1USDPrice: '0.00',
       };
     }, [token0, token1, pairData]);
+
+  useEffect(() => {
+    if (!isLoading && supportedTokenList && supportedTokenList.length > 0) {
+      const toTokenId = query.get('token0');
+      const fromTokenId = query.get('token1');
+
+      if (fromTokenId) {
+        const token0 = supportedTokenList!.find(
+          (token) => token.id === fromTokenId
+        );
+        dispatch(
+          liquidityViewActions.setToken({
+            data: 'token0',
+            token: token0,
+          })
+        );
+      } else {
+        dispatch(
+          liquidityViewActions.setToken({
+            data: 'token0',
+            token: supportedTokenList[0],
+          })
+        );
+      }
+
+      if (toTokenId) {
+        const token1 = supportedTokenList!.find(
+          (token) => token.id === toTokenId
+        );
+        dispatch(
+          liquidityViewActions.setToken({ data: 'token1', token: token1 })
+        );
+      } else {
+        dispatch(
+          liquidityViewActions.setToken({
+            data: 'token1',
+            token: supportedTokenList[1],
+          })
+        );
+      }
+      dispatch(liquidityViewActions.setValue({ data: 'token0', value: '' }));
+      dispatch(liquidityViewActions.setValue({ data: 'token1', value: '' }));
+    }
+  }, [isLoading, supportedTokenListState, supportedTokenList]);
 
   return (
     <>

@@ -1,4 +1,4 @@
-import { ENV } from '@/config';
+import { ENV, getFromStorage, saveToStorage } from '@/config';
 import { SwapIDL, TokenIDL } from '@/did';
 import { ActorAdapter, appActors, useSwapActor } from '@/integrations/actor';
 import { Balances } from '@/models';
@@ -36,11 +36,22 @@ export const useBalances = () => {
         ? await Promise.all(
             sonicBalances.map(async (balance) => {
               try {
+                const tokenCanisterId = balance[0];
+
                 const tokenActor: TokenIDL.Factory =
                   await new ActorAdapter().createActor(
-                    balance[0],
+                    tokenCanisterId,
                     TokenIDL.factory
                   );
+
+                const storageKey = `${tokenCanisterId}-logo`;
+                const logo = getFromStorage(storageKey);
+
+                if (!logo) {
+                  const tokenLogo = await tokenActor.getLogo();
+
+                  saveToStorage(storageKey, tokenLogo);
+                }
 
                 const tokenBalance = await tokenActor.balanceOf(
                   Principal.fromText(principalId)

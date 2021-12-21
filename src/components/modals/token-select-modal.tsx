@@ -1,5 +1,4 @@
 import { arrowBackSrc, questionMarkSrc } from '@/assets';
-import { DefaultTokensImage } from '@/constants';
 import { useBalances } from '@/hooks/use-balances';
 import { TokenMetadata } from '@/models';
 import { modalsSliceActions, useAppDispatch, useModalsStore } from '@/store';
@@ -46,8 +45,6 @@ const TokenSelectItem = ({
   logoSrc = questionMarkSrc,
 }: TokenSelectItemProps) => {
   const tokenOpacity = isSelected ? 0.3 : 1;
-
-  console.log(logoSrc);
 
   return (
     <Flex
@@ -130,7 +127,8 @@ export const TokenSelectModal = () => {
   });
   const parsedTokens = useMemo(() => deserialize(tokens), [tokens]);
   const [search, setSearch] = useState('');
-  const [filteredList, setFilteredList] = useState(parsedTokens);
+  const [filteredList, setFilteredList] =
+    useState<TokenMetadata[]>(parsedTokens);
   const { totalBalances } = useBalances();
 
   useEffect(() => {
@@ -251,23 +249,21 @@ export const TokenSelectModal = () => {
             >
               {isLoading && [...Array(4)].map(() => <SkeletonToken />)}
               {!isLoading &&
-                filteredList.map(
-                  ({ id, logo, symbol, decimals, name }: TokenMetadata) => (
-                    <TokenSelectItem
-                      key={id}
-                      balance={totalBalances && totalBalances[id]}
-                      symbol={symbol}
-                      decimals={decimals}
-                      name={name}
-                      onSelect={() =>
-                        handleSelect(id && selectedTokenIds?.includes(id), id)
-                      }
-                      isLoading={isLoading}
-                      isSelected={selectedTokenIds?.includes(id)}
-                      logoSrc={DefaultTokensImage[symbol] || logo}
-                    />
-                  )
-                )}
+                filteredList.map(({ id, logo, symbol, decimals, name }) => (
+                  <TokenSelectItem
+                    key={id}
+                    balance={totalBalances && totalBalances[id]}
+                    symbol={symbol}
+                    decimals={decimals}
+                    name={name}
+                    onSelect={() =>
+                      handleSelect(id && selectedTokenIds?.includes(id), id)
+                    }
+                    isLoading={isLoading}
+                    isSelected={selectedTokenIds?.includes(id)}
+                    logoSrc={logo}
+                  />
+                ))}
               {allowAddToken && filteredList.length === 0 && (
                 <Flex
                   direction="row"

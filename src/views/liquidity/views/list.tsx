@@ -1,5 +1,4 @@
 import {
-  useDisclosure,
   HStack,
   Text,
   Box,
@@ -19,12 +18,20 @@ import {
   PlugButton,
 } from '@/components';
 import { FaMinus, FaPlus } from 'react-icons/fa';
-import { DefaultTokensImage } from '@/constants';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
-import { ENV } from '@/config';
-import { RemoveLiquidityModal } from '../components/remove-liquidity-modal';
-import { FeatureState, usePlugStore, useSwapCanisterStore } from '@/store';
+
+import {
+  FeatureState,
+  liquidityViewActions,
+  modalsSliceActions,
+  useAppDispatch,
+  usePlugStore,
+  useSwapCanisterStore,
+} from '@/store';
+
+import { TokenMetadata } from '@/models';
+import { getCurrencyString } from '@/utils/format';
 
 const INFORMATION_TITLE = 'Liquidity Provider Rewards';
 const INFORMATION_DESCRIPTION =
@@ -48,18 +55,29 @@ const InformationDescription = () => (
   </Text>
 );
 
+type PairedUserLPToken = {
+  token0: TokenMetadata;
+  token1: TokenMetadata;
+  balance: string;
+};
+
 export const Liquidity = () => {
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const removeLiquidityModal = useDisclosure();
   const [displayInformation, setDisplayInformation] = useState(true);
   const { isConnected } = usePlugStore();
-  const { userLPBalances, userLPBalancesState } = useSwapCanisterStore();
+  const {
+    userLPBalances,
+    userLPBalancesState,
+    supportedTokenList,
+    supportedTokenListState,
+  } = useSwapCanisterStore();
 
-  const moveToAddLiquidityView = (tokenFrom?: string, tokenTo?: string) => {
+  const moveToAddLiquidityView = (token0?: string, token1?: string) => {
     const query =
-      tokenFrom || tokenTo
-        ? `?${tokenFrom ? `tokenFrom=${tokenFrom}` : ''}${
-            tokenTo ? `&tokenTo=${tokenTo}` : ''
+      token0 || token1
+        ? `?${token0 ? `token0=${token0}` : ''}${
+            token1 ? `&token1=${token1}` : ''
           }`
         : '';
 
@@ -70,9 +88,59 @@ export const Liquidity = () => {
     setDisplayInformation(false);
   };
 
+  const handleOpenRemoveLiquidityModal = (
+    token0: TokenMetadata,
+    token1: TokenMetadata
+  ) => {
+    dispatch(liquidityViewActions.setToken({ data: 'token0', token: token0 }));
+    dispatch(liquidityViewActions.setToken({ data: 'token1', token: token1 }));
+    dispatch(modalsSliceActions.openRemoveLiquidityModal());
+  };
+
+  const isLoading = useMemo(() => {
+    if (
+      (supportedTokenListState === FeatureState.Loading,
+      userLPBalancesState === FeatureState.Loading)
+    ) {
+      return true;
+    }
+
+    return false;
+  }, [supportedTokenListState, userLPBalancesState]);
+
+  const pairedUserLPTokens = useMemo(() => {
+    if (!isLoading && userLPBalances && supportedTokenList) {
+      const lpBalancesPairIDs = Object.keys(userLPBalances);
+
+      return lpBalancesPairIDs.reduce((acc, tokenId0) => {
+        const tokenId1 = Object.keys(userLPBalances[tokenId0])[0];
+
+        const token0 = supportedTokenList.find(
+          (token) => token.id === tokenId0
+        );
+        const token1 = supportedTokenList.find(
+          (token) => token.id === tokenId1
+        );
+
+        const balance = getCurrencyString(
+          userLPBalances[tokenId0][tokenId1],
+          token0?.decimals
+        );
+
+        return [
+          ...acc,
+          {
+            token0,
+            token1,
+            balance,
+          } as PairedUserLPToken,
+        ];
+      }, [] as PairedUserLPToken[]);
+    }
+  }, [isLoading, userLPBalances, supportedTokenList]);
+
   return (
     <>
-      <RemoveLiquidityModal {...removeLiquidityModal} />
       {displayInformation && (
         <InformationBox
           onClose={handleInformationClose}
@@ -97,7 +165,7 @@ export const Liquidity = () => {
 
           <PlugButton />
         </>
-      ) : userLPBalancesState === FeatureState.Loading ? (
+      ) : isLoading ? (
         <Stack spacing={4}>
           <Asset isLoading>
             <AssetImageBlock />
@@ -123,7 +191,7 @@ export const Liquidity = () => {
             </HStack>
           </Asset>
         </Stack>
-      ) : !userLPBalances?.length ? (
+      ) : !pairedUserLPTokens?.length ? (
         <Text textAlign="center" color="gray.400">
           You have no liquidity positions
         </Text>
@@ -140,55 +208,57 @@ export const Liquidity = () => {
           pb={8}
           overflow="auto"
         >
-          {(userLPBalances as unknown as any[]).map((_, index) => (
-            <Asset
-              key={index}
-              type="lp"
-              imageSources={[
-                DefaultTokensImage['XTC'],
-                DefaultTokensImage['WICP'],
-              ]}
-            >
-              <HStack spacing={4}>
-                <AssetImageBlock />
-                <AssetTitleBlock title="XTC/WICP" />
-              </HStack>
-              <Box>
-                <Text fontWeight="bold" color="gray.400">
-                  LP Tokens
-                </Text>
-                <Text fontWeight="bold">6.7821</Text>
-              </Box>
+          {pairedUserLPTokens.map(({ token0, token1, balance }, index) => {
+            if (!token0.id || !token1.id) {
+              return null;
+            }
 
-              <Box>
-                <Text fontWeight="bold" color="gray.400">
-                  Fees Earned
-                </Text>
-                <Text fontWeight="bold" color="green.400">
-                  ~$231.21
-                </Text>
-              </Box>
+            return (
+              <Asset
+                key={index}
+                type="lp"
+                imageSources={[token0.logo, token1.logo]}
+              >
+                <HStack spacing={4}>
+                  <AssetImageBlock />
+                  <AssetTitleBlock
+                    title={`${token0.symbol}/${token1.symbol}`}
+                  />
+                </HStack>
+                <Box>
+                  <Text fontWeight="bold" color="gray.400">
+                    LP Tokens
+                  </Text>
+                  <Text fontWeight="bold">{balance}</Text>
+                </Box>
 
-              <HStack>
-                <AssetIconButton
-                  aria-label="Remove liquidity"
-                  icon={<FaMinus />}
-                  onClick={removeLiquidityModal.onOpen}
-                />
-                <AssetIconButton
-                  aria-label="Add liquidity"
-                  colorScheme="dark-blue"
-                  icon={<FaPlus />}
-                  onClick={() =>
-                    moveToAddLiquidityView(
-                      ENV.canisterIds.XTC,
-                      ENV.canisterIds.WICP
-                    )
-                  }
-                />
-              </HStack>
-            </Asset>
-          ))}
+                <Box>
+                  <Text fontWeight="bold" color="gray.400">
+                    Fees Earned
+                  </Text>
+                  <Text fontWeight="bold" color="green.400">
+                    ~$231.21
+                  </Text>
+                </Box>
+
+                <HStack>
+                  <AssetIconButton
+                    aria-label="Remove liquidity"
+                    icon={<FaMinus />}
+                    onClick={() =>
+                      handleOpenRemoveLiquidityModal(token0, token1)
+                    }
+                  />
+                  <AssetIconButton
+                    aria-label="Add liquidity"
+                    colorScheme="dark-blue"
+                    icon={<FaPlus />}
+                    onClick={() => moveToAddLiquidityView(token0.id, token1.id)}
+                  />
+                </HStack>
+              </Asset>
+            );
+          })}
         </Stack>
       )}
     </>
