@@ -35,15 +35,21 @@ export const useRemoveLiquidityBatch = ({
     throw new Error('Tokens are required');
   }
 
-  const withdrawParams = {
+  const withdraw0Params = {
+    token: removeLiquidityParams.token0.metadata,
+    amount: removeLiquidityParams.amount0Min.toString(),
+  };
+
+  const withdraw1Params = {
     token: removeLiquidityParams.token1.metadata,
-    amount: removeLiquidityParams.token1.value,
+    amount: removeLiquidityParams.amount1Min.toString(),
   };
 
   const removeLiquidity = useMemorizedRemoveLiquidityTransaction(
     removeLiquidityParams
   );
-  const withdraw = useMemorizedWithdrawTransaction(withdrawParams);
+  const withdraw0 = useMemorizedWithdrawTransaction(withdraw0Params);
+  const withdraw1 = useMemorizedWithdrawTransaction(withdraw1Params);
 
   const transactions = useMemo(() => {
     let _transactions: any = {
@@ -53,12 +59,15 @@ export const useRemoveLiquidityBatch = ({
     if (!keepInSonic) {
       _transactions = {
         ..._transactions,
-        withdraw,
+        withdraw0,
+        withdraw1,
       };
     }
 
     return _transactions;
   }, [...Object.values(removeLiquidityParams), keepInSonic]);
+
+  console.log(transactions);
 
   const handleRetry = async () => {
     return new Promise<boolean>((resolve) => {

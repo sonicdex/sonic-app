@@ -59,7 +59,7 @@ export const RemoveLiquidityProgressModal = () => {
             <TransactionStep
               status={getStepStatus('withdraw0')}
               iconSrc={depositSrc}
-              chevron
+              chevron={steps?.includes('withdraw1')}
             >
               Withdrawing <br /> {token0Symbol}
             </TransactionStep>
@@ -68,7 +68,6 @@ export const RemoveLiquidityProgressModal = () => {
             <TransactionStep
               status={getStepStatus('withdraw1')}
               iconSrc={depositSrc}
-              chevron
             >
               Withdrawing <br /> {token1Symbol}
             </TransactionStep>

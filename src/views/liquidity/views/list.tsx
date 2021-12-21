@@ -139,8 +139,6 @@ export const Liquidity = () => {
     }
   }, [isLoading, userLPBalances, supportedTokenList]);
 
-  console.log(userLPBalances, supportedTokenList);
-
   return (
     <>
       {displayInformation && (

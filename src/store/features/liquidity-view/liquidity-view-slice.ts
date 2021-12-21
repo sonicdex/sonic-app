@@ -22,7 +22,7 @@ const initialState: LiquidityViewState = {
   pair: undefined,
   pairState: 'idle' as FeatureState,
   state: 'idle' as FeatureState,
-  removeAmountPercentage: 0,
+  removeAmountPercentage: 100,
   token0: {
     metadata: undefined,
     value: '',
@@ -48,6 +48,9 @@ export const liquidityViewSlice = createSlice({
     },
     setRemoveAmountPercentage: (state, action: PayloadAction<number>) => {
       state.removeAmountPercentage = action.payload;
+    },
+    setKeepInSonic: (state, action: PayloadAction<boolean>) => {
+      state.keepInSonic = action.payload;
     },
     setValue: (
       state,

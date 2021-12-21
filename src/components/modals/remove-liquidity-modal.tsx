@@ -21,6 +21,8 @@ import {
   SliderFilledTrack,
   SliderThumb,
   Tooltip,
+  FormControl,
+  Checkbox,
 } from '@chakra-ui/react';
 import { FaArrowDown } from 'react-icons/fa';
 import { useMemo } from 'react';
@@ -48,7 +50,8 @@ export const RemoveLiquidityModal = () => {
   const dispatch = useAppDispatch();
   const { isLiquidityRemoveOpened } = useModalsStore();
   const { addNotification } = useNotificationStore();
-  const { token0, token1, removeAmountPercentage } = useLiquidityViewStore();
+  const { token0, token1, removeAmountPercentage, keepInSonic } =
+    useLiquidityViewStore();
   const { allPairs, userLPBalances } = useSwapCanisterStore();
 
   const handleModalClose = () => {
@@ -186,6 +189,25 @@ export const RemoveLiquidityModal = () => {
               price={5418.12}
             />
           </Stack>
+
+          <Flex direction="row" alignItems="center" borderRadius={5} pt={4}>
+            <FormControl direction="row" alignItems="center">
+              <Checkbox
+                isChecked={keepInSonic}
+                onChange={(e) =>
+                  dispatch(
+                    liquidityViewActions.setKeepInSonic(e.target.checked)
+                  )
+                }
+                colorScheme="dark-blue"
+                size="lg"
+                color={keepInSonic ? '#FFFFFF' : '#888E8F'}
+                fontWeight={600}
+              >
+                Keep tokens in Sonic after swap
+              </Checkbox>
+            </FormControl>
+          </Flex>
         </ModalBody>
 
         <ModalFooter>
