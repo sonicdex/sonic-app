@@ -9,6 +9,7 @@ import {
   usePlugStore,
   useSwapCanisterStore,
 } from '@/store';
+import { parseResponseUserLPBalances } from '@/utils/canister';
 import { Principal } from '@dfinity/principal';
 import { useCallback, useMemo } from 'react';
 
@@ -18,6 +19,43 @@ export const useBalances = () => {
   const _swapActor = useSwapActor();
 
   const dispatch = useAppDispatch();
+
+  async function getUserPositiveLPBalances() {
+    if (_swapActor && principalId) {
+      try {
+        const swapActor =
+          _swapActor ?? (appActors[ENV.canisterIds.swap] as SwapIDL.Factory);
+
+        if (!swapActor) throw new Error('Swap actor not found');
+        if (!principalId) throw new Error('Principal ID not found');
+
+        dispatch(
+          swapCanisterActions.setUserLPBalancesState(FeatureState.Loading)
+        );
+        const response = await _swapActor.getUserLPBalancesAbove(
+          Principal.fromText(principalId),
+          BigInt(0)
+        );
+
+        if (response) {
+          dispatch(
+            swapCanisterActions.setUserLPBalances(
+              parseResponseUserLPBalances(response)
+            )
+          );
+        } else {
+          throw new Error('No "getUserLPBalancesAbove" response');
+        }
+
+        dispatch(swapCanisterActions.setUserLPBalancesState(FeatureState.Idle));
+      } catch (error) {
+        console.error('getUserLPBalancesAbove: ', error);
+        dispatch(
+          swapCanisterActions.setUserLPBalancesState(FeatureState.Error)
+        );
+      }
+    }
+  }
 
   const getBalances = useCallback(async () => {
     try {
@@ -92,6 +130,7 @@ export const useBalances = () => {
     sonicBalances,
     tokenBalances,
     getBalances,
+    getUserPositiveLPBalances,
   };
 };
 

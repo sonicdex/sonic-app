@@ -21,7 +21,7 @@ export const AddLiquidityLink: React.FC<AddLiquidityLinkProps> = ({ id }) => {
   const dispatch = useAppDispatch();
   const liquidityViewStore = useLiquidityViewStore();
   const { addNotification, popNotification } = useNotificationStore();
-  const { getBalances } = useBalances();
+  const { getBalances, getUserPositiveLPBalances } = useBalances();
 
   const { token0, token1, slippage } = useMemo(() => {
     // Clone current state just for this batch
@@ -38,6 +38,11 @@ export const AddLiquidityLink: React.FC<AddLiquidityLinkProps> = ({ id }) => {
 
   const handleStateChange = () => {
     switch (addLiquidityBatch.state) {
+      case 'createPair':
+        dispatch(
+          modalsSliceActions.setAddLiquidityData({ step: 'createPair' })
+        );
+        break;
       case 'approve0':
       case 'deposit0':
         dispatch(modalsSliceActions.setAddLiquidityData({ step: 'deposit0' }));
@@ -75,7 +80,9 @@ export const AddLiquidityLink: React.FC<AddLiquidityLinkProps> = ({ id }) => {
           // TODO: add transaction id
           transactionLink: createCAPLink('transactionId'),
         });
+
         getBalances();
+        getUserPositiveLPBalances();
       })
       .catch((err) => {
         console.error('Add Liquidity Error', err);

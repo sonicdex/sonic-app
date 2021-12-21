@@ -9,14 +9,13 @@ import {
 import {
   parseResponseAllPairs,
   parseResponseSupportedTokenList,
-  parseResponseUserLPBalances,
 } from '@/utils/canister';
-import { Principal } from '@dfinity/principal';
 import { useEffect } from 'react';
 import { useSwapActor } from '../../../integrations/actor/use-swap-actor';
 
 export const useSwapCanisterInit = () => {
-  const { getBalances, totalBalances } = useBalances();
+  const { getBalances, getUserPositiveLPBalances, totalBalances } =
+    useBalances();
   const { principalId, isConnected, state: plugState } = usePlugStore();
   const { supportedTokenListState } = useSwapCanisterStore();
 
@@ -103,37 +102,6 @@ export const useSwapCanisterInit = () => {
       } catch (error) {
         console.error('getAllPairs: ', error);
         dispatch(swapCanisterActions.setAllPairsState(FeatureState.Error));
-      }
-    }
-  }
-
-  async function getUserPositiveLPBalances() {
-    if (swapActor && principalId) {
-      try {
-        dispatch(
-          swapCanisterActions.setUserLPBalancesState(FeatureState.Loading)
-        );
-        const response = await swapActor.getUserLPBalancesAbove(
-          Principal.fromText(principalId),
-          BigInt(0)
-        );
-
-        if (response) {
-          dispatch(
-            swapCanisterActions.setUserLPBalances(
-              parseResponseUserLPBalances(response)
-            )
-          );
-        } else {
-          throw new Error('No "getUserLPBalancesAbove" response');
-        }
-
-        dispatch(swapCanisterActions.setUserLPBalancesState(FeatureState.Idle));
-      } catch (error) {
-        console.error('getUserLPBalancesAbove: ', error);
-        dispatch(
-          swapCanisterActions.setUserLPBalancesState(FeatureState.Error)
-        );
       }
     }
   }

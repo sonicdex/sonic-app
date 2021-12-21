@@ -5,6 +5,7 @@ import {
   AddLiquidityModalDataStep,
   modalsSliceActions,
   useAppDispatch,
+  useLiquidityViewStore,
   useSwapCanisterStore,
 } from '@/store';
 
@@ -16,6 +17,7 @@ import {
 } from '..';
 import { AddLiquidity, Batch, Deposit } from '../..';
 import { getDepositTransactions, getToDepositAmount } from './utils';
+import { useMemorizedCreatePairTransaction } from '../transactions/create-pair';
 
 interface Transactions {
   [transactionName: string]: any;
@@ -24,6 +26,7 @@ interface Transactions {
 export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
   const dispatch = useAppDispatch();
   const { sonicBalances } = useSwapCanisterStore();
+  const { pair } = useLiquidityViewStore();
 
   if (!sonicBalances) {
     throw new Error('Sonic balance are required');
@@ -64,19 +67,34 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
     }
   }, [sonicBalances, addLiquidityParams.token1]) as Deposit;
 
+  const createPairParams = useMemo(() => {
+    return {
+      token0: addLiquidityParams.token0,
+      token1: addLiquidityParams.token1,
+    };
+  }, [addLiquidityParams.token0, addLiquidityParams.token1]);
+
   const approve0 = useMemorizedApproveTransaction(deposit0Params);
   const deposit0 = useMemorizedDepositTransaction(deposit0Params);
 
   const approve1 = useMemorizedApproveTransaction(deposit1Params);
   const deposit1 = useMemorizedDepositTransaction(deposit1Params);
 
+  const createPair = useMemorizedCreatePairTransaction(createPairParams);
   const addLiquidity = useMemorizedAddLiquidityTransaction(addLiquidityParams);
 
   const transactions = useMemo(() => {
     let _transactions: Transactions = {};
+    if (!pair) {
+      _transactions = {
+        ..._transactions,
+        createPair,
+      };
+    }
 
     if (addLiquidityParams.token0.metadata) {
       _transactions = {
+        ..._transactions,
         ...getDepositTransactions({
           txNames: ['approve0', 'deposit0'],
           approveTx: approve0,
@@ -87,6 +105,7 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
 
     if (addLiquidityParams.token1.metadata) {
       _transactions = {
+        ..._transactions,
         ...getDepositTransactions({
           txNames: ['approve1', 'deposit1'],
           approveTx: approve1,
@@ -101,7 +120,7 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
     };
 
     return _transactions;
-  }, [...Object.values(addLiquidityParams)]);
+  }, [...Object.values(addLiquidityParams), pair]);
 
   const handleRetry = async () => {
     return new Promise<boolean>((resolve) => {
@@ -113,7 +132,7 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
               openAddLiquidityModal();
               resolve(true);
             },
-            // Not retry callback
+            // Cancel callback
             () => {
               if (transactions.deposit) {
                 navigate(
@@ -126,6 +145,8 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
         })
       );
 
+      resolve(false);
+      dispatch(modalsSliceActions.closeAddLiquidityProgressModal());
       dispatch(modalsSliceActions.openAddLiquidityFailModal());
     });
   };
