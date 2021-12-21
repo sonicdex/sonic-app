@@ -1,4 +1,4 @@
-export * from './add-liquidity-progress-modal';
+export * from './remove-liquidity-progress-modal';
 export * from './components';
 export * from './deposit-modal';
 export * from './plug-confirmation-modal';

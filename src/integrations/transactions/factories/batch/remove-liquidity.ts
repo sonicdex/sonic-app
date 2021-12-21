@@ -14,8 +14,6 @@ import {
 } from '..';
 import { Batch, RemoveLiquidity } from '../..';
 
-type RemoveLiquidityBatchStep = 'removeLiquidity' | 'withdraw';
-
 export interface UseRemoveLiquidityBatchOptions extends RemoveLiquidity {
   keepInSonic: boolean;
 }
@@ -101,8 +99,9 @@ export const useRemoveLiquidityBatch = ({
     dispatch(modalsSliceActions.openRemoveLiquidityProgressModal());
   };
 
+  console.log(transactions);
   return [
-    useBatchHook<RemoveLiquidityBatchStep>({ transactions, handleRetry }),
+    useBatchHook<RemoveLiquidityModalDataStep>({ transactions, handleRetry }),
     openRemoveLiqudityModal,
-  ] as [Batch.Hook<RemoveLiquidityBatchStep>, () => void];
+  ] as [Batch.Hook<RemoveLiquidityModalDataStep>, () => void];
 };

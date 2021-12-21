@@ -13,6 +13,7 @@ import {
 import { deserialize, stringify } from '@/utils/format';
 import { createCAPLink } from '@/utils/function';
 import { Link } from '@chakra-ui/react';
+import BigNumber from 'bignumber.js';
 import { useEffect, useMemo } from 'react';
 
 export interface RemoveLiquidityLinkProps {
@@ -29,16 +30,49 @@ export const RemoveLiquidityLink: React.FC<RemoveLiquidityLinkProps> = ({
   const { principalId } = usePlugStore();
   const { getBalances } = useBalances();
 
-  const { token0, token1, slippage, keepInSonic } = useMemo(() => {
-    const { token0, token1, slippage, keepInSonic, removeAmountPercentage } =
-      liquidityViewStore;
-    if (userLPBalances && token0.metadata && token1.metadata) {
+  const { token0, token1, ...removeLiquidityBatchParams } = useMemo(() => {
+    const {
+      token0,
+      token1,
+      slippage,
+      keepInSonic,
+      removeAmountPercentage,
+      pair,
+    } = liquidityViewStore;
+
+    if (userLPBalances && token0.metadata && token1.metadata && pair) {
       const tokensLPBalance =
         userLPBalances[token0.metadata.id]?.[token1.metadata.id];
       const lpAmount = (removeAmountPercentage / 100) * tokensLPBalance;
 
+      const amount0Desired = new BigNumber(pair.reserve0.toString())
+        .dividedBy(pair.reserve1.toString())
+        .multipliedBy(lpAmount)
+        .multipliedBy(removeAmountPercentage / 100)
+        .multipliedBy(Number(slippage));
+
+      const amount1Desired = new BigNumber(pair.reserve1.toString())
+        .dividedBy(pair.reserve0.toString())
+        .multipliedBy(lpAmount)
+        .multipliedBy(removeAmountPercentage / 100)
+        .multipliedBy(Number(slippage));
+
+      const amount0Min = amount0Desired
+        .minus(amount0Desired.multipliedBy(Number(slippage)))
+        .toString();
+      const amount1Min = amount1Desired
+        .minus(amount1Desired.multipliedBy(Number(slippage)))
+        .toString();
+
       return deserialize(
-        stringify({ token0, token1, slippage, keepInSonic, lpAmount })
+        stringify({
+          token0,
+          token1,
+          keepInSonic,
+          lpAmount,
+          amount0Min,
+          amount1Min,
+        })
       );
     }
 
@@ -54,10 +88,17 @@ export const RemoveLiquidityLink: React.FC<RemoveLiquidityLinkProps> = ({
           })
         );
         break;
-      case 'withdraw':
+      case 'withdraw0':
         dispatch(
           modalsSliceActions.setRemoveLiquidityData({
-            step: 'withdraw',
+            step: 'withdraw0',
+          })
+        );
+        break;
+      case 'withdraw1':
+        dispatch(
+          modalsSliceActions.setRemoveLiquidityData({
+            step: 'withdraw1',
           })
         );
         break;
@@ -72,10 +113,8 @@ export const RemoveLiquidityLink: React.FC<RemoveLiquidityLinkProps> = ({
   const [removeLiquidityBatch, openSwapModal] = useRemoveLiquidityBatch({
     token0,
     token1,
-    lpAmount: 0, // TODO: get lpAmount from store
-    slippage: Number(slippage),
-    keepInSonic,
     principalId,
+    ...removeLiquidityBatchParams,
   });
 
   useEffect(handleStateChange, [removeLiquidityBatch.state]);

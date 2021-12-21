@@ -74,31 +74,33 @@ export const RemoveLiquidityModal = () => {
   const balances = useMemo(() => {
     if (userLPBalances && allPairs && token0.metadata && token1.metadata) {
       const tokenBalance =
-        userLPBalances[token0.metadata.id][token1.metadata.id];
+        userLPBalances[token0.metadata.id]?.[token1.metadata.id];
 
       const pair = allPairs[token0.metadata.id]?.[token1.metadata.id];
 
-      const balance0 = getCurrencyString(
-        new BigNumber(pair.reserve0.toString())
-          .dividedBy(pair.reserve1.toString())
-          .multipliedBy(tokenBalance)
-          .multipliedBy(removeAmountPercentage / 100)
-          .toFixed(3),
-        token0.metadata.decimals
-      );
-      const balance1 = getCurrencyString(
-        new BigNumber(pair.reserve1.toString())
-          .dividedBy(pair.reserve0.toString())
-          .multipliedBy(tokenBalance)
-          .multipliedBy(removeAmountPercentage / 100)
-          .toFixed(3),
-        token1.metadata.decimals
-      );
+      if (pair) {
+        const balance0 = getCurrencyString(
+          new BigNumber(pair.reserve0.toString())
+            .dividedBy(pair.reserve1.toString())
+            .multipliedBy(tokenBalance)
+            .multipliedBy(removeAmountPercentage / 100)
+            .toFixed(3),
+          token0.metadata.decimals
+        );
+        const balance1 = getCurrencyString(
+          new BigNumber(pair.reserve1.toString())
+            .dividedBy(pair.reserve0.toString())
+            .multipliedBy(tokenBalance)
+            .multipliedBy(removeAmountPercentage / 100)
+            .toFixed(3),
+          token1.metadata.decimals
+        );
 
-      return {
-        balance0,
-        balance1,
-      };
+        return {
+          balance0,
+          balance1,
+        };
+      }
     }
 
     return { balance0: '', balance1: '' };

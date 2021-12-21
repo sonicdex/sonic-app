@@ -42,7 +42,10 @@ export type AddLiquidityModalData = {
   callbacks?: [ModalsCallback, ModalsCallback];
 };
 
-export type RemoveLiquidityModalDataStep = 'removeLiquidity' | 'withdraw';
+export type RemoveLiquidityModalDataStep =
+  | 'removeLiquidity'
+  | 'withdraw0'
+  | 'withdraw1';
 export type RemoveLiquidityModalData = {
   step?: RemoveLiquidityModalDataStep;
   steps?: RemoveLiquidityModalDataStep[];

@@ -233,7 +233,7 @@ export const LiquidityAdd = () => {
 
   const pairData = useMemo(() => {
     if (allPairs && token0.metadata && token1.metadata) {
-      return allPairs[token0.metadata.id]?.[token1.metadata.id];
+      return allPairs?.[token0.metadata.id]?.[token1.metadata.id];
     }
     return undefined;
   }, [allPairs, token0.metadata, token1.metadata]);
