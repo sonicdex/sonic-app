@@ -9,7 +9,7 @@ import {
 } from '@/store';
 import { depositSrc, swapSrc } from '@/assets';
 
-export const AddLiquidityProgressModal = () => {
+export const RemoveLiquidityProgressModal = () => {
   const dispatch = useAppDispatch();
   const { isRemoveLiquidityProgressOpened, removeLiquidityData } =
     useModalsStore();
