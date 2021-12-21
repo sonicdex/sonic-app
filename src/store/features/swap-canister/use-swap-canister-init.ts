@@ -8,6 +8,7 @@ import {
 } from '@/store';
 import {
   parseResponseAllPairs,
+  parseResponseSupportedTokenList,
   parseResponseUserLPBalances,
 } from '@/utils/canister';
 import { Principal } from '@dfinity/principal';
@@ -64,7 +65,11 @@ export const useSwapCanisterInit = () => {
         const response = await swapActor.getSupportedTokenList();
 
         if (response) {
-          dispatch(swapCanisterActions.setSupportedTokenList(response));
+          dispatch(
+            swapCanisterActions.setSupportedTokenList(
+              parseResponseSupportedTokenList(response)
+            )
+          );
         }
         dispatch(
           swapCanisterActions.setSupportedTokensListState(FeatureState.Idle)

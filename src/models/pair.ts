@@ -4,6 +4,12 @@ export type Pair = SwapIDL.PairInfoExt;
 
 export type PairList = {
   [canisterId: string]: {
-    [pairedCanisterId: string]: Pair;
+    [canisterId: string]: Pair;
+  };
+};
+
+export type PairBalances = {
+  [canisterId: string]: {
+    [canisterId: string]: number;
   };
 };

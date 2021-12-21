@@ -32,14 +32,17 @@ import {
   useAppDispatch,
   useLiquidityViewStore,
   useNotificationStore,
+  useSwapCanisterStore,
 } from '@/store';
 import { debounce } from '@/utils/function';
+import { useMemo } from 'react';
+import BigNumber from 'bignumber.js';
+import { getCurrencyString } from '@/utils/format';
 
 type RemoveLiquidityModalProps = UseDisclosureReturn;
 
 const PERCENTAGE_PRESETS = [25, 50, 75, 100];
 
-// TODO: Replace mocks by liquidity data
 export const RemoveLiquidityModal = ({
   isOpen,
   onClose,
@@ -47,6 +50,7 @@ export const RemoveLiquidityModal = ({
   const dispatch = useAppDispatch();
   const { addNotification } = useNotificationStore();
   const { token0, token1, removeAmountPercentage } = useLiquidityViewStore();
+  const { allPairs, userLPBalances } = useSwapCanisterStore();
 
   const handleRemoveLiquidity = () => {
     addNotification({
@@ -62,6 +66,39 @@ export const RemoveLiquidityModal = ({
   const handleSliderChange = (value: number) => {
     dispatch(liquidityViewActions.setRemoveAmountPercentage(value));
   };
+
+  const balances = useMemo(() => {
+    if (userLPBalances && allPairs && token0.metadata && token1.metadata) {
+      const tokenBalance =
+        userLPBalances[token0.metadata.id][token1.metadata.id];
+
+      const pair = allPairs[token0.metadata.id]?.[token1.metadata.id];
+
+      const balance0 = getCurrencyString(
+        new BigNumber(pair.reserve0.toString())
+          .dividedBy(pair.reserve1.toString())
+          .multipliedBy(tokenBalance)
+          .multipliedBy(removeAmountPercentage / 100)
+          .toFixed(3),
+        token0.metadata.decimals
+      );
+      const balance1 = getCurrencyString(
+        new BigNumber(pair.reserve1.toString())
+          .dividedBy(pair.reserve0.toString())
+          .multipliedBy(tokenBalance)
+          .multipliedBy(removeAmountPercentage / 100)
+          .toFixed(3),
+        token1.metadata.decimals
+      );
+
+      return {
+        balance0,
+        balance1,
+      };
+    }
+
+    return { balance0: '', balance1: '' };
+  }, [userLPBalances, token0, token1, removeAmountPercentage]);
 
   return (
     <Modal isCentered isOpen={isOpen} onClose={onClose}>
@@ -129,13 +166,13 @@ export const RemoveLiquidityModal = ({
 
           <Stack spacing={4}>
             <RemoveLiquidityModalAsset
-              symbol="XTC"
-              balance={5418.12}
+              symbol={token0.metadata?.symbol}
+              balance={balances.balance0}
               price={5418.12}
             />
             <RemoveLiquidityModalAsset
-              symbol="WICP"
-              balance={5418.12}
+              symbol={token1.metadata?.symbol}
+              balance={balances.balance1}
               price={5418.12}
             />
           </Stack>

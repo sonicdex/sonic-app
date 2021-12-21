@@ -21,7 +21,7 @@ import {
   PlugButton,
 } from '@/components';
 import { FeatureState, usePlugStore, useSwapCanisterStore } from '@/store';
-import { DefaultTokensImage } from '@/constants';
+
 import { theme } from '@/theme';
 import { FaMinus, FaPlus } from 'react-icons/fa';
 import { questionMarkSrc } from '@/assets';
@@ -129,10 +129,10 @@ export const Assets = () => {
                 </Asset>
               </>
             ) : isSupportedTokenListPresent ? (
-              supportedTokenList.map(({ id, name, symbol, decimals }) => (
+              supportedTokenList.map(({ id, name, symbol, decimals, logo }) => (
                 <Asset
                   key={id}
-                  imageSources={[DefaultTokensImage[symbol] ?? questionMarkSrc]}
+                  imageSources={[logo ?? questionMarkSrc]}
                   isLoading={supportedTokenListState === FeatureState.Loading}
                 >
                   <HStack spacing={4}>

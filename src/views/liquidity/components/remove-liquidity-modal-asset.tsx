@@ -6,7 +6,7 @@ import { FC } from 'react';
 import NumberFormat from 'react-number-format';
 
 type RemoveLiquidityModalAssetProps = Partial<TokenMetadata> & {
-  balance: number;
+  balance: string;
   price: number;
 };
 
@@ -31,7 +31,7 @@ export const RemoveLiquidityModalAsset: FC<RemoveLiquidityModalAssetProps> = ({
       </HStack>
       <Box textAlign="end">
         <Text fontSize="xl" fontWeight="bold">
-          <NumberFormat value={balance} displayType="text"></NumberFormat>
+          <NumberFormat value={balance} displayType="text" />
         </Text>
         <Text fontSize="xs">
           ~

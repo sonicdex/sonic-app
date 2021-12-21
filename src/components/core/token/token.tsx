@@ -16,7 +16,6 @@ import React, { useCallback, useMemo } from 'react';
 
 import { chevronDownSrc, questionMarkSrc } from '@/assets';
 import { NumberInput } from '@/components';
-import { DefaultTokensImage } from '@/constants';
 import { TokenMetadata } from '@/models';
 import { getCurrencyString } from '@/utils/format';
 
@@ -129,8 +128,7 @@ type TokenDetailsLogo = ImageProps;
 export const TokenDetailsLogo: React.FC<TokenDetailsLogo> = (props) => {
   const { isLoading, tokenMetadata } = useTokenContext();
 
-  const logoSrc =
-    DefaultTokensImage[tokenMetadata?.symbol ?? ''] ?? questionMarkSrc;
+  const logoSrc = tokenMetadata?.logo ?? questionMarkSrc;
 
   return (
     <Skeleton

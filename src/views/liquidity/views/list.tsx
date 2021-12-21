@@ -19,12 +19,17 @@ import {
   PlugButton,
 } from '@/components';
 import { FaMinus, FaPlus } from 'react-icons/fa';
-import { DefaultTokensImage } from '@/constants';
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 
 import { RemoveLiquidityModal } from '../components/remove-liquidity-modal';
-import { FeatureState, usePlugStore, useSwapCanisterStore } from '@/store';
+import {
+  FeatureState,
+  liquidityViewActions,
+  useAppDispatch,
+  usePlugStore,
+  useSwapCanisterStore,
+} from '@/store';
 
 import { TokenMetadata } from '@/models';
 import { getCurrencyString } from '@/utils/format';
@@ -58,6 +63,7 @@ type PairedUserLPToken = {
 };
 
 export const Liquidity = () => {
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const removeLiquidityModal = useDisclosure();
   const [displayInformation, setDisplayInformation] = useState(true);
@@ -69,11 +75,11 @@ export const Liquidity = () => {
     supportedTokenListState,
   } = useSwapCanisterStore();
 
-  const moveToAddLiquidityView = (tokenFrom?: string, tokenTo?: string) => {
+  const moveToAddLiquidityView = (token0?: string, token1?: string) => {
     const query =
-      tokenFrom || tokenTo
-        ? `?${tokenFrom ? `token0=${tokenFrom}` : ''}${
-            tokenTo ? `&token1=${tokenTo}` : ''
+      token0 || token1
+        ? `?${token0 ? `token0=${token0}` : ''}${
+            token1 ? `&token1=${token1}` : ''
           }`
         : '';
 
@@ -82,6 +88,15 @@ export const Liquidity = () => {
 
   const handleInformationClose = () => {
     setDisplayInformation(false);
+  };
+
+  const handleOpenRemoveLiquidityModal = (
+    token0: TokenMetadata,
+    token1: TokenMetadata
+  ) => {
+    dispatch(liquidityViewActions.setToken({ data: 'token0', token: token0 }));
+    dispatch(liquidityViewActions.setToken({ data: 'token1', token: token1 }));
+    removeLiquidityModal.onOpen();
   };
 
   const isLoading = useMemo(() => {
@@ -99,11 +114,8 @@ export const Liquidity = () => {
     if (!isLoading && userLPBalances && supportedTokenList) {
       const lpBalancesPairIDs = Object.keys(userLPBalances);
 
-      return lpBalancesPairIDs.reduce((acc, pairTokenIds) => {
-        const [tokenId0, tokenId1] = pairTokenIds.split(':') as [
-          string,
-          string
-        ];
+      return lpBalancesPairIDs.reduce((acc, tokenId0) => {
+        const tokenId1 = Object.keys(userLPBalances[tokenId0])[0];
 
         const token0 = supportedTokenList.find(
           (token) => token.id === tokenId0
@@ -112,20 +124,24 @@ export const Liquidity = () => {
           (token) => token.id === tokenId1
         );
 
+        const balance = getCurrencyString(
+          userLPBalances[tokenId0][tokenId1],
+          token0?.decimals
+        );
+
         return [
           ...acc,
           {
             token0,
             token1,
-            balance: getCurrencyString(
-              userLPBalances[pairTokenIds],
-              token0?.decimals
-            ),
+            balance,
           } as PairedUserLPToken,
         ];
       }, [] as PairedUserLPToken[]);
     }
   }, [isLoading, userLPBalances, supportedTokenList]);
+
+  console.log(pairedUserLPTokens);
 
   return (
     <>
@@ -206,10 +222,7 @@ export const Liquidity = () => {
               <Asset
                 key={index}
                 type="lp"
-                imageSources={[
-                  DefaultTokensImage[token0.id],
-                  DefaultTokensImage[token1.id],
-                ]}
+                imageSources={[token0.logo, token1.logo]}
               >
                 <HStack spacing={4}>
                   <AssetImageBlock />
@@ -237,7 +250,9 @@ export const Liquidity = () => {
                   <AssetIconButton
                     aria-label="Remove liquidity"
                     icon={<FaMinus />}
-                    onClick={removeLiquidityModal.onOpen}
+                    onClick={() =>
+                      handleOpenRemoveLiquidityModal(token0, token1)
+                    }
                   />
                   <AssetIconButton
                     aria-label="Add liquidity"

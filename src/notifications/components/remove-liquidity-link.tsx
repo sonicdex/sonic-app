@@ -8,6 +8,7 @@ import {
   useLiquidityViewStore,
   useNotificationStore,
   usePlugStore,
+  useSwapCanisterStore,
 } from '@/store';
 import { deserialize, stringify } from '@/utils/format';
 import { createCAPLink } from '@/utils/function';
@@ -23,16 +24,26 @@ export const RemoveLiquidityLink: React.FC<RemoveLiquidityLinkProps> = ({
 }) => {
   const dispatch = useAppDispatch();
   const liquidityViewStore = useLiquidityViewStore();
+  const { userLPBalances } = useSwapCanisterStore();
   const { addNotification, popNotification } = useNotificationStore();
   const { principalId } = usePlugStore();
   const { getBalances } = useBalances();
 
   const { token0, token1, slippage, keepInSonic } = useMemo(() => {
-    // Clone current state just for this batch
-    const { token0, token1, slippage, keepInSonic } = liquidityViewStore;
+    const { token0, token1, slippage, keepInSonic, removeAmountPercentage } =
+      liquidityViewStore;
+    if (userLPBalances && token0.metadata && token1.metadata) {
+      const tokensLPBalance =
+        userLPBalances[token0.metadata.id]?.[token1.metadata.id];
+      const lpAmount = (removeAmountPercentage / 100) * tokensLPBalance;
 
-    return deserialize(stringify({ token0, token1, slippage, keepInSonic }));
-  }, []);
+      return deserialize(
+        stringify({ token0, token1, slippage, keepInSonic, lpAmount })
+      );
+    }
+
+    return {};
+  }, [liquidityViewStore, userLPBalances]);
 
   const handleStateChange = () => {
     switch (removeLiquidityBatch.state) {
