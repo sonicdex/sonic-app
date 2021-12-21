@@ -99,7 +99,6 @@ export const useRemoveLiquidityBatch = ({
     dispatch(modalsSliceActions.openRemoveLiquidityProgressModal());
   };
 
-  console.log(transactions);
   return [
     useBatchHook<RemoveLiquidityModalDataStep>({ transactions, handleRetry }),
     openRemoveLiqudityModal,

@@ -7,6 +7,7 @@ import { Activity, Assets, Liquidity, LiquidityAdd, Swap } from '@/views';
 import { EmptyMobile, Layout } from './components';
 import {
   AddLiquidityProgressModal,
+  RemoveLiquidityProgressModal,
   SwapFailModal,
   SwapProgressModal,
   TokenSelectModal,
@@ -46,6 +47,7 @@ export const App = () => {
         <WithdrawProgressModal />
         <DepositProgressModal />
         <AddLiquidityProgressModal />
+        <RemoveLiquidityProgressModal />
 
         <SwapFailModal />
 

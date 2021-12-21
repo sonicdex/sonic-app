@@ -120,6 +120,7 @@ export const RemoveLiquidityLink: React.FC<RemoveLiquidityLinkProps> = ({
   useEffect(handleStateChange, [removeLiquidityBatch.state]);
 
   useEffect(() => {
+    console.log('yes');
     removeLiquidityBatch
       .execute()
       .then((res) => {
