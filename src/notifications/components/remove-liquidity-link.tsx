@@ -71,8 +71,6 @@ export const RemoveLiquidityLink: React.FC<RemoveLiquidityLinkProps> = ({
         token1.metadata.decimals
       );
 
-      console.log(amount0Min.toString(), amount1Min.toString(), lpAmount);
-
       return deserialize(
         stringify({
           token0,
@@ -146,8 +144,8 @@ export const RemoveLiquidityLink: React.FC<RemoveLiquidityLinkProps> = ({
           // TODO: add transaction id
           transactionLink: createCAPLink('transactionId'),
         });
-        getUserPositiveLPBalances();
         getBalances();
+        getUserPositiveLPBalances();
       })
       .catch((err) => {
         console.error('Remove liqudity Error', err);

@@ -80,7 +80,6 @@ export const AddLiquidityLink: React.FC<AddLiquidityLinkProps> = ({ id }) => {
           // TODO: add transaction id
           transactionLink: createCAPLink('transactionId'),
         });
-
         getBalances();
         getUserPositiveLPBalances();
       })

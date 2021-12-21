@@ -99,8 +99,8 @@ export const Liquidity = () => {
 
   const isLoading = useMemo(() => {
     if (
-      (supportedTokenListState === FeatureState.Loading,
-      userLPBalancesState === FeatureState.Loading)
+      supportedTokenListState === FeatureState.Loading ||
+      userLPBalancesState === FeatureState.Loading
     ) {
       return true;
     }
@@ -138,6 +138,8 @@ export const Liquidity = () => {
       }, [] as PairedUserLPToken[]);
     }
   }, [isLoading, userLPBalances, supportedTokenList]);
+
+  console.log(userLPBalances, supportedTokenList);
 
   return (
     <>

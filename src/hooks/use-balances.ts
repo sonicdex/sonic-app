@@ -21,39 +21,37 @@ export const useBalances = () => {
   const dispatch = useAppDispatch();
 
   async function getUserPositiveLPBalances() {
-    if (_swapActor && principalId) {
-      try {
-        const swapActor =
-          _swapActor ?? (appActors[ENV.canisterIds.swap] as SwapIDL.Factory);
+    try {
+      const swapActor =
+        _swapActor ?? (appActors[ENV.canisterIds.swap] as SwapIDL.Factory);
 
-        if (!swapActor) throw new Error('Swap actor not found');
-        if (!principalId) throw new Error('Principal ID not found');
+      if (!swapActor) throw new Error('Swap actor not found');
+      if (!principalId) throw new Error('Principal ID not found');
 
+      dispatch(
+        swapCanisterActions.setUserLPBalancesState(FeatureState.Loading)
+      );
+      const response = await swapActor.getUserLPBalancesAbove(
+        Principal.fromText(principalId),
+        BigInt(0)
+      );
+
+      console.log(response);
+
+      if (response) {
         dispatch(
-          swapCanisterActions.setUserLPBalancesState(FeatureState.Loading)
+          swapCanisterActions.setUserLPBalances(
+            parseResponseUserLPBalances(response)
+          )
         );
-        const response = await _swapActor.getUserLPBalancesAbove(
-          Principal.fromText(principalId),
-          BigInt(0)
-        );
-
-        if (response) {
-          dispatch(
-            swapCanisterActions.setUserLPBalances(
-              parseResponseUserLPBalances(response)
-            )
-          );
-        } else {
-          throw new Error('No "getUserLPBalancesAbove" response');
-        }
-
-        dispatch(swapCanisterActions.setUserLPBalancesState(FeatureState.Idle));
-      } catch (error) {
-        console.error('getUserLPBalancesAbove: ', error);
-        dispatch(
-          swapCanisterActions.setUserLPBalancesState(FeatureState.Error)
-        );
+      } else {
+        throw new Error('No "getUserLPBalancesAbove" response');
       }
+
+      dispatch(swapCanisterActions.setUserLPBalancesState(FeatureState.Idle));
+    } catch (error) {
+      console.error('getUserLPBalancesAbove: ', error);
+      dispatch(swapCanisterActions.setUserLPBalancesState(FeatureState.Error));
     }
   }
 
