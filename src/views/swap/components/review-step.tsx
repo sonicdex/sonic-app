@@ -1,6 +1,7 @@
 import { arrowDownSrc, infoSrc } from '@/assets';
 import {
   Button,
+  ExchangeBox,
   TitleBox,
   Token,
   TokenBalances,
@@ -45,7 +46,7 @@ export const SwapReviewStep = () => {
   const { sonicBalances, tokenBalances } = useSwapCanisterStore();
   const { totalBalances } = useBalances();
   const { addNotification } = useNotificationStore();
-  const { fromTokenOptions, toTokenOptions, from, to, keepInSonic } =
+  const { fromTokenOptions, toTokenOptions, from, to, keepInSonic, slippage } =
     useSwapViewStore();
   const dispatch = useAppDispatch();
 
@@ -176,7 +177,6 @@ export const SwapReviewStep = () => {
         justifyContent="space-between"
         alignItems="center"
         borderRadius={5}
-        mb={5}
         bg="#1E1E1E"
         px={5}
         py={4}
@@ -227,6 +227,9 @@ export const SwapReviewStep = () => {
           </Portal>
         </Popover>
       </Flex>
+
+      <ExchangeBox from={from} to={to} slippage={slippage} />
+
       <Button isFullWidth size="lg" onClick={handleApproveSwap}>
         Confirm Swap
       </Button>

@@ -16,6 +16,7 @@ import {
   TokenBalancesDetails,
   TokenBalancesPrice,
   TokenInput,
+  ExchangeBox,
 } from '@/components';
 import { useBalances } from '@/hooks/use-balances';
 import {
@@ -161,7 +162,7 @@ export const SwapHomeStep = () => {
           />
         }
       />
-      <Flex direction="column" alignItems="center" mb={5}>
+      <Flex direction="column" alignItems="center">
         <Box mt={5} width="100%">
           <Token
             value={from.value}
@@ -257,6 +258,8 @@ export const SwapHomeStep = () => {
           </Token>
         </Box>
       </Flex>
+
+      <ExchangeBox from={from} to={to} slippage={slippage} />
 
       {!isConnected ? (
         <PlugButton />

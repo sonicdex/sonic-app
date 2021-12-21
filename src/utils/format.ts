@@ -209,12 +209,12 @@ export const getAmountMin = (
 };
 
 export const calculatePriceImpact = (
-  amountIn: string,
-  decimalsIn: string,
-  amountOut: string,
-  decimalsOut: string,
-  reserve0: string,
-  reserve1: string
+  amountIn: string | number,
+  decimalsIn: string | number,
+  amountOut: string | number,
+  decimalsOut: string | number,
+  reserve0: string | number,
+  reserve1: string | number
 ): string => {
   if (
     !amountIn ||
@@ -226,10 +226,10 @@ export const calculatePriceImpact = (
     return '0.00';
   // price impact = abs(reserve0/reserve1 - (reserve0 + amountIn)/(reserve1 - amountOut))
   const aIn = new BigNumber(amountIn).multipliedBy(
-    new BigNumber(10).pow(parseInt(decimalsIn))
+    new BigNumber(10).pow(Number(decimalsIn))
   );
-  const aOut = new BigNumber(amountOut).multipliedBy(
-    new BigNumber(10).pow(parseInt(decimalsOut))
+  const aOut = new BigNumber(Number(amountOut)).multipliedBy(
+    new BigNumber(10).pow(Number(decimalsOut))
   );
   const a = new BigNumber(reserve0).dividedBy(new BigNumber(reserve1));
   const b = new BigNumber(reserve0).plus(aIn);
