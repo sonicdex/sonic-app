@@ -24,7 +24,6 @@ import { FeatureState, usePlugStore, useSwapCanisterStore } from '@/store';
 
 import { theme } from '@/theme';
 import { FaMinus, FaPlus } from 'react-icons/fa';
-import { questionMarkSrc } from '@/assets';
 import { useBalances } from '@/hooks/use-balances';
 
 export const Assets = () => {
@@ -132,7 +131,7 @@ export const Assets = () => {
               supportedTokenList.map(({ id, name, symbol, decimals, logo }) => (
                 <Asset
                   key={id}
-                  imageSources={[logo ?? questionMarkSrc]}
+                  imageSources={[logo]}
                   isLoading={supportedTokenListState === FeatureState.Loading}
                 >
                   <HStack spacing={4}>

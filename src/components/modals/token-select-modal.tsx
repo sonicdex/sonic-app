@@ -46,8 +46,6 @@ const TokenSelectItem = ({
 }: TokenSelectItemProps) => {
   const tokenOpacity = isSelected ? 0.3 : 1;
 
-  console.log(logoSrc);
-
   return (
     <Flex
       direction="row"

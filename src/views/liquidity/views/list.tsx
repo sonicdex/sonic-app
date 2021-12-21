@@ -141,8 +141,6 @@ export const Liquidity = () => {
     }
   }, [isLoading, userLPBalances, supportedTokenList]);
 
-  console.log(pairedUserLPTokens);
-
   return (
     <>
       <RemoveLiquidityModal {...removeLiquidityModal} />
