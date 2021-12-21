@@ -1,4 +1,3 @@
-import { UseDisclosureReturn } from '@chakra-ui/hooks';
 import {
   Modal,
   ModalBody,
@@ -24,33 +23,37 @@ import {
   Tooltip,
 } from '@chakra-ui/react';
 import { FaArrowDown } from 'react-icons/fa';
+import { useMemo } from 'react';
+import BigNumber from 'bignumber.js';
+
 import { Button } from '@/components';
-import { RemoveLiquidityModalAsset } from './remove-liquidity-modal-asset';
 import {
   liquidityViewActions,
+  modalsSliceActions,
   NotificationType,
   useAppDispatch,
   useLiquidityViewStore,
+  useModalsStore,
   useNotificationStore,
   useSwapCanisterStore,
 } from '@/store';
 import { debounce } from '@/utils/function';
-import { useMemo } from 'react';
-import BigNumber from 'bignumber.js';
 import { getCurrencyString } from '@/utils/format';
 
-type RemoveLiquidityModalProps = UseDisclosureReturn;
+import { RemoveLiquidityModalAsset } from './remove-liquidity-modal-asset';
 
 const PERCENTAGE_PRESETS = [25, 50, 75, 100];
 
-export const RemoveLiquidityModal = ({
-  isOpen,
-  onClose,
-}: RemoveLiquidityModalProps) => {
+export const RemoveLiquidityModal = () => {
   const dispatch = useAppDispatch();
+  const { isLiquidityRemoveOpened } = useModalsStore();
   const { addNotification } = useNotificationStore();
   const { token0, token1, removeAmountPercentage } = useLiquidityViewStore();
   const { allPairs, userLPBalances } = useSwapCanisterStore();
+
+  const handleModalClose = () => {
+    dispatch(modalsSliceActions.closeRemoveLiquidityModal());
+  };
 
   const handleRemoveLiquidity = () => {
     addNotification({
@@ -61,6 +64,7 @@ export const RemoveLiquidityModal = ({
     debounce(() => {
       dispatch(liquidityViewActions.setRemoveAmountPercentage(0));
     }, 300);
+    handleModalClose();
   };
 
   const handleSliderChange = (value: number) => {
@@ -101,7 +105,11 @@ export const RemoveLiquidityModal = ({
   }, [userLPBalances, token0, token1, removeAmountPercentage]);
 
   return (
-    <Modal isCentered isOpen={isOpen} onClose={onClose}>
+    <Modal
+      isCentered
+      isOpen={isLiquidityRemoveOpened}
+      onClose={handleModalClose}
+    >
       <ModalOverlay />
 
       <ModalContent>

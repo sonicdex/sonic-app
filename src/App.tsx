@@ -12,6 +12,7 @@ import {
   TokenSelectModal,
   WithdrawProgressModal,
   DepositProgressModal,
+  RemoveLiquidityModal,
 } from './components/modals';
 import { useActorsInit } from './integrations/actor/use-actors-init';
 import { usePlugInit } from './integrations/plug';
@@ -38,6 +39,7 @@ export const App = () => {
       <Layout>
         <NotificationManager />
 
+        <RemoveLiquidityModal />
         <SwapProgressModal />
         <SwapFailModal />
         <TokenSelectModal />

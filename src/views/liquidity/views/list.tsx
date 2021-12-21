@@ -1,5 +1,4 @@
 import {
-  useDisclosure,
   HStack,
   Text,
   Box,
@@ -22,10 +21,10 @@ import { FaMinus, FaPlus } from 'react-icons/fa';
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 
-import { RemoveLiquidityModal } from '../components/remove-liquidity-modal';
 import {
   FeatureState,
   liquidityViewActions,
+  modalsSliceActions,
   useAppDispatch,
   usePlugStore,
   useSwapCanisterStore,
@@ -65,7 +64,6 @@ type PairedUserLPToken = {
 export const Liquidity = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const removeLiquidityModal = useDisclosure();
   const [displayInformation, setDisplayInformation] = useState(true);
   const { isConnected } = usePlugStore();
   const {
@@ -96,7 +94,7 @@ export const Liquidity = () => {
   ) => {
     dispatch(liquidityViewActions.setToken({ data: 'token0', token: token0 }));
     dispatch(liquidityViewActions.setToken({ data: 'token1', token: token1 }));
-    removeLiquidityModal.onOpen();
+    dispatch(modalsSliceActions.openRemoveLiquidityModal());
   };
 
   const isLoading = useMemo(() => {
@@ -143,7 +141,6 @@ export const Liquidity = () => {
 
   return (
     <>
-      <RemoveLiquidityModal {...removeLiquidityModal} />
       {displayInformation && (
         <InformationBox
           onClose={handleInformationClose}

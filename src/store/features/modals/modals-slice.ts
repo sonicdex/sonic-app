@@ -81,6 +81,8 @@ interface ModalsState {
   isTokenSelectOpened: boolean;
   tokenSelectData: TokenSelectData;
 
+  isLiquidityRemoveOpened: boolean;
+
   state: FeatureState;
 }
 
@@ -137,6 +139,8 @@ const initialState: ModalsState = {
   isTokenSelectOpened: false,
   tokenSelectData: initialTokenSelectData,
 
+  isLiquidityRemoveOpened: false,
+
   state: FeatureState?.Idle,
 };
 
@@ -145,6 +149,13 @@ export const modalsSlice = createSlice({
   // `createSlice` will infer the state type from the `initialState` argument
   initialState,
   reducers: {
+    openRemoveLiquidityModal: (state) => {
+      state.isLiquidityRemoveOpened = true;
+    },
+    closeRemoveLiquidityModal: (state) => {
+      state.isLiquidityRemoveOpened = false;
+    },
+
     openSwapProgressModal: (state) => {
       state.isSwapProgressOpened = true;
     },
