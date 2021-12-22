@@ -1,115 +1,87 @@
+import { Header, PlugButton } from '@/components';
+import { useActivityView, useActivityViewStore, usePlugStore } from '@/store';
+import { Alert, AlertIcon, AlertTitle, Stack, Text } from '@chakra-ui/react';
 import {
-  Alert,
-  AlertIcon,
-  AlertTitle,
-  HStack,
-  Heading,
-  Stack,
-  Text,
-} from '@chakra-ui/react';
-
-import {
-  Asset,
-  AssetImageBlock,
-  AssetTitleBlock,
-  Header,
-  PlugButton,
-} from '@/components';
-import { DefaultTokensImage } from '@/constants';
-import { usePlugStore } from '@/store';
-import { useEffect } from 'react';
-import { getUserTransactions } from '@/integrations/cap';
-
+  AddLiquidityActivity,
+  DepositActivity,
+  SwapActivity,
+  WithdrawActivity,
+} from './components';
 export const Activity = () => {
-  const { isConnected, principalId } = usePlugStore();
+  useActivityView();
+  const { isConnected } = usePlugStore();
+  const { activityList } = useActivityViewStore();
 
-  useEffect(() => {
-    if (principalId) {
-      getUserTransactions(principalId)
-        .then((res) => console.log('getUserTransactions', res))
-        .catch((err) => console.error('getUserTransactions', err));
-    }
-  }, [principalId]);
+  if (!isConnected) {
+    return (
+      <>
+        <Header title="Your Activity" />
+        <Alert status="warning" mb={6}>
+          <AlertIcon />
+          <AlertTitle>You are not connected to the wallet</AlertTitle>
+        </Alert>
+
+        <PlugButton />
+      </>
+    );
+  }
+
+  if (Object.keys(activityList).length === 0) {
+    return (
+      <>
+        <Header title="Your Activity" />
+        <Text>Nothing to show</Text>
+      </>
+    );
+  }
 
   return (
     <>
       <Header title="Your Activity" />
+      <Stack spacing={4}>
+        <Stack>
+          {Object.entries(activityList).map(([date, transactions]) => (
+            <>
+              <Text>{new Date(date).toDateString()}</Text>
+              {transactions.map((transaction) => {
+                switch (transaction.operation) {
+                  case 'swap':
+                    return (
+                      <SwapActivity
+                        {...(transaction.details as any)}
+                        time={transaction.time}
+                      />
+                    );
+                  case 'addLiquidity':
+                    return (
+                      <AddLiquidityActivity
+                        {...(transaction.details as any)}
+                        time={transaction.time}
+                      />
+                    );
 
-      {!isConnected ? (
-        <>
-          <Alert status="warning" mb={6}>
-            <AlertIcon />
-            <AlertTitle>You are not connected to the wallet</AlertTitle>
-          </Alert>
-
-          <PlugButton />
-        </>
-      ) : (
-        <Stack spacing={4}>
-          <Stack>
-            <Text>October 18th, 2021</Text>
-            <Asset
-              type="swap"
-              imageSources={[
-                DefaultTokensImage['XTC'],
-                DefaultTokensImage['WICP'],
-              ]}
-            >
-              <HStack spacing={4}>
-                <AssetImageBlock />
-                <AssetTitleBlock title="Swap XTC to WICP" subtitle="10:17 AM" />
-              </HStack>
-              <Stack textAlign="end">
-                <Heading as="h6" size="sm">
-                  -182.27 XTC
-                </Heading>
-                <Text color="gray.400">-$182.27</Text>
-              </Stack>
-            </Asset>
-
-            <Asset
-              type="lp"
-              imageSources={[
-                DefaultTokensImage['XTC'],
-                DefaultTokensImage['WICP'],
-              ]}
-            >
-              <HStack spacing={4}>
-                <AssetImageBlock />
-                <AssetTitleBlock title="Remove LP" subtitle="3:10 AM" />
-              </HStack>
-              <Stack textAlign="end">
-                <Heading as="h6" size="sm">
-                  182.27 XTC + 40.21 WICP
-                </Heading>
-                <Text color="gray.400">$18,372.27</Text>
-              </Stack>
-            </Asset>
-          </Stack>
-
-          <Stack>
-            <Text>October 17th, 2021</Text>
-            <Asset
-              type="lp"
-              imageSources={[
-                DefaultTokensImage['XTC'],
-                DefaultTokensImage['WICP'],
-              ]}
-            >
-              <HStack spacing={4}>
-                <AssetImageBlock />
-                <AssetTitleBlock title="Add LP" subtitle="10:17 AM" />
-              </HStack>
-              <Stack textAlign="end">
-                <Heading as="h6" size="sm">
-                  182.27 XTC + 40.21 WICP
-                </Heading>
-                <Text color="gray.400">$18,372.27</Text>
-              </Stack>
-            </Asset>
-          </Stack>
+                  case 'withdraw':
+                    return (
+                      <WithdrawActivity
+                        {...(transaction.details as any)}
+                        time={transaction.time}
+                      />
+                    );
+                  case 'deposit':
+                    return (
+                      <DepositActivity
+                        {...(transaction.details as any)}
+                        time={transaction.time}
+                      />
+                    );
+                  default:
+                    return null;
+                }
+              })}
+            </>
+          ))}
         </Stack>
-      )}
+      </Stack>
     </>
   );
 };

@@ -2,11 +2,13 @@ import { CapHistoryLog } from '../history-log';
 import { getCapRootInstance } from '../connection';
 import { Principal } from '@dfinity/principal';
 import { ENV } from '@/config';
+import { parseCapHistoryLog } from '../utils';
+import { MappedCapHistoryLog } from '..';
 
 export const getUserTransactions = async (
   principalId: string,
   page = 0
-): Promise<CapHistoryLog[]> => {
+): Promise<MappedCapHistoryLog[]> => {
   const capRoot = await getCapRootInstance({
     canisterId: ENV.canisterIds.swapCapRoot,
   });
@@ -16,5 +18,5 @@ export const getUserTransactions = async (
     page,
   })) as { data: CapHistoryLog[] };
 
-  return Object.values(result.data);
+  return parseCapHistoryLog(Object.values(result.data));
 };

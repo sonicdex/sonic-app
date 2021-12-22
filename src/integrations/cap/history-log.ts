@@ -6,3 +6,10 @@ export type CapHistoryLog = {
   time: bigint;
   operation: string;
 };
+
+export type MappedCapHistoryLog = {
+  caller: Principal;
+  details: { [key: string]: any };
+  time: number;
+  operation: string;
+};
