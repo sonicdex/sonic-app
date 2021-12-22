@@ -18,6 +18,8 @@ import {
   plugActions,
   useAppDispatch,
   usePlugStore,
+  useNotificationStore,
+  NotificationType,
 } from '@/store';
 import { Emoji, GradientBox } from '@/components/core';
 import { desensitizationPrincipalId } from '@/utils/canister';
@@ -26,6 +28,7 @@ import { disconnect } from '@/integrations/plug';
 
 export const PlugPrincipalIDTag: FC<TagProps> = (props): ReactElement => {
   const { principalId, state } = usePlugStore();
+  const { addNotification } = useNotificationStore();
   const dispatch = useAppDispatch();
 
   const handleDisconnect = async () => {
@@ -41,6 +44,11 @@ export const PlugPrincipalIDTag: FC<TagProps> = (props): ReactElement => {
   const handleCopy = () => {
     if (principalId) {
       navigator.clipboard.writeText(principalId);
+      addNotification({
+        id: String(new Date().getTime()),
+        title: 'Principal ID copied to clipboard',
+        type: NotificationType.Success,
+      });
     }
   };
 

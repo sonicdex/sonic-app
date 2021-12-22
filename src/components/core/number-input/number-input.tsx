@@ -1,27 +1,24 @@
-import { Input } from '@chakra-ui/react';
+import { Input, InputProps } from '@chakra-ui/react';
 import { ChangeEvent } from 'react';
 
-type NumberInputProps = {
-  value: string;
-  setValue: (value: string) => any;
+export type NumberInputProps = InputProps & {
+  setValue?: (value: string) => void;
   placeholder?: string;
-  disabled?: boolean;
-  style?: any;
 };
 
 export const NumberInput = ({
-  value,
-  setValue,
   placeholder = '0.00',
-  disabled = false,
-  style = {},
+  setValue,
+  ...props
 }: NumberInputProps) => {
   const handleValueChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const inputValue = event.target.value;
-    // const parsedInputValue = parseFloat(inputValue);
+    const value = event.target.value;
 
-    if (isNaN(Number(inputValue))) return;
-    setValue(inputValue);
+    if (isNaN(Number(value))) return;
+
+    if (setValue) {
+      setValue(value);
+    }
   };
 
   return (
@@ -35,12 +32,10 @@ export const NumberInput = ({
       color="#888E8F"
       outline="none"
       transition="color 400ms"
-      _placeholder={{ color: '#888E8F' }}
-      placeholder={placeholder}
-      disabled={disabled}
-      value={value}
       onChange={handleValueChange}
-      style={style}
+      placeholder={placeholder}
+      _placeholder={{ color: '#888E8F' }}
+      {...props}
     />
   );
 };

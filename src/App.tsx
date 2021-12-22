@@ -1,22 +1,34 @@
-import { ModalManager } from '@/modals';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import isMobile from 'ismobilejs';
+
 import { NotificationManager } from '@/notifications';
 import { Activity, Assets, Liquidity, LiquidityAdd, Swap } from '@/views';
-import isMobile from 'ismobilejs';
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+
 import { EmptyMobile, Layout } from './components';
+import {
+  AddLiquidityProgressModal,
+  RemoveLiquidityProgressModal,
+  SwapFailModal,
+  SwapProgressModal,
+  TokenSelectModal,
+  WithdrawProgressModal,
+  DepositProgressModal,
+  RemoveLiquidityModal,
+} from './components/modals';
 import { useActorsInit } from './integrations/actor/use-actors-init';
 import { usePlugInit } from './integrations/plug';
-import { useSwapInit } from './integrations/swap';
 import { AssetsDeposit } from './views/assets/views/deposit';
 import { AssetsWithdraw } from './views/assets/views/withdraw';
+import { useLiquidityViewInit, useSwapCanisterInit } from './store';
 
 export const App = () => {
   const isAnyMobileDevice = isMobile(window.navigator).any;
 
   usePlugInit();
   useActorsInit();
+  useSwapCanisterInit();
 
-  useSwapInit();
+  useLiquidityViewInit();
 
   // TODO: Remove after plug mobile connection
   if (isAnyMobileDevice) {
@@ -27,7 +39,17 @@ export const App = () => {
     <BrowserRouter>
       <Layout>
         <NotificationManager />
-        <ModalManager />
+
+        <RemoveLiquidityModal />
+        <SwapProgressModal />
+        <TokenSelectModal />
+        <WithdrawProgressModal />
+        <DepositProgressModal />
+        <AddLiquidityProgressModal />
+        <RemoveLiquidityProgressModal />
+
+        <SwapFailModal />
+
         <Routes>
           <Route path="/swap" element={<Swap />} />
 

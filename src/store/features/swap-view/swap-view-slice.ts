@@ -1,7 +1,9 @@
-import { PairList, TokenData, TokenDataKey, TokenMetadataList } from '@/models';
+import { TokenData, TokenMetadataList } from '@/models';
 import type { RootState } from '@/store';
 import { FeatureState } from '@/store';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+
+export type SwapTokenDataKey = 'from' | 'to';
 
 export enum SwapStep {
   Home,
@@ -14,25 +16,25 @@ interface SwapViewState {
   from: TokenData;
   to: TokenData;
   tokenList?: TokenMetadataList;
-  pairList?: PairList;
   slippage: string;
   keepInSonic: boolean;
 }
+
+export const INITIAL_SWAP_SLIPPAGE = '0.5';
 
 const initialState: SwapViewState = {
   step: SwapStep?.Home,
   state: FeatureState?.Idle,
   from: {
-    token: undefined,
-    value: '0.00',
+    metadata: undefined,
+    value: '',
   },
   to: {
-    token: undefined,
-    value: '0.00',
+    metadata: undefined,
+    value: '',
   },
   tokenList: undefined,
-  pairList: undefined,
-  slippage: '0.10',
+  slippage: INITIAL_SWAP_SLIPPAGE,
   keepInSonic: false,
 };
 
@@ -49,47 +51,47 @@ export const swapViewSlice = createSlice({
     },
     setValue: (
       state,
-      action: PayloadAction<{ data: TokenDataKey; value: string }>
+      action: PayloadAction<{ data: SwapTokenDataKey; value: string }>
     ) => {
       state[action.payload.data].value = action.payload.value;
       state.step = SwapStep.Home;
     },
     setToken: (
       state,
-      action: PayloadAction<{ data: TokenDataKey; tokenId: string | undefined }>
+      action: PayloadAction<{
+        data: SwapTokenDataKey;
+        tokenId: string | undefined;
+      }>
     ) => {
-      state[action.payload.data].token =
+      state[action.payload.data].metadata =
         action.payload.tokenId && state.tokenList
           ? state.tokenList[action.payload.tokenId]
           : undefined;
       if (action.payload.data === 'from') {
-        state.from.value = '0.00';
-        state.to.value = '0.00';
-        state.to.token = undefined;
+        state.from.value = '';
+        state.to.value = '';
+        state.to.metadata = undefined;
       }
       state.step = SwapStep.Home;
     },
     switchTokens: (state) => {
-      if (state.from.token && state.to.token) {
-        const temp = state.from.token;
-        state.from.token = state.to.token;
-        state.to.token = temp;
+      if (state.from.metadata && state.to.metadata) {
+        const temp = state.from.metadata;
+        state.from.metadata = state.to.metadata;
+        state.to.metadata = temp;
+        state.from.value = '';
         state.step = SwapStep.Home;
       }
     },
     setTokenList: (state, action: PayloadAction<TokenMetadataList>) => {
       state.tokenList = action.payload;
       const tokens = Object.values(action.payload);
-      if (!state.from.token) {
+      if (!state.from.metadata) {
         // TODO: set default token
-        state.from.token = tokens[0];
-        state.from.value = '0.00';
-        state.to.value = '0.00';
+        state.from.metadata = tokens[0];
+        state.from.value = '';
+        state.to.value = '';
       }
-      state.step = SwapStep.Home;
-    },
-    setPairList: (state, action: PayloadAction<PairList>) => {
-      state.pairList = action.payload;
       state.step = SwapStep.Home;
     },
     setSlippage: (state, action: PayloadAction<string>) => {

@@ -1,6 +1,12 @@
 import { questionMarkSrc } from '@/assets';
+import { getFromStorage } from '@/config';
 import { SwapIDL } from '@/did';
-import { TokenMetadataList, PairList } from '@/models';
+import {
+  TokenMetadataList,
+  PairList,
+  PairBalances,
+  SupportedTokenList,
+} from '@/models';
 
 export const desensitizationPrincipalId = (
   principalId?: string,
@@ -18,16 +24,35 @@ export const desensitizationPrincipalId = (
   }
 };
 
+export const parseResponseSupportedTokenList = (
+  response: SwapIDL.TokenInfoExt[]
+): SupportedTokenList => {
+  return response.map((token) => ({
+    ...token,
+    logo: getFromStorage(`${token.id}-logo`) ?? questionMarkSrc,
+  }));
+};
+
 export const parseResponseTokenList = (
   response: SwapIDL.TokenInfoExt[]
 ): TokenMetadataList => {
   return response.reduce((list, token) => {
     list[token.id] = {
       ...token,
-      logo: questionMarkSrc,
+      logo: getFromStorage(`${token.id}-logo`) ?? questionMarkSrc,
     };
     return list;
   }, {} as TokenMetadataList);
+};
+
+export const parseResponsePair = (
+  pair: [] | [SwapIDL.PairInfoExt]
+): SwapIDL.PairInfoExt | undefined => {
+  if (pair.length === 0) {
+    return undefined;
+  }
+
+  return pair[0];
 };
 
 export const parseResponseAllPairs = (
@@ -53,4 +78,24 @@ export const parseResponseAllPairs = (
       },
     };
   }, {} as PairList);
+};
+
+export const parseResponseUserLPBalances = (
+  response: [tokenId: string, amount: bigint][]
+): PairBalances => {
+  return response.reduce((balances, [tokenId, amount]) => {
+    const [token0Id, token1Id] = tokenId.split(':');
+
+    return {
+      ...balances,
+      [token0Id]: {
+        ...balances[token0Id],
+        [token1Id]: Number(amount),
+      },
+      [token1Id]: {
+        ...balances[token1Id],
+        [token0Id]: Number(amount),
+      },
+    };
+  }, {} as PairBalances);
 };

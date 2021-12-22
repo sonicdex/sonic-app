@@ -1,6 +1,6 @@
 import { TokenMetadata } from '@/models';
 
 export type Withdraw = {
-  token: TokenMetadata;
+  token?: TokenMetadata;
   amount: string;
 };

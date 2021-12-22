@@ -15,7 +15,11 @@ import { usePlugStore } from '@/store';
 import { LogoBox } from '../core';
 import { PlugPrincipalIDTag } from '../plug/plug-principal-id-tag';
 import { PlugButton } from '..';
-import { FOOTER_HEIGHT, NAVBAR_HEIGHT, NAVIGATION_TABS } from './constants';
+import {
+  FOOTER_HEIGHT,
+  NAVBAR_HEIGHT,
+  NAVIGATION_TABS,
+} from './layout.constants';
 
 export const Layout: React.FC = ({ children, ...props }) => {
   const { isConnected } = usePlugStore();
@@ -50,9 +54,9 @@ export const Layout: React.FC = ({ children, ...props }) => {
                 <TabList>
                   {NAVIGATION_TABS.map(({ label, url }) => (
                     <Tab
+                      as={Link}
                       key={label}
                       isSelected={location.pathname === url}
-                      as={Link}
                       to={url}
                     >
                       {label}

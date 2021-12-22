@@ -1,8 +1,8 @@
 export enum LocalStorageKey {
-  WalletType = 'WALLET_TYPE',
+  Logos = 'logos',
 }
 
-export function getFromStorage(key: LocalStorageKey): any | undefined {
+export function getFromStorage(key: LocalStorageKey | string): any | undefined {
   try {
     const serializedValue = localStorage.getItem(key);
     return serializedValue ? JSON.parse(serializedValue) : undefined;
@@ -12,7 +12,7 @@ export function getFromStorage(key: LocalStorageKey): any | undefined {
   }
 }
 
-export function saveToStorage(key: LocalStorageKey, value: any): void {
+export function saveToStorage(key: LocalStorageKey | string, value: any): void {
   try {
     const serializedValue = JSON.stringify(value);
     localStorage.setItem(key, serializedValue);
@@ -21,7 +21,7 @@ export function saveToStorage(key: LocalStorageKey, value: any): void {
   }
 }
 
-export function removeFromStorage(key: LocalStorageKey): void {
+export function removeFromStorage(key: LocalStorageKey | string): void {
   try {
     localStorage.removeItem(key);
   } catch (error) {

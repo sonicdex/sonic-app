@@ -15,22 +15,21 @@ import {
   AssetIconButton,
   AssetImageBlock,
   AssetTitleBlock,
+  DisplayCurrency,
   Header,
   InformationBox,
   PlugButton,
 } from '@/components';
-import { FeatureState, usePlugStore, useSwapStore } from '@/store';
-import { DefaultTokensImage } from '@/constants';
+import { FeatureState, usePlugStore, useSwapCanisterStore } from '@/store';
+
 import { theme } from '@/theme';
 import { FaMinus, FaPlus } from 'react-icons/fa';
-import { questionMarkSrc } from '@/assets';
-import { useTotalBalances } from '@/hooks/use-balances';
-import { getCurrencyString } from '@/utils/format';
+import { useBalances } from '@/hooks/use-balances';
 
 export const Assets = () => {
-  const { totalBalances } = useTotalBalances();
+  const { totalBalances } = useBalances();
   const { supportedTokenListState, balancesState, supportedTokenList } =
-    useSwapStore();
+    useSwapCanisterStore();
   const { isConnected } = usePlugStore();
 
   const navigate = useNavigate();
@@ -92,7 +91,7 @@ export const Assets = () => {
         >
           <Stack
             css={{
-              '-ms-overflow-style': 'none',
+              msOverflowStyle: 'none',
               scrollbarWidth: 'none',
               '&::-webkit-scrollbar': {
                 display: 'none',
@@ -129,10 +128,10 @@ export const Assets = () => {
                 </Asset>
               </>
             ) : isSupportedTokenListPresent ? (
-              supportedTokenList.map(({ id, name, symbol, decimals }) => (
+              supportedTokenList.map(({ id, name, symbol, decimals, logo }) => (
                 <Asset
                   key={id}
-                  imageSources={[DefaultTokensImage[symbol] ?? questionMarkSrc]}
+                  imageSources={[logo]}
                   isLoading={supportedTokenListState === FeatureState.Loading}
                 >
                   <HStack spacing={4}>
@@ -144,9 +143,11 @@ export const Assets = () => {
                     <Text fontWeight="bold" color="gray.400">
                       Amount
                     </Text>
-                    <Text fontWeight="bold">
-                      {getCurrencyString(totalBalances?.[id], decimals)}
-                    </Text>
+                    <DisplayCurrency
+                      balance={totalBalances?.[id]}
+                      decimals={decimals}
+                      fontWeight="bold"
+                    />
                   </Box>
                   <Box>
                     <Text fontWeight="bold" color="gray.400">

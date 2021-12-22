@@ -1,9 +1,10 @@
-import { useTotalBalances } from '@/hooks/use-balances';
+import { useBalances } from '@/hooks/use-balances';
 import { useSwapBatch } from '@/integrations/transactions';
-import { MODALS } from '@/modals';
+
 import {
+  modalsSliceActions,
   NotificationType,
-  useModalStore,
+  useAppDispatch,
   useNotificationStore,
   usePlugStore,
   useSwapViewStore,
@@ -18,15 +19,16 @@ export interface SwapLinkProps {
 }
 
 export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
-  const { setCurrentModal, clearModal, setCurrentModalState } = useModalStore();
+  const dispatch = useAppDispatch();
   const swapViewStore = useSwapViewStore();
   const { addNotification, popNotification } = useNotificationStore();
   const { principalId } = usePlugStore();
-  const { getBalances } = useTotalBalances();
+  const { getBalances } = useBalances();
 
   const { from, to, slippage, keepInSonic } = useMemo(() => {
     // Clone current state just for this batch
     const { from, to, slippage, keepInSonic } = swapViewStore;
+
     return deserialize(stringify({ from, to, slippage, keepInSonic }));
   }, []);
 
@@ -34,13 +36,16 @@ export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
     switch (swapBatch.state) {
       case 'approve':
       case 'deposit':
-        setCurrentModalState('deposit');
+        dispatch(modalsSliceActions.setSwapData({ step: 'deposit' }));
+
         break;
       case 'swap':
-        setCurrentModalState('swap');
+        dispatch(modalsSliceActions.setSwapData({ step: 'swap' }));
+
         break;
       case 'withdraw':
-        setCurrentModalState('withdraw');
+        dispatch(modalsSliceActions.setSwapData({ step: 'withdraw' }));
+
         break;
     }
   };
@@ -48,7 +53,6 @@ export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
   const handleOpenModal = () => {
     handleStateChange();
     openSwapModal();
-    setCurrentModal(MODALS.swapProgress);
   };
 
   const [swapBatch, openSwapModal] = useSwapBatch({
@@ -66,10 +70,12 @@ export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
       .execute()
       .then((res) => {
         console.log('Swap Completed', res);
-        clearModal();
+        dispatch(modalsSliceActions.clearSwapData());
+        dispatch(modalsSliceActions.closeSwapProgressModal());
+
         addNotification({
-          title: `Swapped ${from.value} ${from.token?.symbol} for ${to.value} ${to.token?.symbol}`,
-          type: NotificationType.Done,
+          title: `Swapped ${from.value} ${from.metadata.symbol} for ${to.value} ${to.metadata.symbol}`,
+          type: NotificationType.Success,
           id: Date.now().toString(),
           // TODO: add transaction id
           transactionLink: createCAPLink('transactionId'),
@@ -78,9 +84,10 @@ export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
       })
       .catch((err) => {
         console.error('Swap Error', err);
-        clearModal();
+        dispatch(modalsSliceActions.clearSwapData());
+
         addNotification({
-          title: `Failed swapping ${from.value} ${from.token?.symbol} for ${to.value} ${to.token?.symbol}`,
+          title: `Failed swapping ${from.value} ${from.metadata.symbol} for ${to.value} ${to.metadata.symbol}`,
           type: NotificationType.Error,
           id: Date.now().toString(),
         });

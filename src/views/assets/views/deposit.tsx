@@ -1,113 +1,176 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Box } from '@chakra-ui/react';
-import { TitleBox, TokenBox, Button } from '@/components';
+import {
+  TitleBox,
+  Token,
+  Button,
+  TokenContent,
+  TokenInput,
+  TokenDetails,
+  TokenDetailsLogo,
+  TokenDetailsSymbol,
+  TokenBalances,
+  TokenBalancesDetails,
+  TokenBalancesPrice,
+} from '@/components';
 
 import {
-  assetsViewActions,
+  depositViewActions,
   FeatureState,
   NotificationType,
   useAppDispatch,
-  useAssetsViewStore,
+  useDepositViewStore,
   useNotificationStore,
-  useSwapStore,
+  useSwapCanisterStore,
+  useTokenModalOpener,
 } from '@/store';
 import { useNavigate } from 'react-router';
 import { useQuery } from '@/hooks/use-query';
 import { plugCircleSrc } from '@/assets';
+import { formatAmount, getCurrencyString } from '@/utils/format';
+import { debounce } from '@/utils/function';
 
 export const AssetsDeposit = () => {
-  const { addNotification } = useNotificationStore();
   const query = useQuery();
-  const [selectedTokenId, setSelectedTokenId] = useState(query.get('tokenId'));
 
-  const { supportedTokenList, supportedTokenListState } = useSwapStore();
+  const { supportedTokenList, tokenBalances, supportedTokenListState } =
+    useSwapCanisterStore();
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { depositValue } = useAssetsViewStore();
+  const { amount, tokenId } = useDepositViewStore();
+  const { addNotification } = useNotificationStore();
+  const openSelectTokenModal = useTokenModalOpener();
 
-  const isReady = useMemo(
-    () => depositValue && parseFloat(depositValue) > 0,
-    [depositValue]
-  );
+  const selectedTokenMetadata = useMemo(() => {
+    return supportedTokenList?.find(({ id }) => id === tokenId);
+  }, [supportedTokenList, tokenId]);
 
-  const status = useMemo(() => {
-    if (isReady) {
-      return 'active';
-    }
-
-    return '';
-  }, [isReady]);
-
-  const handleTokenSelect = (tokenId: string) => {
-    setSelectedTokenId(tokenId);
+  const handleSelectTokenId = (tokenId?: string) => {
+    dispatch(depositViewActions.setTokenId(tokenId!));
   };
 
-  const handleDeposit = () => {
-    // TODO: replace by real deposit logic
-    addNotification({
-      title: 'Deposit successful',
-      type: NotificationType.Done,
-      id: Date.now().toString(),
+  const handleOpenSelectTokenModal = () => {
+    openSelectTokenModal({
+      metadata: supportedTokenList,
+      onSelect: (tokenId) => handleSelectTokenId(tokenId),
+      selectedTokenIds: [],
     });
   };
 
+  const handleDeposit = () => {
+    addNotification({
+      title: `Depositing ${selectedTokenMetadata?.symbol}`,
+      type: NotificationType.Deposit,
+      id: String(new Date().getTime()),
+    });
+    debounce(() => dispatch(depositViewActions.setAmount('')), 300);
+  };
+
+  const [buttonDisabled, buttonMessage] = useMemo<[boolean, string]>(() => {
+    if (!selectedTokenMetadata?.id) return [true, 'Select the token'];
+
+    const parsedFromValue = (amount && parseFloat(amount)) || 0;
+
+    if (parsedFromValue <= 0)
+      return [true, `No ${selectedTokenMetadata?.name} value selected`];
+
+    if (tokenBalances && selectedTokenMetadata) {
+      const parsedBalance = parseFloat(
+        formatAmount(
+          tokenBalances[selectedTokenMetadata.id],
+          selectedTokenMetadata.decimals
+        )
+      );
+
+      if (parsedFromValue > parsedBalance) {
+        return [true, `Insufficient ${selectedTokenMetadata.name} Balance`];
+      }
+    }
+
+    return [false, 'Withdraw'];
+  }, [amount, tokenBalances, selectedTokenMetadata]);
+
+  const tokenBalance = useMemo(() => {
+    if (tokenBalances && tokenId) {
+      return tokenBalances[tokenId];
+    }
+
+    return 0;
+  }, [tokenBalances, tokenId]);
+
   useEffect(() => {
+    const tokenId = query.get('tokenId');
     const fromQueryValue = query.get('amount');
+
     if (fromQueryValue) {
-      dispatch(assetsViewActions.setDepositValue(fromQueryValue));
+      dispatch(depositViewActions.setAmount(fromQueryValue));
+    }
+
+    if (tokenId) {
+      handleSelectTokenId(tokenId);
     }
 
     return () => {
-      dispatch(assetsViewActions.setDepositValue('0.00'));
+      dispatch(depositViewActions.setAmount(''));
     };
   }, []);
+
+  const handleMaxClick = () => {
+    dispatch(
+      depositViewActions.setAmount(
+        getCurrencyString(tokenBalance, selectedTokenMetadata?.decimals)
+      )
+    );
+  };
+
+  const isLoading =
+    supportedTokenListState === FeatureState.Loading &&
+    !supportedTokenList &&
+    !selectedTokenMetadata &&
+    !tokenId;
 
   return (
     <>
       <TitleBox title="Deposit Asset" onArrowBack={() => navigate('/assets')} />
-      {supportedTokenListState === FeatureState.Loading &&
-      !supportedTokenList ? (
-        <Box my={5}>
-          <TokenBox
-            sources={[{ name: 'Plug Wallet', src: plugCircleSrc }]}
-            isLoading
-          />
-        </Box>
-      ) : supportedTokenList && selectedTokenId ? (
-        <Box my={5}>
-          <TokenBox
-            value={depositValue}
-            onMaxClick={() => dispatch(assetsViewActions.setDepositValue(''))}
-            setValue={(value) =>
-              dispatch(assetsViewActions.setDepositValue(value))
-            }
-            onTokenSelect={handleTokenSelect}
-            price={53.23}
-            sources={[
-              {
-                name: 'Plug Wallet',
-                src: plugCircleSrc,
-                balance: 0,
-              },
-            ]}
-            selectedTokenIds={[selectedTokenId]}
-            status={status}
-            otherTokensMetadata={supportedTokenList}
-            selectedTokenMetadata={supportedTokenList.find(
-              ({ id }) => id === selectedTokenId
-            )}
-          />
-        </Box>
-      ) : null}
+      <Box my={5}>
+        <Token
+          isLoading={isLoading}
+          value={amount}
+          setValue={(value) => dispatch(depositViewActions.setAmount(value))}
+          price={0}
+          sources={[
+            {
+              name: 'Plug Wallet',
+              src: plugCircleSrc,
+              balance: tokenBalance,
+            },
+          ]}
+          tokenListMetadata={supportedTokenList}
+          tokenMetadata={selectedTokenMetadata}
+        >
+          <TokenContent>
+            <TokenDetails onClick={handleOpenSelectTokenModal}>
+              <TokenDetailsLogo />
+              <TokenDetailsSymbol />
+            </TokenDetails>
+
+            <TokenInput autoFocus />
+          </TokenContent>
+          <TokenBalances>
+            <TokenBalancesDetails onMaxClick={handleMaxClick} />
+            <TokenBalancesPrice />
+          </TokenBalances>
+        </Token>
+      </Box>
       <Button
         isFullWidth
         size="lg"
-        isDisabled={!isReady}
+        isDisabled={buttonDisabled}
         onClick={handleDeposit}
         isLoading={supportedTokenListState === FeatureState.Loading}
       >
-        Deposit
+        {buttonMessage}
       </Button>
     </>
   );
