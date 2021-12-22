@@ -1,4 +1,5 @@
 import { useBalances } from '@/hooks/use-balances';
+import { useKeepSync } from '@/hooks/use-keep-sync';
 import {
   FeatureState,
   swapCanisterActions,
@@ -18,6 +19,12 @@ export const useSwapCanisterInit = () => {
     useBalances();
   const { principalId, isConnected, state: plugState } = usePlugStore();
   const { supportedTokenListState } = useSwapCanisterStore();
+
+  const tokenListKeepSync = useKeepSync(getSupportedTokenList);
+  const allPairsKeepSync = useKeepSync(getAllPairs);
+  const balancesKeepSync = useKeepSync(() =>
+    getBalances().then(() => balancesKeepSync())
+  );
 
   const swapActor = useSwapActor();
 
@@ -70,6 +77,7 @@ export const useSwapCanisterInit = () => {
             )
           );
         }
+        tokenListKeepSync();
         dispatch(
           swapCanisterActions.setSupportedTokensListState(FeatureState.Idle)
         );
@@ -98,6 +106,7 @@ export const useSwapCanisterInit = () => {
           throw new Error('No "getAllPairs" response');
         }
 
+        allPairsKeepSync();
         dispatch(swapCanisterActions.setAllPairsState(FeatureState.Idle));
       } catch (error) {
         console.error('getAllPairs: ', error);

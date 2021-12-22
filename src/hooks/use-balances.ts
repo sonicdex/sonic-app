@@ -36,8 +36,6 @@ export const useBalances = () => {
         BigInt(0)
       );
 
-      console.log(response);
-
       if (response) {
         dispatch(
           swapCanisterActions.setUserLPBalances(
@@ -57,6 +55,7 @@ export const useBalances = () => {
 
   const getBalances = useCallback(async () => {
     try {
+      console.log('getting balances');
       const swapActor =
         _swapActor ?? (appActors[ENV.canisterIds.swap] as SwapIDL.Factory);
 
@@ -84,9 +83,12 @@ export const useBalances = () => {
                 const logo = getFromStorage(storageKey);
 
                 if (!logo) {
-                  const tokenLogo = await tokenActor.getLogo();
-
-                  saveToStorage(storageKey, tokenLogo);
+                  try {
+                    const tokenLogo = await tokenActor.getLogo();
+                    saveToStorage(storageKey, tokenLogo);
+                  } catch (e) {
+                    console.error('Token Logo not found', e);
+                  }
                 }
 
                 const tokenBalance = await tokenActor.balanceOf(
