@@ -76,25 +76,23 @@ export const useRemoveLiquidityBatch = ({
           callbacks: [
             // Retry callback
             () => {
-              openRemoveLiqudityModal();
+              openRemoveLiquidityModal();
               resolve(true);
             },
             // Not retry callback
             () => {
-              modalsSliceActions.closeRemoveLiquidityModal();
               resolve(false);
             },
           ],
         })
       );
 
-      resolve(false);
       dispatch(modalsSliceActions.closeRemoveLiquidityProgressModal());
       dispatch(modalsSliceActions.openRemoveLiquidityFailModal());
     });
   };
 
-  const openRemoveLiqudityModal = () => {
+  const openRemoveLiquidityModal = () => {
     dispatch(
       modalsSliceActions.setRemoveLiquidityData({
         steps: Object.keys(transactions) as RemoveLiquidityModalDataStep[],
@@ -108,6 +106,6 @@ export const useRemoveLiquidityBatch = ({
 
   return [
     useBatchHook<RemoveLiquidityModalDataStep>({ transactions, handleRetry }),
-    openRemoveLiqudityModal,
+    openRemoveLiquidityModal,
   ] as [Batch.Hook<RemoveLiquidityModalDataStep>, () => void];
 };

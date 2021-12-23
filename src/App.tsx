@@ -14,6 +14,8 @@ import {
   WithdrawProgressModal,
   DepositProgressModal,
   RemoveLiquidityModal,
+  AddLiquidityFailModal,
+  RemoveLiquidityFailModal,
 } from './components/modals';
 import { useActorsInit } from './integrations/actor/use-actors-init';
 import { usePlugInit } from './integrations/plug';
@@ -49,6 +51,8 @@ export const App = () => {
         <RemoveLiquidityProgressModal />
 
         <SwapFailModal />
+        <AddLiquidityFailModal />
+        <RemoveLiquidityFailModal />
 
         <Routes>
           <Route path="/swap" element={<Swap />} />
