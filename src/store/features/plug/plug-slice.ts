@@ -23,6 +23,9 @@ export const plugSlice = createSlice({
   reducers: {
     setIsConnected: (state, action: PayloadAction<boolean>) => {
       state.isConnected = action.payload;
+      if (!action.payload) {
+        state.principalId = undefined;
+      }
     },
     setPrincipalId: (state, action: PayloadAction<string>) => {
       state.principalId = action.payload;

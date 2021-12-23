@@ -1,16 +1,24 @@
-import { Button, Modal, ModalOverlay } from '@chakra-ui/react';
+import { Modal, ModalOverlay } from '@chakra-ui/react';
+import { Button } from '../core';
 
 import { TransactionFailedModalContent } from './components';
-import { useModalsStore } from '@/store';
+import { modalsSliceActions, useAppDispatch, useModalsStore } from '@/store';
 
 export const RemoveLiquidityFailModal = () => {
   const { isRemoveLiquidityFailOpened, removeLiquidityData } = useModalsStore();
   const { callbacks: [removeLiquidityCallback, closeCallback] = [] } =
     removeLiquidityData;
 
+  const dispatch = useAppDispatch();
+
+  const handleClose = () => {
+    if (closeCallback) closeCallback();
+    dispatch(modalsSliceActions.closeRemoveLiquidityFailModal());
+  };
+
   return (
     <Modal
-      onClose={closeCallback ?? (() => null)}
+      onClose={handleClose}
       isOpen={isRemoveLiquidityFailOpened}
       isCentered
     >
@@ -30,7 +38,7 @@ export const RemoveLiquidityFailModal = () => {
           borderRadius={12}
           fontWeight={700}
           fontSize={18}
-          onClick={closeCallback}
+          onClick={handleClose}
           isFullWidth
           isWireframe
         >
