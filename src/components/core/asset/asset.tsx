@@ -10,6 +10,7 @@ import {
   Flex,
   Tooltip,
   IconButtonProps,
+  Skeleton,
 } from '@chakra-ui/react';
 import { createContext } from '@chakra-ui/react-utils';
 import { questionMarkSrc } from '@/assets';
@@ -89,14 +90,23 @@ export const AssetTitleBlock = ({
   subtitle,
   ...props
 }: AssetTitleBlockProps) => {
+  const { isLoading } = useAssetContext();
   return (
     <Box minW={32} ml={4} {...props}>
-      <Heading as="h3" fontSize="lg" fontWeight={700} color="#F6FCFD">
-        {title}
-      </Heading>
-      <Text fontSize="sm" color="gray.400">
-        {subtitle}
-      </Text>
+      <Skeleton
+        isLoaded={!isLoading}
+        mb={isLoading ? 2 : 0}
+        width={isLoading ? 60 : 'unset'}
+      >
+        <Heading as="h3" fontSize="lg" fontWeight={700} color="#F6FCFD">
+          {title}
+        </Heading>
+      </Skeleton>
+      <Skeleton isLoaded={!isLoading} width={isLoading ? 40 : 'unset'}>
+        <Text fontSize="sm" color="gray.400">
+          {subtitle}
+        </Text>
+      </Skeleton>
     </Box>
   );
 };

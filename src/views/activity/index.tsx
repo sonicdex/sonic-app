@@ -1,17 +1,30 @@
 import { Header, PlugButton } from '@/components';
-import { useActivityView, useActivityViewStore, usePlugStore } from '@/store';
+import {
+  FeatureState,
+  useActivityView,
+  useActivityViewStore,
+  usePlugStore,
+} from '@/store';
 import { theme } from '@/theme';
-import { Alert, AlertIcon, AlertTitle, Stack, Text } from '@chakra-ui/react';
+import {
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  Skeleton,
+  Stack,
+  Text,
+} from '@chakra-ui/react';
 import {
   AddLiquidityActivity,
   DepositActivity,
   SwapActivity,
   WithdrawActivity,
 } from './components';
+import { LoadingActivity } from './components/loading-activity';
 export const Activity = () => {
   useActivityView();
   const { isConnected } = usePlugStore();
-  const { activityList } = useActivityViewStore();
+  const { activityList, state } = useActivityViewStore();
 
   if (!isConnected) {
     return (
@@ -21,8 +34,21 @@ export const Activity = () => {
           <AlertIcon />
           <AlertTitle>You are not connected to the wallet</AlertTitle>
         </Alert>
-
         <PlugButton />
+      </>
+    );
+  }
+
+  if (
+    state === FeatureState.Loading &&
+    Object.keys(activityList).length === 0
+  ) {
+    return (
+      <>
+        <Header title="Your Activity" />
+        <Skeleton mb={2}>{new Date().toDateString()}</Skeleton>
+        <LoadingActivity />
+        <LoadingActivity />
       </>
     );
   }
@@ -30,7 +56,10 @@ export const Activity = () => {
   if (Object.keys(activityList).length === 0) {
     return (
       <>
-        <Header title="Your Activity" />
+        <Header
+          title="Your Activity"
+          isLoading={state === FeatureState.Loading}
+        />
         <Text>Nothing to show</Text>
       </>
     );
@@ -38,7 +67,10 @@ export const Activity = () => {
 
   return (
     <>
-      <Header title="Your Activity" />
+      <Header
+        title="Your Activity"
+        isLoading={state === FeatureState.Loading}
+      />
       <Stack
         mt={-5}
         mb={-5}
@@ -76,7 +108,6 @@ export const Activity = () => {
                         time={transaction.time}
                       />
                     );
-
                   case 'withdraw':
                     return (
                       <WithdrawActivity
