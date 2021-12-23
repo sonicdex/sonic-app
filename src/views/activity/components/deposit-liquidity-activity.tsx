@@ -40,7 +40,7 @@ export const DepositActivity = ({
         />
       </HStack>
       <Stack textAlign="end">
-        <Heading as="h6" size="sm" display="flex">
+        <Heading as="h6" size="sm" display="flex" alignItems="center">
           <DisplayCurrency
             balance={amount}
             decimals={token.decimals}

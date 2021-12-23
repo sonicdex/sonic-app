@@ -44,7 +44,7 @@ export const SwapActivity = ({
         />
       </HStack>
       <Stack textAlign="end">
-        <Heading as="h6" size="sm" display="flex">
+        <Heading as="h6" size="sm" display="flex" alignItems="center">
           <DisplayCurrency
             balance={amountIn}
             decimals={fromToken.decimals}

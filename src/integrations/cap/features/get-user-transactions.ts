@@ -18,5 +18,5 @@ export const getUserTransactions = async (
     page,
   })) as { data: CapHistoryLog[] };
 
-  return parseCapHistoryLog(Object.values(result.data));
+  return parseCapHistoryLog(Object.values(result.data.reverse()));
 };

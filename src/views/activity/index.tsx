@@ -1,5 +1,6 @@
 import { Header, PlugButton } from '@/components';
 import { useActivityView, useActivityViewStore, usePlugStore } from '@/store';
+import { theme } from '@/theme';
 import { Alert, AlertIcon, AlertTitle, Stack, Text } from '@chakra-ui/react';
 import {
   AddLiquidityActivity,
@@ -38,8 +39,24 @@ export const Activity = () => {
   return (
     <>
       <Header title="Your Activity" />
-      <Stack spacing={4}>
-        <Stack>
+      <Stack
+        mt={-5}
+        mb={-5}
+        spacing={4}
+        overflowX="hidden"
+        position="relative"
+        _after={{
+          content: "''",
+          position: 'absolute',
+          height: 20,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          pointerEvents: 'none',
+          background: `linear-gradient(to bottom, transparent 0%, ${theme.colors.bg} 100%)`,
+        }}
+      >
+        <Stack overflowX="auto" pb={20} pt={5}>
           {Object.entries(activityList).map(([date, transactions]) => (
             <>
               <Text>{new Date(date).toDateString()}</Text>

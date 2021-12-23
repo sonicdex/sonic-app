@@ -44,7 +44,7 @@ export const AddLiquidityActivity: React.FC<AddLiquidityActivityProps> = ({
         />
       </HStack>
       <Stack textAlign="end">
-        <Heading as="h6" size="sm" display="flex">
+        <Heading as="h6" size="sm" display="flex" alignItems="center">
           <DisplayCurrency
             balance={amount0}
             decimals={token0.decimals}
