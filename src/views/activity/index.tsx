@@ -102,7 +102,23 @@ export const Activity = () => {
           background: `linear-gradient(to bottom, transparent 0%, ${theme.colors.bg} 100%)`,
         }}
       >
-        <Stack overflowX="auto" pb={20} pt={5} onScroll={scrollHandler}>
+        <Stack
+          overflowX="auto"
+          pb={20}
+          pt={5}
+          onScroll={scrollHandler}
+          css={{
+            '&::-webkit-scrollbar': {
+              display: 'none',
+            },
+            '&::-webkit-scrollbar-track': {
+              display: 'none',
+            },
+            '&::-webkit-scrollbar-thumb': {
+              display: 'none',
+            },
+          }}
+        >
           {Object.entries(activityList).map(([date, transactions]) => (
             <>
               <Text>{new Date(date).toDateString()}</Text>
