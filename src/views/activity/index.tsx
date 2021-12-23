@@ -72,7 +72,9 @@ export const Activity = () => {
           title="Your Activity"
           isLoading={state === FeatureState.Loading}
         />
-        <Text>Nothing to show</Text>
+        <Text textAlign="center" color="#888E8F">
+          You have no activity
+        </Text>
       </>
     );
   }
