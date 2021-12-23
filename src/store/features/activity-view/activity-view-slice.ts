@@ -8,11 +8,15 @@ interface ActivityViewState {
   state: FeatureState;
   tokenList?: TokenMetadataList;
   activityList: { [date: string]: MappedCapHistoryLog[] };
+  page: number;
+  endReached: boolean;
 }
 
 const initialState: ActivityViewState = {
   state: FeatureState?.Idle,
   activityList: {},
+  page: 0,
+  endReached: false,
 };
 
 export const activityViewSlice = createSlice({
@@ -26,12 +30,36 @@ export const activityViewSlice = createSlice({
     setTokenList: (state, action: PayloadAction<TokenMetadataList>) => {
       state.tokenList = action.payload;
     },
+    setPage: (state, action: PayloadAction<number>) => {
+      state.page = action.payload;
+    },
     pushActivityList: (state, action: PayloadAction<MappedCapHistoryLog[]>) => {
-      state.activityList = action.payload.reduce((acc, cur) => {
+      const aux = action.payload.reduce((acc, cur) => {
         const date = new Date(cur.time).toDateString();
         acc[date] = [...(acc[date] || []), cur];
         return acc;
-      }, {} as any);
+      }, state.activityList);
+
+      for (const key in aux) {
+        const alreadyAdded = new Set();
+        aux[key] = aux[key].filter((item) => {
+          if (alreadyAdded.has(item.time)) {
+            return false;
+          }
+          alreadyAdded.add(item.time);
+          return true;
+        });
+      }
+
+      state.activityList = aux;
+    },
+    setEndReached: (state) => {
+      state.endReached = true;
+    },
+    clearActivityList: (state) => {
+      state.activityList = {};
+      state.page = 0;
+      state.endReached = false;
     },
   },
 });

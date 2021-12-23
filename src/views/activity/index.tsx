@@ -1,8 +1,10 @@
 import { Header, PlugButton } from '@/components';
 import {
+  activityViewActions,
   FeatureState,
   useActivityView,
   useActivityViewStore,
+  useAppDispatch,
   usePlugStore,
 } from '@/store';
 import { theme } from '@/theme';
@@ -24,7 +26,17 @@ import { LoadingActivity } from './components/loading-activity';
 export const Activity = () => {
   useActivityView();
   const { isConnected } = usePlugStore();
-  const { activityList, state } = useActivityViewStore();
+  const { activityList, state, page, endReached } = useActivityViewStore();
+  const dispatch = useAppDispatch();
+
+  const scrollHandler = (e: any): void => {
+    if (endReached || state === FeatureState.Loading) return;
+    const isBottom =
+      e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
+    if (isBottom) {
+      dispatch(activityViewActions.setPage(page + 1));
+    }
+  };
 
   if (!isConnected) {
     return (
@@ -88,7 +100,7 @@ export const Activity = () => {
           background: `linear-gradient(to bottom, transparent 0%, ${theme.colors.bg} 100%)`,
         }}
       >
-        <Stack overflowX="auto" pb={20} pt={5}>
+        <Stack overflowX="auto" pb={20} pt={5} onScroll={scrollHandler}>
           {Object.entries(activityList).map(([date, transactions]) => (
             <>
               <Text>{new Date(date).toDateString()}</Text>
