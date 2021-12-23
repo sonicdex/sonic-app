@@ -23,6 +23,7 @@ import {
   WithdrawActivity,
 } from './components';
 import { LoadingActivity } from './components/loading-activity';
+import { RemoveLiquidityActivity } from './components/remove-liquidity-activity';
 export const Activity = () => {
   useActivityView();
   const { isConnected } = usePlugStore();
@@ -134,6 +135,13 @@ export const Activity = () => {
                   case 'addLiquidity':
                     return (
                       <AddLiquidityActivity
+                        {...(transaction.details as any)}
+                        time={transaction.time}
+                      />
+                    );
+                  case 'removeLiquidity':
+                    return (
+                      <RemoveLiquidityActivity
                         {...(transaction.details as any)}
                         time={transaction.time}
                       />
