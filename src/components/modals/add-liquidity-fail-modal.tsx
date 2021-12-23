@@ -1,19 +1,23 @@
-import { Button, Modal, ModalOverlay } from '@chakra-ui/react';
+import { Modal, ModalOverlay } from '@chakra-ui/react';
+import { Button } from '../core';
 
 import { TransactionFailedModalContent } from './components';
-import { useModalsStore } from '@/store';
+import { modalsSliceActions, useAppDispatch, useModalsStore } from '@/store';
 
 export const AddLiquidityFailModal = () => {
   const { isAddLiquidityFailOpened, addLiquidityData } = useModalsStore();
   const { callbacks: [addLiquidityCallback, closeCallback] = [] } =
     addLiquidityData;
 
+  const dispatch = useAppDispatch();
+
+  const handleClose = () => {
+    if (closeCallback) closeCallback();
+    dispatch(modalsSliceActions.closeAddLiquidityFailModal());
+  };
+
   return (
-    <Modal
-      onClose={closeCallback ?? (() => null)}
-      isOpen={isAddLiquidityFailOpened}
-      isCentered
-    >
+    <Modal onClose={handleClose} isOpen={isAddLiquidityFailOpened} isCentered>
       <ModalOverlay />
       <TransactionFailedModalContent title="Swap Failed">
         <Button
@@ -30,7 +34,7 @@ export const AddLiquidityFailModal = () => {
           borderRadius={12}
           fontWeight={700}
           fontSize={18}
-          onClick={closeCallback}
+          onClick={handleClose}
           isFullWidth
           isWireframe
         >

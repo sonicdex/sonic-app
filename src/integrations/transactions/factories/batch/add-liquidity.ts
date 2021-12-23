@@ -1,6 +1,3 @@
-import { useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
-
 import {
   AddLiquidityModalDataStep,
   modalsSliceActions,
@@ -8,16 +5,16 @@ import {
   useLiquidityViewStore,
   useSwapCanisterStore,
 } from '@/store';
-
+import { useMemo } from 'react';
 import {
-  useMemorizedDepositTransaction,
-  useMemorizedAddLiquidityTransaction,
   useBatchHook,
+  useMemorizedAddLiquidityTransaction,
   useMemorizedApproveTransaction,
+  useMemorizedDepositTransaction,
 } from '..';
 import { AddLiquidity, Batch, Deposit } from '../..';
-import { getDepositTransactions, getToDepositAmount } from './utils';
 import { useMemorizedCreatePairTransaction } from '../transactions/create-pair';
+import { getDepositTransactions, getToDepositAmount } from './utils';
 
 interface Transactions {
   [transactionName: string]: any;
@@ -38,8 +35,6 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
   ) {
     throw new Error('Tokens are required');
   }
-
-  const navigate = useNavigate();
 
   const deposit0Params = useMemo(() => {
     if (addLiquidityParams.token0.metadata) {
@@ -134,18 +129,12 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
             },
             // Cancel callback
             () => {
-              if (transactions.deposit) {
-                navigate(
-                  `/assets/withdraw?tokenId=${addLiquidityParams.token0.metadata?.id}&amount=${addLiquidityParams.token0.value}`
-                );
-              }
               resolve(false);
             },
           ],
         })
       );
 
-      resolve(false);
       dispatch(modalsSliceActions.closeAddLiquidityProgressModal());
       dispatch(modalsSliceActions.openAddLiquidityFailModal());
     });

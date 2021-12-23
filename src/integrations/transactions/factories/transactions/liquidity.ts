@@ -100,7 +100,7 @@ export const useMemorizedRemoveLiquidityTransaction: CreateTransaction<RemoveLiq
         args: [
           Principal.fromText(token0.metadata.id),
           Principal.fromText(token1.metadata.id),
-          BigInt(lpAmount),
+          BigInt(Math.round(lpAmount)),
           parseAmount(String(amount0Min), token0.metadata.decimals),
           parseAmount(String(amount1Min), token1.metadata.decimals),
           Principal.fromText(principalId),

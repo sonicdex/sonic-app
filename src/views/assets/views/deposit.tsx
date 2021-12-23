@@ -88,7 +88,7 @@ export const AssetsDeposit = () => {
       }
     }
 
-    return [false, 'Withdraw'];
+    return [false, 'Deposit'];
   }, [amount, tokenBalances, selectedTokenMetadata]);
 
   const tokenBalance = useMemo(() => {
