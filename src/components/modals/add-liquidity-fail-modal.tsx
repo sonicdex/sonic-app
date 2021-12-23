@@ -1,4 +1,5 @@
-import { Button, Modal, ModalOverlay } from '@chakra-ui/react';
+import { Modal, ModalOverlay } from '@chakra-ui/react';
+import { Button } from '../core';
 
 import { TransactionFailedModalContent } from './components';
 import { modalsSliceActions, useAppDispatch, useModalsStore } from '@/store';
