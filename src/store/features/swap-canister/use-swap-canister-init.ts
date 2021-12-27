@@ -1,5 +1,4 @@
 import { useBalances } from '@/hooks/use-balances';
-import { useKeepSync } from '@/hooks/use-keep-sync';
 import {
   FeatureState,
   swapCanisterActions,
@@ -13,18 +12,13 @@ import {
 } from '@/utils/canister';
 import { useEffect } from 'react';
 import { useSwapActor } from '../../../integrations/actor/use-swap-actor';
+import { useKeepSync } from '../keep-sync';
 
 export const useSwapCanisterInit = () => {
   const { getBalances, getUserPositiveLPBalances, totalBalances } =
     useBalances();
   const { principalId, isConnected, state: plugState } = usePlugStore();
-  const { supportedTokenListState } = useSwapCanisterStore();
-
-  const tokenListKeepSync = useKeepSync(getSupportedTokenList);
-  const allPairsKeepSync = useKeepSync(getAllPairs);
-  const balancesKeepSync = useKeepSync(() =>
-    getBalances().then(() => balancesKeepSync())
-  );
+  const { supportedTokenListState, allPairsState } = useSwapCanisterStore();
 
   const swapActor = useSwapActor();
 
@@ -61,39 +55,46 @@ export const useSwapCanisterInit = () => {
     }
   }, [totalBalances, swapActor]);
 
-  async function getSupportedTokenList() {
-    if (swapActor) {
-      try {
-        dispatch(
-          swapCanisterActions.setSupportedTokensListState(FeatureState.Loading)
-        );
-
-        const response = await swapActor.getSupportedTokenList();
-
-        if (response) {
+  const getSupportedTokenList = useKeepSync(
+    'getSupportedTokenList',
+    async () => {
+      if (swapActor && supportedTokenListState !== FeatureState.Loading) {
+        try {
           dispatch(
-            swapCanisterActions.setSupportedTokenList(
-              parseResponseSupportedTokenList(response)
+            swapCanisterActions.setSupportedTokensListState(
+              FeatureState.Loading
             )
           );
-        }
-        tokenListKeepSync();
-        dispatch(
-          swapCanisterActions.setSupportedTokensListState(FeatureState.Idle)
-        );
 
-        return response;
-      } catch (error) {
-        console.error('getSupportedTokenList: ', error);
-        dispatch(
-          swapCanisterActions.setSupportedTokensListState(FeatureState.Error)
-        );
+          const response = await swapActor.getSupportedTokenList();
+
+          if (response) {
+            dispatch(
+              swapCanisterActions.setSupportedTokenList(
+                parseResponseSupportedTokenList(response)
+              )
+            );
+          } else {
+            throw new Error('No "getSupportedTokenList" response');
+          }
+
+          dispatch(
+            swapCanisterActions.setSupportedTokensListState(FeatureState.Idle)
+          );
+
+          return response;
+        } catch (error) {
+          console.error('getSupportedTokenList: ', error);
+          dispatch(
+            swapCanisterActions.setSupportedTokensListState(FeatureState.Error)
+          );
+        }
       }
     }
-  }
+  );
 
-  async function getAllPairs() {
-    if (swapActor) {
+  const getAllPairs = useKeepSync('getAllPairs', async () => {
+    if (swapActor && allPairsState !== FeatureState.Loading) {
       try {
         dispatch(swapCanisterActions.setAllPairsState(FeatureState.Loading));
         const response = await swapActor.getAllPairs();
@@ -106,12 +107,11 @@ export const useSwapCanisterInit = () => {
           throw new Error('No "getAllPairs" response');
         }
 
-        allPairsKeepSync();
         dispatch(swapCanisterActions.setAllPairsState(FeatureState.Idle));
       } catch (error) {
         console.error('getAllPairs: ', error);
         dispatch(swapCanisterActions.setAllPairsState(FeatureState.Error));
       }
     }
-  }
+  });
 };

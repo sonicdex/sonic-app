@@ -49,10 +49,18 @@ export const Assets = () => {
   const isSupportedTokenListPresent =
     supportedTokenList && supportedTokenList.length > 0;
 
+  const isBalancesPresent =
+    totalBalances && Object.keys(totalBalances).length > 0;
+
   const shouldShowSkeletons =
     (supportedTokenListState === FeatureState.Loading &&
       !isSupportedTokenListPresent) ||
-    balancesState === FeatureState.Loading;
+    (balancesState === FeatureState.Loading && !isBalancesPresent);
+
+  const shouldShowHeaderLoading =
+    (supportedTokenListState === FeatureState.Loading &&
+      isSupportedTokenListPresent) ||
+    (balancesState === FeatureState.Loading && isBalancesPresent);
 
   return (
     <>
@@ -60,7 +68,7 @@ export const Assets = () => {
         <Text color="#888E8F">Assets description here</Text>
       </InformationBox>
 
-      <Header title="Your Assets" />
+      <Header title="Your Assets" isLoading={shouldShowHeaderLoading} />
 
       {!isConnected ? (
         <>
@@ -129,11 +137,7 @@ export const Assets = () => {
               </>
             ) : isSupportedTokenListPresent ? (
               supportedTokenList.map(({ id, name, symbol, decimals, logo }) => (
-                <Asset
-                  key={id}
-                  imageSources={[logo]}
-                  isLoading={supportedTokenListState === FeatureState.Loading}
-                >
+                <Asset key={id} imageSources={[logo]}>
                   <HStack spacing={4}>
                     <AssetImageBlock />
                     <AssetTitleBlock title={name} subtitle={symbol} />

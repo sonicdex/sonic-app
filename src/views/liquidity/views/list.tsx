@@ -98,18 +98,14 @@ export const Liquidity = () => {
   };
 
   const isLoading = useMemo(() => {
-    if (
+    return (
       supportedTokenListState === FeatureState.Loading ||
       userLPBalancesState === FeatureState.Loading
-    ) {
-      return true;
-    }
-
-    return false;
+    );
   }, [supportedTokenListState, userLPBalancesState]);
 
   const pairedUserLPTokens = useMemo(() => {
-    if (!isLoading && userLPBalances && supportedTokenList) {
+    if (userLPBalances && supportedTokenList) {
       const lpBalancesPairIDs = Object.keys(userLPBalances);
 
       return lpBalancesPairIDs.reduce((acc, tokenId0) => {
@@ -137,7 +133,7 @@ export const Liquidity = () => {
         ];
       }, [] as PairedUserLPToken[]);
     }
-  }, [isLoading, userLPBalances, supportedTokenList]);
+  }, [userLPBalances, supportedTokenList]);
 
   return (
     <>
@@ -154,6 +150,7 @@ export const Liquidity = () => {
         title="Your Liquidity Positions"
         buttonText="Create Position"
         onButtonClick={moveToAddLiquidityView}
+        isLoading={isLoading && Boolean(pairedUserLPTokens)}
       />
 
       {!isConnected ? (
@@ -165,7 +162,7 @@ export const Liquidity = () => {
 
           <PlugButton />
         </>
-      ) : isLoading ? (
+      ) : isLoading && !pairedUserLPTokens ? (
         <Stack spacing={4}>
           <Asset isLoading>
             <AssetImageBlock />
