@@ -50,7 +50,7 @@ const InformationDescription = () => (
         color: '#888E8F',
       }}
     >
-      review our blog post
+      review our documentation
     </Box>
     .
   </Text>
