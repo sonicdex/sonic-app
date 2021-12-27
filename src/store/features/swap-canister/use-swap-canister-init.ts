@@ -34,13 +34,13 @@ export const useSwapCanisterInit = () => {
 
   useEffect(() => {
     if (swapActor && principalId) {
-      getBalances();
-      getUserPositiveLPBalances();
+      getBalances({ isRefreshing: false });
+      getUserPositiveLPBalances({ isRefreshing: false });
     }
   }, [swapActor, principalId]);
 
   useEffect(() => {
-    getSupportedTokenList();
+    getSupportedTokenList({ isRefreshing: false });
     getAllPairs({ isRefreshing: false });
   }, [swapActor]);
 
