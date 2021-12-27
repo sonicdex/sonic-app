@@ -6,6 +6,7 @@ import { TokenData, Pair, TokenMetadata } from '@/models';
 export type LiquidityTokenDataKey = 'token0' | 'token1';
 
 interface LiquidityViewState {
+  isBannerOpened: boolean;
   pairState: FeatureState;
   state: FeatureState;
   token0: TokenData;
@@ -19,6 +20,7 @@ interface LiquidityViewState {
 export const INITIAL_LIQUIDITY_SLIPPAGE = '0.50';
 
 const initialState: LiquidityViewState = {
+  isBannerOpened: true,
   pair: undefined,
   pairState: 'idle' as FeatureState,
   state: 'idle' as FeatureState,
@@ -40,6 +42,9 @@ export const liquidityViewSlice = createSlice({
   // `createSlice` will infer the state type from the `initialState` argument
   initialState,
   reducers: {
+    setIsBannerOpened: (state, action: PayloadAction<boolean>) => {
+      state.isBannerOpened = action.payload;
+    },
     setState: (state, action: PayloadAction<FeatureState>) => {
       state.state = action.payload;
     },
