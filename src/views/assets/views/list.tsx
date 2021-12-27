@@ -20,7 +20,14 @@ import {
   InformationBox,
   PlugButton,
 } from '@/components';
-import { FeatureState, usePlugStore, useSwapCanisterStore } from '@/store';
+import {
+  assetsViewActions,
+  FeatureState,
+  useAppDispatch,
+  useAssetsViewStore,
+  usePlugStore,
+  useSwapCanisterStore,
+} from '@/store';
 
 import { theme } from '@/theme';
 import { FaMinus, FaPlus } from 'react-icons/fa';
@@ -28,6 +35,8 @@ import { useBalances } from '@/hooks/use-balances';
 import { useMemo } from 'react';
 
 export const Assets = () => {
+  const dispatch = useAppDispatch();
+  const { isBannerOpened } = useAssetsViewStore();
   const { totalBalances } = useBalances();
   const { supportedTokenListState, balancesState, supportedTokenList } =
     useSwapCanisterStore();
@@ -45,6 +54,10 @@ export const Assets = () => {
     if (tokenId) {
       navigate(`/assets/withdraw?tokenId=${tokenId}`);
     }
+  };
+
+  const handleBannerClose = () => {
+    dispatch(assetsViewActions.setIsBannerOpened(false));
   };
 
   const isSupportedTokenListPresent = useMemo(() => {
@@ -67,9 +80,15 @@ export const Assets = () => {
 
   return (
     <>
-      <InformationBox title="Assets Details" mb={9}>
-        <Text color="#888E8F">Assets description here</Text>
-      </InformationBox>
+      {isBannerOpened && (
+        <InformationBox
+          title="Assets Details"
+          mb={9}
+          onClose={handleBannerClose}
+        >
+          <Text color="#888E8F">Assets description here</Text>
+        </InformationBox>
+      )}
 
       <Header title="Your Assets" isLoading={shouldShowHeaderLoading} />
 

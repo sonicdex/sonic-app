@@ -13,6 +13,7 @@ import {
   liquidityViewActions,
   modalsSliceActions,
   useAppDispatch,
+  useLiquidityViewStore,
   usePlugStore,
   useSwapCanisterStore,
 } from '@/store';
@@ -26,7 +27,7 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { FaMinus, FaPlus } from 'react-icons/fa';
 import { useNavigate } from 'react-router';
 
@@ -46,7 +47,7 @@ const InformationDescription = () => (
         color: '#888E8F',
       }}
     >
-      review our blog post
+      review our documentation
     </Box>
     .
   </Text>
@@ -61,7 +62,6 @@ type PairedUserLPToken = {
 export const Liquidity = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const [displayInformation, setDisplayInformation] = useState(true);
   const { isConnected } = usePlugStore();
   const {
     userLPBalances,
@@ -69,6 +69,7 @@ export const Liquidity = () => {
     supportedTokenList,
     supportedTokenListState,
   } = useSwapCanisterStore();
+  const { isBannerOpened } = useLiquidityViewStore();
 
   const moveToAddLiquidityView = (token0?: string, token1?: string) => {
     const query =
@@ -82,7 +83,7 @@ export const Liquidity = () => {
   };
 
   const handleInformationClose = () => {
-    setDisplayInformation(false);
+    dispatch(liquidityViewActions.setIsBannerOpened(false));
   };
 
   const handleOpenRemoveLiquidityModal = (
@@ -141,7 +142,7 @@ export const Liquidity = () => {
 
   return (
     <>
-      {displayInformation && (
+      {isBannerOpened && (
         <InformationBox
           onClose={handleInformationClose}
           title={INFORMATION_TITLE}

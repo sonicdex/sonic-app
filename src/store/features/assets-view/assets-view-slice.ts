@@ -3,10 +3,12 @@ import { FeatureState } from '@/store';
 import type { RootState } from '@/store';
 
 interface AssetsViewState {
+  isBannerOpened: boolean;
   state: FeatureState;
 }
 
 const initialState: AssetsViewState = {
+  isBannerOpened: true,
   state: FeatureState?.Idle,
 };
 
@@ -15,6 +17,9 @@ export const assetsViewSlice = createSlice({
   // `createSlice` will infer the state type from the `initialState` argument
   initialState,
   reducers: {
+    setIsBannerOpened: (state, action: PayloadAction<boolean>) => {
+      state.isBannerOpened = action.payload;
+    },
     setState: (state, action: PayloadAction<FeatureState>) => {
       state.state = action.payload;
     },

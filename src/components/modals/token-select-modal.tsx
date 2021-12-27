@@ -2,7 +2,7 @@ import { arrowBackSrc, questionMarkSrc } from '@/assets';
 import { useBalances } from '@/hooks/use-balances';
 import { TokenMetadata } from '@/models';
 import { modalsSliceActions, useAppDispatch, useModalsStore } from '@/store';
-import { theme } from '@/theme';
+
 import { deserialize } from '@/utils/format';
 import {
   Box,
@@ -10,8 +10,10 @@ import {
   Heading,
   Image,
   Modal,
+  ModalBody,
   ModalCloseButton,
   ModalContent,
+  ModalHeader,
   ModalOverlay,
   Skeleton,
   Stack,
@@ -22,89 +24,6 @@ import { useEffect, useMemo, useState } from 'react';
 import { Button, DisplayCurrency, SearchBar } from '..';
 
 import { ImportToken } from './components';
-
-type TokenSelectItemProps = Partial<{
-  balance: number;
-  onSelect: any;
-  name: string;
-  symbol: string;
-  decimals: number;
-  isSelected: boolean;
-  isLoading: boolean;
-  logoSrc: string;
-}>;
-
-const TokenSelectItem = ({
-  balance = 0,
-  onSelect,
-  name = '',
-  symbol = '',
-  decimals = 0,
-  isSelected = false,
-  isLoading = false,
-  logoSrc = questionMarkSrc,
-}: TokenSelectItemProps) => {
-  const tokenOpacity = isSelected ? 0.3 : 1;
-
-  return (
-    <Flex
-      direction="row"
-      alignItems="center"
-      justifyContent="flex-start"
-      py={3}
-      px={3}
-      cursor="pointer"
-      width="100%"
-      transition="border 400ms"
-      border="1px solid transparent"
-      opacity={tokenOpacity}
-      borderRadius="20px"
-      onClick={onSelect}
-      _hover={{
-        border: !isSelected && '1px solid #4F4F4F',
-      }}
-      maxWidth="400px"
-    >
-      <Skeleton
-        isLoaded={!isLoading}
-        borderRadius={40}
-        minWidth="40px"
-        maxWidth="40px"
-      >
-        <Image src={logoSrc} w={10} h={10} borderRadius={40} />
-      </Skeleton>
-      <Skeleton isLoaded={!isLoading} minWidth="fit-content" ml={5}>
-        <Text fontWeight={700} fontSize="18px" pl={3} maxWidth="100%">
-          {symbol}
-        </Text>
-      </Skeleton>
-      <Skeleton isLoaded={!isLoading} flex={1} overflow="hidden">
-        <Tooltip label={name} openDelay={1000}>
-          <Text
-            pl={2}
-            whiteSpace="nowrap"
-            overflow="hidden"
-            textOverflow="ellipsis"
-            width="fit-content"
-            maxWidth="100%"
-          >
-            {name}
-          </Text>
-        </Tooltip>
-      </Skeleton>
-      <Skeleton isLoaded={!isLoading} minWidth="fit-content" ml={3}>
-        <DisplayCurrency
-          balance={balance}
-          decimals={decimals}
-          as="p"
-          fontSize="18px"
-          fontWeight={700}
-          textAlign="right"
-        />
-      </Skeleton>
-    </Flex>
-  );
-};
 
 export const TokenSelectModal = () => {
   const dispatch = useAppDispatch();
@@ -174,29 +93,21 @@ export const TokenSelectModal = () => {
     <Modal
       isOpen={isTokenSelectOpened}
       onClose={handleTokenSelectClose}
+      scrollBehavior="inside"
       isCentered
+      size="md"
     >
       <ModalOverlay />
-      <ModalContent
-        as={Flex}
-        direction="column"
-        alignItems="center"
-        bg="#1E1E1E"
-        borderRadius={20}
-        pt={5}
-        px={4}
-        pb={8}
-      >
-        <ModalCloseButton position="absolute" top={3} right={4} zIndex={500} />
-        {addToken ? (
-          <>
+      <ModalContent bg="#1E1E1E">
+        <ModalCloseButton zIndex="docked" />
+        <ModalHeader>
+          {addToken ? (
             <Box
               onClick={() => setAddToken(false)}
               position="absolute"
               p={2}
               top={3}
               left={4}
-              borderRadius={100}
               cursor="pointer"
               transition="background 400ms"
               _hover={{
@@ -205,15 +116,7 @@ export const TokenSelectModal = () => {
             >
               <Image src={arrowBackSrc} />
             </Box>
-            <ImportToken
-              id={importTokenData?.id}
-              symbol={importTokenData?.symbol}
-              name={importTokenData?.name}
-              handleImport={importToken}
-            />
-          </>
-        ) : (
-          <Box height="modalHeight" width="100%" overflow="auto">
+          ) : (
             <Flex
               w="100%"
               direction="column"
@@ -221,33 +124,30 @@ export const TokenSelectModal = () => {
               position="sticky"
               bg="#1E1E1E"
               top={0}
-              zIndex={400}
             >
-              <Heading as="h1" fontWeight={700} fontSize="18px">
+              <Heading as="h1" fontWeight={700} fontSize="lg">
                 Select Token
               </Heading>
-              <Box px="10px" w="100%" mt={4}>
+              <Box fontSize="md" px="10px" w="100%" mt={4}>
                 <SearchBar search={search} setSearch={setSearch} />
               </Box>
             </Flex>
-            <Stack
-              direction="column"
-              width="100%"
-              overflow="auto"
-              pb={4}
-              _after={{
-                content: "''",
-                position: 'absolute',
-                pointerEvents: 'none',
-                height: 20,
-                left: 0,
-                right: 0,
-                bottom: '-3px',
-                borderRadius: '20px',
-                background: `linear-gradient(to bottom, transparent 0%, ${theme.colors.bg} 100%)`,
-              }}
-            >
-              {isLoading && [...Array(4)].map(() => <SkeletonToken />)}
+          )}
+        </ModalHeader>
+        <ModalBody>
+          {addToken ? (
+            <>
+              <ImportToken
+                id={importTokenData?.id}
+                symbol={importTokenData?.symbol}
+                name={importTokenData?.name}
+                handleImport={importToken}
+              />
+            </>
+          ) : (
+            <Stack width="100%" direction="column">
+              {isLoading &&
+                [...Array(4)].map(() => <TokenSelectItemSkeleton />)}
               {!isLoading &&
                 filteredList.map(({ id, logo, symbol, decimals, name }) => (
                   <TokenSelectItem
@@ -312,14 +212,87 @@ export const TokenSelectModal = () => {
                 </Flex>
               )}
             </Stack>
-          </Box>
-        )}
+          )}
+        </ModalBody>
       </ModalContent>
     </Modal>
   );
 };
 
-const SkeletonToken = () => (
+type TokenSelectItemProps = Partial<{
+  balance: number;
+  onSelect: any;
+  name: string;
+  symbol: string;
+  decimals: number;
+  isSelected: boolean;
+  isLoading: boolean;
+  logoSrc: string;
+}>;
+
+const TokenSelectItem = ({
+  balance = 0,
+  onSelect,
+  name = '',
+  symbol = '',
+  decimals = 0,
+  isSelected = false,
+  isLoading = false,
+  logoSrc = questionMarkSrc,
+}: TokenSelectItemProps) => {
+  const tokenOpacity = isSelected ? 0.3 : 1;
+
+  return (
+    <Flex
+      alignItems="center"
+      justifyContent="space-between"
+      py={3}
+      px={3}
+      cursor="pointer"
+      width="100%"
+      transition="border 400ms"
+      border="1px solid transparent"
+      opacity={tokenOpacity}
+      borderRadius="20px"
+      onClick={onSelect}
+      _hover={{
+        border: !isSelected && '1px solid #4F4F4F',
+      }}
+    >
+      <Stack direction="row" alignItems="center" spacing={4}>
+        <Skeleton isLoaded={!isLoading}>
+          <Image src={logoSrc} w={8} h={8} borderRadius={40} />
+        </Skeleton>
+        <Box>
+          <Skeleton isLoaded={!isLoading} minWidth="fit-content">
+            <Text fontWeight={700} maxWidth="100%">
+              {symbol}
+            </Text>
+          </Skeleton>
+          <Skeleton isLoaded={!isLoading} flex={1} overflow="hidden">
+            <Tooltip label={name} openDelay={1000}>
+              <Text fontSize="sm" color="gray.300">
+                {name}
+              </Text>
+            </Tooltip>
+          </Skeleton>
+        </Box>
+      </Stack>
+      <Skeleton isLoaded={!isLoading} minWidth="fit-content" ml={3}>
+        <DisplayCurrency
+          balance={balance}
+          decimals={decimals}
+          as="p"
+          fontSize="18px"
+          fontWeight={700}
+          textAlign="right"
+        />
+      </Skeleton>
+    </Flex>
+  );
+};
+
+const TokenSelectItemSkeleton = () => (
   <Flex
     direction="row"
     alignItems="center"
