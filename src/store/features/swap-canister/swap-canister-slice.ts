@@ -16,10 +16,10 @@ export interface SwapCanisterState {
 }
 
 const initialState: SwapCanisterState = {
-  supportedTokenListState: 'loading' as FeatureState,
-  balancesState: 'loading' as FeatureState,
-  allPairsState: 'loading' as FeatureState,
-  userLPBalancesState: 'loading' as FeatureState,
+  supportedTokenListState: 'idle' as FeatureState,
+  balancesState: 'idle' as FeatureState,
+  allPairsState: 'idle' as FeatureState,
+  userLPBalancesState: 'idle' as FeatureState,
 
   supportedTokenList: undefined,
   sonicBalances: undefined,

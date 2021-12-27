@@ -1,26 +1,13 @@
 import {
-  HStack,
-  Text,
-  Box,
-  Alert,
-  AlertIcon,
-  AlertTitle,
-  Stack,
-} from '@chakra-ui/react';
-
-import {
-  InformationBox,
-  Header,
   Asset,
+  AssetIconButton,
   AssetImageBlock,
   AssetTitleBlock,
-  AssetIconButton,
+  Header,
+  InformationBox,
   PlugButton,
 } from '@/components';
-import { FaMinus, FaPlus } from 'react-icons/fa';
-import { useMemo } from 'react';
-import { useNavigate } from 'react-router';
-
+import { TokenMetadata } from '@/models';
 import {
   FeatureState,
   liquidityViewActions,
@@ -30,9 +17,19 @@ import {
   usePlugStore,
   useSwapCanisterStore,
 } from '@/store';
-
-import { TokenMetadata } from '@/models';
 import { getCurrencyString } from '@/utils/format';
+import {
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  Box,
+  HStack,
+  Stack,
+  Text,
+} from '@chakra-ui/react';
+import { useMemo } from 'react';
+import { FaMinus, FaPlus } from 'react-icons/fa';
+import { useNavigate } from 'react-router';
 
 const INFORMATION_TITLE = 'Liquidity Provider Rewards';
 const INFORMATION_DESCRIPTION =
@@ -99,18 +96,21 @@ export const Liquidity = () => {
   };
 
   const isLoading = useMemo(() => {
-    if (
+    return (
       supportedTokenListState === FeatureState.Loading ||
       userLPBalancesState === FeatureState.Loading
-    ) {
-      return true;
-    }
+    );
+  }, [supportedTokenListState, userLPBalancesState]);
 
-    return false;
+  const isRefreshing = useMemo(() => {
+    return (
+      supportedTokenListState === FeatureState.Refreshing ||
+      userLPBalancesState === FeatureState.Refreshing
+    );
   }, [supportedTokenListState, userLPBalancesState]);
 
   const pairedUserLPTokens = useMemo(() => {
-    if (!isLoading && userLPBalances && supportedTokenList) {
+    if (userLPBalances && supportedTokenList) {
       const lpBalancesPairIDs = Object.keys(userLPBalances);
 
       return lpBalancesPairIDs.reduce((acc, tokenId0) => {
@@ -138,7 +138,7 @@ export const Liquidity = () => {
         ];
       }, [] as PairedUserLPToken[]);
     }
-  }, [isLoading, userLPBalances, supportedTokenList]);
+  }, [userLPBalances, supportedTokenList]);
 
   return (
     <>
@@ -155,6 +155,7 @@ export const Liquidity = () => {
         title="Your Liquidity Positions"
         buttonText="Create Position"
         onButtonClick={moveToAddLiquidityView}
+        isLoading={isRefreshing}
       />
 
       {!isConnected ? (
