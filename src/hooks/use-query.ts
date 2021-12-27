@@ -1,8 +1,28 @@
-import { useMemo } from 'react';
+import { useCallback } from 'react';
 import { useLocation } from 'react-router';
 
 export const useQuery = () => {
-  const { search } = useLocation();
+  const location = useLocation();
 
-  return useMemo(() => new URLSearchParams(search), [search]);
+  return {
+    get: useCallback(
+      (key: string) => new URLSearchParams(location.search).get(key),
+      [location.search]
+    ),
+    delete: useCallback(
+      (key: string) => {
+        const query = new URLSearchParams(location.search);
+        query.delete(key);
+        location.search = query.toString();
+        console.log(location.search);
+        window.history.replaceState(
+          {},
+          '',
+          location.pathname +
+            (location.search !== '' ? `?${location.search}` : '')
+        );
+      },
+      [location.search]
+    ),
+  };
 };
