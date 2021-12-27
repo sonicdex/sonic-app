@@ -32,7 +32,7 @@ export const SlippageSettings = ({
     } else if (num > 100) {
       setSlippage('100');
     } else {
-      setSlippage(value || '0');
+      setSlippage(value.replace(/^0+/, '').replace(/^\./, '0.') || '0');
     }
   };
 
