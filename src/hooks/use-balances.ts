@@ -9,113 +9,149 @@ import {
   usePlugStore,
   useSwapCanisterStore,
 } from '@/store';
+import { useKeepSync } from '@/store/features/keep-sync';
 import { parseResponseUserLPBalances } from '@/utils/canister';
 import { Principal } from '@dfinity/principal';
 import { useCallback, useMemo } from 'react';
 
 export const useBalances = () => {
   const { principalId } = usePlugStore();
-  const { sonicBalances, tokenBalances } = useSwapCanisterStore();
+  const { sonicBalances, tokenBalances, balancesState, userLPBalancesState } =
+    useSwapCanisterStore();
   const _swapActor = useSwapActor();
 
   const dispatch = useAppDispatch();
 
-  async function getUserPositiveLPBalances() {
-    try {
-      const swapActor =
-        _swapActor ?? (appActors[ENV.canisterIds.swap] as SwapIDL.Factory);
+  const getUserPositiveLPBalances = useKeepSync(
+    'getUserPositiveLPBalances',
+    useCallback(
+      async (isRefreshing?: boolean) => {
+        try {
+          if (userLPBalancesState === FeatureState.Loading) return;
+          const swapActor =
+            _swapActor ?? (appActors[ENV.canisterIds.swap] as SwapIDL.Factory);
 
-      if (!swapActor) throw new Error('Swap actor not found');
-      if (!principalId) throw new Error('Principal ID not found');
+          if (!swapActor) throw new Error('Swap actor not found');
+          if (!principalId) throw new Error('Principal ID not found');
 
-      dispatch(
-        swapCanisterActions.setUserLPBalancesState(FeatureState.Loading)
-      );
-      const response = await swapActor.getUserLPBalancesAbove(
-        Principal.fromText(principalId),
-        BigInt(0)
-      );
+          dispatch(
+            swapCanisterActions.setUserLPBalancesState(
+              isRefreshing ? FeatureState.Refreshing : FeatureState.Loading
+            )
+          );
+          const response = await swapActor.getUserLPBalancesAbove(
+            Principal.fromText(principalId),
+            BigInt(0)
+          );
 
-      if (response) {
-        dispatch(
-          swapCanisterActions.setUserLPBalances(
-            parseResponseUserLPBalances(response)
-          )
-        );
-      } else {
-        throw new Error('No "getUserLPBalancesAbove" response');
-      }
+          if (response) {
+            dispatch(
+              swapCanisterActions.setUserLPBalances(
+                parseResponseUserLPBalances(response)
+              )
+            );
+          } else {
+            throw new Error('No "getUserLPBalancesAbove" response');
+          }
 
-      dispatch(swapCanisterActions.setUserLPBalancesState(FeatureState.Idle));
-    } catch (error) {
-      console.error('getUserLPBalancesAbove: ', error);
-      dispatch(swapCanisterActions.setUserLPBalancesState(FeatureState.Error));
-    }
-  }
+          dispatch(
+            swapCanisterActions.setUserLPBalancesState(FeatureState.Idle)
+          );
+        } catch (error) {
+          console.error('getUserLPBalancesAbove: ', error);
+          dispatch(
+            swapCanisterActions.setUserLPBalancesState(FeatureState.Error)
+          );
+        }
+      },
+      [_swapActor, userLPBalancesState, principalId]
+    )
+  );
 
-  const getBalances = useCallback(async () => {
-    try {
-      console.log('getting balances');
-      const swapActor =
-        _swapActor ?? (appActors[ENV.canisterIds.swap] as SwapIDL.Factory);
+  const getBalances = useKeepSync(
+    'getBalances',
+    useCallback(
+      async (isRefreshing?: boolean) => {
+        try {
+          if (balancesState === FeatureState.Loading) return;
 
-      if (!swapActor) throw new Error('Swap actor not found');
-      if (!principalId) throw new Error('Principal ID not found');
-      dispatch(swapCanisterActions.setBalancesState(FeatureState.Loading));
+          const swapActor =
+            _swapActor ?? (appActors[ENV.canisterIds.swap] as SwapIDL.Factory);
 
-      const sonicBalances = await swapActor.getUserBalances(
-        Principal.fromText(principalId)
-      );
+          if (!swapActor) throw new Error('Swap actor not found');
+          if (!principalId) throw new Error('Principal ID not found');
+          dispatch(
+            swapCanisterActions.setBalancesState(
+              isRefreshing ? FeatureState.Refreshing : FeatureState.Loading
+            )
+          );
 
-      const tokenBalances = sonicBalances
-        ? await Promise.all(
-            sonicBalances.map(async (balance) => {
-              try {
-                const tokenCanisterId = balance[0];
+          const sonicBalances = await swapActor.getUserBalances(
+            Principal.fromText(principalId)
+          );
 
-                const tokenActor: TokenIDL.Factory =
-                  await new ActorAdapter().createActor(
-                    tokenCanisterId,
-                    TokenIDL.factory
-                  );
-
-                const storageKey = `${tokenCanisterId}-logo`;
-                const logo = getFromStorage(storageKey);
-
-                if (!logo) {
+          const tokenBalances = sonicBalances
+            ? await Promise.all(
+                sonicBalances.map(async (balance) => {
                   try {
-                    const tokenLogo = await tokenActor.getLogo();
-                    saveToStorage(storageKey, tokenLogo);
-                  } catch (e) {
-                    console.error('Token Logo not found', e);
+                    const tokenCanisterId = balance[0];
+
+                    const tokenActor: TokenIDL.Factory =
+                      await new ActorAdapter().createActor(
+                        tokenCanisterId,
+                        TokenIDL.factory
+                      );
+
+                    const storageKey = `${tokenCanisterId}-logo`;
+                    const logo = getFromStorage(storageKey);
+
+                    if (!logo) {
+                      try {
+                        const tokenLogo = await tokenActor.getLogo();
+                        saveToStorage(storageKey, tokenLogo);
+                      } catch (e) {
+                        console.error('Token Logo not found', e);
+                      }
+                    }
+
+                    const tokenBalance = await tokenActor.balanceOf(
+                      Principal.fromText(principalId)
+                    );
+
+                    const result: [string, bigint] = [balance[0], tokenBalance];
+
+                    return result;
+                  } catch (error) {
+                    console.error(error);
+                    const errorResult: [string, bigint] = [
+                      balance[0],
+                      BigInt(0),
+                    ];
+
+                    return errorResult;
                   }
-                }
+                })
+              )
+            : undefined;
 
-                const tokenBalance = await tokenActor.balanceOf(
-                  Principal.fromText(principalId)
-                );
-
-                const result: [string, bigint] = [balance[0], tokenBalance];
-
-                return result;
-              } catch (error) {
-                console.error(error);
-                const errorResult: [string, bigint] = [balance[0], BigInt(0)];
-
-                return errorResult;
-              }
-            })
-          )
-        : undefined;
-
-      dispatch(swapCanisterActions.setSonicBalances(sonicBalances));
-      dispatch(swapCanisterActions.setTokenBalances(tokenBalances));
-      dispatch(swapCanisterActions.setBalancesState(FeatureState.Idle));
-    } catch (error) {
-      console.error(error);
-      dispatch(swapCanisterActions.setBalancesState(FeatureState.Error));
-    }
-  }, [_swapActor, sonicBalances, tokenBalances, principalId, dispatch]);
+          dispatch(swapCanisterActions.setSonicBalances(sonicBalances));
+          dispatch(swapCanisterActions.setTokenBalances(tokenBalances));
+          dispatch(swapCanisterActions.setBalancesState(FeatureState.Idle));
+        } catch (error) {
+          console.error(error);
+          dispatch(swapCanisterActions.setBalancesState(FeatureState.Error));
+        }
+      },
+      [
+        _swapActor,
+        sonicBalances,
+        tokenBalances,
+        principalId,
+        dispatch,
+        balancesState,
+      ]
+    )
+  );
 
   const totalBalances = useMemo(() => {
     if (tokenBalances && sonicBalances) {

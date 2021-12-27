@@ -25,6 +25,7 @@ import { FeatureState, usePlugStore, useSwapCanisterStore } from '@/store';
 import { theme } from '@/theme';
 import { FaMinus, FaPlus } from 'react-icons/fa';
 import { useBalances } from '@/hooks/use-balances';
+import { useMemo } from 'react';
 
 export const Assets = () => {
   const { totalBalances } = useBalances();
@@ -46,21 +47,23 @@ export const Assets = () => {
     }
   };
 
-  const isSupportedTokenListPresent =
-    supportedTokenList && supportedTokenList.length > 0;
+  const isSupportedTokenListPresent = useMemo(() => {
+    return supportedTokenList && supportedTokenList.length > 0;
+  }, [supportedTokenList]);
 
-  const isBalancesPresent =
-    totalBalances && Object.keys(totalBalances).length > 0;
+  const shouldShowSkeletons = useMemo(() => {
+    return (
+      supportedTokenListState === FeatureState.Loading ||
+      balancesState === FeatureState.Loading
+    );
+  }, [supportedTokenListState, balancesState]);
 
-  const shouldShowSkeletons =
-    (supportedTokenListState === FeatureState.Loading &&
-      !isSupportedTokenListPresent) ||
-    (balancesState === FeatureState.Loading && !isBalancesPresent);
-
-  const shouldShowHeaderLoading =
-    (supportedTokenListState === FeatureState.Loading &&
-      isSupportedTokenListPresent) ||
-    (balancesState === FeatureState.Loading && isBalancesPresent);
+  const shouldShowHeaderLoading = useMemo(() => {
+    return (
+      supportedTokenListState === FeatureState.Refreshing ||
+      balancesState === FeatureState.Refreshing
+    );
+  }, [supportedTokenListState, balancesState]);
 
   return (
     <>
@@ -136,45 +139,47 @@ export const Assets = () => {
                 </Asset>
               </>
             ) : isSupportedTokenListPresent ? (
-              supportedTokenList.map(({ id, name, symbol, decimals, logo }) => (
-                <Asset key={id} imageSources={[logo]}>
-                  <HStack spacing={4}>
-                    <AssetImageBlock />
-                    <AssetTitleBlock title={name} subtitle={symbol} />
-                  </HStack>
+              supportedTokenList!.map(
+                ({ id, name, symbol, decimals, logo }) => (
+                  <Asset key={id} imageSources={[logo]}>
+                    <HStack spacing={4}>
+                      <AssetImageBlock />
+                      <AssetTitleBlock title={name} subtitle={symbol} />
+                    </HStack>
 
-                  <Box>
-                    <Text fontWeight="bold" color="gray.400">
-                      Amount
-                    </Text>
-                    <DisplayCurrency
-                      balance={totalBalances?.[id]}
-                      decimals={decimals}
-                      fontWeight="bold"
-                    />
-                  </Box>
-                  <Box>
-                    <Text fontWeight="bold" color="gray.400">
-                      Price
-                    </Text>
-                    <Text fontWeight="bold">{`$0.00`}</Text>
-                  </Box>
+                    <Box>
+                      <Text fontWeight="bold" color="gray.400">
+                        Amount
+                      </Text>
+                      <DisplayCurrency
+                        balance={totalBalances?.[id]}
+                        decimals={decimals}
+                        fontWeight="bold"
+                      />
+                    </Box>
+                    <Box>
+                      <Text fontWeight="bold" color="gray.400">
+                        Price
+                      </Text>
+                      <Text fontWeight="bold">{`$0.00`}</Text>
+                    </Box>
 
-                  <HStack>
-                    <AssetIconButton
-                      aria-label={`Withdraw ${symbol}`}
-                      icon={<FaMinus />}
-                      onClick={() => navigateToWithdraw(id)}
-                    />
-                    <AssetIconButton
-                      colorScheme="dark-blue"
-                      aria-label={`Deposit ${symbol}`}
-                      icon={<FaPlus />}
-                      onClick={() => navigateToDeposit(id)}
-                    />
-                  </HStack>
-                </Asset>
-              ))
+                    <HStack>
+                      <AssetIconButton
+                        aria-label={`Withdraw ${symbol}`}
+                        icon={<FaMinus />}
+                        onClick={() => navigateToWithdraw(id)}
+                      />
+                      <AssetIconButton
+                        colorScheme="dark-blue"
+                        aria-label={`Deposit ${symbol}`}
+                        icon={<FaPlus />}
+                        onClick={() => navigateToDeposit(id)}
+                      />
+                    </HStack>
+                  </Asset>
+                )
+              )
             ) : null}
           </Stack>
         </Box>

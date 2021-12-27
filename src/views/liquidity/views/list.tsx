@@ -1,26 +1,13 @@
 import {
-  HStack,
-  Text,
-  Box,
-  Alert,
-  AlertIcon,
-  AlertTitle,
-  Stack,
-} from '@chakra-ui/react';
-
-import {
-  InformationBox,
-  Header,
   Asset,
+  AssetIconButton,
   AssetImageBlock,
   AssetTitleBlock,
-  AssetIconButton,
+  Header,
+  InformationBox,
   PlugButton,
 } from '@/components';
-import { FaMinus, FaPlus } from 'react-icons/fa';
-import { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router';
-
+import { TokenMetadata } from '@/models';
 import {
   FeatureState,
   liquidityViewActions,
@@ -29,9 +16,19 @@ import {
   usePlugStore,
   useSwapCanisterStore,
 } from '@/store';
-
-import { TokenMetadata } from '@/models';
 import { getCurrencyString } from '@/utils/format';
+import {
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  Box,
+  HStack,
+  Stack,
+  Text,
+} from '@chakra-ui/react';
+import { useMemo, useState } from 'react';
+import { FaMinus, FaPlus } from 'react-icons/fa';
+import { useNavigate } from 'react-router';
 
 const INFORMATION_TITLE = 'Liquidity Provider Rewards';
 const INFORMATION_DESCRIPTION =
@@ -104,6 +101,13 @@ export const Liquidity = () => {
     );
   }, [supportedTokenListState, userLPBalancesState]);
 
+  const isRefreshing = useMemo(() => {
+    return (
+      supportedTokenListState === FeatureState.Refreshing ||
+      userLPBalancesState === FeatureState.Refreshing
+    );
+  }, [supportedTokenListState, userLPBalancesState]);
+
   const pairedUserLPTokens = useMemo(() => {
     if (userLPBalances && supportedTokenList) {
       const lpBalancesPairIDs = Object.keys(userLPBalances);
@@ -150,7 +154,7 @@ export const Liquidity = () => {
         title="Your Liquidity Positions"
         buttonText="Create Position"
         onButtonClick={moveToAddLiquidityView}
-        isLoading={isLoading && Boolean(pairedUserLPTokens)}
+        isLoading={isRefreshing}
       />
 
       {!isConnected ? (
@@ -162,7 +166,7 @@ export const Liquidity = () => {
 
           <PlugButton />
         </>
-      ) : isLoading && !pairedUserLPTokens ? (
+      ) : isLoading ? (
         <Stack spacing={4}>
           <Asset isLoading>
             <AssetImageBlock />

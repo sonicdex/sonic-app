@@ -4,7 +4,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 export const KEEP_SYNC_DEFAULT_INTERVAL = 15 * 1000;
 
 export type KeepSync = {
-  callback: () => Promise<any>;
+  callback: (refresh?: boolean) => Promise<any>;
   interval: number;
 };
 
@@ -44,7 +44,7 @@ export const keepSyncSlice = createSlice({
 
       if (state.timers[key]) clearInterval(state.timers[key]);
       state.timers[key] = setInterval(() => {
-        store.getState().keepSync.callbacks[key]();
+        store.getState().keepSync.callbacks[key](true);
       }, interval);
     },
     setCallback: (state, action: PayloadAction<SetCallbackAction>) => {
