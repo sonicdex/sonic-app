@@ -32,7 +32,7 @@ export const useSwapViewStore = () => {
       const icpToken = fromTokenOptions.find((token) => token.id === 'ICP');
 
       if (icpToken) {
-        toTokenOptions.push(icpToken);
+        toTokenOptions.unshift(icpToken);
       }
     }
 
