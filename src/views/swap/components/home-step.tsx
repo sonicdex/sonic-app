@@ -179,7 +179,6 @@ export const SwapHomeStep = () => {
   };
 
   const handleFromMaxClick = () => {
-    console.log(fromBalance);
     dispatch(
       swapViewActions.setValue({
         data: 'from',
