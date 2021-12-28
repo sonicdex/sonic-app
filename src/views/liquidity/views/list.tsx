@@ -112,9 +112,12 @@ export const Liquidity = () => {
   const pairedUserLPTokens = useMemo(() => {
     if (userLPBalances && supportedTokenList) {
       const lpBalancesPairIDs = Object.keys(userLPBalances);
+      const existentPairs = new Set();
 
       return lpBalancesPairIDs.reduce((acc, tokenId0) => {
         const tokenId1 = Object.keys(userLPBalances[tokenId0])[0];
+        if (existentPairs.has(`${tokenId1}:${tokenId0}`)) return acc;
+        existentPairs.add(`${tokenId0}:${tokenId1}`);
 
         const token0 = supportedTokenList.find(
           (token) => token.id === tokenId0

@@ -60,6 +60,11 @@ export const parseResponseAllPairs = (
 ): PairList => {
   return response.reduce((list, pair) => {
     const { token0, token1, reserve0, reserve1 } = pair;
+
+    if (Number(reserve0) === 0 && Number(reserve1) === 0) {
+      return list;
+    }
+
     return {
       ...list,
       [token0]: {

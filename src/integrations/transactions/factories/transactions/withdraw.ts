@@ -18,7 +18,10 @@ export const useMemorizedWithdrawTransaction: CreateTransaction<Withdraw> = (
       canisterId: ENV.canisterIds.swap,
       idl: SwapIDL.factory,
       methodName: 'withdraw',
-      onSuccess,
+      onSuccess: async (res: SwapIDL.Result) => {
+        if ('err' in res) throw new Error(res.err);
+        onSuccess(res);
+      },
       onFail,
     };
   }, [amount, token]);

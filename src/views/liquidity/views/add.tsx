@@ -87,6 +87,7 @@ export const LiquidityAdd = () => {
       dispatch(liquidityViewActions.setValue({ data: 'token0', value: '' }));
       dispatch(liquidityViewActions.setValue({ data: 'token1', value: '' }));
       setIsReviewing(false);
+      navigate('/liquidity');
     }, 300);
   };
 
@@ -347,13 +348,11 @@ export const LiquidityAdd = () => {
     }, [token0, token1, pairData]);
 
   useEffect(() => {
-    if (!isLoading && supportedTokenList && supportedTokenList.length > 0) {
-      const toTokenId = query.get('token0');
-      const fromTokenId = query.get('token1');
-
-      if (fromTokenId) {
-        const token0 = supportedTokenList!.find(
-          (token) => token.id === fromTokenId
+    if (!isLoading) {
+      const token1Id = query.get('token1');
+      if (token1Id) {
+        const token0 = supportedTokenList?.find(
+          (token) => token.id === token1Id
         );
         dispatch(
           liquidityViewActions.setToken({
@@ -361,34 +360,21 @@ export const LiquidityAdd = () => {
             token: token0,
           })
         );
-      } else {
-        dispatch(
-          liquidityViewActions.setToken({
-            data: 'token0',
-            token: supportedTokenList[0],
-          })
-        );
+        dispatch(liquidityViewActions.setValue({ data: 'token0', value: '' }));
       }
 
-      if (toTokenId) {
-        const token1 = supportedTokenList!.find(
-          (token) => token.id === toTokenId
+      const token0Id = query.get('token0');
+      if (token0Id) {
+        const token1 = supportedTokenList?.find(
+          (token) => token.id === token0Id
         );
         dispatch(
           liquidityViewActions.setToken({ data: 'token1', token: token1 })
         );
-      } else {
-        dispatch(
-          liquidityViewActions.setToken({
-            data: 'token1',
-            token: supportedTokenList[1],
-          })
-        );
+        dispatch(liquidityViewActions.setValue({ data: 'token1', value: '' }));
       }
-      dispatch(liquidityViewActions.setValue({ data: 'token0', value: '' }));
-      dispatch(liquidityViewActions.setValue({ data: 'token1', value: '' }));
     }
-  }, [isLoading, supportedTokenListState, supportedTokenList]);
+  }, [isLoading]);
 
   return (
     <>

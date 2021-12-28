@@ -17,7 +17,10 @@ export const useMemorizedApproveTransaction: CreateTransaction<Deposit> = (
       canisterId: token.id,
       idl: TokenIDL.factory,
       methodName: 'approve',
-      onSuccess,
+      onSuccess: async (res: TokenIDL.Result) => {
+        if ('Err' in res) throw new Error(JSON.stringify(res.Err));
+        onSuccess(res);
+      },
       onFail,
       args: [
         Principal.fromText(ENV.canisterIds.swap),
