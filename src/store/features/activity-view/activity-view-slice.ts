@@ -42,13 +42,15 @@ export const activityViewSlice = createSlice({
 
       for (const key in aux) {
         const alreadyAdded = new Set();
-        aux[key] = aux[key].filter((item) => {
-          if (alreadyAdded.has(item.time)) {
-            return false;
-          }
-          alreadyAdded.add(item.time);
-          return true;
-        });
+        aux[key] = aux[key]
+          .filter((item) => {
+            if (alreadyAdded.has(item.time)) {
+              return false;
+            }
+            alreadyAdded.add(item.time);
+            return true;
+          })
+          .sort((a, b) => b.time - a.time);
       }
 
       state.activityList = aux;
