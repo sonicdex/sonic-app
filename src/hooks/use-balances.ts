@@ -141,12 +141,12 @@ export const useBalances = () => {
             : undefined;
 
           const plugResponse = (await requestBalance()) as unknown as any[];
+          const icpBalance =
+            plugResponse.find((balance) => balance.symbol === 'ICP')?.amount ??
+            0;
 
-          dispatch(
-            swapCanisterActions.setICPBalance(
-              plugResponse.find((balance) => balance.symbol === 'ICP')
-            )
-          );
+          console.log(icpBalance);
+          dispatch(swapCanisterActions.setICPBalance(icpBalance));
           dispatch(swapCanisterActions.setSonicBalances(sonicBalances));
           dispatch(swapCanisterActions.setTokenBalances(tokenBalances));
           dispatch(swapCanisterActions.setBalancesState(FeatureState.Idle));

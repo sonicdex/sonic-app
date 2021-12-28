@@ -6,7 +6,7 @@ export const getICPTokenMetadata = (price?: string): AppTokenMetadata => ({
   name: 'Internet Computer Protocol',
   symbol: 'ICP',
   fee: BigInt(0),
-  decimals: 5,
+  decimals: 0,
   totalSupply: BigInt(0),
   logo: icpSrc,
   price,

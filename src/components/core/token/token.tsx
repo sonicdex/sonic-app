@@ -194,14 +194,14 @@ export const TokenBalancesDetails: React.FC<TokenBalancesDetailsProps> = ({
   const { isLoading, sources, tokenMetadata, value } = useTokenContext();
 
   const totalTokenBalance = useMemo(
-    () =>
-      sources?.reduce((acc, current) => acc + (current.balance ?? 0), 0) ?? 0,
+    () => sources?.reduce((acc, current) => acc + (current.balance ?? 0), 0),
     [sources]
   );
 
   const shouldRenderMaxButton = useMemo(() => {
     if (
       onMaxClick &&
+      totalTokenBalance &&
       totalTokenBalance > 0 &&
       Number(getCurrencyString(totalTokenBalance, tokenMetadata?.decimals)) !==
         Number(value)
@@ -221,12 +221,15 @@ export const TokenBalancesDetails: React.FC<TokenBalancesDetailsProps> = ({
             decimals={tokenMetadata?.decimals}
             symbol={tokenMetadata?.symbol}
           />
-          <DisplayCurrency
-            balance={totalTokenBalance}
-            decimals={tokenMetadata?.decimals || 0}
-            prefix="Balance: "
-            suffix={tokenMetadata?.symbol && ` ${tokenMetadata?.symbol}`}
-          />
+          {typeof totalTokenBalance === 'number' && (
+            <DisplayCurrency
+              balance={totalTokenBalance}
+              decimals={tokenMetadata?.decimals || 0}
+              prefix="Balance: "
+              suffix={tokenMetadata?.symbol && ` ${tokenMetadata?.symbol}`}
+            />
+          )}
+
           {shouldRenderMaxButton && (
             <Button variant="link" onClick={onMaxClick}>
               (max)

@@ -43,7 +43,7 @@ export const SwapHomeStep = () => {
   const { fromTokenOptions, toTokenOptions, from, to, slippage } =
     useSwapViewStore();
   const dispatch = useAppDispatch();
-  const { sonicBalances, tokenBalances } = useSwapCanisterStore();
+  const { sonicBalances, tokenBalances, icpBalance } = useSwapCanisterStore();
   const { isConnected } = usePlugStore();
 
   const openSelectTokenModal = useTokenModalOpener();
@@ -106,9 +106,17 @@ export const SwapHomeStep = () => {
     return false;
   }, [from.metadata]);
 
-  const fromSources = useMemo(
-    () =>
-      getAppAssetsSources({
+  const fromSources = useMemo(() => {
+    if (from.metadata) {
+      if (from.metadata.id === 'ICP') {
+        return getAppAssetsSources({
+          balances: {
+            plug: icpBalance ?? 0,
+          },
+        });
+      }
+
+      return getAppAssetsSources({
         balances: {
           plug:
             from.metadata && tokenBalances
@@ -119,22 +127,30 @@ export const SwapHomeStep = () => {
               ? sonicBalances[from.metadata.id]
               : 0,
         },
-      }),
-    [from.metadata, tokenBalances, sonicBalances]
-  );
+      });
+    }
+  }, [from.metadata, tokenBalances, sonicBalances]);
 
-  const toSources = useMemo(
-    () =>
-      getAppAssetsSources({
+  const toSources = useMemo(() => {
+    if (to.metadata) {
+      if (to.metadata.id === 'ICP') {
+        return getAppAssetsSources({
+          balances: {
+            plug: icpBalance ?? 0,
+          },
+        });
+      }
+
+      return getAppAssetsSources({
         balances: {
           plug:
             to.metadata && tokenBalances ? tokenBalances[to.metadata.id] : 0,
           sonic:
             to.metadata && sonicBalances ? sonicBalances[to.metadata.id] : 0,
         },
-      }),
-    [from.metadata, tokenBalances, sonicBalances]
-  );
+      });
+    }
+  }, [to.metadata, tokenBalances, sonicBalances]);
 
   const handleButtonOnClick = () => {
     if (isLoading) return;
