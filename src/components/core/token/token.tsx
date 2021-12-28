@@ -272,9 +272,10 @@ export const TokenInput: React.FC<TokenInputProps> = (props) => {
       // Handle only one dot in input
       // Handle only token decimals in input
       if (tokenMetadata && setValue) {
+        if (_value === '') return setValue('');
         const [nat, decimals] = _value.split('.');
         let newValue = parseInt(nat) > 0 ? nat.replace(/^0+/, '') : '0';
-        if (_value.includes('.')) {
+        if (_value.includes('.') && tokenMetadata.decimals > 0) {
           newValue += '.';
         }
         if (decimals) {
