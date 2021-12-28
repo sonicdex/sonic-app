@@ -1,6 +1,5 @@
 import { arrowDownSrc, infoSrc } from '@/assets';
 import {
-  Button,
   ExchangeBox,
   TitleBox,
   Token,
@@ -31,6 +30,7 @@ import {
   Box,
   Checkbox,
   Flex,
+  Button,
   FormControl,
   Image,
   Link,
@@ -230,7 +230,13 @@ export const SwapReviewStep = () => {
 
       <ExchangeBox from={from} to={to} slippage={slippage} />
 
-      <Button isFullWidth size="lg" onClick={handleApproveSwap}>
+      <Button
+        variant="gradient"
+        colorScheme="dark-blue"
+        isFullWidth
+        size="lg"
+        onClick={handleApproveSwap}
+      >
         Confirm Swap
       </Button>
     </>
