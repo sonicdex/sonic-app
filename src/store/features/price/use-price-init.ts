@@ -9,12 +9,8 @@ import { swapCanisterActions, useSwapCanisterStore } from '..';
 import { ENV } from '@/config';
 
 export const usePriceInit = () => {
-  const {
-    supportedTokenList,
-    supportedTokenListState,
-    allPairsState,
-    allPairs,
-  } = useSwapCanisterStore();
+  const { supportedTokenList, supportedTokenListState, allPairsState } =
+    useSwapCanisterStore();
   const { state, icpPrice } = usePriceStore();
 
   const dispatch = useAppDispatch();

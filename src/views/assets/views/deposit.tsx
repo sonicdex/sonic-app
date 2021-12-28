@@ -1,12 +1,11 @@
 import { useEffect, useMemo } from 'react';
-import { Box } from '@chakra-ui/react';
+import { Button, Box } from '@chakra-ui/react';
 import {
   TitleBox,
   Token,
-  Button,
   TokenContent,
   TokenInput,
-  TokenDetails,
+  TokenDetailsButton,
   TokenDetailsLogo,
   TokenDetailsSymbol,
   TokenBalances,
@@ -33,8 +32,12 @@ import { debounce } from '@/utils/function';
 export const AssetsDeposit = () => {
   const query = useQuery();
 
-  const { supportedTokenList, tokenBalances, supportedTokenListState } =
-    useSwapCanisterStore();
+  const {
+    supportedTokenList,
+    tokenBalances,
+    icpBalance,
+    supportedTokenListState,
+  } = useSwapCanisterStore();
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -73,7 +76,7 @@ export const AssetsDeposit = () => {
     const parsedFromValue = (amount && parseFloat(amount)) || 0;
 
     if (parsedFromValue <= 0)
-      return [true, `No ${selectedTokenMetadata?.name} value selected`];
+      return [true, `No ${selectedTokenMetadata?.symbol} value selected`];
 
     if (tokenBalances && selectedTokenMetadata) {
       const parsedBalance = parseFloat(
@@ -84,7 +87,7 @@ export const AssetsDeposit = () => {
       );
 
       if (parsedFromValue > parsedBalance) {
-        return [true, `Insufficient ${selectedTokenMetadata.name} Balance`];
+        return [true, `Insufficient ${selectedTokenMetadata.symbol} Balance`];
       }
     }
 
@@ -92,6 +95,10 @@ export const AssetsDeposit = () => {
   }, [amount, tokenBalances, selectedTokenMetadata]);
 
   const tokenBalance = useMemo(() => {
+    if (tokenId === 'ICP') {
+      return icpBalance;
+    }
+
     if (tokenBalances && tokenId) {
       return tokenBalances[tokenId];
     }
@@ -150,10 +157,10 @@ export const AssetsDeposit = () => {
           tokenMetadata={selectedTokenMetadata}
         >
           <TokenContent>
-            <TokenDetails onClick={handleOpenSelectTokenModal}>
+            <TokenDetailsButton onClick={handleOpenSelectTokenModal}>
               <TokenDetailsLogo />
               <TokenDetailsSymbol />
-            </TokenDetails>
+            </TokenDetailsButton>
 
             <TokenInput autoFocus />
           </TokenContent>
@@ -166,6 +173,8 @@ export const AssetsDeposit = () => {
       <Button
         isFullWidth
         size="lg"
+        variant="gradient"
+        colorScheme="dark-blue"
         isDisabled={buttonDisabled}
         onClick={handleDeposit}
         isLoading={supportedTokenListState === FeatureState.Loading}

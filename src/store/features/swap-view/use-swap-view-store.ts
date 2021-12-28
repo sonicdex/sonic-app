@@ -1,3 +1,4 @@
+import { ENV } from '@/config';
 import { selectSwapViewState, useAppSelector } from '@/store';
 import { useMemo } from 'react';
 import { useSwapCanisterStore } from '..';
@@ -9,19 +10,33 @@ export const useSwapViewStore = () => {
   const [fromTokenOptions, toTokenOptions] = useMemo(() => {
     if (!state.from.metadata || !state.tokenList) return [[], []];
 
-    const tokenOptions = Object.values(state.tokenList);
+    const fromTokenOptions = Object.values(state.tokenList);
 
-    if (!allPairs) return [tokenOptions, []];
+    if (!allPairs) return [fromTokenOptions, []];
 
-    return [
-      tokenOptions,
-      tokenOptions.filter((token) =>
-        Boolean(
-          allPairs![state.from.metadata!.id] &&
-            allPairs![state.from.metadata!.id][token.id]
-        )
-      ),
-    ];
+    if (state.from.metadata.id === 'ICP') {
+      const wicpToken = fromTokenOptions.find(
+        (token) => token.id === ENV.canisterIds.WICP
+      );
+
+      const icpToTokenOptions = wicpToken ? [wicpToken] : undefined;
+
+      return [fromTokenOptions, icpToTokenOptions];
+    }
+
+    const toTokenOptions = fromTokenOptions.filter((token) =>
+      Boolean(allPairs?.[state.from.metadata!.id]?.[token.id])
+    );
+
+    if (state.from.metadata.id === ENV.canisterIds.WICP) {
+      const icpToken = fromTokenOptions.find((token) => token.id === 'ICP');
+
+      if (icpToken) {
+        toTokenOptions.unshift(icpToken);
+      }
+    }
+
+    return [fromTokenOptions, toTokenOptions];
   }, [state.tokenList, state.from.metadata, allPairs]);
 
   return {

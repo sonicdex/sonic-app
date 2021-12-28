@@ -23,7 +23,7 @@ export const SearchBar = ({ search, setSearch }: SearchBarProps) => {
       bg="#282828"
       w="100%"
       h={10}
-      borderRadius={20}
+      borderRadius={12}
     >
       <Image src={searchSrc} w={4} mr={3} />
       <Box

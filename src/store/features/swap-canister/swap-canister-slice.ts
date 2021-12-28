@@ -1,6 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { FeatureState, RootState } from '@/store';
-import { Balances, PairBalances, PairList, SupportedTokenList } from '@/models';
+import {
+  Balances,
+  PairBalances,
+  PairList,
+  AppTokenMetadataList,
+} from '@/models';
 
 export interface SwapCanisterState {
   supportedTokenListState: FeatureState;
@@ -8,9 +13,10 @@ export interface SwapCanisterState {
   allPairsState: FeatureState;
   userLPBalancesState: FeatureState;
 
-  supportedTokenList?: SupportedTokenList;
+  supportedTokenList?: AppTokenMetadataList;
   sonicBalances?: Balances;
   tokenBalances?: Balances;
+  icpBalance?: number;
   allPairs?: PairList;
   userLPBalances?: PairBalances;
 }
@@ -24,6 +30,7 @@ const initialState: SwapCanisterState = {
   supportedTokenList: undefined,
   sonicBalances: undefined,
   tokenBalances: undefined,
+  icpBalance: undefined,
   allPairs: undefined,
   userLPBalances: undefined,
 };
@@ -33,6 +40,9 @@ export const swapCanisterSlice = createSlice({
   // `createSlice` will infer the state type from the `initialState` argument
   initialState,
   reducers: {
+    setICPBalance: (state, action: PayloadAction<number>) => {
+      state.icpBalance = action.payload;
+    },
     setSupportedTokensListState: (
       state,
       action: PayloadAction<FeatureState>
@@ -44,7 +54,7 @@ export const swapCanisterSlice = createSlice({
     },
     setSupportedTokenList: (
       state,
-      action: PayloadAction<SupportedTokenList>
+      action: PayloadAction<AppTokenMetadataList>
     ) => {
       state.supportedTokenList = action.payload;
     },

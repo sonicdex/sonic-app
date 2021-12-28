@@ -7,7 +7,6 @@ import {
   getAmountOut,
 } from '@/utils/format';
 import {
-  Box,
   Flex,
   Image,
   Popover,
@@ -54,9 +53,13 @@ export const ExchangeBox: React.FC<ExchangeBoxProps> = ({
   slippage,
 }) => {
   const { allPairs } = useSwapCanisterStore();
-  if (!from.metadata || !to.metadata) return <Box height={4} />;
-  if (!allPairs || !allPairs[from.metadata.id][to.metadata.id])
-    return <Box height={6} />;
+  if (
+    !from.metadata ||
+    !to.metadata ||
+    !allPairs ||
+    !allPairs[from.metadata.id][to.metadata.id]
+  )
+    return null;
 
   const { reserve0, reserve1 } = allPairs[from.metadata.id][to.metadata.id];
 
