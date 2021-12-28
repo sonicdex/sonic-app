@@ -38,6 +38,8 @@ import {
 } from '@/store';
 import { formatAmount, getCurrencyString } from '@/utils/format';
 import { getAppAssetsSources } from '@/config/utils';
+import { useTokenBalance } from '@/hooks';
+import { ENV } from '@/config';
 
 export const SwapHomeStep = () => {
   const { fromTokenOptions, toTokenOptions, from, to, slippage } =
@@ -48,39 +50,60 @@ export const SwapHomeStep = () => {
 
   const openSelectTokenModal = useTokenModalOpener();
 
+  const fromBalance = useTokenBalance(from.metadata?.id);
+  // const toBalance = useTokenBalance(to.metadata?.id);
+
   const [autoSlippage, setAutoSlippage] = useState(true);
 
   const { totalBalances } = useBalances();
 
   const isLoading = useMemo(() => {
-    if (!from.metadata) return true;
+    console.log(totalBalances, from.metadata);
+    if (!from.metadata && !totalBalances) return true;
     return false;
   }, [totalBalances, from.metadata]);
 
-  const [buttonDisabled, buttonMessage] = useMemo<[boolean, string]>(() => {
-    if (isLoading) return [true, 'Loading'];
+  const [buttonDisabled, buttonMessage, onButtonClick] = useMemo<
+    [boolean, string, () => void]
+  >(() => {
+    if (isLoading) return [true, 'Loading', () => {}];
     if (!from.metadata) throw new Error('State is loading');
-    if (!to.metadata) return [true, 'Select the token'];
+    if (!to.metadata) return [true, 'Select the token', () => {}];
 
     const parsedFromValue = (from.value && parseFloat(from.value)) || 0;
 
     if (parsedFromValue <= 0)
-      return [true, `No ${from.metadata.symbol} value selected`];
+      return [true, `No ${from.metadata.symbol} value selected`, () => {}];
 
     if (totalBalances) {
       const parsedBalance = parseFloat(
-        formatAmount(totalBalances[from.metadata.id], from.metadata.decimals)
+        formatAmount(fromBalance!, from.metadata.decimals)
       );
 
       if (parsedFromValue > parsedBalance) {
-        return [true, `Insufficient ${from.metadata.symbol} Balance`];
+        return [true, `Insufficient ${from.metadata.symbol} Balance`, () => {}];
       }
     }
 
-    return [false, 'Review Swap'];
+    if (from.metadata.id === 'ICP' && to.metadata.id === ENV.canisterIds.WICP) {
+      return [false, 'Wrap ICP', () => console.log('Wrapping ICP')];
+    }
+
+    if (from.metadata.id === ENV.canisterIds.WICP && to.metadata.id === 'ICP') {
+      return [false, 'Unwrap ICP', () => console.log('Unwrapping ICP')];
+    }
+
+    return [
+      false,
+      'Review Swap',
+      () => dispatch(swapViewActions.setStep(SwapStep.Review)),
+    ];
   }, [
+    dispatch,
+    swapViewActions,
     isLoading,
     totalBalances,
+    fromBalance,
     from.metadata,
     to.metadata,
     from.value,
@@ -152,26 +175,18 @@ export const SwapHomeStep = () => {
     }
   }, [to.metadata, tokenBalances, sonicBalances]);
 
-  const handleButtonOnClick = () => {
-    if (isLoading) return;
-
-    dispatch(swapViewActions.setStep(SwapStep.Review));
-  };
-
   const switchTokens = () => {
     dispatch(swapViewActions.switchTokens());
   };
 
   const handleFromMaxClick = () => {
+    console.log(fromBalance);
     dispatch(
       swapViewActions.setValue({
         data: 'from',
         value:
           totalBalances && from.metadata
-            ? getCurrencyString(
-                totalBalances[from.metadata?.id],
-                from.metadata?.decimals
-              )
+            ? getCurrencyString(fromBalance!, from.metadata?.decimals)
             : '',
       })
     );
@@ -184,7 +199,7 @@ export const SwapHomeStep = () => {
   //       data: 'to',
   //       value:
   //         totalBalances && to.token
-  //           ? getCurrencyString(totalBalances[to.token?.id], to.token?.decimals)
+  //           ? getCurrencyString(toBalance!, to.token?.decimals)
   //           : '0.00',
   //     })
   //   );
@@ -324,7 +339,7 @@ export const SwapHomeStep = () => {
           variant="gradient"
           colorScheme="dark-blue"
           size="lg"
-          onClick={handleButtonOnClick}
+          onClick={onButtonClick}
           isLoading={isLoading}
           isDisabled={buttonDisabled}
         >

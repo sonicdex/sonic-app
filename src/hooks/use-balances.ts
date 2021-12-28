@@ -1,4 +1,5 @@
 import { ENV, getFromStorage, saveToStorage } from '@/config';
+import { ICP_TOKEN_METADATA } from '@/constants';
 import { SwapIDL, TokenIDL, WICPIDL } from '@/did';
 import { ActorAdapter, appActors, useSwapActor } from '@/integrations/actor';
 import { requestBalance } from '@/integrations/plug';
@@ -12,13 +13,19 @@ import {
 } from '@/store';
 import { useKeepSync } from '@/store/features/keep-sync';
 import { parseResponseUserLPBalances } from '@/utils/canister';
+import { parseAmount } from '@/utils/format';
 import { Principal } from '@dfinity/principal';
 import { useCallback, useMemo } from 'react';
 
 export const useBalances = () => {
   const { principalId } = usePlugStore();
-  const { sonicBalances, tokenBalances, balancesState, userLPBalancesState } =
-    useSwapCanisterStore();
+  const {
+    sonicBalances,
+    icpBalance,
+    tokenBalances,
+    balancesState,
+    userLPBalancesState,
+  } = useSwapCanisterStore();
   const _swapActor = useSwapActor();
 
   const dispatch = useAppDispatch();
@@ -145,7 +152,11 @@ export const useBalances = () => {
             plugResponse.find((balance) => balance.symbol === 'ICP')?.amount ??
             0;
 
-          dispatch(swapCanisterActions.setICPBalance(icpBalance));
+          dispatch(
+            swapCanisterActions.setICPBalance(
+              parseAmount(icpBalance, ICP_TOKEN_METADATA.decimals)
+            )
+          );
           dispatch(swapCanisterActions.setSonicBalances(sonicBalances));
           dispatch(swapCanisterActions.setTokenBalances(tokenBalances));
           dispatch(swapCanisterActions.setBalancesState(FeatureState.Idle));
@@ -177,6 +188,7 @@ export const useBalances = () => {
     totalBalances,
     sonicBalances,
     tokenBalances,
+    icpBalance,
     getBalances,
     getUserPositiveLPBalances,
   };
