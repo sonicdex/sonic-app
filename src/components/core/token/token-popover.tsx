@@ -23,11 +23,13 @@ export const TokenPopover: FC<TokenPopoverProps> = ({
   decimals,
   sources = [],
 }) => {
+  sources = sources.filter((source) => source.balance && source.balance > 0);
+
   return (
     <Popover trigger="hover">
       <PopoverTrigger>
         <HStack spacing={1}>
-          {sources?.map((source) => (
+          {sources.map((source) => (
             <Image key={source?.src} src={source?.src} />
           ))}
         </HStack>
@@ -40,7 +42,7 @@ export const TokenPopover: FC<TokenPopoverProps> = ({
           </Heading>
         </PopoverHeader>
         <PopoverBody>
-          {sources?.map((source) => (
+          {sources.map((source) => (
             <TokenPopoverItem
               key={source.name}
               decimals={decimals}
