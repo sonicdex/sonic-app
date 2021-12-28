@@ -29,9 +29,7 @@ export const useSwapViewStore = () => {
     );
 
     if (state.from.metadata.id === ENV.canisterIds.WICP) {
-      const icpToken = fromTokenOptions.find(
-        (token) => token.id === ENV.canisterIds.WICP
-      );
+      const icpToken = fromTokenOptions.find((token) => token.id === 'ICP');
 
       if (icpToken) {
         toTokenOptions.push(icpToken);
