@@ -143,7 +143,7 @@ export const TokenDetailsLogo: React.FC<TokenDetailsLogo> = (props) => {
         minW={5}
         height={5}
         minH={5}
-        borderRadius={5}
+        borderRadius="full"
         src={logoSrc}
         {...props}
       />
