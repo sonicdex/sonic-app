@@ -58,10 +58,7 @@ export const LiquidityAdd = () => {
   const query = useQuery();
 
   const { isConnected } = usePlugStore();
-  const {
-    allPairs,
-    // icpBalance
-  } = useSwapCanisterStore();
+  const { allPairs } = useSwapCanisterStore();
 
   const { addNotification } = useNotificationStore();
   const { token0, token1, slippage, pair } = useLiquidityViewStore();
