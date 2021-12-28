@@ -7,6 +7,7 @@ import { plug } from '@/integrations/plug';
 import { useEffect, useState } from 'react';
 import { usePlugStore } from '@/store';
 import { parseAmount } from './format';
+import { BINANCE_V3_API_URL } from '@/integrations/binance/constants';
 
 export const formatICP = (val: BigInt): string => {
   try {
@@ -87,19 +88,18 @@ export const useICPBalance = () => {
   };
 };
 
-// FIXME: export binance API URL, abstract this
-export const getICPPrice = () => {
-  let promise = new Promise<string | undefined>((resolve, reject) => {
-    axios
-      .get('https://api.binance.com/api/v3/avgPrice?symbol=ICPUSDT')
-      .then((res) => {
-        if (res.status === 200) {
-          resolve(res.data?.price);
-        } else {
-          reject(false);
-        }
-      })
-      .catch((err) => reject(err));
-  });
-  return promise;
+export const getICPPrice = async () => {
+  try {
+    const response = await axios.get(
+      `${BINANCE_V3_API_URL}/avgPrice?symbol=ICPUSDT`
+    );
+
+    if (response.status === 200) {
+      return response.data.price;
+    } else {
+      throw new Error(response.statusText);
+    }
+  } catch (error) {
+    throw new Error((error as any).message);
+  }
 };

@@ -9,7 +9,7 @@ import {
 } from '@chakra-ui/modal';
 import {
   Box,
-  Button as ChakraButton,
+  Button,
   Center,
   Divider,
   Flex,
@@ -28,7 +28,6 @@ import { FaArrowDown } from 'react-icons/fa';
 import { useMemo } from 'react';
 import BigNumber from 'bignumber.js';
 
-import { Button } from '@/components';
 import {
   liquidityViewActions,
   modalsSliceActions,
@@ -150,14 +149,14 @@ export const RemoveLiquidityModal = () => {
                 key={preset}
                 label={`${preset}% of your liquidity position`}
               >
-                <ChakraButton
+                <Button
                   lineHeight="1"
                   colorScheme="dark-blue"
                   variant="outline"
                   onClick={() => handleSliderChange(preset)}
                 >
                   {preset}%
-                </ChakraButton>
+                </Button>
               </Tooltip>
             ))}
           </SimpleGrid>
@@ -211,7 +210,14 @@ export const RemoveLiquidityModal = () => {
         </ModalBody>
 
         <ModalFooter>
-          <Button mb={3} size="lg" isFullWidth onClick={handleRemoveLiquidity}>
+          <Button
+            variant="gradient"
+            colorScheme="dark-blue"
+            mb={3}
+            size="lg"
+            isFullWidth
+            onClick={handleRemoveLiquidity}
+          >
             Remove
           </Button>
         </ModalFooter>

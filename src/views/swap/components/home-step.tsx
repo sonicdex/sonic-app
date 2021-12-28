@@ -1,15 +1,22 @@
-import { Box, Flex, Icon, IconButton, Tooltip } from '@chakra-ui/react';
+import {
+  Button,
+  Box,
+  Flex,
+  Icon,
+  IconButton,
+  Tooltip,
+  Stack,
+} from '@chakra-ui/react';
 import { useMemo, useState } from 'react';
 import { FaArrowDown } from 'react-icons/fa';
 
 import {
   TitleBox,
   Token,
-  Button,
   PlugButton,
   SlippageSettings,
   TokenContent,
-  TokenDetails,
+  TokenDetailsButton,
   TokenDetailsLogo,
   TokenDetailsSymbol,
   TokenBalances,
@@ -37,7 +44,7 @@ export const SwapHomeStep = () => {
   const { fromTokenOptions, toTokenOptions, from, to, slippage } =
     useSwapViewStore();
   const dispatch = useAppDispatch();
-  const { sonicBalances, tokenBalances } = useSwapCanisterStore();
+  const { sonicBalances, tokenBalances, icpBalance } = useSwapCanisterStore();
   const { isConnected } = usePlugStore();
 
   const openSelectTokenModal = useTokenModalOpener();
@@ -59,7 +66,7 @@ export const SwapHomeStep = () => {
     const parsedFromValue = (from.value && parseFloat(from.value)) || 0;
 
     if (parsedFromValue <= 0)
-      return [true, `No ${from.metadata.name} value selected`];
+      return [true, `No ${from.metadata.symbol} value selected`];
 
     if (totalBalances) {
       const parsedBalance = parseFloat(
@@ -67,7 +74,7 @@ export const SwapHomeStep = () => {
       );
 
       if (parsedFromValue > parsedBalance) {
-        return [true, `Insufficient ${from.metadata.name} Balance`];
+        return [true, `Insufficient ${from.metadata.symbol} Balance`];
       }
     }
 
@@ -88,6 +95,63 @@ export const SwapHomeStep = () => {
 
     return selectedIds;
   }, [from?.metadata?.id, to?.metadata?.id]);
+
+  const [selectTokenButtonDisabled, selectTokenButtonText] = useMemo(() => {
+    if (toTokenOptions && toTokenOptions.length <= 0)
+      return [true, 'No pairs available'];
+    return [false, 'Select the token'];
+  }, [toTokenOptions]);
+
+  const isICPSelected = useMemo(() => {
+    if (from.metadata?.id === 'ICP' || to.metadata?.id === 'ICP') return true;
+    return false;
+  }, [from.metadata]);
+
+  const fromSources = useMemo(() => {
+    if (from.metadata) {
+      if (from.metadata.id === 'ICP') {
+        return getAppAssetsSources({
+          balances: {
+            plug: icpBalance ?? 0,
+          },
+        });
+      }
+
+      return getAppAssetsSources({
+        balances: {
+          plug:
+            from.metadata && tokenBalances
+              ? tokenBalances[from.metadata.id]
+              : 0,
+          sonic:
+            from.metadata && sonicBalances
+              ? sonicBalances[from.metadata.id]
+              : 0,
+        },
+      });
+    }
+  }, [from.metadata, tokenBalances, sonicBalances]);
+
+  const toSources = useMemo(() => {
+    if (to.metadata) {
+      if (to.metadata.id === 'ICP') {
+        return getAppAssetsSources({
+          balances: {
+            plug: icpBalance ?? 0,
+          },
+        });
+      }
+
+      return getAppAssetsSources({
+        balances: {
+          plug:
+            to.metadata && tokenBalances ? tokenBalances[to.metadata.id] : 0,
+          sonic:
+            to.metadata && sonicBalances ? sonicBalances[to.metadata.id] : 0,
+        },
+      });
+    }
+  }, [to.metadata, tokenBalances, sonicBalances]);
 
   const handleButtonOnClick = () => {
     if (isLoading) return;
@@ -146,7 +210,7 @@ export const SwapHomeStep = () => {
   };
 
   return (
-    <>
+    <Stack spacing={4}>
       <TitleBox
         title="Swap"
         settings={
@@ -164,7 +228,7 @@ export const SwapHomeStep = () => {
         }
       />
       <Flex direction="column" alignItems="center">
-        <Box mt={5} width="100%">
+        <Box width="100%">
           <Token
             value={from.value}
             setValue={(value) =>
@@ -174,24 +238,13 @@ export const SwapHomeStep = () => {
             tokenMetadata={from.metadata}
             isLoading={isLoading}
             price={0}
-            sources={getAppAssetsSources({
-              balances: {
-                plug:
-                  from.metadata && tokenBalances
-                    ? tokenBalances[from.metadata.id]
-                    : 0,
-                sonic:
-                  from.metadata && sonicBalances
-                    ? sonicBalances[from.metadata.id]
-                    : 0,
-              },
-            })}
+            sources={fromSources}
           >
             <TokenContent>
-              <TokenDetails onClick={handleSelectFromToken}>
+              <TokenDetailsButton onClick={handleSelectFromToken}>
                 <TokenDetailsLogo />
                 <TokenDetailsSymbol />
-              </TokenDetails>
+              </TokenDetailsButton>
 
               <TokenInput autoFocus />
             </TokenContent>
@@ -231,24 +284,24 @@ export const SwapHomeStep = () => {
             isLoading={isLoading}
             price={0}
             isDisabled={true}
-            sources={getAppAssetsSources({
-              balances: {
-                plug:
-                  to.metadata && tokenBalances
-                    ? tokenBalances[to.metadata.id]
-                    : 0,
-                sonic:
-                  to.metadata && sonicBalances
-                    ? sonicBalances[to.metadata.id]
-                    : 0,
-              },
-            })}
+            sources={toSources}
           >
             <TokenContent>
-              <TokenDetails onClick={handleSelectToToken}>
-                <TokenDetailsLogo />
-                <TokenDetailsSymbol />
-              </TokenDetails>
+              {to.metadata ? (
+                <TokenDetailsButton onClick={handleSelectToToken}>
+                  <TokenDetailsLogo />
+                  <TokenDetailsSymbol />
+                </TokenDetailsButton>
+              ) : (
+                <TokenDetailsButton
+                  onClick={handleSelectToToken}
+                  isDisabled={selectTokenButtonDisabled}
+                  variant="gradient"
+                  colorScheme="dark-blue"
+                >
+                  {selectTokenButtonText}
+                </TokenDetailsButton>
+              )}
 
               <TokenInput />
             </TokenContent>
@@ -260,7 +313,9 @@ export const SwapHomeStep = () => {
         </Box>
       </Flex>
 
-      <ExchangeBox from={from} to={to} slippage={slippage} />
+      {!isICPSelected && (
+        <ExchangeBox from={from} to={to} slippage={slippage} />
+      )}
       <KeepInSonicBox />
 
       {!isConnected ? (
@@ -268,6 +323,8 @@ export const SwapHomeStep = () => {
       ) : (
         <Button
           isFullWidth
+          variant="gradient"
+          colorScheme="dark-blue"
           size="lg"
           onClick={handleButtonOnClick}
           isLoading={isLoading}
@@ -276,6 +333,6 @@ export const SwapHomeStep = () => {
           {buttonMessage}
         </Button>
       )}
-    </>
+    </Stack>
   );
 };

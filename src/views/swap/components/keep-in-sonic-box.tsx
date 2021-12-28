@@ -23,7 +23,7 @@ export const KeepInSonicBox: React.FC = () => {
       direction="row"
       justifyContent="space-between"
       alignItems="center"
-      borderRadius={5}
+      borderRadius="xl"
       bg="#1E1E1E"
       px={5}
       py={4}

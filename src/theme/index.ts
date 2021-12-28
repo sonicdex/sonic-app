@@ -1,6 +1,7 @@
 import { extendTheme } from '@chakra-ui/react';
 import { mode } from '@chakra-ui/theme-tools';
 
+import Button from './components/button';
 import CloseButton from './components/close-button';
 import Modal from './components/modal';
 import Popover from './components/popover';
@@ -28,6 +29,7 @@ const appTheme = {
   },
   colors,
   components: {
+    Button,
     Tabs,
     CloseButton,
     Modal,

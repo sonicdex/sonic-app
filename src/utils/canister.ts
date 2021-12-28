@@ -5,7 +5,7 @@ import {
   TokenMetadataList,
   PairList,
   PairBalances,
-  SupportedTokenList,
+  AppTokenMetadataList,
 } from '@/models';
 
 export const desensitizationPrincipalId = (
@@ -25,22 +25,21 @@ export const desensitizationPrincipalId = (
 };
 
 export const parseResponseSupportedTokenList = (
-  response: SwapIDL.TokenInfoExt[]
-): SupportedTokenList => {
+  response: SwapIDL.TokenInfoExt[],
+  icpPrice?: string
+): AppTokenMetadataList => {
   return response.map((token) => ({
     ...token,
+    ...(icpPrice ? { price: icpPrice } : {}),
     logo: getFromStorage(`${token.id}-logo`) ?? questionMarkSrc,
   }));
 };
 
 export const parseResponseTokenList = (
-  response: SwapIDL.TokenInfoExt[]
+  response: AppTokenMetadataList
 ): TokenMetadataList => {
   return response.reduce((list, token) => {
-    list[token.id] = {
-      ...token,
-      logo: getFromStorage(`${token.id}-logo`) ?? questionMarkSrc,
-    };
+    list[token.id] = token;
     return list;
   }, {} as TokenMetadataList);
 };

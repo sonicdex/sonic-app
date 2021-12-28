@@ -1,5 +1,4 @@
 export * from './asset';
-export * from './button';
 export * from './check-box';
 export * from './emoji';
 export * from './empty-mobile';

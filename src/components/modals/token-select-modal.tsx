@@ -5,6 +5,7 @@ import { modalsSliceActions, useAppDispatch, useModalsStore } from '@/store';
 
 import { deserialize } from '@/utils/format';
 import {
+  Button,
   Box,
   Flex,
   Heading,
@@ -21,7 +22,7 @@ import {
   Tooltip,
 } from '@chakra-ui/react';
 import { useEffect, useMemo, useState } from 'react';
-import { Button, DisplayCurrency, SearchBar } from '..';
+import { DisplayCurrency, SearchBar } from '..';
 
 import { ImportToken } from './components';
 
@@ -157,7 +158,14 @@ export const TokenSelectModal = () => {
                     decimals={decimals}
                     name={name}
                     onSelect={() =>
-                      handleSelect(id && selectedTokenIds?.includes(id), id)
+                      handleSelect(
+                        id
+                          ? selectedTokenIds
+                            ? selectedTokenIds.includes(id)
+                            : false
+                          : false,
+                        id
+                      )
                     }
                     isLoading={isLoading}
                     isSelected={selectedTokenIds?.includes(id)}
@@ -200,7 +208,8 @@ export const TokenSelectModal = () => {
                   <Skeleton isLoaded={!isLoading} minWidth={17} ml={2}>
                     <Button
                       width="fit-content"
-                      gradient="vertical"
+                      variant="gradient"
+                      colorScheme="dark-blue"
                       px={4}
                       borderRadius={20}
                       fontWeight={700}

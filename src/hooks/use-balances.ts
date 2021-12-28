@@ -1,6 +1,7 @@
 import { ENV, getFromStorage, saveToStorage } from '@/config';
-import { SwapIDL, TokenIDL } from '@/did';
+import { SwapIDL, TokenIDL, WICPIDL } from '@/did';
 import { ActorAdapter, appActors, useSwapActor } from '@/integrations/actor';
+import { requestBalance } from '@/integrations/plug';
 import { Balances } from '@/models';
 import {
   FeatureState,
@@ -96,10 +97,15 @@ export const useBalances = () => {
                   try {
                     const tokenCanisterId = balance[0];
 
+                    const _interfaceFactory =
+                      tokenCanisterId === ENV.canisterIds.WICP
+                        ? WICPIDL.factory
+                        : TokenIDL.factory;
+
                     const tokenActor: TokenIDL.Factory =
                       await new ActorAdapter().createActor(
                         tokenCanisterId,
-                        TokenIDL.factory
+                        _interfaceFactory
                       );
 
                     const storageKey = `${tokenCanisterId}-logo`;
@@ -107,7 +113,7 @@ export const useBalances = () => {
 
                     if (!logo) {
                       try {
-                        const tokenLogo = await tokenActor.getLogo();
+                        const tokenLogo = await tokenActor.logo();
                         saveToStorage(storageKey, tokenLogo);
                       } catch (e) {
                         console.error('Token Logo not found', e);
@@ -134,6 +140,12 @@ export const useBalances = () => {
               )
             : undefined;
 
+          const plugResponse = (await requestBalance()) as unknown as any[];
+          const icpBalance =
+            plugResponse.find((balance) => balance.symbol === 'ICP')?.amount ??
+            0;
+
+          dispatch(swapCanisterActions.setICPBalance(icpBalance));
           dispatch(swapCanisterActions.setSonicBalances(sonicBalances));
           dispatch(swapCanisterActions.setTokenBalances(tokenBalances));
           dispatch(swapCanisterActions.setBalancesState(FeatureState.Idle));

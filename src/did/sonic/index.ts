@@ -1,3 +1,4 @@
-export { SwapStorageIDL } from './swap-storage.did';
-export { SwapIDL } from './swap.did';
-export { TokenIDL } from './token.did';
+export * from './swap-storage.did';
+export * from './swap.did';
+export * from './token.did';
+export * from './wicp.did';

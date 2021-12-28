@@ -1,6 +1,5 @@
 import { arrowDownSrc } from '@/assets';
 import {
-  Button,
   ExchangeBox,
   TitleBox,
   Token,
@@ -8,7 +7,7 @@ import {
   TokenBalancesDetails,
   TokenBalancesPrice,
   TokenContent,
-  TokenDetails,
+  TokenDetailsButton,
   TokenDetailsLogo,
   TokenDetailsSymbol,
   TokenInput,
@@ -26,7 +25,7 @@ import {
 } from '@/store';
 import { getCurrencyString } from '@/utils/format';
 import { debounce } from '@/utils/function';
-import { Box, Flex, Image } from '@chakra-ui/react';
+import { Box, Button, Flex, Image } from '@chakra-ui/react';
 import { KeepInSonicBox } from './keep-in-sonic-box';
 
 export const SwapReviewStep = () => {
@@ -94,10 +93,10 @@ export const SwapReviewStep = () => {
             })}
           >
             <TokenContent>
-              <TokenDetails>
+              <TokenDetailsButton>
                 <TokenDetailsLogo />
                 <TokenDetailsSymbol />
-              </TokenDetails>
+              </TokenDetailsButton>
 
               <TokenInput />
             </TokenContent>
@@ -145,10 +144,10 @@ export const SwapReviewStep = () => {
             isDisabled
           >
             <TokenContent>
-              <TokenDetails>
+              <TokenDetailsButton>
                 <TokenDetailsLogo />
                 <TokenDetailsSymbol />
-              </TokenDetails>
+              </TokenDetailsButton>
 
               <TokenInput />
             </TokenContent>
@@ -163,7 +162,13 @@ export const SwapReviewStep = () => {
       <ExchangeBox from={from} to={to} slippage={slippage} />
       <KeepInSonicBox />
 
-      <Button isFullWidth size="lg" onClick={handleApproveSwap}>
+      <Button
+        variant="gradient"
+        colorScheme="dark-blue"
+        isFullWidth
+        size="lg"
+        onClick={handleApproveSwap}
+      >
         Confirm Swap
       </Button>
     </>

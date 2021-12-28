@@ -9,6 +9,8 @@ import {
   BoxProps,
   FlexProps,
   ImageProps,
+  forwardRef,
+  ButtonProps,
 } from '@chakra-ui/react';
 import { createContext } from '@chakra-ui/react-utils';
 import NumberFormat from 'react-number-format';
@@ -98,30 +100,18 @@ export const TokenContent: React.FC<TokenContentProps> = (props) => {
 
 // === Details ===
 
-type TokenDetailsProps = FlexProps;
+type TokenDetailsButtonProps = ButtonProps;
 
-export const TokenDetails: React.FC<TokenDetailsProps> = ({
-  children,
-  ...props
-}) => {
-  return (
-    <Flex
-      direction="row"
-      alignItems="center"
-      borderRadius={20}
-      bg="#282828"
-      pl={2.5}
-      pr={3}
-      py={2}
-      cursor="pointer"
-      minW="fit-content"
-      {...props}
-    >
-      {children}
-      <Image width={3} src={chevronDownSrc} />
-    </Flex>
-  );
-};
+export const TokenDetailsButton = forwardRef<TokenDetailsButtonProps, 'button'>(
+  ({ children, ...props }, ref) => {
+    return (
+      <Button ref={ref} borderRadius="full" {...props}>
+        {children}
+        <Image ml={2.5} width={3} src={chevronDownSrc} />
+      </Button>
+    );
+  }
+);
 
 type TokenDetailsLogo = ImageProps;
 
@@ -155,8 +145,8 @@ export const TokenDetailsSymbol: React.FC<FlexProps> = (props) => {
   const { isLoading, tokenMetadata } = useTokenContext();
 
   return (
-    <Skeleton isLoaded={!isLoading} height={6} width="fit-content" mr={2.5}>
-      <Text fontWeight={700} fontSize="lg" width="fit-content" minWidth={10}>
+    <Skeleton isLoaded={!isLoading} height={5} width="fit-content">
+      <Text fontWeight={700} fontSize="lg" width="fit-content" minWidth={5}>
         {tokenMetadata?.symbol}
       </Text>
     </Skeleton>
@@ -204,14 +194,14 @@ export const TokenBalancesDetails: React.FC<TokenBalancesDetailsProps> = ({
   const { isLoading, sources, tokenMetadata, value } = useTokenContext();
 
   const totalTokenBalance = useMemo(
-    () =>
-      sources?.reduce((acc, current) => acc + (current.balance ?? 0), 0) ?? 0,
+    () => sources?.reduce((acc, current) => acc + (current.balance ?? 0), 0),
     [sources]
   );
 
   const shouldRenderMaxButton = useMemo(() => {
     if (
       onMaxClick &&
+      totalTokenBalance &&
       totalTokenBalance > 0 &&
       Number(getCurrencyString(totalTokenBalance, tokenMetadata?.decimals)) !==
         Number(value)
@@ -231,12 +221,15 @@ export const TokenBalancesDetails: React.FC<TokenBalancesDetailsProps> = ({
             decimals={tokenMetadata?.decimals}
             symbol={tokenMetadata?.symbol}
           />
-          <DisplayCurrency
-            balance={totalTokenBalance}
-            decimals={tokenMetadata?.decimals || 0}
-            prefix="Balance: "
-            suffix={tokenMetadata?.symbol && ` ${tokenMetadata?.symbol}`}
-          />
+          {typeof totalTokenBalance === 'number' && (
+            <DisplayCurrency
+              balance={totalTokenBalance}
+              decimals={tokenMetadata?.decimals || 0}
+              prefix="Balance: "
+              suffix={tokenMetadata?.symbol && ` ${tokenMetadata?.symbol}`}
+            />
+          )}
+
           {shouldRenderMaxButton && (
             <Button variant="link" onClick={onMaxClick}>
               (max)

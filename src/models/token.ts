@@ -6,7 +6,12 @@ export type TokenMetadata = SwapIDL.TokenInfoExt & {
 
 export type TokenMetadataList = { [canisterId: string]: TokenMetadata };
 
-export type SupportedTokenList = (SwapIDL.TokenInfoExt & { logo: string })[];
+export type AppTokenMetadata = SwapIDL.TokenInfoExt & {
+  logo: string;
+  price?: string;
+};
+
+export type AppTokenMetadataList = AppTokenMetadata[];
 
 export interface TokenData {
   metadata?: TokenMetadata;

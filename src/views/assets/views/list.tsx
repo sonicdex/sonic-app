@@ -86,7 +86,11 @@ export const Assets = () => {
           mb={9}
           onClose={handleBannerClose}
         >
-          <Text color="#888E8F">Assets description here</Text>
+          <Text color="#888E8F">
+            View all the assets you have deposited or obtained on Sonic through
+            our Liquidity and Swaps protocols, and deposit more or withdraw them
+            to your wallet.
+          </Text>
         </InformationBox>
       )}
 
@@ -159,11 +163,11 @@ export const Assets = () => {
               </>
             ) : isSupportedTokenListPresent ? (
               supportedTokenList!.map(
-                ({ id, name, symbol, decimals, logo }) => (
+                ({ id, name, symbol, decimals, price, logo }) => (
                   <Asset key={id} imageSources={[logo]}>
                     <HStack spacing={4}>
                       <AssetImageBlock />
-                      <AssetTitleBlock title={name} subtitle={symbol} />
+                      <AssetTitleBlock title={symbol} subtitle={name} />
                     </HStack>
 
                     <Box>
@@ -176,12 +180,14 @@ export const Assets = () => {
                         fontWeight="bold"
                       />
                     </Box>
-                    <Box>
-                      <Text fontWeight="bold" color="gray.400">
-                        Price
-                      </Text>
-                      <Text fontWeight="bold">{`$0.00`}</Text>
-                    </Box>
+                    {price && (
+                      <Box>
+                        <Text fontWeight="bold" color="gray.400">
+                          Price
+                        </Text>
+                        <Text fontWeight="bold">{`$${price}`}</Text>
+                      </Box>
+                    )}
 
                     <HStack>
                       <AssetIconButton
