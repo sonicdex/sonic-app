@@ -145,7 +145,6 @@ export const useBalances = () => {
             plugResponse.find((balance) => balance.symbol === 'ICP')?.amount ??
             0;
 
-          console.log(icpBalance);
           dispatch(swapCanisterActions.setICPBalance(icpBalance));
           dispatch(swapCanisterActions.setSonicBalances(sonicBalances));
           dispatch(swapCanisterActions.setTokenBalances(tokenBalances));
