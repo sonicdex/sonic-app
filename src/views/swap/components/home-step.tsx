@@ -40,6 +40,7 @@ import { formatAmount, getCurrencyString } from '@/utils/format';
 import { getAppAssetsSources } from '@/config/utils';
 import { useTokenBalanceMemo } from '@/hooks';
 import { ENV } from '@/config';
+import { KeepInSonicBox } from './keep-in-sonic-box';
 
 export const SwapHomeStep = () => {
   const { fromTokenOptions, toTokenOptions, from, to, slippage } =
@@ -72,7 +73,7 @@ export const SwapHomeStep = () => {
     const parsedFromValue = (from.value && parseFloat(from.value)) || 0;
 
     if (parsedFromValue <= 0)
-      return [true, `No ${from.metadata.symbol} value selected`, () => {}];
+      return [true, `Enter ${from.metadata.symbol} Amount`, () => {}];
 
     if (totalBalances) {
       const parsedBalance = parseFloat(
@@ -120,7 +121,7 @@ export const SwapHomeStep = () => {
   const [selectTokenButtonDisabled, selectTokenButtonText] = useMemo(() => {
     if (toTokenOptions && toTokenOptions.length <= 0)
       return [true, 'No pairs available'];
-    return [false, 'Select the token'];
+    return [false, 'Select a Token'];
   }, [toTokenOptions]);
 
   const isICPSelected = useMemo(() => {
@@ -328,6 +329,7 @@ export const SwapHomeStep = () => {
       {!isICPSelected && (
         <ExchangeBox from={from} to={to} slippage={slippage} />
       )}
+      <KeepInSonicBox />
 
       {!isConnected ? (
         <PlugButton />

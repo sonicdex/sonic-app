@@ -105,7 +105,13 @@ type TokenDetailsButtonProps = ButtonProps;
 export const TokenDetailsButton = forwardRef<TokenDetailsButtonProps, 'button'>(
   ({ children, ...props }, ref) => {
     return (
-      <Button ref={ref} borderRadius="full" {...props}>
+      <Button
+        ref={ref}
+        borderRadius="full"
+        mr={5}
+        minWidth="fit-content"
+        {...props}
+      >
         {children}
         <Image ml={2.5} width={3} src={chevronDownSrc} />
       </Button>
@@ -133,7 +139,7 @@ export const TokenDetailsLogo: React.FC<TokenDetailsLogo> = (props) => {
         minW={5}
         height={5}
         minH={5}
-        borderRadius={5}
+        borderRadius="full"
         src={logoSrc}
         {...props}
       />
@@ -160,15 +166,15 @@ export const TokenBalances = (props: FlexProps) => {
 };
 
 export const TokenBalancesPrice: React.FC<BoxProps> = (props) => {
-  const { isLoading, isDisabled, price, value } = useTokenContext();
+  const { isLoading, price, value } = useTokenContext();
 
   const isActive = useMemo(() => {
-    if (isLoading || isDisabled || parseFloat(value ?? '0') <= 0) {
+    if (isLoading || parseFloat(value || '0') <= 0) {
       return false;
     }
 
     return true;
-  }, [isLoading, isDisabled, value]);
+  }, [isLoading, value]);
 
   return (
     <Skeleton isLoaded={!isLoading} borderRadius="full">
@@ -232,7 +238,7 @@ export const TokenBalancesDetails: React.FC<TokenBalancesDetailsProps> = ({
 
           {shouldRenderMaxButton && (
             <Button variant="link" onClick={onMaxClick}>
-              (max)
+              (Max)
             </Button>
           )}
         </HStack>
@@ -251,12 +257,12 @@ export const TokenInput: React.FC<TokenInputProps> = (props) => {
   const background = shouldGlow ? '#151515' : '#1E1E1E';
 
   const isActive = useMemo(() => {
-    if (isLoading || isDisabled || parseFloat(value ?? '0') <= 0) {
+    if (isLoading || parseFloat(value || '0') <= 0) {
       return false;
     }
 
     return true;
-  }, [isLoading, isDisabled, value]);
+  }, [isLoading, value]);
 
   const handleChange = useCallback(
     (_value: string) => {
@@ -264,9 +270,10 @@ export const TokenInput: React.FC<TokenInputProps> = (props) => {
       // Handle only one dot in input
       // Handle only token decimals in input
       if (tokenMetadata && setValue) {
+        if (_value === '') return setValue('');
         const [nat, decimals] = _value.split('.');
         let newValue = parseInt(nat) > 0 ? nat.replace(/^0+/, '') : '0';
-        if (_value.includes('.')) {
+        if (_value.includes('.') && tokenMetadata.decimals > 0) {
           newValue += '.';
         }
         if (decimals) {

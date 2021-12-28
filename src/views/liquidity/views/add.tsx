@@ -202,10 +202,10 @@ export const LiquidityAdd = () => {
     const parsedToken1Value = (token1.value && parseFloat(token1.value)) || 0;
 
     if (parsedToken0Value <= 0)
-      return [true, `No ${token0.metadata.symbol} value selected`];
+      return [true, `Enter ${token0.metadata.symbol} Amount`];
 
     if (parsedToken1Value <= 0)
-      return [true, `No ${token1.metadata.symbol} value selected`];
+      return [true, `Enter ${token1.metadata.symbol} Amount`];
 
     if (totalBalances) {
       const parsedToken0Balance = parseFloat(
