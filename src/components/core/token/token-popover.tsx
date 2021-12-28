@@ -23,6 +23,8 @@ export const TokenPopover: FC<TokenPopoverProps> = ({
   decimals,
   sources = [],
 }) => {
+  sources = sources.filter((source) => source.balance && source.balance > 0);
+
   return (
     <Popover trigger="hover">
       <PopoverTrigger>
