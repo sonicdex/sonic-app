@@ -49,8 +49,6 @@ export const usePriceInit = () => {
     }
   }, [icpPrice, supportedTokenListState, allPairsState]);
 
-  console.log(allPairs);
-
   const _getICPPrice = useKeepSync(
     'getICPPrice',
     useCallback(
