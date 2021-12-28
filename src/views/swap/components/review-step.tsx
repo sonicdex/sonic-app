@@ -1,4 +1,4 @@
-import { arrowDownSrc, infoSrc } from '@/assets';
+import { arrowDownSrc } from '@/assets';
 import {
   Button,
   ExchangeBox,
@@ -15,7 +15,6 @@ import {
 } from '@/components';
 import { getAppAssetsSources } from '@/config/utils';
 import { useBalances } from '@/hooks/use-balances';
-
 import {
   NotificationType,
   SwapStep,
@@ -27,26 +26,14 @@ import {
 } from '@/store';
 import { getCurrencyString } from '@/utils/format';
 import { debounce } from '@/utils/function';
-import {
-  Box,
-  Checkbox,
-  Flex,
-  FormControl,
-  Image,
-  Link,
-  Popover,
-  PopoverArrow,
-  PopoverBody,
-  PopoverContent,
-  PopoverTrigger,
-  Portal,
-} from '@chakra-ui/react';
+import { Box, Flex, Image } from '@chakra-ui/react';
+import { KeepInSonicBox } from './keep-in-sonic-box';
 
 export const SwapReviewStep = () => {
   const { sonicBalances, tokenBalances } = useSwapCanisterStore();
   const { totalBalances } = useBalances();
   const { addNotification } = useNotificationStore();
-  const { fromTokenOptions, toTokenOptions, from, to, keepInSonic, slippage } =
+  const { fromTokenOptions, toTokenOptions, from, to, slippage } =
     useSwapViewStore();
   const dispatch = useAppDispatch();
 
@@ -83,7 +70,7 @@ export const SwapReviewStep = () => {
         title="Swap"
         onArrowBack={() => dispatch(swapViewActions.setStep(SwapStep.Home))}
       />
-      <Flex direction="column" alignItems="center" mb={5}>
+      <Flex direction="column" alignItems="center">
         <Box mt={5} width="100%">
           <Token
             value={from.value}
@@ -172,63 +159,9 @@ export const SwapReviewStep = () => {
           </Token>
         </Box>
       </Flex>
-      <Flex
-        direction="row"
-        justifyContent="space-between"
-        alignItems="center"
-        borderRadius={5}
-        bg="#1E1E1E"
-        px={5}
-        py={4}
-      >
-        <FormControl direction="row" alignItems="center">
-          <Checkbox
-            isChecked={keepInSonic}
-            onChange={(e) =>
-              dispatch(swapViewActions.setKeepInSonic(e.target.checked))
-            }
-            colorScheme="dark-blue"
-            size="lg"
-            color={keepInSonic ? '#FFFFFF' : '#888E8F'}
-            fontWeight={600}
-          >
-            Keep tokens in Sonic after swap
-          </Checkbox>
-        </FormControl>
-        <Popover trigger="hover">
-          <PopoverTrigger>
-            <Image
-              src={infoSrc}
-              width={5}
-              transition="opacity 200ms"
-              opacity={keepInSonic ? 1 : 0.5}
-            />
-          </PopoverTrigger>
-          <Portal>
-            <PopoverContent
-              p={2}
-              bgColor="#292929"
-              border="none"
-              borderRadius={20}
-            >
-              <PopoverArrow bgColor="#292929" border="none" />
-              <PopoverBody display="inline-block">
-                Keeping tokens in Sonic (instead of withdrawing to Plug) is good
-                for high frequency trading where a few extra seconds matters a
-                lot. By doing this you can skip the deposit step on your next
-                trade and save the 2-3 extra seconds.&nbsp;
-                <Link href="/#" color="#3D52F4">
-                  {/* TODO: add correct href */}
-                  Learn More
-                </Link>
-                .
-              </PopoverBody>
-            </PopoverContent>
-          </Portal>
-        </Popover>
-      </Flex>
 
       <ExchangeBox from={from} to={to} slippage={slippage} />
+      <KeepInSonicBox />
 
       <Button isFullWidth size="lg" onClick={handleApproveSwap}>
         Confirm Swap

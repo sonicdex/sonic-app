@@ -31,6 +31,7 @@ import {
 } from '@/store';
 import { formatAmount, getCurrencyString } from '@/utils/format';
 import { getAppAssetsSources } from '@/config/utils';
+import { KeepInSonicBox } from './keep-in-sonic-box';
 
 export const SwapHomeStep = () => {
   const { fromTokenOptions, toTokenOptions, from, to, slippage } =
@@ -260,6 +261,7 @@ export const SwapHomeStep = () => {
       </Flex>
 
       <ExchangeBox from={from} to={to} slippage={slippage} />
+      <KeepInSonicBox />
 
       {!isConnected ? (
         <PlugButton />
