@@ -1,5 +1,5 @@
 import { ENV, getFromStorage, saveToStorage } from '@/config';
-import { SwapIDL, TokenIDL } from '@/did';
+import { SwapIDL, TokenIDL, WICPIDL } from '@/did';
 import { ActorAdapter, appActors, useSwapActor } from '@/integrations/actor';
 import { Balances } from '@/models';
 import {
@@ -96,10 +96,15 @@ export const useBalances = () => {
                   try {
                     const tokenCanisterId = balance[0];
 
+                    const _interfaceFactory =
+                      tokenCanisterId === ENV.canisterIds.WICP
+                        ? WICPIDL.factory
+                        : TokenIDL.factory;
+
                     const tokenActor: TokenIDL.Factory =
                       await new ActorAdapter().createActor(
                         tokenCanisterId,
-                        TokenIDL.factory
+                        _interfaceFactory
                       );
 
                     const storageKey = `${tokenCanisterId}-logo`;
