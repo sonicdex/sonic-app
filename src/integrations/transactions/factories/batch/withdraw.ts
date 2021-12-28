@@ -23,6 +23,10 @@ export const useWithdrawBatch = (withdraw: Withdraw) => {
       transactions: {
         withdraw: useMemorizedWithdrawTransaction(withdraw),
       },
+      handleRetry: () => {
+        dispatch(modalsSliceActions.closeWithdrawProgressModal());
+        return Promise.resolve(false);
+      },
     }),
     handleOpenWithdrawModal,
   ] as [Batch.Hook<WithdrawModalDataStep>, () => void];

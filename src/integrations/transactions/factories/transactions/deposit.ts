@@ -17,7 +17,10 @@ export const useMemorizedDepositTransaction: CreateTransaction<Deposit> = (
       canisterId: ENV.canisterIds.swap,
       idl: SwapIDL.factory,
       methodName: 'deposit',
-      onSuccess,
+      onSuccess: async (res: SwapIDL.Result) => {
+        if ('err' in res) throw new Error(res.err);
+        onSuccess(res);
+      },
       onFail,
       args: [
         Principal.fromText(token?.id),

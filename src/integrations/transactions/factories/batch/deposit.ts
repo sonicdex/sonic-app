@@ -33,8 +33,14 @@ export const useDepositBatch = (deposit: Deposit) => {
     );
     dispatch(modalsSliceActions.openDepositProgressModal());
   };
-  return [useBatchHook({ transactions }), handleOpenDepositModal] as [
-    Batch.Hook<DepositModalDataStep>,
-    () => void
-  ];
+  return [
+    useBatchHook({
+      transactions,
+      handleRetry: () => {
+        dispatch(modalsSliceActions.closeDepositProgressModal());
+        return Promise.resolve(false);
+      },
+    }),
+    handleOpenDepositModal,
+  ] as [Batch.Hook<DepositModalDataStep>, () => void];
 };
