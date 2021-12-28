@@ -87,6 +87,7 @@ export const LiquidityAdd = () => {
       dispatch(liquidityViewActions.setValue({ data: 'token0', value: '' }));
       dispatch(liquidityViewActions.setValue({ data: 'token1', value: '' }));
       setIsReviewing(false);
+      navigate('/liquidity');
     }, 300);
   };
 
