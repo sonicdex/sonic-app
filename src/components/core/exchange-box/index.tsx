@@ -98,7 +98,11 @@ export const ExchangeBox: React.FC<ExchangeBoxProps> = ({
                   title="Minimum Received"
                   value={`${
                     to.value
-                      ? getAmountMin(to.value, slippage, to.metadata.decimals)
+                      ? getAmountMin(
+                          to.value,
+                          Number(slippage) / 100,
+                          to.metadata.decimals
+                        )
                       : 0
                   } ${to.metadata.symbol}`}
                 />
