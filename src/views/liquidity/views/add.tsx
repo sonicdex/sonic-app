@@ -52,6 +52,7 @@ import {
 } from '@/utils/format';
 import BigNumber from 'bignumber.js';
 import { debounce } from '@/utils/function';
+import { useTokenBalanceMemo } from '@/hooks';
 
 export const LiquidityAdd = () => {
   const query = useQuery();
@@ -100,13 +101,11 @@ export const LiquidityAdd = () => {
 
   const handleTokenMaxClick = (dataKey: LiquidityTokenDataKey) => {
     const token = dataKey === 'token0' ? token0 : token1;
+    const tokenBalance = dataKey === 'token0' ? token0Balance : token1Balance;
 
     const value =
       totalBalances && token.metadata
-        ? getCurrencyString(
-            totalBalances[token.metadata?.id],
-            token.metadata?.decimals
-          )
+        ? getCurrencyString(tokenBalance!, token.metadata?.decimals)
         : '';
 
     setTokenValueAndLPTokenValue(dataKey, value);
@@ -186,7 +185,10 @@ export const LiquidityAdd = () => {
     }
   };
 
-  // Memorized valuesp
+  // Memorized values
+
+  const token0Balance = useTokenBalanceMemo(token0.metadata?.id);
+  const token1Balance = useTokenBalanceMemo(token1.metadata?.id);
 
   const isLoading = useMemo(() => {
     return supportedTokenListState === FeatureState.Loading;
@@ -207,16 +209,10 @@ export const LiquidityAdd = () => {
 
     if (totalBalances) {
       const parsedToken0Balance = parseFloat(
-        formatAmount(
-          totalBalances[token0.metadata.id],
-          token0.metadata.decimals
-        )
+        formatAmount(token0Balance!, token0.metadata.decimals)
       );
       const parsedToken1Balance = parseFloat(
-        formatAmount(
-          totalBalances[token1.metadata.id],
-          token1.metadata.decimals
-        )
+        formatAmount(token1Balance!, token1.metadata.decimals)
       );
 
       if (parsedToken0Value > parsedToken0Balance) {

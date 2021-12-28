@@ -71,8 +71,6 @@ export const RemoveLiquidityLink: React.FC<RemoveLiquidityLinkProps> = ({
         token1.metadata.decimals
       );
 
-      console.log(removeAmountPercentage);
-
       return deserialize(
         stringify({
           token0,

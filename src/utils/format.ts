@@ -290,6 +290,7 @@ export const formatAmount = (
   try {
     return formatUnits(ethers.BigNumber.from(val.toString()), decimals);
   } catch (err) {
+    console.log(err);
     return '0';
   }
 };

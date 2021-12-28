@@ -40,8 +40,8 @@ export const swapCanisterSlice = createSlice({
   // `createSlice` will infer the state type from the `initialState` argument
   initialState,
   reducers: {
-    setICPBalance: (state, action: PayloadAction<number>) => {
-      state.icpBalance = action.payload;
+    setICPBalance: (state, action: PayloadAction<bigint>) => {
+      state.icpBalance = Number(action.payload);
     },
     setSupportedTokensListState: (
       state,
