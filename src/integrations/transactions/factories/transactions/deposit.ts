@@ -19,7 +19,7 @@ export const useMemorizedDepositTransaction: CreateTransaction<Deposit> = (
       methodName: 'deposit',
       onSuccess: async (res: SwapIDL.Result) => {
         if ('err' in res) throw new Error(res.err);
-        onSuccess(res);
+        if (onSuccess) onSuccess(res);
       },
       onFail,
       args: [

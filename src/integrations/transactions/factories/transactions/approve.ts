@@ -19,7 +19,7 @@ export const useMemorizedApproveTransaction: CreateTransaction<Deposit> = (
       methodName: 'approve',
       onSuccess: async (res: TokenIDL.Result) => {
         if ('Err' in res) throw new Error(JSON.stringify(res.Err));
-        onSuccess(res);
+        if (onSuccess) onSuccess(res);
       },
       onFail,
       args: [

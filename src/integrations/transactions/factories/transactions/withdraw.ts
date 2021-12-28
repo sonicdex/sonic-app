@@ -20,7 +20,7 @@ export const useMemorizedWithdrawTransaction: CreateTransaction<Withdraw> = (
       methodName: 'withdraw',
       onSuccess: async (res: SwapIDL.Result) => {
         if ('err' in res) throw new Error(res.err);
-        onSuccess(res);
+        if (onSuccess) onSuccess(res);
       },
       onFail,
     };
