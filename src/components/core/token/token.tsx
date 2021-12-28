@@ -176,14 +176,12 @@ export const TokenBalancesPrice: React.FC<BoxProps> = (props) => {
     return true;
   }, [isLoading, value]);
 
-  console.log('isActive', isActive);
-
   return (
     <Skeleton isLoaded={!isLoading} borderRadius="full">
       <Box
         transition="color 400ms"
-        {...props}
         color={isActive ? '#F6FCFD' : '#888E8F'}
+        {...props}
       >
         <NumberFormat value={price} displayType="text" prefix="$" />
       </Box>
