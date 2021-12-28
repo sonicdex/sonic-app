@@ -94,8 +94,6 @@ export const getICPPrice = async () => {
       `${BINANCE_V3_API_URL}/avgPrice?symbol=ICPUSDT`
     );
 
-    console.log(response);
-
     if (response.status === 200) {
       return response.data.price;
     } else {
