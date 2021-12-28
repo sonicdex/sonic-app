@@ -5,6 +5,5 @@ export * from './use-actors-init';
 export * from './use-token-actor';
 export * from './use-ledger-actor';
 export * from './use-swap-actor';
-export * from './use-swap-storage-actor';
 export * from './use-wicp-actor';
 export * from './use-xtc-actor';

@@ -17,19 +17,22 @@ import {
   AddLiquidityFailModal,
   RemoveLiquidityFailModal,
 } from './components/modals';
-import { useActorsInit } from './integrations/actor/use-actors-init';
+
 import { usePlugInit } from './integrations/plug';
 import { AssetsDeposit } from './views/assets/views/deposit';
 import { AssetsWithdraw } from './views/assets/views/withdraw';
-import { useLiquidityViewInit, useSwapCanisterInit } from './store';
+import {
+  useLiquidityViewInit,
+  usePriceInit,
+  useSwapCanisterInit,
+} from './store';
 
 export const App = () => {
   const isAnyMobileDevice = isMobile(window.navigator).any;
 
   usePlugInit();
-  useActorsInit();
+  usePriceInit();
   useSwapCanisterInit();
-
   useLiquidityViewInit();
 
   // TODO: Remove after plug mobile connection

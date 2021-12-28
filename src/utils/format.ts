@@ -158,13 +158,17 @@ export const getAmountOut = (
   fee = 3 // means 0.003
 ): string => {
   if (!amountIn || new BigNumber(amountIn).isZero()) return '';
+
   const amountInWithFee = new BigNumber(amountIn) // amountIn * 997;
     .multipliedBy(new BigNumber(10).pow(decimalsIn))
     .multipliedBy(new BigNumber('1000').minus(fee));
+
   const numerator = amountInWithFee.multipliedBy(new BigNumber(reserveOut)); // amountInWithFee * reserveOut;
+
   const denominator = new BigNumber(reserveIn) // reserveIn * 1000 + amountInWithFee;
     .multipliedBy(new BigNumber('1000'))
     .plus(amountInWithFee);
+
   return numerator
     .dividedBy(denominator)
     .dividedBy(new BigNumber(10).pow(decimalsOut))
