@@ -31,9 +31,18 @@ export const Button = ({
       textAlign="center"
       color="#F6FCFD"
       cursor="pointer"
-      background={background}
       variant={isWireframe ? 'outline' : 'solid'}
+      background={background}
+      _disabled={{
+        background: 'gray.800',
+      }}
       _hover={{
+        background,
+        _disabled: {
+          background: 'gray.800',
+        },
+      }}
+      _active={{
         background,
       }}
       {...props}

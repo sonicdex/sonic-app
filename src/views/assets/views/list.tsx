@@ -167,7 +167,7 @@ export const Assets = () => {
                   <Asset key={id} imageSources={[logo]}>
                     <HStack spacing={4}>
                       <AssetImageBlock />
-                      <AssetTitleBlock title={name} subtitle={symbol} />
+                      <AssetTitleBlock title={symbol} subtitle={name} />
                     </HStack>
 
                     <Box>

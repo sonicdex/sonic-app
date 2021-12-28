@@ -1,7 +1,14 @@
 import { useState } from 'react';
-import { Image, Box, Flex, Text, Checkbox, Heading } from '@chakra-ui/react';
+import {
+  Button,
+  Image,
+  Box,
+  Flex,
+  Text,
+  Checkbox,
+  Heading,
+} from '@chakra-ui/react';
 
-import { Button } from '@/components';
 import { redTriangleWarningSrc } from '@/assets';
 import { ImportTokenImage } from './import-token-image';
 
@@ -82,7 +89,8 @@ export const ImportToken = ({
         I understand the risk of trading this token
       </Checkbox>
       <Button
-        gradient="vertical"
+        variant="gradient"
+        colorScheme="dark-blue"
         w="100%"
         borderRadius={12}
         fontSize={18}

@@ -16,6 +16,7 @@ export interface SwapCanisterState {
   supportedTokenList?: AppTokenMetadataList;
   sonicBalances?: Balances;
   tokenBalances?: Balances;
+  icpBalance?: number;
   allPairs?: PairList;
   userLPBalances?: PairBalances;
 }
@@ -29,6 +30,7 @@ const initialState: SwapCanisterState = {
   supportedTokenList: undefined,
   sonicBalances: undefined,
   tokenBalances: undefined,
+  icpBalance: undefined,
   allPairs: undefined,
   userLPBalances: undefined,
 };
@@ -38,6 +40,9 @@ export const swapCanisterSlice = createSlice({
   // `createSlice` will infer the state type from the `initialState` argument
   initialState,
   reducers: {
+    setICPBalance: (state, action: PayloadAction<number>) => {
+      state.icpBalance = action.payload;
+    },
     setSupportedTokensListState: (
       state,
       action: PayloadAction<FeatureState>

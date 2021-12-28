@@ -103,22 +103,11 @@ export const TokenContent: React.FC<TokenContentProps> = (props) => {
 type TokenDetailsButtonProps = ButtonProps;
 
 export const TokenDetailsButton = forwardRef<TokenDetailsButtonProps, 'button'>(
-  ({ children, ...props }) => {
+  ({ children, ...props }, ref) => {
     return (
-      <Button
-        as="button"
-        direction="row"
-        alignItems="center"
-        borderRadius={20}
-        bg="#282828"
-        pl={2.5}
-        pr={3}
-        py={2}
-        minW="fit-content"
-        {...props}
-      >
+      <Button ref={ref} borderRadius="full" {...props}>
         {children}
-        <Image width={3} src={chevronDownSrc} />
+        <Image ml={2.5} width={3} src={chevronDownSrc} />
       </Button>
     );
   }
@@ -156,8 +145,8 @@ export const TokenDetailsSymbol: React.FC<FlexProps> = (props) => {
   const { isLoading, tokenMetadata } = useTokenContext();
 
   return (
-    <Skeleton isLoaded={!isLoading} height={6} width="fit-content" mr={2.5}>
-      <Text fontWeight={700} fontSize="lg" width="fit-content" minWidth={10}>
+    <Skeleton isLoaded={!isLoading} height={5} width="fit-content">
+      <Text fontWeight={700} fontSize="lg" width="fit-content" minWidth={5}>
         {tokenMetadata?.symbol}
       </Text>
     </Skeleton>

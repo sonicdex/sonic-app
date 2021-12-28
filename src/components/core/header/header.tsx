@@ -1,5 +1,4 @@
-import { Box, Flex, Spinner } from '@chakra-ui/react';
-import { Button } from '@/components';
+import { Box, Button, Flex, Spinner } from '@chakra-ui/react';
 
 type HeaderProps = {
   title: string;
@@ -32,7 +31,13 @@ export const Header = ({
         {isLoading && <Spinner width={3} height={3} mx={3} />}
       </Box>
       {buttonText && onButtonClick && (
-        <Button onClick={() => onButtonClick()}>{buttonText}</Button>
+        <Button
+          variant="gradient"
+          colorScheme="dark-blue"
+          onClick={() => onButtonClick()}
+        >
+          {buttonText}
+        </Button>
       )}
     </Flex>
   );

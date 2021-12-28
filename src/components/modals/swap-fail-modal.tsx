@@ -1,5 +1,4 @@
-import { Modal, ModalOverlay } from '@chakra-ui/react';
-import { Button } from '../core';
+import { Button, Modal, ModalOverlay } from '@chakra-ui/react';
 
 import { TransactionFailedModalContent } from './components';
 import { modalsSliceActions, useAppDispatch, useModalsStore } from '@/store';
@@ -20,6 +19,8 @@ export const SwapFailModal = () => {
       <ModalOverlay />
       <TransactionFailedModalContent title="Swap Failed">
         <Button
+          variant="gradient"
+          colorScheme="dark-blue"
           borderRadius={12}
           fontWeight={700}
           fontSize={18}
@@ -35,7 +36,6 @@ export const SwapFailModal = () => {
           fontSize={18}
           onClick={withdrawCallback}
           isFullWidth
-          isWireframe
         >
           Withdraw to Plug
         </Button>

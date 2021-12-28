@@ -1,6 +1,7 @@
 import { ENV, getFromStorage, saveToStorage } from '@/config';
 import { SwapIDL, TokenIDL, WICPIDL } from '@/did';
 import { ActorAdapter, appActors, useSwapActor } from '@/integrations/actor';
+import { requestBalance } from '@/integrations/plug';
 import { Balances } from '@/models';
 import {
   FeatureState,
@@ -139,6 +140,13 @@ export const useBalances = () => {
               )
             : undefined;
 
+          const plugResponse = (await requestBalance()) as unknown as any[];
+
+          dispatch(
+            swapCanisterActions.setICPBalance(
+              plugResponse.find((balance) => balance.symbol === 'ICP')
+            )
+          );
           dispatch(swapCanisterActions.setSonicBalances(sonicBalances));
           dispatch(swapCanisterActions.setTokenBalances(tokenBalances));
           dispatch(swapCanisterActions.setBalancesState(FeatureState.Idle));

@@ -1,8 +1,15 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Text, Flex, Image, Box, Stack, SimpleGrid } from '@chakra-ui/react';
-
 import {
   Button,
+  Text,
+  Flex,
+  Image,
+  Box,
+  Stack,
+  SimpleGrid,
+} from '@chakra-ui/react';
+
+import {
   LPImageBlock,
   PlugButton,
   TitleBox,
@@ -193,10 +200,10 @@ export const LiquidityAdd = () => {
     const parsedToken1Value = (token1.value && parseFloat(token1.value)) || 0;
 
     if (parsedToken0Value <= 0)
-      return [true, `No ${token0.metadata.name} value selected`];
+      return [true, `No ${token0.metadata.symbol} value selected`];
 
     if (parsedToken1Value <= 0)
-      return [true, `No ${token1.metadata.name} value selected`];
+      return [true, `No ${token1.metadata.symbol} value selected`];
 
     if (totalBalances) {
       const parsedToken0Balance = parseFloat(
@@ -213,11 +220,11 @@ export const LiquidityAdd = () => {
       );
 
       if (parsedToken0Value > parsedToken0Balance) {
-        return [true, `Insufficient ${token0.metadata.name} Balance`];
+        return [true, `Insufficient ${token0.metadata.symbol} Balance`];
       }
 
       if (parsedToken1Balance > parsedToken1Balance) {
-        return [true, `Insufficient ${token1.metadata.name} Balance`];
+        return [true, `Insufficient ${token1.metadata.symbol} Balance`];
       }
     }
 
@@ -547,6 +554,8 @@ export const LiquidityAdd = () => {
         <Button
           isFullWidth
           size="lg"
+          variant="gradient"
+          colorScheme="dark-blue"
           onClick={handleAddLiquidity}
           isDisabled={buttonDisabled}
           isLoading={isLoading}

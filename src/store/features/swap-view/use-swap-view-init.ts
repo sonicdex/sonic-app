@@ -1,3 +1,4 @@
+import { ENV } from '@/config';
 import { getICPTokenMetadata } from '@/constants';
 import { useAppDispatch } from '@/store';
 import { parseResponseTokenList } from '@/utils/canister';
@@ -26,6 +27,19 @@ export const useSwapView = () => {
     if (!from.metadata) return;
     if (!to.metadata) return;
     if (!allPairs) return;
+
+    if (
+      (from.metadata.id === 'ICP' && to.metadata.id === ENV.canisterIds.WICP) ||
+      (to.metadata.id === 'ICP' && from.metadata.id === ENV.canisterIds.WICP)
+    ) {
+      dispatch(
+        swapViewActions.setValue({
+          data: 'to',
+          value: from.value,
+        })
+      );
+      return;
+    }
 
     if (
       allPairs[from.metadata.id] &&

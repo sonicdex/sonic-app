@@ -1,9 +1,8 @@
 import { useEffect, useMemo } from 'react';
-import { Box } from '@chakra-ui/react';
+import { Button, Box } from '@chakra-ui/react';
 import {
   TitleBox,
   Token,
-  Button,
   TokenContent,
   TokenDetailsButton,
   TokenDetailsLogo,
@@ -33,8 +32,12 @@ import { debounce } from '@/utils/function';
 export const AssetsWithdraw = () => {
   const query = useQuery();
   const { amount, tokenId } = useWithdrawViewStore();
-  const { supportedTokenList, sonicBalances, supportedTokenListState } =
-    useSwapCanisterStore();
+  const {
+    supportedTokenList,
+    icpBalance,
+    sonicBalances,
+    supportedTokenListState,
+  } = useSwapCanisterStore();
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -63,7 +66,7 @@ export const AssetsWithdraw = () => {
     const parsedFromValue = (amount && parseFloat(amount)) || 0;
 
     if (parsedFromValue <= 0)
-      return [true, `No ${selectedTokenMetadata?.name} value selected`];
+      return [true, `No ${selectedTokenMetadata?.symbol} value selected`];
 
     if (sonicBalances && selectedTokenMetadata) {
       const parsedBalance = parseFloat(
@@ -74,7 +77,7 @@ export const AssetsWithdraw = () => {
       );
 
       if (parsedFromValue > parsedBalance) {
-        return [true, `Insufficient ${selectedTokenMetadata.name} Balance`];
+        return [true, `Insufficient ${selectedTokenMetadata.symbol} Balance`];
       }
     }
 
@@ -82,6 +85,10 @@ export const AssetsWithdraw = () => {
   }, [amount, sonicBalances, selectedTokenMetadata]);
 
   const tokenBalance = useMemo(() => {
+    if (tokenId === 'ICP') {
+      return icpBalance;
+    }
+
     if (sonicBalances && tokenId) {
       return sonicBalances[tokenId];
     }
@@ -169,6 +176,8 @@ export const AssetsWithdraw = () => {
 
       <Button
         isFullWidth
+        variant="gradient"
+        colorScheme="dark-blue"
         size="lg"
         onClick={handleWithdraw}
         isLoading={isLoading}

@@ -1,5 +1,5 @@
-import { Box, Flex } from '@chakra-ui/react';
-import { NumberInput, Button } from '@/components';
+import { Box, Button, Flex } from '@chakra-ui/react';
+import { NumberInput } from '@/components';
 
 type SlippageSettingsProps = {
   slippage: string;
@@ -58,10 +58,10 @@ export const SlippageSettings = ({
       </Box>
       <Flex direction="row" alignItems="center">
         <Button
-          gradient="horizontal"
-          borderRadius={100}
+          variant={isAutoSlippage ? 'gradient' : 'outline'}
+          colorScheme="dark-blue"
+          borderRadius="full"
           onClick={handleButtonClick}
-          isWireframe={!isAutoSlippage}
           mr={3}
         >
           Auto
