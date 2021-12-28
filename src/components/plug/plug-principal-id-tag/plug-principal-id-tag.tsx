@@ -1,30 +1,29 @@
-import { ReactElement, FC, useMemo } from 'react';
-import { TagProps } from '@chakra-ui/tag';
-import { Spinner } from '@chakra-ui/spinner';
-import {
-  Flex,
-  HStack,
-  Text,
-  Image,
-  Box,
-  Menu,
-  MenuList,
-  MenuItem,
-  MenuButton,
-} from '@chakra-ui/react';
-
-import {
-  FeatureState,
-  plugActions,
-  useAppDispatch,
-  usePlugStore,
-  useNotificationStore,
-  NotificationType,
-} from '@/store';
-import { Emoji, GradientBox } from '@/components/core';
-import { desensitizationPrincipalId } from '@/utils/canister';
 import { chevronDownSrc, copySrc, exitSrc } from '@/assets';
 import { disconnect } from '@/integrations/plug';
+import {
+  FeatureState,
+  NotificationType,
+  plugActions,
+  useAppDispatch,
+  useNotificationStore,
+  usePlugStore,
+} from '@/store';
+import { desensitizationPrincipalId } from '@/utils/canister';
+import {
+  Box,
+  Flex,
+  HStack,
+  Image,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  Text,
+} from '@chakra-ui/react';
+import { Spinner } from '@chakra-ui/spinner';
+import { TagProps } from '@chakra-ui/tag';
+import { FC, ReactElement, useMemo } from 'react';
+import { PlugLogo } from '..';
 
 export const PlugPrincipalIDTag: FC<TagProps> = (props): ReactElement => {
   const { principalId, state } = usePlugStore();
@@ -56,13 +55,7 @@ export const PlugPrincipalIDTag: FC<TagProps> = (props): ReactElement => {
     <Menu>
       <MenuButton borderRadius="full" px="4" h="12" bg="#1E1E1E">
         <Flex direction="row" alignItems="center">
-          {state === FeatureState.Loading ? (
-            <Spinner />
-          ) : (
-            <GradientBox>
-              <Emoji label="Fire">🔥</Emoji>
-            </GradientBox>
-          )}
+          {state === FeatureState.Loading ? <Spinner /> : <PlugLogo />}
           <Box ml="2" fontWeight={600}>
             {shortPrincipalId}
           </Box>
