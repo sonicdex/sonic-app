@@ -38,7 +38,7 @@ import {
 } from '@/store';
 import { formatAmount, getCurrencyString } from '@/utils/format';
 import { getAppAssetsSources } from '@/config/utils';
-import { useTokenBalance } from '@/hooks';
+import { useTokenBalanceMemo } from '@/hooks';
 import { ENV } from '@/config';
 
 export const SwapHomeStep = () => {
@@ -50,7 +50,7 @@ export const SwapHomeStep = () => {
 
   const openSelectTokenModal = useTokenModalOpener();
 
-  const fromBalance = useTokenBalance(from.metadata?.id);
+  const fromBalance = useTokenBalanceMemo(from.metadata?.id);
   // const toBalance = useTokenBalance(to.metadata?.id);
 
   const [autoSlippage, setAutoSlippage] = useState(true);

@@ -52,7 +52,7 @@ import {
 } from '@/utils/format';
 import BigNumber from 'bignumber.js';
 import { debounce } from '@/utils/function';
-import { useTokenBalance } from '@/hooks';
+import { useTokenBalanceMemo } from '@/hooks';
 
 export const LiquidityAdd = () => {
   const query = useQuery();
@@ -190,8 +190,8 @@ export const LiquidityAdd = () => {
 
   // Memorized values
 
-  const token0Balance = useTokenBalance(token0.metadata?.id);
-  const token1Balance = useTokenBalance(token1.metadata?.id);
+  const token0Balance = useTokenBalanceMemo(token0.metadata?.id);
+  const token1Balance = useTokenBalanceMemo(token1.metadata?.id);
 
   const isLoading = useMemo(() => {
     return supportedTokenListState === FeatureState.Loading;
