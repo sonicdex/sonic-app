@@ -9,6 +9,8 @@ import {
   BoxProps,
   FlexProps,
   ImageProps,
+  forwardRef,
+  ButtonProps,
 } from '@chakra-ui/react';
 import { createContext } from '@chakra-ui/react-utils';
 import NumberFormat from 'react-number-format';
@@ -98,30 +100,29 @@ export const TokenContent: React.FC<TokenContentProps> = (props) => {
 
 // === Details ===
 
-type TokenDetailsProps = FlexProps;
+type TokenDetailsButtonProps = ButtonProps;
 
-export const TokenDetails: React.FC<TokenDetailsProps> = ({
-  children,
-  ...props
-}) => {
-  return (
-    <Flex
-      direction="row"
-      alignItems="center"
-      borderRadius={20}
-      bg="#282828"
-      pl={2.5}
-      pr={3}
-      py={2}
-      cursor="pointer"
-      minW="fit-content"
-      {...props}
-    >
-      {children}
-      <Image width={3} src={chevronDownSrc} />
-    </Flex>
-  );
-};
+export const TokenDetailsButton = forwardRef<TokenDetailsButtonProps, 'button'>(
+  ({ children, ...props }) => {
+    return (
+      <Button
+        as="button"
+        direction="row"
+        alignItems="center"
+        borderRadius={20}
+        bg="#282828"
+        pl={2.5}
+        pr={3}
+        py={2}
+        minW="fit-content"
+        {...props}
+      >
+        {children}
+        <Image width={3} src={chevronDownSrc} />
+      </Button>
+    );
+  }
+);
 
 type TokenDetailsLogo = ImageProps;
 

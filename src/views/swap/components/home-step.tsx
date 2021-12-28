@@ -9,7 +9,7 @@ import {
   PlugButton,
   SlippageSettings,
   TokenContent,
-  TokenDetails,
+  TokenDetailsButton,
   TokenDetailsLogo,
   TokenDetailsSymbol,
   TokenBalances,
@@ -42,7 +42,7 @@ export const SwapHomeStep = () => {
   const openSelectTokenModal = useTokenModalOpener();
 
   const [autoSlippage, setAutoSlippage] = useState(true);
-
+  console.log(to);
   const { totalBalances } = useBalances();
 
   const isLoading = useMemo(() => {
@@ -87,6 +87,11 @@ export const SwapHomeStep = () => {
 
     return selectedIds;
   }, [from?.metadata?.id, to?.metadata?.id]);
+
+  const [selectTokenButtonDisabled, selectTokenButtonText] = useMemo(() => {
+    if (toTokenOptions.length <= 0) return [true, 'No pairs available'];
+    return [false, 'Select the token'];
+  }, [toTokenOptions]);
 
   const handleButtonOnClick = () => {
     if (isLoading) return;
@@ -187,10 +192,10 @@ export const SwapHomeStep = () => {
             })}
           >
             <TokenContent>
-              <TokenDetails onClick={handleSelectFromToken}>
+              <TokenDetailsButton onClick={handleSelectFromToken}>
                 <TokenDetailsLogo />
                 <TokenDetailsSymbol />
-              </TokenDetails>
+              </TokenDetailsButton>
 
               <TokenInput autoFocus />
             </TokenContent>
@@ -244,10 +249,19 @@ export const SwapHomeStep = () => {
             })}
           >
             <TokenContent>
-              <TokenDetails onClick={handleSelectToToken}>
-                <TokenDetailsLogo />
-                <TokenDetailsSymbol />
-              </TokenDetails>
+              {to.metadata ? (
+                <TokenDetailsButton onClick={handleSelectToToken}>
+                  <TokenDetailsLogo />
+                  <TokenDetailsSymbol />
+                </TokenDetailsButton>
+              ) : (
+                <Button
+                  onClick={handleSelectToToken}
+                  isDisabled={selectTokenButtonDisabled}
+                >
+                  {selectTokenButtonText}
+                </Button>
+              )}
 
               <TokenInput />
             </TokenContent>

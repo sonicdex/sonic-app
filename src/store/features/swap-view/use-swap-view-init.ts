@@ -1,20 +1,25 @@
+import { getICPTokenMetadata } from '@/constants';
 import { useAppDispatch } from '@/store';
 import { parseResponseTokenList } from '@/utils/canister';
 import { getAmountOut } from '@/utils/format';
 import { useEffect } from 'react';
 import { swapViewActions, useSwapViewStore } from '.';
-import { useSwapCanisterStore } from '..';
+import { usePriceStore, useSwapCanisterStore } from '..';
 
 export const useSwapView = () => {
   const dispatch = useAppDispatch();
+  const { icpPrice } = usePriceStore();
   const { allPairs, supportedTokenList } = useSwapCanisterStore();
   const { from, to } = useSwapViewStore();
 
   useEffect(() => {
     if (!supportedTokenList) return;
-    dispatch(
-      swapViewActions.setTokenList(parseResponseTokenList(supportedTokenList))
-    );
+
+    const tokenList = parseResponseTokenList([
+      getICPTokenMetadata(icpPrice),
+      ...supportedTokenList,
+    ]);
+    dispatch(swapViewActions.setTokenList(tokenList));
   }, [supportedTokenList]);
 
   useEffect(() => {

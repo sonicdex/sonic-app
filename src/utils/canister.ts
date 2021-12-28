@@ -5,7 +5,7 @@ import {
   TokenMetadataList,
   PairList,
   PairBalances,
-  SupportedTokenList,
+  AppTokenMetadataList,
 } from '@/models';
 
 export const desensitizationPrincipalId = (
@@ -27,7 +27,7 @@ export const desensitizationPrincipalId = (
 export const parseResponseSupportedTokenList = (
   response: SwapIDL.TokenInfoExt[],
   icpPrice?: string
-): SupportedTokenList => {
+): AppTokenMetadataList => {
   return response.map((token) => ({
     ...token,
     ...(icpPrice ? { price: icpPrice } : {}),
@@ -36,7 +36,7 @@ export const parseResponseSupportedTokenList = (
 };
 
 export const parseResponseTokenList = (
-  response: SupportedTokenList
+  response: AppTokenMetadataList
 ): TokenMetadataList => {
   return response.reduce((list, token) => {
     list[token.id] = token;

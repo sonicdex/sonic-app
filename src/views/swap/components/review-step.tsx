@@ -8,7 +8,7 @@ import {
   TokenBalancesDetails,
   TokenBalancesPrice,
   TokenContent,
-  TokenDetails,
+  TokenDetailsButton,
   TokenDetailsLogo,
   TokenDetailsSymbol,
   TokenInput,
@@ -107,10 +107,10 @@ export const SwapReviewStep = () => {
             })}
           >
             <TokenContent>
-              <TokenDetails>
+              <TokenDetailsButton>
                 <TokenDetailsLogo />
                 <TokenDetailsSymbol />
-              </TokenDetails>
+              </TokenDetailsButton>
 
               <TokenInput />
             </TokenContent>
@@ -158,10 +158,10 @@ export const SwapReviewStep = () => {
             isDisabled
           >
             <TokenContent>
-              <TokenDetails>
+              <TokenDetailsButton>
                 <TokenDetailsLogo />
                 <TokenDetailsSymbol />
-              </TokenDetails>
+              </TokenDetailsButton>
 
               <TokenInput />
             </TokenContent>

@@ -6,7 +6,7 @@ import {
   Button,
   TokenContent,
   TokenInput,
-  TokenDetails,
+  TokenDetailsButton,
   TokenDetailsLogo,
   TokenDetailsSymbol,
   TokenBalances,
@@ -150,10 +150,10 @@ export const AssetsDeposit = () => {
           tokenMetadata={selectedTokenMetadata}
         >
           <TokenContent>
-            <TokenDetails onClick={handleOpenSelectTokenModal}>
+            <TokenDetailsButton onClick={handleOpenSelectTokenModal}>
               <TokenDetailsLogo />
               <TokenDetailsSymbol />
-            </TokenDetails>
+            </TokenDetailsButton>
 
             <TokenInput autoFocus />
           </TokenContent>

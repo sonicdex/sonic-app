@@ -5,7 +5,7 @@ import {
   Token,
   Button,
   TokenContent,
-  TokenDetails,
+  TokenDetailsButton,
   TokenDetailsLogo,
   TokenDetailsSymbol,
   TokenBalancesDetails,
@@ -153,10 +153,10 @@ export const AssetsWithdraw = () => {
           ]}
         >
           <TokenContent>
-            <TokenDetails onClick={handleOpenSelectTokenModal}>
+            <TokenDetailsButton onClick={handleOpenSelectTokenModal}>
               <TokenDetailsLogo />
               <TokenDetailsSymbol />
-            </TokenDetails>
+            </TokenDetailsButton>
 
             <TokenInput autoFocus />
           </TokenContent>

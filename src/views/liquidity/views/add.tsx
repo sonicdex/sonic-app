@@ -11,7 +11,7 @@ import {
   TokenBalancesDetails,
   TokenBalancesPrice,
   TokenContent,
-  TokenDetails,
+  TokenDetailsButton,
   TokenDetailsLogo,
   TokenDetailsSymbol,
   TokenInput,
@@ -421,10 +421,10 @@ export const LiquidityAdd = () => {
             isLoading={isLoading}
           >
             <TokenContent>
-              <TokenDetails onClick={() => handleSelectToken('token0')}>
+              <TokenDetailsButton onClick={() => handleSelectToken('token0')}>
                 <TokenDetailsLogo />
                 <TokenDetailsSymbol />
-              </TokenDetails>
+              </TokenDetailsButton>
 
               <TokenInput autoFocus />
             </TokenContent>
@@ -473,10 +473,10 @@ export const LiquidityAdd = () => {
             isLoading={isLoading}
           >
             <TokenContent>
-              <TokenDetails onClick={() => handleSelectToken('token1')}>
+              <TokenDetailsButton onClick={() => handleSelectToken('token1')}>
                 <TokenDetailsLogo />
                 <TokenDetailsSymbol />
-              </TokenDetails>
+              </TokenDetailsButton>
 
               <TokenInput />
             </TokenContent>
