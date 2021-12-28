@@ -31,6 +31,7 @@ export const TransactionProgressModalContent: React.FC<ModalContentProps> = ({
       pb="43px"
       borderRadius={20}
       {...props}
+      minWidth="fit-content"
     >
       <ModalCloseButton />
       <Heading as="h1" color="#F6FCFD" fontWeight={700} fontSize={22} mb={3}>
