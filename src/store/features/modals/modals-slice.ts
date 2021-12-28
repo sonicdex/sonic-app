@@ -56,7 +56,10 @@ export type RemoveLiquidityModalData = {
 };
 
 type TokenSelectData = {
-  [key: string]: any;
+  tokens: string;
+  selectedTokenIds?: string[];
+  isLoading?: boolean;
+  allowAddToken?: boolean;
   onSelect: (tokenId?: string) => void;
 };
 
@@ -111,8 +114,8 @@ const initialRemoveLiquidityData: RemoveLiquidityModalData = {
 };
 
 const initialTokenSelectData: TokenSelectData = {
-  tokens: '[]',
   onSelect: () => null,
+  tokens: '[]',
   selectedTokenIds: [],
   isLoading: false,
   allowAddToken: true,

@@ -157,7 +157,14 @@ export const TokenSelectModal = () => {
                     decimals={decimals}
                     name={name}
                     onSelect={() =>
-                      handleSelect(id && selectedTokenIds?.includes(id), id)
+                      handleSelect(
+                        id
+                          ? selectedTokenIds
+                            ? selectedTokenIds.includes(id)
+                            : false
+                          : false,
+                        id
+                      )
                     }
                     isLoading={isLoading}
                     isSelected={selectedTokenIds?.includes(id)}

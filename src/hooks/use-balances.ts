@@ -107,7 +107,7 @@ export const useBalances = () => {
 
                     if (!logo) {
                       try {
-                        const tokenLogo = await tokenActor.getLogo();
+                        const tokenLogo = await tokenActor.logo();
                         saveToStorage(storageKey, tokenLogo);
                       } catch (e) {
                         console.error('Token Logo not found', e);

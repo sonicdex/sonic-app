@@ -14,6 +14,8 @@ import withdrawViewReducer from '@/store/features/withdraw-view/withdraw-view-sl
 import swapReducer from '@/store/features/swap-canister/swap-canister-slice';
 import keepSyncReducer from '@/store/features/keep-sync/keep-sync-slice';
 
+import priceReducer from '@/store/features/price/price-slice';
+
 export const store = configureStore({
   reducer: {
     plug: plugReducer,
@@ -26,6 +28,7 @@ export const store = configureStore({
     liquidityView: liquidityViewReducer,
     swapView: swapViewReducer,
     withdrawView: withdrawViewReducer,
+    price: priceReducer,
     keepSync: keepSyncReducer,
   },
   middleware: (getDefaultMiddleware) =>

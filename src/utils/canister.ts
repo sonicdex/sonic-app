@@ -25,22 +25,21 @@ export const desensitizationPrincipalId = (
 };
 
 export const parseResponseSupportedTokenList = (
-  response: SwapIDL.TokenInfoExt[]
+  response: SwapIDL.TokenInfoExt[],
+  icpPrice?: string
 ): SupportedTokenList => {
   return response.map((token) => ({
     ...token,
+    ...(icpPrice ? { price: icpPrice } : {}),
     logo: getFromStorage(`${token.id}-logo`) ?? questionMarkSrc,
   }));
 };
 
 export const parseResponseTokenList = (
-  response: SwapIDL.TokenInfoExt[]
+  response: SupportedTokenList
 ): TokenMetadataList => {
   return response.reduce((list, token) => {
-    list[token.id] = {
-      ...token,
-      logo: getFromStorage(`${token.id}-logo`) ?? questionMarkSrc,
-    };
+    list[token.id] = token;
     return list;
   }, {} as TokenMetadataList);
 };

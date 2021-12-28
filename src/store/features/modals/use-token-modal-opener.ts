@@ -23,6 +23,8 @@ export const useTokenModalOpener = () => {
         tokens: stringify(metadata),
         onSelect,
         selectedTokenIds,
+        // Add when we have a custom token selector
+        allowAddToken: false,
       })
     );
     dispatch(modalsSliceActions.openTokenSelectModal());

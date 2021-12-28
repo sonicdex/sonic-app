@@ -41,7 +41,7 @@ export namespace TokenIDL {
       arg_0: bigint,
       arg_1: bigint
     ) => Promise<Array<[Principal, bigint]>>;
-    getLogo: () => Promise<string>;
+    logo: () => Promise<string>;
     getMetadata: () => Promise<Metadata>;
     getTokenInfo: () => Promise<TokenInfo>;
     getUserApprovals: (arg_0: Principal) => Promise<Array<[Principal, bigint]>>;
@@ -110,7 +110,7 @@ export namespace TokenIDL {
         [IDL.Vec(IDL.Tuple(IDL.Principal, IDL.Nat))],
         ['query']
       ),
-      getLogo: IDL.Func([], [IDL.Text], ['query']),
+      logo: IDL.Func([], [IDL.Text], ['query']),
       getMetadata: IDL.Func([], [Metadata], ['query']),
       getTokenInfo: IDL.Func([], [TokenInfo], ['query']),
       getUserApprovals: IDL.Func(

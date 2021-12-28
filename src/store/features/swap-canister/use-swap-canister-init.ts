@@ -1,3 +1,5 @@
+import { useCallback, useEffect } from 'react';
+
 import { useBalances } from '@/hooks/use-balances';
 import {
   FeatureState,
@@ -10,7 +12,7 @@ import {
   parseResponseAllPairs,
   parseResponseSupportedTokenList,
 } from '@/utils/canister';
-import { useCallback, useEffect } from 'react';
+
 import { useSwapActor } from '../../../integrations/actor/use-swap-actor';
 import { useKeepSync } from '../keep-sync';
 
@@ -40,8 +42,8 @@ export const useSwapCanisterInit = () => {
   }, [swapActor, principalId]);
 
   useEffect(() => {
-    getSupportedTokenList({ isRefreshing: false });
-    getAllPairs({ isRefreshing: false });
+    getSupportedTokenList({ isRefreshing: false, interval: 5 * 1000 });
+    getAllPairs({ isRefreshing: false, interval: 5 * 1000 });
   }, [swapActor]);
 
   const getSupportedTokenList = useKeepSync(
