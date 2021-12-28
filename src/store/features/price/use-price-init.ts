@@ -6,6 +6,7 @@ import { getICPPrice } from '@/utils/icp';
 import { useKeepSync } from '../keep-sync';
 import { priceActions, usePriceStore } from '.';
 import { swapCanisterActions, useSwapCanisterStore } from '..';
+import { ENV } from '@/config';
 
 export const usePriceInit = () => {
   const {
@@ -14,7 +15,7 @@ export const usePriceInit = () => {
     allPairsState,
     allPairs,
   } = useSwapCanisterStore();
-  const { state, price } = usePriceStore();
+  const { state, icpPrice } = usePriceStore();
 
   const dispatch = useAppDispatch();
 
@@ -24,17 +25,21 @@ export const usePriceInit = () => {
 
   useEffect(() => {
     if (
-      price &&
+      icpPrice &&
       supportedTokenList &&
       supportedTokenListState !== FeatureState.Loading &&
       allPairsState !== FeatureState.Loading
     ) {
       const supportedTokenListWithPrices = supportedTokenList.map((token) => {
-        console.log(allPairs);
+        let tokenPrice;
+
+        if (token.id === ENV.canisterIds.WICP) {
+          tokenPrice = icpPrice;
+        }
 
         return {
           ...token,
-          price,
+          price: tokenPrice,
         };
       });
 
@@ -42,7 +47,9 @@ export const usePriceInit = () => {
         swapCanisterActions.setSupportedTokenList(supportedTokenListWithPrices)
       );
     }
-  }, [price, supportedTokenListState, allPairsState]);
+  }, [icpPrice, supportedTokenListState, allPairsState]);
+
+  console.log(allPairs);
 
   const _getICPPrice = useKeepSync(
     'getICPPrice',

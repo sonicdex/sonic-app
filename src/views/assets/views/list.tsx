@@ -180,12 +180,14 @@ export const Assets = () => {
                         fontWeight="bold"
                       />
                     </Box>
-                    <Box>
-                      <Text fontWeight="bold" color="gray.400">
-                        Price
-                      </Text>
-                      <Text fontWeight="bold">{`$${price}`}</Text>
-                    </Box>
+                    {price && (
+                      <Box>
+                        <Text fontWeight="bold" color="gray.400">
+                          Price
+                        </Text>
+                        <Text fontWeight="bold">{`$${price}`}</Text>
+                      </Box>
+                    )}
 
                     <HStack>
                       <AssetIconButton

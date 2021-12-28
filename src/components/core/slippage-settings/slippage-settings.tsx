@@ -39,7 +39,7 @@ export const SlippageSettings = ({
         Transaction Settings
       </Box>
       <Box as="p" fontSize="14px" textAlign="left" fontWeight={400} mb={3}>
-        Slippage tolerace
+        Slippage tolerance
       </Box>
       <Flex direction="row" alignItems="center">
         <Button

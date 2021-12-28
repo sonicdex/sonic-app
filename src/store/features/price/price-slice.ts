@@ -2,12 +2,12 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { FeatureState, RootState } from '@/store';
 
 export interface PriceState {
-  price?: string;
+  icpPrice?: string;
   state: FeatureState;
 }
 
 const initialState: PriceState = {
-  price: undefined,
+  icpPrice: undefined,
   state: 'idle' as FeatureState,
 };
 
@@ -19,7 +19,7 @@ export const priceSlice = createSlice({
       state.state = action.payload;
     },
     setPrice: (state, action: PayloadAction<string>) => {
-      state.price = action.payload;
+      state.icpPrice = action.payload;
     },
   },
 });
