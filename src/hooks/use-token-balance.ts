@@ -7,7 +7,6 @@ export const useTokenBalance = (canisterId?: string) => {
   return useMemo(() => {
     if (canisterId && totalBalances) {
       const isICP = canisterId === 'ICP';
-      console.log(canisterId, isICP, icpBalance);
 
       if (isICP) {
         return icpBalance;

@@ -67,8 +67,6 @@ export const useRemoveLiquidityBatch = ({
     return _transactions;
   }, [...Object.values(removeLiquidityParams), keepInSonic]);
 
-  console.log(transactions);
-
   const handleRetry = async () => {
     return new Promise<boolean>((resolve) => {
       dispatch(
