@@ -1,10 +1,9 @@
 import type { Provider } from '@psychedelic/plug-inpage-provider';
 import { IDL } from '@dfinity/candid';
-
+import { Actor, HttpAgent } from '@dfinity/agent';
 import { ENV } from '@/config';
 
 import { ActorRepository, AppActors } from '.';
-import { Actor, HttpAgent } from '@dfinity/agent';
 
 export const appActors: Record<string, any> = {};
 
