@@ -166,22 +166,24 @@ export const TokenBalances = (props: FlexProps) => {
 };
 
 export const TokenBalancesPrice: React.FC<BoxProps> = (props) => {
-  const { isLoading, isDisabled, price, value } = useTokenContext();
+  const { isLoading, price, value } = useTokenContext();
 
   const isActive = useMemo(() => {
-    if (isLoading || isDisabled || parseFloat(value ?? '0') <= 0) {
+    if (isLoading || parseFloat(value || '0') <= 0) {
       return false;
     }
 
     return true;
-  }, [isLoading, isDisabled, value]);
+  }, [isLoading, value]);
+
+  console.log('isActive', isActive);
 
   return (
     <Skeleton isLoaded={!isLoading} borderRadius="full">
       <Box
         transition="color 400ms"
-        color={isActive ? '#F6FCFD' : '#888E8F'}
         {...props}
+        color={isActive ? '#F6FCFD' : '#888E8F'}
       >
         <NumberFormat value={price} displayType="text" prefix="$" />
       </Box>
@@ -257,12 +259,12 @@ export const TokenInput: React.FC<TokenInputProps> = (props) => {
   const background = shouldGlow ? '#151515' : '#1E1E1E';
 
   const isActive = useMemo(() => {
-    if (isLoading || isDisabled || parseFloat(value ?? '0') <= 0) {
+    if (isLoading || parseFloat(value || '0') <= 0) {
       return false;
     }
 
     return true;
-  }, [isLoading, isDisabled, value]);
+  }, [isLoading, value]);
 
   const handleChange = useCallback(
     (_value: string) => {
