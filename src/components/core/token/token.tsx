@@ -105,7 +105,13 @@ type TokenDetailsButtonProps = ButtonProps;
 export const TokenDetailsButton = forwardRef<TokenDetailsButtonProps, 'button'>(
   ({ children, ...props }, ref) => {
     return (
-      <Button ref={ref} borderRadius="full" {...props}>
+      <Button
+        ref={ref}
+        borderRadius="full"
+        mr={5}
+        minWidth="fit-content"
+        {...props}
+      >
         {children}
         <Image ml={2.5} width={3} src={chevronDownSrc} />
       </Button>
@@ -232,7 +238,7 @@ export const TokenBalancesDetails: React.FC<TokenBalancesDetailsProps> = ({
 
           {shouldRenderMaxButton && (
             <Button variant="link" onClick={onMaxClick}>
-              (max)
+              (Max)
             </Button>
           )}
         </HStack>

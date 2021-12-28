@@ -71,12 +71,12 @@ export const AssetsDeposit = () => {
   };
 
   const [buttonDisabled, buttonMessage] = useMemo<[boolean, string]>(() => {
-    if (!selectedTokenMetadata?.id) return [true, 'Select the token'];
+    if (!selectedTokenMetadata?.id) return [true, 'Select a Token'];
 
     const parsedFromValue = (amount && parseFloat(amount)) || 0;
 
     if (parsedFromValue <= 0)
-      return [true, `No ${selectedTokenMetadata?.symbol} value selected`];
+      return [true, `Enter ${selectedTokenMetadata?.symbol} Amount`];
 
     if (tokenBalances && selectedTokenMetadata) {
       const parsedBalance = parseFloat(
