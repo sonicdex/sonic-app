@@ -243,17 +243,20 @@ export const SwapHomeStep = () => {
       <TitleBox
         title="Swap"
         settings={
-          <SlippageSettings
-            slippage={slippage}
-            isAutoSlippage={autoSlippage}
-            setSlippage={(value) =>
-              dispatch(swapViewActions.setSlippage(value))
-            }
-            setIsAutoSlippage={(value) => {
-              setAutoSlippage(value);
-              dispatch(swapViewActions.setSlippage(INITIAL_SWAP_SLIPPAGE));
-            }}
-          />
+          !isLoading &&
+          !isICPSelected && (
+            <SlippageSettings
+              slippage={slippage}
+              isAutoSlippage={autoSlippage}
+              setSlippage={(value) =>
+                dispatch(swapViewActions.setSlippage(value))
+              }
+              setIsAutoSlippage={(value) => {
+                setAutoSlippage(value);
+                dispatch(swapViewActions.setSlippage(INITIAL_SWAP_SLIPPAGE));
+              }}
+            />
+          )
         }
       />
       <Flex direction="column" alignItems="center">
