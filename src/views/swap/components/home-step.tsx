@@ -141,11 +141,11 @@ export const SwapHomeStep = () => {
     }
 
     if (from.metadata.id === 'ICP' && to.metadata.id === ENV.canisterIds.WICP) {
-      return [false, 'Wrap ICP', handleWrapICP];
+      return [false, 'Wrap', handleWrapICP];
     }
 
     if (from.metadata.id === ENV.canisterIds.WICP && to.metadata.id === 'ICP') {
-      return [false, 'Unwrap ICP', handleUnwrapICP];
+      return [false, 'Unwrap', handleUnwrapICP];
     }
 
     return [
