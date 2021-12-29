@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { infoSrc } from '@/assets';
 import { swapViewActions, useAppDispatch, useSwapViewStore } from '@/store';
 import {
@@ -14,9 +15,23 @@ import {
   Portal,
 } from '@chakra-ui/react';
 
-export const KeepInSonicBox: React.FC = () => {
+type OperationType = 'swap' | 'wrap';
+
+type KeepInSonicBoxProps = {
+  symbol?: string;
+  operation?: OperationType;
+};
+
+export const KeepInSonicBox: React.FC<KeepInSonicBoxProps> = ({
+  symbol,
+  operation = 'swap',
+}) => {
   const { keepInSonic } = useSwapViewStore();
   const dispatch = useAppDispatch();
+
+  const label = useMemo(() => {
+    return `Keep ${symbol ? symbol : 'tokens'} in Sonic after ${operation}`;
+  }, [operation, symbol]);
 
   return (
     <Flex
@@ -40,7 +55,7 @@ export const KeepInSonicBox: React.FC = () => {
           color={keepInSonic ? '#FFFFFF' : '#888E8F'}
           fontWeight={600}
         >
-          Keep tokens in Sonic after swap
+          {label}
         </Checkbox>
       </FormControl>
       <Popover trigger="hover">

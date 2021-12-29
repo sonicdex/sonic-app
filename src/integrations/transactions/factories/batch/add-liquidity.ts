@@ -8,12 +8,12 @@ import {
 import { useMemo } from 'react';
 import {
   useBatchHook,
-  useMemorizedAddLiquidityTransaction,
-  useMemorizedApproveTransaction,
-  useMemorizedDepositTransaction,
+  useAddLiquidityTransactionMemo,
+  useApproveTransactionMemo,
+  useDepositTransactionMemo,
 } from '..';
 import { AddLiquidity, Batch, Deposit } from '../..';
-import { useMemorizedCreatePairTransaction } from '../transactions/create-pair';
+import { useCreatePairTransactionMemo } from '../transactions/create-pair';
 import { getDepositTransactions, getToDepositAmount } from './utils';
 
 interface Transactions {
@@ -69,14 +69,14 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
     };
   }, [addLiquidityParams.token0, addLiquidityParams.token1]);
 
-  const approve0 = useMemorizedApproveTransaction(deposit0Params);
-  const deposit0 = useMemorizedDepositTransaction(deposit0Params);
+  const approve0 = useApproveTransactionMemo(deposit0Params);
+  const deposit0 = useDepositTransactionMemo(deposit0Params);
 
-  const approve1 = useMemorizedApproveTransaction(deposit1Params);
-  const deposit1 = useMemorizedDepositTransaction(deposit1Params);
+  const approve1 = useApproveTransactionMemo(deposit1Params);
+  const deposit1 = useDepositTransactionMemo(deposit1Params);
 
-  const createPair = useMemorizedCreatePairTransaction(createPairParams);
-  const addLiquidity = useMemorizedAddLiquidityTransaction(addLiquidityParams);
+  const createPair = useCreatePairTransactionMemo(createPairParams);
+  const addLiquidity = useAddLiquidityTransactionMemo(addLiquidityParams);
 
   const transactions = useMemo(() => {
     let _transactions: Transactions = {};

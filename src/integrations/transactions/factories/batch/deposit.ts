@@ -5,8 +5,8 @@ import {
 } from '@/store';
 import { useMemo } from 'react';
 import {
-  useMemorizedApproveTransaction,
-  useMemorizedDepositTransaction,
+  useApproveTransactionMemo,
+  useDepositTransactionMemo,
   useBatchHook,
 } from '..';
 import { Batch, Deposit } from '../..';
@@ -14,8 +14,8 @@ import { Batch, Deposit } from '../..';
 export const useDepositBatch = (deposit: Deposit) => {
   const dispatch = useAppDispatch();
 
-  const approveTx = useMemorizedApproveTransaction(deposit);
-  const depositTx = useMemorizedDepositTransaction(deposit);
+  const approveTx = useApproveTransactionMemo(deposit);
+  const depositTx = useDepositTransactionMemo(deposit);
 
   const transactions = useMemo(() => {
     return {

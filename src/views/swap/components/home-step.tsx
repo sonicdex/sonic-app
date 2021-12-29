@@ -58,8 +58,63 @@ export const SwapHomeStep = () => {
 
   const { totalBalances } = useBalances();
 
+  const switchTokens = () => {
+    dispatch(swapViewActions.switchTokens());
+  };
+
+  const handleFromMaxClick = () => {
+    dispatch(
+      swapViewActions.setValue({
+        data: 'from',
+        value:
+          totalBalances && from.metadata
+            ? getCurrencyString(fromBalance!, from.metadata?.decimals)
+            : '',
+      })
+    );
+  };
+
+  // TODO: Add if 2nd input will be unblocked
+  // const handleToMaxClick = () => {
+  //   dispatch(
+  //     swapViewActions.setValue({
+  //       data: 'to',
+  //       value:
+  //         totalBalances && to.token
+  //           ? getCurrencyString(toBalance!, to.metadata?.decimals)
+  //           : '',
+  //     })
+  //   );
+  // };
+
+  const handleSelectFromToken = () => {
+    openSelectTokenModal({
+      metadata: fromTokenOptions,
+      onSelect: (tokenId) =>
+        dispatch(swapViewActions.setToken({ data: 'from', tokenId })),
+      selectedTokenIds,
+    });
+  };
+
+  const handleSelectToToken = () => {
+    openSelectTokenModal({
+      metadata: toTokenOptions,
+      onSelect: (tokenId) =>
+        dispatch(swapViewActions.setToken({ data: 'to', tokenId })),
+      selectedTokenIds,
+    });
+  };
+
+  const handleWrapICP = () => {
+    console.log('Wrap');
+  };
+
+  const handleUnwrapICP = () => {
+    console.log('Unwrap');
+  };
+
   const isLoading = useMemo(() => {
-    if (!from.metadata && !totalBalances) return true;
+    if (!from.metadata || !totalBalances) return true;
     return false;
   }, [totalBalances, from.metadata]);
 
@@ -86,11 +141,11 @@ export const SwapHomeStep = () => {
     }
 
     if (from.metadata.id === 'ICP' && to.metadata.id === ENV.canisterIds.WICP) {
-      return [false, 'Wrap ICP', () => console.log('Wrapping ICP')];
+      return [false, 'Wrap ICP', handleWrapICP];
     }
 
     if (from.metadata.id === ENV.canisterIds.WICP && to.metadata.id === 'ICP') {
-      return [false, 'Unwrap ICP', () => console.log('Unwrapping ICP')];
+      return [false, 'Unwrap ICP', handleUnwrapICP];
     }
 
     return [
@@ -99,6 +154,8 @@ export const SwapHomeStep = () => {
       () => dispatch(swapViewActions.setStep(SwapStep.Review)),
     ];
   }, [
+    handleUnwrapICP,
+    handleWrapICP,
     dispatch,
     swapViewActions,
     isLoading,
@@ -124,10 +181,16 @@ export const SwapHomeStep = () => {
     return [false, 'Select a Token'];
   }, [toTokenOptions]);
 
+  // TODO: Add hook(s) for this logic
+  // Special cases for ICP
+  const [isFromIsICP, isToIsICP] = useMemo(() => {
+    return [from.metadata?.id === 'ICP', to.metadata?.id === 'ICP'];
+  }, [from.metadata?.id, to.metadata?.id]);
+
   const isICPSelected = useMemo(() => {
-    if (from.metadata?.id === 'ICP' || to.metadata?.id === 'ICP') return true;
+    if (isFromIsICP || isToIsICP) return true;
     return false;
-  }, [from.metadata]);
+  }, [isFromIsICP, isToIsICP]);
 
   const fromSources = useMemo(() => {
     if (from.metadata) {
@@ -174,53 +237,6 @@ export const SwapHomeStep = () => {
       });
     }
   }, [to.metadata, tokenBalances, sonicBalances]);
-
-  const switchTokens = () => {
-    dispatch(swapViewActions.switchTokens());
-  };
-
-  const handleFromMaxClick = () => {
-    dispatch(
-      swapViewActions.setValue({
-        data: 'from',
-        value:
-          totalBalances && from.metadata
-            ? getCurrencyString(fromBalance!, from.metadata?.decimals)
-            : '',
-      })
-    );
-  };
-
-  // TODO: add if 2nd input will be unblocked
-  // const handleToMaxClick = () => {
-  //   dispatch(
-  //     swapViewActions.setValue({
-  //       data: 'to',
-  //       value:
-  //         totalBalances && to.token
-  //           ? getCurrencyString(toBalance!, to.token?.decimals)
-  //           : '0.00',
-  //     })
-  //   );
-  // };
-
-  const handleSelectFromToken = () => {
-    openSelectTokenModal({
-      metadata: fromTokenOptions,
-      onSelect: (tokenId) =>
-        dispatch(swapViewActions.setToken({ data: 'from', tokenId })),
-      selectedTokenIds,
-    });
-  };
-
-  const handleSelectToToken = () => {
-    openSelectTokenModal({
-      metadata: toTokenOptions,
-      onSelect: (tokenId) =>
-        dispatch(swapViewActions.setToken({ data: 'to', tokenId })),
-      selectedTokenIds,
-    });
-  };
 
   return (
     <Stack spacing={4}>
@@ -327,10 +343,13 @@ export const SwapHomeStep = () => {
       </Flex>
 
       {!isICPSelected && (
-        <>
-          <ExchangeBox from={from} to={to} slippage={slippage} />
-          <KeepInSonicBox />
-        </>
+        <ExchangeBox from={from} to={to} slippage={slippage} />
+      )}
+      {!isToIsICP && (
+        <KeepInSonicBox
+          symbol={to.metadata?.symbol}
+          operation={isFromIsICP ? 'wrap' : 'swap'}
+        />
       )}
 
       {!isConnected ? (

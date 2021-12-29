@@ -12,7 +12,7 @@ export interface SwapExtraArgs {
   principal: Principal;
 }
 
-export const useMemorizedSwapExactTokensTransaction: CreateTransaction<Swap> = (
+export const useSwapExactTokensTransactionMemo: CreateTransaction<Swap> = (
   { from, to, slippage, principalId }: Swap,
   onSuccess,
   onFail
@@ -47,35 +47,37 @@ export const useMemorizedSwapExactTokensTransaction: CreateTransaction<Swap> = (
     };
   }, [from, to, slippage]);
 
-export const useMemorizedSwapForExactTokensTransaction: CreateTransaction<Swap> =
-  ({ from, to, slippage, principalId }: Swap, onSuccess, onFail) =>
-    useMemo(() => {
-      if (!from.metadata || !to.metadata)
-        throw new Error('Tokens are required');
-      if (!principalId) throw new Error('Principal is required');
+export const useSwapForExactTokensTransactionMemo: CreateTransaction<Swap> = (
+  { from, to, slippage, principalId }: Swap,
+  onSuccess,
+  onFail
+) =>
+  useMemo(() => {
+    if (!from.metadata || !to.metadata) throw new Error('Tokens are required');
+    if (!principalId) throw new Error('Principal is required');
 
-      const amountOut = parseAmount(to.value, to.metadata.decimals);
-      const amountInMin = parseAmount(
-        getAmountMin(from.value, slippage, from.metadata.decimals),
-        to.metadata.decimals
-      );
-      const currentTime = (new Date().getTime() + 5 * 60 * 1000) * 10000000;
+    const amountOut = parseAmount(to.value, to.metadata.decimals);
+    const amountInMin = parseAmount(
+      getAmountMin(from.value, slippage, from.metadata.decimals),
+      to.metadata.decimals
+    );
+    const currentTime = (new Date().getTime() + 5 * 60 * 1000) * 10000000;
 
-      return {
-        canisterId: ENV.canisterIds.swap,
-        idl: SwapIDL.factory,
-        methodName: 'swapTokensForExactTokens',
-        onFail,
-        onSuccess: async (res: SwapIDL.Result) => {
-          if ('err' in res) throw new Error(res.err);
-          onSuccess(res);
-        },
-        args: [
-          amountOut,
-          amountInMin,
-          [from.metadata.id, to.metadata.id],
-          Principal.fromText(principalId),
-          BigInt(currentTime),
-        ],
-      };
-    }, [from, to, slippage]);
+    return {
+      canisterId: ENV.canisterIds.swap,
+      idl: SwapIDL.factory,
+      methodName: 'swapTokensForExactTokens',
+      onFail,
+      onSuccess: async (res: SwapIDL.Result) => {
+        if ('err' in res) throw new Error(res.err);
+        onSuccess(res);
+      },
+      args: [
+        amountOut,
+        amountInMin,
+        [from.metadata.id, to.metadata.id],
+        Principal.fromText(principalId),
+        BigInt(currentTime),
+      ],
+    };
+  }, [from, to, slippage]);
