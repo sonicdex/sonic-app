@@ -28,6 +28,7 @@ import { useQuery } from '@/hooks/use-query';
 import { plugCircleSrc } from '@/assets';
 import { formatAmount, getCurrencyString } from '@/utils/format';
 import { debounce } from '@/utils/function';
+import { FeeBox } from '@/components/core/fee-box';
 
 export const AssetsDeposit = () => {
   const query = useQuery();
@@ -170,6 +171,7 @@ export const AssetsDeposit = () => {
           </TokenBalances>
         </Token>
       </Box>
+      <FeeBox token={selectedTokenMetadata} isDeposit />
       <Button
         isFullWidth
         size="lg"

@@ -5,6 +5,7 @@ import {
   calculatePriceImpact,
   getAmountMin,
   getAmountOut,
+  getCurrencyString,
 } from '@/utils/format';
 import {
   Flex,
@@ -121,6 +122,13 @@ export const ExchangeBox: React.FC<ExchangeBoxProps> = ({
                   title="Liquidity Provider Fee"
                   value={`${10} ${to.metadata.symbol}`}
                 /> */}
+                <StackLine
+                  title="Network Fee"
+                  value={`${getCurrencyString(
+                    from.metadata.fee,
+                    from.metadata.decimals
+                  )} ${from.metadata.symbol}`}
+                />
               </Stack>
             </PopoverBody>
           </PopoverContent>

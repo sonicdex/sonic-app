@@ -28,6 +28,7 @@ import { useQuery } from '@/hooks/use-query';
 import { sonicCircleSrc } from '@/assets';
 import { formatAmount, getCurrencyString } from '@/utils/format';
 import { debounce } from '@/utils/function';
+import { FeeBox } from '@/components/core/fee-box';
 
 export const AssetsWithdraw = () => {
   const query = useQuery();
@@ -173,7 +174,7 @@ export const AssetsWithdraw = () => {
           </TokenBalances>
         </Token>
       </Box>
-
+      <FeeBox token={selectedTokenMetadata} />
       <Button
         isFullWidth
         variant="gradient"
