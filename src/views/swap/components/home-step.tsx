@@ -123,6 +123,10 @@ export const SwapHomeStep = () => {
   >(() => {
     if (isLoading) return [true, 'Loading', () => {}];
     if (!from.metadata) throw new Error('State is loading');
+
+    if (toTokenOptions && toTokenOptions.length <= 0)
+      return [true, 'No pairs available', () => {}];
+
     if (!to.metadata) return [true, 'Select a Token', () => {}];
 
     const parsedFromValue = (from.value && parseFloat(from.value)) || 0;
