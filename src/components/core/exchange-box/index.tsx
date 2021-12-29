@@ -3,8 +3,8 @@ import { TokenData } from '@/models';
 import { useSwapCanisterStore } from '@/store';
 import {
   calculatePriceImpact,
-  getAmountMin,
   getAmountOut,
+  getAmountOutMin,
   getCurrencyString,
 } from '@/utils/format';
 import {
@@ -88,7 +88,7 @@ export const ExchangeBox: React.FC<ExchangeBoxProps> = ({
           <Image src={infoSrc} width={5} transition="opacity 200ms" />
         </PopoverTrigger>
         <Portal>
-          <PopoverContent>
+          <PopoverContent minWidth="400px">
             <PopoverHeader>Transaction Details</PopoverHeader>
             <PopoverArrow />
             <PopoverBody display="inline-block">
@@ -97,10 +97,20 @@ export const ExchangeBox: React.FC<ExchangeBoxProps> = ({
                   title="Minimum Received"
                   value={`${
                     to.value
-                      ? getAmountMin(
+                      ? getAmountOutMin(
                           to.value,
                           Number(slippage) / 100,
-                          to.metadata.decimals
+                          to.metadata.decimals,
+                          [
+                            {
+                              fee: from.metadata.fee,
+                              decimals: from.metadata.decimals,
+                            },
+                            {
+                              fee: to.metadata.fee,
+                              decimals: to.metadata.decimals,
+                            },
+                          ]
                         )
                       : 0
                   } ${to.metadata.symbol}`}
@@ -123,11 +133,18 @@ export const ExchangeBox: React.FC<ExchangeBoxProps> = ({
                   value={`${10} ${to.metadata.symbol}`}
                 /> */}
                 <StackLine
-                  title="Network Fee"
+                  title="Deposit Fee"
                   value={`${getCurrencyString(
                     from.metadata.fee,
                     from.metadata.decimals
                   )} ${from.metadata.symbol}`}
+                />
+                <StackLine
+                  title="Withdraw Fee"
+                  value={`${getCurrencyString(
+                    to.metadata.fee,
+                    to.metadata.decimals
+                  )} ${to.metadata.symbol}`}
                 />
               </Stack>
             </PopoverBody>
