@@ -3,7 +3,7 @@ import {
   useAppDispatch,
   WithdrawModalDataStep,
 } from '@/store';
-import { useMemorizedWithdrawTransaction, useBatchHook } from '..';
+import { useWithdrawTransactionMemo, useBatchHook } from '..';
 import { Batch, Withdraw } from '../..';
 
 export const useWithdrawBatch = (withdraw: Withdraw) => {
@@ -21,7 +21,7 @@ export const useWithdrawBatch = (withdraw: Withdraw) => {
   return [
     useBatchHook({
       transactions: {
-        withdraw: useMemorizedWithdrawTransaction(withdraw),
+        withdraw: useWithdrawTransactionMemo(withdraw),
       },
       handleRetry: () => {
         dispatch(modalsSliceActions.closeWithdrawProgressModal());

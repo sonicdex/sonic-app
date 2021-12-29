@@ -8,8 +8,8 @@ import { useMemo } from 'react';
 
 import {
   useBatchHook,
-  useMemorizedWithdrawTransaction,
-  useMemorizedRemoveLiquidityTransaction,
+  useWithdrawTransactionMemo,
+  useRemoveLiquidityTransactionMemo,
 } from '..';
 import { Batch, RemoveLiquidity } from '../..';
 
@@ -45,11 +45,11 @@ export const useRemoveLiquidityBatch = ({
     amount: removeLiquidityParams.amount1Min.toString(),
   };
 
-  const removeLiquidity = useMemorizedRemoveLiquidityTransaction(
+  const removeLiquidity = useRemoveLiquidityTransactionMemo(
     removeLiquidityParams
   );
-  const withdraw0 = useMemorizedWithdrawTransaction(withdraw0Params);
-  const withdraw1 = useMemorizedWithdrawTransaction(withdraw1Params);
+  const withdraw0 = useWithdrawTransactionMemo(withdraw0Params);
+  const withdraw1 = useWithdrawTransactionMemo(withdraw1Params);
 
   const transactions = useMemo(() => {
     let _transactions: any = {

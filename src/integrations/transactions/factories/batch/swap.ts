@@ -7,10 +7,10 @@ import {
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  useMemorizedApproveTransaction,
-  useMemorizedDepositTransaction,
-  useMemorizedSwapExactTokensTransaction,
-  useMemorizedWithdrawTransaction,
+  useApproveTransactionMemo,
+  useDepositTransactionMemo,
+  useSwapExactTokensTransactionMemo,
+  useWithdrawTransactionMemo,
   useBatchHook,
 } from '..';
 import { Batch, Swap } from '../..';
@@ -47,10 +47,10 @@ export const useSwapBatch = ({
     amount: swapParams.to.value,
   };
 
-  const approve = useMemorizedApproveTransaction(depositParams);
-  const deposit = useMemorizedDepositTransaction(depositParams);
-  const swap = useMemorizedSwapExactTokensTransaction(swapParams);
-  const withdraw = useMemorizedWithdrawTransaction(withdrawParams);
+  const approve = useApproveTransactionMemo(depositParams);
+  const deposit = useDepositTransactionMemo(depositParams);
+  const swap = useSwapExactTokensTransactionMemo(swapParams);
+  const withdraw = useWithdrawTransactionMemo(withdrawParams);
 
   const transactions = useMemo(() => {
     let _transactions = {};
