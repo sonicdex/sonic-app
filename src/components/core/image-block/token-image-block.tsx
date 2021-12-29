@@ -13,7 +13,7 @@ export const TokenImageBlock: React.FC<TokenImageBlockProps> = ({
 }) => {
   return (
     <SkeletonCircle h={10} w={10} isLoaded={!isLoading}>
-      <Image width={10} height={10} src={src} />
+      <Image width={10} height={10} src={src} borderRadius="full" />
     </SkeletonCircle>
   );
 };

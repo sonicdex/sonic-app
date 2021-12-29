@@ -123,7 +123,11 @@ export const SwapHomeStep = () => {
   >(() => {
     if (isLoading) return [true, 'Loading', () => {}];
     if (!from.metadata) throw new Error('State is loading');
-    if (!to.metadata) return [true, 'Select the token', () => {}];
+
+    if (toTokenOptions && toTokenOptions.length <= 0)
+      return [true, 'No pairs available', () => {}];
+
+    if (!to.metadata) return [true, 'Select a Token', () => {}];
 
     const parsedFromValue = (from.value && parseFloat(from.value)) || 0;
 
@@ -141,11 +145,11 @@ export const SwapHomeStep = () => {
     }
 
     if (from.metadata.id === 'ICP' && to.metadata.id === ENV.canisterIds.WICP) {
-      return [false, 'Wrap ICP', handleWrapICP];
+      return [false, 'Wrap', handleWrapICP];
     }
 
     if (from.metadata.id === ENV.canisterIds.WICP && to.metadata.id === 'ICP') {
-      return [false, 'Unwrap ICP', handleUnwrapICP];
+      return [false, 'Unwrap', handleUnwrapICP];
     }
 
     return [
@@ -243,17 +247,20 @@ export const SwapHomeStep = () => {
       <TitleBox
         title="Swap"
         settings={
-          <SlippageSettings
-            slippage={slippage}
-            isAutoSlippage={autoSlippage}
-            setSlippage={(value) =>
-              dispatch(swapViewActions.setSlippage(value))
-            }
-            setIsAutoSlippage={(value) => {
-              setAutoSlippage(value);
-              dispatch(swapViewActions.setSlippage(INITIAL_SWAP_SLIPPAGE));
-            }}
-          />
+          !isLoading &&
+          !isICPSelected && (
+            <SlippageSettings
+              slippage={slippage}
+              isAutoSlippage={autoSlippage}
+              setSlippage={(value) =>
+                dispatch(swapViewActions.setSlippage(value))
+              }
+              setIsAutoSlippage={(value) => {
+                setAutoSlippage(value);
+                dispatch(swapViewActions.setSlippage(INITIAL_SWAP_SLIPPAGE));
+              }}
+            />
+          )
         }
       />
       <Flex direction="column" alignItems="center">

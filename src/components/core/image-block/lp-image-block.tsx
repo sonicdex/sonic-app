@@ -39,6 +39,7 @@ export const LPImageBlock: React.FC<LPImageBlockProps> = ({
           top={0}
           left={0}
           src={imageSources[0]}
+          borderRadius="full"
         />
       </SkeletonCircle>
       <SkeletonCircle
@@ -53,6 +54,7 @@ export const LPImageBlock: React.FC<LPImageBlockProps> = ({
           bottom={0}
           right={0}
           src={imageSources[1]}
+          borderRadius="full"
         />
       </SkeletonCircle>
     </Box>

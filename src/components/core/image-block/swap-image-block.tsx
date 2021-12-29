@@ -21,6 +21,7 @@ export const SwapImageBlock: React.FC<SwapImageBlockProps> = ({
           top={0}
           left={0}
           src={imageSources[0]}
+          borderRadius="full"
         />
       </SkeletonCircle>
       <Text>&#x21AA;</Text>
@@ -32,6 +33,7 @@ export const SwapImageBlock: React.FC<SwapImageBlockProps> = ({
           bottom={0}
           right={0}
           src={imageSources[1]}
+          borderRadius="full"
         />
       </SkeletonCircle>
     </Box>
