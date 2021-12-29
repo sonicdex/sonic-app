@@ -8,29 +8,11 @@ import RosettaApi from '@/apis/rosetta';
 import { plug } from '@/integrations/plug';
 import { useEffect, useState } from 'react';
 import { usePlugStore } from '@/store';
-import { parseAmount } from './format';
+
 import { BINANCE_V3_API_URL } from '@/integrations/binance/constants';
 import { Principal } from '@dfinity/principal';
 
 export const ACCOUNT_DOMAIN_SEPERATOR = '\x0Aaccount-id';
-
-export const formatICP = (val: BigInt): string => {
-  try {
-    return new BigNumber(val.toString())
-      .div(new BigNumber('100000000'))
-      .toString();
-  } catch (err) {
-    return '0';
-  }
-};
-
-export const parseICP = (val: string): BigInt => {
-  try {
-    return parseAmount(val, 8);
-  } catch (err) {
-    return BigInt(0);
-  }
-};
 
 export const getICPBalance = (principalId: string) => {
   let res = {

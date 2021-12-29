@@ -3,9 +3,9 @@ import { useMemo } from 'react';
 import { ENV } from '@/config';
 import { WICPIDL } from '@/did';
 
-import { CreateTransaction, Wrap } from '../../models';
+import { CreateTransaction, MintWICP } from '../../models';
 
-export const useWrapTransactionMemo: CreateTransaction<Wrap> = (
+export const useMintWICPTransactionMemo: CreateTransaction<MintWICP> = (
   { blockHeight, subaccount = 0 },
   onSuccess,
   onFail

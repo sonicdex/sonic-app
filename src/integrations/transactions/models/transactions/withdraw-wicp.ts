@@ -1,4 +1,4 @@
-export type Unwrap = {
+export type WithdrawWICP = {
   value: bigint;
   toAccountId: string;
 };

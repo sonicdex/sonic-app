@@ -36,6 +36,8 @@ export const useSwapViewStore = () => {
       }
     }
 
+    console.log(toTokenOptions);
+
     return [fromTokenOptions, toTokenOptions];
   }, [state.tokenList, state.from.metadata, allPairs]);
 

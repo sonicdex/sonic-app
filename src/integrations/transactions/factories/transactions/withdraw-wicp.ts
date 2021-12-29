@@ -3,9 +3,9 @@ import { useMemo } from 'react';
 import { ENV } from '@/config';
 import { WICPIDL } from '@/did';
 
-import { CreateTransaction, Unwrap } from '../../models';
+import { CreateTransaction, WithdrawWICP } from '../../models';
 
-export const useUnwrapTransactionMemo: CreateTransaction<Unwrap> = (
+export const useWithdrawWICPTransactionMemo: CreateTransaction<WithdrawWICP> = (
   { value, toAccountId },
   onSuccess,
   onFail

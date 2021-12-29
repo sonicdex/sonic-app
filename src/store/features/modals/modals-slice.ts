@@ -4,6 +4,8 @@ import type { RootState } from '@/store';
 
 export type ModalsCallback = (arg0?: any) => any;
 
+export type WrapModalDataStep = 'mint' | '';
+
 export type SwapModalDataStep = 'approve' | 'deposit' | 'swap' | 'withdraw';
 export type SwapModalData = {
   step?: SwapModalDataStep;
@@ -65,6 +67,12 @@ type TokenSelectData = {
 
 // Define a type for the slice state
 interface ModalsState {
+  isWrapProgressOpened: boolean;
+  isWrapFailOpened: boolean;
+
+  isUnwrapProgressOpened: boolean;
+  isUnwrapFailOpened: boolean;
+
   isSwapProgressOpened: boolean;
   isSwapFailOpened: boolean;
   swapData: SwapModalData;
@@ -123,6 +131,12 @@ const initialTokenSelectData: TokenSelectData = {
 
 // Define the initial state using that type
 const initialState: ModalsState = {
+  isWrapProgressOpened: false,
+  isWrapFailOpened: false,
+
+  isUnwrapProgressOpened: false,
+  isUnwrapFailOpened: false,
+
   isSwapProgressOpened: false,
   isSwapFailOpened: false,
   swapData: initialSwapData,
@@ -156,6 +170,33 @@ export const modalsSlice = createSlice({
   // `createSlice` will infer the state type from the `initialState` argument
   initialState,
   reducers: {
+    openWrapProgressModal: (state) => {
+      state.isWrapProgressOpened = true;
+    },
+    closeWrapProgressModal: (state) => {
+      state.isWrapProgressOpened = false;
+    },
+
+    openWrapFailModal: (state) => {
+      state.isWrapFailOpened = true;
+    },
+    closeWrapFailModal: (state) => {
+      state.isWrapFailOpened = false;
+    },
+
+    openUnwrapProgressModal: (state) => {
+      state.isUnwrapProgressOpened = true;
+    },
+    closeUnwrapProgressModal: (state) => {
+      state.isUnwrapProgressOpened = false;
+    },
+    openUnwrapFailModal: (state) => {
+      state.isUnwrapFailOpened = true;
+    },
+    closeUnwrapFailModal: (state) => {
+      state.isUnwrapFailOpened = false;
+    },
+
     openRemoveLiquidityModal: (state) => {
       state.isLiquidityRemoveOpened = true;
     },
