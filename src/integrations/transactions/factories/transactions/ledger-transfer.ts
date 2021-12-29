@@ -15,9 +15,7 @@ export const useLedgerTransferTransactionMemo: CreateTransaction<LedgerTransfer>
         canisterId: ENV.canisterIds.ledger,
         idl: LedgerIDL.factory,
         methodName: 'send_dfx',
-        onSuccess: async (res: Promise<LedgerIDL.BlockHeight>) => {
-          if (onSuccess) onSuccess(res);
-        },
+        onSuccess,
         onFail,
         args: [
           {
