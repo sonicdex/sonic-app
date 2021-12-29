@@ -132,11 +132,15 @@ export const AssetsDeposit = () => {
   }, []);
 
   const handleMaxClick = () => {
-    dispatch(
-      depositViewActions.setAmount(
-        getCurrencyString(tokenBalance, selectedTokenMetadata?.decimals)
-      )
-    );
+    if (tokenBalance && selectedTokenMetadata)
+      dispatch(
+        depositViewActions.setAmount(
+          getCurrencyString(
+            tokenBalance - Number(selectedTokenMetadata!.fee),
+            selectedTokenMetadata?.decimals
+          )
+        )
+      );
   };
 
   const isLoading =

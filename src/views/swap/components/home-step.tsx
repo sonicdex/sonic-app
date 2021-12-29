@@ -63,12 +63,16 @@ export const SwapHomeStep = () => {
   };
 
   const handleFromMaxClick = () => {
+    if (!fromBalance) return;
     dispatch(
       swapViewActions.setValue({
         data: 'from',
         value:
           totalBalances && from.metadata
-            ? getCurrencyString(fromBalance!, from.metadata?.decimals)
+            ? getCurrencyString(
+                fromBalance - Number(from.metadata.fee),
+                from.metadata?.decimals
+              )
             : '',
       })
     );

@@ -13,7 +13,6 @@ import {
   TokenInput,
 } from '@/components';
 import { getAppAssetsSources } from '@/config/utils';
-import { useBalances } from '@/hooks/use-balances';
 import {
   NotificationType,
   SwapStep,
@@ -23,14 +22,12 @@ import {
   useSwapCanisterStore,
   useSwapViewStore,
 } from '@/store';
-import { getCurrencyString } from '@/utils/format';
 import { debounce } from '@/utils/function';
-import { Box, Button, Flex, Image } from '@chakra-ui/react';
+import { Box, Button, Flex, Image, Stack } from '@chakra-ui/react';
 import { KeepInSonicBox } from './keep-in-sonic-box';
 
 export const SwapReviewStep = () => {
   const { sonicBalances, tokenBalances } = useSwapCanisterStore();
-  const { totalBalances } = useBalances();
   const { addNotification } = useNotificationStore();
   const { fromTokenOptions, toTokenOptions, from, to, slippage } =
     useSwapViewStore();
@@ -48,29 +45,14 @@ export const SwapReviewStep = () => {
     );
   };
 
-  const handleMaxClick = () => {
-    dispatch(
-      swapViewActions.setValue({
-        data: 'to',
-        value:
-          totalBalances && to.metadata
-            ? getCurrencyString(
-                totalBalances[to.metadata?.id],
-                to.metadata?.decimals
-              )
-            : '',
-      })
-    );
-  };
-
   return (
-    <>
+    <Stack spacing={4}>
       <TitleBox
         title="Swap"
         onArrowBack={() => dispatch(swapViewActions.setStep(SwapStep.Home))}
       />
       <Flex direction="column" alignItems="center">
-        <Box mt={5} width="100%">
+        <Box width="100%">
           <Token
             value={from.value}
             setValue={(value) =>
@@ -101,7 +83,7 @@ export const SwapReviewStep = () => {
               <TokenInput />
             </TokenContent>
             <TokenBalances>
-              <TokenBalancesDetails onMaxClick={handleMaxClick} />
+              <TokenBalancesDetails />
               <TokenBalancesPrice />
             </TokenBalances>
           </Token>
@@ -171,6 +153,6 @@ export const SwapReviewStep = () => {
       >
         Confirm Swap
       </Button>
-    </>
+    </Stack>
   );
 };
