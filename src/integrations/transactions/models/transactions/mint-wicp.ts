@@ -1,5 +1,4 @@
 export type MintWICP = {
-  blockHeight: bigint;
-  keepInSonic?: boolean;
+  blockHeight?: bigint;
   subaccount?: number;
 };

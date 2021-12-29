@@ -1,38 +1,70 @@
-import { modalsSliceActions, useAppDispatch, WrapModalDataStep } from '@/store';
+import { useMemo } from 'react';
+
+import { ENV } from '@/config';
+import {
+  modalsSliceActions,
+  useAppDispatch,
+  useSwapViewStore,
+  WrapModalDataStep,
+} from '@/store';
+
 import { useBatchHook } from '..';
 import { Batch } from '../..';
 import {
   useMintWICPTransactionMemo,
   useLedgerTransferTransactionMemo,
+  useWithdrawTransactionMemo,
 } from '../transactions';
 
-const LEDGER_ACCOUNT_ID =
+export const WICP_ACCOUNT_ID =
   'cc659fe529756bae6f72db9937c6c60cf7ad57eb4ac5f930a75748927aab469a';
 
 type Wrap = {
+  keepInSonic?: boolean;
   amount: bigint;
 };
 
-export const useWrapBatch = ({ amount }: Wrap) => {
+export const useWrapBatch = ({ amount, keepInSonic = false }: Wrap) => {
+  const { tokenList } = useSwapViewStore();
   const dispatch = useAppDispatch();
 
   const handleOpenBatchModal = () => {
     dispatch(modalsSliceActions.openWithdrawProgressModal());
   };
 
+  const withdrawParams = {
+    token: tokenList![ENV.canisterIds.WICP],
+    amount: amount.toString(),
+  };
+
+  const ledgerTransfer = useLedgerTransferTransactionMemo({
+    toAccountId: WICP_ACCOUNT_ID,
+    amount,
+  });
+  const mintICP = useMintWICPTransactionMemo({});
+  const withdraw = useWithdrawTransactionMemo(withdrawParams);
+
+  const transactions = useMemo(() => {
+    let transactions: Partial<Record<WrapModalDataStep, any>> = {
+      ledgerTransfer,
+      mintICP,
+    };
+
+    if (!keepInSonic) {
+      transactions = {
+        ...transactions,
+        withdraw,
+      };
+    }
+
+    return transactions;
+  }, [ledgerTransfer, mintICP, withdraw, keepInSonic]);
+
   return [
     useBatchHook({
-      transactions: {
-        ledgerTransfer: useLedgerTransferTransactionMemo({
-          toAccountId: LEDGER_ACCOUNT_ID,
-          amount,
-        }),
-        // TODO: Once Plug will have ability to pass onSuccess to next transaction,
-        // add blockHeight from ledgerTransfer
-        wrap: useMintWICPTransactionMemo({ blockHeight: BigInt(0) }),
-      },
+      transactions,
       handleRetry: () => {
-        dispatch(modalsSliceActions.closeWithdrawProgressModal());
+        dispatch(modalsSliceActions.closeWrapProgressModal());
         return Promise.resolve(false);
       },
     }),

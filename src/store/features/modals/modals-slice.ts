@@ -4,7 +4,7 @@ import type { RootState } from '@/store';
 
 export type ModalsCallback = (arg0?: any) => any;
 
-export type WrapModalDataStep = 'mint' | '';
+export type WrapModalDataStep = 'mintICP' | 'ledgerTransfer' | 'withdraw';
 
 export type SwapModalDataStep = 'approve' | 'deposit' | 'swap' | 'withdraw';
 export type SwapModalData = {
