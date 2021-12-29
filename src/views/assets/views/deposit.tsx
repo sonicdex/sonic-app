@@ -26,7 +26,7 @@ import {
 import { useNavigate } from 'react-router';
 import { useQuery } from '@/hooks/use-query';
 import { plugCircleSrc } from '@/assets';
-import { formatAmount, getCurrencyString } from '@/utils/format';
+import { formatAmount, getCurrency, getCurrencyString } from '@/utils/format';
 import { debounce } from '@/utils/function';
 import { FeeBox } from '@/components/core/fee-box';
 
@@ -78,6 +78,13 @@ export const AssetsDeposit = () => {
 
     if (parsedFromValue <= 0)
       return [true, `Enter ${selectedTokenMetadata?.symbol} Amount`];
+
+    if (
+      parsedFromValue <=
+      getCurrency(selectedTokenMetadata.fee, selectedTokenMetadata.decimals)
+    ) {
+      return [true, `Amount must be greater than fee`];
+    }
 
     if (tokenBalances && selectedTokenMetadata) {
       const parsedBalance = parseFloat(
