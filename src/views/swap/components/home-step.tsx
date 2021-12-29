@@ -114,7 +114,6 @@ export const SwapHomeStep = () => {
   };
 
   const isLoading = useMemo(() => {
-    console.log(totalBalances, from.metadata);
     if (!from.metadata || !totalBalances) return true;
     return false;
   }, [totalBalances, from.metadata]);
