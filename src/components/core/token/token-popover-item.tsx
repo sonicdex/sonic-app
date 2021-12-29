@@ -20,7 +20,7 @@ export const TokenPopoverItem: FC<TokenPopoverItemProps> = ({
   name,
 }) => {
   return (
-    <Flex justify="space-between" py={2}>
+    <Flex justify="space-between" pb={3} _last={{ pb: 0 }}>
       <HStack flex={0} minWidth="fit-content">
         <Image src={src} boxSize={4} />
         <Text>{name}</Text>

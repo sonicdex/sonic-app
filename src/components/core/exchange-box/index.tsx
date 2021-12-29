@@ -87,14 +87,9 @@ export const ExchangeBox: React.FC<ExchangeBoxProps> = ({
           <Image src={infoSrc} width={5} transition="opacity 200ms" />
         </PopoverTrigger>
         <Portal>
-          <PopoverContent
-            p={2}
-            bgColor="#292929"
-            border="none"
-            borderRadius={20}
-          >
+          <PopoverContent>
             <PopoverHeader>Transaction Details</PopoverHeader>
-            <PopoverArrow bgColor="#292929" border="none" />
+            <PopoverArrow />
             <PopoverBody display="inline-block">
               <Stack>
                 <StackLine

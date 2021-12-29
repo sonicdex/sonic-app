@@ -68,13 +68,8 @@ export const KeepInSonicBox: React.FC<KeepInSonicBoxProps> = ({
           />
         </PopoverTrigger>
         <Portal>
-          <PopoverContent
-            p={2}
-            bgColor="#292929"
-            border="none"
-            borderRadius={20}
-          >
-            <PopoverArrow bgColor="#292929" border="none" />
+          <PopoverContent>
+            <PopoverArrow />
             <PopoverBody display="inline-block">
               Keeping tokens in Sonic (instead of withdrawing to Plug) is good
               for high frequency trading where a few extra seconds matters a
