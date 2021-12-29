@@ -64,7 +64,7 @@ export const ExchangeBox: React.FC<ExchangeBoxProps> = ({
   const { reserve0, reserve1 } = allPairs[from.metadata.id][to.metadata.id];
 
   return (
-    <Flex opacity={0.4} height={12} alignItems="center" px={4} fontWeight={400}>
+    <Flex opacity={0.4} alignItems="center" px={4} fontWeight={400}>
       <Text display="flex" alignItems="center">
         {from.metadata.symbol}&nbsp;
         <FaArrowRight />
