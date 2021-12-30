@@ -8,26 +8,20 @@ import {
   useModalsStore,
 } from '@/store';
 import { withdrawSrc } from '@/assets';
+import { useStepStatus } from '.';
 
 export const UnwrapProgressModal = () => {
   const dispatch = useAppDispatch();
   const { isUnwrapProgressOpened, unwrapData } = useModalsStore();
   const { steps, step: activeStep } = unwrapData;
 
+  const getStepStatus = useStepStatus<UnwrapModalDataStep>({
+    activeStep,
+    steps,
+  });
+
   const handleClose = () => {
     dispatch(modalsSliceActions.closeUnwrapProgressModal());
-  };
-
-  const getStepStatus = (step: UnwrapModalDataStep) => {
-    if (activeStep) {
-      const currentStepIndex = steps?.indexOf(activeStep);
-      const stepIndex = steps?.indexOf(step);
-
-      if (currentStepIndex! > stepIndex!) return 'done';
-      if (currentStepIndex === stepIndex) return 'active';
-    }
-
-    return 'disabled';
   };
 
   return (

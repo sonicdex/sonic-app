@@ -38,6 +38,7 @@ export type DepositModalData = {
 export type WithdrawModalDataStep = 'withdraw';
 export type WithdrawModalData = {
   step?: WithdrawModalDataStep;
+  steps?: WithdrawModalDataStep[];
   tokenSymbol?: string;
   callbacks?: [ModalsCallback, ModalsCallback];
 };

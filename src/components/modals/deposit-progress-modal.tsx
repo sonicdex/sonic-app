@@ -8,26 +8,20 @@ import {
   useModalsStore,
 } from '@/store';
 import { checkPlainSrc, depositSrc } from '@/assets';
+import { useStepStatus } from '.';
 
 export const DepositProgressModal = () => {
   const dispatch = useAppDispatch();
   const { isDepositProgressOpened, depositData } = useModalsStore();
   const { steps, tokenSymbol, step: activeStep } = depositData;
 
+  const getStepStatus = useStepStatus<DepositModalDataStep>({
+    activeStep,
+    steps,
+  });
+
   const handleClose = () => {
     dispatch(modalsSliceActions.closeDepositProgressModal());
-  };
-
-  const getStepStatus = (step: DepositModalDataStep) => {
-    if (activeStep) {
-      const currentStepIndex = steps?.indexOf(activeStep);
-      const stepIndex = steps?.indexOf(step);
-
-      if (currentStepIndex! > stepIndex!) return 'done';
-      if (currentStepIndex === stepIndex) return 'active';
-    }
-
-    return 'disabled';
   };
 
   return (

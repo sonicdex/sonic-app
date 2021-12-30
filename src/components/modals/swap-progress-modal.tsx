@@ -8,26 +8,16 @@ import {
   useModalsStore,
 } from '@/store';
 import { depositSrc, swapSrc, withdrawSrc } from '@/assets';
+import { useStepStatus } from '.';
 
 export const SwapProgressModal = () => {
   const dispatch = useAppDispatch();
   const { isSwapProgressOpened, swapData } = useModalsStore();
   const { steps, fromTokenSymbol, toTokenSymbol, step: activeStep } = swapData;
+  const getStepStatus = useStepStatus<SwapModalDataStep>({ activeStep, steps });
 
   const handleClose = () => {
     dispatch(modalsSliceActions.closeSwapProgressModal());
-  };
-
-  const getStepStatus = (step: SwapModalDataStep) => {
-    if (activeStep) {
-      const currentStepIndex = steps?.indexOf(activeStep);
-      const stepIndex = steps?.indexOf(step);
-
-      if (currentStepIndex! > stepIndex!) return 'done';
-      if (currentStepIndex === stepIndex) return 'active';
-    }
-
-    return 'disabled';
   };
 
   return (

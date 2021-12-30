@@ -8,26 +8,16 @@ import {
   WrapModalDataStep,
 } from '@/store';
 import { swapSrc, withdrawSrc } from '@/assets';
+import { useStepStatus } from '.';
 
 export const WrapProgressModal = () => {
   const dispatch = useAppDispatch();
   const { isWrapProgressOpened, wrapData } = useModalsStore();
   const { steps, step: activeStep } = wrapData;
+  const getStepStatus = useStepStatus<WrapModalDataStep>({ activeStep, steps });
 
   const handleClose = () => {
     dispatch(modalsSliceActions.closeWrapProgressModal());
-  };
-
-  const getStepStatus = (step: WrapModalDataStep) => {
-    if (activeStep) {
-      const currentStepIndex = steps?.indexOf(activeStep);
-      const stepIndex = steps?.indexOf(step);
-
-      if (currentStepIndex! > stepIndex!) return 'done';
-      if (currentStepIndex === stepIndex) return 'active';
-    }
-
-    return 'disabled';
   };
 
   return (

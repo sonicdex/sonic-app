@@ -12,6 +12,7 @@ export const useWithdrawBatch = (withdraw: Withdraw) => {
   const handleOpenWithdrawModal = () => {
     dispatch(
       modalsSliceActions.setWithdrawData({
+        steps: ['withdraw'] as WithdrawModalDataStep[],
         tokenSymbol: withdraw.token?.symbol,
       })
     );

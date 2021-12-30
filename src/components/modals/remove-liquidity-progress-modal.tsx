@@ -8,6 +8,7 @@ import {
   useModalsStore,
 } from '@/store';
 import { depositSrc, swapSrc } from '@/assets';
+import { useStepStatus } from '.';
 
 export const RemoveLiquidityProgressModal = () => {
   const dispatch = useAppDispatch();
@@ -19,21 +20,13 @@ export const RemoveLiquidityProgressModal = () => {
     token0Symbol,
     step: activeStep,
   } = removeLiquidityData;
+  const getStepStatus = useStepStatus<RemoveLiquidityModalDataStep>({
+    activeStep,
+    steps,
+  });
 
   const handleClose = () => {
     dispatch(modalsSliceActions.closeRemoveLiquidityProgressModal());
-  };
-
-  const getStepStatus = (step: RemoveLiquidityModalDataStep) => {
-    if (activeStep) {
-      const currentStepIndex = steps?.indexOf(activeStep);
-      const stepIndex = steps?.indexOf(step);
-
-      if (currentStepIndex! > stepIndex!) return 'done';
-      if (currentStepIndex === stepIndex) return 'active';
-    }
-
-    return 'disabled';
   };
 
   return (
