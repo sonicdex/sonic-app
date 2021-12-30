@@ -49,6 +49,7 @@ export const WrapProgressModal = () => {
             <TransactionStep
               status={getStepStatus(WrapModalDataStep.Approve)}
               iconSrc={withdrawSrc}
+              chevron
             >
               Approving <br /> WICP
             </TransactionStep>

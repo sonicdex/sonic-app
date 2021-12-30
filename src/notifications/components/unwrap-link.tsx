@@ -36,7 +36,9 @@ export const UnwrapLink: React.FC<UnwrapLinkProps> = ({ id }) => {
 
   const [batch, openUnwrapModal] = useUnwrapBatch({
     amount: from.value,
-    toAccountId: getAccountId(Principal.from(principalId)),
+    toAccountId: principalId
+      ? getAccountId(Principal.fromText(principalId))
+      : undefined,
   });
 
   const handleStateChange = () => {

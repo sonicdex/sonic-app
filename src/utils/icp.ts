@@ -3,7 +3,6 @@ import CryptoJS from 'crypto-js';
 import BigNumber from 'bignumber.js';
 import axios from 'axios';
 
-import { principalToAccountIdentifier } from './common';
 import RosettaApi from '@/apis/rosetta';
 import { plug } from '@/integrations/plug';
 import { useEffect, useState } from 'react';
@@ -27,7 +26,9 @@ export const getICPBalance = (principalId: string) => {
     (resolve, reject) => {
       if (!principalId) return resolve(res);
       rosettaAPI
-        .getAccountBalance(principalToAccountIdentifier(principalId || '', 0))
+        .getAccountBalance(
+          getAccountId(Principal.fromText(principalId || ''), 0)
+        )
         .then((bal) => {
           res.status = 1;
           res.data = new BigNumber(bal.toString())

@@ -4,6 +4,8 @@ import { ENV } from '@/config';
 import { WICPIDL } from '@/did';
 
 import { CreateTransaction, WithdrawWICP } from '../../models';
+import { ICP_TOKEN_METADATA } from '@/constants';
+import { parseAmount } from '@/utils/format';
 
 export const useWithdrawWICPTransactionMemo: CreateTransaction<WithdrawWICP> = (
   { amount, toAccountId },
@@ -23,6 +25,6 @@ export const useWithdrawWICPTransactionMemo: CreateTransaction<WithdrawWICP> = (
         if (onSuccess) onSuccess(res);
       },
       onFail,
-      args: [amount, toAccountId],
+      args: [parseAmount(amount, ICP_TOKEN_METADATA.decimals), toAccountId],
     };
   }, [amount, toAccountId]);

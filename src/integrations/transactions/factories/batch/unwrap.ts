@@ -9,8 +9,8 @@ import { Batch } from '../..';
 import { useWithdrawWICPTransactionMemo } from '../transactions';
 
 type Unwrap = {
-  amount: bigint;
-  toAccountId: string;
+  amount: string;
+  toAccountId?: string;
 };
 
 export const useUnwrapBatch = ({ amount, toAccountId }: Unwrap) => {
@@ -28,7 +28,7 @@ export const useUnwrapBatch = ({ amount, toAccountId }: Unwrap) => {
       })
     );
 
-    dispatch(modalsSliceActions.openUnwrapFailModal());
+    dispatch(modalsSliceActions.openUnwrapProgressModal());
   };
 
   return [

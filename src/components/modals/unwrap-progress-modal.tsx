@@ -12,11 +12,8 @@ import { useStepStatus } from '.';
 
 export const UnwrapProgressModal = () => {
   const dispatch = useAppDispatch();
-  const {
-    isUnwrapProgressModalOpened: isUnwrapProgressOpened,
-    unwrapModalData: unwrapData,
-  } = useModalsStore();
-  const { steps, step: activeStep } = unwrapData;
+  const { isUnwrapProgressModalOpened, unwrapModalData } = useModalsStore();
+  const { steps, step: activeStep } = unwrapModalData;
 
   const getStepStatus = useStepStatus<UnwrapModalDataStep>({
     activeStep,
@@ -28,7 +25,11 @@ export const UnwrapProgressModal = () => {
   };
 
   return (
-    <Modal onClose={handleClose} isOpen={isUnwrapProgressOpened} isCentered>
+    <Modal
+      onClose={handleClose}
+      isOpen={isUnwrapProgressModalOpened}
+      isCentered
+    >
       <ModalOverlay />
       <TransactionProgressModalContent title="Unwrapping ICP in Progress">
         <HStack>
