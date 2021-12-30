@@ -70,7 +70,6 @@ export const AddLiquidityLink: React.FC<AddLiquidityLinkProps> = ({ id }) => {
     addLiquidityBatch
       .execute()
       .then((res) => {
-        console.log('Add Liquidity Completed', res);
         dispatch(modalsSliceActions.clearAddLiquidityData());
         dispatch(modalsSliceActions.closeAddLiquidityProgressModal());
         addNotification({

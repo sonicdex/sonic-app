@@ -62,7 +62,6 @@ export const WrapLink: React.FC<WrapLinkProps> = ({ id }) => {
     wrapBatch
       .execute()
       .then((res) => {
-        console.log('Wrap Completed', res);
         dispatch(modalsSliceActions.closeWrapProgressModal());
 
         addNotification({

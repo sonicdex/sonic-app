@@ -58,7 +58,6 @@ export const UnwrapLink: React.FC<UnwrapLinkProps> = ({ id }) => {
     unwrapBatch
       .execute()
       .then((res) => {
-        console.log('Unwrap Completed', res);
         dispatch(modalsSliceActions.closeUnwrapProgressModal());
 
         addNotification({

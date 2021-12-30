@@ -54,7 +54,6 @@ export class BatchTransactions implements Batch.Controller {
   ): Promise<unknown> {
     const result = await transaction.onSuccess(response);
 
-    console.log('TXR', result);
     this.pop();
     if (this.transactions.length === 0) {
       this.finishPromise(true, response);

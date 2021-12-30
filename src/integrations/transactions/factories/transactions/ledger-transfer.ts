@@ -16,12 +16,6 @@ export const useLedgerTransferTransactionMemo: CreateTransaction<LedgerTransfer>
       if (!toAccountId) throw new Error('Account ID is required');
       if (!amount) throw new Error('Amount is required');
 
-      console.log({
-        to: toAccountId,
-        fee,
-        amount: { e8s: amount },
-        memo: { e8s: memo },
-      });
       return {
         canisterId: ENV.canisterIds.ledger,
         idl: LedgerIDL.factory,

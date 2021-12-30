@@ -32,7 +32,6 @@ export const useCreatePairTransactionMemo: CreateTransaction<CreatePair> = (
         if (onFail) onFail(res);
       },
       onSuccess: async (res: SwapIDL.Result) => {
-        console.log(res);
         if ('err' in res) throw new Error(res.err);
         if (onSuccess) onSuccess(res);
       },

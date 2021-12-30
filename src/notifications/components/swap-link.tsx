@@ -69,7 +69,6 @@ export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
     swapBatch
       .execute()
       .then((res) => {
-        console.log('Swap Completed', res);
         dispatch(modalsSliceActions.clearSwapData());
         dispatch(modalsSliceActions.closeSwapProgressModal());
 

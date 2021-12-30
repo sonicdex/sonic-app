@@ -53,7 +53,6 @@ export const WithdrawLink: React.FC<WithdrawLinkProps> = ({ id }) => {
     batch
       .execute()
       .then((res) => {
-        console.log('Withdraw Completed', res);
         dispatch(modalsSliceActions.clearWithdrawData());
         dispatch(modalsSliceActions.closeWithdrawProgressModal());
         addNotification({

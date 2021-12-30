@@ -134,7 +134,6 @@ export const RemoveLiquidityLink: React.FC<RemoveLiquidityLinkProps> = ({
     removeLiquidityBatch
       .execute()
       .then((res) => {
-        console.log('Remove liqudity Completed', res);
         dispatch(modalsSliceActions.clearRemoveLiquidityData());
         dispatch(modalsSliceActions.closeRemoveLiquidityProgressModal());
         addNotification({

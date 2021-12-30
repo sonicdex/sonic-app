@@ -55,7 +55,6 @@ export const DepositLink: React.FC<DepositLinkProps> = ({ id }) => {
     depositBatch
       .execute()
       .then((res) => {
-        console.log('Deposit Completed', res);
         dispatch(modalsSliceActions.clearDepositData());
         dispatch(modalsSliceActions.closeDepositProgressModal());
         getBalances();
