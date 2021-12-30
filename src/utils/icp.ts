@@ -4,7 +4,6 @@ import BigNumber from 'bignumber.js';
 import axios from 'axios';
 
 import RosettaApi from '@/apis/rosetta';
-import { plug } from '@/integrations/plug';
 import { useEffect, useState } from 'react';
 import { usePlugStore } from '@/store';
 
@@ -13,37 +12,20 @@ import { Principal } from '@dfinity/principal';
 
 export const ACCOUNT_DOMAIN_SEPERATOR = '\x0Aaccount-id';
 
-export const getICPBalance = (principalId: string) => {
-  let res = {
-    status: 0,
-    data: '',
-    msg: '',
-  };
+export const getICPBalance = async (principalId: string) => {
+  const accountId = getAccountId(Principal.fromText(principalId || ''), 0);
 
-  const rosettaAPI = new RosettaApi();
+  if (accountId) {
+    const rosettaAPI = new RosettaApi();
 
-  let promise = new Promise<{ status: number; data: string; msg: string }>(
-    (resolve, reject) => {
-      if (!principalId) return resolve(res);
-      rosettaAPI
-        .getAccountBalance(
-          getAccountId(Principal.fromText(principalId || ''), 0)
-        )
-        .then((bal) => {
-          res.status = 1;
-          res.data = new BigNumber(bal.toString())
-            .div(new BigNumber('100000000'))
-            .toString();
-          resolve(res);
-        })
-        .catch((err: any) => {
-          res.msg = err.message;
-          reject(res);
-        });
-    }
-  );
+    const balance = await rosettaAPI.getAccountBalance(accountId);
 
-  return promise;
+    return new BigNumber(balance.toString())
+      .div(new BigNumber('100000000'))
+      .toString();
+  } else {
+    throw new Error('Account ID is required');
+  }
 };
 
 export const useICPBalance = () => {
@@ -52,14 +34,9 @@ export const useICPBalance = () => {
 
   const getBalance = async () => {
     if (principalId) {
-      const result = plug?.requestBalance();
+      const result = await getICPBalance(principalId);
 
       if (result) {
-        // TODO: Fix types
-        const balance =
-          (result as unknown as any[]).find((balance) => balance.name === 'ICP')
-            ?.amount || 0;
-
         setBalance(balance);
         return balance;
       }

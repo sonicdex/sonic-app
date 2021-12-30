@@ -44,6 +44,7 @@ import { useTokenBalanceMemo } from '@/hooks';
 import { ENV } from '@/config';
 import { KeepInSonicBox } from './keep-in-sonic-box';
 import { debounce } from '@/utils/function';
+import { plug } from '@/integrations/plug';
 
 export const SwapHomeStep = () => {
   const { addNotification } = useNotificationStore();
@@ -110,15 +111,22 @@ export const SwapHomeStep = () => {
   };
 
   const handleWrapICP = () => {
-    addNotification({
-      title: `Wrapping ${from.metadata?.symbol}`,
-      type: NotificationType.Wrap,
-      id: String(new Date().getTime()),
-    });
-    debounce(
-      () => dispatch(swapViewActions.setValue({ data: 'from', value: '' })),
-      300
+    const plugProviderVersionNumber = Number(
+      plug?.versions.provider.split('.')
     );
+
+    console.log(plug?.versions.provider.split('.'));
+    if (plugProviderVersionNumber >= 160) {
+      addNotification({
+        title: `Wrapping ${from.metadata?.symbol}`,
+        type: NotificationType.Wrap,
+        id: String(new Date().getTime()),
+      });
+      debounce(
+        () => dispatch(swapViewActions.setValue({ data: 'from', value: '' })),
+        300
+      );
+    }
   };
 
   const handleUnwrapICP = () => {

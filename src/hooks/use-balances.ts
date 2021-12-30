@@ -2,7 +2,6 @@ import { ENV, getFromStorage, saveToStorage } from '@/config';
 import { ICP_TOKEN_METADATA } from '@/constants';
 import { SwapIDL, TokenIDL, WICPIDL } from '@/did';
 import { ActorAdapter, appActors, useSwapActor } from '@/integrations/actor';
-import { requestBalance } from '@/integrations/plug';
 import { Balances } from '@/models';
 import {
   FeatureState,
@@ -14,6 +13,7 @@ import {
 import { useKeepSync } from '@/store/features/keep-sync';
 import { parseResponseUserLPBalances } from '@/utils/canister';
 import { parseAmount } from '@/utils/format';
+import { getICPBalance } from '@/utils/icp';
 import { Principal } from '@dfinity/principal';
 import { useCallback, useMemo } from 'react';
 
@@ -147,10 +147,7 @@ export const useBalances = () => {
               )
             : undefined;
 
-          const plugResponse = (await requestBalance()) as unknown as any[];
-          const icpBalance =
-            plugResponse.find((balance) => balance.symbol === 'ICP')?.amount ??
-            0;
+          const icpBalance = await getICPBalance(principalId);
 
           dispatch(
             swapCanisterActions.setICPBalance(

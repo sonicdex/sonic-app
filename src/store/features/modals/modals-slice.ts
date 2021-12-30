@@ -16,6 +16,7 @@ export type WrapModalData = {
 };
 
 export enum UnwrapModalDataStep {
+  Withdraw = 'withdraw',
   WithdrawWICP = 'withdrawWICP',
 }
 export type UnwrapModalData = {

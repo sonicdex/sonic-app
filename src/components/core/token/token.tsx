@@ -22,7 +22,7 @@ import { TokenMetadata } from '@/models';
 import { getCurrencyString } from '@/utils/format';
 
 import { TokenPopover } from './token-popover';
-import { DisplayCurrency, NumberInputProps } from '..';
+import { DisplayValue, NumberInputProps } from '..';
 
 // === Core ===
 
@@ -227,9 +227,10 @@ export const TokenBalancesDetails: React.FC<TokenBalancesDetailsProps> = ({
             decimals={tokenMetadata?.decimals}
             symbol={tokenMetadata?.symbol}
           />
+
           {typeof totalTokenBalance === 'number' && (
-            <DisplayCurrency
-              balance={totalTokenBalance}
+            <DisplayValue
+              value={totalTokenBalance}
               decimals={tokenMetadata?.decimals || 0}
               prefix="Balance: "
               suffix={tokenMetadata?.symbol && ` ${tokenMetadata?.symbol}`}

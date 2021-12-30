@@ -2,7 +2,7 @@ import {
   Asset,
   AssetImageBlock,
   AssetTitleBlock,
-  DisplayCurrency,
+  DisplayValue,
 } from '@/components';
 import { useActivityViewStore } from '@/store';
 import { Heading, HStack, Stack, Text } from '@chakra-ui/react';
@@ -40,16 +40,16 @@ export const RemoveLiquidityActivity: React.FC<RemoveLiquidityActivityProps> =
         </HStack>
         <Stack textAlign="end">
           <Heading as="h6" size="sm" display="flex" alignItems="center">
-            <DisplayCurrency
-              balance={amount0}
+            <DisplayValue
+              value={amount0}
               decimals={token0.decimals}
               suffix={' ' + token0.symbol}
             />
             &nbsp;
             <FaPlus />
             &nbsp;
-            <DisplayCurrency
-              balance={amount1}
+            <DisplayValue
+              value={amount1}
               decimals={token1.decimals}
               suffix={' ' + token1.symbol}
             />

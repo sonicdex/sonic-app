@@ -38,7 +38,9 @@ export const useWrapBatch = ({ amount, keepInSonic = false }: Wrap) => {
     toAccountId: WICP_ACCOUNT_ID,
     amount,
   });
-  const mintWICP = useMintWICPTransactionMemo({});
+  const mintWICP = useMintWICPTransactionMemo({}, undefined, (data: any) =>
+    console.log(data)
+  );
   const approve = useApproveTransactionMemo(depositParams);
   const deposit = useDepositTransactionMemo(depositParams);
 

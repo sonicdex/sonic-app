@@ -22,7 +22,7 @@ import {
   Tooltip,
 } from '@chakra-ui/react';
 import { useEffect, useMemo, useState } from 'react';
-import { DisplayCurrency, SearchBar } from '..';
+import { DisplayValue, SearchBar } from '..';
 
 import { ImportToken } from './components';
 
@@ -291,8 +291,8 @@ const TokenSelectItem = ({
         </Box>
       </Stack>
       <Skeleton isLoaded={!isLoading} minWidth="fit-content" ml={3}>
-        <DisplayCurrency
-          balance={balance}
+        <DisplayValue
+          value={balance}
           decimals={decimals}
           as="p"
           fontSize="18px"

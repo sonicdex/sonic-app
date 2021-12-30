@@ -1,6 +1,6 @@
 import { getCurrency } from '@/utils/format';
 
-export const getToDepositAmount = (
+export const getAmountDependsOnBalance = (
   tokenBalance: number,
   tokenDecimals: number,
   fromValue: string
@@ -10,7 +10,7 @@ export const getToDepositAmount = (
   return (parsedFromValue - parsedTokenBalance).toString();
 };
 
-type GetKeysDepositTransactionsOptions = {
+type GetDepositTransactionsOptions = {
   approveTx: any;
   depositTx: any;
   txNames?: [string, string];
@@ -20,7 +20,7 @@ export const getDepositTransactions = ({
   approveTx,
   depositTx,
   txNames = ['approve', 'deposit'],
-}: GetKeysDepositTransactionsOptions) => {
+}: GetDepositTransactionsOptions) => {
   const neededBalance = Number(depositTx.args[1]);
 
   if (neededBalance > 0) {

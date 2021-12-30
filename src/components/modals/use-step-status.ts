@@ -18,11 +18,11 @@ export const useStepStatus = <Step>({
   useCallback(
     (step: Step) => {
       if (activeStep) {
-        const currentStepIndex = steps?.indexOf(activeStep);
-        const stepIndex = steps?.indexOf(step);
+        const selectedStepIndex = steps?.indexOf(step);
+        const activeStepIndex = steps?.indexOf(activeStep);
 
-        if (currentStepIndex! > stepIndex!) return StepStatus.Disabled;
-        if (currentStepIndex === stepIndex) return StepStatus.Active;
+        if (activeStepIndex! > selectedStepIndex!) return StepStatus.Done;
+        if (activeStepIndex === selectedStepIndex) return StepStatus.Active;
       }
 
       return StepStatus.Disabled;
