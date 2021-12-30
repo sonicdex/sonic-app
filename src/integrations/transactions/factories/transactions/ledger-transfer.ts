@@ -5,6 +5,7 @@ import { LedgerIDL } from '@/did';
 
 import { CreateTransaction, LedgerTransfer } from '../../models';
 import { parseAmount } from '@/utils/format';
+import { ICP_TOKEN_METADATA } from '@/constants';
 
 export const useLedgerTransferTransactionMemo: CreateTransaction<LedgerTransfer> =
   (
@@ -29,7 +30,7 @@ export const useLedgerTransferTransactionMemo: CreateTransaction<LedgerTransfer>
           {
             to: toAccountId,
             fee: { e8s: fee },
-            amount: { e8s: parseAmount(amount, 5) },
+            amount: { e8s: parseAmount(amount, ICP_TOKEN_METADATA.decimals) },
             memo,
             from_subaccount: [], // For now, using default subaccount to handle ICP
             created_at_time: [],

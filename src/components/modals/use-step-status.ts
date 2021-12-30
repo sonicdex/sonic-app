@@ -1,3 +1,5 @@
+import { useCallback } from 'react';
+
 export enum StepStatus {
   Active = 'active',
   Disabled = 'disabled',
@@ -12,18 +14,18 @@ type UseStepStatusMemoOptions<Step> = {
 export const useStepStatus = <Step>({
   activeStep,
   steps,
-}: UseStepStatusMemoOptions<Step>) => {
-  const getStepStatus = (step: Step) => {
-    if (activeStep) {
-      const currentStepIndex = steps?.indexOf(activeStep);
-      const stepIndex = steps?.indexOf(step);
+}: UseStepStatusMemoOptions<Step>) =>
+  useCallback(
+    (step: Step) => {
+      if (activeStep) {
+        const currentStepIndex = steps?.indexOf(activeStep);
+        const stepIndex = steps?.indexOf(step);
 
-      if (currentStepIndex! > stepIndex!) return StepStatus.Disabled;
-      if (currentStepIndex === stepIndex) return StepStatus.Active;
-    }
+        if (currentStepIndex! > stepIndex!) return StepStatus.Disabled;
+        if (currentStepIndex === stepIndex) return StepStatus.Active;
+      }
 
-    return StepStatus.Disabled;
-  };
-
-  return getStepStatus;
-};
+      return StepStatus.Disabled;
+    },
+    [activeStep, steps]
+  );

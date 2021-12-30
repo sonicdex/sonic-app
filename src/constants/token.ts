@@ -6,7 +6,7 @@ export const ICP_TOKEN_METADATA = {
   name: 'Internet Computer Protocol',
   symbol: 'ICP',
   fee: BigInt(0),
-  decimals: 5,
+  decimals: 8,
   totalSupply: BigInt(0),
   logo: icpSrc,
 };

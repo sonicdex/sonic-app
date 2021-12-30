@@ -6,7 +6,7 @@ import { WICPIDL } from '@/did';
 import { CreateTransaction, MintWICP } from '../../models';
 
 export const useMintWICPTransactionMemo: CreateTransaction<MintWICP> = (
-  { blockHeight, subaccount = 0 },
+  { blockHeight, subaccount = [] },
   onSuccess,
   onFail
 ) =>

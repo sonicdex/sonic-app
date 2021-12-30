@@ -13,7 +13,8 @@ import { Batch } from '../..';
 import {
   useMintWICPTransactionMemo,
   useLedgerTransferTransactionMemo,
-  useWithdrawTransactionMemo,
+  useApproveTransactionMemo,
+  useDepositTransactionMemo,
 } from '../transactions';
 
 export const WICP_ACCOUNT_ID =
@@ -28,7 +29,7 @@ export const useWrapBatch = ({ amount, keepInSonic = false }: Wrap) => {
   const { tokenList } = useSwapViewStore();
   const dispatch = useAppDispatch();
 
-  const withdrawParams = {
+  const depositParams = {
     token: tokenList![ENV.canisterIds.WICP],
     amount: amount.toString(),
   };
@@ -38,7 +39,8 @@ export const useWrapBatch = ({ amount, keepInSonic = false }: Wrap) => {
     amount,
   });
   const mintWICP = useMintWICPTransactionMemo({});
-  const withdraw = useWithdrawTransactionMemo(withdrawParams);
+  const approve = useApproveTransactionMemo(depositParams);
+  const deposit = useDepositTransactionMemo(depositParams);
 
   const transactions = useMemo(() => {
     let transactions: Partial<Record<WrapModalDataStep, any>> = {
@@ -46,15 +48,16 @@ export const useWrapBatch = ({ amount, keepInSonic = false }: Wrap) => {
       mintWICP,
     };
 
-    if (!keepInSonic) {
+    if (keepInSonic) {
       transactions = {
         ...transactions,
-        withdraw,
+        approve,
+        deposit,
       };
     }
 
     return transactions;
-  }, [ledgerTransfer, mintWICP, withdraw, keepInSonic]);
+  }, [ledgerTransfer, mintWICP, approve, deposit, keepInSonic]);
 
   const handleOpenBatchModal = () => {
     dispatch(

@@ -6,7 +6,8 @@ export type ModalsCallback = (arg0?: any) => any;
 export enum WrapModalDataStep {
   LedgerTransfer = 'ledgerTransfer',
   MintWIPC = 'mintWICP',
-  Withdraw = 'withdraw',
+  Approve = 'approve',
+  Deposit = 'deposit',
 }
 export type WrapModalData = {
   step?: WrapModalDataStep;

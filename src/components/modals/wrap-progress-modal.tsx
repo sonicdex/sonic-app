@@ -33,21 +33,32 @@ export const WrapProgressModal = () => {
             iconSrc={withdrawSrc}
             chevron
           >
-            Transferring ICP to ledger
+            Ledger ICP Transfer
           </TransactionStep>
           <TransactionStep
             status={getStepStatus(WrapModalDataStep.MintWIPC)}
             iconSrc={swapSrc}
-            chevron={steps?.includes(WrapModalDataStep.Withdraw)}
+            chevron={
+              steps?.includes(WrapModalDataStep.Approve) ||
+              steps?.includes(WrapModalDataStep.Deposit)
+            }
           >
             Minting WICP
           </TransactionStep>
-          {steps?.includes(WrapModalDataStep.Withdraw) && (
+          {steps?.includes(WrapModalDataStep.Approve) && (
             <TransactionStep
-              status={getStepStatus(WrapModalDataStep.Withdraw)}
+              status={getStepStatus(WrapModalDataStep.Approve)}
               iconSrc={withdrawSrc}
             >
-              Withdrawing <br /> WICP
+              Approving <br /> WICP
+            </TransactionStep>
+          )}
+          {steps?.includes(WrapModalDataStep.Deposit) && (
+            <TransactionStep
+              status={getStepStatus(WrapModalDataStep.Deposit)}
+              iconSrc={withdrawSrc}
+            >
+              Depositing <br /> WICP
             </TransactionStep>
           )}
         </HStack>
