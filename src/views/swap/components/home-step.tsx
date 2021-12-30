@@ -28,9 +28,11 @@ import {
 import { useBalances } from '@/hooks/use-balances';
 import {
   INITIAL_SWAP_SLIPPAGE,
+  NotificationType,
   SwapStep,
   swapViewActions,
   useAppDispatch,
+  useNotificationStore,
   usePlugStore,
   useSwapCanisterStore,
   useSwapViewStore,
@@ -41,8 +43,10 @@ import { getAppAssetsSources } from '@/config/utils';
 import { useTokenBalanceMemo } from '@/hooks';
 import { ENV } from '@/config';
 import { KeepInSonicBox } from './keep-in-sonic-box';
+import { debounce } from '@/utils/function';
 
 export const SwapHomeStep = () => {
+  const { addNotification } = useNotificationStore();
   const { fromTokenOptions, toTokenOptions, from, to, slippage } =
     useSwapViewStore();
   const dispatch = useAppDispatch();
@@ -106,11 +110,27 @@ export const SwapHomeStep = () => {
   };
 
   const handleWrapICP = () => {
-    console.log('Wrap');
+    addNotification({
+      title: `Wrapping ${from.metadata?.symbol}`,
+      type: NotificationType.Wrap,
+      id: String(new Date().getTime()),
+    });
+    debounce(
+      () => dispatch(swapViewActions.setValue({ data: 'from', value: '' })),
+      300
+    );
   };
 
   const handleUnwrapICP = () => {
-    console.log('Unwrap');
+    addNotification({
+      title: `Unwrapping ${from.metadata?.symbol}`,
+      type: NotificationType.Unwrap,
+      id: String(new Date().getTime()),
+    });
+    debounce(
+      () => dispatch(swapViewActions.setValue({ data: 'from', value: '' })),
+      300
+    );
   };
 
   const isLoading = useMemo(() => {
@@ -123,7 +143,7 @@ export const SwapHomeStep = () => {
   >(() => {
     if (isLoading) return [true, 'Loading', () => {}];
     if (!from.metadata) throw new Error('State is loading');
-    if (!to.metadata) return [true, 'Select the token', () => {}];
+    if (!to.metadata) return [true, 'Select a Token', () => {}];
 
     const parsedFromValue = (from.value && parseFloat(from.value)) || 0;
 

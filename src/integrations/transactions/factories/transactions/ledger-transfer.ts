@@ -4,25 +4,41 @@ import { ENV } from '@/config';
 import { LedgerIDL } from '@/did';
 
 import { CreateTransaction, LedgerTransfer } from '../../models';
+import { parseAmount } from '@/utils/format';
 
 export const useLedgerTransferTransactionMemo: CreateTransaction<LedgerTransfer> =
-  ({ toAccountId, fee, amount, memo = 0 }, onSuccess, onFail) =>
+  (
+    { toAccountId, fee = BigInt(10000), amount, memo = BigInt(0) },
+    onSuccess,
+    onFail
+  ) =>
     useMemo(() => {
       if (!toAccountId) throw new Error('Account ID is required');
       if (!amount) throw new Error('Amount is required');
 
+      console.log({
+        to: toAccountId,
+        fee,
+        amount: { e8s: amount },
+        memo: { e8s: memo },
+      });
       return {
         canisterId: ENV.canisterIds.ledger,
         idl: LedgerIDL.factory,
         methodName: 'send_dfx',
-        onSuccess,
+        onSuccess: async (blockHeight: any) => {
+          if (onSuccess) onSuccess(blockHeight);
+          return blockHeight;
+        },
         onFail,
         args: [
           {
-            toAccountId,
-            fee,
-            amount: { e8s: amount },
-            memo: { e8s: memo },
+            to: toAccountId,
+            fee: { e8s: fee },
+            amount: { e8s: parseAmount(amount, 5) },
+            memo,
+            from_subaccount: [], // For now, using default subaccount to handle ICP
+            created_at_time: [],
           },
         ],
       };

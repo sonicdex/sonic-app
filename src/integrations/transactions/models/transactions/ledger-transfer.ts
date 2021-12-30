@@ -1,5 +1,5 @@
 export type LedgerTransfer = {
-  amount: bigint;
+  amount: string;
   toAccountId: string;
   fee?: bigint;
   memo?: bigint;

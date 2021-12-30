@@ -27,12 +27,17 @@ export const useBatchHook: Batch.CreateHook = ({
     Object.values(transactions).forEach((transaction, index) => {
       const onSuccess = transaction.onSuccess;
       transaction.onSuccess = async (res) => {
-        if (onSuccess) await onSuccess(res);
+        let txRes;
+        if (onSuccess) {
+          txRes = await onSuccess(res);
+        }
         if (index !== transactionsList.length - 1) {
           setState(states[index + 1]);
         } else {
           setState(Batch.DefaultHookStates.Done);
         }
+
+        return txRes;
       };
 
       const onFail = transaction.onFail;

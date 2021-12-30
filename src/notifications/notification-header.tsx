@@ -24,6 +24,8 @@ const NotificationIcon = ({ type }: { type: NotificationType }) => {
           left={4}
         />
       );
+    case NotificationType.Wrap:
+    case NotificationType.Unwrap:
     case NotificationType.Swap:
     case NotificationType.AddLiquidity:
     case NotificationType.RemoveLiquidity:

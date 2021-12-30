@@ -13,6 +13,8 @@ import {
   TokenSelectModal,
   WithdrawProgressModal,
   DepositProgressModal,
+  UnwrapProgressModal,
+  WrapProgressModal,
   RemoveLiquidityModal,
   AddLiquidityFailModal,
   RemoveLiquidityFailModal,
@@ -52,6 +54,8 @@ export const App = () => {
         <DepositProgressModal />
         <AddLiquidityProgressModal />
         <RemoveLiquidityProgressModal />
+        <UnwrapProgressModal />
+        <WrapProgressModal />
 
         <SwapFailModal />
         <AddLiquidityFailModal />

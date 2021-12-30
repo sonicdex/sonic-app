@@ -9,6 +9,8 @@ import {
   WithdrawLink,
   SwapLink,
   TransactionLink,
+  UnwrapLink,
+  WrapLink,
 } from './components';
 import { NotificationBoxProps } from '.';
 
@@ -29,6 +31,9 @@ export const NotificationContent: React.FC<NotificationContentProps> = ({
     [NotificationType.AddLiquidity]: <AddLiquidityLink id={id} />,
     [NotificationType.RemoveLiquidity]: <RemoveLiquidityLink id={id} />,
     [NotificationType.Withdraw]: <WithdrawLink id={id} />,
+    [NotificationType.Deposit]: <DepositLink id={id} />,
+    [NotificationType.Unwrap]: <UnwrapLink id={id} />,
+    [NotificationType.Wrap]: <WrapLink id={id} />,
     [NotificationType.Deposit]: <DepositLink id={id} />,
     [NotificationType.Success]: transactionLink ? (
       <TransactionLink transactionLink={transactionLink} />

@@ -4,7 +4,19 @@ import type { RootState } from '@/store';
 
 export type ModalsCallback = (arg0?: any) => any;
 
-export type WrapModalDataStep = 'mintICP' | 'ledgerTransfer' | 'withdraw';
+export type WrapModalDataStep = 'ledgerTransfer' | 'mintWICP' | 'withdraw';
+export type WrapModalData = {
+  step?: WrapModalDataStep;
+  steps?: WrapModalDataStep[];
+  callbacks?: [ModalsCallback, ModalsCallback];
+};
+
+export type UnwrapModalDataStep = 'withdrawWICP';
+export type UnwrapModalData = {
+  step?: UnwrapModalDataStep;
+  steps?: UnwrapModalDataStep[];
+  callbacks?: [ModalsCallback, ModalsCallback];
+};
 
 export type SwapModalDataStep = 'approve' | 'deposit' | 'swap' | 'withdraw';
 export type SwapModalData = {
@@ -69,9 +81,11 @@ type TokenSelectData = {
 interface ModalsState {
   isWrapProgressOpened: boolean;
   isWrapFailOpened: boolean;
+  wrapData: WrapModalData;
 
   isUnwrapProgressOpened: boolean;
   isUnwrapFailOpened: boolean;
+  unwrapData: UnwrapModalData;
 
   isSwapProgressOpened: boolean;
   isSwapFailOpened: boolean;
@@ -100,6 +114,14 @@ interface ModalsState {
 
   state: FeatureState;
 }
+
+const initialWrapData: WrapModalData = {
+  step: undefined,
+};
+
+const initialUnwrapData: UnwrapModalData = {
+  step: undefined,
+};
 
 const initialSwapData: SwapModalData = {
   step: undefined,
@@ -133,9 +155,11 @@ const initialTokenSelectData: TokenSelectData = {
 const initialState: ModalsState = {
   isWrapProgressOpened: false,
   isWrapFailOpened: false,
+  wrapData: initialWrapData,
 
   isUnwrapProgressOpened: false,
   isUnwrapFailOpened: false,
+  unwrapData: initialUnwrapData,
 
   isSwapProgressOpened: false,
   isSwapFailOpened: false,
@@ -176,12 +200,17 @@ export const modalsSlice = createSlice({
     closeWrapProgressModal: (state) => {
       state.isWrapProgressOpened = false;
     },
-
     openWrapFailModal: (state) => {
       state.isWrapFailOpened = true;
     },
     closeWrapFailModal: (state) => {
       state.isWrapFailOpened = false;
+    },
+    setWrapData: (state, action: PayloadAction<WrapModalData>) => {
+      state.wrapData = {
+        ...state.wrapData,
+        ...action.payload,
+      };
     },
 
     openUnwrapProgressModal: (state) => {
@@ -195,6 +224,12 @@ export const modalsSlice = createSlice({
     },
     closeUnwrapFailModal: (state) => {
       state.isUnwrapFailOpened = false;
+    },
+    setUnwrapData: (state, action: PayloadAction<UnwrapModalData>) => {
+      state.unwrapData = {
+        ...state.unwrapData,
+        ...action.payload,
+      };
     },
 
     openRemoveLiquidityModal: (state) => {

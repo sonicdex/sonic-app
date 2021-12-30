@@ -10,4 +10,6 @@ export * from './remove-liquidity-progress-modal';
 export * from './swap-fail-modal';
 export * from './swap-progress-modal';
 export * from './token-select-modal';
+export * from './unwrap-progress-modal';
 export * from './withdraw-modal';
+export * from './wrap-progress-modal';

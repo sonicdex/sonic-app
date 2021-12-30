@@ -6,12 +6,12 @@ import { WICPIDL } from '@/did';
 import { CreateTransaction, WithdrawWICP } from '../../models';
 
 export const useWithdrawWICPTransactionMemo: CreateTransaction<WithdrawWICP> = (
-  { value, toAccountId },
+  { amount, toAccountId },
   onSuccess,
   onFail
 ) =>
   useMemo(() => {
-    if (!value) throw new Error('Value is required');
+    if (!amount) throw new Error('Amount is required');
     if (!toAccountId) throw new Error('Account ID is required');
 
     return {
@@ -23,6 +23,6 @@ export const useWithdrawWICPTransactionMemo: CreateTransaction<WithdrawWICP> = (
         if (onSuccess) onSuccess(res);
       },
       onFail,
-      args: [value, toAccountId],
+      args: [amount, toAccountId],
     };
-  }, [value, toAccountId]);
+  }, [amount, toAccountId]);

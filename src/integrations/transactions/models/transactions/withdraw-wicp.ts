@@ -1,4 +1,4 @@
 export type WithdrawWICP = {
-  value: bigint;
+  amount: bigint;
   toAccountId: string;
 };

@@ -11,8 +11,6 @@ export const useMintWICPTransactionMemo: CreateTransaction<MintWICP> = (
   onFail
 ) =>
   useMemo(() => {
-    if (!blockHeight) throw new Error('Block height is required');
-
     return {
       canisterId: ENV.canisterIds.WICP,
       idl: WICPIDL.factory,
@@ -23,7 +21,7 @@ export const useMintWICPTransactionMemo: CreateTransaction<MintWICP> = (
       },
       onFail,
       args: (prevResponses: any[]) => {
-        const argBlockHeight = prevResponses[0].response;
+        const argBlockHeight = prevResponses[0]?.response;
 
         console.log('ABH', argBlockHeight, prevResponses);
 

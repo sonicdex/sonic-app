@@ -21,16 +21,12 @@ export const WICP_ACCOUNT_ID =
 
 type Wrap = {
   keepInSonic?: boolean;
-  amount: bigint;
+  amount: string;
 };
 
 export const useWrapBatch = ({ amount, keepInSonic = false }: Wrap) => {
   const { tokenList } = useSwapViewStore();
   const dispatch = useAppDispatch();
-
-  const handleOpenBatchModal = () => {
-    dispatch(modalsSliceActions.openWithdrawProgressModal());
-  };
 
   const withdrawParams = {
     token: tokenList![ENV.canisterIds.WICP],
@@ -41,13 +37,13 @@ export const useWrapBatch = ({ amount, keepInSonic = false }: Wrap) => {
     toAccountId: WICP_ACCOUNT_ID,
     amount,
   });
-  const mintICP = useMintWICPTransactionMemo({});
+  const mintWICP = useMintWICPTransactionMemo({});
   const withdraw = useWithdrawTransactionMemo(withdrawParams);
 
   const transactions = useMemo(() => {
     let transactions: Partial<Record<WrapModalDataStep, any>> = {
       ledgerTransfer,
-      mintICP,
+      mintWICP,
     };
 
     if (!keepInSonic) {
@@ -58,7 +54,16 @@ export const useWrapBatch = ({ amount, keepInSonic = false }: Wrap) => {
     }
 
     return transactions;
-  }, [ledgerTransfer, mintICP, withdraw, keepInSonic]);
+  }, [ledgerTransfer, mintWICP, withdraw, keepInSonic]);
+
+  const handleOpenBatchModal = () => {
+    dispatch(
+      modalsSliceActions.setWrapData({
+        steps: Object.keys(transactions) as WrapModalDataStep[],
+      })
+    );
+    dispatch(modalsSliceActions.openWrapProgressModal());
+  };
 
   return [
     useBatchHook({
