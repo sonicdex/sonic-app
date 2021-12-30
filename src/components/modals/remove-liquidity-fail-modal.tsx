@@ -4,7 +4,10 @@ import { TransactionFailedModalContent } from './components';
 import { modalsSliceActions, useAppDispatch, useModalsStore } from '@/store';
 
 export const RemoveLiquidityFailModal = () => {
-  const { isRemoveLiquidityFailOpened, removeLiquidityData } = useModalsStore();
+  const {
+    isRemoveLiquidityFailModalOpened: isRemoveLiquidityFailOpened,
+    removeLiquidityModalData: removeLiquidityData,
+  } = useModalsStore();
   const { callbacks: [removeLiquidityCallback, closeCallback] = [] } =
     removeLiquidityData;
 

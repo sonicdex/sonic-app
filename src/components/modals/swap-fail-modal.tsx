@@ -5,7 +5,8 @@ import { modalsSliceActions, useAppDispatch, useModalsStore } from '@/store';
 
 export const SwapFailModal = () => {
   const dispatch = useAppDispatch();
-  const { isSwapFailOpened, swapData } = useModalsStore();
+  const { isSwapFailModalOpened: isSwapFailOpened, swapModalData: swapData } =
+    useModalsStore();
   const { callbacks: [retryCallback, withdrawCallback, closeCallback] = [] } =
     swapData;
 

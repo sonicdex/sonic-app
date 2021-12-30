@@ -13,6 +13,8 @@ export const useWithdrawTransactionMemo: CreateTransaction<Withdraw> = (
   useMemo(() => {
     if (!token?.id) throw new Error('Token is required');
 
+    console.log('W', amount);
+
     return {
       args: [Principal.fromText(token.id), parseAmount(amount, token.decimals)],
       canisterId: ENV.canisterIds.swap,

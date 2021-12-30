@@ -14,7 +14,7 @@ import {
 } from '..';
 import { AddLiquidity, Batch, Deposit } from '../..';
 import { useCreatePairTransactionMemo } from '../transactions/create-pair';
-import { getDepositTransactions, getToDepositAmount } from './utils';
+import { getDepositTransactions, getAmountDependsOnBalance } from './utils';
 
 interface Transactions {
   [transactionName: string]: any;
@@ -40,7 +40,7 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
     if (addLiquidityParams.token0.metadata) {
       return {
         token: addLiquidityParams.token0.metadata,
-        amount: getToDepositAmount(
+        amount: getAmountDependsOnBalance(
           sonicBalances[addLiquidityParams.token0.metadata?.id],
           addLiquidityParams.token0.metadata.decimals,
           addLiquidityParams.token0.value
@@ -53,7 +53,7 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
     if (addLiquidityParams.token1.metadata) {
       return {
         token: addLiquidityParams.token1.metadata,
-        amount: getToDepositAmount(
+        amount: getAmountDependsOnBalance(
           sonicBalances[addLiquidityParams.token1.metadata?.id],
           addLiquidityParams.token1.metadata.decimals,
           addLiquidityParams.token1.value
@@ -120,7 +120,7 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
   const handleRetry = async () => {
     return new Promise<boolean>((resolve) => {
       dispatch(
-        modalsSliceActions.setAddLiquidityData({
+        modalsSliceActions.setAddLiquidityModalData({
           callbacks: [
             // Retry callback
             () => {
@@ -142,7 +142,7 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
 
   const openAddLiquidityModal = () => {
     dispatch(
-      modalsSliceActions.setAddLiquidityData({
+      modalsSliceActions.setAddLiquidityModalData({
         steps: Object.keys(transactions) as AddLiquidityModalDataStep[],
         token0Symbol: addLiquidityParams.token0.metadata?.symbol,
         token1Symbol: addLiquidityParams.token1.metadata?.symbol,

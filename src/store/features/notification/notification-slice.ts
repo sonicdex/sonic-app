@@ -10,6 +10,8 @@ export enum NotificationType {
   Withdraw,
   AddLiquidity,
   RemoveLiquidity,
+  Unwrap,
+  Wrap,
 }
 
 export interface Notification {

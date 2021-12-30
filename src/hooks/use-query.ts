@@ -14,7 +14,7 @@ export const useQuery = () => {
         const query = new URLSearchParams(location.search);
         query.delete(key);
         location.search = query.toString();
-        console.log(location.search);
+
         window.history.replaceState(
           {},
           '',

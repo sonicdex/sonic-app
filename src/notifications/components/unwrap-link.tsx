@@ -1,10 +1,10 @@
 import { useBalances } from '@/hooks/use-balances';
-import { useSwapBatch } from '@/integrations/transactions';
+import { useUnwrapBatch } from '@/integrations/transactions';
 
 import {
   modalsSliceActions,
   NotificationType,
-  SwapModalDataStep,
+  UnwrapModalDataStep,
   useAppDispatch,
   useNotificationStore,
   usePlugStore,
@@ -12,44 +12,44 @@ import {
 } from '@/store';
 import { deserialize, stringify } from '@/utils/format';
 import { createCAPLink } from '@/utils/function';
+import { getAccountId } from '@/utils/icp';
 import { Link } from '@chakra-ui/react';
+import { Principal } from '@dfinity/principal';
 import { useEffect, useMemo } from 'react';
 
-export interface SwapLinkProps {
+export interface UnwrapLinkProps {
   id: string;
 }
 
-export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
+export const UnwrapLink: React.FC<UnwrapLinkProps> = ({ id }) => {
+  const { principalId } = usePlugStore();
   const dispatch = useAppDispatch();
   const swapViewStore = useSwapViewStore();
   const { addNotification, popNotification } = useNotificationStore();
-  const { principalId } = usePlugStore();
   const { getBalances } = useBalances();
 
-  const { from, to, slippage, keepInSonic } = useMemo(() => {
-    // Clone current state just for this batch
-    const { from, to, slippage, keepInSonic } = swapViewStore;
+  const { from } = useMemo(() => {
+    const { from } = swapViewStore;
 
-    return deserialize(stringify({ from, to, slippage, keepInSonic }));
+    return deserialize(stringify({ from }));
   }, []);
 
-  const [batch, openSwapModal] = useSwapBatch({
-    from,
-    to,
-    slippage: Number(slippage),
-    keepInSonic,
-    principalId,
+  const [batch, openUnwrapModal] = useUnwrapBatch({
+    amount: from.value,
+    toAccountId: principalId
+      ? getAccountId(Principal.fromText(principalId))
+      : undefined,
   });
 
   const handleStateChange = () => {
     if (
-      Object.values(SwapModalDataStep).includes(
-        batch.state as SwapModalDataStep
+      Object.values(UnwrapModalDataStep).includes(
+        batch.state as UnwrapModalDataStep
       )
     ) {
       dispatch(
-        modalsSliceActions.setSwapModalData({
-          step: batch.state as SwapModalDataStep,
+        modalsSliceActions.setUnwrapModalData({
+          step: batch.state as UnwrapModalDataStep,
         })
       );
     }
@@ -57,7 +57,7 @@ export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
 
   const handleOpenModal = () => {
     handleStateChange();
-    openSwapModal();
+    openUnwrapModal();
   };
 
   useEffect(handleStateChange, [batch.state]);
@@ -66,11 +66,10 @@ export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
     batch
       .execute()
       .then((res) => {
-        dispatch(modalsSliceActions.clearSwapModalData());
-        dispatch(modalsSliceActions.closeSwapProgressModal());
+        dispatch(modalsSliceActions.closeUnwrapProgressModal());
 
         addNotification({
-          title: `Swapped ${from.value} ${from.metadata.symbol} for ${to.value} ${to.metadata.symbol}`,
+          title: `Unwrapped ${from.value} ${from.metadata.symbol}`,
           type: NotificationType.Success,
           id: Date.now().toString(),
           // TODO: add transaction id
@@ -79,11 +78,10 @@ export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
         getBalances();
       })
       .catch((err) => {
-        console.error('Swap Error', err);
-        dispatch(modalsSliceActions.clearSwapModalData());
+        console.error('Unwrap Error', err);
 
         addNotification({
-          title: `Failed swapping ${from.value} ${from.metadata.symbol} for ${to.value} ${to.metadata.symbol}`,
+          title: `Failed unwrapping ${from.value} ${from.metadata.symbol}`,
           type: NotificationType.Error,
           id: Date.now().toString(),
         });

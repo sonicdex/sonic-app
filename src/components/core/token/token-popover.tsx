@@ -25,6 +25,10 @@ export const TokenPopover: FC<TokenPopoverProps> = ({
 }) => {
   sources = sources.filter((source) => source.balance && source.balance > 0);
 
+  if (sources.length === 0) {
+    return null;
+  }
+
   return (
     <Popover trigger="hover">
       <PopoverTrigger>

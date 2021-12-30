@@ -51,6 +51,7 @@ module.exports = () => {
     plugins: [
       new CleanWebpackPlugin(),
       new webpack.ProvidePlugin({
+        Buffer: [require.resolve('buffer/'), 'Buffer'],
         process: 'process/browser',
       }),
     ],

@@ -3,15 +3,17 @@ import { useMemo } from 'react';
 import { ENV } from '@/config';
 import { WICPIDL } from '@/did';
 
-import { CreateTransaction, Unwrap } from '../../models';
+import { CreateTransaction, WithdrawWICP } from '../../models';
+import { ICP_TOKEN_METADATA } from '@/constants';
+import { parseAmount } from '@/utils/format';
 
-export const useUnwrapTransactionMemo: CreateTransaction<Unwrap> = (
-  { value, toAccountId },
+export const useWithdrawWICPTransactionMemo: CreateTransaction<WithdrawWICP> = (
+  { amount, toAccountId },
   onSuccess,
   onFail
 ) =>
   useMemo(() => {
-    if (!value) throw new Error('Value is required');
+    if (!amount) throw new Error('Amount is required');
     if (!toAccountId) throw new Error('Account ID is required');
 
     return {
@@ -23,6 +25,6 @@ export const useUnwrapTransactionMemo: CreateTransaction<Unwrap> = (
         if (onSuccess) onSuccess(res);
       },
       onFail,
-      args: [value, toAccountId],
+      args: [parseAmount(amount, ICP_TOKEN_METADATA.decimals), toAccountId],
     };
-  }, [value, toAccountId]);
+  }, [amount, toAccountId]);

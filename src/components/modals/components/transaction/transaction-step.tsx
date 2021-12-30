@@ -1,10 +1,12 @@
 import { Image, Box, Flex } from '@chakra-ui/react';
 import { CircleIcon } from '@/components';
 import { doubleRightChevronSrc } from '@/assets';
+import { useMemo } from 'react';
+import { StepStatus } from '../..';
 
 type TransactionStepProps = {
   children: React.ReactNode;
-  status: 'active' | 'disabled' | 'done';
+  status: StepStatus;
   iconSrc: string;
   chevron?: boolean;
 };
@@ -15,9 +17,21 @@ export const TransactionStep = ({
   status,
   chevron = false,
 }: TransactionStepProps) => {
-  const color = status === 'disabled' ? '#888E8F' : '#FFFFFF';
-  const weight = status === 'disabled' ? 400 : 600;
-  const opacity = status === 'disabled' ? 0.4 : 1;
+  const { color, weight, opacity } = useMemo(() => {
+    if (status === StepStatus.Disabled) {
+      return {
+        color: '#888E8F',
+        weight: 400,
+        opacity: 0.4,
+      };
+    }
+
+    return {
+      color: '#FFFFFF',
+      weight: 600,
+      opacity: 1,
+    };
+  }, [status]);
 
   return (
     <>

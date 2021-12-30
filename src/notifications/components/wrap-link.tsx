@@ -1,55 +1,49 @@
 import { useBalances } from '@/hooks/use-balances';
-import { useSwapBatch } from '@/integrations/transactions';
+import { useWrapBatch } from '@/integrations/transactions/factories/batch/wrap';
 
 import {
   modalsSliceActions,
   NotificationType,
-  SwapModalDataStep,
   useAppDispatch,
   useNotificationStore,
-  usePlugStore,
   useSwapViewStore,
+  WrapModalDataStep,
 } from '@/store';
 import { deserialize, stringify } from '@/utils/format';
 import { createCAPLink } from '@/utils/function';
 import { Link } from '@chakra-ui/react';
 import { useEffect, useMemo } from 'react';
 
-export interface SwapLinkProps {
+export interface WrapLinkProps {
   id: string;
 }
 
-export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
+export const WrapLink: React.FC<WrapLinkProps> = ({ id }) => {
   const dispatch = useAppDispatch();
   const swapViewStore = useSwapViewStore();
   const { addNotification, popNotification } = useNotificationStore();
-  const { principalId } = usePlugStore();
   const { getBalances } = useBalances();
 
-  const { from, to, slippage, keepInSonic } = useMemo(() => {
-    // Clone current state just for this batch
-    const { from, to, slippage, keepInSonic } = swapViewStore;
+  const { from, keepInSonic } = useMemo(() => {
+    const { from, keepInSonic } = swapViewStore;
 
-    return deserialize(stringify({ from, to, slippage, keepInSonic }));
+    return deserialize(stringify({ from, keepInSonic }));
   }, []);
 
-  const [batch, openSwapModal] = useSwapBatch({
-    from,
-    to,
-    slippage: Number(slippage),
+  const [batch, openWrapModal] = useWrapBatch({
+    amount: from.value,
     keepInSonic,
-    principalId,
   });
 
   const handleStateChange = () => {
     if (
-      Object.values(SwapModalDataStep).includes(
-        batch.state as SwapModalDataStep
+      Object.values(WrapModalDataStep).includes(
+        batch.state as WrapModalDataStep
       )
     ) {
       dispatch(
-        modalsSliceActions.setSwapModalData({
-          step: batch.state as SwapModalDataStep,
+        modalsSliceActions.setWrapModalData({
+          step: batch.state as WrapModalDataStep,
         })
       );
     }
@@ -57,20 +51,18 @@ export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
 
   const handleOpenModal = () => {
     handleStateChange();
-    openSwapModal();
+    openWrapModal();
   };
-
   useEffect(handleStateChange, [batch.state]);
 
   useEffect(() => {
     batch
       .execute()
       .then((res) => {
-        dispatch(modalsSliceActions.clearSwapModalData());
-        dispatch(modalsSliceActions.closeSwapProgressModal());
+        dispatch(modalsSliceActions.closeWrapProgressModal());
 
         addNotification({
-          title: `Swapped ${from.value} ${from.metadata.symbol} for ${to.value} ${to.metadata.symbol}`,
+          title: `Wrapped ${from.value} ${from.metadata.symbol}`,
           type: NotificationType.Success,
           id: Date.now().toString(),
           // TODO: add transaction id
@@ -79,11 +71,10 @@ export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
         getBalances();
       })
       .catch((err) => {
-        console.error('Swap Error', err);
-        dispatch(modalsSliceActions.clearSwapModalData());
+        console.error('Wrap Error', err);
 
         addNotification({
-          title: `Failed swapping ${from.value} ${from.metadata.symbol} for ${to.value} ${to.metadata.symbol}`,
+          title: `Failed wrapping ${from.value} ${from.metadata.symbol}`,
           type: NotificationType.Error,
           id: Date.now().toString(),
         });

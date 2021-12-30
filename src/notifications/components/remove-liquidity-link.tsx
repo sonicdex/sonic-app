@@ -4,6 +4,7 @@ import { useRemoveLiquidityBatch } from '@/integrations/transactions';
 import {
   modalsSliceActions,
   NotificationType,
+  RemoveLiquidityModalDataStep,
   useAppDispatch,
   useLiquidityViewStore,
   useNotificationStore,
@@ -90,52 +91,39 @@ export const RemoveLiquidityLink: React.FC<RemoveLiquidityLinkProps> = ({
     userLPBalances,
   ]);
 
-  const handleStateChange = () => {
-    switch (removeLiquidityBatch.state) {
-      case 'removeLiquidity':
-        dispatch(
-          modalsSliceActions.setRemoveLiquidityData({
-            step: 'removeLiquidity',
-          })
-        );
-        break;
-      case 'withdraw0':
-        dispatch(
-          modalsSliceActions.setRemoveLiquidityData({
-            step: 'withdraw0',
-          })
-        );
-        break;
-      case 'withdraw1':
-        dispatch(
-          modalsSliceActions.setRemoveLiquidityData({
-            step: 'withdraw1',
-          })
-        );
-        break;
-    }
-  };
-
-  const handleOpenModal = () => {
-    handleStateChange();
-    openSwapModal();
-  };
-
-  const [removeLiquidityBatch, openSwapModal] = useRemoveLiquidityBatch({
+  const [batch, openRemoveLiquidityModal] = useRemoveLiquidityBatch({
     token0,
     token1,
     principalId,
     ...removeLiquidityBatchParams,
   });
 
-  useEffect(handleStateChange, [removeLiquidityBatch.state]);
+  const handleStateChange = () => {
+    if (
+      Object.values(RemoveLiquidityModalDataStep).includes(
+        batch.state as RemoveLiquidityModalDataStep
+      )
+    ) {
+      dispatch(
+        modalsSliceActions.setRemoveLiquidityModalData({
+          step: batch.state as RemoveLiquidityModalDataStep,
+        })
+      );
+    }
+  };
+
+  const handleOpenModal = () => {
+    handleStateChange();
+    openRemoveLiquidityModal();
+  };
+
+  useEffect(handleStateChange, [batch.state]);
 
   useEffect(() => {
-    removeLiquidityBatch
+    batch
       .execute()
       .then((res) => {
-        console.log('Remove liqudity Completed', res);
-        dispatch(modalsSliceActions.clearRemoveLiquidityData());
+        dispatch(modalsSliceActions.clearRemoveLiquidityModalData());
         dispatch(modalsSliceActions.closeRemoveLiquidityProgressModal());
         addNotification({
           title: `Successfuly removed liquidity: ${token0.value} ${token0.metadata.symbol} + ${token1.value} ${token1.metadata.symbol}`,
@@ -149,7 +137,7 @@ export const RemoveLiquidityLink: React.FC<RemoveLiquidityLinkProps> = ({
       })
       .catch((err) => {
         console.error('Remove liqudity Error', err);
-        dispatch(modalsSliceActions.clearRemoveLiquidityData());
+        dispatch(modalsSliceActions.clearRemoveLiquidityModalData());
         addNotification({
           title: `Remove liquidity failed - ${token0.value} ${token0.metadata.symbol} + ${token1.value} ${token1.metadata.symbol}`,
           type: NotificationType.Error,

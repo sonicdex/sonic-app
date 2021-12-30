@@ -10,18 +10,17 @@ import {
 import { FaArrowLeft, FaCog } from 'react-icons/fa';
 
 type TitleBoxProps = {
-  children?: any;
-  settings?: any;
-  onArrowBack?: () => void;
   title: string;
+  onArrowBack?: () => void;
+  settings?: React.ReactNode;
 };
 
-export const TitleBox = ({
-  children,
+export const TitleBox: React.FC<TitleBoxProps> = ({
   title,
-  settings,
   onArrowBack,
-}: TitleBoxProps) => {
+  settings,
+  children,
+}) => {
   const headerBottomRadius = children ? 0 : 20;
   const titleRightAdjustment = settings ? 8 : 'auto';
   const titleLeftAdjustment = onArrowBack ? 8 : 'auto';
@@ -63,35 +62,28 @@ export const TitleBox = ({
           {title}
         </Box>
         {settings && (
-          <Box>
-            <Menu>
-              <MenuButton>
-                <IconButton
-                  isRound
-                  size="sm"
-                  aria-label="settings"
-                  icon={<FaCog />}
-                  ml="auto"
-                />
-              </MenuButton>
-              <MenuList
-                bg="#1E1E1E"
-                border="none"
-                borderRadius={20}
-                ml={-20}
-                py={0}
-              >
-                {settings}
-              </MenuList>
-            </Menu>
-          </Box>
+          <Menu>
+            <MenuButton
+              as={IconButton}
+              isRound
+              size="sm"
+              aria-label="settings"
+              icon={<FaCog />}
+              ml="auto"
+            />
+            <MenuList
+              bg="#1E1E1E"
+              border="none"
+              borderRadius={20}
+              ml={-20}
+              py={0}
+            >
+              {settings}
+            </MenuList>
+          </Menu>
         )}
       </Flex>
-      {children && (
-        <Box py={2} px={5} bg="#282828" borderBottomRadius={20}>
-          {children}
-        </Box>
-      )}
+      {children}
     </Flex>
   );
 };

@@ -8,26 +8,23 @@ import {
   useModalsStore,
 } from '@/store';
 import { checkPlainSrc, depositSrc } from '@/assets';
+import { useStepStatus } from '.';
 
 export const DepositProgressModal = () => {
   const dispatch = useAppDispatch();
-  const { isDepositProgressOpened, depositData } = useModalsStore();
+  const {
+    isDepositProgressModalOpened: isDepositProgressOpened,
+    depositModalData: depositData,
+  } = useModalsStore();
   const { steps, tokenSymbol, step: activeStep } = depositData;
+
+  const getStepStatus = useStepStatus<DepositModalDataStep>({
+    activeStep,
+    steps,
+  });
 
   const handleClose = () => {
     dispatch(modalsSliceActions.closeDepositProgressModal());
-  };
-
-  const getStepStatus = (step: DepositModalDataStep) => {
-    if (activeStep) {
-      const currentStepIndex = steps?.indexOf(activeStep);
-      const stepIndex = steps?.indexOf(step);
-
-      if (currentStepIndex! > stepIndex!) return 'done';
-      if (currentStepIndex === stepIndex) return 'active';
-    }
-
-    return 'disabled';
   };
 
   return (
@@ -36,14 +33,14 @@ export const DepositProgressModal = () => {
       <TransactionProgressModalContent title="Deposit in Progress">
         <HStack>
           <TransactionStep
-            status={getStepStatus('approve')}
+            status={getStepStatus(DepositModalDataStep.Approve)}
             iconSrc={checkPlainSrc}
             chevron
           >
             Approving usage <br /> {tokenSymbol}
           </TransactionStep>
           <TransactionStep
-            status={getStepStatus('deposit')}
+            status={getStepStatus(DepositModalDataStep.Deposit)}
             iconSrc={depositSrc}
           >
             Depositing <br /> {tokenSymbol}

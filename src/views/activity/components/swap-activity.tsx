@@ -2,7 +2,7 @@ import {
   Asset,
   AssetImageBlock,
   AssetTitleBlock,
-  DisplayCurrency,
+  DisplayValue,
 } from '@/components';
 import { useActivityViewStore } from '@/store';
 import { Heading, HStack, Stack, Text } from '@chakra-ui/react';
@@ -45,16 +45,16 @@ export const SwapActivity = ({
       </HStack>
       <Stack textAlign="end">
         <Heading as="h6" size="sm" display="flex" alignItems="center">
-          <DisplayCurrency
-            balance={amountIn}
+          <DisplayValue
+            value={amountIn}
             decimals={fromToken.decimals}
             suffix={' ' + fromToken.symbol}
           />
           &nbsp;
           <FaArrowRight />
           &nbsp;
-          <DisplayCurrency
-            balance={amountOut}
+          <DisplayValue
+            value={amountOut}
             decimals={fromToken.decimals}
             suffix={' ' + toToken.symbol}
           />

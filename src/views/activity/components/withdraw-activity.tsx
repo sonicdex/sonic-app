@@ -2,7 +2,7 @@ import {
   Asset,
   AssetImageBlock,
   AssetTitleBlock,
-  DisplayCurrency,
+  DisplayValue,
 } from '@/components';
 import { useActivityViewStore } from '@/store';
 import { Heading, HStack, Stack, Text } from '@chakra-ui/react';
@@ -41,8 +41,8 @@ export const WithdrawActivity = ({
       </HStack>
       <Stack textAlign="end">
         <Heading as="h6" size="sm" display="flex" alignItems="center">
-          <DisplayCurrency
-            balance={amount}
+          <DisplayValue
+            value={amount}
             decimals={token.decimals}
             suffix={' ' + token.symbol}
           />

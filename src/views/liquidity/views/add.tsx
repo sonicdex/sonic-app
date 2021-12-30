@@ -481,10 +481,20 @@ export const LiquidityAdd = () => {
             isLoading={isLoading}
           >
             <TokenContent>
-              <TokenDetailsButton onClick={() => handleSelectToken('token1')}>
-                <TokenDetailsLogo />
-                <TokenDetailsSymbol />
-              </TokenDetailsButton>
+              {token1.metadata ? (
+                <TokenDetailsButton onClick={() => handleSelectToken('token1')}>
+                  <TokenDetailsLogo />
+                  <TokenDetailsSymbol />
+                </TokenDetailsButton>
+              ) : (
+                <TokenDetailsButton
+                  onClick={() => handleSelectToken('token1')}
+                  variant="gradient"
+                  colorScheme="dark-blue"
+                >
+                  Select a Token
+                </TokenDetailsButton>
+              )}
 
               <TokenInput />
             </TokenContent>

@@ -7,12 +7,12 @@ export const useBatchHook: Batch.CreateHook = ({
   transactions,
   handleRetry,
 }) => {
-  const [state, setState] = useState<string>(Batch.DefaultHookStates.Idle);
+  const [state, setState] = useState<string>(Batch.DefaultHookState.Idle);
   const [error, setError] = useState<unknown>();
 
   const handleError = (error: unknown): void => {
     setError(error);
-    setState(Batch.DefaultHookStates.Error);
+    setState(Batch.DefaultHookState.Error);
   };
 
   const states = useMemo(() => {
@@ -27,12 +27,17 @@ export const useBatchHook: Batch.CreateHook = ({
     Object.values(transactions).forEach((transaction, index) => {
       const onSuccess = transaction.onSuccess;
       transaction.onSuccess = async (res) => {
-        if (onSuccess) await onSuccess(res);
+        let txRes;
+        if (onSuccess) {
+          txRes = await onSuccess(res);
+        }
         if (index !== transactionsList.length - 1) {
           setState(states[index + 1]);
         } else {
-          setState(Batch.DefaultHookStates.Done);
+          setState(Batch.DefaultHookState.Done);
         }
+
+        return txRes;
       };
 
       const onFail = transaction.onFail;
@@ -47,7 +52,7 @@ export const useBatchHook: Batch.CreateHook = ({
   }, [transactions]);
 
   const execute = (): Promise<unknown> => {
-    if (state !== Batch.DefaultHookStates.Idle) {
+    if (state !== Batch.DefaultHookState.Idle) {
       return Promise.reject('Batch is not idle');
     }
     setState(states[0]);

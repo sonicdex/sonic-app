@@ -40,12 +40,10 @@ export const useAddLiquidityTransactionMemo: CreateTransaction<AddLiquidity> = (
       idl: SwapIDL.factory,
       methodName: 'addLiquidity',
       onFail: async (res: SwapIDL.Result) => {
-        console.error(res);
         if ('err' in res) throw new Error(res.err);
         if (onFail) onFail(res);
       },
       onSuccess: async (res: SwapIDL.Result) => {
-        console.log(res);
         if ('err' in res) throw new Error(res.err);
         if (onSuccess) onSuccess(res);
       },
@@ -90,7 +88,6 @@ export const useRemoveLiquidityTransactionMemo: CreateTransaction<RemoveLiquidit
           if (onFail) onFail(res);
         },
         onSuccess: async (res: SwapIDL.Result) => {
-          console.log(res);
           if ('err' in res) throw new Error(res.err);
           if (onSuccess) onSuccess(res);
         },

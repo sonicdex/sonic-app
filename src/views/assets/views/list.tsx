@@ -15,7 +15,7 @@ import {
   AssetIconButton,
   AssetImageBlock,
   AssetTitleBlock,
-  DisplayCurrency,
+  DisplayValue,
   Header,
   InformationBox,
   PlugButton,
@@ -174,8 +174,8 @@ export const Assets = () => {
                       <Text fontWeight="bold" color="gray.400">
                         Amount
                       </Text>
-                      <DisplayCurrency
-                        balance={totalBalances?.[id]}
+                      <DisplayValue
+                        value={totalBalances?.[id]}
                         decimals={decimals}
                         fontWeight="bold"
                       />

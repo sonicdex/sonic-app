@@ -14,7 +14,7 @@ import {
   useBatchHook,
 } from '..';
 import { Batch, Swap } from '../..';
-import { getDepositTransactions, getToDepositAmount } from './utils';
+import { getDepositTransactions, getAmountDependsOnBalance } from './utils';
 
 export interface ExtraDepositSwapBatchOptions {
   keepInSonic: boolean;
@@ -27,7 +27,7 @@ export const useSwapBatch = ({
   const dispatch = useAppDispatch();
   const { sonicBalances } = useSwapCanisterStore();
 
-  if (!sonicBalances) throw new Error('Sonic balance are required');
+  if (!sonicBalances) throw new Error('Sonic balance is required');
 
   if (!swapParams.from.metadata || !swapParams.to.metadata)
     throw new Error('Tokens are required');
@@ -36,7 +36,7 @@ export const useSwapBatch = ({
 
   const depositParams = {
     token: swapParams.from.metadata,
-    amount: getToDepositAmount(
+    amount: getAmountDependsOnBalance(
       sonicBalances[swapParams.from.metadata.id],
       swapParams.from.metadata.decimals,
       swapParams.from.value
@@ -55,14 +55,12 @@ export const useSwapBatch = ({
   const transactions = useMemo(() => {
     let _transactions = {};
 
-    if (swapParams.from.metadata) {
-      _transactions = {
-        ...getDepositTransactions({
-          approveTx: approve,
-          depositTx: deposit,
-        }),
-      };
-    }
+    _transactions = {
+      ...getDepositTransactions({
+        approveTx: approve,
+        depositTx: deposit,
+      }),
+    };
 
     _transactions = {
       ..._transactions,
@@ -82,7 +80,7 @@ export const useSwapBatch = ({
   const handleRetry = async () => {
     return new Promise<boolean>((resolve) => {
       dispatch(
-        modalsSliceActions.setSwapData({
+        modalsSliceActions.setSwapModalData({
           callbacks: [
             // Retry callback
             () => {
@@ -111,7 +109,7 @@ export const useSwapBatch = ({
 
   const openSwapModal = () => {
     dispatch(
-      modalsSliceActions.setSwapData({
+      modalsSliceActions.setSwapModalData({
         steps: Object.keys(transactions) as SwapModalDataStep[],
         fromTokenSymbol: swapParams.from.metadata?.symbol,
         toTokenSymbol: swapParams.to.metadata?.symbol,
