@@ -112,10 +112,9 @@ export const SwapHomeStep = () => {
 
   const handleWrapICP = () => {
     const plugProviderVersionNumber = Number(
-      plug?.versions.provider.split('.')
+      plug?.versions.provider.split('.').join('')
     );
 
-    console.log(plug?.versions.provider.split('.'));
     if (plugProviderVersionNumber >= 160) {
       addNotification({
         title: `Wrapping ${from.metadata?.symbol}`,
@@ -126,6 +125,12 @@ export const SwapHomeStep = () => {
         () => dispatch(swapViewActions.setValue({ data: 'from', value: '' })),
         300
       );
+    } else {
+      addNotification({
+        title: `Please use latest version of the Plug`,
+        type: NotificationType.Error,
+        id: String(new Date().getTime()),
+      });
     }
   };
 
