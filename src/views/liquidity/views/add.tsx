@@ -103,9 +103,14 @@ export const LiquidityAdd = () => {
     const token = dataKey === 'token0' ? token0 : token1;
     const tokenBalance = dataKey === 'token0' ? token0Balance : token1Balance;
 
+    if (!token || !tokenBalance) return;
+
     const value =
       totalBalances && token.metadata
-        ? getCurrencyString(tokenBalance!, token.metadata?.decimals)
+        ? getCurrencyString(
+            tokenBalance - Number(token.metadata.fee),
+            token.metadata?.decimals
+          )
         : '';
 
     setTokenValueAndLPTokenValue(dataKey, value);
