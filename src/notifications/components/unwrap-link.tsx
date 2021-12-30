@@ -42,7 +42,11 @@ export const UnwrapLink: React.FC<UnwrapLinkProps> = ({ id }) => {
   });
 
   const handleStateChange = () => {
-    if (batch.state in UnwrapModalDataStep) {
+    if (
+      Object.values(UnwrapModalDataStep).includes(
+        batch.state as UnwrapModalDataStep
+      )
+    ) {
       dispatch(
         modalsSliceActions.setUnwrapModalData({
           step: batch.state as UnwrapModalDataStep,

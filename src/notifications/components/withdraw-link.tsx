@@ -35,7 +35,11 @@ export const WithdrawLink: React.FC<WithdrawLinkProps> = ({ id }) => {
   });
 
   const handleStateChange = () => {
-    if (batch.state in WithdrawModalDataStep) {
+    if (
+      Object.values(WithdrawModalDataStep).includes(
+        batch.state as WithdrawModalDataStep
+      )
+    ) {
       dispatch(
         modalsSliceActions.setWithdrawModalData({
           step: batch.state as WithdrawModalDataStep,

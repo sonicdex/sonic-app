@@ -42,7 +42,11 @@ export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
   });
 
   const handleStateChange = () => {
-    if (batch.state in SwapModalDataStep) {
+    if (
+      Object.values(SwapModalDataStep).includes(
+        batch.state as SwapModalDataStep
+      )
+    ) {
       dispatch(
         modalsSliceActions.setSwapModalData({
           step: batch.state as SwapModalDataStep,

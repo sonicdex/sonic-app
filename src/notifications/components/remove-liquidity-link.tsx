@@ -99,7 +99,11 @@ export const RemoveLiquidityLink: React.FC<RemoveLiquidityLinkProps> = ({
   });
 
   const handleStateChange = () => {
-    if (batch.state in RemoveLiquidityModalDataStep) {
+    if (
+      Object.values(RemoveLiquidityModalDataStep).includes(
+        batch.state as RemoveLiquidityModalDataStep
+      )
+    ) {
       dispatch(
         modalsSliceActions.setRemoveLiquidityModalData({
           step: batch.state as RemoveLiquidityModalDataStep,

@@ -36,7 +36,11 @@ export const WrapLink: React.FC<WrapLinkProps> = ({ id }) => {
   });
 
   const handleStateChange = () => {
-    if (batch.state in WrapModalDataStep) {
+    if (
+      Object.values(WrapModalDataStep).includes(
+        batch.state as WrapModalDataStep
+      )
+    ) {
       dispatch(
         modalsSliceActions.setWrapModalData({
           step: batch.state as WrapModalDataStep,

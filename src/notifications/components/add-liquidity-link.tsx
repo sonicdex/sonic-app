@@ -38,7 +38,11 @@ export const AddLiquidityLink: React.FC<AddLiquidityLinkProps> = ({ id }) => {
   });
 
   const handleStateChange = () => {
-    if (batch.state in AddLiquidityModalDataStep) {
+    if (
+      Object.values(AddLiquidityModalDataStep).includes(
+        batch.state as AddLiquidityModalDataStep
+      )
+    ) {
       dispatch(
         modalsSliceActions.setAddLiquidityModalData({
           step: batch.state as AddLiquidityModalDataStep,

@@ -31,7 +31,7 @@ export const UnwrapProgressModal = () => {
       isCentered
     >
       <ModalOverlay />
-      <TransactionProgressModalContent title="Unwrapping ICP in Progress">
+      <TransactionProgressModalContent title="Unwrapping ICP">
         <HStack>
           <TransactionStep
             status={getStepStatus(UnwrapModalDataStep.WithdrawWICP)}

@@ -26,7 +26,7 @@ export const WrapProgressModal = () => {
   return (
     <Modal onClose={handleClose} isOpen={isWrapProgressOpened} isCentered>
       <ModalOverlay />
-      <TransactionProgressModalContent title="Wrapping ICP in Progress">
+      <TransactionProgressModalContent title="Wrapping ICP">
         <HStack>
           <TransactionStep
             status={getStepStatus(WrapModalDataStep.LedgerTransfer)}

@@ -35,7 +35,11 @@ export const DepositLink: React.FC<DepositLinkProps> = ({ id }) => {
   });
 
   const handleStateChange = () => {
-    if (batch.state in DepositModalDataStep) {
+    if (
+      Object.values(DepositModalDataStep).includes(
+        batch.state as DepositModalDataStep
+      )
+    ) {
       dispatch(
         modalsSliceActions.setDepositModalData({
           step: batch.state as DepositModalDataStep,
