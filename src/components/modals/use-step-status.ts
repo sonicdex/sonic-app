@@ -1,3 +1,9 @@
+export enum StepStatus {
+  Active = 'active',
+  Disabled = 'disabled',
+  Done = 'done',
+}
+
 type UseStepStatusMemoOptions<Step> = {
   activeStep?: Step;
   steps?: Step[];
@@ -12,11 +18,11 @@ export const useStepStatus = <Step>({
       const currentStepIndex = steps?.indexOf(activeStep);
       const stepIndex = steps?.indexOf(step);
 
-      if (currentStepIndex! > stepIndex!) return 'done';
-      if (currentStepIndex === stepIndex) return 'active';
+      if (currentStepIndex! > stepIndex!) return StepStatus.Disabled;
+      if (currentStepIndex === stepIndex) return StepStatus.Active;
     }
 
-    return 'disabled';
+    return StepStatus.Disabled;
   };
 
   return getStepStatus;

@@ -22,13 +22,11 @@ export namespace Batch {
     getState: GetState;
   }
 
-  export type DefaultHookState = 'idle' | 'done' | 'error';
-
-  export const DefaultHookStates = {
-    Idle: 'idle',
-    Done: 'done',
-    Error: 'error',
-  };
+  export enum DefaultHookState {
+    Idle = 'idle',
+    Done = 'done',
+    Error = 'error',
+  }
 
   export type HookState = {
     [key: number]: string;

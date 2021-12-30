@@ -1,23 +1,23 @@
 import { Box, Flex, Image, keyframes } from '@chakra-ui/react';
 import { greenCheckSrc } from '@/assets';
+import { StepStatus } from '@/components/modals';
 
 const spin = keyframes`
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 `;
 
-export const CircleIcon = ({
-  status,
-  iconSrc,
-}: {
-  status?: 'active' | 'disabled' | 'done';
+type CircleIconProps = {
+  status?: StepStatus;
   iconSrc: string;
-}) => {
+};
+
+export const CircleIcon = ({ status, iconSrc }: CircleIconProps) => {
   const spinAnimation = `${spin} infinite 2s linear`;
 
-  const bg = status === 'disabled' ? '#353535' : '#3D52F4';
-  const opacity = status === 'disabled' ? 0.5 : 1;
-  const checkOpacity = status === 'done' ? 1 : 0;
+  const bg = status === StepStatus.Disabled ? '#353535' : '#3D52F4';
+  const opacity = status === StepStatus.Disabled ? 0.5 : 1;
+  const checkOpacity = status === StepStatus.Done ? 1 : 0;
 
   return (
     <Box w="45px" h="45px" borderRadius="45px" position="relative" bg={bg}>
