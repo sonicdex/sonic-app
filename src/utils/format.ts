@@ -315,3 +315,28 @@ export const formatValue = (value: string): string => {
     return `> 999M`;
   }
 };
+
+export const getAmountOutMin = (
+  value: number | string,
+  tolerance: number | string,
+  decimals: number | string,
+  tokenFees: {
+    fee: number | string | bigint;
+    decimals: number | string | bigint;
+  }[]
+) => {
+  const withoutFees = new BigNumber('1')
+    .minus(new BigNumber(tolerance))
+    .multipliedBy(new BigNumber(value))
+    .dp(Number(decimals));
+
+  const withFees = tokenFees.reduce((acc, { fee, decimals }) => {
+    return acc.minus(
+      new BigNumber(Number(fee)).dividedBy(
+        new BigNumber(10).pow(Number(decimals))
+      )
+    );
+  }, withoutFees);
+
+  return withFees;
+};

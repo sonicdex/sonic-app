@@ -26,8 +26,9 @@ import {
 import { useNavigate } from 'react-router';
 import { useQuery } from '@/hooks/use-query';
 import { sonicCircleSrc } from '@/assets';
-import { formatAmount, getCurrencyString } from '@/utils/format';
+import { formatAmount, getCurrency, getCurrencyString } from '@/utils/format';
 import { debounce } from '@/utils/function';
+import { FeeBox } from '@/components/core/fee-box';
 
 export const AssetsWithdraw = () => {
   const query = useQuery();
@@ -67,6 +68,13 @@ export const AssetsWithdraw = () => {
 
     if (parsedFromValue <= 0)
       return [true, `Enter ${selectedTokenMetadata?.symbol} Amount`];
+
+    if (
+      parsedFromValue <=
+      getCurrency(selectedTokenMetadata.fee, selectedTokenMetadata.decimals)
+    ) {
+      return [true, `Amount must be greater than fee`];
+    }
 
     if (sonicBalances && selectedTokenMetadata) {
       const parsedBalance = parseFloat(
@@ -173,7 +181,7 @@ export const AssetsWithdraw = () => {
           </TokenBalances>
         </Token>
       </Box>
-
+      <FeeBox token={selectedTokenMetadata} />
       <Button
         isFullWidth
         variant="gradient"

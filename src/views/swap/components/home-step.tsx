@@ -38,7 +38,7 @@ import {
   useSwapViewStore,
   useTokenModalOpener,
 } from '@/store';
-import { formatAmount, getCurrencyString } from '@/utils/format';
+import { formatAmount, getCurrency, getCurrencyString } from '@/utils/format';
 import { getAppAssetsSources } from '@/config/utils';
 import { useTokenBalanceMemo } from '@/hooks';
 import { ENV } from '@/config';
@@ -68,12 +68,16 @@ export const SwapHomeStep = () => {
   };
 
   const handleFromMaxClick = () => {
+    if (!fromBalance) return;
     dispatch(
       swapViewActions.setValue({
         data: 'from',
         value:
           totalBalances && from.metadata
-            ? getCurrencyString(fromBalance!, from.metadata?.decimals)
+            ? getCurrencyString(
+                fromBalance - Number(from.metadata.fee),
+                from.metadata?.decimals
+              )
             : '',
       })
     );
@@ -152,16 +156,31 @@ export const SwapHomeStep = () => {
   }, [totalBalances, from.metadata]);
 
   const [buttonDisabled, buttonMessage, onButtonClick] = useMemo<
-    [boolean, string, () => void]
+    [boolean, string, (() => void)?]
   >(() => {
-    if (isLoading) return [true, 'Loading', () => {}];
+    if (isLoading) return [true, 'Loading'];
     if (!from.metadata) throw new Error('State is loading');
     if (!to.metadata) return [true, 'Select a Token', () => {}];
+
+    if (toTokenOptions && toTokenOptions.length <= 0)
+      return [true, 'No pairs available'];
 
     const parsedFromValue = (from.value && parseFloat(from.value)) || 0;
 
     if (parsedFromValue <= 0)
-      return [true, `Enter ${from.metadata.symbol} Amount`, () => {}];
+      return [true, `Enter ${from.metadata.symbol} Amount`];
+
+    if (
+      parsedFromValue <= getCurrency(from.metadata.fee, from.metadata.decimals)
+    ) {
+      return [true, `${from.metadata.symbol} amount must be greater than fee`];
+    }
+
+    const parsedToValue = (to.value && parseFloat(to.value)) || 0;
+
+    if (parsedToValue <= getCurrency(to.metadata.fee, to.metadata.decimals)) {
+      return [true, `${to.metadata.symbol} amount must be greater than fee`];
+    }
 
     if (totalBalances) {
       const parsedBalance = parseFloat(
@@ -169,16 +188,16 @@ export const SwapHomeStep = () => {
       );
 
       if (parsedFromValue > parsedBalance) {
-        return [true, `Insufficient ${from.metadata.symbol} Balance`, () => {}];
+        return [true, `Insufficient ${from.metadata.symbol} Balance`];
       }
     }
 
     if (from.metadata.id === 'ICP' && to.metadata.id === ENV.canisterIds.WICP) {
-      return [false, 'Wrap ICP', handleWrapICP];
+      return [false, 'Wrap', handleWrapICP];
     }
 
     if (from.metadata.id === ENV.canisterIds.WICP && to.metadata.id === 'ICP') {
-      return [false, 'Unwrap ICP', handleUnwrapICP];
+      return [false, 'Unwrap', handleUnwrapICP];
     }
 
     return [
@@ -276,17 +295,20 @@ export const SwapHomeStep = () => {
       <TitleBox
         title="Swap"
         settings={
-          <SlippageSettings
-            slippage={slippage}
-            isAutoSlippage={autoSlippage}
-            setSlippage={(value) =>
-              dispatch(swapViewActions.setSlippage(value))
-            }
-            setIsAutoSlippage={(value) => {
-              setAutoSlippage(value);
-              dispatch(swapViewActions.setSlippage(INITIAL_SWAP_SLIPPAGE));
-            }}
-          />
+          !isLoading &&
+          !isICPSelected && (
+            <SlippageSettings
+              slippage={slippage}
+              isAutoSlippage={autoSlippage}
+              setSlippage={(value) =>
+                dispatch(swapViewActions.setSlippage(value))
+              }
+              setIsAutoSlippage={(value) => {
+                setAutoSlippage(value);
+                dispatch(swapViewActions.setSlippage(INITIAL_SWAP_SLIPPAGE));
+              }}
+            />
+          )
         }
       />
       <Flex direction="column" alignItems="center">

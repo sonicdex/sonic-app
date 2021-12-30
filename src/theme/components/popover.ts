@@ -17,18 +17,17 @@ const baseStylePopper: SystemStyleObject = {
 
 const baseStyleContent: SystemStyleFunction = (props) => {
   const bg = mode('white', 'gray.800')(props);
-  const shadowColor = mode('gray.200', 'whiteAlpha.300')(props);
 
   return {
     [$popperBg.variable]: `colors.${bg}`,
     bg: $popperBg.reference,
     [$arrowBg.variable]: $popperBg.reference,
-    [$arrowShadowColor.variable]: `colors.${shadowColor}`,
+    [$arrowShadowColor.variable]: 'transparent',
     width: 'xs',
-    border: '1px solid',
+    border: 'none',
     borderColor: 'inherit',
-    borderRadius: 'md',
-    boxShadow: 'sm',
+    borderRadius: 'xl',
+    boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.35)',
     zIndex: 'inherit',
     _focus: {
       outline: 0,
@@ -38,14 +37,17 @@ const baseStyleContent: SystemStyleFunction = (props) => {
 };
 
 const baseStyleHeader: SystemStyleObject = {
-  px: 3,
-  py: 2,
+  mx: 4,
+  py: 4,
+  px: 1,
   borderBottomWidth: '1px',
+  fontWeight: 'bold',
 };
 
 const baseStyleBody: SystemStyleObject = {
-  px: 3,
-  py: 2,
+  mx: 4,
+  px: 1,
+  py: 4,
 };
 
 const baseStyleFooter: SystemStyleObject = {
@@ -68,7 +70,6 @@ const baseStyle: PartsStyleFunction<typeof parts> = (props) => ({
   header: baseStyleHeader,
   body: baseStyleBody,
   footer: baseStyleFooter,
-  arrow: {},
   closeButton: baseStyleCloseButton,
 });
 

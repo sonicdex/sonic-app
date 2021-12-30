@@ -26,8 +26,9 @@ import {
 import { useNavigate } from 'react-router';
 import { useQuery } from '@/hooks/use-query';
 import { plugCircleSrc } from '@/assets';
-import { formatAmount, getCurrencyString } from '@/utils/format';
+import { formatAmount, getCurrency, getCurrencyString } from '@/utils/format';
 import { debounce } from '@/utils/function';
+import { FeeBox } from '@/components/core/fee-box';
 
 export const AssetsDeposit = () => {
   const query = useQuery();
@@ -78,6 +79,13 @@ export const AssetsDeposit = () => {
     if (parsedFromValue <= 0)
       return [true, `Enter ${selectedTokenMetadata?.symbol} Amount`];
 
+    if (
+      parsedFromValue <=
+      getCurrency(selectedTokenMetadata.fee, selectedTokenMetadata.decimals)
+    ) {
+      return [true, `Amount must be greater than fee`];
+    }
+
     if (tokenBalances && selectedTokenMetadata) {
       const parsedBalance = parseFloat(
         formatAmount(
@@ -124,11 +132,15 @@ export const AssetsDeposit = () => {
   }, []);
 
   const handleMaxClick = () => {
-    dispatch(
-      depositViewActions.setAmount(
-        getCurrencyString(tokenBalance, selectedTokenMetadata?.decimals)
-      )
-    );
+    if (tokenBalance && selectedTokenMetadata)
+      dispatch(
+        depositViewActions.setAmount(
+          getCurrencyString(
+            tokenBalance - Number(selectedTokenMetadata!.fee),
+            selectedTokenMetadata?.decimals
+          )
+        )
+      );
   };
 
   const isLoading =
@@ -170,6 +182,7 @@ export const AssetsDeposit = () => {
           </TokenBalances>
         </Token>
       </Box>
+      <FeeBox token={selectedTokenMetadata} isDeposit />
       <Button
         isFullWidth
         size="lg"

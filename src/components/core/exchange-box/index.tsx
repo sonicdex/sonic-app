@@ -3,8 +3,9 @@ import { TokenData } from '@/models';
 import { useSwapCanisterStore } from '@/store';
 import {
   calculatePriceImpact,
-  getAmountMin,
   getAmountOut,
+  getAmountOutMin,
+  getCurrencyString,
 } from '@/utils/format';
 import {
   Flex,
@@ -64,7 +65,7 @@ export const ExchangeBox: React.FC<ExchangeBoxProps> = ({
   const { reserve0, reserve1 } = allPairs[from.metadata.id][to.metadata.id];
 
   return (
-    <Flex opacity={0.4} height={12} alignItems="center" px={4} fontWeight={400}>
+    <Flex opacity={0.4} alignItems="center" px={4} fontWeight={400}>
       <Text display="flex" alignItems="center">
         {from.metadata.symbol}&nbsp;
         <FaArrowRight />
@@ -87,24 +88,29 @@ export const ExchangeBox: React.FC<ExchangeBoxProps> = ({
           <Image src={infoSrc} width={5} transition="opacity 200ms" />
         </PopoverTrigger>
         <Portal>
-          <PopoverContent
-            p={2}
-            bgColor="#292929"
-            border="none"
-            borderRadius={20}
-          >
+          <PopoverContent minWidth="400px">
             <PopoverHeader>Transaction Details</PopoverHeader>
-            <PopoverArrow bgColor="#292929" border="none" />
+            <PopoverArrow />
             <PopoverBody display="inline-block">
               <Stack>
                 <StackLine
                   title="Minimum Received"
                   value={`${
                     to.value
-                      ? getAmountMin(
+                      ? getAmountOutMin(
                           to.value,
                           Number(slippage) / 100,
-                          to.metadata.decimals
+                          to.metadata.decimals,
+                          [
+                            {
+                              fee: from.metadata.fee,
+                              decimals: from.metadata.decimals,
+                            },
+                            {
+                              fee: to.metadata.fee,
+                              decimals: to.metadata.decimals,
+                            },
+                          ]
                         )
                       : 0
                   } ${to.metadata.symbol}`}
@@ -126,6 +132,20 @@ export const ExchangeBox: React.FC<ExchangeBoxProps> = ({
                   title="Liquidity Provider Fee"
                   value={`${10} ${to.metadata.symbol}`}
                 /> */}
+                <StackLine
+                  title="Deposit Fee"
+                  value={`${getCurrencyString(
+                    from.metadata.fee,
+                    from.metadata.decimals
+                  )} ${from.metadata.symbol}`}
+                />
+                <StackLine
+                  title="Withdraw Fee"
+                  value={`${getCurrencyString(
+                    to.metadata.fee,
+                    to.metadata.decimals
+                  )} ${to.metadata.symbol}`}
+                />
               </Stack>
             </PopoverBody>
           </PopoverContent>
