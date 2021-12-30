@@ -7,6 +7,7 @@ import {
   useNotificationStore,
   useSwapCanisterStore,
   useWithdrawViewStore,
+  WithdrawModalDataStep,
 } from '@/store';
 import { createCAPLink } from '@/utils/function';
 import { Link } from '@chakra-ui/react';
@@ -34,11 +35,12 @@ export const WithdrawLink: React.FC<WithdrawLinkProps> = ({ id }) => {
   });
 
   const handleStateChange = () => {
-    switch (batch.state) {
-      case 'withdraw':
-        dispatch(modalsSliceActions.setWithdrawData({ step: 'withdraw' }));
-
-        break;
+    if (batch.state in WithdrawModalDataStep) {
+      dispatch(
+        modalsSliceActions.setWithdrawModalData({
+          step: batch.state as WithdrawModalDataStep,
+        })
+      );
     }
   };
 
@@ -53,7 +55,7 @@ export const WithdrawLink: React.FC<WithdrawLinkProps> = ({ id }) => {
     batch
       .execute()
       .then((res) => {
-        dispatch(modalsSliceActions.clearWithdrawData());
+        dispatch(modalsSliceActions.clearWithdrawModalData());
         dispatch(modalsSliceActions.closeWithdrawProgressModal());
         addNotification({
           title: 'Withdraw successful',
@@ -66,7 +68,7 @@ export const WithdrawLink: React.FC<WithdrawLinkProps> = ({ id }) => {
       })
       .catch((err) => {
         console.error('Withdraw Error', err);
-        dispatch(modalsSliceActions.clearWithdrawData());
+        dispatch(modalsSliceActions.clearWithdrawModalData());
         addNotification({
           title: `Withdraw failed ${value} ${selectedToken?.symbol}`,
           type: NotificationType.Error,

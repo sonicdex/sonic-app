@@ -28,7 +28,10 @@ import { ImportToken } from './components';
 
 export const TokenSelectModal = () => {
   const dispatch = useAppDispatch();
-  const { tokenSelectData, isTokenSelectOpened } = useModalsStore();
+  const {
+    tokenSelectModalData: tokenSelectData,
+    isTokenSelectModalModalOpened: isTokenSelectOpened,
+  } = useModalsStore();
 
   const {
     tokens,

@@ -4,6 +4,7 @@ import { useSwapBatch } from '@/integrations/transactions';
 import {
   modalsSliceActions,
   NotificationType,
+  SwapModalDataStep,
   useAppDispatch,
   useNotificationStore,
   usePlugStore,
@@ -32,21 +33,21 @@ export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
     return deserialize(stringify({ from, to, slippage, keepInSonic }));
   }, []);
 
+  const [batch, openSwapModal] = useSwapBatch({
+    from,
+    to,
+    slippage: Number(slippage),
+    keepInSonic,
+    principalId,
+  });
+
   const handleStateChange = () => {
-    switch (swapBatch.state) {
-      case 'approve':
-      case 'deposit':
-        dispatch(modalsSliceActions.setSwapData({ step: 'deposit' }));
-
-        break;
-      case 'swap':
-        dispatch(modalsSliceActions.setSwapData({ step: 'swap' }));
-
-        break;
-      case 'withdraw':
-        dispatch(modalsSliceActions.setSwapData({ step: 'withdraw' }));
-
-        break;
+    if (batch.state in SwapModalDataStep) {
+      dispatch(
+        modalsSliceActions.setSwapModalData({
+          step: batch.state as SwapModalDataStep,
+        })
+      );
     }
   };
 
@@ -55,21 +56,13 @@ export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
     openSwapModal();
   };
 
-  const [swapBatch, openSwapModal] = useSwapBatch({
-    from,
-    to,
-    slippage: Number(slippage),
-    keepInSonic,
-    principalId,
-  });
-
-  useEffect(handleStateChange, [swapBatch.state]);
+  useEffect(handleStateChange, [batch.state]);
 
   useEffect(() => {
-    swapBatch
+    batch
       .execute()
       .then((res) => {
-        dispatch(modalsSliceActions.clearSwapData());
+        dispatch(modalsSliceActions.clearSwapModalData());
         dispatch(modalsSliceActions.closeSwapProgressModal());
 
         addNotification({
@@ -83,7 +76,7 @@ export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
       })
       .catch((err) => {
         console.error('Swap Error', err);
-        dispatch(modalsSliceActions.clearSwapData());
+        dispatch(modalsSliceActions.clearSwapModalData());
 
         addNotification({
           title: `Failed swapping ${from.value} ${from.metadata.symbol} for ${to.value} ${to.metadata.symbol}`,

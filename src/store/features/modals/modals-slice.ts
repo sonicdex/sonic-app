@@ -1,24 +1,34 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { FeatureState } from '@/store';
 import type { RootState } from '@/store';
 
 export type ModalsCallback = (arg0?: any) => any;
 
-export type WrapModalDataStep = 'ledgerTransfer' | 'mintWICP' | 'withdraw';
+export enum WrapModalDataStep {
+  LedgerTransfer = 'ledgerTransfer',
+  MintWIPC = 'mintWICP',
+  Withdraw = 'withdraw',
+}
 export type WrapModalData = {
   step?: WrapModalDataStep;
   steps?: WrapModalDataStep[];
   callbacks?: [ModalsCallback, ModalsCallback];
 };
 
-export type UnwrapModalDataStep = 'withdrawWICP';
+export enum UnwrapModalDataStep {
+  WithdrawWICP = 'withdrawWICP',
+}
 export type UnwrapModalData = {
   step?: UnwrapModalDataStep;
   steps?: UnwrapModalDataStep[];
   callbacks?: [ModalsCallback, ModalsCallback];
 };
 
-export type SwapModalDataStep = 'approve' | 'deposit' | 'swap' | 'withdraw';
+export enum SwapModalDataStep {
+  Approve = 'approve',
+  Deposit = 'deposit',
+  Swap = 'swap',
+  Withdraw = 'withdraw',
+}
 export type SwapModalData = {
   step?: SwapModalDataStep;
   steps?: SwapModalDataStep[];
@@ -27,7 +37,10 @@ export type SwapModalData = {
   callbacks?: [ModalsCallback, ModalsCallback, ModalsCallback];
 };
 
-export type DepositModalDataStep = 'approve' | 'deposit';
+export enum DepositModalDataStep {
+  Approve = 'approve',
+  Deposit = 'deposit',
+}
 export type DepositModalData = {
   step?: DepositModalDataStep;
   steps?: DepositModalDataStep[];
@@ -35,7 +48,9 @@ export type DepositModalData = {
   callbacks?: [ModalsCallback, ModalsCallback];
 };
 
-export type WithdrawModalDataStep = 'withdraw';
+export enum WithdrawModalDataStep {
+  Withdraw = 'withdraw',
+}
 export type WithdrawModalData = {
   step?: WithdrawModalDataStep;
   steps?: WithdrawModalDataStep[];
@@ -43,13 +58,14 @@ export type WithdrawModalData = {
   callbacks?: [ModalsCallback, ModalsCallback];
 };
 
-export type AddLiquidityModalDataStep =
-  | 'createPair'
-  | 'approve0'
-  | 'deposit0'
-  | 'approve1'
-  | 'deposit1'
-  | 'addLiquidity';
+export enum AddLiquidityModalDataStep {
+  CreatePair = 'createPair',
+  Approve0 = 'approve0',
+  Deposit0 = 'deposit0',
+  Approve1 = 'approve1',
+  Deposit1 = 'deposit1',
+  AddLiquidity = 'addLiquidity',
+}
 export type AddLiquidityModalData = {
   step?: AddLiquidityModalDataStep;
   steps?: AddLiquidityModalDataStep[];
@@ -58,10 +74,11 @@ export type AddLiquidityModalData = {
   callbacks?: [ModalsCallback, ModalsCallback];
 };
 
-export type RemoveLiquidityModalDataStep =
-  | 'removeLiquidity'
-  | 'withdraw0'
-  | 'withdraw1';
+export enum RemoveLiquidityModalDataStep {
+  RemoveLiquidity = 'removeLiquidity',
+  Withdraw0 = 'withdraw0',
+  Withdraw1 = 'withdraw1',
+}
 export type RemoveLiquidityModalData = {
   step?: RemoveLiquidityModalDataStep;
   steps?: RemoveLiquidityModalDataStep[];
@@ -80,67 +97,65 @@ type TokenSelectData = {
 
 // Define a type for the slice state
 interface ModalsState {
-  isWrapProgressOpened: boolean;
-  isWrapFailOpened: boolean;
-  wrapData: WrapModalData;
+  isWrapProgressModalOpened: boolean;
+  isWrapFailModalOpened: boolean;
+  wrapModalData: WrapModalData;
 
-  isUnwrapProgressOpened: boolean;
-  isUnwrapFailOpened: boolean;
-  unwrapData: UnwrapModalData;
+  isUnwrapProgressModalOpened: boolean;
+  isUnwrapFailModalOpened: boolean;
+  unwrapModalData: UnwrapModalData;
 
-  isSwapProgressOpened: boolean;
-  isSwapFailOpened: boolean;
-  swapData: SwapModalData;
+  isSwapProgressModalOpened: boolean;
+  isSwapFailModalOpened: boolean;
+  swapModalData: SwapModalData;
 
-  isDepositProgressOpened: boolean;
-  isDepositFailOpened: boolean;
-  depositData: DepositModalData;
+  isDepositProgressModalOpened: boolean;
+  isDepositFailModalOpened: boolean;
+  depositModalData: DepositModalData;
 
-  isWithdrawProgressOpened: boolean;
-  isWithdrawFailOpened: boolean;
-  withdrawData: WithdrawModalData;
+  isWithdrawProgressModalOpened: boolean;
+  isWithdrawFailModalOpened: boolean;
+  withdrawModalData: WithdrawModalData;
 
-  isAddLiquidityProgressOpened: boolean;
-  isAddLiquidityFailOpened: boolean;
-  addLiquidityData: AddLiquidityModalData;
+  isAddLiquidityProgressModalOpened: boolean;
+  isAddLiquidityFailModalOpened: boolean;
+  addLiquidityModalData: AddLiquidityModalData;
 
-  isRemoveLiquidityProgressOpened: boolean;
-  isRemoveLiquidityFailOpened: boolean;
-  removeLiquidityData: RemoveLiquidityModalData;
+  isRemoveLiquidityProgressModalOpened: boolean;
+  isRemoveLiquidityFailModalOpened: boolean;
+  removeLiquidityModalData: RemoveLiquidityModalData;
 
-  isTokenSelectOpened: boolean;
-  tokenSelectData: TokenSelectData;
+  isTokenSelectModalModalOpened: boolean;
+  tokenSelectModalData: TokenSelectData;
 
-  isLiquidityRemoveOpened: boolean;
-
-  state: FeatureState;
+  isRemoveLiquidityModalOpened: boolean;
 }
 
-const initialWrapData: WrapModalData = {
+const initialWrapModalData: WrapModalData = {
   step: undefined,
 };
 
-const initialUnwrapData: UnwrapModalData = {
+const initialUnwrapModalData: UnwrapModalData = {
   step: undefined,
 };
 
-const initialSwapData: SwapModalData = {
+const initialSwapModalData: SwapModalData = {
   step: undefined,
 };
 
-const initialDepositData: DepositModalData = {
+const initialDepositModalData: DepositModalData = {
   step: undefined,
 };
 
-const initialWithdrawData: WithdrawModalData = {
+const initialWithdrawModalData: WithdrawModalData = {
   step: undefined,
 };
 
-const initialAddLiquidityData: AddLiquidityModalData = {
+const initialAddLiquidityModalData: AddLiquidityModalData = {
   step: undefined,
 };
 
-const initialRemoveLiquidityData: RemoveLiquidityModalData = {
+const initialRemoveLiquidityModalData: RemoveLiquidityModalData = {
   step: undefined,
 };
 
@@ -154,40 +169,38 @@ const initialTokenSelectData: TokenSelectData = {
 
 // Define the initial state using that type
 const initialState: ModalsState = {
-  isWrapProgressOpened: false,
-  isWrapFailOpened: false,
-  wrapData: initialWrapData,
+  isWrapProgressModalOpened: false,
+  isWrapFailModalOpened: false,
+  wrapModalData: initialWrapModalData,
 
-  isUnwrapProgressOpened: false,
-  isUnwrapFailOpened: false,
-  unwrapData: initialUnwrapData,
+  isUnwrapProgressModalOpened: false,
+  isUnwrapFailModalOpened: false,
+  unwrapModalData: initialUnwrapModalData,
 
-  isSwapProgressOpened: false,
-  isSwapFailOpened: false,
-  swapData: initialSwapData,
+  isSwapProgressModalOpened: false,
+  isSwapFailModalOpened: false,
+  swapModalData: initialSwapModalData,
 
-  isDepositProgressOpened: false,
-  isDepositFailOpened: false,
-  depositData: initialDepositData,
+  isDepositProgressModalOpened: false,
+  isDepositFailModalOpened: false,
+  depositModalData: initialDepositModalData,
 
-  isWithdrawProgressOpened: false,
-  isWithdrawFailOpened: false,
-  withdrawData: initialWithdrawData,
+  isWithdrawProgressModalOpened: false,
+  isWithdrawFailModalOpened: false,
+  withdrawModalData: initialWithdrawModalData,
 
-  isAddLiquidityProgressOpened: false,
-  isAddLiquidityFailOpened: false,
-  addLiquidityData: initialAddLiquidityData,
+  isAddLiquidityProgressModalOpened: false,
+  isAddLiquidityFailModalOpened: false,
+  addLiquidityModalData: initialAddLiquidityModalData,
 
-  isRemoveLiquidityProgressOpened: false,
-  isRemoveLiquidityFailOpened: false,
-  removeLiquidityData: initialRemoveLiquidityData,
+  isRemoveLiquidityProgressModalOpened: false,
+  isRemoveLiquidityFailModalOpened: false,
+  removeLiquidityModalData: initialRemoveLiquidityModalData,
 
-  isTokenSelectOpened: false,
-  tokenSelectData: initialTokenSelectData,
+  isTokenSelectModalModalOpened: false,
+  tokenSelectModalData: initialTokenSelectData,
 
-  isLiquidityRemoveOpened: false,
-
-  state: FeatureState?.Idle,
+  isRemoveLiquidityModalOpened: false,
 };
 
 export const modalsSlice = createSlice({
@@ -196,181 +209,186 @@ export const modalsSlice = createSlice({
   initialState,
   reducers: {
     openWrapProgressModal: (state) => {
-      state.isWrapProgressOpened = true;
+      state.isWrapProgressModalOpened = true;
     },
     closeWrapProgressModal: (state) => {
-      state.isWrapProgressOpened = false;
+      state.isWrapProgressModalOpened = false;
     },
     openWrapFailModal: (state) => {
-      state.isWrapFailOpened = true;
+      state.isWrapFailModalOpened = true;
     },
     closeWrapFailModal: (state) => {
-      state.isWrapFailOpened = false;
+      state.isWrapFailModalOpened = false;
     },
-    setWrapData: (state, action: PayloadAction<WrapModalData>) => {
-      state.wrapData = {
-        ...state.wrapData,
+    clearWrapModalData: (state) => {
+      state.wrapModalData = initialWrapModalData;
+    },
+    setWrapModalData: (state, action: PayloadAction<WrapModalData>) => {
+      state.wrapModalData = {
+        ...state.wrapModalData,
         ...action.payload,
       };
     },
 
     openUnwrapProgressModal: (state) => {
-      state.isUnwrapProgressOpened = true;
+      state.isUnwrapProgressModalOpened = true;
     },
     closeUnwrapProgressModal: (state) => {
-      state.isUnwrapProgressOpened = false;
+      state.isUnwrapProgressModalOpened = false;
     },
     openUnwrapFailModal: (state) => {
-      state.isUnwrapFailOpened = true;
+      state.isUnwrapFailModalOpened = true;
     },
     closeUnwrapFailModal: (state) => {
-      state.isUnwrapFailOpened = false;
+      state.isUnwrapFailModalOpened = false;
     },
-    setUnwrapData: (state, action: PayloadAction<UnwrapModalData>) => {
-      state.unwrapData = {
-        ...state.unwrapData,
+    clearUnwrapModalData: (state) => {
+      state.unwrapModalData = initialUnwrapModalData;
+    },
+    setUnwrapModalData: (state, action: PayloadAction<UnwrapModalData>) => {
+      state.unwrapModalData = {
+        ...state.unwrapModalData,
         ...action.payload,
       };
     },
 
-    openRemoveLiquidityModal: (state) => {
-      state.isLiquidityRemoveOpened = true;
-    },
-    closeRemoveLiquidityModal: (state) => {
-      state.isLiquidityRemoveOpened = false;
-    },
-
     openSwapProgressModal: (state) => {
-      state.isSwapProgressOpened = true;
+      state.isSwapProgressModalOpened = true;
     },
     closeSwapProgressModal: (state) => {
-      state.isSwapProgressOpened = false;
+      state.isSwapProgressModalOpened = false;
     },
     openSwapFailModal: (state) => {
-      state.isSwapFailOpened = true;
+      state.isSwapFailModalOpened = true;
     },
     closeSwapFailModal: (state) => {
-      state.isSwapFailOpened = false;
+      state.isSwapFailModalOpened = false;
     },
-    clearSwapData: (state) => {
-      state.swapData = initialSwapData;
+    clearSwapModalData: (state) => {
+      state.swapModalData = initialSwapModalData;
     },
-    setSwapData: (state, action: PayloadAction<SwapModalData>) => {
-      state.swapData = {
-        ...state.swapData,
+    setSwapModalData: (state, action: PayloadAction<SwapModalData>) => {
+      state.swapModalData = {
+        ...state.swapModalData,
         ...action.payload,
       };
     },
 
     openDepositProgressModal: (state) => {
-      state.isDepositProgressOpened = true;
+      state.isDepositProgressModalOpened = true;
     },
     closeDepositProgressModal: (state) => {
-      state.isDepositProgressOpened = false;
+      state.isDepositProgressModalOpened = false;
     },
     openDepositFailModal: (state) => {
-      state.isDepositFailOpened = true;
+      state.isDepositFailModalOpened = true;
     },
     closeDepositFailModal: (state) => {
-      state.isDepositFailOpened = false;
+      state.isDepositFailModalOpened = false;
     },
-    clearDepositData: (state) => {
-      state.depositData = initialDepositData;
+    clearDepositModalData: (state) => {
+      state.depositModalData = initialDepositModalData;
     },
-    setDepositData: (state, action: PayloadAction<DepositModalData>) => {
-      state.depositData = {
-        ...state.depositData,
+    setDepositModalData: (state, action: PayloadAction<DepositModalData>) => {
+      state.depositModalData = {
+        ...state.depositModalData,
         ...action.payload,
       };
     },
 
     openWithdrawProgressModal: (state) => {
-      state.isWithdrawProgressOpened = true;
+      state.isWithdrawProgressModalOpened = true;
     },
     closeWithdrawProgressModal: (state) => {
-      state.isWithdrawProgressOpened = false;
+      state.isWithdrawProgressModalOpened = false;
     },
     openWithdrawFailModal: (state) => {
-      state.isWithdrawFailOpened = true;
+      state.isWithdrawFailModalOpened = true;
     },
     closeWithdrawFailModal: (state) => {
-      state.isWithdrawFailOpened = false;
+      state.isWithdrawFailModalOpened = false;
     },
-    clearWithdrawData: (state) => {
-      state.withdrawData = initialWithdrawData;
+    clearWithdrawModalData: (state) => {
+      state.withdrawModalData = initialWithdrawModalData;
     },
-    setWithdrawData: (state, action: PayloadAction<WithdrawModalData>) => {
-      state.withdrawData = {
-        ...state.withdrawData,
+    setWithdrawModalData: (state, action: PayloadAction<WithdrawModalData>) => {
+      state.withdrawModalData = {
+        ...state.withdrawModalData,
         ...action.payload,
       };
     },
 
     openAddLiquidityProgressModal: (state) => {
-      state.isAddLiquidityProgressOpened = true;
+      state.isAddLiquidityProgressModalOpened = true;
     },
     closeAddLiquidityProgressModal: (state) => {
-      state.isAddLiquidityProgressOpened = false;
+      state.isAddLiquidityProgressModalOpened = false;
     },
     openAddLiquidityFailModal: (state) => {
-      state.isAddLiquidityFailOpened = true;
+      state.isAddLiquidityFailModalOpened = true;
     },
     closeAddLiquidityFailModal: (state) => {
-      state.isAddLiquidityFailOpened = false;
+      state.isAddLiquidityFailModalOpened = false;
     },
-    clearAddLiquidityData: (state) => {
-      state.addLiquidityData = initialAddLiquidityData;
+    clearAddLiquidityModalData: (state) => {
+      state.addLiquidityModalData = initialAddLiquidityModalData;
     },
-    setAddLiquidityData: (
+    setAddLiquidityModalData: (
       state,
       action: PayloadAction<AddLiquidityModalData>
     ) => {
-      state.addLiquidityData = {
-        ...state.addLiquidityData,
+      state.addLiquidityModalData = {
+        ...state.addLiquidityModalData,
         ...action.payload,
       };
     },
 
     openRemoveLiquidityProgressModal: (state) => {
-      state.isRemoveLiquidityProgressOpened = true;
+      state.isRemoveLiquidityProgressModalOpened = true;
     },
     closeRemoveLiquidityProgressModal: (state) => {
-      state.isRemoveLiquidityProgressOpened = false;
+      state.isRemoveLiquidityProgressModalOpened = false;
     },
     openRemoveLiquidityFailModal: (state) => {
-      state.isRemoveLiquidityFailOpened = true;
+      state.isRemoveLiquidityFailModalOpened = true;
     },
     closeRemoveLiquidityFailModal: (state) => {
-      state.isRemoveLiquidityFailOpened = false;
+      state.isRemoveLiquidityFailModalOpened = false;
     },
-    clearRemoveLiquidityData: (state) => {
-      state.removeLiquidityData = initialRemoveLiquidityData;
+    clearRemoveLiquidityModalData: (state) => {
+      state.removeLiquidityModalData = initialRemoveLiquidityModalData;
     },
-    setRemoveLiquidityData: (
+    setRemoveLiquidityModalData: (
       state,
       action: PayloadAction<RemoveLiquidityModalData>
     ) => {
-      state.removeLiquidityData = {
-        ...state.removeLiquidityData,
+      state.removeLiquidityModalData = {
+        ...state.removeLiquidityModalData,
         ...action.payload,
       };
     },
 
     openTokenSelectModal: (state) => {
-      state.isTokenSelectOpened = true;
+      state.isTokenSelectModalModalOpened = true;
     },
     closeTokenSelectModal: (state) => {
-      state.isTokenSelectOpened = false;
+      state.isTokenSelectModalModalOpened = false;
     },
-    clearTokenSelectData: (state) => {
-      state.tokenSelectData = initialTokenSelectData;
+    clearTokenSelectModalData: (state) => {
+      state.tokenSelectModalData = initialTokenSelectData;
     },
-    setTokenSelectData: (state, action: PayloadAction<TokenSelectData>) => {
-      state.tokenSelectData = action.payload;
+    setTokenSelectModalData: (
+      state,
+      action: PayloadAction<TokenSelectData>
+    ) => {
+      state.tokenSelectModalData = action.payload;
     },
 
-    setState: (state, action: PayloadAction<FeatureState>) => {
-      state.state = action.payload;
+    openRemoveLiquidityModal: (state) => {
+      state.isRemoveLiquidityModalOpened = true;
+    },
+    closeRemoveLiquidityModal: (state) => {
+      state.isRemoveLiquidityModalOpened = false;
     },
   },
 });

@@ -26,7 +26,7 @@ export const useDepositBatch = (deposit: Deposit) => {
 
   const handleOpenDepositModal = () => {
     dispatch(
-      modalsSliceActions.setDepositData({
+      modalsSliceActions.setDepositModalData({
         steps: Object.keys(transactions) as DepositModalDataStep[],
         tokenSymbol: deposit.token?.symbol,
       })

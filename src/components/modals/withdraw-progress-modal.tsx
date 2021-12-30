@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { HStack, Modal, ModalOverlay } from '@chakra-ui/react';
 
 import {
@@ -14,7 +13,10 @@ import { useStepStatus } from '.';
 
 export const WithdrawProgressModal = () => {
   const dispatch = useAppDispatch();
-  const { isWithdrawProgressOpened, withdrawData } = useModalsStore();
+  const {
+    isWithdrawProgressModalOpened: isWithdrawProgressOpened,
+    withdrawModalData: withdrawData,
+  } = useModalsStore();
   const { tokenSymbol, steps, step: activeStep } = withdrawData;
 
   const getStepStatus = useStepStatus<WithdrawModalDataStep>({
@@ -31,7 +33,10 @@ export const WithdrawProgressModal = () => {
       <ModalOverlay />
       <TransactionProgressModalContent title="Withdraw in Progress">
         <HStack>
-          <TransactionStep status={getStepStatus('withdraw')} iconSrc={swapSrc}>
+          <TransactionStep
+            status={getStepStatus(WithdrawModalDataStep.Withdraw)}
+            iconSrc={swapSrc}
+          >
             Withdrawing <br /> {tokenSymbol}
           </TransactionStep>
         </HStack>

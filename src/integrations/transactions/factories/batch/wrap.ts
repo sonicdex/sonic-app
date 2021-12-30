@@ -58,7 +58,7 @@ export const useWrapBatch = ({ amount, keepInSonic = false }: Wrap) => {
 
   const handleOpenBatchModal = () => {
     dispatch(
-      modalsSliceActions.setWrapData({
+      modalsSliceActions.setWrapModalData({
         steps: Object.keys(transactions) as WrapModalDataStep[],
       })
     );

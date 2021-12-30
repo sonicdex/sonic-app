@@ -12,7 +12,10 @@ import { useStepStatus } from '.';
 
 export const UnwrapProgressModal = () => {
   const dispatch = useAppDispatch();
-  const { isUnwrapProgressOpened, unwrapData } = useModalsStore();
+  const {
+    isUnwrapProgressModalOpened: isUnwrapProgressOpened,
+    unwrapModalData: unwrapData,
+  } = useModalsStore();
   const { steps, step: activeStep } = unwrapData;
 
   const getStepStatus = useStepStatus<UnwrapModalDataStep>({
@@ -30,7 +33,7 @@ export const UnwrapProgressModal = () => {
       <TransactionProgressModalContent title="Unwrapping ICP in Progress">
         <HStack>
           <TransactionStep
-            status={getStepStatus('withdrawWICP')}
+            status={getStepStatus(UnwrapModalDataStep.WithdrawWICP)}
             iconSrc={withdrawSrc}
           >
             Unwrapping the ICP

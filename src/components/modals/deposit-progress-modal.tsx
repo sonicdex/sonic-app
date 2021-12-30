@@ -12,7 +12,10 @@ import { useStepStatus } from '.';
 
 export const DepositProgressModal = () => {
   const dispatch = useAppDispatch();
-  const { isDepositProgressOpened, depositData } = useModalsStore();
+  const {
+    isDepositProgressModalOpened: isDepositProgressOpened,
+    depositModalData: depositData,
+  } = useModalsStore();
   const { steps, tokenSymbol, step: activeStep } = depositData;
 
   const getStepStatus = useStepStatus<DepositModalDataStep>({
@@ -30,14 +33,14 @@ export const DepositProgressModal = () => {
       <TransactionProgressModalContent title="Deposit in Progress">
         <HStack>
           <TransactionStep
-            status={getStepStatus('approve')}
+            status={getStepStatus(DepositModalDataStep.Approve)}
             iconSrc={checkPlainSrc}
             chevron
           >
             Approving usage <br /> {tokenSymbol}
           </TransactionStep>
           <TransactionStep
-            status={getStepStatus('deposit')}
+            status={getStepStatus(DepositModalDataStep.Deposit)}
             iconSrc={depositSrc}
           >
             Depositing <br /> {tokenSymbol}

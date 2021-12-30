@@ -7,6 +7,7 @@ import {
   useAppDispatch,
   useNotificationStore,
   useSwapViewStore,
+  WrapModalDataStep,
 } from '@/store';
 import { deserialize, stringify } from '@/utils/format';
 import { createCAPLink } from '@/utils/function';
@@ -29,20 +30,18 @@ export const WrapLink: React.FC<WrapLinkProps> = ({ id }) => {
     return deserialize(stringify({ from, keepInSonic }));
   }, []);
 
+  const [batch, openWrapModal] = useWrapBatch({
+    amount: from.value,
+    keepInSonic,
+  });
+
   const handleStateChange = () => {
-    switch (wrapBatch.state) {
-      case 'ledgerTransfer':
-        dispatch(modalsSliceActions.setWrapData({ step: 'ledgerTransfer' }));
-
-        break;
-      case 'mintWICP':
-        dispatch(modalsSliceActions.setWrapData({ step: 'mintWICP' }));
-
-        break;
-      case 'withdraw':
-        dispatch(modalsSliceActions.setWrapData({ step: 'withdraw' }));
-
-        break;
+    if (batch.state in WrapModalDataStep) {
+      dispatch(
+        modalsSliceActions.setWrapModalData({
+          step: batch.state as WrapModalDataStep,
+        })
+      );
     }
   };
 
@@ -50,16 +49,10 @@ export const WrapLink: React.FC<WrapLinkProps> = ({ id }) => {
     handleStateChange();
     openWrapModal();
   };
-
-  const [wrapBatch, openWrapModal] = useWrapBatch({
-    amount: from.value,
-    keepInSonic,
-  });
-
-  useEffect(handleStateChange, [wrapBatch.state]);
+  useEffect(handleStateChange, [batch.state]);
 
   useEffect(() => {
-    wrapBatch
+    batch
       .execute()
       .then((res) => {
         dispatch(modalsSliceActions.closeWrapProgressModal());

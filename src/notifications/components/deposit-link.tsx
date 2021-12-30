@@ -1,6 +1,7 @@
 import { useBalances } from '@/hooks/use-balances';
 import { useDepositBatch } from '@/integrations/transactions';
 import {
+  DepositModalDataStep,
   modalsSliceActions,
   NotificationType,
   useAppDispatch,
@@ -28,19 +29,18 @@ export const DepositLink: React.FC<DepositLinkProps> = ({ id }) => {
     return supportedTokenList?.find(({ id }) => id === tokenId);
   }, [supportedTokenList, tokenId]);
 
-  const [depositBatch, openDepositModal] = useDepositBatch({
+  const [batch, openDepositModal] = useDepositBatch({
     amount: value,
     token: selectedToken,
   });
 
   const handleStateChange = () => {
-    switch (depositBatch.state) {
-      case 'approve':
-        dispatch(modalsSliceActions.setDepositData({ step: 'approve' }));
-        break;
-      case 'deposit':
-        dispatch(modalsSliceActions.setDepositData({ step: 'deposit' }));
-        break;
+    if (batch.state in DepositModalDataStep) {
+      dispatch(
+        modalsSliceActions.setDepositModalData({
+          step: batch.state as DepositModalDataStep,
+        })
+      );
     }
   };
 
@@ -49,13 +49,13 @@ export const DepositLink: React.FC<DepositLinkProps> = ({ id }) => {
     openDepositModal();
   };
 
-  useEffect(handleStateChange, [depositBatch.state]);
+  useEffect(handleStateChange, [batch.state]);
 
   useEffect(() => {
-    depositBatch
+    batch
       .execute()
       .then((res) => {
-        dispatch(modalsSliceActions.clearDepositData());
+        dispatch(modalsSliceActions.clearDepositModalData());
         dispatch(modalsSliceActions.closeDepositProgressModal());
         getBalances();
         addNotification({
@@ -68,7 +68,7 @@ export const DepositLink: React.FC<DepositLinkProps> = ({ id }) => {
       })
       .catch((err) => {
         console.error('Deposit Error', err);
-        dispatch(modalsSliceActions.clearDepositData());
+        dispatch(modalsSliceActions.clearDepositModalData());
         addNotification({
           title: `Deposit failed ${value} ${selectedToken?.symbol}`,
           type: NotificationType.Error,

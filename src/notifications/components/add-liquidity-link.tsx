@@ -4,6 +4,7 @@ import { Link } from '@chakra-ui/react';
 import { useBalances } from '@/hooks/use-balances';
 import { useAddLiquidityBatch } from '@/integrations/transactions';
 import {
+  AddLiquidityModalDataStep,
   modalsSliceActions,
   NotificationType,
   useAppDispatch,
@@ -30,32 +31,19 @@ export const AddLiquidityLink: React.FC<AddLiquidityLinkProps> = ({ id }) => {
     return deserialize(stringify({ token0, token1, slippage }));
   }, []);
 
-  const [addLiquidityBatch, openAddLiquidityModal] = useAddLiquidityBatch({
+  const [batch, openAddLiquidityModal] = useAddLiquidityBatch({
     token0,
     token1,
     slippage: Number(slippage),
   });
 
   const handleStateChange = () => {
-    switch (addLiquidityBatch.state) {
-      case 'createPair':
-        dispatch(
-          modalsSliceActions.setAddLiquidityData({ step: 'createPair' })
-        );
-        break;
-      case 'approve0':
-      case 'deposit0':
-        dispatch(modalsSliceActions.setAddLiquidityData({ step: 'deposit0' }));
-        break;
-      case 'approve1':
-      case 'deposit1':
-        dispatch(modalsSliceActions.setAddLiquidityData({ step: 'deposit1' }));
-        break;
-      case 'addLiquidity':
-        dispatch(
-          modalsSliceActions.setAddLiquidityData({ step: 'addLiquidity' })
-        );
-        break;
+    if (batch.state in AddLiquidityModalDataStep) {
+      dispatch(
+        modalsSliceActions.setAddLiquidityModalData({
+          step: batch.state as AddLiquidityModalDataStep,
+        })
+      );
     }
   };
 
@@ -64,13 +52,13 @@ export const AddLiquidityLink: React.FC<AddLiquidityLinkProps> = ({ id }) => {
     openAddLiquidityModal();
   };
 
-  useEffect(handleStateChange, [addLiquidityBatch.state]);
+  useEffect(handleStateChange, [batch.state]);
 
   useEffect(() => {
-    addLiquidityBatch
+    batch
       .execute()
       .then((res) => {
-        dispatch(modalsSliceActions.clearAddLiquidityData());
+        dispatch(modalsSliceActions.clearAddLiquidityModalData());
         dispatch(modalsSliceActions.closeAddLiquidityProgressModal());
         addNotification({
           title: `Successfuly added liquidity: ${token0.value} ${token0.metadata.symbol} + ${token1.value} ${token1.metadata.symbol}`,
@@ -84,7 +72,7 @@ export const AddLiquidityLink: React.FC<AddLiquidityLinkProps> = ({ id }) => {
       })
       .catch((err) => {
         console.error('Add Liquidity Error', err);
-        dispatch(modalsSliceActions.clearAddLiquidityData());
+        dispatch(modalsSliceActions.clearAddLiquidityModalData());
         addNotification({
           title: `Failed add liquidity ${token0.value} ${token0.metadata.symbol} + ${token1.value} ${token1.metadata.symbol}`,
           type: NotificationType.Error,

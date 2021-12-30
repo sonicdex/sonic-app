@@ -120,7 +120,7 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
   const handleRetry = async () => {
     return new Promise<boolean>((resolve) => {
       dispatch(
-        modalsSliceActions.setAddLiquidityData({
+        modalsSliceActions.setAddLiquidityModalData({
           callbacks: [
             // Retry callback
             () => {
@@ -142,7 +142,7 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
 
   const openAddLiquidityModal = () => {
     dispatch(
-      modalsSliceActions.setAddLiquidityData({
+      modalsSliceActions.setAddLiquidityModalData({
         steps: Object.keys(transactions) as AddLiquidityModalDataStep[],
         token0Symbol: addLiquidityParams.token0.metadata?.symbol,
         token1Symbol: addLiquidityParams.token1.metadata?.symbol,

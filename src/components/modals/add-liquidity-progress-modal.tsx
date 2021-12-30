@@ -12,7 +12,10 @@ import { useStepStatus } from '.';
 
 export const AddLiquidityProgressModal = () => {
   const dispatch = useAppDispatch();
-  const { isAddLiquidityProgressOpened, addLiquidityData } = useModalsStore();
+  const {
+    isAddLiquidityProgressModalOpened: isAddLiquidityProgressOpened,
+    addLiquidityModalData: addLiquidityData,
+  } = useModalsStore();
   const {
     steps,
     token1Symbol,
@@ -38,27 +41,45 @@ export const AddLiquidityProgressModal = () => {
       <ModalOverlay />
       <TransactionProgressModalContent title="Adding Liquidity">
         <HStack>
-          {steps?.includes('createPair') && (
+          {steps?.includes(AddLiquidityModalDataStep.CreatePair) && (
             <TransactionStep
-              status={getStepStatus('createPair')}
+              status={getStepStatus(AddLiquidityModalDataStep.CreatePair)}
               iconSrc={plusSrc}
               chevron
             >
               Creating pair <br /> {token0Symbol} - {token1Symbol}
             </TransactionStep>
           )}
-          {steps?.includes('deposit0') && (
+          {steps?.includes(AddLiquidityModalDataStep.Approve0) && (
             <TransactionStep
-              status={getStepStatus('deposit0')}
+              status={getStepStatus(AddLiquidityModalDataStep.Approve0)}
+              iconSrc={depositSrc}
+              chevron
+            >
+              Approving usage <br /> {token0Symbol}
+            </TransactionStep>
+          )}
+          {steps?.includes(AddLiquidityModalDataStep.Deposit0) && (
+            <TransactionStep
+              status={getStepStatus(AddLiquidityModalDataStep.Deposit0)}
               iconSrc={depositSrc}
               chevron
             >
               Depositing <br /> {token0Symbol}
             </TransactionStep>
           )}
-          {steps?.includes('deposit1') && (
+          {steps?.includes(AddLiquidityModalDataStep.Approve1) && (
             <TransactionStep
-              status={getStepStatus('deposit1')}
+              status={getStepStatus(AddLiquidityModalDataStep.Approve1)}
+              iconSrc={depositSrc}
+              chevron
+            >
+              Approving usage <br /> {token1Symbol}
+            </TransactionStep>
+          )}
+          {steps?.includes(AddLiquidityModalDataStep.Deposit1) && (
+            <TransactionStep
+              status={getStepStatus(AddLiquidityModalDataStep.Deposit1)}
               iconSrc={depositSrc}
               chevron
             >
@@ -66,7 +87,7 @@ export const AddLiquidityProgressModal = () => {
             </TransactionStep>
           )}
           <TransactionStep
-            status={getStepStatus('addLiquidity')}
+            status={getStepStatus(AddLiquidityModalDataStep.AddLiquidity)}
             iconSrc={swapSrc}
           >
             Adding Liquidity <br /> {token0Symbol} + {token1Symbol}

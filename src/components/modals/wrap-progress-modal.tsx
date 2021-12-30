@@ -12,7 +12,10 @@ import { useStepStatus } from '.';
 
 export const WrapProgressModal = () => {
   const dispatch = useAppDispatch();
-  const { isWrapProgressOpened, wrapData } = useModalsStore();
+  const {
+    isWrapProgressModalOpened: isWrapProgressOpened,
+    wrapModalData: wrapData,
+  } = useModalsStore();
   const { steps, step: activeStep } = wrapData;
   const getStepStatus = useStepStatus<WrapModalDataStep>({ activeStep, steps });
 
@@ -26,22 +29,22 @@ export const WrapProgressModal = () => {
       <TransactionProgressModalContent title="Wrapping ICP in Progress">
         <HStack>
           <TransactionStep
-            status={getStepStatus('ledgerTransfer')}
+            status={getStepStatus(WrapModalDataStep.LedgerTransfer)}
             iconSrc={withdrawSrc}
             chevron
           >
             Transferring ICP to ledger
           </TransactionStep>
           <TransactionStep
-            status={getStepStatus('mintWICP')}
+            status={getStepStatus(WrapModalDataStep.MintWIPC)}
             iconSrc={swapSrc}
-            chevron={steps?.includes('withdraw')}
+            chevron={steps?.includes(WrapModalDataStep.Withdraw)}
           >
             Minting WICP
           </TransactionStep>
-          {steps?.includes('withdraw') && (
+          {steps?.includes(WrapModalDataStep.Withdraw) && (
             <TransactionStep
-              status={getStepStatus('withdraw')}
+              status={getStepStatus(WrapModalDataStep.Withdraw)}
               iconSrc={withdrawSrc}
             >
               Withdrawing <br /> WICP

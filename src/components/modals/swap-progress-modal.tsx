@@ -7,12 +7,15 @@ import {
   useAppDispatch,
   useModalsStore,
 } from '@/store';
-import { depositSrc, swapSrc, withdrawSrc } from '@/assets';
+import { checkPlainSrc, depositSrc, swapSrc, withdrawSrc } from '@/assets';
 import { useStepStatus } from '.';
 
 export const SwapProgressModal = () => {
   const dispatch = useAppDispatch();
-  const { isSwapProgressOpened, swapData } = useModalsStore();
+  const {
+    isSwapProgressModalOpened: isSwapProgressOpened,
+    swapModalData: swapData,
+  } = useModalsStore();
   const { steps, fromTokenSymbol, toTokenSymbol, step: activeStep } = swapData;
   const getStepStatus = useStepStatus<SwapModalDataStep>({ activeStep, steps });
 
@@ -25,9 +28,18 @@ export const SwapProgressModal = () => {
       <ModalOverlay />
       <TransactionProgressModalContent title="Swap in Progress">
         <HStack>
-          {steps?.includes('deposit') && (
+          {steps?.includes(SwapModalDataStep.Approve) && (
             <TransactionStep
-              status={getStepStatus('deposit')}
+              status={getStepStatus(SwapModalDataStep.Approve)}
+              iconSrc={checkPlainSrc}
+              chevron
+            >
+              Approving usage <br /> {fromTokenSymbol}
+            </TransactionStep>
+          )}
+          {steps?.includes(SwapModalDataStep.Deposit) && (
+            <TransactionStep
+              status={getStepStatus(SwapModalDataStep.Deposit)}
               iconSrc={depositSrc}
               chevron
             >
@@ -35,15 +47,15 @@ export const SwapProgressModal = () => {
             </TransactionStep>
           )}
           <TransactionStep
-            status={getStepStatus('swap')}
+            status={getStepStatus(SwapModalDataStep.Swap)}
             iconSrc={swapSrc}
-            chevron={steps?.includes('withdraw')}
+            chevron={steps?.includes(SwapModalDataStep.Withdraw)}
           >
             Swapping <br /> {fromTokenSymbol} to {toTokenSymbol}
           </TransactionStep>
-          {steps?.includes('withdraw') && (
+          {steps?.includes(SwapModalDataStep.Withdraw) && (
             <TransactionStep
-              status={getStepStatus('withdraw')}
+              status={getStepStatus(SwapModalDataStep.Withdraw)}
               iconSrc={withdrawSrc}
             >
               Withdrawing <br /> {toTokenSymbol}

@@ -70,7 +70,7 @@ export const useRemoveLiquidityBatch = ({
   const handleRetry = async () => {
     return new Promise<boolean>((resolve) => {
       dispatch(
-        modalsSliceActions.setRemoveLiquidityData({
+        modalsSliceActions.setRemoveLiquidityModalData({
           callbacks: [
             // Retry callback
             () => {
@@ -92,7 +92,7 @@ export const useRemoveLiquidityBatch = ({
 
   const openRemoveLiquidityModal = () => {
     dispatch(
-      modalsSliceActions.setRemoveLiquidityData({
+      modalsSliceActions.setRemoveLiquidityModalData({
         steps: Object.keys(transactions) as RemoveLiquidityModalDataStep[],
         token0Symbol: removeLiquidityParams.token0.metadata?.symbol,
         token1Symbol: removeLiquidityParams.token1.metadata?.symbol,

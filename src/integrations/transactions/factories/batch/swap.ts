@@ -82,7 +82,7 @@ export const useSwapBatch = ({
   const handleRetry = async () => {
     return new Promise<boolean>((resolve) => {
       dispatch(
-        modalsSliceActions.setSwapData({
+        modalsSliceActions.setSwapModalData({
           callbacks: [
             // Retry callback
             () => {
@@ -111,7 +111,7 @@ export const useSwapBatch = ({
 
   const openSwapModal = () => {
     dispatch(
-      modalsSliceActions.setSwapData({
+      modalsSliceActions.setSwapModalData({
         steps: Object.keys(transactions) as SwapModalDataStep[],
         fromTokenSymbol: swapParams.from.metadata?.symbol,
         toTokenSymbol: swapParams.to.metadata?.symbol,

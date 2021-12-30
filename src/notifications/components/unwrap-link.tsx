@@ -4,6 +4,7 @@ import { useUnwrapBatch } from '@/integrations/transactions';
 import {
   modalsSliceActions,
   NotificationType,
+  UnwrapModalDataStep,
   useAppDispatch,
   useNotificationStore,
   usePlugStore,
@@ -33,12 +34,18 @@ export const UnwrapLink: React.FC<UnwrapLinkProps> = ({ id }) => {
     return deserialize(stringify({ from }));
   }, []);
 
-  const handleStateChange = () => {
-    switch (unwrapBatch.state) {
-      case 'withdrawWICP':
-        dispatch(modalsSliceActions.setUnwrapData({ step: 'withdrawWICP' }));
+  const [batch, openUnwrapModal] = useUnwrapBatch({
+    amount: from.value,
+    toAccountId: getAccountId(Principal.from(principalId)),
+  });
 
-        break;
+  const handleStateChange = () => {
+    if (batch.state in UnwrapModalDataStep) {
+      dispatch(
+        modalsSliceActions.setUnwrapModalData({
+          step: batch.state as UnwrapModalDataStep,
+        })
+      );
     }
   };
 
@@ -47,15 +54,10 @@ export const UnwrapLink: React.FC<UnwrapLinkProps> = ({ id }) => {
     openUnwrapModal();
   };
 
-  const [unwrapBatch, openUnwrapModal] = useUnwrapBatch({
-    amount: from.value,
-    toAccountId: getAccountId(Principal.from(principalId)),
-  });
-
-  useEffect(handleStateChange, [unwrapBatch.state]);
+  useEffect(handleStateChange, [batch.state]);
 
   useEffect(() => {
-    unwrapBatch
+    batch
       .execute()
       .then((res) => {
         dispatch(modalsSliceActions.closeUnwrapProgressModal());

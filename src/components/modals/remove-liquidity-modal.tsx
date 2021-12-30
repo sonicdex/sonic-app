@@ -47,7 +47,7 @@ const PERCENTAGE_PRESETS = [25, 50, 75, 100];
 
 export const RemoveLiquidityModal = () => {
   const dispatch = useAppDispatch();
-  const { isLiquidityRemoveOpened } = useModalsStore();
+  const { isRemoveLiquidityModalOpened } = useModalsStore();
   const { addNotification } = useNotificationStore();
   const { token0, token1, removeAmountPercentage, keepInSonic } =
     useLiquidityViewStore();
@@ -111,7 +111,7 @@ export const RemoveLiquidityModal = () => {
   return (
     <Modal
       isCentered
-      isOpen={isLiquidityRemoveOpened}
+      isOpen={isRemoveLiquidityModalOpened}
       onClose={handleModalClose}
     >
       <ModalOverlay />

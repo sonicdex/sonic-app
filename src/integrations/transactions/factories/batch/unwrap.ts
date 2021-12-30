@@ -23,8 +23,8 @@ export const useUnwrapBatch = ({ amount, toAccountId }: Unwrap) => {
 
   const handleOpenBatchModal = () => {
     dispatch(
-      modalsSliceActions.setUnwrapData({
-        steps: ['withdrawWICP'],
+      modalsSliceActions.setUnwrapModalData({
+        steps: [UnwrapModalDataStep.WithdrawWICP],
       })
     );
 
