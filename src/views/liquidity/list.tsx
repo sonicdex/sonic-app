@@ -16,6 +16,7 @@ import {
   AssetIconButton,
   AssetImageBlock,
   AssetTitleBlock,
+  DisplayValue,
   Header,
   InformationBox,
   PlugButton,
@@ -235,7 +236,7 @@ export const LiquidityListView = () => {
                   <Text fontWeight="bold" color="gray.400">
                     LP Tokens
                   </Text>
-                  <Text fontWeight="bold">{balance}</Text>
+                  <DisplayValue value={balance} />
                 </Box>
 
                 <Box>
