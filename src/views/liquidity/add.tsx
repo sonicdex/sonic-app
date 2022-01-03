@@ -60,7 +60,7 @@ import {
 } from '@/utils/format';
 import { debounce } from '@/utils/function';
 
-export const LiquidityAdd = () => {
+export const LiquidityAddView = () => {
   const query = useQuery();
 
   const { isConnected } = usePlugStore();

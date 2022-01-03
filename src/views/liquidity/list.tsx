@@ -60,7 +60,7 @@ type PairedUserLPToken = {
   balance: string;
 };
 
-export const Liquidity = () => {
+export const LiquidityListView = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { isConnected } = usePlugStore();

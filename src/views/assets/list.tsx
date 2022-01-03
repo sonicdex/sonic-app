@@ -33,7 +33,7 @@ import {
 } from '@/store';
 import { theme } from '@/theme';
 
-export const Assets = () => {
+export const AssetsListView = () => {
   const dispatch = useAppDispatch();
   const { isBannerOpened } = useAssetsViewStore();
   const { totalBalances } = useBalances();

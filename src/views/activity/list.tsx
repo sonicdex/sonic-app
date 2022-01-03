@@ -21,12 +21,13 @@ import { theme } from '@/theme';
 import {
   AddLiquidityActivity,
   DepositActivity,
+  LoadingActivity,
+  RemoveLiquidityActivity,
   SwapActivity,
   WithdrawActivity,
 } from './components';
-import { LoadingActivity } from './components/loading-activity';
-import { RemoveLiquidityActivity } from './components/remove-liquidity-activity';
-export const Activity = () => {
+
+export const ActivityListView = () => {
   useActivityView();
   const { isConnected } = usePlugStore();
   const { activityList, state, page, endReached } = useActivityViewStore();

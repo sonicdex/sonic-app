@@ -1,1 +1,2 @@
-export * from './views';
+export * from './add';
+export * from './list';
