@@ -20,7 +20,7 @@ import {
   InformationBox,
   PlugButton,
 } from '@/components';
-import { TokenMetadata } from '@/models';
+import { AppTokenMetadata } from '@/models';
 import {
   FeatureState,
   liquidityViewActions,
@@ -55,8 +55,8 @@ const InformationDescription = () => (
 );
 
 type PairedUserLPToken = {
-  token0: TokenMetadata;
-  token1: TokenMetadata;
+  token0: AppTokenMetadata;
+  token1: AppTokenMetadata;
   balance: string;
 };
 
@@ -88,8 +88,8 @@ export const LiquidityListView = () => {
   };
 
   const handleOpenRemoveLiquidityModal = (
-    token0: TokenMetadata,
-    token1: TokenMetadata
+    token0: AppTokenMetadata,
+    token1: AppTokenMetadata
   ) => {
     dispatch(liquidityViewActions.setToken({ data: 'token0', token: token0 }));
     dispatch(liquidityViewActions.setToken({ data: 'token1', token: token1 }));

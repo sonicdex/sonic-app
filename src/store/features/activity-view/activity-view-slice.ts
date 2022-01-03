@@ -1,13 +1,13 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { MappedCapHistoryLog } from '@/integrations/cap';
-import { TokenMetadataList } from '@/models';
+import { AppTokenMetadataListObject } from '@/models';
 import type { RootState } from '@/store';
 import { FeatureState } from '@/store';
 
 interface ActivityViewState {
   state: FeatureState;
-  tokenList?: TokenMetadataList;
+  tokenList?: AppTokenMetadataListObject;
   activityList: { [date: string]: MappedCapHistoryLog[] };
   page: number;
   endReached: boolean;
@@ -28,7 +28,10 @@ export const activityViewSlice = createSlice({
     setState: (state, action: PayloadAction<FeatureState>) => {
       state.state = action.payload;
     },
-    setTokenList: (state, action: PayloadAction<TokenMetadataList>) => {
+    setTokenList: (
+      state,
+      action: PayloadAction<AppTokenMetadataListObject>
+    ) => {
       state.tokenList = action.payload;
     },
     setPage: (state, action: PayloadAction<number>) => {

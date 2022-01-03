@@ -127,21 +127,24 @@ export const LiquidityAddView = () => {
       openSelectTokenModal({
         metadata: supportedTokenList,
         onSelect: (tokenId) => {
-          const foundToken = supportedTokenList!.find(
-            (token) => token.id === tokenId
-          );
-          dispatch(
-            liquidityViewActions.setToken({
-              data: dataKey,
-              token: foundToken,
-            })
-          );
-          dispatch(
-            liquidityViewActions.setValue({ data: 'token0', value: '' })
-          );
-          dispatch(
-            liquidityViewActions.setValue({ data: 'token1', value: '' })
-          );
+          if (tokenId && supportedTokenList) {
+            const foundToken = supportedTokenList.find(
+              ({ id }) => id === tokenId
+            );
+
+            dispatch(
+              liquidityViewActions.setToken({
+                data: dataKey,
+                token: foundToken,
+              })
+            );
+            dispatch(
+              liquidityViewActions.setValue({ data: 'token0', value: '' })
+            );
+            dispatch(
+              liquidityViewActions.setValue({ data: 'token1', value: '' })
+            );
+          }
         },
         selectedTokenIds,
       });
@@ -223,12 +226,12 @@ export const LiquidityAddView = () => {
     if (parsedToken1Value <= 0)
       return [true, `Enter ${token1.metadata.symbol} Amount`];
 
-    if (totalBalances) {
+    if (totalBalances && token0Balance && token1Balance) {
       const parsedToken0Balance = parseFloat(
-        formatAmount(token0Balance!, token0.metadata.decimals)
+        formatAmount(token0Balance, token0.metadata.decimals)
       );
       const parsedToken1Balance = parseFloat(
-        formatAmount(token1Balance!, token1.metadata.decimals)
+        formatAmount(token1Balance, token1.metadata.decimals)
       );
 
       if (parsedToken0Value > parsedToken0Balance) {
@@ -309,62 +312,55 @@ export const LiquidityAddView = () => {
     return false;
   }, [token0.value, token1.value]);
 
-  const { token0Price, token1Price, token0USDPrice, token1USDPrice } =
-    useMemo(() => {
-      if (token0.metadata && token1.metadata) {
-        if (pairData && pairData.reserve0 && pairData.reserve1) {
-          const token0Price = new BigNumber(String(pairData.reserve0))
-            .div(new BigNumber(String(pairData.reserve1)))
-            .dp(Number(token0.metadata.decimals))
-            .toFixed(3);
+  const { token0Price, token1Price } = useMemo(() => {
+    if (token0.metadata && token1.metadata) {
+      if (pairData && pairData.reserve0 && pairData.reserve1) {
+        const token0Price = new BigNumber(String(pairData.reserve0))
+          .div(new BigNumber(String(pairData.reserve1)))
+          .dp(Number(token0.metadata.decimals))
+          .toFixed(3);
 
-          const token1Price = new BigNumber(String(pairData.reserve1))
-            .div(new BigNumber(String(pairData.reserve0)))
-            .dp(Number(token1.metadata.decimals))
-            .toFixed(3);
+        const token1Price = new BigNumber(String(pairData.reserve1))
+          .div(new BigNumber(String(pairData.reserve0)))
+          .dp(Number(token1.metadata.decimals))
+          .toFixed(3);
 
-          return {
-            token0Price,
-            token1Price,
-            token0USDPrice: '0.00',
-            token1USDPrice: '0.00',
-          };
-        } else {
-          const token0Value = new BigNumber(token1.value)
-            .div(new BigNumber(token0.value))
-            .dp(token0.metadata?.decimals)
-            .toString();
-          const token1Value = new BigNumber(token0.value)
-            .div(new BigNumber(token1.value))
-            .dp(token1.metadata?.decimals)
-            .toString();
+        return {
+          token0Price,
+          token1Price,
+        };
+      } else {
+        const token0Value = new BigNumber(token1.value)
+          .div(new BigNumber(token0.value))
+          .dp(token0.metadata?.decimals)
+          .toString();
+        const token1Value = new BigNumber(token0.value)
+          .div(new BigNumber(token1.value))
+          .dp(token1.metadata?.decimals)
+          .toString();
 
-          return {
-            token0Price:
-              !token0Value ||
-              new BigNumber(token0Value).isNaN() ||
-              !new BigNumber(token0Value).isFinite()
-                ? '0.00'
-                : token0Value,
-            token1Price:
-              !token1Value ||
-              new BigNumber(token1Value).isNaN() ||
-              !new BigNumber(token1Value).isFinite()
-                ? '0.00'
-                : token1Value,
-            token0USDPrice: '0.00',
-            token1USDPrice: '0.00',
-          };
-        }
+        return {
+          token0Price:
+            !token0Value ||
+            new BigNumber(token0Value).isNaN() ||
+            !new BigNumber(token0Value).isFinite()
+              ? '0.00'
+              : token0Value,
+          token1Price:
+            !token1Value ||
+            new BigNumber(token1Value).isNaN() ||
+            !new BigNumber(token1Value).isFinite()
+              ? '0.00'
+              : token1Value,
+        };
       }
+    }
 
-      return {
-        token0Price: '0.00',
-        token1Price: '0.00',
-        token0USDPrice: '0.00',
-        token1USDPrice: '0.00',
-      };
-    }, [token0, token1, pairData]);
+    return {
+      token0Price: '0.00',
+      token1Price: '0.00',
+    };
+  }, [token0, token1, pairData]);
 
   const token0Sources = useMemo(() => {
     if (token0.metadata) {
@@ -389,12 +385,10 @@ export const LiquidityAddView = () => {
   }, [token1.metadata, tokenBalances, sonicBalances]);
 
   useEffect(() => {
-    if (!isLoading) {
+    if (!isLoading && supportedTokenList) {
       const token1Id = query.get('token1');
       if (token1Id) {
-        const token0 = supportedTokenList?.find(
-          (token) => token.id === token1Id
-        );
+        const token0 = supportedTokenList.find(({ id }) => id === token0Id);
         dispatch(
           liquidityViewActions.setToken({
             data: 'token0',
@@ -406,9 +400,7 @@ export const LiquidityAddView = () => {
 
       const token0Id = query.get('token0');
       if (token0Id) {
-        const token1 = supportedTokenList?.find(
-          (token) => token.id === token0Id
-        );
+        const token1 = supportedTokenList.find(({ id }) => id === token1Id);
         dispatch(
           liquidityViewActions.setToken({ data: 'token1', token: token1 })
         );
@@ -426,7 +418,7 @@ export const LiquidityAddView = () => {
               as={IconButton}
               isRound
               size="sm"
-              aria-label="Settings"
+              aria-label="Adjust the slippage"
               icon={<FaCog />}
               ml="auto"
             />
@@ -462,7 +454,6 @@ export const LiquidityAddView = () => {
             tokenListMetadata={supportedTokenList}
             tokenMetadata={token0.metadata}
             isDisabled={isReviewing}
-            price={token0USDPrice}
             sources={token0Sources}
             isLoading={isLoading}
           >
@@ -503,7 +494,6 @@ export const LiquidityAddView = () => {
             tokenListMetadata={supportedTokenList}
             tokenMetadata={token1.metadata}
             isDisabled={isReviewing}
-            price={token1USDPrice}
             sources={token1Sources}
             isLoading={isLoading}
             isBalancesLoading={isBalancesLoading}

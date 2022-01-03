@@ -15,7 +15,6 @@ export const useActivityView = () => {
 
   useEffect(() => {
     if (!supportedTokenList) return;
-    console.log(supportedTokenList);
     dispatch(
       activityViewActions.setTokenList(
         parseResponseTokenList(supportedTokenList)

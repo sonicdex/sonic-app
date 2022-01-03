@@ -11,14 +11,14 @@ import {
   ImageProps,
   Skeleton,
   Text,
+  TextProps,
 } from '@chakra-ui/react';
 import { createContext } from '@chakra-ui/react-utils';
 import React, { useCallback, useMemo } from 'react';
-import NumberFormat from 'react-number-format';
 
 import { chevronDownSrc, questionMarkSrc } from '@/assets';
 import { NumberInput } from '@/components';
-import { TokenMetadata } from '@/models';
+import { AppTokenMetadata } from '@/models';
 import { getCurrencyString } from '@/utils/format';
 
 import { DisplayValue, NumberInputProps } from '..';
@@ -28,9 +28,8 @@ import { TokenBalancesPopover } from '../token-balances-popover';
 
 export type TokenUniqueProps = {
   value?: string;
-  price?: string | number;
-  tokenMetadata?: TokenMetadata;
-  tokenListMetadata?: Array<TokenMetadata>;
+  tokenMetadata?: AppTokenMetadata;
+  tokenListMetadata?: AppTokenMetadata[];
   sources?: TokenSource[];
   setValue?: (value: string) => any;
   isDisabled?: boolean;
@@ -148,12 +147,18 @@ export const TokenDetailsLogo: React.FC<TokenDetailsLogo> = (props) => {
   );
 };
 
-export const TokenDetailsSymbol: React.FC<FlexProps> = (props) => {
+export const TokenDetailsSymbol: React.FC<TextProps> = (props) => {
   const { isLoading, tokenMetadata } = useTokenContext();
 
   return (
     <Skeleton isLoaded={!isLoading} height={5} width="fit-content">
-      <Text fontWeight={700} fontSize="lg" width="fit-content" minWidth={5}>
+      <Text
+        fontWeight={700}
+        fontSize="lg"
+        width="fit-content"
+        minWidth={5}
+        {...props}
+      >
         {tokenMetadata?.symbol}
       </Text>
     </Skeleton>
@@ -167,7 +172,7 @@ export const TokenBalances = (props: FlexProps) => {
 };
 
 export const TokenBalancesPrice: React.FC<BoxProps> = (props) => {
-  const { isLoading, price, value } = useTokenContext();
+  const { isLoading, value, tokenMetadata } = useTokenContext();
 
   const isActive = useMemo(() => {
     if (isLoading || parseFloat(value || '0') <= 0) {
@@ -184,7 +189,7 @@ export const TokenBalancesPrice: React.FC<BoxProps> = (props) => {
         color={isActive ? '#F6FCFD' : '#888E8F'}
         {...props}
       >
-        <NumberFormat value={price} displayType="text" prefix="$" />
+        <DisplayValue value={tokenMetadata?.price ?? 0} prefix="$" />
       </Box>
     </Skeleton>
   );

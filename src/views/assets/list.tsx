@@ -195,7 +195,11 @@ export const AssetsListView = () => {
                         <Text fontWeight="bold" color="gray.400">
                           Price
                         </Text>
-                        <Text fontWeight="bold">{`$${price}`}</Text>
+                        <DisplayValue
+                          fontWeight="bold"
+                          prefix="$"
+                          value={price}
+                        />
                       </Box>
                     )}
 

@@ -42,11 +42,16 @@ export const AssetsWithdrawView = () => {
   const openSelectTokenModal = useTokenModalOpener();
 
   const selectedTokenMetadata = useMemo(() => {
-    return supportedTokenList?.find(({ id }) => id === tokenId);
+    if (tokenId && supportedTokenList) {
+      return supportedTokenList.find(({ id }) => id === tokenId);
+    }
+    return undefined;
   }, [supportedTokenList, tokenId]);
 
   const handleSelectTokenId = (tokenId?: string) => {
-    dispatch(withdrawViewActions.setTokenId(tokenId!));
+    if (tokenId) {
+      dispatch(withdrawViewActions.setTokenId(tokenId));
+    }
   };
 
   const handleOpenSelectTokenModal = () => {
@@ -149,7 +154,6 @@ export const AssetsWithdrawView = () => {
           setValue={(value) => dispatch(withdrawViewActions.setAmount(value))}
           tokenListMetadata={supportedTokenList}
           tokenMetadata={selectedTokenMetadata}
-          price={0}
           isLoading={isLoading}
           sources={[
             {

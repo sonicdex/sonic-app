@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { TokenData, TokenMetadataList } from '@/models';
+import { AppTokenMetadataListObject, TokenData } from '@/models';
 import type { RootState } from '@/store';
 import { FeatureState } from '@/store';
 
@@ -16,7 +16,7 @@ interface SwapViewState {
   state: FeatureState;
   from: TokenData;
   to: TokenData;
-  tokenList?: TokenMetadataList;
+  tokenList?: AppTokenMetadataListObject;
   slippage: string;
   keepInSonic: boolean;
 }
@@ -84,7 +84,10 @@ export const swapViewSlice = createSlice({
         state.step = SwapStep.Home;
       }
     },
-    setTokenList: (state, action: PayloadAction<TokenMetadataList>) => {
+    setTokenList: (
+      state,
+      action: PayloadAction<AppTokenMetadataListObject>
+    ) => {
       state.tokenList = action.payload;
       const tokens = Object.values(action.payload);
       if (!state.from.metadata) {

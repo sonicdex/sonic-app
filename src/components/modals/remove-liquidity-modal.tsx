@@ -178,14 +178,12 @@ export const RemoveLiquidityModal = () => {
 
           <Stack spacing={4}>
             <RemoveLiquidityModalAsset
-              symbol={token0.metadata?.symbol}
+              {...token0.metadata}
               balance={balances.balance0}
-              price={5418.12}
             />
             <RemoveLiquidityModalAsset
-              symbol={token1.metadata?.symbol}
+              {...token1.metadata}
               balance={balances.balance1}
-              price={5418.12}
             />
           </Stack>
 

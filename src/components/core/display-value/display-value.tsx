@@ -1,10 +1,10 @@
 import { Text, TextProps, Tooltip } from '@chakra-ui/react';
 import { useMemo } from 'react';
 
-import { formatValue,getCurrencyString } from '@/utils/format';
+import { formatValue, getCurrencyString } from '@/utils/format';
 
 export type DisplayValueProps = TextProps & {
-  value?: number;
+  value?: number | string;
   decimals?: number;
   prefix?: string;
   suffix?: string;
@@ -24,7 +24,7 @@ export const DisplayValue: React.FC<DisplayValueProps> = ({
     return [display, tooltip];
   }, [value, decimals]);
 
-  if (formattedValue === '0') {
+  if (formattedValue === '0' || formattedValue.length <= 4) {
     return (
       <Text {...textProps}>
         {prefix}

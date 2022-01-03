@@ -19,7 +19,7 @@ import { useEffect, useMemo, useState } from 'react';
 
 import { arrowBackSrc, questionMarkSrc } from '@/assets';
 import { useBalances } from '@/hooks/use-balances';
-import { TokenMetadata } from '@/models';
+import { AppTokenMetadata } from '@/models';
 import { modalsSliceActions, useAppDispatch, useModalsStore } from '@/store';
 import { deserialize } from '@/utils/format';
 
@@ -51,11 +51,11 @@ export const TokenSelectModal = () => {
   const parsedTokens = useMemo(() => deserialize(tokens), [tokens]);
   const [search, setSearch] = useState('');
   const [filteredList, setFilteredList] =
-    useState<TokenMetadata[]>(parsedTokens);
+    useState<AppTokenMetadata[]>(parsedTokens);
   const { totalBalances } = useBalances();
 
   useEffect(() => {
-    const filterFunction = ({ symbol, name }: Partial<TokenMetadata>) => {
+    const filterFunction = ({ symbol, name }: Partial<AppTokenMetadata>) => {
       if (search?.length === 0) {
         return true;
       }

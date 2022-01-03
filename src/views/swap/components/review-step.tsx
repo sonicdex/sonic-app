@@ -62,7 +62,6 @@ export const SwapReviewStep = () => {
             }
             tokenListMetadata={fromTokenOptions}
             tokenMetadata={from.metadata}
-            price={0}
             sources={getAppAssetsSources({
               balances: {
                 plug:
@@ -111,7 +110,6 @@ export const SwapReviewStep = () => {
             }
             tokenListMetadata={toTokenOptions}
             tokenMetadata={to.metadata}
-            price={0}
             sources={getAppAssetsSources({
               balances: {
                 plug:

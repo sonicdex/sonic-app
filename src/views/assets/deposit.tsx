@@ -43,11 +43,16 @@ export const AssetsDepositView = () => {
   const openSelectTokenModal = useTokenModalOpener();
 
   const selectedTokenMetadata = useMemo(() => {
-    return supportedTokenList?.find(({ id }) => id === tokenId);
+    if (tokenId && supportedTokenList) {
+      return supportedTokenList.find(({ id }) => id === tokenId);
+    }
+    return undefined;
   }, [supportedTokenList, tokenId]);
 
   const handleSelectTokenId = (tokenId?: string) => {
-    dispatch(depositViewActions.setTokenId(tokenId!));
+    if (tokenId) {
+      dispatch(depositViewActions.setTokenId(tokenId));
+    }
   };
 
   const handleOpenSelectTokenModal = () => {
@@ -128,8 +133,8 @@ export const AssetsDepositView = () => {
       dispatch(
         depositViewActions.setAmount(
           getCurrencyString(
-            tokenBalance - Number(selectedTokenMetadata!.fee),
-            selectedTokenMetadata?.decimals
+            tokenBalance - Number(selectedTokenMetadata.fee),
+            selectedTokenMetadata.decimals
           )
         )
       );
@@ -151,7 +156,6 @@ export const AssetsDepositView = () => {
           isLoading={isLoading}
           value={amount}
           setValue={(value) => dispatch(depositViewActions.setAmount(value))}
-          price={0}
           sources={[
             {
               name: 'Plug Wallet',

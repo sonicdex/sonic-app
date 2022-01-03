@@ -27,7 +27,11 @@ export const DepositLink: React.FC<DepositLinkProps> = ({ id }) => {
   const { supportedTokenList } = useSwapCanisterStore();
 
   const selectedToken = useMemo(() => {
-    return supportedTokenList?.find(({ id }) => id === tokenId);
+    if (tokenId && supportedTokenList) {
+      return supportedTokenList.find(({ id }) => id === tokenId);
+    }
+
+    return undefined;
   }, [supportedTokenList, tokenId]);
 
   const [batch, openDepositModal] = useDepositBatch({

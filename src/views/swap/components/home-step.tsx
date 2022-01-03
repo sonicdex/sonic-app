@@ -369,7 +369,6 @@ export const SwapHomeStep = () => {
             tokenListMetadata={fromTokenOptions}
             tokenMetadata={from.metadata}
             isLoading={isLoading}
-            price={0}
             sources={fromSources}
           >
             <TokenContent>
@@ -414,7 +413,6 @@ export const SwapHomeStep = () => {
             tokenListMetadata={toTokenOptions}
             tokenMetadata={to.metadata}
             isLoading={isLoading}
-            price={0}
             isDisabled={true}
             sources={toSources}
           >

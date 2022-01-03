@@ -2,10 +2,10 @@ import { questionMarkSrc } from '@/assets';
 import { getFromStorage } from '@/config';
 import { SwapIDL } from '@/did';
 import {
-  AppTokenMetadataList,
+  AppTokenMetadata,
+  AppTokenMetadataListObject,
   PairBalances,
   PairList,
-  TokenMetadataList,
 } from '@/models';
 
 export const desensitizationPrincipalId = (
@@ -27,7 +27,7 @@ export const desensitizationPrincipalId = (
 export const parseResponseSupportedTokenList = (
   response: SwapIDL.TokenInfoExt[],
   icpPrice?: string
-): AppTokenMetadataList => {
+): AppTokenMetadata[] => {
   return response.map((token) => ({
     ...token,
     ...(icpPrice ? { price: icpPrice } : {}),
@@ -36,12 +36,12 @@ export const parseResponseSupportedTokenList = (
 };
 
 export const parseResponseTokenList = (
-  response: AppTokenMetadataList
-): TokenMetadataList => {
+  response: AppTokenMetadata[]
+): AppTokenMetadataListObject => {
   return response.reduce((list, token) => {
     list[token.id] = token;
     return list;
-  }, {} as TokenMetadataList);
+  }, {} as AppTokenMetadataListObject);
 };
 
 export const parseResponsePair = (

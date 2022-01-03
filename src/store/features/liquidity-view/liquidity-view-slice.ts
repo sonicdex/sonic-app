@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { Pair, TokenData, TokenMetadata } from '@/models';
+import { AppTokenMetadata, Pair, TokenData } from '@/models';
 import { FeatureState, RootState } from '@/store';
 
 export type LiquidityTokenDataKey = 'token0' | 'token1';
@@ -67,7 +67,7 @@ export const liquidityViewSlice = createSlice({
       state,
       action: PayloadAction<{
         data: LiquidityTokenDataKey;
-        token?: TokenMetadata;
+        token?: AppTokenMetadata;
       }>
     ) => {
       state[action.payload.data].metadata = action.payload.token;
