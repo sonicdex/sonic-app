@@ -1,6 +1,7 @@
-import { getCurrencyString, formatValue } from '@/utils/format';
 import { Text, TextProps, Tooltip } from '@chakra-ui/react';
 import { useMemo } from 'react';
+
+import { formatValue,getCurrencyString } from '@/utils/format';
 
 export type DisplayValueProps = TextProps & {
   value?: number;

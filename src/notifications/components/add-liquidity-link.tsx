@@ -1,5 +1,5 @@
-import { useEffect, useMemo } from 'react';
 import { Link } from '@chakra-ui/react';
+import { useEffect, useMemo } from 'react';
 
 import { useBalances } from '@/hooks/use-balances';
 import { useAddLiquidityBatch } from '@/integrations/transactions';

@@ -1,9 +1,10 @@
-import { questionMarkSrc } from '@/assets';
-import { TokenMetadata } from '@/models';
 import { Image } from '@chakra-ui/image';
 import { Box, Flex, HStack, Text } from '@chakra-ui/layout';
 import { FC } from 'react';
 import NumberFormat from 'react-number-format';
+
+import { questionMarkSrc } from '@/assets';
+import { TokenMetadata } from '@/models';
 
 type RemoveLiquidityModalAssetProps = Partial<TokenMetadata> & {
   balance: string;

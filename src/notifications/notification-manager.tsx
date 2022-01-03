@@ -1,8 +1,9 @@
 import { Flex } from '@chakra-ui/react';
+
 import { useNotificationStore } from '@/store';
-import { ERRORS, ErrorNotificationType } from './notifications.constants';
 
 import { NotificationBox } from './notification-box';
+import { ErrorNotificationType,ERRORS } from './notifications.constants';
 
 export const NotificationManager = () => {
   const { notifications, popNotification } = useNotificationStore();

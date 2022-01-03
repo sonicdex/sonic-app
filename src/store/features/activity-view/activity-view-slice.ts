@@ -1,8 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { FeatureState } from '@/store';
-import type { RootState } from '@/store';
-import { TokenMetadataList } from '@/models';
+
 import { MappedCapHistoryLog } from '@/integrations/cap';
+import { TokenMetadataList } from '@/models';
+import type { RootState } from '@/store';
+import { FeatureState } from '@/store';
 
 interface ActivityViewState {
   state: FeatureState;

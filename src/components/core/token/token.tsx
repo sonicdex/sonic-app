@@ -1,28 +1,28 @@
 import {
+  Box,
+  BoxProps,
+  Button,
+  ButtonProps,
+  Flex,
+  FlexProps,
+  forwardRef,
+  HStack,
+  Image,
+  ImageProps,
   Skeleton,
   Text,
-  Box,
-  Flex,
-  Image,
-  HStack,
-  Button,
-  BoxProps,
-  FlexProps,
-  ImageProps,
-  forwardRef,
-  ButtonProps,
 } from '@chakra-ui/react';
 import { createContext } from '@chakra-ui/react-utils';
-import NumberFormat from 'react-number-format';
 import React, { useCallback, useMemo } from 'react';
+import NumberFormat from 'react-number-format';
 
 import { chevronDownSrc, questionMarkSrc } from '@/assets';
 import { NumberInput } from '@/components';
 import { TokenMetadata } from '@/models';
 import { getCurrencyString } from '@/utils/format';
 
-import { TokenPopover } from './token-popover';
 import { DisplayValue, NumberInputProps } from '..';
+import { TokenPopover } from './token-popover';
 
 // === Core ===
 

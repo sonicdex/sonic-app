@@ -1,8 +1,9 @@
-import { TokenMetadata } from '@/models';
-import { getCurrencyString } from '@/utils/format';
 import { Flex, Text } from '@chakra-ui/react';
 import React from 'react';
 import { FaArrowRight } from 'react-icons/fa';
+
+import { TokenMetadata } from '@/models';
+import { getCurrencyString } from '@/utils/format';
 
 export type FeeBoxProps = {
   token?: TokenMetadata;

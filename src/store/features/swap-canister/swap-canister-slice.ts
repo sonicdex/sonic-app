@@ -1,11 +1,12 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { FeatureState, RootState } from '@/store';
+
 import {
+  AppTokenMetadataList,
   Balances,
   PairBalances,
   PairList,
-  AppTokenMetadataList,
 } from '@/models';
+import { FeatureState, RootState } from '@/store';
 
 export interface SwapCanisterState {
   supportedTokenListState: FeatureState;

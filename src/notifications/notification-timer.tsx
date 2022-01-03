@@ -1,7 +1,8 @@
-import { NotificationType } from '@/store';
 import { Box } from '@chakra-ui/react';
 import { keyframes } from '@emotion/react';
 import { useMemo } from 'react';
+
+import { NotificationType } from '@/store';
 
 const reduceWidth = keyframes`
     from { width: calc(100% - 30px);}

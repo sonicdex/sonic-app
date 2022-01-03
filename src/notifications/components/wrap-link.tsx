@@ -1,6 +1,8 @@
+import { Link } from '@chakra-ui/react';
+import { useEffect, useMemo } from 'react';
+
 import { useBalances } from '@/hooks/use-balances';
 import { useWrapBatch } from '@/integrations/transactions/factories/batch/wrap';
-
 import {
   modalsSliceActions,
   NotificationType,
@@ -11,8 +13,6 @@ import {
 } from '@/store';
 import { deserialize, stringify } from '@/utils/format';
 import { createCAPLink } from '@/utils/function';
-import { Link } from '@chakra-ui/react';
-import { useEffect, useMemo } from 'react';
 
 export interface WrapLinkProps {
   id: string;

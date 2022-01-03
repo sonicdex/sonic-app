@@ -1,20 +1,21 @@
-import React, { useMemo } from 'react';
-import { useLocation, Link } from 'react-router-dom';
 import {
   chakra,
+  Container,
   Grid,
   GridItem,
-  Container,
-  Text,
-  Tabs,
-  TabList,
   Tab,
+  TabList,
+  Tabs,
+  Text,
 } from '@chakra-ui/react';
+import React, { useMemo } from 'react';
+import { Link,useLocation } from 'react-router-dom';
 
 import { usePlugStore } from '@/store';
+
+import { PlugButton } from '..';
 import { LogoBox } from '../core';
 import { PlugPrincipalIDTag } from '../plug/plug-principal-id-tag';
-import { PlugButton } from '..';
 import {
   FOOTER_HEIGHT,
   NAVBAR_HEIGHT,

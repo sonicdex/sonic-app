@@ -1,18 +1,22 @@
+import { Box,Button } from '@chakra-ui/react';
 import { useEffect, useMemo } from 'react';
-import { Button, Box } from '@chakra-ui/react';
+import { useNavigate } from 'react-router';
+
+import { sonicCircleSrc } from '@/assets';
 import {
   TitleBox,
   Token,
+  TokenBalances,
+  TokenBalancesDetails,
+  TokenBalancesPrice,
   TokenContent,
   TokenDetailsButton,
   TokenDetailsLogo,
   TokenDetailsSymbol,
-  TokenBalancesDetails,
-  TokenBalancesPrice,
-  TokenBalances,
   TokenInput,
 } from '@/components';
-
+import { FeeBox } from '@/components/core/fee-box';
+import { useQuery } from '@/hooks/use-query';
 import {
   FeatureState,
   NotificationType,
@@ -23,12 +27,8 @@ import {
   useWithdrawViewStore,
   withdrawViewActions,
 } from '@/store';
-import { useNavigate } from 'react-router';
-import { useQuery } from '@/hooks/use-query';
-import { sonicCircleSrc } from '@/assets';
 import { formatAmount, getCurrency, getCurrencyString } from '@/utils/format';
 import { debounce } from '@/utils/function';
-import { FeeBox } from '@/components/core/fee-box';
 
 export const AssetsWithdraw = () => {
   const query = useQuery();

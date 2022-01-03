@@ -1,12 +1,14 @@
-import { ENV } from '@/config';
-import { SwapIDL } from '@/did';
-import { getAmountMin, parseAmount } from '@/utils/format';
 import { Principal } from '@dfinity/principal';
 import { Transaction } from '@psychedelic/plug-inpage-provider/dist/src/Provider';
 import { useMemo } from 'react';
+
+import { ENV } from '@/config';
+import { SwapIDL } from '@/did';
+import { getAmountMin, parseAmount } from '@/utils/format';
+
 import { CreateTransaction, Swap } from '../../models';
 
-export interface SwapTransaction extends Transaction {}
+export type SwapTransaction = Transaction
 
 export interface SwapExtraArgs {
   principal: Principal;

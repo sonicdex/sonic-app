@@ -1,3 +1,6 @@
+import { Link } from '@chakra-ui/react';
+import { useEffect, useMemo } from 'react';
+
 import { useBalances } from '@/hooks/use-balances';
 import { useWithdrawBatch } from '@/integrations/transactions/factories/batch/withdraw';
 import {
@@ -10,8 +13,6 @@ import {
   WithdrawModalDataStep,
 } from '@/store';
 import { createCAPLink } from '@/utils/function';
-import { Link } from '@chakra-ui/react';
-import { useEffect, useMemo } from 'react';
 
 export interface WithdrawLinkProps {
   id: string;

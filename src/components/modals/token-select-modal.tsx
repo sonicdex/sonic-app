@@ -1,12 +1,6 @@
-import { arrowBackSrc, questionMarkSrc } from '@/assets';
-import { useBalances } from '@/hooks/use-balances';
-import { TokenMetadata } from '@/models';
-import { modalsSliceActions, useAppDispatch, useModalsStore } from '@/store';
-
-import { deserialize } from '@/utils/format';
 import {
-  Button,
   Box,
+  Button,
   Flex,
   Heading,
   Image,
@@ -22,8 +16,14 @@ import {
   Tooltip,
 } from '@chakra-ui/react';
 import { useEffect, useMemo, useState } from 'react';
-import { DisplayValue, SearchBar } from '..';
 
+import { arrowBackSrc, questionMarkSrc } from '@/assets';
+import { useBalances } from '@/hooks/use-balances';
+import { TokenMetadata } from '@/models';
+import { modalsSliceActions, useAppDispatch, useModalsStore } from '@/store';
+import { deserialize } from '@/utils/format';
+
+import { DisplayValue, SearchBar } from '..';
 import { ImportToken } from './components';
 
 export const TokenSelectModal = () => {

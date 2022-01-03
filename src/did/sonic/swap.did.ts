@@ -177,7 +177,7 @@ export namespace SwapIDL {
     lpBalances: [Array<[string, bigint]>, bigint];
     balances: [Array<[string, bigint]>, bigint];
   }
-  export interface Factory extends Swap {}
+  export type Factory = Swap
 
   export const factory: IDL.InterfaceFactory = ({ IDL }) => {
     const TxReceipt = IDL.Variant({ ok: IDL.Nat, err: IDL.Text });

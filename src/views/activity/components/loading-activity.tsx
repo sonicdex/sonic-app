@@ -1,5 +1,6 @@
-import { Asset, AssetImageBlock, AssetTitleBlock } from '@/components';
 import { Heading, HStack, Skeleton, Stack } from '@chakra-ui/react';
+
+import { Asset, AssetImageBlock, AssetTitleBlock } from '@/components';
 
 export const LoadingActivity = () => {
   return (

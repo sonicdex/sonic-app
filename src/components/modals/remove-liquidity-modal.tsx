@@ -11,22 +11,22 @@ import {
   Box,
   Button,
   Center,
+  Checkbox,
   Divider,
   Flex,
+  FormControl,
   Heading,
-  Stack,
   SimpleGrid,
   Slider,
-  SliderTrack,
   SliderFilledTrack,
   SliderThumb,
+  SliderTrack,
+  Stack,
   Tooltip,
-  FormControl,
-  Checkbox,
 } from '@chakra-ui/react';
-import { FaArrowDown } from 'react-icons/fa';
-import { useMemo } from 'react';
 import BigNumber from 'bignumber.js';
+import { useMemo } from 'react';
+import { FaArrowDown } from 'react-icons/fa';
 
 import {
   liquidityViewActions,
@@ -38,8 +38,8 @@ import {
   useNotificationStore,
   useSwapCanisterStore,
 } from '@/store';
-import { debounce } from '@/utils/function';
 import { getCurrencyString } from '@/utils/format';
+import { debounce } from '@/utils/function';
 
 import { RemoveLiquidityModalAsset } from './remove-liquidity-modal-asset';
 

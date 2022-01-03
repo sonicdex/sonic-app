@@ -1,6 +1,3 @@
-import { useMemo } from 'react';
-import { infoSrc } from '@/assets';
-import { swapViewActions, useAppDispatch, useSwapViewStore } from '@/store';
 import {
   Checkbox,
   Flex,
@@ -14,6 +11,10 @@ import {
   PopoverTrigger,
   Portal,
 } from '@chakra-ui/react';
+import { useMemo } from 'react';
+
+import { infoSrc } from '@/assets';
+import { swapViewActions, useAppDispatch, useSwapViewStore } from '@/store';
 
 type OperationType = 'swap' | 'wrap';
 
@@ -29,8 +30,52 @@ export const KeepInSonicBox: React.FC<KeepInSonicBoxProps> = ({
   const { keepInSonic } = useSwapViewStore();
   const dispatch = useAppDispatch();
 
-  const label = useMemo(() => {
-    return `Keep ${symbol ? symbol : 'tokens'} in Sonic after ${operation}`;
+  const { label, popoverLabel } = useMemo(() => {
+    switch (operation) {
+      case 'swap':
+        return {
+          label: `Keep ${
+            symbol ? symbol : 'tokens'
+          } in Sonic after ${operation}`,
+          popoverLabel: (
+            <>
+              Keeping tokens in Sonic (instead of withdrawing to Plug) is good
+              for high frequency trading where a few extra seconds matters a
+              lot. By doing this you can skip the deposit step on your next
+              trade and save the 2-3 extra seconds.&nbsp;
+              <Link href="/#" color="#3D52F4">
+                {/* TODO: add correct href */}
+                Learn More
+              </Link>
+              .
+            </>
+          ),
+        };
+      case 'wrap':
+        return {
+          label: `Deposit ${
+            symbol ? symbol : 'tokens'
+          } to Sonic after ${operation}`,
+          popoverLabel: (
+            <>
+              Depositing tokens into in Sonic (instead of keeping in Plug) is
+              good when you want to instantly start swapping or adding liquidity
+              inside Sonic. By doing this you're adding deposit WICP step on
+              your next trade to start using WICP instantly in Sonic.&nbsp;
+              <Link href="/#" color="#3D52F4">
+                {/* TODO: add correct href */}
+                Learn More
+              </Link>
+              .
+            </>
+          ),
+        };
+      default:
+        return {
+          label: 'Keep in Sonic',
+          popoverLabel: 'Keep in Sonic',
+        };
+    }
   }, [operation, symbol]);
 
   return (
@@ -70,17 +115,7 @@ export const KeepInSonicBox: React.FC<KeepInSonicBoxProps> = ({
         <Portal>
           <PopoverContent>
             <PopoverArrow />
-            <PopoverBody display="inline-block">
-              Keeping tokens in Sonic (instead of withdrawing to Plug) is good
-              for high frequency trading where a few extra seconds matters a
-              lot. By doing this you can skip the deposit step on your next
-              trade and save the 2-3 extra seconds.&nbsp;
-              <Link href="/#" color="#3D52F4">
-                {/* TODO: add correct href */}
-                Learn More
-              </Link>
-              .
-            </PopoverBody>
+            <PopoverBody display="inline-block">{popoverLabel}</PopoverBody>
           </PopoverContent>
         </Portal>
       </Popover>

@@ -1,5 +1,6 @@
 import { ENV } from '@/config';
 import { TokenIDL } from '@/did';
+
 import { useActor } from '.';
 
 export const useWICPActor = () =>

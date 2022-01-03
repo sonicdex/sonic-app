@@ -1,11 +1,11 @@
 import { useMemo } from 'react';
 
 import { ENV } from '@/config';
+import { ICP_TOKEN_METADATA } from '@/constants';
 import { WICPIDL } from '@/did';
+import { parseAmount } from '@/utils/format';
 
 import { CreateTransaction, WithdrawWICP } from '../../models';
-import { ICP_TOKEN_METADATA } from '@/constants';
-import { parseAmount } from '@/utils/format';
 
 export const useWithdrawWICPTransactionMemo: CreateTransaction<WithdrawWICP> = (
   { amount, toAccountId },

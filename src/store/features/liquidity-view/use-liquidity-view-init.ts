@@ -1,11 +1,13 @@
-import { FeatureState, useAppDispatch } from '@/store';
-import { useSwapActor } from '@/integrations/actor';
-import { liquidityViewActions, useLiquidityViewStore } from '.';
 import { Principal } from '@dfinity/principal';
 import { useEffect } from 'react';
-import { parseResponsePair } from '@/utils/canister';
-import { useSwapCanisterStore } from '..';
+
 import { ENV } from '@/config';
+import { useSwapActor } from '@/integrations/actor';
+import { FeatureState, useAppDispatch } from '@/store';
+import { parseResponsePair } from '@/utils/canister';
+
+import { useSwapCanisterStore } from '..';
+import { liquidityViewActions, useLiquidityViewStore } from '.';
 
 export const useLiquidityViewInit = () => {
   const dispatch = useAppDispatch();

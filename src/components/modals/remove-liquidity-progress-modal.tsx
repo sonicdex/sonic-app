@@ -1,14 +1,15 @@
 import { HStack, Modal, ModalOverlay } from '@chakra-ui/react';
 
-import { TransactionProgressModalContent, TransactionStep } from './components';
+import { depositSrc, swapSrc } from '@/assets';
 import {
   modalsSliceActions,
   RemoveLiquidityModalDataStep,
   useAppDispatch,
   useModalsStore,
 } from '@/store';
-import { depositSrc, swapSrc } from '@/assets';
+
 import { useStepStatus } from '.';
+import { TransactionProgressModalContent, TransactionStep } from './components';
 
 export const RemoveLiquidityProgressModal = () => {
   const dispatch = useAppDispatch();

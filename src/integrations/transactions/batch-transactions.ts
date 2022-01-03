@@ -1,5 +1,6 @@
 import Provider from '@psychedelic/plug-inpage-provider';
 import type { Transaction } from '@psychedelic/plug-inpage-provider/dist/src/Provider';
+
 import { Batch } from './models/batch';
 
 export class BatchTransactions implements Batch.Controller {

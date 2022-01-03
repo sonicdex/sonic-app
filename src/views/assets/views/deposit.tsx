@@ -1,18 +1,22 @@
+import { Box,Button } from '@chakra-ui/react';
 import { useEffect, useMemo } from 'react';
-import { Button, Box } from '@chakra-ui/react';
+import { useNavigate } from 'react-router';
+
+import { plugCircleSrc } from '@/assets';
 import {
   TitleBox,
   Token,
-  TokenContent,
-  TokenInput,
-  TokenDetailsButton,
-  TokenDetailsLogo,
-  TokenDetailsSymbol,
   TokenBalances,
   TokenBalancesDetails,
   TokenBalancesPrice,
+  TokenContent,
+  TokenDetailsButton,
+  TokenDetailsLogo,
+  TokenDetailsSymbol,
+  TokenInput,
 } from '@/components';
-
+import { FeeBox } from '@/components/core/fee-box';
+import { useQuery } from '@/hooks/use-query';
 import {
   depositViewActions,
   FeatureState,
@@ -23,12 +27,8 @@ import {
   useSwapCanisterStore,
   useTokenModalOpener,
 } from '@/store';
-import { useNavigate } from 'react-router';
-import { useQuery } from '@/hooks/use-query';
-import { plugCircleSrc } from '@/assets';
 import { formatAmount, getCurrency, getCurrencyString } from '@/utils/format';
 import { debounce } from '@/utils/function';
-import { FeeBox } from '@/components/core/fee-box';
 
 export const AssetsDeposit = () => {
   const query = useQuery();

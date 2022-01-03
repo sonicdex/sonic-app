@@ -1,3 +1,6 @@
+import { Heading, HStack, Stack, Text } from '@chakra-ui/react';
+import { Principal } from '@dfinity/principal';
+
 import {
   Asset,
   AssetImageBlock,
@@ -5,8 +8,6 @@ import {
   DisplayValue,
 } from '@/components';
 import { useActivityViewStore } from '@/store';
-import { Heading, HStack, Stack, Text } from '@chakra-ui/react';
-import { Principal } from '@dfinity/principal';
 
 export type DepositActivityProps = {
   amount: number;

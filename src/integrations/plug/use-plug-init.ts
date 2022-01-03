@@ -1,10 +1,12 @@
+import { useEffect } from 'react';
+
 import {
   FeatureState,
   plugActions,
   useAppDispatch,
   usePlugStore,
 } from '@/store';
-import { useEffect } from 'react';
+
 import { checkIsConnected, getPrincipal } from '.';
 
 export const usePlugInit = () => {

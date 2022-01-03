@@ -1,15 +1,15 @@
 import {
   Flex,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalBody,
-  Image,
   Heading,
+  Image,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalOverlay,
   Text,
 } from '@chakra-ui/react';
 
-import { logoSrc, closeSrc } from '@/assets';
+import { closeSrc,logoSrc } from '@/assets';
 
 type PlugConfirmationModalProps = {
   isOpen: boolean;

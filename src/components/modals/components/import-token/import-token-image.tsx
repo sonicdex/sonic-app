@@ -1,4 +1,5 @@
 import { Flex, Image } from '@chakra-ui/react';
+
 import { questionMarkSrc } from '@/assets';
 
 type ImportTokenImageProps = {

@@ -1,15 +1,16 @@
-import { useState } from 'react';
 import {
-  Button,
-  Image,
   Box,
-  Flex,
-  Text,
+  Button,
   Checkbox,
+  Flex,
   Heading,
+  Image,
+  Text,
 } from '@chakra-ui/react';
+import { useState } from 'react';
 
 import { redTriangleWarningSrc } from '@/assets';
+
 import { ImportTokenImage } from './import-token-image';
 
 type ImportTokenProps = {

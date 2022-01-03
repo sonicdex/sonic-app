@@ -1,8 +1,11 @@
 import { ENV } from '@/config';
 
-let timer: any | null = null;
+let timer: NodeJS.Timer | null = null;
 
-export const debounce = (fn: Function, awaitTime: number = 500) => {
+export const debounce = (
+  fn: (...args: unknown[]) => unknown,
+  awaitTime = 500
+) => {
   if (timer) clearTimeout(timer);
   timer = setTimeout(() => {
     fn();

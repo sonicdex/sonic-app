@@ -1,5 +1,5 @@
+import { Flex, HStack, Image,Text } from '@chakra-ui/react';
 import { FC } from 'react';
-import { Flex, HStack, Text, Image } from '@chakra-ui/react';
 
 import { questionMarkSrc } from '@/assets';
 import { getCurrencyString } from '@/utils/format';

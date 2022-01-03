@@ -1,7 +1,9 @@
-import { Image, Box, Flex } from '@chakra-ui/react';
-import { CircleIcon } from '@/components';
-import { doubleRightChevronSrc } from '@/assets';
+import { Box, Flex,Image } from '@chakra-ui/react';
 import { useMemo } from 'react';
+
+import { doubleRightChevronSrc } from '@/assets';
+import { CircleIcon } from '@/components';
+
 import { StepStatus } from '../..';
 
 type TransactionStepProps = {

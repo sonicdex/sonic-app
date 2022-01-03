@@ -1,4 +1,17 @@
 import {
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  Box,
+  HStack,
+  Stack,
+  Text,
+} from '@chakra-ui/react';
+import { useMemo } from 'react';
+import { FaMinus, FaPlus } from 'react-icons/fa';
+import { useNavigate } from 'react-router';
+
+import {
   Asset,
   AssetIconButton,
   AssetImageBlock,
@@ -18,18 +31,6 @@ import {
   useSwapCanisterStore,
 } from '@/store';
 import { getCurrencyString } from '@/utils/format';
-import {
-  Alert,
-  AlertIcon,
-  AlertTitle,
-  Box,
-  HStack,
-  Stack,
-  Text,
-} from '@chakra-ui/react';
-import { useMemo } from 'react';
-import { FaMinus, FaPlus } from 'react-icons/fa';
-import { useNavigate } from 'react-router';
 
 const INFORMATION_TITLE = 'Liquidity Provider Rewards';
 const INFORMATION_DESCRIPTION =

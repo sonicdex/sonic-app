@@ -1,11 +1,11 @@
 import {
   Box,
-  IconButton,
   Flex,
-  Tooltip,
+  IconButton,
   Menu,
   MenuButton,
   MenuList,
+  Tooltip,
 } from '@chakra-ui/react';
 import { FaArrowLeft, FaCog } from 'react-icons/fa';
 

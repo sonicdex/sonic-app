@@ -1,10 +1,10 @@
 import {
-  Heading,
-  Text,
   Flex,
+  Heading,
+  ModalCloseButton,
   ModalContent,
   ModalContentProps,
-  ModalCloseButton,
+  Text,
 } from '@chakra-ui/react';
 import React from 'react';
 

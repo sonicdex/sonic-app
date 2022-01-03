@@ -1,6 +1,7 @@
-import { Image, Flex, Fade } from '@chakra-ui/react';
-import { checkPlainSrc } from '@/assets';
+import { Fade,Flex, Image } from '@chakra-ui/react';
 import { MouseEvent } from 'react';
+
+import { checkPlainSrc } from '@/assets';
 
 type CheckboxProps = {
   checked: boolean;

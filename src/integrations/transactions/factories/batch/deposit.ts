@@ -1,15 +1,17 @@
+import { useMemo } from 'react';
+
 import {
   DepositModalDataStep,
   modalsSliceActions,
   useAppDispatch,
 } from '@/store';
-import { useMemo } from 'react';
+
+import { Batch, Deposit } from '../..';
 import {
   useApproveTransactionMemo,
-  useDepositTransactionMemo,
   useBatchHook,
+  useDepositTransactionMemo,
 } from '..';
-import { Batch, Deposit } from '../..';
 
 export const useDepositBatch = (deposit: Deposit) => {
   const dispatch = useAppDispatch();

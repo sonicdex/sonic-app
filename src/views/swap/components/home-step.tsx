@@ -1,31 +1,36 @@
 import {
-  Button,
   Box,
+  Button,
   Flex,
   Icon,
   IconButton,
-  Tooltip,
+  Skeleton,
   Stack,
+  Tooltip,
 } from '@chakra-ui/react';
 import { useMemo, useState } from 'react';
 import { FaArrowDown } from 'react-icons/fa';
 
 import {
-  TitleBox,
-  Token,
+  ExchangeBox,
   PlugButton,
   SlippageSettings,
+  TitleBox,
+  Token,
+  TokenBalances,
+  TokenBalancesDetails,
+  TokenBalancesPrice,
   TokenContent,
   TokenDetailsButton,
   TokenDetailsLogo,
   TokenDetailsSymbol,
-  TokenBalances,
-  TokenBalancesDetails,
-  TokenBalancesPrice,
   TokenInput,
-  ExchangeBox,
 } from '@/components';
+import { ENV } from '@/config';
+import { getAppAssetsSources } from '@/config/utils';
+import { useTokenBalanceMemo } from '@/hooks';
 import { useBalances } from '@/hooks/use-balances';
+import { plug } from '@/integrations/plug';
 import {
   FeatureState,
   INITIAL_SWAP_SLIPPAGE,
@@ -40,12 +45,9 @@ import {
   useTokenModalOpener,
 } from '@/store';
 import { formatAmount, getCurrency, getCurrencyString } from '@/utils/format';
-import { getAppAssetsSources } from '@/config/utils';
-import { useTokenBalanceMemo } from '@/hooks';
-import { ENV } from '@/config';
-import { KeepInSonicBox } from './keep-in-sonic-box';
 import { debounce } from '@/utils/function';
-import { plug } from '@/integrations/plug';
+
+import { KeepInSonicBox } from './keep-in-sonic-box';
 
 export const SwapHomeStep = () => {
   const { addNotification } = useNotificationStore();
@@ -139,7 +141,7 @@ export const SwapHomeStep = () => {
       );
     } else {
       addNotification({
-        title: `Please use latest version of the Plug`,
+        title: `Please use latest version of Plug`,
         type: NotificationType.Error,
         id: String(new Date().getTime()),
       });
@@ -178,7 +180,7 @@ export const SwapHomeStep = () => {
   >(() => {
     if (isLoading) return [true, 'Loading'];
     if (isFetchingNotStarted || !from.metadata) return [true, 'Fetching'];
-    if (!to.metadata) return [true, 'Select a Token', () => {}];
+    if (!to.metadata) return [true, 'Select a Token'];
 
     if (toTokenOptions && toTokenOptions.length <= 0)
       return [true, 'No pairs available'];
@@ -239,7 +241,7 @@ export const SwapHomeStep = () => {
   ]);
 
   const selectedTokenIds = useMemo(() => {
-    let selectedIds = [];
+    const selectedIds = [];
     if (from?.metadata?.id) selectedIds.push(from.metadata.id);
     if (to?.metadata?.id) selectedIds.push(to.metadata.id);
 
@@ -399,10 +401,12 @@ export const SwapHomeStep = () => {
                 <TokenDetailsButton
                   onClick={handleSelectToToken}
                   isDisabled={selectTokenButtonDisabled}
-                  variant="gradient"
-                  colorScheme="dark-blue"
+                  variant={isLoading ? 'solid' : 'gradient'}
+                  colorScheme={isLoading ? 'gray' : 'dark-blue'}
                 >
-                  {selectTokenButtonText}
+                  <Skeleton isLoaded={!isLoading}>
+                    {selectTokenButtonText}
+                  </Skeleton>
                 </TokenDetailsButton>
               )}
 

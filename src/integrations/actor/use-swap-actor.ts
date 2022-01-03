@@ -1,5 +1,6 @@
 import { ENV } from '@/config';
 import { SwapIDL } from '@/did';
+
 import { useActor } from '.';
 
 export const useSwapActor = () =>

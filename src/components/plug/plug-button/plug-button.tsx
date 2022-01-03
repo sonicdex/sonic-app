@@ -1,6 +1,10 @@
-import { forwardRef } from 'react';
+import { Button, ButtonProps } from '@chakra-ui/button';
+import { useColorModeValue } from '@chakra-ui/color-mode';
 import type { Provider } from '@psychedelic/plug-inpage-provider';
+import { forwardRef } from 'react';
 
+import { ENV } from '@/config';
+import { requestConnect } from '@/integrations/plug';
 import {
   FeatureState,
   plugActions,
@@ -10,10 +14,6 @@ import {
 
 import { PlugLogo } from '../plug-logo/plug-logo';
 import { PLUG_WALLET_WEBSITE_URL } from './constants';
-import { Button, ButtonProps } from '@chakra-ui/button';
-import { ENV } from '@/config';
-import { requestConnect } from '@/integrations/plug';
-import { useColorModeValue } from '@chakra-ui/color-mode';
 
 export type PlugButtonProps = Omit<ButtonProps, 'color' | 'variant'> & {
   whitelist?: string[];

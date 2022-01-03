@@ -1,9 +1,11 @@
-import { CapHistoryLog } from '../history-log';
-import { getCapRootInstance } from '../connection';
 import { Principal } from '@dfinity/principal';
+
 import { ENV } from '@/config';
-import { parseCapHistoryLog } from '../utils';
+
 import { MappedCapHistoryLog } from '..';
+import { getCapRootInstance } from '../connection';
+import { CapHistoryLog } from '../history-log';
+import { parseCapHistoryLog } from '../utils';
 
 export const getUserTransactions = async (
   principalId: string,

@@ -1,4 +1,5 @@
 import { Box, Button, Flex } from '@chakra-ui/react';
+
 import { NumberInput } from '@/components';
 
 type SlippageSettingsProps = {
@@ -26,7 +27,7 @@ export const SlippageSettings = ({
   };
 
   const handleChange = (value: string) => {
-    let num = Number(value);
+    const num = Number(value);
     if (num < 0) {
       setSlippage('0');
     } else if (num > 100) {

@@ -1,5 +1,5 @@
-import { Principal } from '@dfinity/principal';
 import { JsonnableEd25519KeyIdentity } from '@dfinity/identity/lib/cjs/identity/ed25519';
+import { Principal } from '@dfinity/principal';
 
 declare global {
   export interface DfinitySubAccount {

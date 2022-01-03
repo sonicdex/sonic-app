@@ -8,13 +8,13 @@ import {
   WrapModalDataStep,
 } from '@/store';
 
-import { useBatchHook } from '..';
 import { Batch } from '../..';
+import { useBatchHook } from '..';
 import {
-  useMintWICPTransactionMemo,
-  useLedgerTransferTransactionMemo,
   useApproveTransactionMemo,
   useDepositTransactionMemo,
+  useLedgerTransferTransactionMemo,
+  useMintWICPTransactionMemo,
 } from '../transactions';
 
 export const WICP_ACCOUNT_ID =

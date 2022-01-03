@@ -1,14 +1,13 @@
+import { Principal } from '@dfinity/principal';
+import axios from 'axios';
+import BigNumber from 'bignumber.js';
 import crc32 from 'buffer-crc32';
 import CryptoJS from 'crypto-js';
-import BigNumber from 'bignumber.js';
-import axios from 'axios';
+import { useEffect, useState } from 'react';
 
 import RosettaApi from '@/apis/rosetta';
-import { useEffect, useState } from 'react';
-import { usePlugStore } from '@/store';
-
 import { BINANCE_V3_API_URL } from '@/integrations/binance/constants';
-import { Principal } from '@dfinity/principal';
+import { usePlugStore } from '@/store';
 
 export const ACCOUNT_DOMAIN_SEPERATOR = '\x0Aaccount-id';
 
@@ -141,7 +140,7 @@ const wordArrayToByteArray = (wordArray: any, length: number) => {
     result = [...result, bytes];
     i++;
   }
-  return [].concat.apply([], result) as unknown as Uint8Array;
+  return [].concat(...result) as unknown as Uint8Array;
 };
 
 export const intToHex = (val: number) =>

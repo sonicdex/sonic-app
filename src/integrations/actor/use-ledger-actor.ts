@@ -1,5 +1,6 @@
 import { ENV } from '@/config';
 import { LedgerIDL } from '@/did';
+
 import { useActor } from '.';
 
 export const useLedgerActor = () =>

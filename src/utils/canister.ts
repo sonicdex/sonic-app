@@ -2,16 +2,16 @@ import { questionMarkSrc } from '@/assets';
 import { getFromStorage } from '@/config';
 import { SwapIDL } from '@/did';
 import {
-  TokenMetadataList,
-  PairList,
-  PairBalances,
   AppTokenMetadataList,
+  PairBalances,
+  PairList,
+  TokenMetadataList,
 } from '@/models';
 
 export const desensitizationPrincipalId = (
   principalId?: string,
-  firstLength: number = 5,
-  lastLength: number = 3
+  firstLength = 5,
+  lastLength = 3
 ) => {
   if (principalId) {
     const firstPart = principalId.slice(0, firstLength);

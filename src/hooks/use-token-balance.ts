@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+
 import { useBalances } from './use-balances';
 
 export const useTokenBalanceMemo = (canisterId?: string) => {

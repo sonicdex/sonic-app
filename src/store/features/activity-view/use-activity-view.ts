@@ -1,9 +1,11 @@
+import { useEffect } from 'react';
+
 import { getUserTransactions } from '@/integrations/cap';
 import { FeatureState, useAppDispatch } from '@/store';
 import { parseResponseTokenList } from '@/utils/canister';
-import { useEffect } from 'react';
-import { activityViewActions, useActivityViewStore } from '.';
+
 import { usePlugStore, useSwapCanisterStore } from '..';
+import { activityViewActions, useActivityViewStore } from '.';
 
 export const useActivityView = () => {
   const { principalId } = usePlugStore();

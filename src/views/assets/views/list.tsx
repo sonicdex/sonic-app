@@ -1,14 +1,16 @@
-import { useNavigate } from 'react-router';
 import {
   Alert,
-  AlertTitle,
   AlertIcon,
-  // AlertDescription,
-  Stack,
+  AlertTitle,
   Box,
   HStack,
+  // AlertDescription,
+  Stack,
   Text,
 } from '@chakra-ui/react';
+import { useMemo } from 'react';
+import { FaMinus, FaPlus } from 'react-icons/fa';
+import { useNavigate } from 'react-router';
 
 import {
   Asset,
@@ -20,6 +22,7 @@ import {
   InformationBox,
   PlugButton,
 } from '@/components';
+import { useBalances } from '@/hooks/use-balances';
 import {
   assetsViewActions,
   FeatureState,
@@ -28,11 +31,7 @@ import {
   usePlugStore,
   useSwapCanisterStore,
 } from '@/store';
-
 import { theme } from '@/theme';
-import { FaMinus, FaPlus } from 'react-icons/fa';
-import { useBalances } from '@/hooks/use-balances';
-import { useMemo } from 'react';
 
 export const Assets = () => {
   const dispatch = useAppDispatch();

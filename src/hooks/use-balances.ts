@@ -1,3 +1,6 @@
+import { Principal } from '@dfinity/principal';
+import { useCallback, useMemo } from 'react';
+
 import { ENV, getFromStorage, saveToStorage } from '@/config';
 import { ICP_TOKEN_METADATA } from '@/constants';
 import { SwapIDL, TokenIDL, WICPIDL } from '@/did';
@@ -14,8 +17,6 @@ import { useKeepSync } from '@/store/features/keep-sync';
 import { parseResponseUserLPBalances } from '@/utils/canister';
 import { parseAmount } from '@/utils/format';
 import { getICPBalance } from '@/utils/icp';
-import { Principal } from '@dfinity/principal';
-import { useCallback, useMemo } from 'react';
 
 export const useBalances = () => {
   const { principalId } = usePlugStore();

@@ -1,20 +1,22 @@
+import { useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import {
   modalsSliceActions,
   SwapModalDataStep,
   useAppDispatch,
   useSwapCanisterStore,
 } from '@/store';
-import { useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+
+import { Batch, Swap } from '../..';
 import {
   useApproveTransactionMemo,
+  useBatchHook,
   useDepositTransactionMemo,
   useSwapExactTokensTransactionMemo,
   useWithdrawTransactionMemo,
-  useBatchHook,
 } from '..';
-import { Batch, Swap } from '../..';
-import { getDepositTransactions, getAmountDependsOnBalance } from './utils';
+import { getAmountDependsOnBalance,getDepositTransactions } from './utils';
 
 export interface ExtraDepositSwapBatchOptions {
   keepInSonic: boolean;

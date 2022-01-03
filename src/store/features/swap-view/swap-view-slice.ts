@@ -1,7 +1,8 @@
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+
 import { TokenData, TokenMetadataList } from '@/models';
 import type { RootState } from '@/store';
 import { FeatureState } from '@/store';
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export type SwapTokenDataKey = 'from' | 'to';
 

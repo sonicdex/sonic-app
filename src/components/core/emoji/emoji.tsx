@@ -1,5 +1,5 @@
-import React from 'react';
 import { chakra, forwardRef } from '@chakra-ui/system';
+import React from 'react';
 
 export type EmojiProps = {
   label: string;

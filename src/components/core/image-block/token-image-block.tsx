@@ -1,6 +1,7 @@
-import { questionMarkSrc } from '@/assets';
 import { Image, SkeletonCircle } from '@chakra-ui/react';
 import React from 'react';
+
+import { questionMarkSrc } from '@/assets';
 
 export type TokenImageBlockProps = {
   isLoading?: boolean;

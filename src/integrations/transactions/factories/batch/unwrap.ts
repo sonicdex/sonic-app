@@ -1,3 +1,5 @@
+import { useMemo } from 'react';
+
 import { ENV } from '@/config';
 import { ICP_TOKEN_METADATA } from '@/constants';
 import {
@@ -7,15 +9,14 @@ import {
   useSwapCanisterStore,
   useSwapViewStore,
 } from '@/store';
-import { useMemo } from 'react';
-import { getAmountDependsOnBalance } from '.';
 
-import { useBatchHook } from '..';
 import { Batch } from '../..';
+import { useBatchHook } from '..';
 import {
-  useWithdrawWICPTransactionMemo,
   useWithdrawTransactionMemo,
+  useWithdrawWICPTransactionMemo,
 } from '../transactions';
+import { getAmountDependsOnBalance } from '.';
 
 type Unwrap = {
   amount: string;

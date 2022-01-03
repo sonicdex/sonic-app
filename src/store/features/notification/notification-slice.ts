@@ -1,6 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { FeatureState } from '@/store';
+import React from 'react';
+
 import type { RootState } from '@/store';
+import { FeatureState } from '@/store';
 
 export enum NotificationType {
   Success,
@@ -16,7 +18,7 @@ export enum NotificationType {
 
 export interface Notification {
   id: string;
-  title: string;
+  title: React.ReactNode;
   errorMessage?: string;
   type: NotificationType;
   transactionLink?: string;

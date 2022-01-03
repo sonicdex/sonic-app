@@ -1,16 +1,17 @@
-import { FC } from 'react';
-import { Heading, HStack, Image } from '@chakra-ui/react';
 import {
   Popover,
   PopoverArrow,
-  PopoverTrigger,
+  PopoverBody,
   PopoverContent,
   PopoverHeader,
-  PopoverBody,
+  PopoverTrigger,
 } from '@chakra-ui/popover';
+import { Heading, HStack, Image } from '@chakra-ui/react';
+import { FC } from 'react';
+
+import { TokenSource } from '@/components';
 
 import { TokenPopoverItem } from './token-popover-item';
-import { TokenSource } from '@/components';
 
 type TokenPopoverProps = {
   symbol?: string;

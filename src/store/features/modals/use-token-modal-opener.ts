@@ -1,6 +1,7 @@
 import { TokenMetadata } from '@/models';
 import { useAppDispatch } from '@/store';
 import { stringify } from '@/utils/format';
+
 import { modalsSliceActions } from '.';
 
 type OpenSelectTokenModalOptions = {

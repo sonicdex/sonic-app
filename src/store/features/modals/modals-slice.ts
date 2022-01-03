@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+
 import type { RootState } from '@/store';
 
 export type ModalsCallback = (arg0?: any) => any;

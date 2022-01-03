@@ -1,8 +1,8 @@
-import BigNumber from 'bignumber.js';
-
-import { parseUnits, formatUnits } from 'ethers/lib/utils';
 import { Bytes } from '@ethersproject/bytes';
+import BigNumber from 'bignumber.js';
 import { ethers } from 'ethers';
+import { formatUnits,parseUnits } from 'ethers/lib/utils';
+
 import { TokenMetadata } from '@/models';
 
 export type BigNumberish = BigNumber | Bytes | bigint | string | number;

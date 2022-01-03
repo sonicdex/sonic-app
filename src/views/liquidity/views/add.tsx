@@ -1,14 +1,17 @@
-import { useEffect, useMemo, useState } from 'react';
 import {
+  Box,
   Button,
-  Text,
   Flex,
   Image,
-  Box,
-  Stack,
   SimpleGrid,
+  Stack,
+  Text,
 } from '@chakra-ui/react';
+import BigNumber from 'bignumber.js';
+import { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router';
 
+import { plusSrc } from '@/assets';
 import {
   LPImageBlock,
   PlugButton,
@@ -23,8 +26,11 @@ import {
   TokenDetailsSymbol,
   TokenInput,
 } from '@/components';
-
-import { plusSrc } from '@/assets';
+import { SlippageSettings } from '@/components';
+import { getAppAssetsSources } from '@/config/utils';
+import { useTokenBalanceMemo } from '@/hooks';
+import { useBalances } from '@/hooks/use-balances';
+import { useQuery } from '@/hooks/use-query';
 import {
   FeatureState,
   INITIAL_LIQUIDITY_SLIPPAGE,
@@ -38,21 +44,14 @@ import {
   useSwapCanisterStore,
   useTokenModalOpener,
 } from '@/store';
-import { useNavigate } from 'react-router';
-import { useQuery } from '@/hooks/use-query';
-import { getAppAssetsSources } from '@/config/utils';
-import { SlippageSettings } from '@/components';
-import { useBalances } from '@/hooks/use-balances';
 import {
-  getCurrencyString,
+  formatAmount,
   getAmountEqualLPToken,
   getAmountLP,
+  getCurrencyString,
   getLPPercentageString,
-  formatAmount,
 } from '@/utils/format';
-import BigNumber from 'bignumber.js';
 import { debounce } from '@/utils/function';
-import { useTokenBalanceMemo } from '@/hooks';
 
 export const LiquidityAdd = () => {
   const query = useQuery();
@@ -65,7 +64,7 @@ export const LiquidityAdd = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { tokenBalances, sonicBalances, totalBalances } = useBalances();
-  const { supportedTokenList, supportedTokenListState } =
+  const { supportedTokenList, supportedTokenListState, balancesState } =
     useSwapCanisterStore();
   const openSelectTokenModal = useTokenModalOpener();
 
@@ -195,6 +194,11 @@ export const LiquidityAdd = () => {
   const token0Balance = useTokenBalanceMemo(token0.metadata?.id);
   const token1Balance = useTokenBalanceMemo(token1.metadata?.id);
 
+  const isBalancesLoading = useMemo(
+    () => balancesState === FeatureState.Loading,
+    [token0Balance, token1Balance]
+  );
+
   const isLoading = useMemo(() => {
     return supportedTokenListState === FeatureState.Loading;
   }, [supportedTokenListState]);
@@ -234,7 +238,7 @@ export const LiquidityAdd = () => {
   }, [isLoading, isReviewing, totalBalances, token0, token1]);
 
   const selectedTokenIds = useMemo(() => {
-    let selectedIds = [];
+    const selectedIds = [];
     if (token0?.metadata?.id) selectedIds.push(token0.metadata.id);
     if (token1?.metadata?.id) selectedIds.push(token1.metadata.id);
 

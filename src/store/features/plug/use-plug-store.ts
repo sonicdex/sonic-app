@@ -1,3 +1,3 @@
-import { useAppSelector, selectPlugState } from '@/store';
+import { selectPlugState,useAppSelector } from '@/store';
 
 export const usePlugStore = () => useAppSelector(selectPlugState);

@@ -1,4 +1,5 @@
 import { Box, Flex, Image, keyframes } from '@chakra-ui/react';
+
 import { greenCheckSrc } from '@/assets';
 import { StepStatus } from '@/components/modals';
 

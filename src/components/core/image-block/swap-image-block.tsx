@@ -1,6 +1,7 @@
-import { questionMarkSrc } from '@/assets';
 import { Box, Image, SkeletonCircle, Text } from '@chakra-ui/react';
 import React from 'react';
+
+import { questionMarkSrc } from '@/assets';
 
 export type SwapImageBlockProps = {
   isLoading?: boolean;

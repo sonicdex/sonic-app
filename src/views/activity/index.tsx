@@ -1,3 +1,12 @@
+import {
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  Skeleton,
+  Stack,
+  Text,
+} from '@chakra-ui/react';
+
 import { Header, PlugButton } from '@/components';
 import {
   activityViewActions,
@@ -8,14 +17,7 @@ import {
   usePlugStore,
 } from '@/store';
 import { theme } from '@/theme';
-import {
-  Alert,
-  AlertIcon,
-  AlertTitle,
-  Skeleton,
-  Stack,
-  Text,
-} from '@chakra-ui/react';
+
 import {
   AddLiquidityActivity,
   DepositActivity,

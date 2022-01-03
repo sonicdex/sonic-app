@@ -1,3 +1,5 @@
+import { Box, Button, Flex, Image, Stack } from '@chakra-ui/react';
+
 import { arrowDownSrc } from '@/assets';
 import {
   ExchangeBox,
@@ -23,7 +25,7 @@ import {
   useSwapViewStore,
 } from '@/store';
 import { debounce } from '@/utils/function';
-import { Box, Button, Flex, Image, Stack } from '@chakra-ui/react';
+
 import { KeepInSonicBox } from './keep-in-sonic-box';
 
 export const SwapReviewStep = () => {

@@ -1,14 +1,3 @@
-import { chevronDownSrc, copySrc, exitSrc } from '@/assets';
-import { disconnect } from '@/integrations/plug';
-import {
-  FeatureState,
-  NotificationType,
-  plugActions,
-  useAppDispatch,
-  useNotificationStore,
-  usePlugStore,
-} from '@/store';
-import { desensitizationPrincipalId } from '@/utils/canister';
 import {
   Box,
   Flex,
@@ -23,6 +12,19 @@ import {
 import { Spinner } from '@chakra-ui/spinner';
 import { TagProps } from '@chakra-ui/tag';
 import { FC, ReactElement, useMemo } from 'react';
+
+import { chevronDownSrc, copySrc, exitSrc } from '@/assets';
+import { disconnect } from '@/integrations/plug';
+import {
+  FeatureState,
+  NotificationType,
+  plugActions,
+  useAppDispatch,
+  useNotificationStore,
+  usePlugStore,
+} from '@/store';
+import { desensitizationPrincipalId } from '@/utils/canister';
+
 import { PlugLogo } from '..';
 
 export const PlugPrincipalIDTag: FC<TagProps> = (props): ReactElement => {

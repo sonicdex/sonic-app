@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
+import { Pair, TokenData, TokenMetadata } from '@/models';
 import { FeatureState, RootState } from '@/store';
-import { TokenData, Pair, TokenMetadata } from '@/models';
 
 export type LiquidityTokenDataKey = 'token0' | 'token1';
 

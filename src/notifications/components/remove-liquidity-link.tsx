@@ -1,6 +1,9 @@
+import { Link } from '@chakra-ui/react';
+import BigNumber from 'bignumber.js';
+import { useEffect, useMemo } from 'react';
+
 import { useBalances } from '@/hooks/use-balances';
 import { useRemoveLiquidityBatch } from '@/integrations/transactions';
-
 import {
   modalsSliceActions,
   NotificationType,
@@ -13,9 +16,6 @@ import {
 } from '@/store';
 import { deserialize, getCurrency, stringify } from '@/utils/format';
 import { createCAPLink } from '@/utils/function';
-import { Link } from '@chakra-ui/react';
-import BigNumber from 'bignumber.js';
-import { useEffect, useMemo } from 'react';
 
 export interface RemoveLiquidityLinkProps {
   id: string;
