@@ -1,12 +1,12 @@
 import { useCallback, useEffect } from 'react';
 
+import { ENV } from '@/config';
 import { FeatureState, useAppDispatch } from '@/store';
 import { getICPPrice } from '@/utils/icp';
 
+import { swapCanisterActions, useSwapCanisterStore } from '..';
 import { useKeepSync } from '../keep-sync';
 import { priceActions, usePriceStore } from '.';
-import { swapCanisterActions, useSwapCanisterStore } from '..';
-import { ENV } from '@/config';
 
 export const usePriceInit = () => {
   const { supportedTokenList, supportedTokenListState, allPairsState } =

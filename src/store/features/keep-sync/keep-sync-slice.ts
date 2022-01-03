@@ -1,5 +1,6 @@
-import { RootState, store } from '@/store';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+
+import { RootState, store } from '@/store';
 
 export const KEEP_SYNC_DEFAULT_INTERVAL = 15 * 1000;
 

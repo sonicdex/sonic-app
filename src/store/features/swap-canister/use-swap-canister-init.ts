@@ -42,8 +42,8 @@ export const useSwapCanisterInit = () => {
   }, [swapActor, principalId]);
 
   useEffect(() => {
-    getSupportedTokenList({ isRefreshing: false, interval: 60 * 1000 });
-    getAllPairs({ isRefreshing: false, interval: 60 * 1000 });
+    getSupportedTokenList({ isRefreshing: false, interval: 60 * 10000 });
+    getAllPairs({ isRefreshing: false, interval: 60 * 10000 });
   }, [swapActor]);
 
   const getSupportedTokenList = useKeepSync(
@@ -61,6 +61,7 @@ export const useSwapCanisterInit = () => {
             const response = await swapActor.getSupportedTokenList();
 
             if (response) {
+              console.log(parseResponseSupportedTokenList(response));
               dispatch(
                 swapCanisterActions.setSupportedTokenList(
                   parseResponseSupportedTokenList(response)

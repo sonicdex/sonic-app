@@ -1,17 +1,18 @@
+import { useMemo } from 'react';
+
 import {
   modalsSliceActions,
   RemoveLiquidityModalDataStep,
   useAppDispatch,
   useSwapCanisterStore,
 } from '@/store';
-import { useMemo } from 'react';
 
+import { Batch, RemoveLiquidity } from '../..';
 import {
   useBatchHook,
-  useWithdrawTransactionMemo,
   useRemoveLiquidityTransactionMemo,
+  useWithdrawTransactionMemo,
 } from '..';
-import { Batch, RemoveLiquidity } from '../..';
 
 export interface UseRemoveLiquidityBatchOptions extends RemoveLiquidity {
   keepInSonic: boolean;

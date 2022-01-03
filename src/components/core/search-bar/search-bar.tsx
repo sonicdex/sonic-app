@@ -1,5 +1,5 @@
-import { ChangeEvent } from 'react';
 import { Box, Flex, Image } from '@chakra-ui/react';
+import { ChangeEvent } from 'react';
 
 import { searchSrc } from '@/assets';
 

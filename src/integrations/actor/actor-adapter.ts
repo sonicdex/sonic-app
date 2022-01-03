@@ -1,6 +1,7 @@
-import type { Provider } from '@psychedelic/plug-inpage-provider';
-import { IDL } from '@dfinity/candid';
 import { Actor, HttpAgent } from '@dfinity/agent';
+import { IDL } from '@dfinity/candid';
+import type { Provider } from '@psychedelic/plug-inpage-provider';
+
 import { ENV } from '@/config';
 
 import { ActorRepository, AppActors } from '.';

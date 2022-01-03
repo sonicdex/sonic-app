@@ -1,19 +1,21 @@
 import {
-  IconButton,
-  FlexProps,
-  TooltipProps,
-  Heading,
-  BoxProps,
-  Text,
-  SkeletonCircle,
   Box,
+  BoxProps,
   Flex,
-  Tooltip,
+  FlexProps,
+  Heading,
+  IconButton,
   IconButtonProps,
   Skeleton,
+  SkeletonCircle,
+  Text,
+  Tooltip,
+  TooltipProps,
 } from '@chakra-ui/react';
 import { createContext } from '@chakra-ui/react-utils';
+
 import { questionMarkSrc } from '@/assets';
+
 import { LPImageBlock, SwapImageBlock, TokenImageBlock } from '..';
 
 export type AssetType = 'swap' | 'lp' | 'token';

@@ -1,13 +1,14 @@
-import { questionMarkSrc } from '@/assets';
-import { TokenMetadata } from '@/models';
 import { Image } from '@chakra-ui/image';
 import { Box, Flex, HStack, Text } from '@chakra-ui/layout';
 import { FC } from 'react';
-import NumberFormat from 'react-number-format';
 
-type RemoveLiquidityModalAssetProps = Partial<TokenMetadata> & {
+import { questionMarkSrc } from '@/assets';
+import { AppTokenMetadata } from '@/models';
+
+import { DisplayValue } from '..';
+
+type RemoveLiquidityModalAssetProps = Partial<AppTokenMetadata> & {
   balance: string;
-  price: number;
 };
 
 export const RemoveLiquidityModalAsset: FC<RemoveLiquidityModalAssetProps> = ({
@@ -31,16 +32,11 @@ export const RemoveLiquidityModalAsset: FC<RemoveLiquidityModalAssetProps> = ({
       </HStack>
       <Box textAlign="end">
         <Text fontSize="xl" fontWeight="bold">
-          <NumberFormat value={balance} displayType="text" />
+          <DisplayValue value={balance} />
         </Text>
         <Text fontSize="xs">
           ~
-          <NumberFormat
-            value={price}
-            displayType="text"
-            prefix="$"
-            decimalScale={0}
-          />
+          <DisplayValue value={price} prefix="$" />
         </Text>
       </Box>
     </Flex>

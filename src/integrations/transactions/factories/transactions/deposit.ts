@@ -1,8 +1,10 @@
+import { Principal } from '@dfinity/principal';
+import { useMemo } from 'react';
+
 import { ENV } from '@/config';
 import { SwapIDL } from '@/did';
 import { parseAmount } from '@/utils/format';
-import { Principal } from '@dfinity/principal';
-import { useMemo } from 'react';
+
 import { CreateTransaction, Deposit } from '../../models';
 
 export const useDepositTransactionMemo: CreateTransaction<Deposit> = (

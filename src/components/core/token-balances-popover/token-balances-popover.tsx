@@ -1,31 +1,35 @@
-import { FC } from 'react';
-import { Heading, HStack, Image } from '@chakra-ui/react';
 import {
   Popover,
   PopoverArrow,
-  PopoverTrigger,
+  PopoverBody,
   PopoverContent,
   PopoverHeader,
-  PopoverBody,
+  PopoverTrigger,
 } from '@chakra-ui/popover';
+import { Heading, HStack, Image } from '@chakra-ui/react';
+import { FC, useMemo } from 'react';
 
-import { TokenPopoverItem } from './token-popover-item';
 import { TokenSource } from '@/components';
 
-type TokenPopoverProps = {
+import { TokenBalancesPopoverItem } from './token-balances-popover-item';
+
+type TokenBalancesPopoverProps = {
   symbol?: string;
   decimals?: number;
   sources?: TokenSource[];
 };
 
-export const TokenPopover: FC<TokenPopoverProps> = ({
+export const TokenBalancesPopover: FC<TokenBalancesPopoverProps> = ({
   symbol,
   decimals,
   sources = [],
 }) => {
-  sources = sources.filter((source) => source.balance && source.balance > 0);
+  const filteredSources = useMemo(
+    () => sources.filter((source) => source.balance && source.balance > 0),
+    [sources]
+  );
 
-  if (sources.length === 0) {
+  if (filteredSources.length === 0) {
     return null;
   }
 
@@ -33,7 +37,7 @@ export const TokenPopover: FC<TokenPopoverProps> = ({
     <Popover trigger="hover">
       <PopoverTrigger>
         <HStack spacing={1}>
-          {sources.map((source) => (
+          {filteredSources.map((source) => (
             <Image key={source?.src} src={source?.src} />
           ))}
         </HStack>
@@ -46,8 +50,8 @@ export const TokenPopover: FC<TokenPopoverProps> = ({
           </Heading>
         </PopoverHeader>
         <PopoverBody>
-          {sources.map((source) => (
-            <TokenPopoverItem
+          {filteredSources.map((source) => (
+            <TokenBalancesPopoverItem
               key={source.name}
               decimals={decimals}
               symbol={symbol}

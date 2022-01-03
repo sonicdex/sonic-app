@@ -1,3 +1,5 @@
+import { useMemo } from 'react';
+
 import {
   AddLiquidityModalDataStep,
   modalsSliceActions,
@@ -5,16 +7,16 @@ import {
   useLiquidityViewStore,
   useSwapCanisterStore,
 } from '@/store';
-import { useMemo } from 'react';
+
+import { AddLiquidity, Batch, Deposit } from '../..';
 import {
-  useBatchHook,
   useAddLiquidityTransactionMemo,
   useApproveTransactionMemo,
+  useBatchHook,
   useDepositTransactionMemo,
 } from '..';
-import { AddLiquidity, Batch, Deposit } from '../..';
 import { useCreatePairTransactionMemo } from '../transactions/create-pair';
-import { getDepositTransactions, getAmountDependsOnBalance } from './utils';
+import { getAmountDependsOnBalance,getDepositTransactions } from './utils';
 
 interface Transactions {
   [transactionName: string]: any;

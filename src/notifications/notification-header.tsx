@@ -1,6 +1,7 @@
+import { Box, Spinner } from '@chakra-ui/react';
+
 import { closeSrc, redWarningSrc, transparentGreenCheckSrc } from '@/assets';
 import { NotificationType } from '@/store';
-import { Box, Spinner } from '@chakra-ui/react';
 
 const NotificationIcon = ({ type }: { type: NotificationType }) => {
   switch (type) {

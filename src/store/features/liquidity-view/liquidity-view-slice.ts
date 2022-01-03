@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
+import { AppTokenMetadata, Pair, TokenData } from '@/models';
 import { FeatureState, RootState } from '@/store';
-import { TokenData, Pair, TokenMetadata } from '@/models';
 
 export type LiquidityTokenDataKey = 'token0' | 'token1';
 
@@ -22,8 +22,8 @@ export const INITIAL_LIQUIDITY_SLIPPAGE = '0.50';
 const initialState: LiquidityViewState = {
   isBannerOpened: true,
   pair: undefined,
-  pairState: 'idle' as FeatureState,
-  state: 'idle' as FeatureState,
+  pairState: 'not-started' as FeatureState,
+  state: 'not-started' as FeatureState,
   removeAmountPercentage: 100,
   token0: {
     metadata: undefined,
@@ -67,7 +67,7 @@ export const liquidityViewSlice = createSlice({
       state,
       action: PayloadAction<{
         data: LiquidityTokenDataKey;
-        token?: TokenMetadata;
+        token?: AppTokenMetadata;
       }>
     ) => {
       state[action.payload.data].metadata = action.payload.token;

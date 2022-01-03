@@ -1,24 +1,4 @@
 import {
-  Asset,
-  AssetIconButton,
-  AssetImageBlock,
-  AssetTitleBlock,
-  Header,
-  InformationBox,
-  PlugButton,
-} from '@/components';
-import { TokenMetadata } from '@/models';
-import {
-  FeatureState,
-  liquidityViewActions,
-  modalsSliceActions,
-  useAppDispatch,
-  useLiquidityViewStore,
-  usePlugStore,
-  useSwapCanisterStore,
-} from '@/store';
-import { getCurrencyString } from '@/utils/format';
-import {
   Alert,
   AlertIcon,
   AlertTitle,
@@ -30,6 +10,28 @@ import {
 import { useMemo } from 'react';
 import { FaMinus, FaPlus } from 'react-icons/fa';
 import { useNavigate } from 'react-router';
+
+import {
+  Asset,
+  AssetIconButton,
+  AssetImageBlock,
+  AssetTitleBlock,
+  DisplayValue,
+  Header,
+  InformationBox,
+  PlugButton,
+} from '@/components';
+import { AppTokenMetadata } from '@/models';
+import {
+  FeatureState,
+  liquidityViewActions,
+  modalsSliceActions,
+  useAppDispatch,
+  useLiquidityViewStore,
+  usePlugStore,
+  useSwapCanisterStore,
+} from '@/store';
+import { getCurrencyString } from '@/utils/format';
 
 const INFORMATION_TITLE = 'Liquidity Provider Rewards';
 const INFORMATION_DESCRIPTION =
@@ -54,12 +56,12 @@ const InformationDescription = () => (
 );
 
 type PairedUserLPToken = {
-  token0: TokenMetadata;
-  token1: TokenMetadata;
+  token0: AppTokenMetadata;
+  token1: AppTokenMetadata;
   balance: string;
 };
 
-export const Liquidity = () => {
+export const LiquidityListView = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { isConnected } = usePlugStore();
@@ -87,8 +89,8 @@ export const Liquidity = () => {
   };
 
   const handleOpenRemoveLiquidityModal = (
-    token0: TokenMetadata,
-    token1: TokenMetadata
+    token0: AppTokenMetadata,
+    token1: AppTokenMetadata
   ) => {
     dispatch(liquidityViewActions.setToken({ data: 'token0', token: token0 }));
     dispatch(liquidityViewActions.setToken({ data: 'token1', token: token1 }));
@@ -157,8 +159,8 @@ export const Liquidity = () => {
       <Header
         title="Your Liquidity Positions"
         buttonText="Create Position"
-        onButtonClick={moveToAddLiquidityView}
-        isLoading={isRefreshing}
+        onButtonClick={() => moveToAddLiquidityView()}
+        isRefreshing={isRefreshing}
       />
 
       {!isConnected ? (
@@ -234,7 +236,7 @@ export const Liquidity = () => {
                   <Text fontWeight="bold" color="gray.400">
                     LP Tokens
                   </Text>
-                  <Text fontWeight="bold">{balance}</Text>
+                  <DisplayValue value={balance} />
                 </Box>
 
                 <Box>

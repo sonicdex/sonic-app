@@ -1,7 +1,8 @@
 import { Button, Modal, ModalOverlay } from '@chakra-ui/react';
 
-import { TransactionFailedModalContent } from './components';
 import { modalsSliceActions, useAppDispatch, useModalsStore } from '@/store';
+
+import { TransactionFailedModalContent } from './components';
 
 export const AddLiquidityFailModal = () => {
   const {

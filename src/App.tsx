@@ -1,28 +1,33 @@
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import isMobile from 'ismobilejs';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 
 import { NotificationManager } from '@/notifications';
-import { Activity, Assets, Liquidity, LiquidityAdd, Swap } from '@/views';
+import {
+  ActivityListView,
+  AssetsDepositView,
+  AssetsListView,
+  AssetsWithdrawView,
+  LiquidityAddView,
+  LiquidityListView,
+  SwapView,
+} from '@/views';
 
 import { EmptyMobile, Layout } from './components';
 import {
+  AddLiquidityFailModal,
   AddLiquidityProgressModal,
+  DepositProgressModal,
+  RemoveLiquidityFailModal,
+  RemoveLiquidityModal,
   RemoveLiquidityProgressModal,
   SwapFailModal,
   SwapProgressModal,
   TokenSelectModal,
-  WithdrawProgressModal,
-  DepositProgressModal,
   UnwrapProgressModal,
+  WithdrawProgressModal,
   WrapProgressModal,
-  RemoveLiquidityModal,
-  AddLiquidityFailModal,
-  RemoveLiquidityFailModal,
 } from './components/modals';
-
 import { usePlugInit } from './integrations/plug';
-import { AssetsDeposit } from './views/assets/views/deposit';
-import { AssetsWithdraw } from './views/assets/views/withdraw';
 import {
   useLiquidityViewInit,
   usePriceInit,
@@ -62,16 +67,16 @@ export const App = () => {
         <RemoveLiquidityFailModal />
 
         <Routes>
-          <Route path="/swap" element={<Swap />} />
+          <Route path="/swap" element={<SwapView />} />
 
-          <Route path="/assets" element={<Assets />} />
-          <Route path="/assets/withdraw" element={<AssetsWithdraw />} />
-          <Route path="/assets/deposit" element={<AssetsDeposit />} />
+          <Route path="/assets" element={<AssetsListView />} />
+          <Route path="/assets/withdraw" element={<AssetsWithdrawView />} />
+          <Route path="/assets/deposit" element={<AssetsDepositView />} />
 
-          <Route path="/liquidity" element={<Liquidity />} />
-          <Route path="/liquidity/add" element={<LiquidityAdd />} />
+          <Route path="/liquidity" element={<LiquidityListView />} />
+          <Route path="/liquidity/add" element={<LiquidityAddView />} />
 
-          <Route path="/activity" element={<Activity />} />
+          <Route path="/activity" element={<ActivityListView />} />
           <Route path="*" element={<Navigate to="/swap" />} />
         </Routes>
       </Layout>

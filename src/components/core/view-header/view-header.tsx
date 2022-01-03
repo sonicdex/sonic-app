@@ -1,28 +1,17 @@
-import {
-  Box,
-  IconButton,
-  Flex,
-  Tooltip,
-  Menu,
-  MenuButton,
-  MenuList,
-} from '@chakra-ui/react';
-import { FaArrowLeft, FaCog } from 'react-icons/fa';
+import { Box, Flex, IconButton, Tooltip } from '@chakra-ui/react';
+import { FaArrowLeft } from 'react-icons/fa';
 
-type TitleBoxProps = {
+type ViewHeaderProps = {
   title: string;
   onArrowBack?: () => void;
-  settings?: React.ReactNode;
 };
 
-export const TitleBox: React.FC<TitleBoxProps> = ({
+export const ViewHeader: React.FC<ViewHeaderProps> = ({
   title,
   onArrowBack,
-  settings,
   children,
 }) => {
-  const headerBottomRadius = children ? 0 : 20;
-  const titleRightAdjustment = settings ? 8 : 'auto';
+  const titleRightAdjustment = children ? 8 : 'auto';
   const titleLeftAdjustment = onArrowBack ? 8 : 'auto';
 
   return (
@@ -36,7 +25,7 @@ export const TitleBox: React.FC<TitleBoxProps> = ({
         fontWeight={700}
         textAlign="center"
         borderTopRadius={20}
-        borderBottomRadius={headerBottomRadius}
+        borderBottomRadius={20}
         direction="row"
         align="center"
       >
@@ -61,29 +50,8 @@ export const TitleBox: React.FC<TitleBoxProps> = ({
         >
           {title}
         </Box>
-        {settings && (
-          <Menu>
-            <MenuButton
-              as={IconButton}
-              isRound
-              size="sm"
-              aria-label="settings"
-              icon={<FaCog />}
-              ml="auto"
-            />
-            <MenuList
-              bg="#1E1E1E"
-              border="none"
-              borderRadius={20}
-              ml={-20}
-              py={0}
-            >
-              {settings}
-            </MenuList>
-          </Menu>
-        )}
+        {children}
       </Flex>
-      {children}
     </Flex>
   );
 };

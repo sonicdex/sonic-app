@@ -117,7 +117,7 @@ export namespace SwapStorageIDL {
     index: bigint;
     amount: bigint;
   }
-  export interface Factory extends Storage {}
+  export type Factory = Storage
 
   export const factory: IDL.InterfaceFactory = ({ IDL }) => {
     const Operation__1 = IDL.Variant({

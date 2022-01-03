@@ -1,12 +1,11 @@
 import {
+  addNotification,
   FeatureState,
   Notification,
-  selectNotificationState,
-  addNotification,
   popNotification,
+  selectNotificationState,
   setNotificationState,
 } from '@/store';
-
 import { useAppDispatch, useAppSelector } from '@/store';
 
 export const useNotificationStore = () => {

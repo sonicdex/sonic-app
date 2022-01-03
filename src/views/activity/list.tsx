@@ -1,3 +1,12 @@
+import {
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  Skeleton,
+  Stack,
+  Text,
+} from '@chakra-ui/react';
+
 import { Header, PlugButton } from '@/components';
 import {
   activityViewActions,
@@ -8,23 +17,17 @@ import {
   usePlugStore,
 } from '@/store';
 import { theme } from '@/theme';
-import {
-  Alert,
-  AlertIcon,
-  AlertTitle,
-  Skeleton,
-  Stack,
-  Text,
-} from '@chakra-ui/react';
+
 import {
   AddLiquidityActivity,
   DepositActivity,
+  LoadingActivity,
+  RemoveLiquidityActivity,
   SwapActivity,
   WithdrawActivity,
 } from './components';
-import { LoadingActivity } from './components/loading-activity';
-import { RemoveLiquidityActivity } from './components/remove-liquidity-activity';
-export const Activity = () => {
+
+export const ActivityListView = () => {
   useActivityView();
   const { isConnected } = usePlugStore();
   const { activityList, state, page, endReached } = useActivityViewStore();
@@ -71,7 +74,7 @@ export const Activity = () => {
       <>
         <Header
           title="Your Activity"
-          isLoading={state === FeatureState.Loading}
+          isRefreshing={state === FeatureState.Loading}
         />
         <Text textAlign="center" color="#888E8F">
           You have no activity
@@ -84,7 +87,7 @@ export const Activity = () => {
     <>
       <Header
         title="Your Activity"
-        isLoading={state === FeatureState.Loading}
+        isRefreshing={state === FeatureState.Loading}
       />
       <Stack
         mt={-5}

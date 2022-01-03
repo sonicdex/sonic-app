@@ -1,14 +1,16 @@
-import { useNavigate } from 'react-router';
 import {
   Alert,
-  AlertTitle,
   AlertIcon,
-  // AlertDescription,
-  Stack,
+  AlertTitle,
   Box,
   HStack,
+  // AlertDescription,
+  Stack,
   Text,
 } from '@chakra-ui/react';
+import { useMemo } from 'react';
+import { FaMinus, FaPlus } from 'react-icons/fa';
+import { useNavigate } from 'react-router';
 
 import {
   Asset,
@@ -20,6 +22,7 @@ import {
   InformationBox,
   PlugButton,
 } from '@/components';
+import { useBalances } from '@/hooks/use-balances';
 import {
   assetsViewActions,
   FeatureState,
@@ -28,13 +31,9 @@ import {
   usePlugStore,
   useSwapCanisterStore,
 } from '@/store';
-
 import { theme } from '@/theme';
-import { FaMinus, FaPlus } from 'react-icons/fa';
-import { useBalances } from '@/hooks/use-balances';
-import { useMemo } from 'react';
 
-export const Assets = () => {
+export const AssetsListView = () => {
   const dispatch = useAppDispatch();
   const { isBannerOpened } = useAssetsViewStore();
   const { totalBalances } = useBalances();
@@ -60,23 +59,34 @@ export const Assets = () => {
     dispatch(assetsViewActions.setIsBannerOpened(false));
   };
 
-  const isSupportedTokenListPresent = useMemo(() => {
-    return supportedTokenList && supportedTokenList.length > 0;
-  }, [supportedTokenList]);
+  const notEmptyTokenList = useMemo(() => {
+    if (supportedTokenList && totalBalances) {
+      return supportedTokenList.filter(
+        (token) => totalBalances[token.id] !== 0
+      );
+    }
 
-  const shouldShowSkeletons = useMemo(() => {
-    return (
+    return [];
+  }, [supportedTokenList, totalBalances]);
+
+  const isTokenListPresent = useMemo(
+    () => notEmptyTokenList && notEmptyTokenList.length > 0,
+    [notEmptyTokenList]
+  );
+
+  const isLoading = useMemo(
+    () =>
       supportedTokenListState === FeatureState.Loading ||
-      balancesState === FeatureState.Loading
-    );
-  }, [supportedTokenListState, balancesState]);
+      balancesState === FeatureState.Loading,
+    [supportedTokenListState, balancesState]
+  );
 
-  const shouldShowHeaderLoading = useMemo(() => {
-    return (
+  const isRefreshing = useMemo(
+    () =>
       supportedTokenListState === FeatureState.Refreshing ||
-      balancesState === FeatureState.Refreshing
-    );
-  }, [supportedTokenListState, balancesState]);
+      balancesState === FeatureState.Refreshing,
+    [supportedTokenListState, balancesState]
+  );
 
   return (
     <>
@@ -94,7 +104,7 @@ export const Assets = () => {
         </InformationBox>
       )}
 
-      <Header title="Your Assets" isLoading={shouldShowHeaderLoading} />
+      <Header title="Your Assets" isRefreshing={isRefreshing} />
 
       {!isConnected ? (
         <>
@@ -135,7 +145,7 @@ export const Assets = () => {
             pb={8}
             overflow="auto"
           >
-            {shouldShowSkeletons ? (
+            {isLoading ? (
               <>
                 <Asset isLoading>
                   <AssetImageBlock />
@@ -161,8 +171,8 @@ export const Assets = () => {
                   </HStack>
                 </Asset>
               </>
-            ) : isSupportedTokenListPresent ? (
-              supportedTokenList!.map(
+            ) : isTokenListPresent ? (
+              notEmptyTokenList!.map(
                 ({ id, name, symbol, decimals, price, logo }) => (
                   <Asset key={id} imageSources={[logo]}>
                     <HStack spacing={4}>
@@ -185,7 +195,11 @@ export const Assets = () => {
                         <Text fontWeight="bold" color="gray.400">
                           Price
                         </Text>
-                        <Text fontWeight="bold">{`$${price}`}</Text>
+                        <DisplayValue
+                          fontWeight="bold"
+                          prefix="$"
+                          value={price}
+                        />
                       </Box>
                     )}
 
@@ -205,7 +219,11 @@ export const Assets = () => {
                   </Asset>
                 )
               )
-            ) : null}
+            ) : (
+              <Text textAlign="center" color="gray.400">
+                No assets available
+              </Text>
+            )}
           </Stack>
         </Box>
       )}

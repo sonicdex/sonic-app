@@ -1,7 +1,8 @@
+import { Box, Button, Flex, Image, Stack } from '@chakra-ui/react';
+
 import { arrowDownSrc } from '@/assets';
 import {
   ExchangeBox,
-  TitleBox,
   Token,
   TokenBalances,
   TokenBalancesDetails,
@@ -11,6 +12,7 @@ import {
   TokenDetailsLogo,
   TokenDetailsSymbol,
   TokenInput,
+  ViewHeader,
 } from '@/components';
 import { getAppAssetsSources } from '@/config/utils';
 import {
@@ -23,7 +25,7 @@ import {
   useSwapViewStore,
 } from '@/store';
 import { debounce } from '@/utils/function';
-import { Box, Button, Flex, Image, Stack } from '@chakra-ui/react';
+
 import { KeepInSonicBox } from './keep-in-sonic-box';
 
 export const SwapReviewStep = () => {
@@ -47,7 +49,7 @@ export const SwapReviewStep = () => {
 
   return (
     <Stack spacing={4}>
-      <TitleBox
+      <ViewHeader
         title="Swap"
         onArrowBack={() => dispatch(swapViewActions.setStep(SwapStep.Home))}
       />
@@ -60,7 +62,6 @@ export const SwapReviewStep = () => {
             }
             tokenListMetadata={fromTokenOptions}
             tokenMetadata={from.metadata}
-            price={0}
             sources={getAppAssetsSources({
               balances: {
                 plug:
@@ -109,7 +110,6 @@ export const SwapReviewStep = () => {
             }
             tokenListMetadata={toTokenOptions}
             tokenMetadata={to.metadata}
-            price={0}
             sources={getAppAssetsSources({
               balances: {
                 plug:

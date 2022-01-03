@@ -1,12 +1,12 @@
-import { useState, ReactNode } from 'react';
 import {
   Box,
-  Tooltip,
   BoxProps,
-  Flex,
-  Collapse,
   CloseButton,
+  Collapse,
+  Flex,
+  Tooltip,
 } from '@chakra-ui/react';
+import { ReactNode,useState } from 'react';
 
 type InformationBoxTypes = BoxProps & {
   title: string;

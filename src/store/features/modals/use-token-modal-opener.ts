@@ -1,10 +1,11 @@
-import { TokenMetadata } from '@/models';
+import { AppTokenMetadata } from '@/models';
 import { useAppDispatch } from '@/store';
 import { stringify } from '@/utils/format';
+
 import { modalsSliceActions } from '.';
 
 type OpenSelectTokenModalOptions = {
-  metadata?: TokenMetadata[];
+  metadata?: AppTokenMetadata[];
   onSelect: (tokenId?: string) => void;
   selectedTokenIds?: string[];
 };

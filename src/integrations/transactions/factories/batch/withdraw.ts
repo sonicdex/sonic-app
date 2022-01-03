@@ -3,8 +3,9 @@ import {
   useAppDispatch,
   WithdrawModalDataStep,
 } from '@/store';
-import { useWithdrawTransactionMemo, useBatchHook } from '..';
+
 import { Batch, Withdraw } from '../..';
+import { useBatchHook,useWithdrawTransactionMemo } from '..';
 
 export const useWithdrawBatch = (withdraw: Withdraw) => {
   const dispatch = useAppDispatch();

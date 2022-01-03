@@ -1,12 +1,3 @@
-import { infoSrc } from '@/assets';
-import { TokenData } from '@/models';
-import { useSwapCanisterStore } from '@/store';
-import {
-  calculatePriceImpact,
-  getAmountOut,
-  getAmountOutMin,
-  getCurrencyString,
-} from '@/utils/format';
 import {
   Flex,
   Image,
@@ -23,6 +14,16 @@ import {
 } from '@chakra-ui/react';
 import React from 'react';
 import { FaArrowRight } from 'react-icons/fa';
+
+import { infoSrc } from '@/assets';
+import { TokenData } from '@/models';
+import { useSwapCanisterStore } from '@/store';
+import {
+  calculatePriceImpact,
+  getAmountOut,
+  getAmountOutMin,
+  getCurrencyString,
+} from '@/utils/format';
 
 export type ExchangeBoxProps = {
   from: TokenData;

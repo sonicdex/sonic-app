@@ -66,7 +66,7 @@ export namespace TokenIDL {
     ) => Promise<Result>;
     withdraw: (arg_0: bigint, arg_1: string) => Promise<Result>;
   }
-  export interface Factory extends Token {}
+  export type Factory = Token
 
   export const factory: IDL.InterfaceFactory = ({ IDL }) => {
     const TxError = IDL.Variant({

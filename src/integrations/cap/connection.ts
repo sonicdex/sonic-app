@@ -1,5 +1,6 @@
-import { ENV } from '@/config';
 import { CapRoot } from '@psychedelic/cap-js';
+
+import { ENV } from '@/config';
 
 export interface CapRouterInstanceProps {
   canisterId: string;

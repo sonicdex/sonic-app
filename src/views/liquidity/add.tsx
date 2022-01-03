@@ -1,18 +1,27 @@
-import { useEffect, useMemo, useState } from 'react';
 import {
-  Button,
-  Text,
-  Flex,
-  Image,
   Box,
-  Stack,
+  Button,
+  Flex,
+  IconButton,
+  Image,
+  Menu,
+  MenuButton,
+  MenuList,
   SimpleGrid,
+  Skeleton,
+  Stack,
+  Text,
+  Tooltip,
 } from '@chakra-ui/react';
+import BigNumber from 'bignumber.js';
+import { useEffect, useMemo, useState } from 'react';
+import { FaCog } from 'react-icons/fa';
+import { useNavigate } from 'react-router';
 
+import { plusSrc } from '@/assets';
 import {
   LPImageBlock,
   PlugButton,
-  TitleBox,
   Token,
   TokenBalances,
   TokenBalancesDetails,
@@ -22,9 +31,13 @@ import {
   TokenDetailsLogo,
   TokenDetailsSymbol,
   TokenInput,
+  ViewHeader,
 } from '@/components';
-
-import { plusSrc } from '@/assets';
+import { SlippageSettings } from '@/components';
+import { getAppAssetsSources } from '@/config/utils';
+import { useTokenBalanceMemo } from '@/hooks';
+import { useBalances } from '@/hooks/use-balances';
+import { useQuery } from '@/hooks/use-query';
 import {
   FeatureState,
   INITIAL_LIQUIDITY_SLIPPAGE,
@@ -38,23 +51,16 @@ import {
   useSwapCanisterStore,
   useTokenModalOpener,
 } from '@/store';
-import { useNavigate } from 'react-router';
-import { useQuery } from '@/hooks/use-query';
-import { getAppAssetsSources } from '@/config/utils';
-import { SlippageSettings } from '@/components';
-import { useBalances } from '@/hooks/use-balances';
 import {
-  getCurrencyString,
+  formatAmount,
   getAmountEqualLPToken,
   getAmountLP,
+  getCurrencyString,
   getLPPercentageString,
-  formatAmount,
 } from '@/utils/format';
-import BigNumber from 'bignumber.js';
 import { debounce } from '@/utils/function';
-import { useTokenBalanceMemo } from '@/hooks';
 
-export const LiquidityAdd = () => {
+export const LiquidityAddView = () => {
   const query = useQuery();
 
   const { isConnected } = usePlugStore();
@@ -65,7 +71,7 @@ export const LiquidityAdd = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { tokenBalances, sonicBalances, totalBalances } = useBalances();
-  const { supportedTokenList, supportedTokenListState } =
+  const { supportedTokenList, supportedTokenListState, balancesState } =
     useSwapCanisterStore();
   const openSelectTokenModal = useTokenModalOpener();
 
@@ -121,21 +127,24 @@ export const LiquidityAdd = () => {
       openSelectTokenModal({
         metadata: supportedTokenList,
         onSelect: (tokenId) => {
-          const foundToken = supportedTokenList!.find(
-            (token) => token.id === tokenId
-          );
-          dispatch(
-            liquidityViewActions.setToken({
-              data: dataKey,
-              token: foundToken,
-            })
-          );
-          dispatch(
-            liquidityViewActions.setValue({ data: 'token0', value: '' })
-          );
-          dispatch(
-            liquidityViewActions.setValue({ data: 'token1', value: '' })
-          );
+          if (tokenId && supportedTokenList) {
+            const foundToken = supportedTokenList.find(
+              ({ id }) => id === tokenId
+            );
+
+            dispatch(
+              liquidityViewActions.setToken({
+                data: dataKey,
+                token: foundToken,
+              })
+            );
+            dispatch(
+              liquidityViewActions.setValue({ data: 'token0', value: '' })
+            );
+            dispatch(
+              liquidityViewActions.setValue({ data: 'token1', value: '' })
+            );
+          }
         },
         selectedTokenIds,
       });
@@ -195,6 +204,11 @@ export const LiquidityAdd = () => {
   const token0Balance = useTokenBalanceMemo(token0.metadata?.id);
   const token1Balance = useTokenBalanceMemo(token1.metadata?.id);
 
+  const isBalancesLoading = useMemo(
+    () => balancesState === FeatureState.Loading,
+    [token0Balance, token1Balance]
+  );
+
   const isLoading = useMemo(() => {
     return supportedTokenListState === FeatureState.Loading;
   }, [supportedTokenListState]);
@@ -212,12 +226,12 @@ export const LiquidityAdd = () => {
     if (parsedToken1Value <= 0)
       return [true, `Enter ${token1.metadata.symbol} Amount`];
 
-    if (totalBalances) {
+    if (totalBalances && token0Balance && token1Balance) {
       const parsedToken0Balance = parseFloat(
-        formatAmount(token0Balance!, token0.metadata.decimals)
+        formatAmount(token0Balance, token0.metadata.decimals)
       );
       const parsedToken1Balance = parseFloat(
-        formatAmount(token1Balance!, token1.metadata.decimals)
+        formatAmount(token1Balance, token1.metadata.decimals)
       );
 
       if (parsedToken0Value > parsedToken0Balance) {
@@ -234,7 +248,7 @@ export const LiquidityAdd = () => {
   }, [isLoading, isReviewing, totalBalances, token0, token1]);
 
   const selectedTokenIds = useMemo(() => {
-    let selectedIds = [];
+    const selectedIds = [];
     if (token0?.metadata?.id) selectedIds.push(token0.metadata.id);
     if (token1?.metadata?.id) selectedIds.push(token1.metadata.id);
 
@@ -298,70 +312,83 @@ export const LiquidityAdd = () => {
     return false;
   }, [token0.value, token1.value]);
 
-  const { token0Price, token1Price, token0USDPrice, token1USDPrice } =
-    useMemo(() => {
-      if (token0.metadata && token1.metadata) {
-        if (pairData && pairData.reserve0 && pairData.reserve1) {
-          const token0Price = new BigNumber(String(pairData.reserve0))
-            .div(new BigNumber(String(pairData.reserve1)))
-            .dp(Number(token0.metadata.decimals))
-            .toFixed(3);
+  const { token0Price, token1Price } = useMemo(() => {
+    if (token0.metadata && token1.metadata) {
+      if (pairData && pairData.reserve0 && pairData.reserve1) {
+        const token0Price = new BigNumber(String(pairData.reserve0))
+          .div(new BigNumber(String(pairData.reserve1)))
+          .dp(Number(token0.metadata.decimals))
+          .toFixed(3);
 
-          const token1Price = new BigNumber(String(pairData.reserve1))
-            .div(new BigNumber(String(pairData.reserve0)))
-            .dp(Number(token1.metadata.decimals))
-            .toFixed(3);
+        const token1Price = new BigNumber(String(pairData.reserve1))
+          .div(new BigNumber(String(pairData.reserve0)))
+          .dp(Number(token1.metadata.decimals))
+          .toFixed(3);
 
-          return {
-            token0Price,
-            token1Price,
-            token0USDPrice: '0.00',
-            token1USDPrice: '0.00',
-          };
-        } else {
-          const token0Value = new BigNumber(token1.value)
-            .div(new BigNumber(token0.value))
-            .dp(token0.metadata?.decimals)
-            .toString();
-          const token1Value = new BigNumber(token0.value)
-            .div(new BigNumber(token1.value))
-            .dp(token1.metadata?.decimals)
-            .toString();
+        return {
+          token0Price,
+          token1Price,
+        };
+      } else {
+        const token0Value = new BigNumber(token1.value)
+          .div(new BigNumber(token0.value))
+          .dp(token0.metadata?.decimals)
+          .toString();
+        const token1Value = new BigNumber(token0.value)
+          .div(new BigNumber(token1.value))
+          .dp(token1.metadata?.decimals)
+          .toString();
 
-          return {
-            token0Price:
-              !token0Value ||
-              new BigNumber(token0Value).isNaN() ||
-              !new BigNumber(token0Value).isFinite()
-                ? '0.00'
-                : token0Value,
-            token1Price:
-              !token1Value ||
-              new BigNumber(token1Value).isNaN() ||
-              !new BigNumber(token1Value).isFinite()
-                ? '0.00'
-                : token1Value,
-            token0USDPrice: '0.00',
-            token1USDPrice: '0.00',
-          };
-        }
+        return {
+          token0Price:
+            !token0Value ||
+            new BigNumber(token0Value).isNaN() ||
+            !new BigNumber(token0Value).isFinite()
+              ? '0.00'
+              : token0Value,
+          token1Price:
+            !token1Value ||
+            new BigNumber(token1Value).isNaN() ||
+            !new BigNumber(token1Value).isFinite()
+              ? '0.00'
+              : token1Value,
+        };
       }
+    }
 
-      return {
-        token0Price: '0.00',
-        token1Price: '0.00',
-        token0USDPrice: '0.00',
-        token1USDPrice: '0.00',
-      };
-    }, [token0, token1, pairData]);
+    return {
+      token0Price: '0.00',
+      token1Price: '0.00',
+    };
+  }, [token0, token1, pairData]);
+
+  const token0Sources = useMemo(() => {
+    if (token0.metadata) {
+      return getAppAssetsSources({
+        balances: {
+          plug: tokenBalances ? tokenBalances[token0.metadata.id] : 0,
+          sonic: sonicBalances ? sonicBalances[token0.metadata.id] : 0,
+        },
+      });
+    }
+  }, [token0.metadata, tokenBalances, sonicBalances]);
+
+  const token1Sources = useMemo(() => {
+    if (token1.metadata) {
+      return getAppAssetsSources({
+        balances: {
+          plug: tokenBalances ? tokenBalances[token1.metadata.id] : 0,
+          sonic: sonicBalances ? sonicBalances[token1.metadata.id] : 0,
+        },
+      });
+    }
+  }, [token1.metadata, tokenBalances, sonicBalances]);
 
   useEffect(() => {
-    if (!isLoading) {
+    if (!isLoading && supportedTokenList) {
       const token1Id = query.get('token1');
       if (token1Id) {
-        const token0 = supportedTokenList?.find(
-          (token) => token.id === token1Id
-        );
+        const token0 = supportedTokenList.find(({ id }) => id === token0Id);
         dispatch(
           liquidityViewActions.setToken({
             data: 'token0',
@@ -373,9 +400,7 @@ export const LiquidityAdd = () => {
 
       const token0Id = query.get('token0');
       if (token0Id) {
-        const token1 = supportedTokenList?.find(
-          (token) => token.id === token0Id
-        );
+        const token1 = supportedTokenList.find(({ id }) => id === token1Id);
         dispatch(
           liquidityViewActions.setToken({ data: 'token1', token: token1 })
         );
@@ -386,25 +411,41 @@ export const LiquidityAdd = () => {
 
   return (
     <>
-      <TitleBox
-        onArrowBack={handlePreviousStep}
-        title="Add Liquidity"
-        settings={
-          <SlippageSettings
-            slippage={slippage}
-            setSlippage={(value) =>
-              dispatch(liquidityViewActions.setSlippage(value))
-            }
-            isAutoSlippage={autoSlippage}
-            setIsAutoSlippage={(value) => {
-              setAutoSlippage(value);
-              dispatch(
-                liquidityViewActions.setSlippage(INITIAL_LIQUIDITY_SLIPPAGE)
-              );
-            }}
-          />
-        }
-      />
+      <ViewHeader onArrowBack={handlePreviousStep} title="Add Liquidity">
+        <Menu>
+          <Tooltip label="Settings">
+            <MenuButton
+              as={IconButton}
+              isRound
+              size="sm"
+              aria-label="Adjust the slippage"
+              icon={<FaCog />}
+              ml="auto"
+            />
+          </Tooltip>
+          <MenuList
+            bg="#1E1E1E"
+            border="none"
+            borderRadius={20}
+            ml={-20}
+            py={0}
+          >
+            <SlippageSettings
+              slippage={slippage}
+              setSlippage={(value) =>
+                dispatch(liquidityViewActions.setSlippage(value))
+              }
+              isAutoSlippage={autoSlippage}
+              setIsAutoSlippage={(value) => {
+                setAutoSlippage(value);
+                dispatch(
+                  liquidityViewActions.setSlippage(INITIAL_LIQUIDITY_SLIPPAGE)
+                );
+              }}
+            />
+          </MenuList>
+        </Menu>
+      </ViewHeader>
       <Flex my={5} direction="column" alignItems="center">
         <Box width="100%">
           <Token
@@ -413,19 +454,7 @@ export const LiquidityAdd = () => {
             tokenListMetadata={supportedTokenList}
             tokenMetadata={token0.metadata}
             isDisabled={isReviewing}
-            price={token0USDPrice}
-            sources={getAppAssetsSources({
-              balances: {
-                plug:
-                  token0.metadata && tokenBalances
-                    ? tokenBalances[token0.metadata.id]
-                    : 0,
-                sonic:
-                  token0.metadata && sonicBalances
-                    ? sonicBalances[token0.metadata.id]
-                    : 0,
-              },
-            })}
+            sources={token0Sources}
             isLoading={isLoading}
           >
             <TokenContent>
@@ -465,20 +494,9 @@ export const LiquidityAdd = () => {
             tokenListMetadata={supportedTokenList}
             tokenMetadata={token1.metadata}
             isDisabled={isReviewing}
-            price={token1USDPrice}
-            sources={getAppAssetsSources({
-              balances: {
-                plug:
-                  token1.metadata && tokenBalances
-                    ? tokenBalances[token1.metadata.id]
-                    : 0,
-                sonic:
-                  token1.metadata && sonicBalances
-                    ? sonicBalances[token1.metadata.id]
-                    : 0,
-              },
-            })}
+            sources={token1Sources}
             isLoading={isLoading}
+            isBalancesLoading={isBalancesLoading}
           >
             <TokenContent>
               {token1.metadata ? (
@@ -489,10 +507,10 @@ export const LiquidityAdd = () => {
               ) : (
                 <TokenDetailsButton
                   onClick={() => handleSelectToken('token1')}
-                  variant="gradient"
-                  colorScheme="dark-blue"
+                  variant={isLoading ? 'solid' : 'gradient'}
+                  colorScheme={isLoading ? 'gray' : 'dark-blue'}
                 >
-                  Select a Token
+                  <Skeleton isLoaded={!isLoading}>Select a Token</Skeleton>
                 </TokenDetailsButton>
               )}
 

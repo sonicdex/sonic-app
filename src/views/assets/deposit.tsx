@@ -1,56 +1,58 @@
+import { Box, Button } from '@chakra-ui/react';
 import { useEffect, useMemo } from 'react';
-import { Button, Box } from '@chakra-ui/react';
+import { useNavigate } from 'react-router';
+
+import { plugCircleSrc } from '@/assets';
 import {
-  TitleBox,
   Token,
+  TokenBalances,
+  TokenBalancesDetails,
+  TokenBalancesPrice,
   TokenContent,
   TokenDetailsButton,
   TokenDetailsLogo,
   TokenDetailsSymbol,
-  TokenBalancesDetails,
-  TokenBalancesPrice,
-  TokenBalances,
   TokenInput,
+  ViewHeader,
 } from '@/components';
-
+import { FeeBox } from '@/components/core/fee-box';
+import { useQuery } from '@/hooks/use-query';
 import {
+  depositViewActions,
   FeatureState,
   NotificationType,
   useAppDispatch,
+  useDepositViewStore,
   useNotificationStore,
   useSwapCanisterStore,
   useTokenModalOpener,
-  useWithdrawViewStore,
-  withdrawViewActions,
 } from '@/store';
-import { useNavigate } from 'react-router';
-import { useQuery } from '@/hooks/use-query';
-import { sonicCircleSrc } from '@/assets';
 import { formatAmount, getCurrency, getCurrencyString } from '@/utils/format';
 import { debounce } from '@/utils/function';
-import { FeeBox } from '@/components/core/fee-box';
 
-export const AssetsWithdraw = () => {
+export const AssetsDepositView = () => {
   const query = useQuery();
-  const { amount, tokenId } = useWithdrawViewStore();
-  const {
-    supportedTokenList,
-    icpBalance,
-    sonicBalances,
-    supportedTokenListState,
-  } = useSwapCanisterStore();
+
+  const { supportedTokenList, tokenBalances, supportedTokenListState } =
+    useSwapCanisterStore();
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const { amount, tokenId } = useDepositViewStore();
   const { addNotification } = useNotificationStore();
   const openSelectTokenModal = useTokenModalOpener();
 
   const selectedTokenMetadata = useMemo(() => {
-    return supportedTokenList?.find(({ id }) => id === tokenId);
+    if (tokenId && supportedTokenList) {
+      return supportedTokenList.find(({ id }) => id === tokenId);
+    }
+    return undefined;
   }, [supportedTokenList, tokenId]);
 
   const handleSelectTokenId = (tokenId?: string) => {
-    dispatch(withdrawViewActions.setTokenId(tokenId!));
+    if (tokenId) {
+      dispatch(depositViewActions.setTokenId(tokenId));
+    }
   };
 
   const handleOpenSelectTokenModal = () => {
@@ -59,6 +61,15 @@ export const AssetsWithdraw = () => {
       onSelect: (tokenId) => handleSelectTokenId(tokenId),
       selectedTokenIds: [],
     });
+  };
+
+  const handleDeposit = () => {
+    addNotification({
+      title: `Depositing ${selectedTokenMetadata?.symbol}`,
+      type: NotificationType.Deposit,
+      id: String(new Date().getTime()),
+    });
+    debounce(() => dispatch(depositViewActions.setAmount('')), 300);
   };
 
   const [buttonDisabled, buttonMessage] = useMemo<[boolean, string]>(() => {
@@ -76,10 +87,10 @@ export const AssetsWithdraw = () => {
       return [true, `Amount must be greater than fee`];
     }
 
-    if (sonicBalances && selectedTokenMetadata) {
+    if (tokenBalances && selectedTokenMetadata) {
       const parsedBalance = parseFloat(
         formatAmount(
-          sonicBalances[selectedTokenMetadata.id],
+          tokenBalances[selectedTokenMetadata.id],
           selectedTokenMetadata.decimals
         )
       );
@@ -89,27 +100,23 @@ export const AssetsWithdraw = () => {
       }
     }
 
-    return [false, 'Withdraw'];
-  }, [amount, sonicBalances, selectedTokenMetadata]);
+    return [false, 'Deposit'];
+  }, [amount, tokenBalances, selectedTokenMetadata]);
 
   const tokenBalance = useMemo(() => {
-    if (tokenId === 'ICP') {
-      return icpBalance;
-    }
-
-    if (sonicBalances && tokenId) {
-      return sonicBalances[tokenId];
+    if (tokenBalances && tokenId) {
+      return tokenBalances[tokenId];
     }
 
     return 0;
-  }, [sonicBalances, tokenId]);
+  }, [tokenBalances, tokenId]);
 
   useEffect(() => {
     const tokenId = query.get('tokenId');
-    const amount = query.get('amount');
+    const fromQueryValue = query.get('amount');
 
-    if (amount) {
-      dispatch(withdrawViewActions.setAmount(amount));
+    if (fromQueryValue) {
+      dispatch(depositViewActions.setAmount(fromQueryValue));
     }
 
     if (tokenId) {
@@ -117,55 +124,47 @@ export const AssetsWithdraw = () => {
     }
 
     return () => {
-      dispatch(withdrawViewActions.setAmount(''));
+      dispatch(depositViewActions.setAmount(''));
     };
   }, []);
 
-  const handleWithdraw = () => {
-    addNotification({
-      title: `Withdrawing ${selectedTokenMetadata?.symbol}`,
-      type: NotificationType.Withdraw,
-      id: String(new Date().getTime()),
-    });
-
-    debounce(() => dispatch(withdrawViewActions.setAmount('')), 300);
-  };
-
   const handleMaxClick = () => {
-    dispatch(
-      withdrawViewActions.setAmount(
-        getCurrencyString(tokenBalance, selectedTokenMetadata?.decimals)
-      )
-    );
+    if (tokenBalance && selectedTokenMetadata)
+      dispatch(
+        depositViewActions.setAmount(
+          getCurrencyString(
+            tokenBalance - Number(selectedTokenMetadata.fee),
+            selectedTokenMetadata.decimals
+          )
+        )
+      );
   };
 
-  const isLoading =
-    supportedTokenListState === FeatureState.Loading &&
-    !supportedTokenList &&
-    !selectedTokenMetadata &&
-    !tokenId;
+  const isLoading = useMemo(
+    () => supportedTokenListState === FeatureState.Loading,
+    [supportedTokenListState]
+  );
 
   return (
     <>
-      <TitleBox
-        title="Withdraw Asset"
+      <ViewHeader
+        title="Deposit Asset"
         onArrowBack={() => navigate('/assets')}
       />
       <Box my={5}>
         <Token
-          value={amount}
-          setValue={(value) => dispatch(withdrawViewActions.setAmount(value))}
-          tokenListMetadata={supportedTokenList}
-          tokenMetadata={selectedTokenMetadata}
-          price={0}
           isLoading={isLoading}
+          value={amount}
+          setValue={(value) => dispatch(depositViewActions.setAmount(value))}
           sources={[
             {
-              name: 'Sonic',
-              src: sonicCircleSrc,
+              name: 'Plug Wallet',
+              src: plugCircleSrc,
               balance: tokenBalance,
             },
           ]}
+          tokenListMetadata={supportedTokenList}
+          tokenMetadata={selectedTokenMetadata}
         >
           <TokenContent>
             <TokenDetailsButton onClick={handleOpenSelectTokenModal}>
@@ -181,15 +180,15 @@ export const AssetsWithdraw = () => {
           </TokenBalances>
         </Token>
       </Box>
-      <FeeBox token={selectedTokenMetadata} />
+      <FeeBox token={selectedTokenMetadata} isDeposit />
       <Button
         isFullWidth
+        size="lg"
         variant="gradient"
         colorScheme="dark-blue"
-        size="lg"
-        onClick={handleWithdraw}
-        isLoading={isLoading}
         isDisabled={buttonDisabled}
+        onClick={handleDeposit}
+        isLoading={supportedTokenListState === FeatureState.Loading}
       >
         {buttonMessage}
       </Button>

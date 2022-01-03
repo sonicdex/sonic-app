@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { UseHttp, UseHttpProps } from './models';
+
 import { HttpClientAdapter } from './http-client-adapter';
+import { UseHttp, UseHttpProps } from './models';
 
 export const useHttp = <Request = any, Response = any>({
   url,

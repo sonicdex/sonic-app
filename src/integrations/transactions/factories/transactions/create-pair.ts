@@ -5,9 +5,9 @@ import { useMemo } from 'react';
 import { ENV } from '@/config';
 import { SwapIDL } from '@/did';
 
-import { CreateTransaction, CreatePair } from '../../models';
+import { CreatePair,CreateTransaction } from '../../models';
 
-export interface CreatePairTransaction extends Transaction {}
+export type CreatePairTransaction = Transaction
 
 export interface CreatePairExtraArgs {
   principal: Principal;

@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { FeatureState } from '@/store';
+
 import type { RootState } from '@/store';
+import { FeatureState } from '@/store';
 
 interface WithdrawViewState {
   state: FeatureState;

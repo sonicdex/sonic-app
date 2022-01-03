@@ -1,11 +1,13 @@
+import { useEffect } from 'react';
+
 import { ENV } from '@/config';
 import { getICPTokenMetadata } from '@/constants';
 import { useAppDispatch } from '@/store';
 import { parseResponseTokenList } from '@/utils/canister';
 import { getAmountOut } from '@/utils/format';
-import { useEffect } from 'react';
-import { swapViewActions, useSwapViewStore } from '.';
+
 import { usePriceStore, useSwapCanisterStore } from '..';
+import { swapViewActions, useSwapViewStore } from '.';
 
 export const useSwapView = () => {
   const dispatch = useAppDispatch();

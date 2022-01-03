@@ -1,6 +1,8 @@
+import { useMemo } from 'react';
+
 import { ENV } from '@/config';
 import { selectSwapViewState, useAppSelector } from '@/store';
-import { useMemo } from 'react';
+
 import { useSwapCanisterStore } from '..';
 
 export const useSwapViewStore = () => {

@@ -1,6 +1,8 @@
+import { Link } from '@chakra-ui/react';
+import { useEffect, useMemo } from 'react';
+
 import { useBalances } from '@/hooks/use-balances';
 import { useSwapBatch } from '@/integrations/transactions';
-
 import {
   modalsSliceActions,
   NotificationType,
@@ -12,8 +14,6 @@ import {
 } from '@/store';
 import { deserialize, stringify } from '@/utils/format';
 import { createCAPLink } from '@/utils/function';
-import { Link } from '@chakra-ui/react';
-import { useEffect, useMemo } from 'react';
 
 export interface SwapLinkProps {
   id: string;

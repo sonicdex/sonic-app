@@ -1,9 +1,7 @@
-import BigNumber from 'bignumber.js';
-
-import { parseUnits, formatUnits } from 'ethers/lib/utils';
 import { Bytes } from '@ethersproject/bytes';
+import BigNumber from 'bignumber.js';
 import { ethers } from 'ethers';
-import { TokenMetadata } from '@/models';
+import { formatUnits, parseUnits } from 'ethers/lib/utils';
 
 export type BigNumberish = BigNumber | Bytes | bigint | string | number;
 
@@ -240,47 +238,6 @@ export const calculatePriceImpact = (
   const c = new BigNumber(reserve1).plus(aOut);
   const impact = a.minus(b.dividedBy(c)).abs().multipliedBy(100).toFixed(2);
   return impact;
-};
-
-type FormatDefaultLiquidityTokenOptions = {
-  fromToken: TokenMetadata;
-  toToken: TokenMetadata;
-  token0: TokenMetadata;
-  token1: TokenMetadata;
-};
-
-export const formatDefaultLiquidityToken = ({
-  fromToken,
-  toToken,
-  token0,
-  token1,
-}: FormatDefaultLiquidityTokenOptions) => {
-  const defaultFromToken = fromToken
-    ? {
-        decimals: fromToken.decimals,
-        fee: fromToken.fee,
-        id: token0,
-        name: fromToken.name,
-        symbol: fromToken.symbol,
-        totalSupply: fromToken.totalSupply,
-        logo: fromToken.logo,
-      }
-    : '';
-  const defaultToToken = toToken
-    ? {
-        decimals: toToken.decimals,
-        fee: toToken.fee,
-        id: token1,
-        name: toToken.name,
-        symbol: toToken.symbol,
-        totalSupply: toToken.totalSupply,
-        logo: toToken.logo,
-      }
-    : '';
-  return {
-    defaultFromToken,
-    defaultToToken,
-  };
 };
 
 export const formatAmount = (

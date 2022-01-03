@@ -1,4 +1,5 @@
 import type { Transaction } from '@psychedelic/plug-inpage-provider/dist/src/Provider';
+
 import { CreateTransaction } from '.';
 
 export namespace Batch {

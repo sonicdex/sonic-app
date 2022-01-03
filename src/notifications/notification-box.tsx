@@ -1,6 +1,8 @@
-import { Notification } from '@/store';
 import { Box, Collapse } from '@chakra-ui/react';
 import { useState } from 'react';
+
+import { Notification } from '@/store';
+
 import { NotificationContent } from './notification-content';
 import { NotificationHeader } from './notification-header';
 import { NotificationTimer } from './notification-timer';

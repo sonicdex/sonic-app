@@ -1,5 +1,7 @@
-import { useAppDispatch } from '@/store';
 import { useEffect } from 'react';
+
+import { useAppDispatch } from '@/store';
+
 import { KeepSync, keepSyncActions } from './keep-sync-slice';
 
 export type KeepSyncCallbackParams = {

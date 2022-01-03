@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { FeatureState } from '@/store';
+
 import type { RootState } from '@/store';
+import { FeatureState } from '@/store';
 
 // Define a type for the slice state
 interface PlugState {
@@ -13,7 +14,7 @@ interface PlugState {
 const initialState: PlugState = {
   isConnected: false,
   principalId: undefined,
-  state: 'loading' as FeatureState,
+  state: 'not-started' as FeatureState,
 };
 
 export const plugSlice = createSlice({

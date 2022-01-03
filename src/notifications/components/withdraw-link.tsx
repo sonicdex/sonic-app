@@ -1,3 +1,6 @@
+import { Link } from '@chakra-ui/react';
+import { useEffect, useMemo } from 'react';
+
 import { useBalances } from '@/hooks/use-balances';
 import { useWithdrawBatch } from '@/integrations/transactions/factories/batch/withdraw';
 import {
@@ -10,8 +13,6 @@ import {
   WithdrawModalDataStep,
 } from '@/store';
 import { createCAPLink } from '@/utils/function';
-import { Link } from '@chakra-ui/react';
-import { useEffect, useMemo } from 'react';
 
 export interface WithdrawLinkProps {
   id: string;
@@ -26,7 +27,11 @@ export const WithdrawLink: React.FC<WithdrawLinkProps> = ({ id }) => {
   const { supportedTokenList } = useSwapCanisterStore();
 
   const selectedToken = useMemo(() => {
-    return supportedTokenList?.find(({ id }) => id === tokenId);
+    if (tokenId && supportedTokenList) {
+      return supportedTokenList.find(({ id }) => id === tokenId);
+    }
+
+    return undefined;
   }, [supportedTokenList, tokenId]);
 
   const [batch, openModal] = useWithdrawBatch({

@@ -1,3 +1,6 @@
+import { Link } from '@chakra-ui/react';
+import { useEffect, useMemo } from 'react';
+
 import { useBalances } from '@/hooks/use-balances';
 import { useDepositBatch } from '@/integrations/transactions';
 import {
@@ -10,8 +13,6 @@ import {
   useSwapCanisterStore,
 } from '@/store';
 import { createCAPLink } from '@/utils/function';
-import { Link } from '@chakra-ui/react';
-import { useEffect, useMemo } from 'react';
 
 export interface DepositLinkProps {
   id: string;
@@ -26,7 +27,11 @@ export const DepositLink: React.FC<DepositLinkProps> = ({ id }) => {
   const { supportedTokenList } = useSwapCanisterStore();
 
   const selectedToken = useMemo(() => {
-    return supportedTokenList?.find(({ id }) => id === tokenId);
+    if (tokenId && supportedTokenList) {
+      return supportedTokenList.find(({ id }) => id === tokenId);
+    }
+
+    return undefined;
   }, [supportedTokenList, tokenId]);
 
   const [batch, openDepositModal] = useDepositBatch({

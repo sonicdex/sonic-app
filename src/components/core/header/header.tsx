@@ -1,17 +1,18 @@
 import { Box, Button, Flex, Spinner } from '@chakra-ui/react';
+import React from 'react';
 
 type HeaderProps = {
   title: string;
   buttonText?: string;
-  onButtonClick?: () => any;
-  isLoading?: boolean;
+  onButtonClick?: React.MouseEventHandler<HTMLButtonElement>;
+  isRefreshing?: boolean;
 };
 
 export const Header = ({
   title,
   buttonText,
   onButtonClick,
-  isLoading,
+  isRefreshing,
 }: HeaderProps) => {
   const paddingToLine = buttonText && onButtonClick ? '17px' : '24px';
   const marginTop = buttonText && onButtonClick ? '-8px' : '0px';
@@ -28,13 +29,13 @@ export const Header = ({
     >
       <Box as="h3" fontWeight={700} color="#F6FCFD">
         {title}
-        {isLoading && <Spinner width={3} height={3} mx={3} />}
+        {isRefreshing && <Spinner width={3} height={3} mx={3} />}
       </Box>
       {buttonText && onButtonClick && (
         <Button
           variant="gradient"
           colorScheme="dark-blue"
-          onClick={() => onButtonClick()}
+          onClick={onButtonClick}
         >
           {buttonText}
         </Button>

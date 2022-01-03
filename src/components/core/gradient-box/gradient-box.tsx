@@ -1,5 +1,5 @@
 import { useColorModeValue } from '@chakra-ui/color-mode';
-import { Flex, Box } from '@chakra-ui/react';
+import { Box,Flex } from '@chakra-ui/react';
 import { FC, HTMLAttributes } from 'react';
 
 type GradientBoxProps = HTMLAttributes<HTMLDivElement> & {

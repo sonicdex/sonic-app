@@ -1,40 +1,40 @@
 import {
+  Box,
+  BoxProps,
+  Button,
+  ButtonProps,
+  Flex,
+  FlexProps,
+  forwardRef,
+  HStack,
+  Image,
+  ImageProps,
   Skeleton,
   Text,
-  Box,
-  Flex,
-  Image,
-  HStack,
-  Button,
-  BoxProps,
-  FlexProps,
-  ImageProps,
-  forwardRef,
-  ButtonProps,
+  TextProps,
 } from '@chakra-ui/react';
 import { createContext } from '@chakra-ui/react-utils';
-import NumberFormat from 'react-number-format';
 import React, { useCallback, useMemo } from 'react';
 
 import { chevronDownSrc, questionMarkSrc } from '@/assets';
 import { NumberInput } from '@/components';
-import { TokenMetadata } from '@/models';
+import { AppTokenMetadata } from '@/models';
 import { getCurrencyString } from '@/utils/format';
 
-import { TokenPopover } from './token-popover';
 import { DisplayValue, NumberInputProps } from '..';
+import { TokenBalancesPopover } from '../token-balances-popover';
 
 // === Core ===
 
 export type TokenUniqueProps = {
   value?: string;
-  price?: string | number;
-  tokenMetadata?: TokenMetadata;
-  tokenListMetadata?: Array<TokenMetadata>;
+  tokenMetadata?: AppTokenMetadata;
+  tokenListMetadata?: AppTokenMetadata[];
   sources?: TokenSource[];
   setValue?: (value: string) => any;
   isDisabled?: boolean;
   isLoading?: boolean;
+  isBalancesLoading?: boolean;
   shouldGlow?: boolean;
 };
 
@@ -147,12 +147,18 @@ export const TokenDetailsLogo: React.FC<TokenDetailsLogo> = (props) => {
   );
 };
 
-export const TokenDetailsSymbol: React.FC<FlexProps> = (props) => {
+export const TokenDetailsSymbol: React.FC<TextProps> = (props) => {
   const { isLoading, tokenMetadata } = useTokenContext();
 
   return (
     <Skeleton isLoaded={!isLoading} height={5} width="fit-content">
-      <Text fontWeight={700} fontSize="lg" width="fit-content" minWidth={5}>
+      <Text
+        fontWeight={700}
+        fontSize="lg"
+        width="fit-content"
+        minWidth={5}
+        {...props}
+      >
         {tokenMetadata?.symbol}
       </Text>
     </Skeleton>
@@ -166,7 +172,7 @@ export const TokenBalances = (props: FlexProps) => {
 };
 
 export const TokenBalancesPrice: React.FC<BoxProps> = (props) => {
-  const { isLoading, price, value } = useTokenContext();
+  const { isLoading, value, tokenMetadata } = useTokenContext();
 
   const isActive = useMemo(() => {
     if (isLoading || parseFloat(value || '0') <= 0) {
@@ -183,7 +189,7 @@ export const TokenBalancesPrice: React.FC<BoxProps> = (props) => {
         color={isActive ? '#F6FCFD' : '#888E8F'}
         {...props}
       >
-        <NumberFormat value={price} displayType="text" prefix="$" />
+        <DisplayValue value={tokenMetadata?.price ?? 0} prefix="$" />
       </Box>
     </Skeleton>
   );
@@ -222,7 +228,7 @@ export const TokenBalancesDetails: React.FC<TokenBalancesDetailsProps> = ({
     <Skeleton isLoaded={!isLoading} borderRadius="full" minW={20}>
       <Flex direction="row" color="#888E8F" {...props}>
         <HStack>
-          <TokenPopover
+          <TokenBalancesPopover
             sources={sources}
             decimals={tokenMetadata?.decimals}
             symbol={tokenMetadata?.symbol}

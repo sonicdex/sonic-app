@@ -1,7 +1,8 @@
-import { NotificationType } from '@/store';
 import { Box } from '@chakra-ui/react';
 import { keyframes } from '@emotion/react';
 import { useMemo } from 'react';
+
+import { NotificationType } from '@/store';
 
 const reduceWidth = keyframes`
     from { width: calc(100% - 30px);}
@@ -32,7 +33,7 @@ export const NotificationTimer: React.FC<NotificationTimerProps> = ({
     }
   }, [type]);
 
-  const collapseAnimation = `${reduceWidth} 25s forwards linear`;
+  const collapseAnimation = `${reduceWidth} 10s forwards linear`;
 
   return (
     <Box
