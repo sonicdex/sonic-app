@@ -158,8 +158,8 @@ export const Liquidity = () => {
       <Header
         title="Your Liquidity Positions"
         buttonText="Create Position"
-        onButtonClick={moveToAddLiquidityView}
-        isLoading={isRefreshing}
+        onButtonClick={() => moveToAddLiquidityView()}
+        isRefreshing={isRefreshing}
       />
 
       {!isConnected ? (

@@ -73,7 +73,7 @@ export const Activity = () => {
       <>
         <Header
           title="Your Activity"
-          isLoading={state === FeatureState.Loading}
+          isRefreshing={state === FeatureState.Loading}
         />
         <Text textAlign="center" color="#888E8F">
           You have no activity
@@ -86,7 +86,7 @@ export const Activity = () => {
     <>
       <Header
         title="Your Activity"
-        isLoading={state === FeatureState.Loading}
+        isRefreshing={state === FeatureState.Loading}
       />
       <Stack
         mt={-5}

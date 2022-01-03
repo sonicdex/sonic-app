@@ -59,23 +59,34 @@ export const Assets = () => {
     dispatch(assetsViewActions.setIsBannerOpened(false));
   };
 
-  const isSupportedTokenListPresent = useMemo(() => {
-    return supportedTokenList && supportedTokenList.length > 0;
-  }, [supportedTokenList]);
+  const notEmptyTokenList = useMemo(() => {
+    if (supportedTokenList && totalBalances) {
+      return supportedTokenList.filter(
+        (token) => totalBalances[token.id] !== 0
+      );
+    }
 
-  const shouldShowSkeletons = useMemo(() => {
-    return (
+    return [];
+  }, [supportedTokenList, totalBalances]);
+
+  const isTokenListPresent = useMemo(
+    () => notEmptyTokenList && notEmptyTokenList.length > 0,
+    [notEmptyTokenList]
+  );
+
+  const isLoading = useMemo(
+    () =>
       supportedTokenListState === FeatureState.Loading ||
-      balancesState === FeatureState.Loading
-    );
-  }, [supportedTokenListState, balancesState]);
+      balancesState === FeatureState.Loading,
+    [supportedTokenListState, balancesState]
+  );
 
-  const shouldShowHeaderLoading = useMemo(() => {
-    return (
+  const isRefreshing = useMemo(
+    () =>
       supportedTokenListState === FeatureState.Refreshing ||
-      balancesState === FeatureState.Refreshing
-    );
-  }, [supportedTokenListState, balancesState]);
+      balancesState === FeatureState.Refreshing,
+    [supportedTokenListState, balancesState]
+  );
 
   return (
     <>
@@ -93,7 +104,7 @@ export const Assets = () => {
         </InformationBox>
       )}
 
-      <Header title="Your Assets" isLoading={shouldShowHeaderLoading} />
+      <Header title="Your Assets" isRefreshing={isRefreshing} />
 
       {!isConnected ? (
         <>
@@ -134,7 +145,7 @@ export const Assets = () => {
             pb={8}
             overflow="auto"
           >
-            {shouldShowSkeletons ? (
+            {isLoading ? (
               <>
                 <Asset isLoading>
                   <AssetImageBlock />
@@ -160,8 +171,8 @@ export const Assets = () => {
                   </HStack>
                 </Asset>
               </>
-            ) : isSupportedTokenListPresent ? (
-              supportedTokenList!.map(
+            ) : isTokenListPresent ? (
+              notEmptyTokenList!.map(
                 ({ id, name, symbol, decimals, price, logo }) => (
                   <Asset key={id} imageSources={[logo]}>
                     <HStack spacing={4}>
@@ -204,7 +215,11 @@ export const Assets = () => {
                   </Asset>
                 )
               )
-            ) : null}
+            ) : (
+              <Text textAlign="center" color="gray.400">
+                No assets available
+              </Text>
+            )}
           </Stack>
         </Box>
       )}

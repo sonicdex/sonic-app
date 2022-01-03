@@ -2,20 +2,26 @@ import {
   Box,
   Button,
   Flex,
+  IconButton,
   Image,
+  Menu,
+  MenuButton,
+  MenuList,
   SimpleGrid,
+  Skeleton,
   Stack,
   Text,
+  Tooltip,
 } from '@chakra-ui/react';
 import BigNumber from 'bignumber.js';
 import { useEffect, useMemo, useState } from 'react';
+import { FaCog } from 'react-icons/fa';
 import { useNavigate } from 'react-router';
 
 import { plusSrc } from '@/assets';
 import {
   LPImageBlock,
   PlugButton,
-  TitleBox,
   Token,
   TokenBalances,
   TokenBalancesDetails,
@@ -25,6 +31,7 @@ import {
   TokenDetailsLogo,
   TokenDetailsSymbol,
   TokenInput,
+  ViewHeader,
 } from '@/components';
 import { SlippageSettings } from '@/components';
 import { getAppAssetsSources } from '@/config/utils';
@@ -359,6 +366,28 @@ export const LiquidityAdd = () => {
       };
     }, [token0, token1, pairData]);
 
+  const token0Sources = useMemo(() => {
+    if (token0.metadata) {
+      return getAppAssetsSources({
+        balances: {
+          plug: tokenBalances ? tokenBalances[token0.metadata.id] : 0,
+          sonic: sonicBalances ? sonicBalances[token0.metadata.id] : 0,
+        },
+      });
+    }
+  }, [token0.metadata, tokenBalances, sonicBalances]);
+
+  const token1Sources = useMemo(() => {
+    if (token1.metadata) {
+      return getAppAssetsSources({
+        balances: {
+          plug: tokenBalances ? tokenBalances[token1.metadata.id] : 0,
+          sonic: sonicBalances ? sonicBalances[token1.metadata.id] : 0,
+        },
+      });
+    }
+  }, [token1.metadata, tokenBalances, sonicBalances]);
+
   useEffect(() => {
     if (!isLoading) {
       const token1Id = query.get('token1');
@@ -390,25 +419,41 @@ export const LiquidityAdd = () => {
 
   return (
     <>
-      <TitleBox
-        onArrowBack={handlePreviousStep}
-        title="Add Liquidity"
-        settings={
-          <SlippageSettings
-            slippage={slippage}
-            setSlippage={(value) =>
-              dispatch(liquidityViewActions.setSlippage(value))
-            }
-            isAutoSlippage={autoSlippage}
-            setIsAutoSlippage={(value) => {
-              setAutoSlippage(value);
-              dispatch(
-                liquidityViewActions.setSlippage(INITIAL_LIQUIDITY_SLIPPAGE)
-              );
-            }}
-          />
-        }
-      />
+      <ViewHeader onArrowBack={handlePreviousStep} title="Add Liquidity">
+        <Menu>
+          <Tooltip label="Settings">
+            <MenuButton
+              as={IconButton}
+              isRound
+              size="sm"
+              aria-label="Settings"
+              icon={<FaCog />}
+              ml="auto"
+            />
+          </Tooltip>
+          <MenuList
+            bg="#1E1E1E"
+            border="none"
+            borderRadius={20}
+            ml={-20}
+            py={0}
+          >
+            <SlippageSettings
+              slippage={slippage}
+              setSlippage={(value) =>
+                dispatch(liquidityViewActions.setSlippage(value))
+              }
+              isAutoSlippage={autoSlippage}
+              setIsAutoSlippage={(value) => {
+                setAutoSlippage(value);
+                dispatch(
+                  liquidityViewActions.setSlippage(INITIAL_LIQUIDITY_SLIPPAGE)
+                );
+              }}
+            />
+          </MenuList>
+        </Menu>
+      </ViewHeader>
       <Flex my={5} direction="column" alignItems="center">
         <Box width="100%">
           <Token
@@ -418,18 +463,7 @@ export const LiquidityAdd = () => {
             tokenMetadata={token0.metadata}
             isDisabled={isReviewing}
             price={token0USDPrice}
-            sources={getAppAssetsSources({
-              balances: {
-                plug:
-                  token0.metadata && tokenBalances
-                    ? tokenBalances[token0.metadata.id]
-                    : 0,
-                sonic:
-                  token0.metadata && sonicBalances
-                    ? sonicBalances[token0.metadata.id]
-                    : 0,
-              },
-            })}
+            sources={token0Sources}
             isLoading={isLoading}
           >
             <TokenContent>
@@ -470,18 +504,7 @@ export const LiquidityAdd = () => {
             tokenMetadata={token1.metadata}
             isDisabled={isReviewing}
             price={token1USDPrice}
-            sources={getAppAssetsSources({
-              balances: {
-                plug:
-                  token1.metadata && tokenBalances
-                    ? tokenBalances[token1.metadata.id]
-                    : 0,
-                sonic:
-                  token1.metadata && sonicBalances
-                    ? sonicBalances[token1.metadata.id]
-                    : 0,
-              },
-            })}
+            sources={token1Sources}
             isLoading={isLoading}
             isBalancesLoading={isBalancesLoading}
           >
@@ -494,10 +517,10 @@ export const LiquidityAdd = () => {
               ) : (
                 <TokenDetailsButton
                   onClick={() => handleSelectToken('token1')}
-                  variant="gradient"
-                  colorScheme="dark-blue"
+                  variant={isLoading ? 'solid' : 'gradient'}
+                  colorScheme={isLoading ? 'gray' : 'dark-blue'}
                 >
-                  Select a Token
+                  <Skeleton isLoaded={!isLoading}>Select a Token</Skeleton>
                 </TokenDetailsButton>
               )}
 

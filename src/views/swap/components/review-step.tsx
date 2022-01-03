@@ -3,7 +3,6 @@ import { Box, Button, Flex, Image, Stack } from '@chakra-ui/react';
 import { arrowDownSrc } from '@/assets';
 import {
   ExchangeBox,
-  TitleBox,
   Token,
   TokenBalances,
   TokenBalancesDetails,
@@ -13,6 +12,7 @@ import {
   TokenDetailsLogo,
   TokenDetailsSymbol,
   TokenInput,
+  ViewHeader,
 } from '@/components';
 import { getAppAssetsSources } from '@/config/utils';
 import {
@@ -49,7 +49,7 @@ export const SwapReviewStep = () => {
 
   return (
     <Stack spacing={4}>
-      <TitleBox
+      <ViewHeader
         title="Swap"
         onArrowBack={() => dispatch(swapViewActions.setStep(SwapStep.Home))}
       />

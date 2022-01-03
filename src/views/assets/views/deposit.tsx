@@ -1,10 +1,9 @@
-import { Box,Button } from '@chakra-ui/react';
+import { Box, Button } from '@chakra-ui/react';
 import { useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router';
 
 import { plugCircleSrc } from '@/assets';
 import {
-  TitleBox,
   Token,
   TokenBalances,
   TokenBalancesDetails,
@@ -14,6 +13,7 @@ import {
   TokenDetailsLogo,
   TokenDetailsSymbol,
   TokenInput,
+  ViewHeader,
 } from '@/components';
 import { FeeBox } from '@/components/core/fee-box';
 import { useQuery } from '@/hooks/use-query';
@@ -151,7 +151,10 @@ export const AssetsDeposit = () => {
 
   return (
     <>
-      <TitleBox title="Deposit Asset" onArrowBack={() => navigate('/assets')} />
+      <ViewHeader
+        title="Deposit Asset"
+        onArrowBack={() => navigate('/assets')}
+      />
       <Box my={5}>
         <Token
           isLoading={isLoading}

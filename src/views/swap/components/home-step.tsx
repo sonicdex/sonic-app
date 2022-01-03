@@ -5,19 +5,21 @@ import {
   Icon,
   IconButton,
   Link,
+  Menu,
+  MenuButton,
+  MenuList,
   Skeleton,
   Stack,
   Tooltip,
 } from '@chakra-ui/react';
 import { useMemo, useState } from 'react';
-import { FaArrowDown } from 'react-icons/fa';
+import { FaArrowDown, FaCog } from 'react-icons/fa';
 
 import {
   ExchangeBox,
   PLUG_WALLET_WEBSITE_URL,
   PlugButton,
   SlippageSettings,
-  TitleBox,
   Token,
   TokenBalances,
   TokenBalancesDetails,
@@ -27,6 +29,7 @@ import {
   TokenDetailsLogo,
   TokenDetailsSymbol,
   TokenInput,
+  ViewHeader,
 } from '@/components';
 import { ENV } from '@/config';
 import { getAppAssetsSources } from '@/config/utils';
@@ -145,7 +148,8 @@ export const SwapHomeStep = () => {
       addNotification({
         title: (
           <>
-            You're using an outdated version of Plug, please update it{' '}
+            You're using an outdated version of Plug, please update to the
+            latest one{' '}
             <Link
               color="blue.400"
               href={PLUG_WALLET_WEBSITE_URL}
@@ -328,25 +332,41 @@ export const SwapHomeStep = () => {
 
   return (
     <Stack spacing={4}>
-      <TitleBox
-        title="Swap"
-        settings={
-          !isLoading &&
-          !isICPSelected && (
-            <SlippageSettings
-              slippage={slippage}
-              isAutoSlippage={autoSlippage}
-              setSlippage={(value) =>
-                dispatch(swapViewActions.setSlippage(value))
-              }
-              setIsAutoSlippage={(value) => {
-                setAutoSlippage(value);
-                dispatch(swapViewActions.setSlippage(INITIAL_SWAP_SLIPPAGE));
-              }}
-            />
-          )
-        }
-      />
+      <ViewHeader title="Swap">
+        {!isLoading && !isICPSelected && (
+          <Menu>
+            <Tooltip label="Settings">
+              <MenuButton
+                as={IconButton}
+                isRound
+                size="sm"
+                aria-label="Settings"
+                icon={<FaCog />}
+                ml="auto"
+              />
+            </Tooltip>
+            <MenuList
+              bg="#1E1E1E"
+              border="none"
+              borderRadius={20}
+              ml={-20}
+              py={0}
+            >
+              <SlippageSettings
+                slippage={slippage}
+                isAutoSlippage={autoSlippage}
+                setSlippage={(value) =>
+                  dispatch(swapViewActions.setSlippage(value))
+                }
+                setIsAutoSlippage={(value) => {
+                  setAutoSlippage(value);
+                  dispatch(swapViewActions.setSlippage(INITIAL_SWAP_SLIPPAGE));
+                }}
+              />
+            </MenuList>
+          </Menu>
+        )}
+      </ViewHeader>
       <Flex direction="column" alignItems="center">
         <Box width="100%">
           <Token
@@ -375,9 +395,9 @@ export const SwapHomeStep = () => {
           </Token>
         </Box>
 
-        <Tooltip label="Swap">
+        <Tooltip label="Swap placement">
           <IconButton
-            aria-label="Swap"
+            aria-label="Swap placement"
             icon={<Icon as={FaArrowDown} transition="transform 250ms" />}
             variant="outline"
             mt={-2}

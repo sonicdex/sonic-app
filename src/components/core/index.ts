@@ -11,7 +11,7 @@ export * from './logo-box';
 export * from './number-input';
 export * from './search-bar';
 export * from './slippage-settings';
-export * from './title-box';
+export * from './view-header';
 export * from './toggle';
 export * from './token';
 export * from './display-value';
