@@ -27,6 +27,7 @@ import {
 } from '@/components';
 import { useBalances } from '@/hooks/use-balances';
 import {
+  FeatureState,
   INITIAL_SWAP_SLIPPAGE,
   NotificationType,
   SwapStep,
@@ -51,7 +52,14 @@ export const SwapHomeStep = () => {
   const { fromTokenOptions, toTokenOptions, from, to, slippage } =
     useSwapViewStore();
   const dispatch = useAppDispatch();
-  const { sonicBalances, tokenBalances, icpBalance } = useSwapCanisterStore();
+  const {
+    sonicBalances,
+    tokenBalances,
+    icpBalance,
+    balancesState,
+    supportedTokenListState,
+    allPairsState,
+  } = useSwapCanisterStore();
   const { isConnected } = usePlugStore();
 
   const openSelectTokenModal = useTokenModalOpener();
@@ -150,16 +158,26 @@ export const SwapHomeStep = () => {
     );
   };
 
-  const isLoading = useMemo(() => {
-    if (!from.metadata || !totalBalances) return true;
-    return false;
-  }, [totalBalances, from.metadata]);
+  const isFetchingNotStarted = useMemo(
+    () =>
+      allPairsState === FeatureState.NotStarted ||
+      supportedTokenListState === FeatureState.NotStarted,
+    [supportedTokenListState, allPairsState]
+  );
+
+  const isLoading = useMemo(
+    () =>
+      balancesState === FeatureState.Loading ||
+      supportedTokenListState === FeatureState.Loading ||
+      allPairsState === FeatureState.Loading,
+    [balancesState, supportedTokenListState, allPairsState]
+  );
 
   const [buttonDisabled, buttonMessage, onButtonClick] = useMemo<
     [boolean, string, (() => void)?]
   >(() => {
     if (isLoading) return [true, 'Loading'];
-    if (!from.metadata) throw new Error('State is loading');
+    if (isFetchingNotStarted || !from.metadata) return [true, 'Fetching'];
     if (!to.metadata) return [true, 'Select a Token', () => {}];
 
     if (toTokenOptions && toTokenOptions.length <= 0)
@@ -211,6 +229,7 @@ export const SwapHomeStep = () => {
     dispatch,
     swapViewActions,
     isLoading,
+    isFetchingNotStarted,
     totalBalances,
     fromBalance,
     from.metadata,

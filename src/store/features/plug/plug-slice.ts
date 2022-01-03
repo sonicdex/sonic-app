@@ -13,7 +13,7 @@ interface PlugState {
 const initialState: PlugState = {
   isConnected: false,
   principalId: undefined,
-  state: 'loading' as FeatureState,
+  state: 'not-started' as FeatureState,
 };
 
 export const plugSlice = createSlice({

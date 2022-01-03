@@ -8,7 +8,7 @@ export interface PriceState {
 
 const initialState: PriceState = {
   icpPrice: undefined,
-  state: 'idle' as FeatureState,
+  state: 'not-started' as FeatureState,
 };
 
 export const priceSlice = createSlice({

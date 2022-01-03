@@ -22,8 +22,8 @@ export const INITIAL_LIQUIDITY_SLIPPAGE = '0.50';
 const initialState: LiquidityViewState = {
   isBannerOpened: true,
   pair: undefined,
-  pairState: 'idle' as FeatureState,
-  state: 'idle' as FeatureState,
+  pairState: 'not-started' as FeatureState,
+  state: 'not-started' as FeatureState,
   removeAmountPercentage: 100,
   token0: {
     metadata: undefined,

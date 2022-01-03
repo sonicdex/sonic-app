@@ -22,10 +22,10 @@ export interface SwapCanisterState {
 }
 
 const initialState: SwapCanisterState = {
-  supportedTokenListState: 'idle' as FeatureState,
-  balancesState: 'idle' as FeatureState,
-  allPairsState: 'idle' as FeatureState,
-  userLPBalancesState: 'idle' as FeatureState,
+  supportedTokenListState: 'not-started' as FeatureState,
+  balancesState: 'not-started' as FeatureState,
+  allPairsState: 'not-started' as FeatureState,
+  userLPBalancesState: 'not-started' as FeatureState,
 
   supportedTokenList: undefined,
   sonicBalances: undefined,
