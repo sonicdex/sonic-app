@@ -33,7 +33,7 @@ export const NotificationTimer: React.FC<NotificationTimerProps> = ({
     }
   }, [type]);
 
-  const collapseAnimation = `${reduceWidth} 25s forwards linear`;
+  const collapseAnimation = `${reduceWidth} 10s forwards linear`;
 
   return (
     <Box

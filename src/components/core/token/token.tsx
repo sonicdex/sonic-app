@@ -35,6 +35,7 @@ export type TokenUniqueProps = {
   setValue?: (value: string) => any;
   isDisabled?: boolean;
   isLoading?: boolean;
+  isBalancesLoading?: boolean;
   shouldGlow?: boolean;
 };
 

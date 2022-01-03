@@ -483,6 +483,7 @@ export const LiquidityAdd = () => {
               },
             })}
             isLoading={isLoading}
+            isBalancesLoading={isBalancesLoading}
           >
             <TokenContent>
               {token1.metadata ? (

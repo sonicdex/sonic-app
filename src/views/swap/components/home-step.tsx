@@ -4,6 +4,7 @@ import {
   Flex,
   Icon,
   IconButton,
+  Link,
   Skeleton,
   Stack,
   Tooltip,
@@ -13,6 +14,7 @@ import { FaArrowDown } from 'react-icons/fa';
 
 import {
   ExchangeBox,
+  PLUG_WALLET_WEBSITE_URL,
   PlugButton,
   SlippageSettings,
   TitleBox,
@@ -141,7 +143,20 @@ export const SwapHomeStep = () => {
       );
     } else {
       addNotification({
-        title: `Please use latest version of Plug`,
+        title: (
+          <>
+            You're using an outdated version of Plug, please update it{' '}
+            <Link
+              color="blue.400"
+              href={PLUG_WALLET_WEBSITE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              here
+            </Link>
+            .
+          </>
+        ),
         type: NotificationType.Error,
         id: String(new Date().getTime()),
       });
