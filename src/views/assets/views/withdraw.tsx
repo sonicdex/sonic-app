@@ -33,12 +33,8 @@ import { debounce } from '@/utils/function';
 export const AssetsWithdraw = () => {
   const query = useQuery();
   const { amount, tokenId } = useWithdrawViewStore();
-  const {
-    supportedTokenList,
-    icpBalance,
-    sonicBalances,
-    supportedTokenListState,
-  } = useSwapCanisterStore();
+  const { supportedTokenList, sonicBalances, supportedTokenListState } =
+    useSwapCanisterStore();
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -93,10 +89,6 @@ export const AssetsWithdraw = () => {
   }, [amount, sonicBalances, selectedTokenMetadata]);
 
   const tokenBalance = useMemo(() => {
-    if (tokenId === 'ICP') {
-      return icpBalance;
-    }
-
     if (sonicBalances && tokenId) {
       return sonicBalances[tokenId];
     }

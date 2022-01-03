@@ -296,14 +296,8 @@ export const SwapHomeStep = () => {
 
       return getAppAssetsSources({
         balances: {
-          plug:
-            from.metadata && tokenBalances
-              ? tokenBalances[from.metadata.id]
-              : 0,
-          sonic:
-            from.metadata && sonicBalances
-              ? sonicBalances[from.metadata.id]
-              : 0,
+          plug: tokenBalances ? tokenBalances[from.metadata.id] : 0,
+          sonic: sonicBalances ? sonicBalances[from.metadata.id] : 0,
         },
       });
     }
@@ -321,10 +315,8 @@ export const SwapHomeStep = () => {
 
       return getAppAssetsSources({
         balances: {
-          plug:
-            to.metadata && tokenBalances ? tokenBalances[to.metadata.id] : 0,
-          sonic:
-            to.metadata && sonicBalances ? sonicBalances[to.metadata.id] : 0,
+          plug: tokenBalances ? tokenBalances[to.metadata.id] : 0,
+          sonic: sonicBalances ? sonicBalances[to.metadata.id] : 0,
         },
       });
     }

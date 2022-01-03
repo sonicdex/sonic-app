@@ -33,12 +33,8 @@ import { debounce } from '@/utils/function';
 export const AssetsDeposit = () => {
   const query = useQuery();
 
-  const {
-    supportedTokenList,
-    tokenBalances,
-    icpBalance,
-    supportedTokenListState,
-  } = useSwapCanisterStore();
+  const { supportedTokenList, tokenBalances, supportedTokenListState } =
+    useSwapCanisterStore();
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -103,10 +99,6 @@ export const AssetsDeposit = () => {
   }, [amount, tokenBalances, selectedTokenMetadata]);
 
   const tokenBalance = useMemo(() => {
-    if (tokenId === 'ICP') {
-      return icpBalance;
-    }
-
     if (tokenBalances && tokenId) {
       return tokenBalances[tokenId];
     }
@@ -143,11 +135,10 @@ export const AssetsDeposit = () => {
       );
   };
 
-  const isLoading =
-    supportedTokenListState === FeatureState.Loading &&
-    !supportedTokenList &&
-    !selectedTokenMetadata &&
-    !tokenId;
+  const isLoading = useMemo(
+    () => supportedTokenListState === FeatureState.Loading,
+    [supportedTokenListState]
+  );
 
   return (
     <>

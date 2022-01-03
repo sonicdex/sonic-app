@@ -22,7 +22,7 @@ import { TokenMetadata } from '@/models';
 import { getCurrencyString } from '@/utils/format';
 
 import { DisplayValue, NumberInputProps } from '..';
-import { TokenPopover } from './token-popover';
+import { TokenBalancesPopover } from '../token-balances-popover';
 
 // === Core ===
 
@@ -223,7 +223,7 @@ export const TokenBalancesDetails: React.FC<TokenBalancesDetailsProps> = ({
     <Skeleton isLoaded={!isLoading} borderRadius="full" minW={20}>
       <Flex direction="row" color="#888E8F" {...props}>
         <HStack>
-          <TokenPopover
+          <TokenBalancesPopover
             sources={sources}
             decimals={tokenMetadata?.decimals}
             symbol={tokenMetadata?.symbol}
