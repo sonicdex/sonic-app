@@ -17,25 +17,15 @@ export const DisplayValue: React.FC<DisplayValueProps> = ({
   suffix,
   ...textProps
 }) => {
-  const [formattedValue, tooltipLabel] = useMemo(() => {
+  const [formattedValue, tooltipLabel, isDisabled] = useMemo(() => {
     const tooltip = decimals ? getCurrencyString(value, decimals) : value;
     const display = formatValue(tooltip.toString());
 
-    return [display, tooltip];
+    return [display, tooltip, String(tooltip).length <= 4];
   }, [value, decimals]);
 
-  if (formattedValue === '0' || formattedValue.length <= 4) {
-    return (
-      <Text {...textProps}>
-        {prefix}
-        {formattedValue}
-        {suffix}
-      </Text>
-    );
-  }
-
   return (
-    <Tooltip label={tooltipLabel}>
+    <Tooltip label={tooltipLabel} isDisabled={isDisabled}>
       <Text {...textProps}>
         {prefix}
         {formattedValue}

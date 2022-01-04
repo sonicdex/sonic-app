@@ -21,7 +21,9 @@ import {
   Header,
   InformationBox,
   PlugButton,
+  TokenBalancesPopover,
 } from '@/components';
+import { getAppAssetsSources } from '@/config/utils';
 import { useBalances } from '@/hooks/use-balances';
 import {
   assetsViewActions,
@@ -36,7 +38,7 @@ import { theme } from '@/theme';
 export const AssetsListView = () => {
   const dispatch = useAppDispatch();
   const { isBannerOpened } = useAssetsViewStore();
-  const { totalBalances } = useBalances();
+  const { totalBalances, sonicBalances, tokenBalances } = useBalances();
   const { supportedTokenListState, balancesState, supportedTokenList } =
     useSwapCanisterStore();
   const { isConnected } = usePlugStore();
@@ -144,6 +146,7 @@ export const AssetsListView = () => {
             spacing={4}
             pb={8}
             overflow="auto"
+            height="100%"
           >
             {isLoading ? (
               <>
@@ -172,7 +175,7 @@ export const AssetsListView = () => {
                 </Asset>
               </>
             ) : isTokenListPresent ? (
-              notEmptyTokenList!.map(
+              notEmptyTokenList?.map(
                 ({ id, name, symbol, decimals, price, logo }) => (
                   <Asset key={id} imageSources={[logo]}>
                     <HStack spacing={4}>
@@ -180,16 +183,27 @@ export const AssetsListView = () => {
                       <AssetTitleBlock title={symbol} subtitle={name} />
                     </HStack>
 
-                    <Box>
-                      <Text fontWeight="bold" color="gray.400">
-                        Amount
-                      </Text>
-                      <DisplayValue
-                        value={totalBalances?.[id]}
-                        decimals={decimals}
-                        fontWeight="bold"
-                      />
-                    </Box>
+                    <TokenBalancesPopover
+                      sources={getAppAssetsSources({
+                        balances: {
+                          plug: tokenBalances?.[id],
+                          sonic: sonicBalances?.[id],
+                        },
+                      })}
+                      decimals={decimals}
+                      symbol={symbol}
+                    >
+                      <Box>
+                        <Text fontWeight="bold" color="gray.400">
+                          Amount
+                        </Text>
+                        <DisplayValue
+                          value={totalBalances?.[id]}
+                          decimals={decimals}
+                          fontWeight="bold"
+                        />
+                      </Box>
+                    </TokenBalancesPopover>
                     <Box>
                       <Text fontWeight="bold" color="gray.400">
                         Price
