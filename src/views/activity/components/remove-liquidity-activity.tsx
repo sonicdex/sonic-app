@@ -30,6 +30,8 @@ export const RemoveLiquidityActivity: React.FC<RemoveLiquidityActivityProps> =
     const token0 = tokenList[_token0];
     const token1 = tokenList[_token1];
 
+    if (!token0 || !token1) return null;
+
     return (
       <Asset type="lp" imageSources={[token0.logo, token1.logo]}>
         <HStack spacing={4}>

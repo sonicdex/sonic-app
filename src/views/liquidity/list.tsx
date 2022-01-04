@@ -7,7 +7,7 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { FaMinus, FaPlus } from 'react-icons/fa';
 import { useNavigate } from 'react-router';
 
@@ -35,7 +35,7 @@ import { getCurrencyString } from '@/utils/format';
 
 const INFORMATION_TITLE = 'Liquidity Provider Rewards';
 const INFORMATION_DESCRIPTION =
-  'Liquidity providers earn a 0.25% fee on all trades proportional to their share of the pool. Fees are added to the pool, accrue in real time and can be claimed by withdrawing your liquidity. If you want to learn ';
+  'Liquidity providers earn a 0.3% fee on all trades proportional to their share of the pool. Fees are added to the pool, accrue in real time and can be claimed by withdrawing your liquidity. If you want to learn ';
 
 const InformationDescription = () => (
   <Text color="#888E8F">
@@ -145,6 +145,14 @@ export const LiquidityListView = () => {
     }
   }, [userLPBalances, supportedTokenList]);
 
+  const getUserLPValue = useCallback(
+    (token0: AppTokenMetadata, token1: AppTokenMetadata) => {
+      console.log(token0, token1);
+      return undefined;
+    },
+    []
+  );
+
   return (
     <>
       {isBannerOpened && (
@@ -241,10 +249,13 @@ export const LiquidityListView = () => {
 
                 <Box>
                   <Text fontWeight="bold" color="gray.400">
-                    Fees Earned
+                    LP Value
                   </Text>
-                  {/* TODO: Price calc */}
-                  <DisplayValue color="green.400" prefix="$" value="0" />
+                  <DisplayValue
+                    color="green.400"
+                    prefix="$"
+                    value={getUserLPValue(token0, token1)}
+                  />
                 </Box>
 
                 <HStack>

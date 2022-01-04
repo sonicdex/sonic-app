@@ -1,5 +1,8 @@
 import Provider from '@psychedelic/plug-inpage-provider';
-import type { Transaction } from '@psychedelic/plug-inpage-provider/dist/src/Provider';
+import type {
+  Transaction,
+  TransactionPrevResponse,
+} from '@psychedelic/plug-inpage-provider/dist/src/Provider';
 
 import { Batch } from './models/batch';
 
@@ -19,7 +22,8 @@ export class BatchTransactions implements Batch.Controller {
       ...transaction,
       onSuccess: (response) =>
         this.handleTransactionSuccess(transaction, response),
-      onFail: (error) => this.handleTransactionFail(transaction, error),
+      onFail: (error, prevResponses) =>
+        this.handleTransactionFail(transaction, error, prevResponses),
     });
     return this;
   }
@@ -51,26 +55,27 @@ export class BatchTransactions implements Batch.Controller {
 
   private async handleTransactionSuccess(
     transaction: Transaction,
-    response: unknown
+    responses: unknown[]
   ): Promise<unknown> {
-    const result = await transaction.onSuccess(response);
+    const result = await transaction.onSuccess(responses);
 
     this.pop();
     if (this.transactions.length === 0) {
-      this.finishPromise(true, response);
+      this.finishPromise(true, responses);
     }
     return result;
   }
 
   private async handleTransactionFail(
     transaction: Transaction,
-    error: unknown
-  ): Promise<unknown> {
+    error: unknown,
+    prevResponses?: TransactionPrevResponse[]
+  ): Promise<void> {
     const retry = this.handleRetry && (await this.handleRetry(error));
     if (retry) {
-      return this.start();
+      this.start();
     } else {
-      await transaction.onFail(error);
+      await transaction.onFail(error, prevResponses);
       this.finishPromise(false, error);
     }
   }

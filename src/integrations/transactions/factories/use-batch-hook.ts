@@ -43,9 +43,9 @@ export const useBatchHook: Batch.CreateHook = ({
       };
 
       const onFail = transaction.onFail;
-      transaction.onFail = async (res) => {
-        if (onFail) await onFail(res);
-        handleError(res);
+      transaction.onFail = async (err, prevRes) => {
+        if (onFail) await onFail(err, prevRes);
+        handleError(err);
       };
       newBatch.push(transaction);
     });

@@ -8,7 +8,7 @@ export const batchTransactionFailMock = async (transactions: Transaction[]) => {
 
 export const batchTransactionsMock = async (transactions: Transaction[]) => {
   for (const { onSuccess } of transactions) {
-    await onSuccess(true);
+    await onSuccess([]);
   }
   return true;
 };
