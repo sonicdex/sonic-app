@@ -24,18 +24,8 @@ export const DisplayValue: React.FC<DisplayValueProps> = ({
     return [display, tooltip];
   }, [value, decimals]);
 
-  if (formattedValue === '0' || formattedValue.length <= 4) {
-    return (
-      <Text {...textProps}>
-        {prefix}
-        {formattedValue}
-        {suffix}
-      </Text>
-    );
-  }
-
   return (
-    <Tooltip label={tooltipLabel}>
+    <Tooltip label={tooltipLabel} isDisabled={String(tooltipLabel).length <= 4}>
       <Text {...textProps}>
         {prefix}
         {formattedValue}
