@@ -201,6 +201,7 @@ export const AssetsListView = () => {
                           value={totalBalances?.[id]}
                           decimals={decimals}
                           fontWeight="bold"
+                          disableTooltip
                         />
                       </Box>
                     </TokenBalancesPopover>
