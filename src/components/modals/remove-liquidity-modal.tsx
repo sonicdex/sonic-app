@@ -38,7 +38,7 @@ import {
   useNotificationStore,
   useSwapCanisterStore,
 } from '@/store';
-import { getCurrencyString } from '@/utils/format';
+import { getCurrency } from '@/utils/format';
 import { debounce } from '@/utils/function';
 
 import { RemoveLiquidityModalAsset } from './remove-liquidity-modal-asset';
@@ -79,24 +79,30 @@ export const RemoveLiquidityModal = () => {
         userLPBalances[token0.metadata.id]?.[token1.metadata.id];
 
       const pair = allPairs[token0.metadata.id]?.[token1.metadata.id];
-
       if (pair) {
-        const balance0 = getCurrencyString(
-          new BigNumber(pair.reserve0.toString())
-            .dividedBy(pair.reserve1.toString())
-            .multipliedBy(tokenBalance)
-            .multipliedBy(removeAmountPercentage / 100)
-            .toFixed(3),
+        const normalizedReserve0 = getCurrency(
+          pair.reserve0.toString(),
           token0.metadata.decimals
         );
-        const balance1 = getCurrencyString(
-          new BigNumber(pair.reserve1.toString())
-            .dividedBy(pair.reserve0.toString())
-            .multipliedBy(tokenBalance)
-            .multipliedBy(removeAmountPercentage / 100)
-            .toFixed(3),
+        const normalizedReserve1 = getCurrency(
+          pair.reserve1.toString(),
           token1.metadata.decimals
         );
+        const normalizedTokenBalance = getCurrency(
+          tokenBalance.toString(),
+          Math.round((token0.metadata.decimals + token1.metadata.decimals) / 2)
+        );
+
+        const balance0 = new BigNumber(normalizedReserve0)
+          .dividedBy(normalizedReserve1)
+          .multipliedBy(normalizedTokenBalance)
+          .multipliedBy(removeAmountPercentage / 100)
+          .toFixed(3);
+        const balance1 = new BigNumber(normalizedReserve1)
+          .dividedBy(normalizedReserve0)
+          .multipliedBy(normalizedTokenBalance)
+          .multipliedBy(removeAmountPercentage / 100)
+          .toFixed(3);
 
         return {
           balance0,

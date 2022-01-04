@@ -241,7 +241,7 @@ export const LiquidityAddView = () => {
         return [true, `Insufficient ${token0.metadata.symbol} Balance`];
       }
 
-      if (parsedToken1Balance > parsedToken1Balance) {
+      if (parsedToken1Value > parsedToken1Balance) {
         return [true, `Insufficient ${token1.metadata.symbol} Balance`];
       }
     }

@@ -39,7 +39,6 @@ module.exports = (env) => {
         NODE_ENV: 'development',
         HOST: 'http://localhost:9000',
         LEDGER_CANISTER_ID: 'ryjl3-tyaaa-aaaaa-aaaba-cai',
-        TOKEN_CANISTER_ID: '6u36y-tyaaa-aaaah-qaawq-cai',
         SWAP_CANISTER_ID: '3xwpq-ziaaa-aaaah-qcn4a-cai',
         WICP_CANISTER_ID: 'utozz-siaaa-aaaam-qaaxq-cai',
         XTC_CANISTER_ID: 'aanaa-xaaaa-aaaah-aaeiq-cai',

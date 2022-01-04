@@ -130,7 +130,7 @@ export const LiquidityListView = () => {
 
         const balance = getCurrencyString(
           userLPBalances[tokenId0][tokenId1],
-          token0?.decimals
+          Math.round(((token0?.decimals ?? 0) + (token1?.decimals ?? 0)) / 2)
         );
 
         return [
@@ -147,10 +147,10 @@ export const LiquidityListView = () => {
 
   const getUserLPValue = useCallback(
     (token0: AppTokenMetadata, token1: AppTokenMetadata) => {
-      console.log(token0, token1);
-      return undefined;
+      const lpPrice = undefined;
+      return lpPrice;
     },
-    []
+    [userLPBalances]
   );
 
   return (
