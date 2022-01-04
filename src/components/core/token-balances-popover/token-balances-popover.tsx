@@ -17,12 +17,14 @@ type TokenBalancesPopoverProps = {
   symbol?: string;
   decimals?: number;
   sources?: TokenSource[];
+  children?: React.ReactNode;
 };
 
 export const TokenBalancesPopover: FC<TokenBalancesPopoverProps> = ({
   symbol,
   decimals,
   sources = [],
+  children,
 }) => {
   const filteredSources = useMemo(
     () => sources.filter((source) => source.balance && source.balance > 0),
@@ -37,9 +39,10 @@ export const TokenBalancesPopover: FC<TokenBalancesPopoverProps> = ({
     <Popover trigger="hover">
       <PopoverTrigger>
         <HStack spacing={1}>
-          {filteredSources.map((source) => (
-            <Image key={source?.src} src={source?.src} />
-          ))}
+          {children ||
+            filteredSources.map((source) => (
+              <Image key={source?.src} src={source?.src} />
+            ))}
         </HStack>
       </PopoverTrigger>
       <PopoverContent color="gray.50">
