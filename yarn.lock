@@ -1840,10 +1840,10 @@
     axios "^0.24.0"
     cross-fetch "^3.1.4"
 
-"@psychedelic/plug-inpage-provider@1.5.0-comp":
-  version "1.5.0-comp"
-  resolved "https://npm.pkg.github.com/download/@psychedelic/plug-inpage-provider/1.5.0-comp/96eff1944a4f081176370f42663f92ebbb93435587320ee781ae34cd539d176a#d03c189234bc884a299f7b9bbc4a643503201545"
-  integrity sha512-KZ+zEqzftw5KP5mG2tzb3OTWfBU9HVIZBTT1FJGvh1pfJnA7+xP7ySfru3qkeCX3WmoK03Zv0Fd0qvGYFxYw4Q==
+"@psychedelic/plug-inpage-provider@1.6.1":
+  version "1.6.1"
+  resolved "https://npm.pkg.github.com/download/@psychedelic/plug-inpage-provider/1.6.1/0811f0e6beea1162a4f36ed82c98a4ff6ba2e4aff88c494b2f0d3273621d3ee2#7e779b3857108571cd0fd586e2b786d73cb04332"
+  integrity sha512-iliY9Q7i76KhRUS+vIhMRJnJrG5JbYFaF3EbqhOHdHdhy55kGAMBYImZdBQkDBYd+TKofbD3eZBnfezo/miJoA==
   dependencies:
     "@dfinity/agent" "0.9.3"
     "@dfinity/candid" "0.9.3"

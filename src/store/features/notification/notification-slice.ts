@@ -22,6 +22,7 @@ export interface Notification {
   errorMessage?: string;
   type: NotificationType;
   transactionLink?: string;
+  timeout?: string;
 }
 
 export interface NotificationsState {
@@ -42,7 +43,10 @@ export const notificationSlice = createSlice({
       state.state = action.payload;
     },
     addNotification: (state, action: PayloadAction<Notification>) => {
-      state.notifications.push(action.payload);
+      state.notifications.push({
+        ...action.payload,
+        timeout: action.payload.timeout || '10s',
+      });
     },
     popNotification: (state, action: PayloadAction<string>) => {
       const popId = action.payload;

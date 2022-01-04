@@ -19,7 +19,7 @@
   "devDependencies": {
     "@commitlint/cli": "15.0.0",
     "@commitlint/config-conventional": "15.0.0",
-    "@psychedelic/plug-inpage-provider": "1.5.0-comp",
+    "@psychedelic/plug-inpage-provider": "1.6.1",
     "@types/buffer-crc32": "^0.2.0",
     "@types/crypto-js": "^4.1.0",
     "@types/jest": "^27.0.3",
