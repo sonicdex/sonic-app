@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
+import { getFromStorage, LocalStorageKey, saveToStorage } from '@/config';
 import type { RootState } from '@/store';
 import { FeatureState } from '@/store';
 
@@ -9,7 +10,7 @@ interface AssetsViewState {
 }
 
 const initialState: AssetsViewState = {
-  isBannerOpened: true,
+  isBannerOpened: !getFromStorage(LocalStorageKey.AssetsBannerDisabled),
   state: FeatureState?.Idle,
 };
 
@@ -19,6 +20,7 @@ export const assetsViewSlice = createSlice({
   initialState,
   reducers: {
     setIsBannerOpened: (state, action: PayloadAction<boolean>) => {
+      saveToStorage(LocalStorageKey.AssetsBannerDisabled, !action.payload);
       state.isBannerOpened = action.payload;
     },
     setState: (state, action: PayloadAction<FeatureState>) => {
