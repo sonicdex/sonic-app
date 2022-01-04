@@ -19,6 +19,7 @@ export const NotificationBox = ({
   children,
   transactionLink,
   id,
+  timeout,
 }: NotificationBoxProps) => {
   const [show, setShow] = useState(true);
 
@@ -49,7 +50,11 @@ export const NotificationBox = ({
         >
           {children}
         </NotificationContent>
-        <NotificationTimer handleClose={handleClose} type={type} />
+        <NotificationTimer
+          handleClose={handleClose}
+          type={type}
+          timeout={timeout}
+        />
       </Box>
     </Collapse>
   );

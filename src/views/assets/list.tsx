@@ -204,18 +204,16 @@ export const AssetsListView = () => {
                         />
                       </Box>
                     </TokenBalancesPopover>
-                    {price && (
-                      <Box>
-                        <Text fontWeight="bold" color="gray.400">
-                          Price
-                        </Text>
-                        <DisplayValue
-                          fontWeight="bold"
-                          prefix="$"
-                          value={price}
-                        />
-                      </Box>
-                    )}
+                    <Box>
+                      <Text fontWeight="bold" color="gray.400">
+                        Price
+                      </Text>
+                      <DisplayValue
+                        fontWeight="bold"
+                        prefix="$"
+                        value={price ?? 0}
+                      />
+                    </Box>
 
                     <HStack>
                       <AssetIconButton

@@ -22,6 +22,7 @@ export interface Notification {
   errorMessage?: string;
   type: NotificationType;
   transactionLink?: string;
+  timeout?: string;
 }
 
 export interface NotificationsState {

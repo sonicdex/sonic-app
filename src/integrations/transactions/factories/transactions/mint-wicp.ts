@@ -21,7 +21,7 @@ export const useMintWICPTransactionMemo: CreateTransaction<MintWICP> = (
         if (onSuccess) onSuccess(res);
       },
       onFail: async (err: any, prevTransactionsData: any[]) => {
-        if (onFail) onFail(prevTransactionsData);
+        if (onFail) onFail(err, prevTransactionsData);
       },
       args: (prevResponses: any[]) => {
         const argBlockHeight = prevResponses[0]?.response;

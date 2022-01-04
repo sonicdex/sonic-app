@@ -11,14 +11,19 @@ const reduceWidth = keyframes`
 
 export interface NotificationTimerProps {
   type: NotificationType;
+  timeout?: string;
   handleClose: () => void;
 }
 
 export const NotificationTimer: React.FC<NotificationTimerProps> = ({
   type,
+  timeout = '10s',
   handleClose,
 }) => {
-  if (type !== NotificationType.Success && type !== NotificationType.Error) {
+  if (
+    (type !== NotificationType.Success && type !== NotificationType.Error) ||
+    timeout === 'none'
+  ) {
     return null;
   }
 
@@ -33,7 +38,7 @@ export const NotificationTimer: React.FC<NotificationTimerProps> = ({
     }
   }, [type]);
 
-  const collapseAnimation = `${reduceWidth} 10s forwards linear`;
+  const collapseAnimation = `${reduceWidth} ${timeout} forwards linear`;
 
   return (
     <Box

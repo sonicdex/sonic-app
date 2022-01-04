@@ -3,7 +3,9 @@ import { useMemo } from 'react';
 import { ENV } from '@/config';
 import {
   modalsSliceActions,
+  NotificationType,
   useAppDispatch,
+  useNotificationStore,
   useSwapViewStore,
   WrapModalDataStep,
 } from '@/store';
@@ -28,6 +30,7 @@ type Wrap = {
 export const useWrapBatch = ({ amount, keepInSonic = false }: Wrap) => {
   const { tokenList } = useSwapViewStore();
   const dispatch = useAppDispatch();
+  const { addNotification } = useNotificationStore();
 
   const depositParams = {
     token: tokenList![ENV.canisterIds.WICP],
@@ -38,8 +41,21 @@ export const useWrapBatch = ({ amount, keepInSonic = false }: Wrap) => {
     toAccountId: WICP_ACCOUNT_ID,
     amount,
   });
-  const mintWICP = useMintWICPTransactionMemo({}, undefined, (data: any) =>
-    console.log(data)
+  const mintWICP = useMintWICPTransactionMemo(
+    {},
+    undefined,
+    // TODO: Add strict types
+    (err: any, prevTransactionsData: any) => {
+      const blockHeight = (
+        prevTransactionsData?.[0]?.response as bigint | undefined
+      )?.toString();
+      addNotification({
+        title: `The minting of WICP is failed, please use DFX to finish minting your WICP "dfx canister --no-wallet --network ic call utozz-siaaa-aaaam-qaaxq-cai mint '(0, ${blockHeight})'"`,
+        type: NotificationType.Error,
+        timeout: 'none',
+        id: Date.now().toString(),
+      });
+    }
   );
   const approve = useApproveTransactionMemo(depositParams);
   const deposit = useDepositTransactionMemo(depositParams);

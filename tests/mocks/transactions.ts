@@ -8,7 +8,7 @@ export const mockTransaction = ({
   onSuccess,
   onFail,
 }: Partial<Transaction> = {}): Transaction => ({
-  args: args || [],
+  args: args || ([] as any),
   canisterId: canisterId || 'any_canister_id',
   idl: idl || ((() => undefined) as any),
   methodName: methodName || 'any_method_name',
