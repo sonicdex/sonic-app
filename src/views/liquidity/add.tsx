@@ -177,16 +177,17 @@ export const LiquidityAddView = () => {
       token1.metadata &&
       allPairs?.[token0.metadata.id]?.[token1.metadata.id]
     ) {
-      const decimalsOut =
+      const [decimalsOut, decimalsIn] =
         dataKey === 'token0'
-          ? token1.metadata?.decimals
-          : token0.metadata?.decimals;
+          ? [token1.metadata.decimals, token0.metadata.decimals]
+          : [token0.metadata.decimals, token1.metadata.decimals];
 
       const lpValue = getAmountEqualLPToken({
         amountIn,
         reserveIn,
         reserveOut,
         decimalsOut,
+        decimalsIn,
       });
 
       const reversedDataKey = dataKey === 'token0' ? 'token1' : 'token0';
@@ -324,7 +325,7 @@ export const LiquidityAddView = () => {
             liquidityValue: new BigNumber(token0.value)
               .multipliedBy(new BigNumber(token1.value))
               .sqrt()
-              .toFixed(3),
+              .toString(),
           };
         }
       }
