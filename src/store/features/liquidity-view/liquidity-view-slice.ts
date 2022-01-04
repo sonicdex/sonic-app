@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
+import { getFromStorage, LocalStorageKey, saveToStorage } from '@/config';
 import { AppTokenMetadata, Pair, TokenData } from '@/models';
 import { FeatureState, RootState } from '@/store';
 
@@ -20,7 +21,7 @@ interface LiquidityViewState {
 export const INITIAL_LIQUIDITY_SLIPPAGE = '0.50';
 
 const initialState: LiquidityViewState = {
-  isBannerOpened: true,
+  isBannerOpened: !getFromStorage(LocalStorageKey.LiquidityBannerDisabled),
   pair: undefined,
   pairState: 'not-started' as FeatureState,
   state: 'not-started' as FeatureState,
@@ -43,6 +44,7 @@ export const liquidityViewSlice = createSlice({
   initialState,
   reducers: {
     setIsBannerOpened: (state, action: PayloadAction<boolean>) => {
+      saveToStorage(LocalStorageKey.LiquidityBannerDisabled, !action.payload);
       state.isBannerOpened = action.payload;
     },
     setState: (state, action: PayloadAction<FeatureState>) => {
