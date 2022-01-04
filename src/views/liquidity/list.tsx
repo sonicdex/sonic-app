@@ -60,6 +60,7 @@ type PairedUserLPToken = {
   token0: AppTokenMetadata;
   token1: AppTokenMetadata;
   userShares: string;
+  totalShares?: string;
 };
 
 export const LiquidityListView = () => {
@@ -117,7 +118,7 @@ export const LiquidityListView = () => {
   }, [supportedTokenListState, userLPBalancesState]);
 
   const pairedUserLPTokens = useMemo(() => {
-    if (userLPBalances && supportedTokenList) {
+    if (userLPBalances && supportedTokenList && allPairs) {
       const lpBalancesPairIDs = Object.keys(userLPBalances);
       const existentPairs = new Set();
 
@@ -138,12 +139,18 @@ export const LiquidityListView = () => {
           Math.round(((token0?.decimals ?? 0) + (token1?.decimals ?? 0)) / 2)
         );
 
+        const totalShares = getCurrencyString(
+          allPairs?.[tokenId0]?.[tokenId1]?.totalSupply,
+          Math.round(((token0?.decimals ?? 0) + (token1?.decimals ?? 0)) / 2)
+        );
+
         return [
           ...acc,
           {
             token0,
             token1,
             userShares,
+            totalShares,
           } as PairedUserLPToken,
         ];
       }, [] as PairedUserLPToken[]);

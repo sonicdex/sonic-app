@@ -319,8 +319,8 @@ export const LiquidityAddView = () => {
             !new BigNumber(token1Value).isFinite();
 
           return {
-            token0Price: isToken0Price ? '0.00' : token0Value,
-            token1Price: isToken1Price ? '0.00' : token1Value,
+            token0Price: isToken0Price ? '0' : token0Value,
+            token1Price: isToken1Price ? '0' : token1Value,
             liquidityPercentage: '100%',
             liquidityValue: new BigNumber(token0.value)
               .multipliedBy(new BigNumber(token1.value))
@@ -331,8 +331,8 @@ export const LiquidityAddView = () => {
       }
 
       return {
-        token0Price: '0.00',
-        token1Price: '0.00',
+        token0Price: '0',
+        token1Price: '0',
       };
     }, [token0, token1, pair]);
 
