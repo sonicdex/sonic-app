@@ -7,9 +7,12 @@ import {
   Menu,
   MenuButton,
   MenuList,
-  SimpleGrid,
+  Popover,
+  PopoverArrow,
+  PopoverBody,
+  PopoverContent,
+  PopoverTrigger,
   Skeleton,
-  Stack,
   Text,
   Tooltip,
 } from '@chakra-ui/react';
@@ -18,10 +21,11 @@ import { useEffect, useMemo, useState } from 'react';
 import { FaCog } from 'react-icons/fa';
 import { useNavigate } from 'react-router';
 
-import { plusSrc } from '@/assets';
+import { equalSrc, infoSrc, plusSrc } from '@/assets';
 import {
   LPImageBlock,
   PlugButton,
+  SlippageSettings,
   Token,
   TokenBalances,
   TokenBalancesDetails,
@@ -33,7 +37,6 @@ import {
   TokenInput,
   ViewHeader,
 } from '@/components';
-import { SlippageSettings } from '@/components';
 import { getAppAssetsSources } from '@/config/utils';
 import { useTokenBalanceMemo } from '@/hooks';
 import { useBalances } from '@/hooks/use-balances';
@@ -254,14 +257,6 @@ export const LiquidityAddView = () => {
 
     return selectedIds;
   }, [token0?.metadata?.id, token1?.metadata?.id]);
-
-  const shouldShowSumUp = useMemo(() => {
-    if (Number(token0.value) > 0 && Number(token1.value) > 0) {
-      return true;
-    }
-
-    return false;
-  }, [token0.value, token1.value]);
 
   const { token0Price, token1Price, liquidityPercentage, liquidityValue } =
     useMemo(() => {
@@ -502,57 +497,104 @@ export const LiquidityAddView = () => {
               <TokenBalancesPrice />
             </TokenBalances>
           </Token>
-        </Box>
-        {shouldShowSumUp && (
-          <>
-            <Stack
-              direction="row"
+
+          {!isReviewing && liquidityValue && (
+            <Flex
               alignItems="center"
-              pl={3}
-              pr={5}
-              py={2}
-              borderRadius="full"
-              w="fit-content"
-              mt={-3}
-              mb={-3}
-              zIndex={1200}
-              bg={isReviewing ? '#3D52F4' : '#1E1E1E'}
-              border={`1px solid ${isReviewing ? '#3D52F4' : '#373737'}`}
+              justifyContent="space-between"
+              width="full"
+              mt={5}
+              px={5}
             >
-              <LPImageBlock
-                size="sm"
-                imageSources={[token0.metadata?.logo, token1.metadata?.logo]}
-              />
-
-              <Text fontWeight="bold">
-                {token0.metadata?.symbol} - {token1.metadata?.symbol}
+              <Text color="gray.300">
+                {`${token0.metadata?.symbol} + ${token1.metadata?.symbol}`}
               </Text>
-            </Stack>
+              <Text color="gray.300">
+                {`1 ${token0.metadata?.symbol} = ${token1Price} ${token1.metadata?.symbol}`}
+              </Text>
+            </Flex>
+          )}
+        </Box>
+        {isReviewing && (
+          <>
+            <Flex
+              borderRadius={4}
+              width={10}
+              height={10}
+              border="1px solid #373737"
+              py={3}
+              px={3}
+              bg="#1E1E1E"
+              mt={-2}
+              mb={-2}
+              zIndex={1200}
+              justifyContent="center"
+              alignItems="center"
+            >
+              <Image m="auto" src={equalSrc} />
+            </Flex>
 
-            <Box width="100%">
-              <Token value={token1.value} isDisabled shouldGlow={isReviewing}>
-                <SimpleGrid columns={3}>
-                  <Box>
-                    <Text color="gray.300">Share of pool:</Text>
-                    <Text>
-                      {liquidityValue} ({liquidityPercentage})
-                    </Text>
-                  </Box>
-                  <Box textAlign="center">
-                    <Text color="gray.300">
-                      {token1.metadata?.symbol} per {token0.metadata?.symbol}
-                    </Text>
-                    <Text>{token0Price}</Text>
-                  </Box>
-                  <Box textAlign="right">
-                    <Text color="gray.300">
-                      {token0.metadata?.symbol} per {token1.metadata?.symbol}
-                    </Text>
-                    <Text>{token1Price}</Text>
-                  </Box>
-                </SimpleGrid>
-              </Token>
-            </Box>
+            <Token value={liquidityValue} isDisabled shouldGlow>
+              <TokenContent>
+                <Flex
+                  borderRadius="full"
+                  mr={5}
+                  minWidth="fit-content"
+                  background="gray.800"
+                  height={10}
+                  px={4}
+                  justifyContent="center"
+                  alignItems="center"
+                  fontWeight="bold"
+                >
+                  <LPImageBlock
+                    imageSources={[
+                      token0.metadata?.logo,
+                      token1.metadata?.logo,
+                    ]}
+                    size="sm"
+                  />
+                  <Text ml={2.5}>
+                    {`${token0.metadata?.symbol}-${token1.metadata?.symbol}`}
+                  </Text>
+
+                  <Popover trigger="hover">
+                    <PopoverTrigger>
+                      <Image ml={2.5} width={4} src={infoSrc} />
+                    </PopoverTrigger>
+                    <PopoverContent>
+                      <PopoverArrow />
+                      <PopoverBody>
+                        This is your share of the LP pool represented as tokens.
+                      </PopoverBody>
+                    </PopoverContent>
+                  </Popover>
+                </Flex>
+
+                <TokenInput />
+              </TokenContent>
+              <TokenBalances color="#888E8F">
+                Share of Pool:
+                <Text flex={1} textAlign="right">
+                  {liquidityPercentage}
+                </Text>
+              </TokenBalances>
+            </Token>
+
+            <Flex
+              alignItems="center"
+              justifyContent="space-between"
+              width="full"
+              mt={5}
+              px={5}
+            >
+              <Text color="gray.300">
+                {`1 ${token0.metadata?.symbol} = ${token1Price} ${token1.metadata?.symbol}`}
+              </Text>
+              <Text color="gray.300">
+                {`1 ${token1.metadata?.symbol} = ${token0Price} ${token0.metadata?.symbol}`}
+              </Text>
+            </Flex>
           </>
         )}
       </Flex>
