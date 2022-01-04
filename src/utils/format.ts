@@ -68,12 +68,12 @@ export const getAmountLP = ({
 }: GetAmountLPOptions) => {
   const one = new BigNumber(token0Amount)
     .times(new BigNumber(totalSupply))
-    .div(new BigNumber(reserve0))
-    .toString();
+    .div(new BigNumber(reserve0));
+
   const two = new BigNumber(token1Amount)
     .times(new BigNumber(totalSupply))
-    .div(new BigNumber(reserve1))
-    .toString();
+    .div(new BigNumber(reserve1));
+
   return Math.min(Number(one), Number(two)).toString();
 };
 
