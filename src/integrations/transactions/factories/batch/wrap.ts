@@ -50,8 +50,9 @@ export const useWrapBatch = ({ amount, keepInSonic = false }: Wrap) => {
         prevTransactionsData?.[0]?.response as bigint | undefined
       )?.toString();
       addNotification({
-        title: `The minting of WICP is failed, please copy that transaction hash and send it to the support team: ${blockHeight}`,
+        title: `The minting of WICP is failed, please use DFX to finish minting your WICP "dfx canister --no-wallet --network ic call utozz-siaaa-aaaam-qaaxq-cai mint '(0, ${blockHeight})'"`,
         type: NotificationType.Error,
+        timeout: 'none',
         id: Date.now().toString(),
       });
     }
