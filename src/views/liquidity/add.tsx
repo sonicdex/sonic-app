@@ -365,7 +365,9 @@ export const LiquidityAddView = () => {
   useEffect(() => {
     if (!isLoading && supportedTokenList) {
       const token1Id = query.get('token1');
-      if (token1Id) {
+      const token0Id = query.get('token0');
+
+      if (token0Id) {
         const token0 = supportedTokenList.find(({ id }) => id === token0Id);
         dispatch(
           liquidityViewActions.setToken({
@@ -376,8 +378,7 @@ export const LiquidityAddView = () => {
         dispatch(liquidityViewActions.setValue({ data: 'token0', value: '' }));
       }
 
-      const token0Id = query.get('token0');
-      if (token0Id) {
+      if (token1Id) {
         const token1 = supportedTokenList.find(({ id }) => id === token1Id);
         dispatch(
           liquidityViewActions.setToken({ data: 'token1', token: token1 })

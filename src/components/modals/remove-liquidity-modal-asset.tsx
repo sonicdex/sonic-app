@@ -35,8 +35,7 @@ export const RemoveLiquidityModalAsset: FC<RemoveLiquidityModalAssetProps> = ({
           <DisplayValue value={balance} />
         </Text>
         <Text fontSize="xs">
-          ~
-          <DisplayValue value={price} prefix="$" />
+          <DisplayValue value={price} prefix="~$" />
         </Text>
       </Box>
     </Flex>
