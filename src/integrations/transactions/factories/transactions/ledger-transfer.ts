@@ -9,7 +9,7 @@ import { CreateTransaction, LedgerTransfer } from '../../models';
 
 export const useLedgerTransferTransactionMemo: CreateTransaction<LedgerTransfer> =
   (
-    { toAccountId, fee = BigInt(10000), amount, memo = BigInt(0) },
+    { toAccountId, fee = ICP_TOKEN_METADATA.fee, amount, memo = BigInt(0) },
     onSuccess,
     onFail
   ) =>

@@ -68,13 +68,13 @@ export const getAmountLP = ({
 }: GetAmountLPOptions) => {
   const one = new BigNumber(token0Amount)
     .times(new BigNumber(totalSupply))
-    .div(new BigNumber(reserve0))
-    .toFixed(3);
+    .div(new BigNumber(reserve0));
+
   const two = new BigNumber(token1Amount)
     .times(new BigNumber(totalSupply))
-    .div(new BigNumber(reserve1))
-    .toFixed(3);
-  return Math.min(Number(one), Number(two)).toFixed(3);
+    .div(new BigNumber(reserve1));
+
+  return Math.min(Number(one), Number(two)).toString();
 };
 
 interface GetLPPercentageString extends GetAmountLPOptions {
@@ -121,6 +121,7 @@ type GetEqualLPTokenAmount = {
   reserveIn: string;
   reserveOut: string;
   decimalsOut: number;
+  decimalsIn: number;
 };
 
 export const getAmountEqualLPToken = ({
@@ -128,6 +129,7 @@ export const getAmountEqualLPToken = ({
   reserveIn,
   reserveOut,
   decimalsOut,
+  decimalsIn,
 }: GetEqualLPTokenAmount) => {
   if (
     !amountIn ||
@@ -139,9 +141,10 @@ export const getAmountEqualLPToken = ({
   }
 
   const amountOut = new BigNumber(amountIn)
+    .multipliedBy(new BigNumber(10).pow(decimalsIn))
     .multipliedBy(new BigNumber(reserveOut))
     .dividedBy(new BigNumber(reserveIn))
-    .dp(decimalsOut)
+    .dividedBy(new BigNumber(10).pow(decimalsOut))
     .toString();
 
   return amountOut;

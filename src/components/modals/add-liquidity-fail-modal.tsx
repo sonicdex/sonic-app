@@ -22,7 +22,7 @@ export const AddLiquidityFailModal = () => {
   return (
     <Modal onClose={handleClose} isOpen={isAddLiquidityFailOpened} isCentered>
       <ModalOverlay />
-      <TransactionFailedModalContent title="Swap Failed">
+      <TransactionFailedModalContent title="Add liquidity Failed">
         <Button
           variant="gradient"
           colorScheme="dark-blue"

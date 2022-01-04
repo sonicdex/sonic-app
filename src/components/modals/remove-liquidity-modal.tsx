@@ -38,7 +38,7 @@ import {
   useNotificationStore,
   useSwapCanisterStore,
 } from '@/store';
-import { getCurrencyString } from '@/utils/format';
+import { getCurrency } from '@/utils/format';
 import { debounce } from '@/utils/function';
 
 import { RemoveLiquidityModalAsset } from './remove-liquidity-modal-asset';
@@ -79,24 +79,31 @@ export const RemoveLiquidityModal = () => {
         userLPBalances[token0.metadata.id]?.[token1.metadata.id];
 
       const pair = allPairs[token0.metadata.id]?.[token1.metadata.id];
-
-      if (pair) {
-        const balance0 = getCurrencyString(
-          new BigNumber(pair.reserve0.toString())
-            .dividedBy(pair.reserve1.toString())
-            .multipliedBy(tokenBalance)
-            .multipliedBy(removeAmountPercentage / 100)
-            .toFixed(3),
+      if (pair?.reserve0 && pair?.reserve1 && tokenBalance) {
+        const normalizedReserve0 = getCurrency(
+          pair.reserve0.toString(),
           token0.metadata.decimals
         );
-        const balance1 = getCurrencyString(
-          new BigNumber(pair.reserve1.toString())
-            .dividedBy(pair.reserve0.toString())
-            .multipliedBy(tokenBalance)
-            .multipliedBy(removeAmountPercentage / 100)
-            .toFixed(3),
+        const normalizedReserve1 = getCurrency(
+          pair.reserve1.toString(),
           token1.metadata.decimals
         );
+        const normalizedTokenBalance = getCurrency(
+          tokenBalance.toString(),
+          Math.round((token0.metadata.decimals + token1.metadata.decimals) / 2)
+        );
+
+        const balance0 = new BigNumber(normalizedTokenBalance)
+          .pow(2)
+          .dividedBy(normalizedReserve1)
+          .multipliedBy(removeAmountPercentage / 100)
+          .toString();
+
+        const balance1 = new BigNumber(normalizedTokenBalance)
+          .pow(2)
+          .dividedBy(normalizedReserve0)
+          .multipliedBy(removeAmountPercentage / 100)
+          .toString();
 
         return {
           balance0,
@@ -202,7 +209,7 @@ export const RemoveLiquidityModal = () => {
                 color={keepInSonic ? '#FFFFFF' : '#888E8F'}
                 fontWeight={600}
               >
-                Keep tokens in Sonic after swap
+                Keep tokens in Sonic after removing liqudity
               </Checkbox>
             </FormControl>
           </Flex>
