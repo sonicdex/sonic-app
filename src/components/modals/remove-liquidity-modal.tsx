@@ -124,7 +124,7 @@ export const RemoveLiquidityModal = () => {
           </Heading>
         </ModalHeader>
         <ModalBody textAlign="center">
-          <Heading as="h4" size="xs" color="gray.500">
+          <Heading as="h4" size="xs" color="gray.500" mt={2}>
             Amount
           </Heading>
           <Heading as="h6" size="xl" fontWeight="bold" mt={2} mb={4}>
@@ -153,6 +153,7 @@ export const RemoveLiquidityModal = () => {
                   lineHeight="1"
                   colorScheme="dark-blue"
                   variant="outline"
+                  disabled={removeAmountPercentage === preset}
                   onClick={() => handleSliderChange(preset)}
                 >
                   {preset}%
@@ -176,7 +177,7 @@ export const RemoveLiquidityModal = () => {
             <Divider />
           </Flex>
 
-          <Stack spacing={4}>
+          <Stack mt={6} mb={4}>
             <RemoveLiquidityModalAsset
               {...token0.metadata}
               balance={balances.balance0}
