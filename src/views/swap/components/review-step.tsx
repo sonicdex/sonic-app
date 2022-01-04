@@ -142,7 +142,11 @@ export const SwapReviewStep = () => {
       </Flex>
 
       <ExchangeBox from={from} to={to} slippage={slippage} />
-      <KeepInSonicBox />
+      <KeepInSonicBox
+        canHeldInSonic={!(to.metadata?.symbol === 'ICP')}
+        symbol={to.metadata?.symbol}
+        operation={from.metadata?.symbol === 'ICP' ? 'wrap' : 'swap'}
+      />
 
       <Button
         variant="gradient"

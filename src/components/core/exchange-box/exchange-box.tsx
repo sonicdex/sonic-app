@@ -55,14 +55,32 @@ export const ExchangeBox: React.FC<ExchangeBoxProps> = ({
   slippage,
 }) => {
   const { allPairs } = useSwapCanisterStore();
-  if (
-    !from.metadata ||
-    !to.metadata ||
-    !allPairs ||
-    !allPairs[from.metadata.id][to.metadata.id]
-  )
-    return null;
 
+  if (!from.metadata || !to.metadata) return null;
+
+  const [icp, feeMessage] =
+    from.metadata.id === 'ICP'
+      ? [from.metadata, 'Wrap']
+      : to.metadata.id === 'ICP'
+      ? [to.metadata, 'Unwrap']
+      : [];
+
+  if (icp) {
+    return (
+      <Flex opacity={0.4} alignItems="center" px={4} fontWeight={400}>
+        <Text display="flex" alignItems="center">
+          {from.metadata.symbol}&nbsp;
+          <FaArrowRight />
+          &nbsp;{to.metadata.symbol}
+        </Text>
+        <Text flex={1} textAlign="right">
+          {feeMessage} Fee = {getCurrencyString(icp.fee, icp.decimals)}
+        </Text>
+      </Flex>
+    );
+  }
+
+  if (!allPairs || !allPairs[from.metadata.id][to.metadata.id]) return null;
   const { reserve0, reserve1 } = allPairs[from.metadata.id][to.metadata.id];
 
   return (

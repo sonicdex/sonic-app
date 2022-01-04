@@ -215,8 +215,12 @@ export const TokenBalancesDetails: React.FC<TokenBalancesDetailsProps> = ({
       onMaxClick &&
       totalTokenBalance &&
       totalTokenBalance > 0 &&
-      Number(getCurrencyString(totalTokenBalance, tokenMetadata?.decimals)) !==
-        Number(value)
+      Number(
+        getCurrencyString(
+          totalTokenBalance - Number(tokenMetadata?.fee || 0),
+          tokenMetadata?.decimals
+        )
+      ) !== Number(value)
     ) {
       return true;
     }
