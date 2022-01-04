@@ -10,6 +10,7 @@ import {
   PopoverContent,
   PopoverTrigger,
   Portal,
+  Text,
 } from '@chakra-ui/react';
 import { useMemo } from 'react';
 
@@ -21,11 +22,13 @@ type OperationType = 'swap' | 'wrap';
 type KeepInSonicBoxProps = {
   symbol?: string;
   operation?: OperationType;
+  canHeldInSonic?: boolean;
 };
 
 export const KeepInSonicBox: React.FC<KeepInSonicBoxProps> = ({
   symbol,
   operation = 'swap',
+  canHeldInSonic = true,
 }) => {
   const { keepInSonic } = useSwapViewStore();
   const dispatch = useAppDispatch();
@@ -89,36 +92,43 @@ export const KeepInSonicBox: React.FC<KeepInSonicBoxProps> = ({
       py={4}
       mb={5}
     >
-      <FormControl direction="row" alignItems="center">
-        <Checkbox
-          isChecked={keepInSonic}
-          onChange={(e) =>
-            dispatch(swapViewActions.setKeepInSonic(e.target.checked))
-          }
-          colorScheme="dark-blue"
-          size="lg"
-          color={keepInSonic ? '#FFFFFF' : '#888E8F'}
-          fontWeight={600}
-        >
-          {label}
-        </Checkbox>
-      </FormControl>
-      <Popover trigger="hover">
-        <PopoverTrigger>
-          <Image
-            src={infoSrc}
-            width={5}
-            transition="opacity 200ms"
-            opacity={keepInSonic ? 1 : 0.5}
-          />
-        </PopoverTrigger>
-        <Portal>
-          <PopoverContent>
-            <PopoverArrow />
-            <PopoverBody display="inline-block">{popoverLabel}</PopoverBody>
-          </PopoverContent>
-        </Portal>
-      </Popover>
+      {canHeldInSonic ? (
+        <>
+          <FormControl direction="row" alignItems="center">
+            <Checkbox
+              isChecked={keepInSonic}
+              onChange={(e) =>
+                dispatch(swapViewActions.setKeepInSonic(e.target.checked))
+              }
+              colorScheme="dark-blue"
+              color={keepInSonic ? '#FFFFFF' : '#888E8F'}
+              fontWeight={600}
+            >
+              {label}
+            </Checkbox>
+          </FormControl>
+          <Popover trigger="hover">
+            <PopoverTrigger>
+              <Image
+                src={infoSrc}
+                width={5}
+                transition="opacity 200ms"
+                opacity={keepInSonic ? 1 : 0.5}
+              />
+            </PopoverTrigger>
+            <Portal>
+              <PopoverContent>
+                <PopoverArrow />
+                <PopoverBody display="inline-block">{popoverLabel}</PopoverBody>
+              </PopoverContent>
+            </Portal>
+          </Popover>
+        </>
+      ) : (
+        <Text fontWeight="bold" color="gray.400">
+          ICP can’t be held in the Sonic canister
+        </Text>
+      )}
     </Flex>
   );
 };

@@ -413,7 +413,7 @@ export const LiquidityAddView = () => {
     <>
       <ViewHeader onArrowBack={handlePreviousStep} title="Add Liquidity">
         <Menu>
-          <Tooltip label="Settings">
+          <Tooltip label="Adjust the slippage">
             <MenuButton
               as={IconButton}
               isRound

@@ -325,39 +325,38 @@ export const SwapHomeStep = () => {
   return (
     <Stack spacing={4}>
       <ViewHeader title="Swap">
-        {!isLoading && !isICPSelected && (
-          <Menu>
-            <Tooltip label="Settings">
-              <MenuButton
-                as={IconButton}
-                isRound
-                size="sm"
-                aria-label="Settings"
-                icon={<FaCog />}
-                ml="auto"
-              />
-            </Tooltip>
-            <MenuList
-              bg="#1E1E1E"
-              border="none"
-              borderRadius={20}
-              ml={-20}
-              py={0}
-            >
-              <SlippageSettings
-                slippage={slippage}
-                isAutoSlippage={autoSlippage}
-                setSlippage={(value) =>
-                  dispatch(swapViewActions.setSlippage(value))
-                }
-                setIsAutoSlippage={(value) => {
-                  setAutoSlippage(value);
-                  dispatch(swapViewActions.setSlippage(INITIAL_SWAP_SLIPPAGE));
-                }}
-              />
-            </MenuList>
-          </Menu>
-        )}
+        <Menu>
+          <Tooltip label="Adjust the slippage">
+            <MenuButton
+              as={IconButton}
+              isRound
+              size="sm"
+              aria-label="Adjust the slippage"
+              icon={<FaCog />}
+              ml="auto"
+              isDisabled={isICPSelected}
+            />
+          </Tooltip>
+          <MenuList
+            bg="#1E1E1E"
+            border="none"
+            borderRadius={20}
+            ml={-20}
+            py={0}
+          >
+            <SlippageSettings
+              slippage={slippage}
+              isAutoSlippage={autoSlippage}
+              setSlippage={(value) =>
+                dispatch(swapViewActions.setSlippage(value))
+              }
+              setIsAutoSlippage={(value) => {
+                setAutoSlippage(value);
+                dispatch(swapViewActions.setSlippage(INITIAL_SWAP_SLIPPAGE));
+              }}
+            />
+          </MenuList>
+        </Menu>
       </ViewHeader>
       <Flex direction="column" alignItems="center">
         <Box width="100%">
@@ -448,12 +447,12 @@ export const SwapHomeStep = () => {
       {!isICPSelected && (
         <ExchangeBox from={from} to={to} slippage={slippage} />
       )}
-      {!isToIsICP && (
-        <KeepInSonicBox
-          symbol={to.metadata?.symbol}
-          operation={isFromIsICP ? 'wrap' : 'swap'}
-        />
-      )}
+
+      <KeepInSonicBox
+        canHeldInSonic={!isToIsICP}
+        symbol={to.metadata?.symbol}
+        operation={isFromIsICP ? 'wrap' : 'swap'}
+      />
 
       {!isConnected ? (
         <PlugButton />
