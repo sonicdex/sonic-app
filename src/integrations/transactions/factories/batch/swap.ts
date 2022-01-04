@@ -29,8 +29,6 @@ export const useSwapBatch = ({
   const dispatch = useAppDispatch();
   const { sonicBalances } = useSwapCanisterStore();
 
-  console.log(swapParams);
-
   if (!sonicBalances) throw new Error('Sonic balance is required');
 
   if (!swapParams.from.metadata || !swapParams.to.metadata)
