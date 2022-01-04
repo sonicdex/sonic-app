@@ -322,8 +322,8 @@ export const LiquidityAddView = () => {
             token1Price: isToken1Price ? '0.00' : token1Value,
             liquidityPercentage: '100%',
             liquidityValue: new BigNumber(token0.value)
-              .plus(new BigNumber(token1.value))
-              .div(2)
+              .multipliedBy(new BigNumber(token1.value))
+              .sqrt()
               .toFixed(3),
           };
         }

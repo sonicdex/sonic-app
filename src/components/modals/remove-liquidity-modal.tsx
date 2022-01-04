@@ -79,7 +79,7 @@ export const RemoveLiquidityModal = () => {
         userLPBalances[token0.metadata.id]?.[token1.metadata.id];
 
       const pair = allPairs[token0.metadata.id]?.[token1.metadata.id];
-      if (pair) {
+      if (pair?.reserve0 && pair?.reserve1 && tokenBalance) {
         const normalizedReserve0 = getCurrency(
           pair.reserve0.toString(),
           token0.metadata.decimals
@@ -93,14 +93,15 @@ export const RemoveLiquidityModal = () => {
           Math.round((token0.metadata.decimals + token1.metadata.decimals) / 2)
         );
 
-        const balance0 = new BigNumber(normalizedReserve0)
+        const balance0 = new BigNumber(normalizedTokenBalance)
+          .pow(2)
           .dividedBy(normalizedReserve1)
-          .multipliedBy(normalizedTokenBalance)
           .multipliedBy(removeAmountPercentage / 100)
           .toFixed(3);
-        const balance1 = new BigNumber(normalizedReserve1)
+
+        const balance1 = new BigNumber(normalizedTokenBalance)
+          .pow(2)
           .dividedBy(normalizedReserve0)
-          .multipliedBy(normalizedTokenBalance)
           .multipliedBy(removeAmountPercentage / 100)
           .toFixed(3);
 

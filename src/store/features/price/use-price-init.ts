@@ -3,6 +3,7 @@ import { useCallback, useEffect } from 'react';
 
 import { ENV } from '@/config';
 import { FeatureState, useAppDispatch } from '@/store';
+import { getCurrency } from '@/utils/format';
 import { getICPPrice } from '@/utils/icp';
 
 import { swapCanisterActions, useSwapCanisterStore } from '..';
@@ -40,31 +41,35 @@ export const usePriceInit = () => {
         }
 
         if (token.id !== ENV.canisterIds.WICP) {
-          const wicpTokenPair = allPairs?.[ENV.canisterIds.WICP]?.[token.id];
+          const wicpToTokenPair = allPairs?.[ENV.canisterIds.WICP]?.[token.id];
+          const tokenDecimals = supportedTokenList.find(
+            ({ id }) => id === token.id
+          )?.decimals;
+          const wicpDecimals = supportedTokenList.find(
+            ({ id }) => id === ENV.canisterIds.WICP
+          )?.decimals;
 
-          if (wicpTokenPair) {
+          if (wicpToTokenPair && tokenDecimals && wicpDecimals) {
             const wicpReserve =
-              wicpTokenPair.token0 === ENV.canisterIds.WICP
-                ? wicpTokenPair.reserve0
-                : wicpTokenPair.reserve1;
+              wicpToTokenPair.token0 === ENV.canisterIds.WICP
+                ? wicpToTokenPair.reserve0
+                : wicpToTokenPair.reserve1;
 
             const tokenReserve =
-              wicpTokenPair.token0 === ENV.canisterIds.WICP
-                ? wicpTokenPair.reserve1
-                : wicpTokenPair.reserve0;
+              wicpToTokenPair.token0 === ENV.canisterIds.WICP
+                ? wicpToTokenPair.reserve1
+                : wicpToTokenPair.reserve0;
 
             if (wicpReserve && tokenReserve) {
               tokenPrice = new BigNumber(icpPrice)
-                .multipliedBy(wicpReserve.toString())
-                .div(tokenReserve.toString())
+                .multipliedBy(getCurrency(wicpReserve.toString(), wicpDecimals))
+                .div(getCurrency(tokenReserve.toString(), tokenDecimals))
                 .toString();
             }
           } else {
             tokenPrice = '0';
           }
         }
-
-        console.log('price', allPairs);
 
         return {
           ...token,
