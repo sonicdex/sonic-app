@@ -444,9 +444,7 @@ export const SwapHomeStep = () => {
         </Box>
       </Flex>
 
-      {!isICPSelected && (
-        <ExchangeBox from={from} to={to} slippage={slippage} />
-      )}
+      <ExchangeBox from={from} to={to} slippage={slippage} />
 
       <KeepInSonicBox
         canHeldInSonic={!isToIsICP}
