@@ -7,6 +7,6 @@ export const ENV = {
     WICP: process.env.WICP_CANISTER_ID || 'utozz-siaaa-aaaam-qaaxq-cai',
     XTC: process.env.XTC_CANISTER_ID || 'aanaa-xaaaa-aaaah-aaeiq-cai',
     swapCapRoot:
-      process.env.SWAP_CAP_ROOT_CANISTER_ID || 'zdike-4iaaa-aaaah-qcnsa-cai',
+      process.env.SWAP_CAP_ROOT_CANISTER_ID || '3qxje-uqaaa-aaaah-qcn4q-cai',
   },
 };
