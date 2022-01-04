@@ -1,4 +1,4 @@
-import { Heading, HStack, Stack, Text } from '@chakra-ui/react';
+import { Heading, HStack, Stack } from '@chakra-ui/react';
 import { FaPlus } from 'react-icons/fa';
 
 import {
@@ -60,7 +60,7 @@ export const AddLiquidityActivity: React.FC<AddLiquidityActivityProps> = ({
             suffix={' ' + token1.symbol}
           />
         </Heading>
-        <Text color="gray.400">$0</Text>
+        <DisplayValue prefix="$" value={token0.price} />
       </Stack>
     </Asset>
   );

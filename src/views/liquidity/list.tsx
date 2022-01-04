@@ -243,9 +243,8 @@ export const LiquidityListView = () => {
                   <Text fontWeight="bold" color="gray.400">
                     Fees Earned
                   </Text>
-                  <Text fontWeight="bold" color="green.400">
-                    ~$231.21
-                  </Text>
+                  {/* TODO: Price calc */}
+                  <DisplayValue color="green.400" prefix="$" value="0" />
                 </Box>
 
                 <HStack>
