@@ -61,7 +61,6 @@ export const useSwapCanisterInit = () => {
             const response = await swapActor.getSupportedTokenList();
 
             if (response) {
-              console.log(parseResponseSupportedTokenList(response));
               dispatch(
                 swapCanisterActions.setSupportedTokenList(
                   parseResponseSupportedTokenList(response)

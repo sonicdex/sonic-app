@@ -16,7 +16,7 @@ import {
   useSwapExactTokensTransactionMemo,
   useWithdrawTransactionMemo,
 } from '..';
-import { getAmountDependsOnBalance,getDepositTransactions } from './utils';
+import { getAmountDependsOnBalance, getDepositTransactions } from './utils';
 
 export interface ExtraDepositSwapBatchOptions {
   keepInSonic: boolean;
@@ -28,6 +28,8 @@ export const useSwapBatch = ({
 }: Swap & ExtraDepositSwapBatchOptions) => {
   const dispatch = useAppDispatch();
   const { sonicBalances } = useSwapCanisterStore();
+
+  console.log(swapParams);
 
   if (!sonicBalances) throw new Error('Sonic balance is required');
 

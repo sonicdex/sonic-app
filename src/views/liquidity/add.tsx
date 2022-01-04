@@ -161,10 +161,10 @@ export const LiquidityAddView = () => {
       value ?? (dataKey === 'token0' ? token0.value : token1.value);
 
     const reserveIn = String(
-      dataKey === 'token0' ? pairData?.reserve0 : pairData?.reserve1
+      dataKey === 'token0' ? pair?.reserve0 : pair?.reserve1
     );
     const reserveOut = String(
-      dataKey === 'token1' ? pairData?.reserve0 : pairData?.reserve1
+      dataKey === 'token1' ? pair?.reserve0 : pair?.reserve1
     );
 
     dispatch(liquidityViewActions.setValue({ data: dataKey, value: amountIn }));
@@ -255,55 +255,6 @@ export const LiquidityAddView = () => {
     return selectedIds;
   }, [token0?.metadata?.id, token1?.metadata?.id]);
 
-  const pairData = useMemo(() => {
-    if (allPairs && token0.metadata && token1.metadata) {
-      return allPairs?.[token0.metadata.id]?.[token1.metadata.id];
-    }
-    return undefined;
-  }, [allPairs, token0.metadata, token1.metadata]);
-
-  const liquidityAmounts = useMemo(() => {
-    if (
-      Number(token0.value) &&
-      Number(token1.value) &&
-      token0.metadata?.decimals &&
-      token1.metadata?.decimals
-    ) {
-      if (pair) {
-        const getAmountLPOptions = {
-          token0Amount: token0.value,
-          token1Amount: token1.value,
-          reserve0: String(pair.reserve0),
-          reserve1: String(pair.reserve1),
-          totalSupply: String(pair.totalSupply),
-        };
-
-        const getPercentageLPOptions = {
-          ...getAmountLPOptions,
-          token0Decimals: token0.metadata?.decimals,
-          token1Decimals: token1.metadata?.decimals,
-        };
-
-        const value = getAmountLP(getAmountLPOptions);
-        const percentage = getLPPercentageString(getPercentageLPOptions);
-
-        return { value, percentage };
-      }
-
-      if (!pair) {
-        return {
-          value: new BigNumber(token0.value)
-            .plus(new BigNumber(token1.value))
-            .div(2)
-            .toFixed(3),
-          percentage: '100%',
-        };
-      }
-    }
-
-    return { value: '0.00', percentage: '0%' };
-  }, [token0, token1, pair]);
-
   const shouldShowSumUp = useMemo(() => {
     if (Number(token0.value) > 0 && Number(token1.value) > 0) {
       return true;
@@ -312,55 +263,82 @@ export const LiquidityAddView = () => {
     return false;
   }, [token0.value, token1.value]);
 
-  const { token0Price, token1Price } = useMemo(() => {
-    if (token0.metadata && token1.metadata) {
-      if (pairData && pairData.reserve0 && pairData.reserve1) {
-        const token0Price = new BigNumber(String(pairData.reserve0))
-          .div(new BigNumber(String(pairData.reserve1)))
-          .dp(Number(token0.metadata.decimals))
-          .toFixed(3);
+  const { token0Price, token1Price, liquidityPercentage, liquidityValue } =
+    useMemo(() => {
+      if (token0.metadata && token1.metadata) {
+        if (pair && pair.reserve0 && pair.reserve1) {
+          const token0Price = new BigNumber(String(pair.reserve0))
+            .div(new BigNumber(String(pair.reserve1)))
+            .dp(Number(token0.metadata.decimals))
+            .toFixed(3);
 
-        const token1Price = new BigNumber(String(pairData.reserve1))
-          .div(new BigNumber(String(pairData.reserve0)))
-          .dp(Number(token1.metadata.decimals))
-          .toFixed(3);
+          const token1Price = new BigNumber(String(pair.reserve1))
+            .div(new BigNumber(String(pair.reserve0)))
+            .dp(Number(token1.metadata.decimals))
+            .toFixed(3);
 
-        return {
-          token0Price,
-          token1Price,
-        };
-      } else {
-        const token0Value = new BigNumber(token1.value)
-          .div(new BigNumber(token0.value))
-          .dp(token0.metadata?.decimals)
-          .toString();
-        const token1Value = new BigNumber(token0.value)
-          .div(new BigNumber(token1.value))
-          .dp(token1.metadata?.decimals)
-          .toString();
+          const getAmountLPOptions = {
+            token0Amount: token0.value,
+            token1Amount: token1.value,
+            reserve0: String(pair.reserve0),
+            reserve1: String(pair.reserve1),
+            totalSupply: String(pair.totalSupply),
+          };
 
-        return {
-          token0Price:
+          const getPercentageLPOptions = {
+            ...getAmountLPOptions,
+            token0Decimals: token0.metadata?.decimals,
+            token1Decimals: token1.metadata?.decimals,
+          };
+
+          const liquidityValue = getAmountLP(getAmountLPOptions);
+          const liquidityPercentage = getLPPercentageString(
+            getPercentageLPOptions
+          );
+
+          return {
+            liquidityValue,
+            liquidityPercentage,
+            token0Price,
+            token1Price,
+          };
+        } else {
+          const token0Value = new BigNumber(token1.value)
+            .div(new BigNumber(token0.value))
+            .dp(token0.metadata?.decimals)
+            .toString();
+          const token1Value = new BigNumber(token0.value)
+            .div(new BigNumber(token1.value))
+            .dp(token1.metadata?.decimals)
+            .toString();
+
+          const isToken0Price =
             !token0Value ||
             new BigNumber(token0Value).isNaN() ||
-            !new BigNumber(token0Value).isFinite()
-              ? '0.00'
-              : token0Value,
-          token1Price:
+            !new BigNumber(token0Value).isFinite();
+
+          const isToken1Price =
             !token1Value ||
             new BigNumber(token1Value).isNaN() ||
-            !new BigNumber(token1Value).isFinite()
-              ? '0.00'
-              : token1Value,
-        };
-      }
-    }
+            !new BigNumber(token1Value).isFinite();
 
-    return {
-      token0Price: '0.00',
-      token1Price: '0.00',
-    };
-  }, [token0, token1, pairData]);
+          return {
+            token0Price: isToken0Price ? '0.00' : token0Value,
+            token1Price: isToken1Price ? '0.00' : token1Value,
+            liquidityPercentage: '100%',
+            liquidityValue: new BigNumber(token0.value)
+              .plus(new BigNumber(token1.value))
+              .div(2)
+              .toFixed(3),
+          };
+        }
+      }
+
+      return {
+        token0Price: '0.00',
+        token1Price: '0.00',
+      };
+    }, [token0, token1, pair]);
 
   const token0Sources = useMemo(() => {
     if (token0.metadata) {
@@ -556,7 +534,7 @@ export const LiquidityAddView = () => {
                   <Box>
                     <Text color="gray.300">Share of pool:</Text>
                     <Text>
-                      {liquidityAmounts.value} ({liquidityAmounts.percentage})
+                      {liquidityValue} ({liquidityPercentage})
                     </Text>
                   </Box>
                   <Box textAlign="center">
