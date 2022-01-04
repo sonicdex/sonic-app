@@ -1,11 +1,11 @@
+import { ChakraProvider, ColorModeProvider } from '@chakra-ui/react';
 import ReactDOM from 'react-dom';
 import { Provider as ReduxProvider } from 'react-redux';
-import { ChakraProvider, ColorModeProvider } from '@chakra-ui/react';
 
 import { theme } from '@/theme';
 
-import { store } from './store';
 import { App } from './App';
+import { store } from './store';
 
 ReactDOM.render(
   <ChakraProvider theme={theme} resetCSS>

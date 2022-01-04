@@ -1,5 +1,6 @@
-import { HttpClient, Http } from './models';
 import httpProvider from 'axios';
+
+import { Http,HttpClient } from './models';
 
 export class HttpClientAdapter<Request = any, Response = any>
   implements HttpClient

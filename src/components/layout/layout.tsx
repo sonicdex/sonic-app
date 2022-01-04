@@ -1,21 +1,26 @@
-import React, { useMemo } from 'react';
-import { useLocation, Link } from 'react-router-dom';
 import {
   chakra,
+  Container,
   Grid,
   GridItem,
-  Container,
-  Text,
-  Tabs,
-  TabList,
   Tab,
+  TabList,
+  Tabs,
+  Text,
 } from '@chakra-ui/react';
+import React, { useMemo } from 'react';
+import { Link,useLocation } from 'react-router-dom';
 
 import { usePlugStore } from '@/store';
+
+import { PlugButton } from '..';
 import { LogoBox } from '../core';
 import { PlugPrincipalIDTag } from '../plug/plug-principal-id-tag';
-import { PlugButton } from '..';
-import { FOOTER_HEIGHT, NAVBAR_HEIGHT, NAVIGATION_TABS } from './constants';
+import {
+  FOOTER_HEIGHT,
+  NAVBAR_HEIGHT,
+  NAVIGATION_TABS,
+} from './layout.constants';
 
 export const Layout: React.FC = ({ children, ...props }) => {
   const { isConnected } = usePlugStore();
@@ -46,14 +51,13 @@ export const Layout: React.FC = ({ children, ...props }) => {
                 index={currentTabIndex}
                 variant="solid-rounded"
                 colorScheme="dark-blue"
-                defa
               >
                 <TabList>
                   {NAVIGATION_TABS.map(({ label, url }) => (
                     <Tab
+                      as={Link}
                       key={label}
                       isSelected={location.pathname === url}
-                      as={Link}
                       to={url}
                     >
                       {label}
@@ -71,9 +75,12 @@ export const Layout: React.FC = ({ children, ...props }) => {
 
       <Container
         as="main"
-        maxW="container.sm"
+        maxW="xl"
         h={`calc(100vh - ${NAVBAR_HEIGHT} - ${FOOTER_HEIGHT})`}
+        maxH={`calc(100vh - ${NAVBAR_HEIGHT} - ${FOOTER_HEIGHT})`}
         py="10"
+        display="flex"
+        flexDirection="column"
         {...props}
       >
         {children}

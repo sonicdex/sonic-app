@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { FeatureState } from '@/store';
+
 import type { RootState } from '@/store';
+import { FeatureState } from '@/store';
 
 // Define a type for the slice state
 interface PlugState {
@@ -13,7 +14,7 @@ interface PlugState {
 const initialState: PlugState = {
   isConnected: false,
   principalId: undefined,
-  state: FeatureState?.Idle,
+  state: 'not-started' as FeatureState,
 };
 
 export const plugSlice = createSlice({
@@ -23,6 +24,9 @@ export const plugSlice = createSlice({
   reducers: {
     setIsConnected: (state, action: PayloadAction<boolean>) => {
       state.isConnected = action.payload;
+      if (!action.payload) {
+        state.principalId = undefined;
+      }
     },
     setPrincipalId: (state, action: PayloadAction<string>) => {
       state.principalId = action.payload;
@@ -33,11 +37,7 @@ export const plugSlice = createSlice({
   },
 });
 
-export const {
-  setIsConnected,
-  setState: setPlugState,
-  setPrincipalId,
-} = plugSlice.actions;
+export const plugActions = plugSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
 export const selectPlugState = (state: RootState) => state.plug;

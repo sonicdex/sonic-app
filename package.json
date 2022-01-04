@@ -7,7 +7,9 @@
   "scripts": {
     "dev": "webpack-cli serve --open --config webpack.dev.js",
     "build": "webpack --config webpack.prod.js",
-    "format": "prettier --write ./src"
+    "format": "prettier --write ./src",
+    "test": "jest --watch",
+    "test:ci": "jest --silent"
   },
   "author": {
     "name": "Psychedelic",
@@ -17,20 +19,35 @@
   "devDependencies": {
     "@commitlint/cli": "15.0.0",
     "@commitlint/config-conventional": "15.0.0",
-    "@psychedelic/plug-inpage-provider": "1.5.0-comp",
+    "@psychedelic/plug-inpage-provider": "1.6.1",
+    "@types/buffer-crc32": "^0.2.0",
+    "@types/crypto-js": "^4.1.0",
+    "@types/jest": "^27.0.3",
+    "@types/json-bigint": "^1.0.1",
     "@types/react": "^17.0.30",
-    "@types/react-dom": "^17.0.9",
-    "@types/react-router-dom": "^5.3.1",
+    "@types/react-dom": "^17.0.11",
     "@typescript-eslint/eslint-plugin": "^5.1.0",
     "@typescript-eslint/parser": "^5.1.0",
+    "buffer": "^6.0.3",
     "clean-webpack-plugin": "^4.0.0",
     "commitlint": "15.0.0",
     "css-loader": "^6.5.0",
     "dotenv": "^10.0.0",
     "eslint": "8.2.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-jest-dom": "^4.0.1",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-simple-import-sort": "^7.0.0",
+    "eslint-plugin-testing-library": "^5.0.1",
+    "html-webpack-plugin": "^5.5.0",
     "husky": "^7.0.2",
+    "inline-chunk-html-plugin": "^1.1.1",
+    "jest": "^27.4.2",
     "lint-staged": "12.0.3",
     "prettier": "^2.4.1",
+    "process": "^0.11.10",
+    "terser-webpack-plugin": "^5.2.5",
+    "ts-jest": "^27.0.7",
     "ts-loader": "^9.2.6",
     "typescript": "^4.4.4",
     "webpack": "^5.58.2",
@@ -40,14 +57,25 @@
   },
   "dependencies": {
     "@chakra-ui/react": "^1.7.2",
+    "@dfinity/agent": "^0.10.1",
+    "@dfinity/auth-client": "^0.10.1",
     "@dfinity/candid": "^0.10.1",
+    "@dfinity/identity": "^0.10.1",
     "@dfinity/principal": "^0.10.1",
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
+    "@ethersproject/bytes": "^5.5.0",
+    "@psychedelic/cap-js": "^0.0.7",
     "@reduxjs/toolkit": "^1.6.2",
     "axios": "^0.24.0",
+    "bignumber.js": "^9.0.1",
+    "buffer-crc32": "^0.2.13",
+    "crc-32": "^1.2.0",
+    "crypto-js": "^4.1.1",
+    "ethers": "^5.5.1",
     "framer-motion": "^4",
     "ismobilejs": "^1.1.1",
+    "json-bigint": "^1.0.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-icons": "^4.3.1",
@@ -56,5 +84,17 @@
   },
   "lint-staged": {
     "*.{js,jss,ts,tsx,css,md}": "prettier --write"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }

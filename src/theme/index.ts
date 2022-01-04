@@ -1,14 +1,18 @@
 import { extendTheme } from '@chakra-ui/react';
 import { mode } from '@chakra-ui/theme-tools';
 
+import Button from './components/button';
+import CloseButton from './components/close-button';
+import Modal from './components/modal';
+import Popover from './components/popover';
 import Tabs from './components/tabs';
 import { colors } from './foundations';
 
 const appTheme = {
   styles: {
-    global: (props) => ({
+    global: (props: any) => ({
       body: {
-        bg: mode('white', 'gray.900')(props),
+        bg: mode('white', 'bg')(props),
       },
     }),
   },
@@ -20,9 +24,16 @@ const appTheme = {
     initialColorMode: 'dark',
     useSystemColorMode: false,
   },
+  sizes: {
+    modalHeight: '345px',
+  },
   colors,
   components: {
+    Button,
     Tabs,
+    CloseButton,
+    Modal,
+    Popover,
   },
 };
 

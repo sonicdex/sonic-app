@@ -1,7 +1,12 @@
 import { IDL } from '@dfinity/candid';
 
-// TODO: Add actors for sonic canisters
-export type AppActors = {};
+import { LedgerIDL, SwapIDL, SwapStorageIDL, TokenIDL } from '@/did';
+
+export type AppActors =
+  | LedgerIDL.Factory
+  | SwapIDL.Factory
+  | SwapStorageIDL.Factory
+  | TokenIDL.Factory;
 
 export interface ActorRepository {
   createActor: <T extends AppActors>(

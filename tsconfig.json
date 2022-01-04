@@ -8,12 +8,15 @@
     "baseUrl": "src",
     "paths": {
       "@/*": ["*"],
-      "@mocks": ["../mocks"]
+      "@tests/*": ["../tests/*"]
     },
     "forceConsistentCasingInFileNames": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "strict": true,
+    "noUnusedLocals": true,
+    "skipLibCheck": true
   },
   "include": ["src", "tests", "mocks"]
 }

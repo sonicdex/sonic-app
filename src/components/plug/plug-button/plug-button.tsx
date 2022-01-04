@@ -1,14 +1,19 @@
-import { forwardRef } from 'react';
+import { Button, ButtonProps } from '@chakra-ui/button';
+import { useColorModeValue } from '@chakra-ui/color-mode';
 import type { Provider } from '@psychedelic/plug-inpage-provider';
+import { forwardRef } from 'react';
 
-import { FeatureState, usePlugStore } from '@/store';
+import { ENV } from '@/config';
+import { requestConnect } from '@/integrations/plug';
+import {
+  FeatureState,
+  plugActions,
+  useAppDispatch,
+  usePlugStore,
+} from '@/store';
 
 import { PlugLogo } from '../plug-logo/plug-logo';
 import { PLUG_WALLET_WEBSITE_URL } from './constants';
-import { Button, ButtonProps } from '@chakra-ui/button';
-import { ENV } from '@/config';
-import { requestConnect } from '@/integrations/plug';
-import { useColorModeValue } from '@chakra-ui/color-mode';
 
 export type PlugButtonProps = Omit<ButtonProps, 'color' | 'variant'> & {
   whitelist?: string[];
@@ -16,11 +21,16 @@ export type PlugButtonProps = Omit<ButtonProps, 'color' | 'variant'> & {
 };
 
 export const PlugButton = forwardRef<HTMLButtonElement, PlugButtonProps>(
-  ({ whitelist = ENV.canisters, host = ENV.host, ...props }, ref) => {
-    const { setIsConnected, setPlugState, state } = usePlugStore();
+  (
+    { whitelist = Object.values(ENV.canisterIds), host = ENV.host, ...props },
+    ref
+  ) => {
+    const { state } = usePlugStore();
+
+    const dispatch = useAppDispatch();
 
     const handleConnect = (isConnected: boolean) => {
-      setIsConnected(isConnected);
+      dispatch(plugActions.setIsConnected(isConnected));
     };
 
     const isPlugPAPIExists = Boolean(window.ic?.plug);
@@ -32,7 +42,8 @@ export const PlugButton = forwardRef<HTMLButtonElement, PlugButtonProps>(
       }
 
       try {
-        setPlugState(FeatureState.Loading);
+        dispatch(plugActions.setState(FeatureState.Loading));
+
         const isConnected = await requestConnect({
           whitelist,
           host,
@@ -51,7 +62,7 @@ export const PlugButton = forwardRef<HTMLButtonElement, PlugButtonProps>(
 
         return false;
       } finally {
-        setPlugState(FeatureState.Idle);
+        dispatch(plugActions.setState(FeatureState.Idle));
       }
     };
 
@@ -83,7 +94,7 @@ export const PlugButton = forwardRef<HTMLButtonElement, PlugButtonProps>(
           bottom: 0,
           left: 0,
           zIndex: 'hide',
-          margin: '-3px',
+          margin: '-2px',
           borderRadius: 'inherit',
           background:
             'linear-gradient(93.07deg,#ffd719 0.61%,#f754d4 33.98%,#1fd1ec 65.84%,#48fa6b 97.7%)',

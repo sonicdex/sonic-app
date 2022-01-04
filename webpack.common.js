@@ -1,21 +1,27 @@
 const path = require('path');
 const webpack = require('webpack');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 require('dotenv').config();
 
-module.exports = (env) => {
+module.exports = () => {
   return {
+    name: 'sonic-app',
     entry: './src/index.tsx',
     output: {
-      path: path.join(__dirname, 'public/js'),
-      publicPath: '/public',
-      filename: 'bundle.js',
+      path: path.resolve(__dirname, 'dist'),
+      publicPath: '/',
+      uniqueName: 'sonic-app',
     },
     resolve: {
       extensions: ['.ts', '.tsx', '.js'],
       alias: {
         '@': path.join(__dirname, '/src'),
       },
+    },
+    performance: {
+      maxAssetSize: 650 * 1024,
+      maxEntrypointSize: 650 * 1024,
     },
     module: {
       rules: [
@@ -29,33 +35,25 @@ module.exports = (env) => {
           type: 'asset/resource',
         },
         {
-          test: /\.(png|svg|jpg|jpeg|gif)$/i,
+          test: /\.(png|jpg|jpeg|gif)$/i,
           type: 'asset/resource',
+        },
+        {
+          test: /\.svg/,
+          type: 'asset/inline',
         },
         {
           test: /\.css$/i,
           use: ['style-loader', 'css-loader'],
         },
-        {
-          test: /\.html$/,
-          use: {
-            loader: 'html-loader',
-            options: {
-              attrs: [':src'],
-            },
-          },
-        },
       ],
     },
     plugins: [
       new CleanWebpackPlugin(),
-      new webpack.EnvironmentPlugin([
-        'LEDGER_CANISTER_ID',
-        'SWAP_CANISTER_ID',
-        'SWAP_STORAGE_CANISTER_ID',
-        'WICP_CANISTER_ID',
-        'XTC_CANISTER_ID',
-      ]),
+      new webpack.ProvidePlugin({
+        Buffer: [require.resolve('buffer/'), 'Buffer'],
+        process: 'process/browser',
+      }),
     ],
   };
 };

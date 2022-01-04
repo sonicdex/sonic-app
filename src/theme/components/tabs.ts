@@ -7,6 +7,7 @@ import type {
   SystemStyleObject,
 } from '@chakra-ui/theme-tools';
 import { getColor, mode } from '@chakra-ui/theme-tools';
+
 import { theme } from '..';
 
 const baseStyleRoot: SystemStyleFunction = (props) => {
@@ -40,7 +41,7 @@ const baseStyleTablist: SystemStyleFunction = (props) => {
   };
 
   return {
-    justifyContent: alignments[align],
+    justifyContent: alignments[align as keyof typeof alignments],
     flexDirection: orientation === 'vertical' ? 'column' : 'row',
   };
 };

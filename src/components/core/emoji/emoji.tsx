@@ -1,5 +1,5 @@
-import React from 'react';
 import { chakra, forwardRef } from '@chakra-ui/system';
+import React from 'react';
 
 export type EmojiProps = {
   label: string;
@@ -14,8 +14,10 @@ export const Emoji: React.FC<EmojiProps> = forwardRef<EmojiProps, 'svg'>(
         role="img"
         aria-label={label}
         title={label}
-        fontSize="4px"
-        transform="scale(6)"
+        fontSize="md"
+        ml={1}
+        mt={0.5}
+        transform="scale(1)"
       >
         {children}
       </chakra.span>

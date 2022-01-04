@@ -1,5 +1,3 @@
 {
-  "i18n-ally.localesPaths": ["source/locales"],
-  "i18n-ally.keystyle": "nested",
-  "editor.formatOnSave": true
+  "exportall.config.folderListener": ["/src/components/modals"]
 }
