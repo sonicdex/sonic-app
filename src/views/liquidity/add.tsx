@@ -177,16 +177,17 @@ export const LiquidityAddView = () => {
       token1.metadata &&
       allPairs?.[token0.metadata.id]?.[token1.metadata.id]
     ) {
-      const decimalsOut =
+      const [decimalsOut, decimalsIn] =
         dataKey === 'token0'
-          ? token1.metadata?.decimals
-          : token0.metadata?.decimals;
+          ? [token1.metadata.decimals, token0.metadata.decimals]
+          : [token0.metadata.decimals, token1.metadata.decimals];
 
       const lpValue = getAmountEqualLPToken({
         amountIn,
         reserveIn,
         reserveOut,
         decimalsOut,
+        decimalsIn,
       });
 
       const reversedDataKey = dataKey === 'token0' ? 'token1' : 'token0';
@@ -241,7 +242,7 @@ export const LiquidityAddView = () => {
         return [true, `Insufficient ${token0.metadata.symbol} Balance`];
       }
 
-      if (parsedToken1Balance > parsedToken1Balance) {
+      if (parsedToken1Value > parsedToken1Balance) {
         return [true, `Insufficient ${token1.metadata.symbol} Balance`];
       }
     }
@@ -318,20 +319,20 @@ export const LiquidityAddView = () => {
             !new BigNumber(token1Value).isFinite();
 
           return {
-            token0Price: isToken0Price ? '0.00' : token0Value,
-            token1Price: isToken1Price ? '0.00' : token1Value,
+            token0Price: isToken0Price ? '0' : token0Value,
+            token1Price: isToken1Price ? '0' : token1Value,
             liquidityPercentage: '100%',
             liquidityValue: new BigNumber(token0.value)
-              .plus(new BigNumber(token1.value))
-              .div(2)
-              .toFixed(3),
+              .multipliedBy(new BigNumber(token1.value))
+              .sqrt()
+              .toString(),
           };
         }
       }
 
       return {
-        token0Price: '0.00',
-        token1Price: '0.00',
+        token0Price: '0',
+        token1Price: '0',
       };
     }, [token0, token1, pair]);
 

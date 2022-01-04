@@ -1,7 +1,9 @@
+import BigNumber from 'bignumber.js';
 import { useCallback, useEffect } from 'react';
 
 import { ENV } from '@/config';
 import { FeatureState, useAppDispatch } from '@/store';
+import { getCurrency } from '@/utils/format';
 import { getICPPrice } from '@/utils/icp';
 
 import { swapCanisterActions, useSwapCanisterStore } from '..';
@@ -9,8 +11,12 @@ import { useKeepSync } from '../keep-sync';
 import { priceActions, usePriceStore } from '.';
 
 export const usePriceInit = () => {
-  const { supportedTokenList, supportedTokenListState, allPairsState } =
-    useSwapCanisterStore();
+  const {
+    supportedTokenList,
+    supportedTokenListState,
+    allPairsState,
+    allPairs,
+  } = useSwapCanisterStore();
   const { state, icpPrice } = usePriceStore();
 
   const dispatch = useAppDispatch();
@@ -23,6 +29,7 @@ export const usePriceInit = () => {
     if (
       icpPrice &&
       supportedTokenList &&
+      allPairs &&
       supportedTokenListState !== FeatureState.Loading &&
       allPairsState !== FeatureState.Loading
     ) {
@@ -31,6 +38,37 @@ export const usePriceInit = () => {
 
         if (token.id === ENV.canisterIds.WICP) {
           tokenPrice = icpPrice;
+        }
+
+        if (token.id !== ENV.canisterIds.WICP) {
+          const wicpToTokenPair = allPairs?.[ENV.canisterIds.WICP]?.[token.id];
+          const tokenDecimals = supportedTokenList.find(
+            ({ id }) => id === token.id
+          )?.decimals;
+          const wicpDecimals = supportedTokenList.find(
+            ({ id }) => id === ENV.canisterIds.WICP
+          )?.decimals;
+
+          if (wicpToTokenPair && tokenDecimals && wicpDecimals) {
+            const wicpReserve =
+              wicpToTokenPair.token0 === ENV.canisterIds.WICP
+                ? wicpToTokenPair.reserve0
+                : wicpToTokenPair.reserve1;
+
+            const tokenReserve =
+              wicpToTokenPair.token0 === ENV.canisterIds.WICP
+                ? wicpToTokenPair.reserve1
+                : wicpToTokenPair.reserve0;
+
+            if (wicpReserve && tokenReserve) {
+              tokenPrice = new BigNumber(icpPrice)
+                .multipliedBy(getCurrency(wicpReserve.toString(), wicpDecimals))
+                .div(getCurrency(tokenReserve.toString(), tokenDecimals))
+                .toString();
+            }
+          } else {
+            tokenPrice = '0';
+          }
         }
 
         return {
