@@ -7,6 +7,7 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react';
+import BigNumber from 'bignumber.js';
 import { useCallback, useMemo } from 'react';
 import { FaMinus, FaPlus } from 'react-icons/fa';
 import { useNavigate } from 'react-router';
@@ -31,7 +32,7 @@ import {
   usePlugStore,
   useSwapCanisterStore,
 } from '@/store';
-import { getCurrencyString } from '@/utils/format';
+import { getCurrency, getCurrencyString } from '@/utils/format';
 
 const INFORMATION_TITLE = 'Liquidity Provider Rewards';
 const INFORMATION_DESCRIPTION =
@@ -58,7 +59,7 @@ const InformationDescription = () => (
 type PairedUserLPToken = {
   token0: AppTokenMetadata;
   token1: AppTokenMetadata;
-  balance: string;
+  userShares: string;
 };
 
 export const LiquidityListView = () => {
@@ -66,6 +67,8 @@ export const LiquidityListView = () => {
   const navigate = useNavigate();
   const { isConnected } = usePlugStore();
   const {
+    allPairs,
+    allPairsState,
     userLPBalances,
     userLPBalancesState,
     supportedTokenList,
@@ -99,13 +102,15 @@ export const LiquidityListView = () => {
 
   const isLoading = useMemo(() => {
     return (
+      allPairsState === FeatureState.Loading ||
       supportedTokenListState === FeatureState.Loading ||
       userLPBalancesState === FeatureState.Loading
     );
-  }, [supportedTokenListState, userLPBalancesState]);
+  }, [allPairsState, supportedTokenListState, userLPBalancesState]);
 
   const isRefreshing = useMemo(() => {
     return (
+      allPairsState === FeatureState.Refreshing ||
       supportedTokenListState === FeatureState.Refreshing ||
       userLPBalancesState === FeatureState.Refreshing
     );
@@ -128,7 +133,7 @@ export const LiquidityListView = () => {
           (token) => token.id === tokenId1
         );
 
-        const balance = getCurrencyString(
+        const userShares = getCurrencyString(
           userLPBalances[tokenId0][tokenId1],
           Math.round(((token0?.decimals ?? 0) + (token1?.decimals ?? 0)) / 2)
         );
@@ -138,7 +143,7 @@ export const LiquidityListView = () => {
           {
             token0,
             token1,
-            balance,
+            userShares,
           } as PairedUserLPToken,
         ];
       }, [] as PairedUserLPToken[]);
@@ -146,11 +151,35 @@ export const LiquidityListView = () => {
   }, [userLPBalances, supportedTokenList]);
 
   const getUserLPValue = useCallback(
-    (token0: AppTokenMetadata, token1: AppTokenMetadata) => {
-      const lpPrice = undefined;
-      return lpPrice;
+    (
+      token0: AppTokenMetadata,
+      token1: AppTokenMetadata,
+      totalShares: string,
+      userShares: string
+    ) => {
+      const pair = allPairs?.[token0.id]?.[token1.id];
+
+      if (pair && token0.price && token1.price) {
+        const lpPrice = new BigNumber(
+          new BigNumber(getCurrency(pair.reserve0.toString(), token0.decimals))
+            .multipliedBy(
+              getCurrency(pair.reserve1.toString(), token1.decimals)
+            )
+            .sqrt()
+        )
+          .multipliedBy(
+            new BigNumber(token0.price).multipliedBy(token1.price).sqrt()
+          )
+          .dividedBy(new BigNumber(totalShares).multipliedBy(2));
+
+        const userLPValue = new BigNumber(userShares).multipliedBy(lpPrice);
+
+        return userLPValue.toString();
+      }
+
+      return '0';
     },
-    [userLPBalances]
+    [userLPBalances, allPairs]
   );
 
   return (
@@ -223,7 +252,7 @@ export const LiquidityListView = () => {
           pb={8}
           overflow="auto"
         >
-          {pairedUserLPTokens.map(({ token0, token1, balance }, index) => {
+          {pairedUserLPTokens.map(({ token0, token1, userShares }, index) => {
             if (!token0.id || !token1.id) {
               return null;
             }
@@ -244,7 +273,7 @@ export const LiquidityListView = () => {
                   <Text fontWeight="bold" color="gray.400">
                     LP Tokens
                   </Text>
-                  <DisplayValue value={balance} />
+                  <DisplayValue value={userShares} />
                 </Box>
 
                 <Box>
@@ -254,7 +283,12 @@ export const LiquidityListView = () => {
                   <DisplayValue
                     color="green.400"
                     prefix="$"
-                    value={getUserLPValue(token0, token1)}
+                    value={getUserLPValue(
+                      token0,
+                      token1,
+                      userShares,
+                      userShares
+                    )}
                   />
                 </Box>
 

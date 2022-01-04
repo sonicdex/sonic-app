@@ -97,13 +97,13 @@ export const RemoveLiquidityModal = () => {
           .pow(2)
           .dividedBy(normalizedReserve1)
           .multipliedBy(removeAmountPercentage / 100)
-          .toFixed(3);
+          .toString();
 
         const balance1 = new BigNumber(normalizedTokenBalance)
           .pow(2)
           .dividedBy(normalizedReserve0)
           .multipliedBy(removeAmountPercentage / 100)
-          .toFixed(3);
+          .toString();
 
         return {
           balance0,
@@ -209,7 +209,7 @@ export const RemoveLiquidityModal = () => {
                 color={keepInSonic ? '#FFFFFF' : '#888E8F'}
                 fontWeight={600}
               >
-                Keep tokens in Sonic after swap
+                Keep tokens in Sonic after removing liqudity
               </Checkbox>
             </FormControl>
           </Flex>
