@@ -37,10 +37,15 @@ export const TransactionStep = ({
 
   return (
     <>
-      <Flex direction="row" alignItems="flex-start">
+      <Flex
+        direction="row"
+        alignItems="center"
+        justifyContent="center"
+        flex={1}
+      >
         <Flex direction="column" alignItems="center">
           <CircleIcon iconSrc={iconSrc} status={status} />
-          <Box
+          <Flex
             mt={2}
             as="h3"
             fontWeight={weight}
@@ -48,9 +53,12 @@ export const TransactionStep = ({
             color={color}
             textAlign="center"
             transition="color 400ms"
+            flex={1}
+            justifyContent="center"
+            alignItems="center"
           >
             {children}
-          </Box>
+          </Flex>
         </Flex>
       </Flex>
       {chevron && (

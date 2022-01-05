@@ -136,7 +136,7 @@ export const SwapHomeStep = () => {
 
     if (plugProviderVersionNumber >= 160) {
       addNotification({
-        title: `Wrapping ${from.metadata?.symbol}`,
+        title: `Wrapping ${from.value} ${from.metadata?.symbol}`,
         type: NotificationType.Wrap,
         id: String(new Date().getTime()),
       });
@@ -169,7 +169,7 @@ export const SwapHomeStep = () => {
 
   const handleUnwrapICP = () => {
     addNotification({
-      title: `Unwrapping ${from.metadata?.symbol}`,
+      title: `Unwrapping ${from.value} ${from.metadata?.symbol}`,
       type: NotificationType.Unwrap,
       id: String(new Date().getTime()),
     });

@@ -1,4 +1,4 @@
-import { HStack, Modal, ModalOverlay } from '@chakra-ui/react';
+import { Flex, Modal, ModalOverlay } from '@chakra-ui/react';
 
 import { swapSrc, withdrawSrc } from '@/assets';
 import {
@@ -28,7 +28,7 @@ export const WrapProgressModal = () => {
     <Modal onClose={handleClose} isOpen={isWrapProgressOpened} isCentered>
       <ModalOverlay />
       <TransactionProgressModalContent title="Wrapping ICP">
-        <HStack>
+        <Flex alignItems="flex-start">
           <TransactionStep
             status={getStepStatus(WrapModalDataStep.LedgerTransfer)}
             iconSrc={withdrawSrc}
@@ -64,7 +64,7 @@ export const WrapProgressModal = () => {
               Depositing <br /> WICP
             </TransactionStep>
           )}
-        </HStack>
+        </Flex>
       </TransactionProgressModalContent>
     </Modal>
   );
