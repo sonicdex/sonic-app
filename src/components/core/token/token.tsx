@@ -200,23 +200,24 @@ export const TokenBalancesPrice: React.FC<TokenBalancesPriceProps> = ({
   const defaultColor = isActive ? '#F6FCFD' : '#888E8F';
 
   const { color, priceDifferencePercentage } = useMemo(() => {
-    if (shouldShowPriceDiff) {
-      const priceDifferencePercentage = -1;
+    // TODO: finish
+    // if (shouldShowPriceDiff) {
+    //   const priceDifferencePercentage = 0;
 
-      const color =
-        priceDifferencePercentage > 0
-          ? 'green.500'
-          : priceDifferencePercentage <= 0 && priceDifferencePercentage >= -1
-          ? defaultColor
-          : priceDifferencePercentage < -1 && priceDifferencePercentage >= -5
-          ? 'yellow.500'
-          : 'red.500';
+    //   const color =
+    //     priceDifferencePercentage > 0
+    //       ? 'green.500'
+    //       : priceDifferencePercentage <= 0 && priceDifferencePercentage >= -1
+    //       ? defaultColor
+    //       : priceDifferencePercentage < -1 && priceDifferencePercentage >= -5
+    //       ? 'yellow.500'
+    //       : 'red.500';
 
-      return {
-        color,
-        priceDifferencePercentage,
-      };
-    }
+    //   return {
+    //     color,
+    //     priceDifferencePercentage,
+    //   };
+    // }
 
     return {
       color: defaultColor,
