@@ -7,11 +7,11 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
+  MenuProps,
   Text,
 } from '@chakra-ui/react';
 import { Spinner } from '@chakra-ui/spinner';
-import { TagProps } from '@chakra-ui/tag';
-import { FC, ReactElement, useMemo } from 'react';
+import { FC, useMemo } from 'react';
 
 import { chevronDownSrc, copySrc, exitSrc } from '@/assets';
 import { disconnect } from '@/integrations/plug';
@@ -27,7 +27,7 @@ import { desensitizationPrincipalId } from '@/utils/canister';
 
 import { PlugLogo } from '..';
 
-export const PlugPrincipalIDTag: FC<TagProps> = (props): ReactElement => {
+export const PlugPrincipalIDMenu: FC<Omit<MenuProps, 'children'>> = (props) => {
   const { principalId, state } = usePlugStore();
   const { addNotification } = useNotificationStore();
   const dispatch = useAppDispatch();
@@ -54,7 +54,7 @@ export const PlugPrincipalIDTag: FC<TagProps> = (props): ReactElement => {
   };
 
   return (
-    <Menu>
+    <Menu {...props}>
       <MenuButton borderRadius="full" px="4" h="12" bg="#1E1E1E">
         <Flex direction="row" alignItems="center">
           {state === FeatureState.Loading ? <Spinner /> : <PlugLogo />}
@@ -67,13 +67,13 @@ export const PlugPrincipalIDTag: FC<TagProps> = (props): ReactElement => {
       <MenuList bg="#1E1E1E" border="none" borderRadius="xl" overflow="hidden">
         <MenuItem fontWeight="bold" onClick={handleCopy}>
           <HStack direction="row">
-            <Image src={copySrc} />
+            <Image alt="copy" src={copySrc} />
             <Text>Copy ID</Text>
           </HStack>
         </MenuItem>
         <MenuItem fontWeight="bold" onClick={handleDisconnect}>
           <HStack direction="row">
-            <Image src={exitSrc} />
+            <Image alt="exit" src={exitSrc} />
             <Text>Disconnect</Text>
           </HStack>
         </MenuItem>
@@ -82,6 +82,6 @@ export const PlugPrincipalIDTag: FC<TagProps> = (props): ReactElement => {
   );
 };
 
-PlugPrincipalIDTag.displayName = 'PlugPrincipalIDTag';
+PlugPrincipalIDMenu.displayName = 'PlugPrincipalIDTag';
 
-const ChevronIcon = () => <Image ml={3} src={chevronDownSrc} />;
+const ChevronIcon = () => <Image alt="down" ml={3} src={chevronDownSrc} />;

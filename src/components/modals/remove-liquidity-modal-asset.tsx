@@ -1,6 +1,7 @@
 import { Image } from '@chakra-ui/image';
 import { Box, Flex, HStack, Text } from '@chakra-ui/layout';
-import { FC } from 'react';
+import BigNumber from 'bignumber.js';
+import { FC, useMemo } from 'react';
 
 import { questionMarkSrc } from '@/assets';
 import { AppTokenMetadata } from '@/models';
@@ -17,6 +18,11 @@ export const RemoveLiquidityModalAsset: FC<RemoveLiquidityModalAssetProps> = ({
   balance = 0,
   price = 0,
 }) => {
+  const balancePrice = useMemo(
+    () => new BigNumber(price ?? 0).multipliedBy(balance ?? 0).toNumber(),
+    [balance, price]
+  );
+
   return (
     <Flex justifyContent="space-between">
       <HStack
@@ -35,7 +41,7 @@ export const RemoveLiquidityModalAsset: FC<RemoveLiquidityModalAssetProps> = ({
           <DisplayValue value={balance} />
         </Text>
         <Text fontSize="xs">
-          <DisplayValue value={price} prefix="~$" />
+          <DisplayValue value={balancePrice} prefix="~$" />
         </Text>
       </Box>
     </Flex>

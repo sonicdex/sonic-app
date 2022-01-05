@@ -45,6 +45,7 @@ export const CircleIcon = ({ status, iconSrc }: CircleIconProps) => {
         />
       )}
       <Image
+        alt={'check'}
         top={0}
         right={0}
         opacity={checkOpacity}
@@ -66,7 +67,7 @@ export const CircleIcon = ({ status, iconSrc }: CircleIconProps) => {
         opacity={opacity}
         transition="opacity 400ms"
       >
-        <Image w="18px" src={iconSrc} />
+        <Image w="18px" src={iconSrc} alt={'icon'} />
       </Flex>
     </Box>
   );

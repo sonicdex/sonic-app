@@ -9,7 +9,7 @@ import {
   Text,
 } from '@chakra-ui/react';
 
-import { closeSrc,logoSrc } from '@/assets';
+import { closeSrc, logoSrc } from '@/assets';
 
 type PlugConfirmationModalProps = {
   isOpen: boolean;
@@ -32,6 +32,7 @@ export const PlugConfirmationModal = ({
           src={closeSrc}
           onClick={onClose}
           cursor="pointer"
+          alt="close"
         />
         <Flex direction="column" alignItems="center">
           <Heading as="h3" color="#F6FCFD" fontWeight={700} fontSize="md">
@@ -40,7 +41,7 @@ export const PlugConfirmationModal = ({
           <Text color="#888E8F" fontSize="md" mt={3} mb={5}>
             Please confirm this transaction in Plug
           </Text>
-          <Image width={24} src={logoSrc} />
+          <Image width={24} src={logoSrc} alt="Sonic" />
         </Flex>
       </ModalBody>
     </ModalContent>

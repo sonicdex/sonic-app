@@ -1,4 +1,5 @@
 import { Box, Button, Flex, Image, Stack } from '@chakra-ui/react';
+import { useMemo } from 'react';
 
 import { arrowDownSrc } from '@/assets';
 import {
@@ -46,6 +47,15 @@ export const SwapReviewStep = () => {
       300
     );
   };
+
+  const [isFromIsICP, isToIsICP] = useMemo(() => {
+    return [from.metadata?.id === 'ICP', to.metadata?.id === 'ICP'];
+  }, [from.metadata?.id, to.metadata?.id]);
+
+  const isICPSelected = useMemo(() => {
+    if (isFromIsICP || isToIsICP) return true;
+    return false;
+  }, [isFromIsICP, isToIsICP]);
 
   return (
     <Stack spacing={4}>
@@ -100,7 +110,7 @@ export const SwapReviewStep = () => {
           mb={-2}
           zIndex={1200}
         >
-          <Image m="auto" src={arrowDownSrc} />
+          <Image alt="result" m="auto" src={arrowDownSrc} />
         </Box>
         <Box width="100%">
           <Token
@@ -135,7 +145,7 @@ export const SwapReviewStep = () => {
             </TokenContent>
             <TokenBalances>
               <TokenBalancesDetails />
-              <TokenBalancesPrice />
+              <TokenBalancesPrice shouldShowPriceDiff={!isICPSelected} />
             </TokenBalances>
           </Token>
         </Box>

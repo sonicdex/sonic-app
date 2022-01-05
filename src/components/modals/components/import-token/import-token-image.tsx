@@ -19,10 +19,10 @@ export const ImportTokenImage = ({
         alignItems="center"
         justifyContent="center"
       >
-        <Image w={6} h={6} src={logo} />
+        <Image alt="logo" w={6} h={6} src={logo} />
       </Flex>
     );
   }
 
-  return <Image borderRadius={26} w={10} h={10} src={logo} />;
+  return <Image alt="logo" borderRadius={26} w={10} h={10} src={logo} />;
 };

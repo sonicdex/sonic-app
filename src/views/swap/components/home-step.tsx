@@ -438,7 +438,7 @@ export const SwapHomeStep = () => {
             </TokenContent>
             <TokenBalances>
               <TokenBalancesDetails />
-              <TokenBalancesPrice />
+              <TokenBalancesPrice shouldShowPriceDiff={!isICPSelected} />
             </TokenBalances>
           </Token>
         </Box>

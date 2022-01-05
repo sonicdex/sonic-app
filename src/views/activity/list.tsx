@@ -6,6 +6,7 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react';
+import { Fragment } from 'react';
 
 import { Header, PlugButton } from '@/components';
 import {
@@ -123,14 +124,15 @@ export const ActivityListView = () => {
             },
           }}
         >
-          {Object.entries(activityList).map(([date, transactions]) => (
-            <>
+          {Object.entries(activityList).map(([date, transactions], index) => (
+            <Fragment key={index}>
               <Text>{new Date(date).toDateString()}</Text>
-              {transactions.map((transaction) => {
+              {transactions.map((transaction, index) => {
                 switch (transaction.operation) {
                   case 'swap':
                     return (
                       <SwapActivity
+                        key={index}
                         {...(transaction.details as any)}
                         time={transaction.time}
                       />
@@ -138,6 +140,7 @@ export const ActivityListView = () => {
                   case 'addLiquidity':
                     return (
                       <AddLiquidityActivity
+                        key={index}
                         {...(transaction.details as any)}
                         time={transaction.time}
                       />
@@ -145,6 +148,7 @@ export const ActivityListView = () => {
                   case 'removeLiquidity':
                     return (
                       <RemoveLiquidityActivity
+                        key={index}
                         {...(transaction.details as any)}
                         time={transaction.time}
                       />
@@ -152,6 +156,7 @@ export const ActivityListView = () => {
                   case 'withdraw':
                     return (
                       <WithdrawActivity
+                        key={index}
                         {...(transaction.details as any)}
                         time={transaction.time}
                       />
@@ -159,6 +164,7 @@ export const ActivityListView = () => {
                   case 'deposit':
                     return (
                       <DepositActivity
+                        key={index}
                         {...(transaction.details as any)}
                         time={transaction.time}
                       />
@@ -167,7 +173,7 @@ export const ActivityListView = () => {
                     return null;
                 }
               })}
-            </>
+            </Fragment>
           ))}
         </Stack>
       </Stack>

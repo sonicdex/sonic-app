@@ -1,4 +1,4 @@
-import { Box, Flex,Image } from '@chakra-ui/react';
+import { Box, Flex, Image } from '@chakra-ui/react';
 import { useMemo } from 'react';
 
 import { doubleRightChevronSrc } from '@/assets';
@@ -56,6 +56,7 @@ export const TransactionStep = ({
       {chevron && (
         <Box>
           <Image
+            alt="next transaction"
             src={doubleRightChevronSrc}
             m={4}
             opacity={opacity}
