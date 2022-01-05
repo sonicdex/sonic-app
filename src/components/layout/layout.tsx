@@ -9,13 +9,13 @@ import {
   Text,
 } from '@chakra-ui/react';
 import React, { useMemo } from 'react';
-import { Link,useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 import { usePlugStore } from '@/store';
 
 import { PlugButton } from '..';
 import { LogoBox } from '../core';
-import { PlugPrincipalIDTag } from '../plug/plug-principal-id-tag';
+import { PlugPrincipalIDMenu } from '../plug/plug-principal-id-tag';
 import {
   FOOTER_HEIGHT,
   NAVBAR_HEIGHT,
@@ -68,7 +68,7 @@ export const Layout: React.FC = ({ children, ...props }) => {
             </chakra.nav>
           </GridItem>
           <GridItem colSpan={1} justifySelf="center">
-            {isConnected ? <PlugPrincipalIDTag /> : <PlugButton />}
+            {isConnected ? <PlugPrincipalIDMenu /> : <PlugButton />}
           </GridItem>
         </Grid>
       </Container>

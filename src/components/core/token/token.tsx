@@ -114,7 +114,7 @@ export const TokenDetailsButton = forwardRef<TokenDetailsButtonProps, 'button'>(
         {...props}
       >
         {children}
-        <Image ml={2.5} width={3} src={chevronDownSrc} />
+        <Image ml={2.5} width={3} src={chevronDownSrc} alt="chevron down" />
       </Button>
     );
   }
@@ -142,6 +142,7 @@ export const TokenDetailsLogo: React.FC<TokenDetailsLogo> = (props) => {
         minH={5}
         borderRadius="full"
         src={logoSrc}
+        alt={`${tokenMetadata?.symbol} logo`}
         {...props}
       />
     </Skeleton>
@@ -172,7 +173,14 @@ export const TokenBalances = (props: FlexProps) => {
   return <Flex direction="row" justifyContent="space-between" {...props} />;
 };
 
-export const TokenBalancesPrice: React.FC<BoxProps> = (props) => {
+export type TokenBalancesPriceProps = BoxProps & {
+  shouldShowPriceDiff?: boolean;
+};
+
+export const TokenBalancesPrice: React.FC<TokenBalancesPriceProps> = ({
+  shouldShowPriceDiff = false,
+  ...props
+}) => {
   const { isLoading, value, tokenMetadata } = useTokenContext();
 
   const isActive = useMemo(() => {
@@ -189,15 +197,48 @@ export const TokenBalancesPrice: React.FC<BoxProps> = (props) => {
       .toNumber();
   }, [tokenMetadata, value]);
 
+  const defaultColor = isActive ? '#F6FCFD' : '#888E8F';
+
+  const { color, priceDifferencePercentage } = useMemo(() => {
+    // TODO: finish
+    // if (shouldShowPriceDiff) {
+    //   const priceDifferencePercentage = 0;
+
+    //   const color =
+    //     priceDifferencePercentage > 0
+    //       ? 'green.500'
+    //       : priceDifferencePercentage <= 0 && priceDifferencePercentage >= -1
+    //       ? defaultColor
+    //       : priceDifferencePercentage < -1 && priceDifferencePercentage >= -5
+    //       ? 'yellow.500'
+    //       : 'red.500';
+
+    //   return {
+    //     color,
+    //     priceDifferencePercentage,
+    //   };
+    // }
+
+    return {
+      color: defaultColor,
+      priceDifferencePercentage: undefined,
+    };
+  }, [isActive, shouldShowPriceDiff, price]);
+
   return (
     <Skeleton isLoaded={!isLoading} borderRadius="full">
-      <Box
-        transition="color 400ms"
-        color={isActive ? '#F6FCFD' : '#888E8F'}
-        {...props}
-      >
+      <Flex transition="color 400ms" color={defaultColor} {...props}>
         <DisplayValue value={price} prefix="$" />
-      </Box>
+        &nbsp;
+        {priceDifferencePercentage && (
+          <DisplayValue
+            color={color}
+            value={priceDifferencePercentage}
+            prefix="(-"
+            suffix="%)"
+          />
+        )}
+      </Flex>
     </Skeleton>
   );
 };

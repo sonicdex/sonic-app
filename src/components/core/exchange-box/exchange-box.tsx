@@ -104,7 +104,12 @@ export const ExchangeBox: React.FC<ExchangeBoxProps> = ({
       </Text>
       <Popover trigger="hover">
         <PopoverTrigger>
-          <Image src={infoSrc} width={5} transition="opacity 200ms" />
+          <Image
+            alt="info"
+            src={infoSrc}
+            width={5}
+            transition="opacity 200ms"
+          />
         </PopoverTrigger>
         <Portal>
           <PopoverContent minWidth="400px">

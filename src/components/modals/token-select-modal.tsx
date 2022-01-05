@@ -3,11 +3,14 @@ import {
   Button,
   Flex,
   Heading,
+  Icon,
   Image,
+  Link,
   Modal,
   ModalBody,
   ModalCloseButton,
   ModalContent,
+  ModalFooter,
   ModalHeader,
   ModalOverlay,
   Skeleton,
@@ -16,8 +19,10 @@ import {
   Tooltip,
 } from '@chakra-ui/react';
 import { useEffect, useMemo, useState } from 'react';
+import { FaHdd } from 'react-icons/fa';
 
 import { arrowBackSrc, questionMarkSrc } from '@/assets';
+import { ENV } from '@/config';
 import { useBalances } from '@/hooks/use-balances';
 import { AppTokenMetadata } from '@/models';
 import { modalsSliceActions, useAppDispatch, useModalsStore } from '@/store';
@@ -118,7 +123,7 @@ export const TokenSelectModal = () => {
                 background: '#282828',
               }}
             >
-              <Image src={arrowBackSrc} />
+              <Image src={arrowBackSrc} alt="Back" />
             </Box>
           ) : (
             <Flex
@@ -152,7 +157,7 @@ export const TokenSelectModal = () => {
             <Stack width="100%" direction="column">
               {isLoading &&
                 [...Array(4)].map(() => <TokenSelectItemSkeleton />)}
-              {!isLoading &&
+              {!isLoading && filteredList.length > 0 ? (
                 filteredList.map(({ id, logo, symbol, decimals, name }) => (
                   <TokenSelectItem
                     key={id}
@@ -174,7 +179,18 @@ export const TokenSelectModal = () => {
                     isSelected={selectedTokenIds?.includes(id)}
                     logoSrc={logo}
                   />
-                ))}
+                ))
+              ) : (
+                <Stack color="gray.300" alignItems="center" pt={2}>
+                  <Icon as={FaHdd} />
+
+                  <Text textAlign="center">
+                    Can't see your token? Request it to be added to Sonic using
+                    the button below.
+                  </Text>
+                </Stack>
+              )}
+
               {allowAddToken && filteredList.length === 0 && (
                 <Flex
                   direction="row"
@@ -191,6 +207,7 @@ export const TokenSelectModal = () => {
                   <Flex direction="row" alignItems="center">
                     <Skeleton isLoaded={!isLoading} borderRadius={40}>
                       <Image
+                        alt={importTokenData.symbol}
                         src={importTokenData.logo}
                         w={10}
                         h={10}
@@ -226,6 +243,19 @@ export const TokenSelectModal = () => {
             </Stack>
           )}
         </ModalBody>
+        <ModalFooter>
+          <Button
+            as={Link}
+            href={ENV.tokenRequestURL}
+            isFullWidth
+            variant="gradient"
+            colorScheme="dark-blue"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Request Token (Soon)
+          </Button>
+        </ModalFooter>
       </ModalContent>
     </Modal>
   );
@@ -273,7 +303,7 @@ const TokenSelectItem = ({
     >
       <Stack direction="row" alignItems="center" spacing={4}>
         <Skeleton isLoaded={!isLoading}>
-          <Image src={logoSrc} w={8} h={8} borderRadius={40} />
+          <Image alt={symbol} src={logoSrc} w={8} h={8} borderRadius={40} />
         </Skeleton>
         <Box>
           <Skeleton isLoaded={!isLoading} minWidth="fit-content">

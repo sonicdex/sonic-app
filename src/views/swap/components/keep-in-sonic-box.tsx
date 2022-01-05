@@ -109,6 +109,7 @@ export const KeepInSonicBox: React.FC<KeepInSonicBoxProps> = ({
           <Popover trigger="hover">
             <PopoverTrigger>
               <Image
+                alt="info"
                 src={infoSrc}
                 width={5}
                 transition="opacity 200ms"

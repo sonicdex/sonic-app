@@ -16,6 +16,7 @@ export const SwapImageBlock: React.FC<SwapImageBlockProps> = ({
     <Box width={10} height={10} position="relative">
       <SkeletonCircle h={6} w={6} isLoaded={!isLoading}>
         <Image
+          alt="token from"
           position="absolute"
           width={6}
           height={6}
@@ -28,6 +29,7 @@ export const SwapImageBlock: React.FC<SwapImageBlockProps> = ({
       <Text>&#x21AA;</Text>
       <SkeletonCircle h={6} w={6} isLoaded={!isLoading}>
         <Image
+          alt="token to"
           position="absolute"
           width={6}
           height={6}
