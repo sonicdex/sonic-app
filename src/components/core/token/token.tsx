@@ -14,6 +14,7 @@ import {
   TextProps,
 } from '@chakra-ui/react';
 import { createContext } from '@chakra-ui/react-utils';
+import BigNumber from 'bignumber.js';
 import React, { useCallback, useMemo } from 'react';
 
 import { chevronDownSrc, questionMarkSrc } from '@/assets';
@@ -182,6 +183,12 @@ export const TokenBalancesPrice: React.FC<BoxProps> = (props) => {
     return true;
   }, [isLoading, value]);
 
+  const price = useMemo(() => {
+    return new BigNumber(tokenMetadata?.price ?? 0)
+      .multipliedBy(value || '0')
+      .toNumber();
+  }, [tokenMetadata, value]);
+
   return (
     <Skeleton isLoaded={!isLoading} borderRadius="full">
       <Box
@@ -189,7 +196,7 @@ export const TokenBalancesPrice: React.FC<BoxProps> = (props) => {
         color={isActive ? '#F6FCFD' : '#888E8F'}
         {...props}
       >
-        <DisplayValue value={tokenMetadata?.price ?? 0} prefix="$" />
+        <DisplayValue value={price} prefix="$" />
       </Box>
     </Skeleton>
   );
