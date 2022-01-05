@@ -33,7 +33,7 @@ export const UnwrapProgressModal = () => {
     >
       <ModalOverlay />
 
-      <TransactionProgressModalContent title="Unwrapping ICP">
+      <TransactionProgressModalContent title="Unwrapping WICP">
         <HStack>
           {steps?.includes(UnwrapModalDataStep.Withdraw) && (
             <TransactionStep
