@@ -20,8 +20,10 @@ export const DisplayValue: React.FC<DisplayValueProps> = ({
   ...textProps
 }) => {
   const [formattedValue, tooltipLabel, isDisabled] = useMemo(() => {
-    const tooltip = decimals ? getCurrencyString(value, decimals) : value;
-    const display = formatValue(tooltip.toString());
+    const tooltip = decimals
+      ? getCurrencyString(value, decimals)
+      : Number(value).toFixed(15).replace(/0+$/, '');
+    const display = formatValue(tooltip);
 
     return [display, tooltip, disableTooltip || String(tooltip).length <= 4];
   }, [value, decimals]);
