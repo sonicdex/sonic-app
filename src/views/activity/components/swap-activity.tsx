@@ -1,4 +1,4 @@
-import { Heading, HStack, Stack, Text } from '@chakra-ui/react';
+import { Heading, HStack, Stack } from '@chakra-ui/react';
 import { FaArrowRight } from 'react-icons/fa';
 
 import {
@@ -56,11 +56,10 @@ export const SwapActivity = ({
           &nbsp;
           <DisplayValue
             value={amountOut}
-            decimals={fromToken.decimals}
+            decimals={toToken.decimals}
             suffix={' ' + toToken.symbol}
           />
         </Heading>
-        <Text color="gray.400">$0</Text>
       </Stack>
     </Asset>
   );

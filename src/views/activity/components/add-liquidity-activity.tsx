@@ -62,7 +62,6 @@ export const AddLiquidityActivity: React.FC<AddLiquidityActivityProps> = ({
             suffix={' ' + token1.symbol}
           />
         </Heading>
-        <DisplayValue prefix="$" value={token0.price} />
       </Stack>
     </Asset>
   );
