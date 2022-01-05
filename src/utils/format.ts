@@ -5,6 +5,8 @@ import { formatUnits, parseUnits } from 'ethers/lib/utils';
 
 export type BigNumberish = BigNumber | Bytes | bigint | string | number;
 
+BigNumber.config({ EXPONENTIAL_AT: 99 });
+
 export const deserialize = (json: string) =>
   JSON.parse(json, (key, value) => {
     if (typeof value === 'string' && /^\d+n$/.test(value)) {
