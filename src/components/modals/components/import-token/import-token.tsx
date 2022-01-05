@@ -63,6 +63,7 @@ export const ImportToken = ({
         pb={5}
       >
         <Image
+          alt="warning"
           src={redTriangleWarningSrc}
           w={6}
           position="absolute"

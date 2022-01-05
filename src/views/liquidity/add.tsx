@@ -460,7 +460,7 @@ export const LiquidityAddView = () => {
           mb={-2}
           zIndex={1200}
         >
-          <Image m="auto" src={plusSrc} />
+          <Image alt="plus" m="auto" src={plusSrc} />
         </Box>
         <Box width="100%">
           <Token
@@ -532,7 +532,7 @@ export const LiquidityAddView = () => {
               justifyContent="center"
               alignItems="center"
             >
-              <Image m="auto" src={equalSrc} />
+              <Image alt="equal" m="auto" src={equalSrc} />
             </Flex>
 
             <Token value={liquidityValue} isDisabled shouldGlow>
@@ -561,7 +561,7 @@ export const LiquidityAddView = () => {
 
                   <Popover trigger="hover">
                     <PopoverTrigger>
-                      <Image ml={2.5} width={4} src={infoSrc} />
+                      <Image alt="info" ml={2.5} width={4} src={infoSrc} />
                     </PopoverTrigger>
                     <PopoverContent>
                       <PopoverArrow />

@@ -34,6 +34,7 @@ export const LPImageBlock: React.FC<LPImageBlockProps> = ({
         isLoaded={!isLoading}
       >
         <Image
+          alt="token0"
           position="absolute"
           width={skeletonSize[size]}
           height={skeletonSize[size]}
@@ -49,6 +50,7 @@ export const LPImageBlock: React.FC<LPImageBlockProps> = ({
         isLoaded={!isLoading}
       >
         <Image
+          alt="token1"
           position="absolute"
           width={skeletonSize[size]}
           height={skeletonSize[size]}

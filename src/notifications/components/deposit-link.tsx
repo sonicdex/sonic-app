@@ -12,7 +12,6 @@ import {
   useNotificationStore,
   useSwapCanisterStore,
 } from '@/store';
-import { createCAPLink } from '@/utils/function';
 
 export interface DepositLinkProps {
   id: string;
@@ -63,7 +62,7 @@ export const DepositLink: React.FC<DepositLinkProps> = ({ id }) => {
   useEffect(() => {
     batch
       .execute()
-      .then((res) => {
+      .then(() => {
         dispatch(modalsSliceActions.clearDepositModalData());
         dispatch(modalsSliceActions.closeDepositProgressModal());
         getBalances();
@@ -71,8 +70,7 @@ export const DepositLink: React.FC<DepositLinkProps> = ({ id }) => {
           title: 'Deposit successful',
           type: NotificationType.Success,
           id: Date.now().toString(),
-          // TODO: add transaction id
-          transactionLink: createCAPLink('transactionId'),
+          transactionLink: '/activity',
         });
       })
       .catch((err) => {

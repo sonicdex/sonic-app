@@ -43,9 +43,9 @@ export const KeepInSonicBox: React.FC<KeepInSonicBoxProps> = ({
           popoverLabel: (
             <>
               Keeping tokens in Sonic (instead of withdrawing to Plug) is good
-              for high frequency trading where a few extra seconds matters a
-              lot. By doing this you can skip the deposit step on your next
-              trade and save the 2-3 extra seconds.&nbsp;
+              for high frequency trading where a few extra seconds matter a lot.
+              By doing this, you can skip the deposit step on your next trades
+              and save 2-3 seconds each time.&nbsp;
               <Link href="/#" color="#3D52F4">
                 {/* TODO: add correct href */}
                 Learn More
@@ -109,6 +109,7 @@ export const KeepInSonicBox: React.FC<KeepInSonicBoxProps> = ({
           <Popover trigger="hover">
             <PopoverTrigger>
               <Image
+                alt="info"
                 src={infoSrc}
                 width={5}
                 transition="opacity 200ms"

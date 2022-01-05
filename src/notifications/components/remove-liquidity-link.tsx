@@ -15,7 +15,6 @@ import {
   useSwapCanisterStore,
 } from '@/store';
 import { deserialize, getCurrency, stringify } from '@/utils/format';
-import { createCAPLink } from '@/utils/function';
 
 export interface RemoveLiquidityLinkProps {
   id: string;
@@ -122,15 +121,14 @@ export const RemoveLiquidityLink: React.FC<RemoveLiquidityLinkProps> = ({
   useEffect(() => {
     batch
       .execute()
-      .then((res) => {
+      .then(() => {
         dispatch(modalsSliceActions.clearRemoveLiquidityModalData());
         dispatch(modalsSliceActions.closeRemoveLiquidityProgressModal());
         addNotification({
           title: `Successfuly removed liquidity: ${token0.value} ${token0.metadata.symbol} + ${token1.value} ${token1.metadata.symbol}`,
           type: NotificationType.Success,
           id: Date.now().toString(),
-          // TODO: add transaction id
-          transactionLink: createCAPLink('transactionId'),
+          transactionLink: '/activity',
         });
         getBalances();
         getUserPositiveLPBalances();
