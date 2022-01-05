@@ -14,7 +14,6 @@ import {
   useSwapViewStore,
 } from '@/store';
 import { deserialize, stringify } from '@/utils/format';
-import { createCAPLink } from '@/utils/function';
 import { getAccountId } from '@/utils/icp';
 
 export interface UnwrapLinkProps {
@@ -65,15 +64,14 @@ export const UnwrapLink: React.FC<UnwrapLinkProps> = ({ id }) => {
   useEffect(() => {
     batch
       .execute()
-      .then((res) => {
+      .then(() => {
         dispatch(modalsSliceActions.closeUnwrapProgressModal());
 
         addNotification({
           title: `Unwrapped ${from.value} ${from.metadata.symbol}`,
           type: NotificationType.Success,
           id: Date.now().toString(),
-          // TODO: add transaction id
-          transactionLink: createCAPLink('transactionId'),
+          transactionLink: '/activity',
         });
         getBalances();
       })
