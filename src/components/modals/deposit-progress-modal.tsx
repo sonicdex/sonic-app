@@ -1,4 +1,4 @@
-import { HStack, Modal, ModalOverlay } from '@chakra-ui/react';
+import { Flex, Modal, ModalOverlay } from '@chakra-ui/react';
 
 import { checkPlainSrc, depositSrc } from '@/assets';
 import {
@@ -32,7 +32,7 @@ export const DepositProgressModal = () => {
     <Modal onClose={handleClose} isOpen={isDepositProgressOpened} isCentered>
       <ModalOverlay />
       <TransactionProgressModalContent title="Deposit in Progress">
-        <HStack>
+        <Flex alignItems="flex-start">
           <TransactionStep
             status={getStepStatus(DepositModalDataStep.Approve)}
             iconSrc={checkPlainSrc}
@@ -46,7 +46,7 @@ export const DepositProgressModal = () => {
           >
             Depositing <br /> {tokenSymbol}
           </TransactionStep>
-        </HStack>
+        </Flex>
       </TransactionProgressModalContent>
     </Modal>
   );

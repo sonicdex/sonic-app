@@ -1,4 +1,4 @@
-import { HStack, Modal, ModalOverlay } from '@chakra-ui/react';
+import { Flex, Modal, ModalOverlay } from '@chakra-ui/react';
 
 import { swapSrc } from '@/assets';
 import {
@@ -32,14 +32,14 @@ export const WithdrawProgressModal = () => {
     <Modal onClose={handleClose} isOpen={isWithdrawProgressOpened} isCentered>
       <ModalOverlay />
       <TransactionProgressModalContent title="Withdraw in Progress">
-        <HStack>
+        <Flex alignItems="flex-start">
           <TransactionStep
             status={getStepStatus(WithdrawModalDataStep.Withdraw)}
             iconSrc={swapSrc}
           >
             Withdrawing <br /> {tokenSymbol}
           </TransactionStep>
-        </HStack>
+        </Flex>
       </TransactionProgressModalContent>
     </Modal>
   );
