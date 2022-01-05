@@ -13,7 +13,6 @@ import {
   useSwapViewStore,
 } from '@/store';
 import { deserialize, stringify } from '@/utils/format';
-import { createCAPLink } from '@/utils/function';
 
 export interface SwapLinkProps {
   id: string;
@@ -65,7 +64,7 @@ export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
   useEffect(() => {
     batch
       .execute()
-      .then((res) => {
+      .then(() => {
         dispatch(modalsSliceActions.clearSwapModalData());
         dispatch(modalsSliceActions.closeSwapProgressModal());
 
@@ -73,8 +72,7 @@ export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
           title: `Swapped ${from.value} ${from.metadata.symbol} for ${to.value} ${to.metadata.symbol}`,
           type: NotificationType.Success,
           id: Date.now().toString(),
-          // TODO: add transaction id
-          transactionLink: createCAPLink('transactionId'),
+          transactionLink: '/activity',
         });
         getBalances();
       })

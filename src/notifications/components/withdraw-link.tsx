@@ -12,7 +12,6 @@ import {
   useWithdrawViewStore,
   WithdrawModalDataStep,
 } from '@/store';
-import { createCAPLink } from '@/utils/function';
 
 export interface WithdrawLinkProps {
   id: string;
@@ -63,15 +62,14 @@ export const WithdrawLink: React.FC<WithdrawLinkProps> = ({ id }) => {
   useEffect(() => {
     batch
       .execute()
-      .then((res) => {
+      .then(() => {
         dispatch(modalsSliceActions.clearWithdrawModalData());
         dispatch(modalsSliceActions.closeWithdrawProgressModal());
         addNotification({
           title: 'Withdraw successful',
           type: NotificationType.Success,
           id: Date.now().toString(),
-          // TODO: add transaction id
-          transactionLink: createCAPLink('transactionId'),
+          transactionLink: '/activity',
         });
         getBalances();
       })

@@ -12,7 +12,6 @@ import {
   WrapModalDataStep,
 } from '@/store';
 import { deserialize, stringify } from '@/utils/format';
-import { createCAPLink } from '@/utils/function';
 
 export interface WrapLinkProps {
   id: string;
@@ -58,15 +57,14 @@ export const WrapLink: React.FC<WrapLinkProps> = ({ id }) => {
   useEffect(() => {
     batch
       .execute()
-      .then((res) => {
+      .then(() => {
         dispatch(modalsSliceActions.closeWrapProgressModal());
 
         addNotification({
           title: `Wrapped ${from.value} ${from.metadata.symbol}`,
           type: NotificationType.Success,
           id: Date.now().toString(),
-          // TODO: add transaction id
-          transactionLink: createCAPLink('transactionId'),
+          transactionLink: '/activity',
         });
         getBalances();
       })

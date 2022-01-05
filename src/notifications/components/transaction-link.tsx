@@ -9,13 +9,8 @@ export const TransactionLink: React.FC<TransactionLinkProps> = ({
   transactionLink,
 }) => {
   return (
-    <Link
-      href={transactionLink}
-      target="_blank"
-      rel="noreferrer"
-      color="#3D52F4"
-    >
-      View on explorer
+    <Link href={transactionLink} rel="noreferrer" color="#3D52F4">
+      View in activity tab
     </Link>
   );
 };

@@ -12,7 +12,6 @@ import {
   useNotificationStore,
 } from '@/store';
 import { deserialize, stringify } from '@/utils/format';
-import { createCAPLink } from '@/utils/function';
 
 export interface AddLiquidityLinkProps {
   id: string;
@@ -61,15 +60,14 @@ export const AddLiquidityLink: React.FC<AddLiquidityLinkProps> = ({ id }) => {
   useEffect(() => {
     batch
       .execute()
-      .then((res) => {
+      .then(() => {
         dispatch(modalsSliceActions.clearAddLiquidityModalData());
         dispatch(modalsSliceActions.closeAddLiquidityProgressModal());
         addNotification({
           title: `Successfuly added liquidity: ${token0.value} ${token0.metadata.symbol} + ${token1.value} ${token1.metadata.symbol}`,
           type: NotificationType.Success,
           id: Date.now().toString(),
-          // TODO: add transaction id
-          transactionLink: createCAPLink('transactionId'),
+          transactionLink: '/activity',
         });
         getBalances();
         getUserPositiveLPBalances();
