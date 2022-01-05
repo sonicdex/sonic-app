@@ -1,5 +1,5 @@
-import { questionMarkSrc } from '@/assets';
-import { getFromStorage } from '@/config';
+import { questionMarkSrc, xtcSrc } from '@/assets';
+import { ENV, getFromStorage } from '@/config';
 import { SwapIDL } from '@/did';
 import {
   AppTokenMetadata,
@@ -28,11 +28,23 @@ export const parseResponseSupportedTokenList = (
   response: SwapIDL.TokenInfoExt[],
   icpPrice?: string
 ): AppTokenMetadata[] => {
-  return response.map((token) => ({
-    ...token,
-    ...(icpPrice ? { price: icpPrice } : {}),
-    logo: getFromStorage(`${token.id}-logo`) ?? questionMarkSrc,
-  }));
+  return response.map((token) => {
+    // TODO: remove this once XTC logo will be fixed
+    let logo;
+    if (token.id === ENV.canisterIds.XTC) {
+      logo = xtcSrc;
+    }
+
+    if (token.id !== ENV.canisterIds.XTC) {
+      logo = getFromStorage(`${token.id}-logo`) ?? questionMarkSrc;
+    }
+
+    return {
+      ...token,
+      ...(icpPrice ? { price: icpPrice } : {}),
+      logo,
+    };
+  });
 };
 
 export const parseResponseTokenList = (
