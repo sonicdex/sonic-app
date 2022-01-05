@@ -160,15 +160,22 @@ export const LiquidityAddView = () => {
     dataKey: LiquidityTokenDataKey,
     value?: string
   ) => {
-    const amountIn =
-      value ?? (dataKey === 'token0' ? token0.value : token1.value);
-
-    const reserveIn = String(
-      dataKey === 'token0' ? pair?.reserve0 : pair?.reserve1
-    );
-    const reserveOut = String(
-      dataKey === 'token1' ? pair?.reserve0 : pair?.reserve1
-    );
+    const [amountIn, reserveIn, reserveOut, decimalsIn, decimalsOut] =
+      dataKey === 'token0'
+        ? [
+            value ?? token0.value,
+            String(pair?.reserve0),
+            String(pair?.reserve1),
+            Number(token0.metadata?.decimals),
+            Number(token1.metadata?.decimals),
+          ]
+        : [
+            value ?? token1.value,
+            String(pair?.reserve1),
+            String(pair?.reserve0),
+            Number(token1.metadata?.decimals),
+            Number(token0.metadata?.decimals),
+          ];
 
     dispatch(liquidityViewActions.setValue({ data: dataKey, value: amountIn }));
 
@@ -177,17 +184,12 @@ export const LiquidityAddView = () => {
       token1.metadata &&
       allPairs?.[token0.metadata.id]?.[token1.metadata.id]
     ) {
-      const [decimalsOut, decimalsIn] =
-        dataKey === 'token0'
-          ? [token1.metadata.decimals, token0.metadata.decimals]
-          : [token0.metadata.decimals, token1.metadata.decimals];
-
       const lpValue = getAmountEqualLPToken({
         amountIn,
         reserveIn,
         reserveOut,
-        decimalsOut,
         decimalsIn,
+        decimalsOut,
       });
 
       const reversedDataKey = dataKey === 'token0' ? 'token1' : 'token0';
@@ -263,15 +265,21 @@ export const LiquidityAddView = () => {
     useMemo(() => {
       if (token0.metadata && token1.metadata) {
         if (pair && pair.reserve0 && pair.reserve1) {
-          const token0Price = new BigNumber(String(pair.reserve0))
-            .div(new BigNumber(String(pair.reserve1)))
-            .dp(Number(token0.metadata.decimals))
-            .toFixed(3);
+          const token0Price = getAmountEqualLPToken({
+            amountIn: '1',
+            reserveIn: String(pair.reserve1),
+            reserveOut: String(pair.reserve0),
+            decimalsIn: Number(token1.metadata.decimals),
+            decimalsOut: Number(token0.metadata.decimals),
+          });
 
-          const token1Price = new BigNumber(String(pair.reserve1))
-            .div(new BigNumber(String(pair.reserve0)))
-            .dp(Number(token1.metadata.decimals))
-            .toFixed(3);
+          const token1Price = getAmountEqualLPToken({
+            amountIn: '1',
+            reserveIn: String(pair.reserve0),
+            reserveOut: String(pair.reserve1),
+            decimalsIn: Number(token0.metadata.decimals),
+            decimalsOut: Number(token1.metadata.decimals),
+          });
 
           const getAmountLPOptions = {
             token0Amount: token0.value,
