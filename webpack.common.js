@@ -1,8 +1,8 @@
 const path = require('path');
 const webpack = require('webpack');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 require('dotenv').config();
+const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = () => {
   return {
@@ -53,6 +53,16 @@ module.exports = () => {
       new webpack.ProvidePlugin({
         Buffer: [require.resolve('buffer/'), 'Buffer'],
         process: 'process/browser',
+      }),
+      new CopyPlugin({
+        patterns: [
+          {
+            from: path.resolve(__dirname, 'public'),
+            globOptions: {
+              ignore: ['**/index.html'],
+            },
+          },
+        ],
       }),
     ],
   };

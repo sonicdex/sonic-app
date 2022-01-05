@@ -61,10 +61,9 @@ export const KeepInSonicBox: React.FC<KeepInSonicBoxProps> = ({
           } to Sonic after ${operation}`,
           popoverLabel: (
             <>
-              Depositing tokens into in Sonic (instead of keeping in Plug) is
-              good when you want to instantly start swapping or adding liquidity
-              inside Sonic. By doing this you're adding deposit WICP step on
-              your next trade to start using WICP instantly in Sonic.&nbsp;
+              If you keep your tokens deposited in Sonic (instead of withdrawing
+              to Plug) you can start swaps or add liquidity faster on your next
+              operation. &nbsp;
               <Link href="/#" color="#3D52F4">
                 {/* TODO: add correct href */}
                 Learn More
