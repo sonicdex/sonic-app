@@ -25,7 +25,17 @@ export const AddLiquidityLink: React.FC<AddLiquidityLinkProps> = ({ id }) => {
 
   const { token0, token1, slippage } = useMemo(() => {
     // Clone current state just for this batch
-    const { token0, token1, slippage } = liquidityViewStore;
+    const { token0, token1, slippage, pair } = liquidityViewStore;
+
+    // Is needed to send to canister the values in the pair id order
+    if (pair) {
+      const token0Id = pair.id.split(':')[0];
+      if (token0Id !== token0.metadata?.id) {
+        return deserialize(
+          stringify({ token0: token1, token1: token0, slippage })
+        );
+      }
+    }
 
     return deserialize(stringify({ token0, token1, slippage }));
   }, []);

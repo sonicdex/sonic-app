@@ -1,4 +1,5 @@
 import { Text, TextProps, Tooltip } from '@chakra-ui/react';
+import BigNumber from 'bignumber.js';
 import { useMemo } from 'react';
 
 import { formatValue, getCurrencyString } from '@/utils/format';
@@ -20,8 +21,10 @@ export const DisplayValue: React.FC<DisplayValueProps> = ({
   ...textProps
 }) => {
   const [formattedValue, tooltipLabel, isDisabled] = useMemo(() => {
-    const tooltip = decimals ? getCurrencyString(value, decimals) : value;
-    const display = formatValue(tooltip.toString());
+    const tooltip = decimals
+      ? getCurrencyString(value, decimals)
+      : new BigNumber(value).toString();
+    const display = formatValue(tooltip);
 
     return [display, tooltip, disableTooltip || String(tooltip).length <= 4];
   }, [value, decimals]);
