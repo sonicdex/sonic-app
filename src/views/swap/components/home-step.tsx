@@ -35,7 +35,7 @@ import {
 import { ENV } from '@/config';
 import { getAppAssetsSources } from '@/config/utils';
 import { ICP_METADATA } from '@/constants';
-import { useTokenBalanceMemo } from '@/hooks';
+import { useICPSelectionDetectorMemo, useTokenBalanceMemo } from '@/hooks';
 import { useBalances } from '@/hooks/use-balances';
 import { plug } from '@/integrations/plug';
 import {
@@ -281,19 +281,8 @@ export const SwapHomeStep = () => {
     return [false, 'Select a Token'];
   }, [toTokenOptions]);
 
-  // TODO: Add hook(s) for this logic
-  // Special cases for ICP
-  const [isFromIsICP, isToIsICP] = useMemo(() => {
-    return [
-      from.metadata?.id === ICP_METADATA.id,
-      to.metadata?.id === ICP_METADATA.id,
-    ];
-  }, [from.metadata?.id, to.metadata?.id]);
-
-  const isICPSelected = useMemo(() => {
-    if (isFromIsICP || isToIsICP) return true;
-    return false;
-  }, [isFromIsICP, isToIsICP]);
+  const { isFirstTokenIsICP, isSecondTokenIsICP, isICPSelected } =
+    useICPSelectionDetectorMemo(from.metadata?.id, to.metadata?.id);
 
   const fromSources = useMemo(() => {
     if (from.metadata) {
@@ -458,9 +447,9 @@ export const SwapHomeStep = () => {
       <ExchangeBox from={from} to={to} slippage={slippage} />
 
       <KeepInSonicBox
-        canHeldInSonic={!isToIsICP}
+        canHeldInSonic={!isSecondTokenIsICP}
         symbol={to.metadata?.symbol}
-        operation={isFromIsICP ? 'wrap' : 'swap'}
+        operation={isFirstTokenIsICP ? 'wrap' : 'swap'}
       />
 
       {!isConnected ? (

@@ -1,5 +1,4 @@
 import { Box, Button, Flex, Image, Stack } from '@chakra-ui/react';
-import { useMemo } from 'react';
 
 import { arrowDownSrc } from '@/assets';
 import {
@@ -16,7 +15,7 @@ import {
   ViewHeader,
 } from '@/components';
 import { getAppAssetsSources } from '@/config/utils';
-import { ICP_METADATA } from '@/constants';
+import { useICPSelectionDetectorMemo } from '@/hooks';
 import {
   NotificationType,
   SwapStep,
@@ -49,17 +48,8 @@ export const SwapReviewStep = () => {
     );
   };
 
-  const [isFromIsICP, isToIsICP] = useMemo(() => {
-    return [
-      from.metadata?.id === ICP_METADATA.id,
-      to.metadata?.id === ICP_METADATA.id,
-    ];
-  }, [from.metadata?.id, to.metadata?.id]);
-
-  const isICPSelected = useMemo(() => {
-    if (isFromIsICP || isToIsICP) return true;
-    return false;
-  }, [isFromIsICP, isToIsICP]);
+  const { isFirstTokenIsICP, isSecondTokenIsICP, isICPSelected } =
+    useICPSelectionDetectorMemo(from.metadata?.id, to.metadata?.id);
 
   return (
     <Stack spacing={4}>
@@ -157,9 +147,9 @@ export const SwapReviewStep = () => {
 
       <ExchangeBox from={from} to={to} slippage={slippage} />
       <KeepInSonicBox
-        canHeldInSonic={!(to.metadata?.symbol === ICP_METADATA.id)}
+        canHeldInSonic={!isSecondTokenIsICP}
         symbol={to.metadata?.symbol}
-        operation={from.metadata?.symbol === ICP_METADATA.id ? 'wrap' : 'swap'}
+        operation={isFirstTokenIsICP ? 'wrap' : 'swap'}
       />
 
       <Button
