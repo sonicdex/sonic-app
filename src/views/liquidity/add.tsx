@@ -183,7 +183,6 @@ export const LiquidityAddView = () => {
           ];
 
     dispatch(liquidityViewActions.setValue({ data: dataKey, value: amountIn }));
-
     if (
       token0.metadata &&
       token1.metadata &&
@@ -196,6 +195,8 @@ export const LiquidityAddView = () => {
         decimalsIn,
         decimalsOut,
       });
+
+      console.log(amountIn, reserveIn, reserveOut, decimalsIn, decimalsOut);
 
       const reversedDataKey = dataKey === 'token0' ? 'token1' : 'token0';
 
