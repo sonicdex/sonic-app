@@ -1,5 +1,5 @@
 import { Box, Flex, IconButton, Tooltip } from '@chakra-ui/react';
-import { FaArrowLeft } from 'react-icons/fa';
+import { FaArrowLeft } from '@react-icons/all-files/fa/FaArrowLeft';
 
 type ViewHeaderProps = {
   title: string;

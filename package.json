@@ -19,6 +19,7 @@
   "devDependencies": {
     "@commitlint/cli": "15.0.0",
     "@commitlint/config-conventional": "15.0.0",
+    "@ethersproject/bytes": "^5.5.0",
     "@psychedelic/plug-inpage-provider": "1.6.1",
     "@types/buffer-crc32": "^0.2.0",
     "@types/crypto-js": "^4.1.0",
@@ -59,14 +60,13 @@
   "dependencies": {
     "@chakra-ui/react": "^1.7.2",
     "@dfinity/agent": "^0.10.1",
-    "@dfinity/auth-client": "^0.10.1",
     "@dfinity/candid": "^0.10.1",
     "@dfinity/identity": "^0.10.1",
     "@dfinity/principal": "^0.10.1",
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
-    "@ethersproject/bytes": "^5.5.0",
     "@psychedelic/cap-js": "^0.0.7",
+    "@react-icons/all-files": "^4.1.0",
     "@reduxjs/toolkit": "^1.6.2",
     "axios": "^0.24.0",
     "bignumber.js": "^9.0.1",
@@ -79,7 +79,6 @@
     "json-bigint": "^1.0.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-icons": "^4.3.1",
     "react-redux": "^7.2.5",
     "react-router-dom": "6.0.2"
   },

@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
 import { ENV } from '@/config';
-import { ICP_TOKEN_METADATA } from '@/constants';
+import { ICP_METADATA } from '@/constants';
 import {
   modalsSliceActions,
   UnwrapModalDataStep,
@@ -35,7 +35,7 @@ export const useUnwrapBatch = ({ amount, toAccountId }: Unwrap) => {
     token: tokenList[ENV.canisterIds.WICP],
     amount: getAmountDependsOnBalance(
       tokenBalances[ENV.canisterIds.WICP],
-      ICP_TOKEN_METADATA.decimals,
+      ICP_METADATA.decimals,
       amount
     ),
   });

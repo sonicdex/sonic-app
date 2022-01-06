@@ -9,13 +9,14 @@ import {
   PopoverTrigger,
   Portal,
   Stack,
-  StackItem,
   Text,
 } from '@chakra-ui/react';
+import { FaArrowRight } from '@react-icons/all-files/fa/FaArrowRight';
 import React from 'react';
-import { FaArrowRight } from 'react-icons/fa';
 
 import { infoSrc } from '@/assets';
+import { StackLine } from '@/components';
+import { ICP_METADATA } from '@/constants';
 import { TokenData } from '@/models';
 import { useSwapCanisterStore } from '@/store';
 import {
@@ -31,24 +32,6 @@ export type ExchangeBoxProps = {
   slippage: string;
 };
 
-type StackLineProps = {
-  title: string;
-  value: string;
-};
-
-const StackLine: React.FC<StackLineProps> = ({ value, title }) => {
-  return (
-    <StackItem>
-      <Flex>
-        <Text>{title}</Text>
-        <Text ml={2} flex={1} textAlign="right">
-          {value}
-        </Text>
-      </Flex>
-    </StackItem>
-  );
-};
-
 export const ExchangeBox: React.FC<ExchangeBoxProps> = ({
   from,
   to,
@@ -59,9 +42,9 @@ export const ExchangeBox: React.FC<ExchangeBoxProps> = ({
   if (!from.metadata || !to.metadata) return null;
 
   const [icp, feeMessage] =
-    from.metadata.id === 'ICP'
+    from.metadata.id === ICP_METADATA.id
       ? [from.metadata, 'Wrap']
-      : to.metadata.id === 'ICP'
+      : to.metadata.id === ICP_METADATA.id
       ? [to.metadata, 'Unwrap']
       : [];
 

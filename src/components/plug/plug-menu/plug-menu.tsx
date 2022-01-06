@@ -27,7 +27,7 @@ import { desensitizationPrincipalId } from '@/utils/canister';
 
 import { PlugLogo } from '..';
 
-export const PlugPrincipalIDMenu: FC<Omit<MenuProps, 'children'>> = (props) => {
+export const PlugMenu: FC<Omit<MenuProps, 'children'>> = (props) => {
   const { principalId, state } = usePlugStore();
   const { addNotification } = useNotificationStore();
   const dispatch = useAppDispatch();
@@ -82,6 +82,6 @@ export const PlugPrincipalIDMenu: FC<Omit<MenuProps, 'children'>> = (props) => {
   );
 };
 
-PlugPrincipalIDMenu.displayName = 'PlugPrincipalIDTag';
+PlugMenu.displayName = 'PlugPrincipalIDTag';
 
 const ChevronIcon = () => <Image alt="down" ml={3} src={chevronDownSrc} />;

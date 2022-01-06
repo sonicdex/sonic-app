@@ -24,9 +24,9 @@ import {
   Stack,
   Tooltip,
 } from '@chakra-ui/react';
+import { FaArrowDown } from '@react-icons/all-files/fa/FaArrowDown';
 import BigNumber from 'bignumber.js';
 import { useMemo } from 'react';
-import { FaArrowDown } from 'react-icons/fa';
 
 import {
   liquidityViewActions,

@@ -29,12 +29,12 @@ export const NumberInput = ({
       fontSize="3xl"
       fontWeight={700}
       backgroundColor="transparent"
-      color="#888E8F"
+      color="gray.300"
       outline="none"
       transition="color 400ms"
       onChange={handleValueChange}
       placeholder={placeholder}
-      _placeholder={{ color: '#888E8F' }}
+      _placeholder={{ color: 'gray.300' }}
       {...props}
     />
   );

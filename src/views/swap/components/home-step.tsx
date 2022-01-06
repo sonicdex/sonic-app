@@ -12,11 +12,11 @@ import {
   Stack,
   Tooltip,
 } from '@chakra-ui/react';
+import { FaArrowDown } from '@react-icons/all-files/fa/FaArrowDown';
+import { FaCog } from '@react-icons/all-files/fa/FaCog';
 import { useMemo, useState } from 'react';
-import { FaArrowDown, FaCog } from 'react-icons/fa';
 
 import {
-  ExchangeBox,
   PLUG_WALLET_WEBSITE_URL,
   PlugButton,
   SlippageSettings,
@@ -33,7 +33,8 @@ import {
 } from '@/components';
 import { ENV } from '@/config';
 import { getAppAssetsSources } from '@/config/utils';
-import { useTokenBalanceMemo } from '@/hooks';
+import { ICP_METADATA } from '@/constants';
+import { useICPSelectionDetectorMemo, useTokenBalanceMemo } from '@/hooks';
 import { useBalances } from '@/hooks/use-balances';
 import { plug } from '@/integrations/plug';
 import {
@@ -52,6 +53,7 @@ import {
 import { formatAmount, getCurrency, getCurrencyString } from '@/utils/format';
 import { debounce } from '@/utils/function';
 
+import { ExchangeBox } from '.';
 import { KeepInSonicBox } from './keep-in-sonic-box';
 
 export const SwapHomeStep = () => {
@@ -221,9 +223,9 @@ export const SwapHomeStep = () => {
       return [true, `${to.metadata.symbol} amount must be greater than fee`];
     }
 
-    if (totalBalances) {
+    if (totalBalances && fromBalance) {
       const parsedBalance = parseFloat(
-        formatAmount(fromBalance!, from.metadata.decimals)
+        formatAmount(fromBalance, from.metadata.decimals)
       );
 
       if (parsedFromValue > parsedBalance) {
@@ -231,11 +233,17 @@ export const SwapHomeStep = () => {
       }
     }
 
-    if (from.metadata.id === 'ICP' && to.metadata.id === ENV.canisterIds.WICP) {
+    if (
+      from.metadata.id === ICP_METADATA.id &&
+      to.metadata.id === ENV.canisterIds.WICP
+    ) {
       return [false, 'Wrap', handleWrapICP];
     }
 
-    if (from.metadata.id === ENV.canisterIds.WICP && to.metadata.id === 'ICP') {
+    if (
+      from.metadata.id === ENV.canisterIds.WICP &&
+      to.metadata.id === ICP_METADATA.id
+    ) {
       return [false, 'Unwrap', handleUnwrapICP];
     }
 
@@ -273,20 +281,12 @@ export const SwapHomeStep = () => {
     return [false, 'Select a Token'];
   }, [toTokenOptions]);
 
-  // TODO: Add hook(s) for this logic
-  // Special cases for ICP
-  const [isFromIsICP, isToIsICP] = useMemo(() => {
-    return [from.metadata?.id === 'ICP', to.metadata?.id === 'ICP'];
-  }, [from.metadata?.id, to.metadata?.id]);
-
-  const isICPSelected = useMemo(() => {
-    if (isFromIsICP || isToIsICP) return true;
-    return false;
-  }, [isFromIsICP, isToIsICP]);
+  const { isFirstTokenIsICP, isSecondTokenIsICP, isICPSelected } =
+    useICPSelectionDetectorMemo(from.metadata?.id, to.metadata?.id);
 
   const fromSources = useMemo(() => {
     if (from.metadata) {
-      if (from.metadata.id === 'ICP') {
+      if (from.metadata.id === ICP_METADATA.id) {
         return getAppAssetsSources({
           balances: {
             plug: icpBalance ?? 0,
@@ -305,7 +305,7 @@ export const SwapHomeStep = () => {
 
   const toSources = useMemo(() => {
     if (to.metadata) {
-      if (to.metadata.id === 'ICP') {
+      if (to.metadata.id === ICP_METADATA.id) {
         return getAppAssetsSources({
           balances: {
             plug: icpBalance ?? 0,
@@ -395,6 +395,8 @@ export const SwapHomeStep = () => {
             zIndex="overlay"
             bg="gray.800"
             onClick={switchTokens}
+            isDisabled={!to.metadata}
+            pointerEvents={!to.metadata ? 'none' : 'all'}
             _hover={{
               '& > svg': {
                 transform: 'rotate(180deg)',
@@ -447,9 +449,9 @@ export const SwapHomeStep = () => {
       <ExchangeBox from={from} to={to} slippage={slippage} />
 
       <KeepInSonicBox
-        canHeldInSonic={!isToIsICP}
+        canHeldInSonic={!isSecondTokenIsICP}
         symbol={to.metadata?.symbol}
-        operation={isFromIsICP ? 'wrap' : 'swap'}
+        operation={isFirstTokenIsICP ? 'wrap' : 'swap'}
       />
 
       {!isConnected ? (

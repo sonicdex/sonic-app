@@ -1,5 +1,7 @@
 import { useMemo } from 'react';
 
+import { ICP_METADATA } from '@/constants';
+
 import { useBalances } from './use-balances';
 
 export const useTokenBalanceMemo = (canisterId?: string) => {
@@ -7,7 +9,7 @@ export const useTokenBalanceMemo = (canisterId?: string) => {
 
   return useMemo(() => {
     if (canisterId && totalBalances) {
-      const isICP = canisterId === 'ICP';
+      const isICP = canisterId === ICP_METADATA.id;
 
       if (isICP) {
         return icpBalance;

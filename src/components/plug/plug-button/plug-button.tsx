@@ -1,7 +1,7 @@
 import { Button, ButtonProps } from '@chakra-ui/button';
 import { useColorModeValue } from '@chakra-ui/color-mode';
 import type { Provider } from '@psychedelic/plug-inpage-provider';
-import { forwardRef } from 'react';
+import { forwardRef, useMemo } from 'react';
 
 import { ENV } from '@/config';
 import { requestConnect } from '@/integrations/plug';
@@ -26,7 +26,6 @@ export const PlugButton = forwardRef<HTMLButtonElement, PlugButtonProps>(
     ref
   ) => {
     const { state } = usePlugStore();
-
     const dispatch = useAppDispatch();
 
     const handleConnect = (isConnected: boolean) => {
@@ -38,7 +37,7 @@ export const PlugButton = forwardRef<HTMLButtonElement, PlugButtonProps>(
     const handleConnectAttempt = async () => {
       if (!isPlugPAPIExists) {
         window.open(PLUG_WALLET_WEBSITE_URL, '_blank');
-        return false;
+        return;
       }
 
       try {
@@ -50,23 +49,18 @@ export const PlugButton = forwardRef<HTMLButtonElement, PlugButtonProps>(
         });
 
         if (isConnected) {
-          if (handleConnect) {
-            handleConnect(isConnected);
-          }
-          return true;
+          handleConnect(isConnected);
         }
-
-        return false;
       } catch (err) {
         console.error(err);
-
-        return false;
       } finally {
         dispatch(plugActions.setState(FeatureState.Idle));
       }
     };
 
-    const isLoading = state === FeatureState.Loading;
+    const isLoading = useMemo(() => {
+      return state === FeatureState.Loading;
+    }, [state]);
 
     const bg = useColorModeValue('gray.100', 'gray.900');
     const bgHover = useColorModeValue('gray.200', 'gray.800');

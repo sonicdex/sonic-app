@@ -1,7 +1,7 @@
 import { icpSrc } from '@/assets';
 import { AppTokenMetadata } from '@/models';
 
-export const ICP_TOKEN_METADATA = {
+export const ICP_METADATA = {
   id: 'ICP',
   name: 'Internet Computer Protocol',
   symbol: 'ICP',
@@ -12,6 +12,6 @@ export const ICP_TOKEN_METADATA = {
 };
 
 export const getICPTokenMetadata = (price?: string): AppTokenMetadata => ({
-  ...ICP_TOKEN_METADATA,
+  ...ICP_METADATA,
   price,
 });
