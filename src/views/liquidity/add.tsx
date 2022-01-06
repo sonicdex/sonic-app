@@ -127,7 +127,7 @@ export const LiquidityAddView = () => {
           )
         : '';
 
-    setTokenValueAndLPTokenValue(dataKey, value);
+    setInAndOutTokenValues(dataKey, value);
   };
 
   const handleSelectToken = (dataKey: LiquidityTokenDataKey) => {
@@ -161,7 +161,7 @@ export const LiquidityAddView = () => {
 
   // Utils
 
-  const setTokenValueAndLPTokenValue = (
+  const setInAndOutTokenValues = (
     dataKey: LiquidityTokenDataKey,
     value?: string
   ) => {
@@ -195,8 +195,6 @@ export const LiquidityAddView = () => {
         decimalsIn,
         decimalsOut,
       });
-
-      console.log(amountIn, reserveIn, reserveOut, decimalsIn, decimalsOut);
 
       const reversedDataKey = dataKey === 'token0' ? 'token1' : 'token0';
 
@@ -456,7 +454,7 @@ export const LiquidityAddView = () => {
         <Box width="100%">
           <Token
             value={token0.value}
-            setValue={(value) => setTokenValueAndLPTokenValue('token0', value)}
+            setValue={(value) => setInAndOutTokenValues('token0', value)}
             tokenListMetadata={supportedTokenList}
             tokenMetadata={token0.metadata}
             isDisabled={isReviewing}
@@ -496,7 +494,7 @@ export const LiquidityAddView = () => {
         <Box width="100%">
           <Token
             value={token1.value}
-            setValue={(value) => setTokenValueAndLPTokenValue('token1', value)}
+            setValue={(value) => setInAndOutTokenValues('token1', value)}
             tokenListMetadata={supportedTokenList}
             tokenMetadata={token1.metadata}
             isDisabled={isReviewing}

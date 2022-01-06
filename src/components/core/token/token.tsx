@@ -341,7 +341,7 @@ export const TokenInput: React.FC<TokenInputProps> = (props) => {
         setValue(newValue);
       }
     },
-    [value, tokenMetadata]
+    [value, tokenMetadata, setValue]
   );
 
   return (
