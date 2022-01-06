@@ -127,7 +127,7 @@ export const LiquidityAddView = () => {
           )
         : '';
 
-    setTokenValueAndLPTokenValue(dataKey, value);
+    setInAndOutTokenValues(dataKey, value);
   };
 
   const handleSelectToken = (dataKey: LiquidityTokenDataKey) => {
@@ -161,7 +161,7 @@ export const LiquidityAddView = () => {
 
   // Utils
 
-  const setTokenValueAndLPTokenValue = (
+  const setInAndOutTokenValues = (
     dataKey: LiquidityTokenDataKey,
     value?: string
   ) => {
@@ -183,7 +183,6 @@ export const LiquidityAddView = () => {
           ];
 
     dispatch(liquidityViewActions.setValue({ data: dataKey, value: amountIn }));
-
     if (
       token0.metadata &&
       token1.metadata &&
@@ -455,7 +454,7 @@ export const LiquidityAddView = () => {
         <Box width="100%">
           <Token
             value={token0.value}
-            setValue={(value) => setTokenValueAndLPTokenValue('token0', value)}
+            setValue={(value) => setInAndOutTokenValues('token0', value)}
             tokenListMetadata={supportedTokenList}
             tokenMetadata={token0.metadata}
             isDisabled={isReviewing}
@@ -495,7 +494,7 @@ export const LiquidityAddView = () => {
         <Box width="100%">
           <Token
             value={token1.value}
-            setValue={(value) => setTokenValueAndLPTokenValue('token1', value)}
+            setValue={(value) => setInAndOutTokenValues('token1', value)}
             tokenListMetadata={supportedTokenList}
             tokenMetadata={token1.metadata}
             isDisabled={isReviewing}

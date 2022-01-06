@@ -26,7 +26,7 @@ export const desensitizationPrincipalId = (
 
 export const parseResponseSupportedTokenList = (
   response: SwapIDL.TokenInfoExt[],
-  icpPrice?: string
+  price?: string
 ): AppTokenMetadata[] => {
   return response.map((token) => {
     // TODO: remove hardcode, once XTC logo will be fixed
@@ -41,7 +41,7 @@ export const parseResponseSupportedTokenList = (
 
     return {
       ...token,
-      ...(icpPrice ? { price: icpPrice } : {}),
+      ...(price ? { price } : {}),
       logo,
     };
   });
