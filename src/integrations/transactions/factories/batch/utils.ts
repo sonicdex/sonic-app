@@ -26,14 +26,13 @@ export const getDepositTransactions = ({
 
   let transactions = {};
 
-  if (neededAllowance > 0) {
-    transactions = {
-      ...transactions,
-      [txNames[0]]: approveTx,
-    };
-  }
-
   if (neededBalance > 0) {
+    if (neededAllowance > 0) {
+      transactions = {
+        ...transactions,
+        [txNames[0]]: approveTx,
+      };
+    }
     transactions = {
       ...transactions,
       [txNames[1]]: depositTx,
