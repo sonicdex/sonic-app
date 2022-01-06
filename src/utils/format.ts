@@ -3,6 +3,9 @@ import BigNumber from 'bignumber.js';
 import { ethers } from 'ethers';
 import { formatUnits, parseUnits } from 'ethers/lib/utils';
 
+import { ICP_METADATA } from '@/constants';
+import { AppTokenMetadata } from '@/models';
+
 export type BigNumberish = BigNumber | Bytes | bigint | string | number;
 
 BigNumber.config({ EXPONENTIAL_AT: 99 });
@@ -303,4 +306,18 @@ export const getAmountOutMin = (
   }, withoutFees);
 
   return withFees;
+};
+
+export const getDepositMaxValue = (
+  token?: AppTokenMetadata,
+  balance?: number | bigint
+) => {
+  if (!token || !balance) return '';
+
+  const times = token.id === ICP_METADATA.id ? 1 : 2;
+
+  return getCurrencyString(
+    Number(balance) - Number(token.fee) * times,
+    token.decimals
+  );
 };
