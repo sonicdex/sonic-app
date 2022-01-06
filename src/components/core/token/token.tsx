@@ -20,7 +20,7 @@ import React, { useCallback, useMemo } from 'react';
 import { chevronDownSrc, questionMarkSrc } from '@/assets';
 import { NumberInput } from '@/components';
 import { AppTokenMetadata } from '@/models';
-import { getCurrencyString } from '@/utils/format';
+import { getDepositMaxValue } from '@/utils/format';
 
 import { DisplayValue, NumberInputProps } from '..';
 import { TokenBalancesPopover } from '../token-balances-popover';
@@ -263,12 +263,8 @@ export const TokenBalancesDetails: React.FC<TokenBalancesDetailsProps> = ({
       onMaxClick &&
       totalTokenBalance &&
       totalTokenBalance > 0 &&
-      Number(
-        getCurrencyString(
-          totalTokenBalance - Number(tokenMetadata?.fee || 0),
-          tokenMetadata?.decimals
-        )
-      ) !== Number(value)
+      Number(getDepositMaxValue(tokenMetadata, totalTokenBalance)) !==
+        Number(value)
     ) {
       return true;
     }

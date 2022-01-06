@@ -28,7 +28,7 @@ import {
   useSwapCanisterStore,
   useTokenModalOpener,
 } from '@/store';
-import { formatAmount, getCurrency, getCurrencyString } from '@/utils/format';
+import { formatAmount, getCurrency, getDepositMaxValue } from '@/utils/format';
 import { debounce } from '@/utils/function';
 
 export const AssetsDepositView = () => {
@@ -135,10 +135,7 @@ export const AssetsDepositView = () => {
     if (tokenBalance && selectedTokenMetadata)
       dispatch(
         depositViewActions.setAmount(
-          getCurrencyString(
-            tokenBalance - Number(selectedTokenMetadata.fee),
-            selectedTokenMetadata.decimals
-          )
+          getDepositMaxValue(selectedTokenMetadata, tokenBalance)
         )
       );
   };

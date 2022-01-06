@@ -64,6 +64,7 @@ import {
   getAmountEqualLPToken,
   getAmountLP,
   getCurrencyString,
+  getDepositMaxValue,
   getLPPercentageString,
 } from '@/utils/format';
 import { debounce } from '@/utils/function';
@@ -119,13 +120,7 @@ export const LiquidityAddView = () => {
 
     if (!token || !tokenBalance) return;
 
-    const value =
-      totalBalances && token.metadata
-        ? getCurrencyString(
-            tokenBalance - Number(token.metadata.fee),
-            token.metadata?.decimals
-          )
-        : '';
+    const value = getDepositMaxValue(token.metadata, tokenBalance);
 
     setInAndOutTokenValues(dataKey, value);
   };
@@ -625,6 +620,7 @@ export const LiquidityAddView = () => {
                         src={infoSrc}
                         width={5}
                         transition="opacity 200ms"
+                        opacity={0.6}
                       />
                     </PopoverTrigger>
                     <PopoverContent minWidth="400px">
