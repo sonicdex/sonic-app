@@ -14,9 +14,9 @@ export const AllowanceVerifyModal = () => {
     allowanceModalData: { tokenSymbol },
   } = useModalsStore();
 
-  const tokenSymbols = useMemo(() => {
+  const _tokenSymbols = useMemo(() => {
     if (!tokenSymbol) {
-      return [''];
+      return ['token'];
     } else if (typeof tokenSymbol === 'string') {
       return [tokenSymbol];
     } else {
@@ -37,14 +37,14 @@ export const AllowanceVerifyModal = () => {
       <ModalOverlay />
       <TransactionProgressModalContent title="Verifying Allowance">
         <Flex alignItems="flex-start">
-          {tokenSymbols.map((tokenSymbol) => (
+          {_tokenSymbols.map((_tokenSymbol) => (
             <TransactionStep
               status={StepStatus.Active}
               iconSrc={checkPlainSrc}
-              key={tokenSymbol}
+              key={_tokenSymbol}
             >
               <Box mx={6}>
-                Verifying {tokenSymbol || ''} <br /> allowance
+                Verifying {_tokenSymbol} <br /> allowance
               </Box>
             </TransactionStep>
           ))}
