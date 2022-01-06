@@ -17,6 +17,7 @@ import {
 } from '@/components';
 import { FeeBox } from '@/components/core/fee-box';
 import { useQuery } from '@/hooks/use-query';
+import { useTokenAllowance } from '@/hooks/use-token-allowance';
 import {
   depositViewActions,
   FeatureState,
@@ -48,6 +49,8 @@ export const AssetsDepositView = () => {
     }
     return undefined;
   }, [supportedTokenList, tokenId]);
+
+  useTokenAllowance(selectedTokenMetadata?.id);
 
   const handleSelectTokenId = (tokenId?: string) => {
     if (tokenId) {

@@ -16,7 +16,7 @@ import {
   useDepositTransactionMemo,
 } from '..';
 import { useCreatePairTransactionMemo } from '../transactions/create-pair';
-import { getAmountDependsOnBalance,getDepositTransactions } from './utils';
+import { getAmountDependsOnBalance, getDepositTransactions } from './utils';
 
 interface Transactions {
   [transactionName: string]: any;
@@ -47,6 +47,7 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
           addLiquidityParams.token0.metadata.decimals,
           addLiquidityParams.token0.value
         ),
+        allowance: addLiquidityParams.allowance0,
       };
     }
   }, [sonicBalances, addLiquidityParams.token0]) as Deposit;
@@ -60,6 +61,7 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
           addLiquidityParams.token1.metadata.decimals,
           addLiquidityParams.token1.value
         ),
+        allowance: addLiquidityParams.allowance1,
       };
     }
   }, [sonicBalances, addLiquidityParams.token1]) as Deposit;

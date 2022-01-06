@@ -16,6 +16,6 @@ export interface ActorRepository {
 }
 
 export type ActorProps = {
-  canisterId: string;
+  canisterId?: string;
   interfaceFactory: IDL.InterfaceFactory;
 };

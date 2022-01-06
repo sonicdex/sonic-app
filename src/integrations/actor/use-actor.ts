@@ -12,11 +12,13 @@ export const useActor = <T extends AppActors>(
   const { isConnected } = usePlugStore();
 
   useEffect(() => {
+    setActor(undefined);
+    if (!props.canisterId) return;
     new ActorAdapter(isConnected ? window.ic?.plug : undefined)
       .createActor<T>(props.canisterId, props.interfaceFactory)
       .then((newActor) => setActor(newActor))
       .catch((error) => console.error(error));
-  }, [isConnected]);
+  }, [isConnected, props.canisterId]);
 
   return actor;
 };
