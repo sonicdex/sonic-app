@@ -65,7 +65,7 @@ export const AddLiquidityLink: React.FC<AddLiquidityLinkProps> = ({ id }) => {
   };
 
   const handleOpenModal = () => {
-    if (allowance0 !== undefined && allowance1 !== undefined) {
+    if (typeof allowance0 === 'number' && typeof allowance1 === 'number') {
       dispatch(modalsSliceActions.closeAllowanceVerifyModal());
       handleStateChange();
       openAddLiquidityModal();
@@ -83,7 +83,8 @@ export const AddLiquidityLink: React.FC<AddLiquidityLinkProps> = ({ id }) => {
 
   useEffect(() => {
     handleOpenModal();
-    if (allowance0 === undefined || allowance1 === undefined) return;
+    if (typeof allowance0 === 'undefined' || typeof allowance1 === 'undefined')
+      return;
     batch
       .execute()
       .then(() => {

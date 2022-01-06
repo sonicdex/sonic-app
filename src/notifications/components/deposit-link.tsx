@@ -69,7 +69,7 @@ export const DepositLink: React.FC<DepositLinkProps> = ({ id }) => {
   };
 
   const handleOpenModal = () => {
-    if (allowance !== undefined) {
+    if (typeof allowance === 'number') {
       dispatch(modalsSliceActions.closeAllowanceVerifyModal());
       handleStateChange();
       openDepositModal();
@@ -87,7 +87,7 @@ export const DepositLink: React.FC<DepositLinkProps> = ({ id }) => {
 
   useEffect(() => {
     handleOpenModal();
-    if (allowance === undefined) return;
+    if (typeof allowance === 'undefined') return;
     batch
       .execute()
       .then(() => {

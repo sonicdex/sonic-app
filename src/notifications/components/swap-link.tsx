@@ -59,7 +59,7 @@ export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
   };
 
   const handleOpenModal = () => {
-    if (allowance !== undefined) {
+    if (typeof allowance === 'number') {
       dispatch(modalsSliceActions.closeAllowanceVerifyModal());
       handleStateChange();
       openSwapModal();
@@ -77,7 +77,7 @@ export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
 
   useEffect(() => {
     handleOpenModal();
-    if (allowance === undefined) return;
+    if (typeof allowance === 'undefined') return;
     batch
       .execute()
       .then(() => {
