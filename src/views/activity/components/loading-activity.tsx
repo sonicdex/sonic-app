@@ -4,7 +4,7 @@ import { Asset, AssetImageBlock, AssetTitleBlock } from '@/components';
 
 export const LoadingActivity = () => {
   return (
-    <Asset type="token" isLoading={true} mb={2}>
+    <Asset type="token" isLoading mb={2}>
       <HStack spacing={4}>
         <AssetImageBlock />
         <AssetTitleBlock title={`Loading Title`} subtitle={'Loading'} />

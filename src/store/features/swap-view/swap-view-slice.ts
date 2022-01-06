@@ -91,7 +91,6 @@ export const swapViewSlice = createSlice({
       state.tokenList = action.payload;
       const tokens = Object.values(action.payload);
       if (!state.from.metadata) {
-        // TODO: set default token
         state.from.metadata = tokens[0];
         state.from.value = '';
         state.to.value = '';

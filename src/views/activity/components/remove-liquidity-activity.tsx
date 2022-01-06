@@ -1,5 +1,5 @@
 import { Heading, HStack, Stack } from '@chakra-ui/react';
-import { FaPlus } from 'react-icons/fa';
+import { FaPlus } from '@react-icons/all-files/fa/FaPlus';
 
 import {
   Asset,

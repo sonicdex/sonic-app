@@ -12,8 +12,9 @@ import {
   Stack,
   Tooltip,
 } from '@chakra-ui/react';
+import { FaArrowDown } from '@react-icons/all-files/fa/FaArrowDown';
+import { FaCog } from '@react-icons/all-files/fa/FaCog';
 import { useMemo, useState } from 'react';
-import { FaArrowDown, FaCog } from 'react-icons/fa';
 
 import {
   ExchangeBox,
@@ -33,6 +34,7 @@ import {
 } from '@/components';
 import { ENV } from '@/config';
 import { getAppAssetsSources } from '@/config/utils';
+import { ICP_TOKEN_METADATA } from '@/constants';
 import { useTokenBalanceMemo } from '@/hooks';
 import { useBalances } from '@/hooks/use-balances';
 import { plug } from '@/integrations/plug';
@@ -231,11 +233,17 @@ export const SwapHomeStep = () => {
       }
     }
 
-    if (from.metadata.id === 'ICP' && to.metadata.id === ENV.canisterIds.WICP) {
+    if (
+      from.metadata.id === ICP_TOKEN_METADATA.id &&
+      to.metadata.id === ENV.canisterIds.WICP
+    ) {
       return [false, 'Wrap', handleWrapICP];
     }
 
-    if (from.metadata.id === ENV.canisterIds.WICP && to.metadata.id === 'ICP') {
+    if (
+      from.metadata.id === ENV.canisterIds.WICP &&
+      to.metadata.id === ICP_TOKEN_METADATA.id
+    ) {
       return [false, 'Unwrap', handleUnwrapICP];
     }
 
@@ -276,7 +284,10 @@ export const SwapHomeStep = () => {
   // TODO: Add hook(s) for this logic
   // Special cases for ICP
   const [isFromIsICP, isToIsICP] = useMemo(() => {
-    return [from.metadata?.id === 'ICP', to.metadata?.id === 'ICP'];
+    return [
+      from.metadata?.id === ICP_TOKEN_METADATA.id,
+      to.metadata?.id === ICP_TOKEN_METADATA.id,
+    ];
   }, [from.metadata?.id, to.metadata?.id]);
 
   const isICPSelected = useMemo(() => {
@@ -286,7 +297,7 @@ export const SwapHomeStep = () => {
 
   const fromSources = useMemo(() => {
     if (from.metadata) {
-      if (from.metadata.id === 'ICP') {
+      if (from.metadata.id === ICP_TOKEN_METADATA.id) {
         return getAppAssetsSources({
           balances: {
             plug: icpBalance ?? 0,
@@ -305,7 +316,7 @@ export const SwapHomeStep = () => {
 
   const toSources = useMemo(() => {
     if (to.metadata) {
-      if (to.metadata.id === 'ICP') {
+      if (to.metadata.id === ICP_TOKEN_METADATA.id) {
         return getAppAssetsSources({
           balances: {
             plug: icpBalance ?? 0,

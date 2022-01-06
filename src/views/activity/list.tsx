@@ -63,7 +63,7 @@ export const ActivityListView = () => {
     return (
       <>
         <Header title="Your Activity" />
-        <Skeleton mb={2}>{new Date().toDateString()}</Skeleton>
+        <Skeleton mb={2} h={4} w={40} />
         <LoadingActivity />
         <LoadingActivity />
       </>

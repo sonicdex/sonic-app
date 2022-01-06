@@ -1,5 +1,5 @@
 import { Heading, HStack, Stack } from '@chakra-ui/react';
-import { FaArrowRight } from 'react-icons/fa';
+import { FaArrowRight } from '@react-icons/all-files/fa/FaArrowRight';
 
 import {
   Asset,

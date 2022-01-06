@@ -16,9 +16,9 @@ import {
   Text,
   Tooltip,
 } from '@chakra-ui/react';
+import { FaCog } from '@react-icons/all-files/fa/FaCog';
 import BigNumber from 'bignumber.js';
 import { useEffect, useMemo, useState } from 'react';
-import { FaCog } from 'react-icons/fa';
 import { useNavigate } from 'react-router';
 
 import { equalSrc, infoSrc, plusSrc } from '@/assets';

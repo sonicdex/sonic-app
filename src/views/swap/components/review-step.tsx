@@ -16,6 +16,7 @@ import {
   ViewHeader,
 } from '@/components';
 import { getAppAssetsSources } from '@/config/utils';
+import { ICP_TOKEN_METADATA } from '@/constants';
 import {
   NotificationType,
   SwapStep,
@@ -49,7 +50,10 @@ export const SwapReviewStep = () => {
   };
 
   const [isFromIsICP, isToIsICP] = useMemo(() => {
-    return [from.metadata?.id === 'ICP', to.metadata?.id === 'ICP'];
+    return [
+      from.metadata?.id === ICP_TOKEN_METADATA.id,
+      to.metadata?.id === ICP_TOKEN_METADATA.id,
+    ];
   }, [from.metadata?.id, to.metadata?.id]);
 
   const isICPSelected = useMemo(() => {
@@ -153,9 +157,11 @@ export const SwapReviewStep = () => {
 
       <ExchangeBox from={from} to={to} slippage={slippage} />
       <KeepInSonicBox
-        canHeldInSonic={!(to.metadata?.symbol === 'ICP')}
+        canHeldInSonic={!(to.metadata?.symbol === ICP_TOKEN_METADATA.id)}
         symbol={to.metadata?.symbol}
-        operation={from.metadata?.symbol === 'ICP' ? 'wrap' : 'swap'}
+        operation={
+          from.metadata?.symbol === ICP_TOKEN_METADATA.id ? 'wrap' : 'swap'
+        }
       />
 
       <Button

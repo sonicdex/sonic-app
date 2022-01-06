@@ -1062,11 +1062,6 @@
     js-sha256 "0.9.0"
     simple-cbor "^0.4.1"
 
-"@dfinity/auth-client@^0.10.1":
-  version "0.10.1"
-  resolved "https://registry.yarnpkg.com/@dfinity/auth-client/-/auth-client-0.10.1.tgz#11b4cf48ee0450ab586ff8ac88663b61164a0768"
-  integrity sha512-nKEUOyislqX4IklLh1kPGZyh5NHKusJCA6W+ySgh5VmGvE1qXHajRof0SY6z/i/lncjg7vi4fxtod/4knWtp/A==
-
 "@dfinity/candid@0.9.3":
   version "0.9.3"
   resolved "https://registry.yarnpkg.com/@dfinity/candid/-/candid-0.9.3.tgz#96b2a5339da634ccc5546a0560f48f5ceef70dfe"
@@ -1876,6 +1871,11 @@
   dependencies:
     prop-types "^15.7.2"
     tslib "^2.1.0"
+
+"@react-icons/all-files@^4.1.0":
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/@react-icons/all-files/-/all-files-4.1.0.tgz#477284873a0821928224b6fc84c62d2534d6650b"
+  integrity sha512-hxBI2UOuVaI3O/BhQfhtb4kcGn9ft12RWAFVMUeNjqqhLsHvFtzIkFaptBJpFDANTKoDfdVoHTKZDlwKCACbMQ==
 
 "@reduxjs/toolkit@^1.6.2":
   version "1.6.2"
@@ -6622,11 +6622,6 @@ react-focus-lock@2.5.2:
     react-clientside-effect "^1.2.5"
     use-callback-ref "^1.2.5"
     use-sidecar "^1.0.5"
-
-react-icons@^4.3.1:
-  version "4.3.1"
-  resolved "https://registry.yarnpkg.com/react-icons/-/react-icons-4.3.1.tgz#2fa92aebbbc71f43d2db2ed1aed07361124e91ca"
-  integrity sha512-cB10MXLTs3gVuXimblAdI71jrJx8njrJZmNMEMC+sQu5B/BIOmlsAjskdqpn81y8UBVEGuHODd7/ci5DvoSzTQ==
 
 react-is@^16.7.0, react-is@^16.8.1:
   version "16.13.1"

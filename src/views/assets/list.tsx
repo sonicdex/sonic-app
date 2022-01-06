@@ -8,8 +8,9 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react';
+import { FaMinus } from '@react-icons/all-files/fa/FaMinus';
+import { FaPlus } from '@react-icons/all-files/fa/FaPlus';
 import { useMemo } from 'react';
-import { FaMinus, FaPlus } from 'react-icons/fa';
 import { useNavigate } from 'react-router';
 
 import {
@@ -150,14 +151,6 @@ export const AssetsListView = () => {
           >
             {isLoading ? (
               <>
-                <Asset isLoading>
-                  <AssetImageBlock />
-                  <HStack>
-                    <AssetIconButton aria-label="Deposit" icon={<FaPlus />} />
-                    <AssetIconButton aria-label="Withdraw" icon={<FaMinus />} />
-                  </HStack>
-                </Asset>
-
                 <Asset isLoading>
                   <AssetImageBlock />
                   <HStack>

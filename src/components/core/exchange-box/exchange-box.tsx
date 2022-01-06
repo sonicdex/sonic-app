@@ -12,10 +12,11 @@ import {
   StackItem,
   Text,
 } from '@chakra-ui/react';
+import { FaArrowRight } from '@react-icons/all-files/fa/FaArrowRight';
 import React from 'react';
-import { FaArrowRight } from 'react-icons/fa';
 
 import { infoSrc } from '@/assets';
+import { ICP_TOKEN_METADATA } from '@/constants';
 import { TokenData } from '@/models';
 import { useSwapCanisterStore } from '@/store';
 import {
@@ -59,9 +60,9 @@ export const ExchangeBox: React.FC<ExchangeBoxProps> = ({
   if (!from.metadata || !to.metadata) return null;
 
   const [icp, feeMessage] =
-    from.metadata.id === 'ICP'
+    from.metadata.id === ICP_TOKEN_METADATA.id
       ? [from.metadata, 'Wrap']
-      : to.metadata.id === 'ICP'
+      : to.metadata.id === ICP_TOKEN_METADATA.id
       ? [to.metadata, 'Unwrap']
       : [];
 
