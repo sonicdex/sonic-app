@@ -60,7 +60,6 @@ import {
   useTokenModalOpener,
 } from '@/store';
 import {
-  formatAmount,
   getAmountEqualLPToken,
   getAmountLP,
   getCurrencyString,
@@ -232,18 +231,17 @@ export const LiquidityAddView = () => {
       return [true, `Enter ${token1.metadata.symbol} Amount`];
 
     if (totalBalances && token0Balance && token1Balance) {
-      const parsedToken0Balance = parseFloat(
-        formatAmount(token0Balance, token0.metadata.decimals)
-      );
-      const parsedToken1Balance = parseFloat(
-        formatAmount(token1Balance, token1.metadata.decimals)
-      );
-
-      if (parsedToken0Value > parsedToken0Balance) {
+      if (
+        parsedToken0Value >
+        Number(getDepositMaxValue(token0.metadata, token0Balance))
+      ) {
         return [true, `Insufficient ${token0.metadata.symbol} Balance`];
       }
 
-      if (parsedToken1Value > parsedToken1Balance) {
+      if (
+        parsedToken1Value >
+        Number(getDepositMaxValue(token1.metadata, token1Balance))
+      ) {
         return [true, `Insufficient ${token1.metadata.symbol} Balance`];
       }
     }
