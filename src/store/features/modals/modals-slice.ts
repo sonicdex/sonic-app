@@ -90,6 +90,11 @@ export type RemoveLiquidityModalData = {
   callbacks?: [ModalsCallback, ModalsCallback];
 };
 
+export type AllowanceVerifyModalData = {
+  tokenSymbol?: string | string[];
+  callbacks?: [ModalsCallback, ModalsCallback];
+};
+
 type TokenSelectData = {
   tokens: string;
   selectedTokenIds?: string[];
@@ -132,6 +137,9 @@ interface ModalsState {
   tokenSelectModalData: TokenSelectData;
 
   isRemoveLiquidityModalOpened: boolean;
+
+  isAllowanceVerifyModalOpened: boolean;
+  allowanceModalData: AllowanceVerifyModalData;
 }
 
 const initialWrapModalData: WrapModalData = {
@@ -204,6 +212,9 @@ const initialState: ModalsState = {
   tokenSelectModalData: initialTokenSelectData,
 
   isRemoveLiquidityModalOpened: false,
+
+  isAllowanceVerifyModalOpened: false,
+  allowanceModalData: {},
 };
 
 export const modalsSlice = createSlice({
@@ -392,6 +403,19 @@ export const modalsSlice = createSlice({
     },
     closeRemoveLiquidityModal: (state) => {
       state.isRemoveLiquidityModalOpened = false;
+    },
+
+    openAllowanceVerifyModal: (state) => {
+      state.isAllowanceVerifyModalOpened = true;
+    },
+    closeAllowanceVerifyModal: (state) => {
+      state.isAllowanceVerifyModalOpened = false;
+    },
+    setAllowanceVerifyModalData: (
+      state,
+      action: PayloadAction<AllowanceVerifyModalData>
+    ) => {
+      state.allowanceModalData = action.payload;
     },
   },
 });

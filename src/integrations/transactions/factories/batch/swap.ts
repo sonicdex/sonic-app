@@ -43,6 +43,7 @@ export const useSwapBatch = ({
       swapParams.from.metadata.decimals,
       swapParams.from.value
     ),
+    allowance: swapParams.allowance,
   };
   const withdrawParams = {
     token: swapParams.to.metadata,

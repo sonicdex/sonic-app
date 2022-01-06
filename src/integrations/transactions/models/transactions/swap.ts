@@ -5,4 +5,5 @@ export type Swap = {
   to: TokenData;
   slippage: number;
   principalId?: string;
+  allowance?: number;
 };

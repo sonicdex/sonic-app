@@ -13,6 +13,7 @@ export const useActor = <T extends AppActors>(
 
   useEffect(() => {
     setActor(undefined);
+    if (!props.canisterId) return;
     new ActorAdapter(isConnected ? window.ic?.plug : undefined)
       .createActor<T>(props.canisterId, props.interfaceFactory)
       .then((newActor) => setActor(newActor))

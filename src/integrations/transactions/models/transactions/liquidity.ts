@@ -4,6 +4,8 @@ export type AddLiquidity = {
   token0: TokenData;
   token1: TokenData;
   slippage: number;
+  allowance0?: number;
+  allowance1?: number;
 };
 
 export type RemoveLiquidity = {

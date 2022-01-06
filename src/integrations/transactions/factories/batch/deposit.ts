@@ -12,6 +12,7 @@ import {
   useBatchHook,
   useDepositTransactionMemo,
 } from '..';
+import { getDepositTransactions } from '.';
 
 export const useDepositBatch = (deposit: Deposit) => {
   const dispatch = useAppDispatch();
@@ -19,12 +20,15 @@ export const useDepositBatch = (deposit: Deposit) => {
   const approveTx = useApproveTransactionMemo(deposit);
   const depositTx = useDepositTransactionMemo(deposit);
 
-  const transactions = useMemo(() => {
-    return {
-      approve: approveTx,
-      deposit: depositTx,
-    };
-  }, [approveTx, depositTx]);
+  const transactions = useMemo(
+    () =>
+      getDepositTransactions({
+        approveTx,
+        depositTx,
+        txNames: ['approve', 'deposit'],
+      }),
+    [approveTx, depositTx]
+  );
 
   const handleOpenDepositModal = () => {
     dispatch(

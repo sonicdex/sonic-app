@@ -2,6 +2,7 @@ import { Link } from '@chakra-ui/react';
 import { useEffect, useMemo } from 'react';
 
 import { useBalances } from '@/hooks/use-balances';
+import { useTokenAllowance } from '@/hooks/use-token-allowance';
 import { useAddLiquidityBatch } from '@/integrations/transactions';
 import {
   AddLiquidityModalDataStep,
@@ -40,6 +41,9 @@ export const AddLiquidityLink: React.FC<AddLiquidityLinkProps> = ({ id }) => {
     return deserialize(stringify({ token0, token1, slippage }));
   }, []);
 
+  const allowance0 = useTokenAllowance(token0.metadata?.id);
+  const allowance1 = useTokenAllowance(token1.metadata?.id);
+
   const [batch, openAddLiquidityModal] = useAddLiquidityBatch({
     token0,
     token1,
@@ -61,13 +65,25 @@ export const AddLiquidityLink: React.FC<AddLiquidityLinkProps> = ({ id }) => {
   };
 
   const handleOpenModal = () => {
-    handleStateChange();
-    openAddLiquidityModal();
+    if (allowance0 !== undefined && allowance1 !== undefined) {
+      dispatch(modalsSliceActions.closeAllowanceVerifyModal());
+      handleStateChange();
+      openAddLiquidityModal();
+    } else {
+      dispatch(
+        modalsSliceActions.setAllowanceVerifyModalData({
+          tokenSymbol: [token0.metadata?.symbol, token1.metadata?.symbol],
+        })
+      );
+      dispatch(modalsSliceActions.openAllowanceVerifyModal());
+    }
   };
 
   useEffect(handleStateChange, [batch.state]);
 
   useEffect(() => {
+    handleOpenModal();
+    if (allowance0 === undefined || allowance1 === undefined) return;
     batch
       .execute()
       .then(() => {
@@ -92,9 +108,7 @@ export const AddLiquidityLink: React.FC<AddLiquidityLinkProps> = ({ id }) => {
         });
       })
       .finally(() => popNotification(id));
-
-    handleOpenModal();
-  }, []);
+  }, [allowance0, allowance1]);
 
   return (
     <Link
