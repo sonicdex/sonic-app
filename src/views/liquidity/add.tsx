@@ -620,6 +620,7 @@ export const LiquidityAddView = () => {
                         src={infoSrc}
                         width={5}
                         transition="opacity 200ms"
+                        opacity={0.6}
                       />
                     </PopoverTrigger>
                     <PopoverContent minWidth="400px">
