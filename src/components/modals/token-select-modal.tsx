@@ -18,8 +18,8 @@ import {
   Text,
   Tooltip,
 } from '@chakra-ui/react';
+import { FaHdd } from '@react-icons/all-files/fa/FaHdd';
 import { useEffect, useMemo, useState } from 'react';
-import { FaHdd } from 'react-icons/fa';
 
 import { arrowBackSrc, questionMarkSrc } from '@/assets';
 import { ENV } from '@/config';
@@ -89,7 +89,6 @@ export const TokenSelectModal = () => {
 
   const importToken = () => {
     // TODO: Import token integration
-    // TODO: Set selected token to imported token id
     handleTokenSelectClose();
   };
 

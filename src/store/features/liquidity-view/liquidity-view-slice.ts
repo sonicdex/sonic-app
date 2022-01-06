@@ -75,7 +75,20 @@ export const liquidityViewSlice = createSlice({
       state[action.payload.data].metadata = action.payload.token;
     },
     setPair: (state, action: PayloadAction<Pair | undefined>) => {
-      state.pair = action.payload;
+      if (
+        action.payload &&
+        state.token0.metadata?.id === action.payload.token1
+      ) {
+        state.pair = {
+          ...action.payload,
+          token0: action.payload.token1,
+          token1: action.payload.token0,
+          reserve0: action.payload.reserve1,
+          reserve1: action.payload.reserve0,
+        };
+      } else {
+        state.pair = action.payload;
+      }
     },
     setSlippage: (state, action: PayloadAction<string>) => {
       state.slippage = action.payload;

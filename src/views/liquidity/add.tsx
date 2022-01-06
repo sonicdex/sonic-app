@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Flex,
+  HStack,
   IconButton,
   Image,
   Menu,
@@ -11,21 +12,25 @@ import {
   PopoverArrow,
   PopoverBody,
   PopoverContent,
+  PopoverHeader,
   PopoverTrigger,
   Skeleton,
+  Stack,
   Text,
   Tooltip,
 } from '@chakra-ui/react';
+import { FaCog } from '@react-icons/all-files/fa/FaCog';
 import BigNumber from 'bignumber.js';
 import { useEffect, useMemo, useState } from 'react';
-import { FaCog } from 'react-icons/fa';
 import { useNavigate } from 'react-router';
 
 import { equalSrc, infoSrc, plusSrc } from '@/assets';
 import {
+  DisplayValue,
   LPImageBlock,
   PlugButton,
   SlippageSettings,
+  StackLine,
   Token,
   TokenBalances,
   TokenBalancesDetails,
@@ -122,7 +127,7 @@ export const LiquidityAddView = () => {
           )
         : '';
 
-    setTokenValueAndLPTokenValue(dataKey, value);
+    setInAndOutTokenValues(dataKey, value);
   };
 
   const handleSelectToken = (dataKey: LiquidityTokenDataKey) => {
@@ -156,38 +161,39 @@ export const LiquidityAddView = () => {
 
   // Utils
 
-  const setTokenValueAndLPTokenValue = (
+  const setInAndOutTokenValues = (
     dataKey: LiquidityTokenDataKey,
     value?: string
   ) => {
-    const amountIn =
-      value ?? (dataKey === 'token0' ? token0.value : token1.value);
-
-    const reserveIn = String(
-      dataKey === 'token0' ? pair?.reserve0 : pair?.reserve1
-    );
-    const reserveOut = String(
-      dataKey === 'token1' ? pair?.reserve0 : pair?.reserve1
-    );
+    const [amountIn, reserveIn, reserveOut, decimalsIn, decimalsOut] =
+      dataKey === 'token0'
+        ? [
+            value ?? token0.value,
+            String(pair?.reserve0),
+            String(pair?.reserve1),
+            Number(token0.metadata?.decimals),
+            Number(token1.metadata?.decimals),
+          ]
+        : [
+            value ?? token1.value,
+            String(pair?.reserve1),
+            String(pair?.reserve0),
+            Number(token1.metadata?.decimals),
+            Number(token0.metadata?.decimals),
+          ];
 
     dispatch(liquidityViewActions.setValue({ data: dataKey, value: amountIn }));
-
     if (
       token0.metadata &&
       token1.metadata &&
       allPairs?.[token0.metadata.id]?.[token1.metadata.id]
     ) {
-      const [decimalsOut, decimalsIn] =
-        dataKey === 'token0'
-          ? [token1.metadata.decimals, token0.metadata.decimals]
-          : [token0.metadata.decimals, token1.metadata.decimals];
-
       const lpValue = getAmountEqualLPToken({
         amountIn,
         reserveIn,
         reserveOut,
-        decimalsOut,
         decimalsIn,
+        decimalsOut,
       });
 
       const reversedDataKey = dataKey === 'token0' ? 'token1' : 'token0';
@@ -219,7 +225,7 @@ export const LiquidityAddView = () => {
 
   const [buttonDisabled, buttonMessage] = useMemo<[boolean, string]>(() => {
     if (isLoading) return [true, 'Loading'];
-    if (!token0.metadata || !token1.metadata) return [true, 'Select tokens'];
+    if (!token0.metadata || !token1.metadata) return [true, 'Select Tokens'];
 
     const parsedToken0Value = (token0.value && parseFloat(token0.value)) || 0;
     const parsedToken1Value = (token1.value && parseFloat(token1.value)) || 0;
@@ -263,15 +269,21 @@ export const LiquidityAddView = () => {
     useMemo(() => {
       if (token0.metadata && token1.metadata) {
         if (pair && pair.reserve0 && pair.reserve1) {
-          const token0Price = new BigNumber(String(pair.reserve0))
-            .div(new BigNumber(String(pair.reserve1)))
-            .dp(Number(token0.metadata.decimals))
-            .toFixed(3);
+          const token0Price = getAmountEqualLPToken({
+            amountIn: '1',
+            reserveIn: String(pair.reserve1),
+            reserveOut: String(pair.reserve0),
+            decimalsIn: Number(token1.metadata.decimals),
+            decimalsOut: Number(token0.metadata.decimals),
+          });
 
-          const token1Price = new BigNumber(String(pair.reserve1))
-            .div(new BigNumber(String(pair.reserve0)))
-            .dp(Number(token1.metadata.decimals))
-            .toFixed(3);
+          const token1Price = getAmountEqualLPToken({
+            amountIn: '1',
+            reserveIn: String(pair.reserve0),
+            reserveOut: String(pair.reserve1),
+            decimalsIn: Number(token0.metadata.decimals),
+            decimalsOut: Number(token1.metadata.decimals),
+          });
 
           const getAmountLPOptions = {
             token0Amount: token0.value,
@@ -384,8 +396,25 @@ export const LiquidityAddView = () => {
     }
   }, [isLoading]);
 
+  const { fee0, fee1 } = useMemo(() => {
+    if (token0.metadata && token1.metadata) {
+      const fee0 = getCurrencyString(
+        token0.metadata.fee + token0.metadata.fee,
+        token0.metadata.decimals
+      );
+      const fee1 = getCurrencyString(
+        token1.metadata.fee + token1.metadata.fee,
+        token1.metadata.decimals
+      );
+
+      return { fee0, fee1 };
+    }
+
+    return { fee0: '0', fee1: '0' };
+  }, [token0.metadata, token1.metadata]);
+
   return (
-    <>
+    <Stack spacing={4}>
       <ViewHeader onArrowBack={handlePreviousStep} title="Add Liquidity">
         <Menu>
           <Tooltip label="Adjust the slippage">
@@ -421,11 +450,11 @@ export const LiquidityAddView = () => {
           </MenuList>
         </Menu>
       </ViewHeader>
-      <Flex my={5} direction="column" alignItems="center">
+      <Flex direction="column" alignItems="center">
         <Box width="100%">
           <Token
             value={token0.value}
-            setValue={(value) => setTokenValueAndLPTokenValue('token0', value)}
+            setValue={(value) => setInAndOutTokenValues('token0', value)}
             tokenListMetadata={supportedTokenList}
             tokenMetadata={token0.metadata}
             isDisabled={isReviewing}
@@ -449,7 +478,7 @@ export const LiquidityAddView = () => {
           </Token>
         </Box>
         <Box
-          borderRadius={4}
+          borderRadius={12}
           width={10}
           height={10}
           border="1px solid #373737"
@@ -465,7 +494,7 @@ export const LiquidityAddView = () => {
         <Box width="100%">
           <Token
             value={token1.value}
-            setValue={(value) => setTokenValueAndLPTokenValue('token1', value)}
+            setValue={(value) => setInAndOutTokenValues('token1', value)}
             tokenListMetadata={supportedTokenList}
             tokenMetadata={token1.metadata}
             isDisabled={isReviewing}
@@ -498,104 +527,126 @@ export const LiquidityAddView = () => {
               <TokenBalancesPrice />
             </TokenBalances>
           </Token>
-
-          {!isReviewing && liquidityValue && (
-            <Flex
-              alignItems="center"
-              justifyContent="space-between"
-              width="full"
-              mt={5}
-              px={5}
-            >
-              <Text color="gray.300">
-                {`${token0.metadata?.symbol} + ${token1.metadata?.symbol}`}
-              </Text>
-              <Text color="gray.300">
-                {`1 ${token0.metadata?.symbol} = ${token1Price} ${token1.metadata?.symbol}`}
-              </Text>
-            </Flex>
-          )}
         </Box>
-        {isReviewing && (
+        {token0.metadata && token1.metadata && (
           <>
-            <Flex
-              borderRadius={4}
-              width={10}
-              height={10}
-              border="1px solid #373737"
-              py={3}
-              px={3}
-              bg="#1E1E1E"
-              mt={-2}
-              mb={-2}
-              zIndex={1200}
-              justifyContent="center"
-              alignItems="center"
-            >
-              <Image alt="equal" m="auto" src={equalSrc} />
-            </Flex>
-
-            <Token value={liquidityValue} isDisabled shouldGlow>
-              <TokenContent>
+            {isReviewing && (
+              <>
                 <Flex
-                  borderRadius="full"
-                  mr={5}
-                  minWidth="fit-content"
-                  background="gray.800"
+                  borderRadius={12}
+                  width={10}
                   height={10}
-                  px={4}
+                  border="1px solid #373737"
+                  py={3}
+                  px={3}
+                  bg="#1E1E1E"
+                  mt={-2}
+                  mb={-2}
+                  zIndex={1200}
                   justifyContent="center"
                   alignItems="center"
-                  fontWeight="bold"
                 >
-                  <LPImageBlock
-                    imageSources={[
-                      token0.metadata?.logo,
-                      token1.metadata?.logo,
-                    ]}
-                    size="sm"
-                  />
-                  <Text ml={2.5}>
-                    {`${token0.metadata?.symbol}-${token1.metadata?.symbol}`}
-                  </Text>
+                  <Image alt="equal" m="auto" src={equalSrc} />
+                </Flex>
 
+                <Token value={liquidityValue} isDisabled shouldGlow>
+                  <TokenContent>
+                    <Flex
+                      borderRadius="full"
+                      mr={5}
+                      minWidth="fit-content"
+                      background="gray.800"
+                      height={10}
+                      px={4}
+                      justifyContent="center"
+                      alignItems="center"
+                      fontWeight="bold"
+                    >
+                      <LPImageBlock
+                        imageSources={[
+                          token0.metadata?.logo,
+                          token1.metadata?.logo,
+                        ]}
+                        size="sm"
+                      />
+                      <Text ml={2.5}>
+                        {`${token0.metadata?.symbol}-${token1.metadata?.symbol}`}
+                      </Text>
+
+                      <Popover trigger="hover">
+                        <PopoverTrigger>
+                          <Image alt="info" ml={2.5} width={4} src={infoSrc} />
+                        </PopoverTrigger>
+                        <PopoverContent>
+                          <PopoverArrow />
+                          <PopoverBody>
+                            This is your share of the LP pool represented as
+                            tokens.
+                          </PopoverBody>
+                        </PopoverContent>
+                      </Popover>
+                    </Flex>
+
+                    <TokenInput />
+                  </TokenContent>
+                  <TokenBalances color="#888E8F">
+                    Share of Pool:
+                    <Text flex={1} textAlign="right">
+                      {liquidityPercentage}
+                    </Text>
+                  </TokenBalances>
+                </Token>
+              </>
+            )}
+
+            {liquidityValue && (
+              <Flex
+                alignItems="center"
+                justifyContent="space-between"
+                width="full"
+                mt={5}
+                px={5}
+              >
+                <Text color="gray.300">
+                  {`1 ${token0.metadata?.symbol} = `}{' '}
+                  <DisplayValue as="span" value={token1Price} />{' '}
+                  {` ${token1.metadata?.symbol}`}
+                </Text>
+                <HStack>
+                  <Text color="gray.300">
+                    {`1 ${token1.metadata?.symbol} = `}{' '}
+                    <DisplayValue as="span" value={token0Price} />{' '}
+                    {`${token0.metadata?.symbol}`}
+                  </Text>
                   <Popover trigger="hover">
                     <PopoverTrigger>
-                      <Image alt="info" ml={2.5} width={4} src={infoSrc} />
+                      <Image
+                        alt="info"
+                        src={infoSrc}
+                        width={5}
+                        transition="opacity 200ms"
+                      />
                     </PopoverTrigger>
-                    <PopoverContent>
+                    <PopoverContent minWidth="400px">
+                      <PopoverHeader>Transaction Details</PopoverHeader>
                       <PopoverArrow />
-                      <PopoverBody>
-                        This is your share of the LP pool represented as tokens.
+                      <PopoverBody display="inline-block">
+                        <Stack>
+                          <StackLine
+                            title={`${token0.metadata.name} Deposit Fee`}
+                            value={`${fee0} ${token0.metadata.symbol}`}
+                          />
+                          <StackLine
+                            title={`${token1.metadata.name} Deposit Fee`}
+                            value={`${fee1} ${token1.metadata.symbol}`}
+                          />
+                        </Stack>
                       </PopoverBody>
                     </PopoverContent>
                   </Popover>
-                </Flex>
-
-                <TokenInput />
-              </TokenContent>
-              <TokenBalances color="#888E8F">
-                Share of Pool:
-                <Text flex={1} textAlign="right">
-                  {liquidityPercentage}
-                </Text>
-              </TokenBalances>
-            </Token>
-
-            <Flex
-              alignItems="center"
-              justifyContent="space-between"
-              width="full"
-              mt={5}
-              px={5}
-            >
-              <Text color="gray.300">
-                {`1 ${token0.metadata?.symbol} = ${token1Price} ${token1.metadata?.symbol}`}
-              </Text>
-              <Text color="gray.300">
-                {`1 ${token1.metadata?.symbol} = ${token0Price} ${token0.metadata?.symbol}`}
-              </Text>
-            </Flex>
+                </HStack>
+              </Flex>
+            )}
           </>
         )}
       </Flex>
@@ -614,6 +665,6 @@ export const LiquidityAddView = () => {
           {buttonMessage}
         </Button>
       )}
-    </>
+    </Stack>
   );
 };

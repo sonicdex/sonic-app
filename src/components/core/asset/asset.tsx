@@ -94,7 +94,7 @@ export const AssetTitleBlock = ({
 }: AssetTitleBlockProps) => {
   const { isLoading } = useAssetContext();
   return (
-    <Box minW={32} ml={4} {...props}>
+    <Box ml={4} {...props}>
       <Skeleton
         isLoaded={!isLoading}
         mb={isLoading ? 2 : 0}

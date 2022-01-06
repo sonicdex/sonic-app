@@ -1,4 +1,4 @@
-import { Heading, HStack, Stack, Text } from '@chakra-ui/react';
+import { Heading, HStack, Stack } from '@chakra-ui/react';
 import { Principal } from '@dfinity/principal';
 
 import {
@@ -50,7 +50,6 @@ export const DepositActivity = ({
             suffix={' ' + token.symbol}
           />
         </Heading>
-        <Text color="gray.400">$0</Text>
       </Stack>
     </Asset>
   );

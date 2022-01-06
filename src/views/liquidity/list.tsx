@@ -7,9 +7,10 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react';
+import { FaMinus } from '@react-icons/all-files/fa/FaMinus';
+import { FaPlus } from '@react-icons/all-files/fa/FaPlus';
 import BigNumber from 'bignumber.js';
 import { useCallback, useMemo } from 'react';
-import { FaMinus, FaPlus } from 'react-icons/fa';
 import { useNavigate } from 'react-router';
 
 import {

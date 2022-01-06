@@ -1,5 +1,5 @@
 import { Heading, HStack, Stack } from '@chakra-ui/react';
-import { FaPlus } from 'react-icons/fa';
+import { FaPlus } from '@react-icons/all-files/fa/FaPlus';
 
 import {
   Asset,
@@ -62,7 +62,6 @@ export const AddLiquidityActivity: React.FC<AddLiquidityActivityProps> = ({
             suffix={' ' + token1.symbol}
           />
         </Heading>
-        <DisplayValue prefix="$" value={token0.price} />
       </Stack>
     </Asset>
   );

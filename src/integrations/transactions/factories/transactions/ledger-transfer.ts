@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
 import { ENV } from '@/config';
-import { ICP_TOKEN_METADATA } from '@/constants';
+import { ICP_METADATA } from '@/constants';
 import { LedgerIDL } from '@/did';
 import { parseAmount } from '@/utils/format';
 
@@ -9,7 +9,7 @@ import { CreateTransaction, LedgerTransfer } from '../../models';
 
 export const useLedgerTransferTransactionMemo: CreateTransaction<LedgerTransfer> =
   (
-    { toAccountId, fee = ICP_TOKEN_METADATA.fee, amount, memo = BigInt(0) },
+    { toAccountId, fee = ICP_METADATA.fee, amount, memo = BigInt(0) },
     onSuccess,
     onFail
   ) =>
@@ -30,7 +30,7 @@ export const useLedgerTransferTransactionMemo: CreateTransaction<LedgerTransfer>
           {
             to: toAccountId,
             fee: { e8s: fee },
-            amount: { e8s: parseAmount(amount, ICP_TOKEN_METADATA.decimals) },
+            amount: { e8s: parseAmount(amount, ICP_METADATA.decimals) },
             memo,
             from_subaccount: [], // For now, using default subaccount to handle ICP
             created_at_time: [],

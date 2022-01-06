@@ -1,6 +1,6 @@
 import { Flex, Text } from '@chakra-ui/react';
+import { FaArrowRight } from '@react-icons/all-files/fa/FaArrowRight';
 import React from 'react';
-import { FaArrowRight } from 'react-icons/fa';
 
 import { AppTokenMetadata } from '@/models';
 import { getCurrencyString } from '@/utils/format';

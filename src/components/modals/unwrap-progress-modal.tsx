@@ -1,4 +1,4 @@
-import { HStack, Modal, ModalOverlay } from '@chakra-ui/react';
+import { Flex, Modal, ModalOverlay } from '@chakra-ui/react';
 
 import { withdrawSrc } from '@/assets';
 import {
@@ -33,8 +33,8 @@ export const UnwrapProgressModal = () => {
     >
       <ModalOverlay />
 
-      <TransactionProgressModalContent title="Unwrapping ICP">
-        <HStack>
+      <TransactionProgressModalContent title="Unwrapping WICP">
+        <Flex alignItems="flex-start">
           {steps?.includes(UnwrapModalDataStep.Withdraw) && (
             <TransactionStep
               status={getStepStatus(UnwrapModalDataStep.Withdraw)}
@@ -50,7 +50,7 @@ export const UnwrapProgressModal = () => {
           >
             Unwrapping <br /> WICP
           </TransactionStep>
-        </HStack>
+        </Flex>
       </TransactionProgressModalContent>
     </Modal>
   );

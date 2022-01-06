@@ -2,7 +2,7 @@ import { Principal } from '@dfinity/principal';
 import { useCallback, useMemo } from 'react';
 
 import { ENV, getFromStorage, saveToStorage } from '@/config';
-import { ICP_TOKEN_METADATA } from '@/constants';
+import { ICP_METADATA } from '@/constants';
 import { SwapIDL, TokenIDL, WICPIDL } from '@/did';
 import { ActorAdapter, appActors, useSwapActor } from '@/integrations/actor';
 import { Balances } from '@/models';
@@ -152,7 +152,7 @@ export const useBalances = () => {
 
           dispatch(
             swapCanisterActions.setICPBalance(
-              parseAmount(icpBalance, ICP_TOKEN_METADATA.decimals)
+              parseAmount(icpBalance, ICP_METADATA.decimals)
             )
           );
           dispatch(swapCanisterActions.setSonicBalances(sonicBalances));
