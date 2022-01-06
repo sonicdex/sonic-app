@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 import { ENV } from '@/config';
-import { getICPTokenMetadata, ICP_TOKEN_METADATA } from '@/constants';
+import { getICPTokenMetadata, ICP_METADATA } from '@/constants';
 import { useAppDispatch } from '@/store';
 import { parseResponseTokenList } from '@/utils/canister';
 import { getAmountOut } from '@/utils/format';
@@ -31,9 +31,9 @@ export const useSwapView = () => {
     if (!allPairs) return;
 
     if (
-      (from.metadata.id === ICP_TOKEN_METADATA.id &&
+      (from.metadata.id === ICP_METADATA.id &&
         to.metadata.id === ENV.canisterIds.WICP) ||
-      (to.metadata.id === ICP_TOKEN_METADATA.id &&
+      (to.metadata.id === ICP_METADATA.id &&
         from.metadata.id === ENV.canisterIds.WICP)
     ) {
       dispatch(
