@@ -50,7 +50,7 @@ import {
   useSwapViewStore,
   useTokenModalOpener,
 } from '@/store';
-import { formatAmount, getCurrency, getDepositMaxValue } from '@/utils/format';
+import { getCurrency, getDepositMaxValue } from '@/utils/format';
 import { debounce } from '@/utils/function';
 
 import { ExchangeBox } from '.';
@@ -218,11 +218,9 @@ export const SwapHomeStep = () => {
     }
 
     if (totalBalances && fromBalance) {
-      const parsedBalance = parseFloat(
-        formatAmount(fromBalance, from.metadata.decimals)
-      );
-
-      if (parsedFromValue > parsedBalance) {
+      if (
+        parsedFromValue > Number(getDepositMaxValue(from.metadata, fromBalance))
+      ) {
         return [true, `Insufficient ${from.metadata.symbol} Balance`];
       }
     }
