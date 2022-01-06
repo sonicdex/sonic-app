@@ -16,6 +16,7 @@ import { EmptyMobile, Layout } from './components';
 import {
   AddLiquidityFailModal,
   AddLiquidityProgressModal,
+  AllowanceVerifyModal,
   DepositProgressModal,
   RemoveLiquidityFailModal,
   RemoveLiquidityModal,
@@ -65,6 +66,8 @@ export const App = () => {
         <SwapFailModal />
         <AddLiquidityFailModal />
         <RemoveLiquidityFailModal />
+
+        <AllowanceVerifyModal />
 
         <Routes>
           <Route path="/swap" element={<SwapView />} />

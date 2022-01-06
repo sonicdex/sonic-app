@@ -50,7 +50,7 @@ import {
   useSwapViewStore,
   useTokenModalOpener,
 } from '@/store';
-import { formatAmount, getCurrency, getCurrencyString } from '@/utils/format';
+import { formatAmount, getCurrency, getDepositMaxValue } from '@/utils/format';
 import { debounce } from '@/utils/function';
 
 import { ExchangeBox } from '.';
@@ -89,13 +89,7 @@ export const SwapHomeStep = () => {
     dispatch(
       swapViewActions.setValue({
         data: 'from',
-        value:
-          totalBalances && from.metadata
-            ? getCurrencyString(
-                fromBalance - Number(from.metadata.fee),
-                from.metadata?.decimals
-              )
-            : '',
+        value: getDepositMaxValue(from.metadata, fromBalance),
       })
     );
   };

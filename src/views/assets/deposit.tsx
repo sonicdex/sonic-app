@@ -17,6 +17,7 @@ import {
 } from '@/components';
 import { FeeBox } from '@/components/core/fee-box';
 import { useQuery } from '@/hooks/use-query';
+import { useTokenAllowance } from '@/hooks/use-token-allowance';
 import {
   depositViewActions,
   FeatureState,
@@ -27,7 +28,7 @@ import {
   useSwapCanisterStore,
   useTokenModalOpener,
 } from '@/store';
-import { formatAmount, getCurrency, getCurrencyString } from '@/utils/format';
+import { formatAmount, getCurrency, getDepositMaxValue } from '@/utils/format';
 import { debounce } from '@/utils/function';
 
 export const AssetsDepositView = () => {
@@ -48,6 +49,8 @@ export const AssetsDepositView = () => {
     }
     return undefined;
   }, [supportedTokenList, tokenId]);
+
+  useTokenAllowance(selectedTokenMetadata?.id);
 
   const handleSelectTokenId = (tokenId?: string) => {
     if (tokenId) {
@@ -132,10 +135,7 @@ export const AssetsDepositView = () => {
     if (tokenBalance && selectedTokenMetadata)
       dispatch(
         depositViewActions.setAmount(
-          getCurrencyString(
-            tokenBalance - Number(selectedTokenMetadata.fee),
-            selectedTokenMetadata.decimals
-          )
+          getDepositMaxValue(selectedTokenMetadata, tokenBalance)
         )
       );
   };

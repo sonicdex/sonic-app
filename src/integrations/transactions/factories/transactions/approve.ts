@@ -8,7 +8,7 @@ import { parseAmount } from '@/utils/format';
 import { CreateTransaction, Deposit } from '../../models';
 
 export const useApproveTransactionMemo: CreateTransaction<Deposit> = (
-  { amount, token },
+  { amount, token, allowance = 0 },
   onSuccess,
   onFail
 ) =>
@@ -26,7 +26,7 @@ export const useApproveTransactionMemo: CreateTransaction<Deposit> = (
       onFail,
       args: [
         Principal.fromText(ENV.canisterIds.swap),
-        parseAmount(amount, token.decimals),
+        parseAmount(amount, token.decimals) - BigInt(allowance),
       ],
     };
-  }, [amount, token]);
+  }, [amount, token, allowance]);

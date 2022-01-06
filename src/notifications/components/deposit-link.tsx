@@ -2,7 +2,9 @@ import { Link } from '@chakra-ui/react';
 import { useEffect, useMemo } from 'react';
 
 import { useBalances } from '@/hooks/use-balances';
+import { useTokenAllowance } from '@/hooks/use-token-allowance';
 import { useDepositBatch } from '@/integrations/transactions';
+import { AppTokenMetadata } from '@/models';
 import {
   DepositModalDataStep,
   modalsSliceActions,
@@ -12,6 +14,7 @@ import {
   useNotificationStore,
   useSwapCanisterStore,
 } from '@/store';
+import { deserialize, stringify } from '@/utils/format';
 
 export interface DepositLinkProps {
   id: string;
@@ -22,20 +25,33 @@ export const DepositLink: React.FC<DepositLinkProps> = ({ id }) => {
   const { addNotification, popNotification } = useNotificationStore();
   const { getBalances } = useBalances();
 
-  const { amount: value, tokenId } = useDepositViewStore();
-  const { supportedTokenList } = useSwapCanisterStore();
+  const depositViewStore = useDepositViewStore();
+  const swapCanisterStore = useSwapCanisterStore();
+
+  const { supportedTokenList, value, tokenId } = useMemo(() => {
+    // Clone current state just for this batch
+    const { amount: value, tokenId } = depositViewStore;
+    const { supportedTokenList } = swapCanisterStore;
+
+    return deserialize(stringify({ supportedTokenList, value, tokenId }));
+  }, []);
 
   const selectedToken = useMemo(() => {
     if (tokenId && supportedTokenList) {
-      return supportedTokenList.find(({ id }) => id === tokenId);
+      return supportedTokenList.find(
+        ({ id }: AppTokenMetadata) => id === tokenId
+      );
     }
 
     return undefined;
   }, [supportedTokenList, tokenId]);
 
+  const allowance = useTokenAllowance(selectedToken?.id);
+
   const [batch, openDepositModal] = useDepositBatch({
     amount: value,
     token: selectedToken,
+    allowance,
   });
 
   const handleStateChange = () => {
@@ -53,13 +69,25 @@ export const DepositLink: React.FC<DepositLinkProps> = ({ id }) => {
   };
 
   const handleOpenModal = () => {
-    handleStateChange();
-    openDepositModal();
+    if (typeof allowance === 'number') {
+      dispatch(modalsSliceActions.closeAllowanceVerifyModal());
+      handleStateChange();
+      openDepositModal();
+    } else {
+      dispatch(
+        modalsSliceActions.setAllowanceVerifyModalData({
+          tokenSymbol: selectedToken?.symbol,
+        })
+      );
+      dispatch(modalsSliceActions.openAllowanceVerifyModal());
+    }
   };
 
   useEffect(handleStateChange, [batch.state]);
 
   useEffect(() => {
+    handleOpenModal();
+    if (typeof allowance === 'undefined') return;
     batch
       .execute()
       .then(() => {
@@ -83,9 +111,7 @@ export const DepositLink: React.FC<DepositLinkProps> = ({ id }) => {
         });
       })
       .finally(() => popNotification(id));
-
-    handleOpenModal();
-  }, []);
+  }, [allowance]);
 
   return (
     <Link

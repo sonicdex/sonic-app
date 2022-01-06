@@ -21,13 +21,23 @@ export const getDepositTransactions = ({
   depositTx,
   txNames = ['approve', 'deposit'],
 }: GetDepositTransactionsOptions) => {
-  const neededBalance = Number(depositTx.args[1]);
+  const requiredAllowance = Number(approveTx.args[1]);
+  const requiredBalance = Number(depositTx.args[1]);
 
-  if (neededBalance > 0) {
-    return {
-      [txNames[0]]: approveTx,
+  let transactions = {};
+
+  if (requiredBalance > 0) {
+    if (requiredAllowance > 0) {
+      transactions = {
+        ...transactions,
+        [txNames[0]]: approveTx,
+      };
+    }
+    transactions = {
+      ...transactions,
       [txNames[1]]: depositTx,
     };
   }
-  return {};
+
+  return transactions;
 };

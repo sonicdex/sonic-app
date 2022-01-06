@@ -2,6 +2,7 @@ import { Link } from '@chakra-ui/react';
 import { useEffect, useMemo } from 'react';
 
 import { useBalances } from '@/hooks/use-balances';
+import { useTokenAllowance } from '@/hooks/use-token-allowance';
 import { useSwapBatch } from '@/integrations/transactions';
 import {
   modalsSliceActions,
@@ -32,12 +33,15 @@ export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
     return deserialize(stringify({ from, to, slippage, keepInSonic }));
   }, []);
 
+  const allowance = useTokenAllowance(from.metadata?.id);
+
   const [batch, openSwapModal] = useSwapBatch({
     from,
     to,
     slippage: Number(slippage),
     keepInSonic,
     principalId,
+    allowance,
   });
 
   const handleStateChange = () => {
@@ -55,13 +59,25 @@ export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
   };
 
   const handleOpenModal = () => {
-    handleStateChange();
-    openSwapModal();
+    if (typeof allowance === 'number') {
+      dispatch(modalsSliceActions.closeAllowanceVerifyModal());
+      handleStateChange();
+      openSwapModal();
+    } else {
+      dispatch(
+        modalsSliceActions.setAllowanceVerifyModalData({
+          tokenSymbol: from.metadata?.symbol,
+        })
+      );
+      dispatch(modalsSliceActions.openAllowanceVerifyModal());
+    }
   };
 
   useEffect(handleStateChange, [batch.state]);
 
   useEffect(() => {
+    handleOpenModal();
+    if (typeof allowance === 'undefined') return;
     batch
       .execute()
       .then(() => {
@@ -87,9 +103,7 @@ export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
         });
       })
       .finally(() => popNotification(id));
-
-    handleOpenModal();
-  }, []);
+  }, [allowance]);
 
   return (
     <Link

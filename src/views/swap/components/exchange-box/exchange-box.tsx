@@ -142,7 +142,7 @@ export const ExchangeBox: React.FC<ExchangeBoxProps> = ({
                 <StackLine
                   title="Deposit Fee"
                   value={`${getCurrencyString(
-                    from.metadata.fee,
+                    BigInt(2) * from.metadata.fee,
                     from.metadata.decimals
                   )} ${from.metadata.symbol}`}
                 />
