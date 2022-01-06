@@ -317,8 +317,13 @@ export const getDepositMaxValue = (
 
   const times = token.id === ICP_METADATA.id ? 1 : 2;
 
-  return getCurrencyString(
-    Number(balance) - Number(token.fee) * times,
-    token.decimals
-  );
+  const value = new BigNumber(Number(balance))
+    .minus(Number(token.fee) * times)
+    .toNumber();
+
+  if (value > 0) {
+    return getCurrencyString(value, token.decimals);
+  }
+
+  return '';
 };

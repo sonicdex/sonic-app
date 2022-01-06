@@ -21,7 +21,7 @@ export const FeeBox: React.FC<FeeBoxProps> = ({ isDeposit = false, token }) => {
         &nbsp;{isDeposit ? 'Sonic' : 'Plug'}
       </Text>
       <Text flex={1} textAlign="right" mx={2}>
-        Network Fee:&nbsp;
+        {token.symbol}&nbsp;Fee =&nbsp;
         {getCurrencyString(token.fee, token.decimals)}
         &nbsp;{token.symbol}
       </Text>

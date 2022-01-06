@@ -43,7 +43,7 @@ export const useSwapView = () => {
       dispatch(
         swapViewActions.setValue({
           data: 'to',
-          value: Number(value) > 0 ? value.toString() : '',
+          value: value.toNumber() > 0 ? value.toString() : '',
         })
       );
       return;
