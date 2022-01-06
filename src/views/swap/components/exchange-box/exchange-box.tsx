@@ -9,13 +9,13 @@ import {
   PopoverTrigger,
   Portal,
   Stack,
-  StackItem,
   Text,
 } from '@chakra-ui/react';
 import { FaArrowRight } from '@react-icons/all-files/fa/FaArrowRight';
 import React from 'react';
 
 import { infoSrc } from '@/assets';
+import { StackLine } from '@/components';
 import { ICP_METADATA } from '@/constants';
 import { TokenData } from '@/models';
 import { useSwapCanisterStore } from '@/store';
@@ -30,24 +30,6 @@ export type ExchangeBoxProps = {
   from: TokenData;
   to: TokenData;
   slippage: string;
-};
-
-type StackLineProps = {
-  title: string;
-  value: string;
-};
-
-const StackLine: React.FC<StackLineProps> = ({ value, title }) => {
-  return (
-    <StackItem>
-      <Flex>
-        <Text>{title}</Text>
-        <Text ml={2} flex={1} textAlign="right">
-          {value}
-        </Text>
-      </Flex>
-    </StackItem>
-  );
 };
 
 export const ExchangeBox: React.FC<ExchangeBoxProps> = ({

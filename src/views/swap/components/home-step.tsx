@@ -17,7 +17,6 @@ import { FaCog } from '@react-icons/all-files/fa/FaCog';
 import { useMemo, useState } from 'react';
 
 import {
-  ExchangeBox,
   PLUG_WALLET_WEBSITE_URL,
   PlugButton,
   SlippageSettings,
@@ -54,6 +53,7 @@ import {
 import { formatAmount, getCurrency, getCurrencyString } from '@/utils/format';
 import { debounce } from '@/utils/function';
 
+import { ExchangeBox } from '.';
 import { KeepInSonicBox } from './keep-in-sonic-box';
 
 export const SwapHomeStep = () => {
@@ -223,9 +223,9 @@ export const SwapHomeStep = () => {
       return [true, `${to.metadata.symbol} amount must be greater than fee`];
     }
 
-    if (totalBalances) {
+    if (totalBalances && fromBalance) {
       const parsedBalance = parseFloat(
-        formatAmount(fromBalance!, from.metadata.decimals)
+        formatAmount(fromBalance, from.metadata.decimals)
       );
 
       if (parsedFromValue > parsedBalance) {
@@ -395,6 +395,8 @@ export const SwapHomeStep = () => {
             zIndex="overlay"
             bg="gray.800"
             onClick={switchTokens}
+            isDisabled={!to.metadata}
+            pointerEvents={!to.metadata ? 'none' : 'all'}
             _hover={{
               '& > svg': {
                 transform: 'rotate(180deg)',

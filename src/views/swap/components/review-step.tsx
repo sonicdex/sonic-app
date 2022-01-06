@@ -2,7 +2,6 @@ import { Box, Button, Flex, Image, Stack } from '@chakra-ui/react';
 
 import { arrowDownSrc } from '@/assets';
 import {
-  ExchangeBox,
   Token,
   TokenBalances,
   TokenBalancesDetails,
@@ -27,6 +26,7 @@ import {
 } from '@/store';
 import { debounce } from '@/utils/function';
 
+import { ExchangeBox } from '.';
 import { KeepInSonicBox } from './keep-in-sonic-box';
 
 export const SwapReviewStep = () => {
@@ -94,7 +94,7 @@ export const SwapReviewStep = () => {
           </Token>
         </Box>
         <Box
-          borderRadius={4}
+          borderRadius={12}
           width={10}
           height={10}
           py={3}

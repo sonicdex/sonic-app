@@ -1,4 +1,4 @@
-import { Text, TextProps, Tooltip } from '@chakra-ui/react';
+import { forwardRef, Text, TextProps, Tooltip } from '@chakra-ui/react';
 import BigNumber from 'bignumber.js';
 import { useMemo } from 'react';
 
@@ -12,30 +12,28 @@ export type DisplayValueProps = TextProps & {
   disableTooltip?: boolean;
 };
 
-export const DisplayValue: React.FC<DisplayValueProps> = ({
-  value = 0,
-  decimals,
-  prefix,
-  suffix,
-  disableTooltip,
-  ...textProps
-}) => {
-  const [formattedValue, tooltipLabel, isDisabled] = useMemo(() => {
-    const tooltip = decimals
-      ? getCurrencyString(value, decimals)
-      : new BigNumber(value).toString();
-    const display = formatValue(tooltip);
+export const DisplayValue = forwardRef<DisplayValueProps, 'p'>(
+  (
+    { value = 0, decimals, prefix, suffix, disableTooltip, ...textProps },
+    ref
+  ) => {
+    const [formattedValue, tooltipLabel, isDisabled] = useMemo(() => {
+      const tooltip = decimals
+        ? getCurrencyString(value, decimals)
+        : new BigNumber(value).toString();
+      const display = formatValue(tooltip);
 
-    return [display, tooltip, disableTooltip || String(tooltip).length <= 4];
-  }, [value, decimals]);
+      return [display, tooltip, disableTooltip || String(tooltip).length <= 4];
+    }, [value, decimals]);
 
-  return (
-    <Tooltip label={tooltipLabel} isDisabled={isDisabled}>
-      <Text {...textProps}>
-        {prefix}
-        {formattedValue}
-        {suffix}
-      </Text>
-    </Tooltip>
-  );
-};
+    return (
+      <Tooltip label={tooltipLabel} isDisabled={isDisabled}>
+        <Text ref={ref} {...textProps}>
+          {prefix}
+          {formattedValue}
+          {suffix}
+        </Text>
+      </Tooltip>
+    );
+  }
+);

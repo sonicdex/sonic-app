@@ -197,7 +197,7 @@ export const TokenBalancesPrice: React.FC<TokenBalancesPriceProps> = ({
       .toNumber();
   }, [tokenMetadata, value]);
 
-  const defaultColor = isActive ? '#F6FCFD' : '#888E8F';
+  const defaultColor = isActive ? 'gray.50' : 'gray.300';
 
   const { color, priceDifferencePercentage } = useMemo(() => {
     // TODO: finish

@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Flex,
+  HStack,
   IconButton,
   Image,
   Menu,
@@ -11,8 +12,10 @@ import {
   PopoverArrow,
   PopoverBody,
   PopoverContent,
+  PopoverHeader,
   PopoverTrigger,
   Skeleton,
+  Stack,
   Text,
   Tooltip,
 } from '@chakra-ui/react';
@@ -23,9 +26,11 @@ import { useNavigate } from 'react-router';
 
 import { equalSrc, infoSrc, plusSrc } from '@/assets';
 import {
+  DisplayValue,
   LPImageBlock,
   PlugButton,
   SlippageSettings,
+  StackLine,
   Token,
   TokenBalances,
   TokenBalancesDetails,
@@ -221,7 +226,7 @@ export const LiquidityAddView = () => {
 
   const [buttonDisabled, buttonMessage] = useMemo<[boolean, string]>(() => {
     if (isLoading) return [true, 'Loading'];
-    if (!token0.metadata || !token1.metadata) return [true, 'Select tokens'];
+    if (!token0.metadata || !token1.metadata) return [true, 'Select Tokens'];
 
     const parsedToken0Value = (token0.value && parseFloat(token0.value)) || 0;
     const parsedToken1Value = (token1.value && parseFloat(token1.value)) || 0;
@@ -392,8 +397,25 @@ export const LiquidityAddView = () => {
     }
   }, [isLoading]);
 
+  const { fee0, fee1 } = useMemo(() => {
+    if (token0.metadata && token1.metadata) {
+      const fee0 = getCurrencyString(
+        token0.metadata.fee + token0.metadata.fee,
+        token0.metadata.decimals
+      );
+      const fee1 = getCurrencyString(
+        token1.metadata.fee + token1.metadata.fee,
+        token1.metadata.decimals
+      );
+
+      return { fee0, fee1 };
+    }
+
+    return { fee0: '0', fee1: '0' };
+  }, [token0.metadata, token1.metadata]);
+
   return (
-    <>
+    <Stack spacing={4}>
       <ViewHeader onArrowBack={handlePreviousStep} title="Add Liquidity">
         <Menu>
           <Tooltip label="Adjust the slippage">
@@ -429,7 +451,7 @@ export const LiquidityAddView = () => {
           </MenuList>
         </Menu>
       </ViewHeader>
-      <Flex my={5} direction="column" alignItems="center">
+      <Flex direction="column" alignItems="center">
         <Box width="100%">
           <Token
             value={token0.value}
@@ -457,7 +479,7 @@ export const LiquidityAddView = () => {
           </Token>
         </Box>
         <Box
-          borderRadius={4}
+          borderRadius={12}
           width={10}
           height={10}
           border="1px solid #373737"
@@ -506,104 +528,126 @@ export const LiquidityAddView = () => {
               <TokenBalancesPrice />
             </TokenBalances>
           </Token>
-
-          {!isReviewing && liquidityValue && (
-            <Flex
-              alignItems="center"
-              justifyContent="space-between"
-              width="full"
-              mt={5}
-              px={5}
-            >
-              <Text color="gray.300">
-                {`${token0.metadata?.symbol} + ${token1.metadata?.symbol}`}
-              </Text>
-              <Text color="gray.300">
-                {`1 ${token0.metadata?.symbol} = ${token1Price} ${token1.metadata?.symbol}`}
-              </Text>
-            </Flex>
-          )}
         </Box>
-        {isReviewing && (
+        {token0.metadata && token1.metadata && (
           <>
-            <Flex
-              borderRadius={4}
-              width={10}
-              height={10}
-              border="1px solid #373737"
-              py={3}
-              px={3}
-              bg="#1E1E1E"
-              mt={-2}
-              mb={-2}
-              zIndex={1200}
-              justifyContent="center"
-              alignItems="center"
-            >
-              <Image alt="equal" m="auto" src={equalSrc} />
-            </Flex>
-
-            <Token value={liquidityValue} isDisabled shouldGlow>
-              <TokenContent>
+            {isReviewing && (
+              <>
                 <Flex
-                  borderRadius="full"
-                  mr={5}
-                  minWidth="fit-content"
-                  background="gray.800"
+                  borderRadius={12}
+                  width={10}
                   height={10}
-                  px={4}
+                  border="1px solid #373737"
+                  py={3}
+                  px={3}
+                  bg="#1E1E1E"
+                  mt={-2}
+                  mb={-2}
+                  zIndex={1200}
                   justifyContent="center"
                   alignItems="center"
-                  fontWeight="bold"
                 >
-                  <LPImageBlock
-                    imageSources={[
-                      token0.metadata?.logo,
-                      token1.metadata?.logo,
-                    ]}
-                    size="sm"
-                  />
-                  <Text ml={2.5}>
-                    {`${token0.metadata?.symbol}-${token1.metadata?.symbol}`}
-                  </Text>
+                  <Image alt="equal" m="auto" src={equalSrc} />
+                </Flex>
 
+                <Token value={liquidityValue} isDisabled shouldGlow>
+                  <TokenContent>
+                    <Flex
+                      borderRadius="full"
+                      mr={5}
+                      minWidth="fit-content"
+                      background="gray.800"
+                      height={10}
+                      px={4}
+                      justifyContent="center"
+                      alignItems="center"
+                      fontWeight="bold"
+                    >
+                      <LPImageBlock
+                        imageSources={[
+                          token0.metadata?.logo,
+                          token1.metadata?.logo,
+                        ]}
+                        size="sm"
+                      />
+                      <Text ml={2.5}>
+                        {`${token0.metadata?.symbol}-${token1.metadata?.symbol}`}
+                      </Text>
+
+                      <Popover trigger="hover">
+                        <PopoverTrigger>
+                          <Image alt="info" ml={2.5} width={4} src={infoSrc} />
+                        </PopoverTrigger>
+                        <PopoverContent>
+                          <PopoverArrow />
+                          <PopoverBody>
+                            This is your share of the LP pool represented as
+                            tokens.
+                          </PopoverBody>
+                        </PopoverContent>
+                      </Popover>
+                    </Flex>
+
+                    <TokenInput />
+                  </TokenContent>
+                  <TokenBalances color="#888E8F">
+                    Share of Pool:
+                    <Text flex={1} textAlign="right">
+                      {liquidityPercentage}
+                    </Text>
+                  </TokenBalances>
+                </Token>
+              </>
+            )}
+
+            {liquidityValue && (
+              <Flex
+                alignItems="center"
+                justifyContent="space-between"
+                width="full"
+                mt={5}
+                px={5}
+              >
+                <Text color="gray.300">
+                  {`1 ${token0.metadata?.symbol} = `}{' '}
+                  <DisplayValue as="span" value={token1Price} />{' '}
+                  {` ${token1.metadata?.symbol}`}
+                </Text>
+                <HStack>
+                  <Text color="gray.300">
+                    {`1 ${token1.metadata?.symbol} = `}{' '}
+                    <DisplayValue as="span" value={token0Price} />{' '}
+                    {`${token0.metadata?.symbol}`}
+                  </Text>
                   <Popover trigger="hover">
                     <PopoverTrigger>
-                      <Image alt="info" ml={2.5} width={4} src={infoSrc} />
+                      <Image
+                        alt="info"
+                        src={infoSrc}
+                        width={5}
+                        transition="opacity 200ms"
+                      />
                     </PopoverTrigger>
-                    <PopoverContent>
+                    <PopoverContent minWidth="400px">
+                      <PopoverHeader>Transaction Details</PopoverHeader>
                       <PopoverArrow />
-                      <PopoverBody>
-                        This is your share of the LP pool represented as tokens.
+                      <PopoverBody display="inline-block">
+                        <Stack>
+                          <StackLine
+                            title={`${token0.metadata.name} Deposit Fee`}
+                            value={`${fee0} ${token0.metadata.symbol}`}
+                          />
+                          <StackLine
+                            title={`${token1.metadata.name} Deposit Fee`}
+                            value={`${fee1} ${token1.metadata.symbol}`}
+                          />
+                        </Stack>
                       </PopoverBody>
                     </PopoverContent>
                   </Popover>
-                </Flex>
-
-                <TokenInput />
-              </TokenContent>
-              <TokenBalances color="#888E8F">
-                Share of Pool:
-                <Text flex={1} textAlign="right">
-                  {liquidityPercentage}
-                </Text>
-              </TokenBalances>
-            </Token>
-
-            <Flex
-              alignItems="center"
-              justifyContent="space-between"
-              width="full"
-              mt={5}
-              px={5}
-            >
-              <Text color="gray.300">
-                {`1 ${token0.metadata?.symbol} = ${token1Price} ${token1.metadata?.symbol}`}
-              </Text>
-              <Text color="gray.300">
-                {`1 ${token1.metadata?.symbol} = ${token0Price} ${token0.metadata?.symbol}`}
-              </Text>
-            </Flex>
+                </HStack>
+              </Flex>
+            )}
           </>
         )}
       </Flex>
@@ -622,6 +666,6 @@ export const LiquidityAddView = () => {
           {buttonMessage}
         </Button>
       )}
-    </>
+    </Stack>
   );
 };

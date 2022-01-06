@@ -15,7 +15,7 @@ import { usePlugStore } from '@/store';
 
 import { PlugButton } from '..';
 import { LogoBox } from '../core';
-import { PlugPrincipalIDMenu } from '../plug/plug-principal-id-tag';
+import { PlugMenu } from '../plug/plug-menu';
 import {
   FOOTER_HEIGHT,
   NAVBAR_HEIGHT,
@@ -68,7 +68,7 @@ export const Layout: React.FC = ({ children, ...props }) => {
             </chakra.nav>
           </GridItem>
           <GridItem colSpan={1} justifySelf="center">
-            {isConnected ? <PlugPrincipalIDMenu /> : <PlugButton />}
+            {isConnected ? <PlugMenu /> : <PlugButton />}
           </GridItem>
         </Grid>
       </Container>
