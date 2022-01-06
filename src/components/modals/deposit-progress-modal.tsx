@@ -33,13 +33,15 @@ export const DepositProgressModal = () => {
       <ModalOverlay />
       <TransactionProgressModalContent title="Deposit in Progress">
         <Flex alignItems="flex-start">
-          <TransactionStep
-            status={getStepStatus(DepositModalDataStep.Approve)}
-            iconSrc={checkPlainSrc}
-            chevron
-          >
-            Approving usage <br /> {tokenSymbol}
-          </TransactionStep>
+          {steps?.includes(DepositModalDataStep.Approve) && (
+            <TransactionStep
+              status={getStepStatus(DepositModalDataStep.Approve)}
+              iconSrc={checkPlainSrc}
+              chevron
+            >
+              Approving usage <br /> {tokenSymbol}
+            </TransactionStep>
+          )}
           <TransactionStep
             status={getStepStatus(DepositModalDataStep.Deposit)}
             iconSrc={depositSrc}

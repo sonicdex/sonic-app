@@ -28,7 +28,7 @@ import {
   useSwapCanisterStore,
   useTokenModalOpener,
 } from '@/store';
-import { formatAmount, getCurrency, getDepositMaxValue } from '@/utils/format';
+import { getCurrency, getDepositMaxValue } from '@/utils/format';
 import { debounce } from '@/utils/function';
 
 export const AssetsDepositView = () => {
@@ -91,14 +91,15 @@ export const AssetsDepositView = () => {
     }
 
     if (tokenBalances && selectedTokenMetadata) {
-      const parsedBalance = parseFloat(
-        formatAmount(
-          tokenBalances[selectedTokenMetadata.id],
-          selectedTokenMetadata.decimals
+      if (
+        parsedFromValue >
+        Number(
+          getDepositMaxValue(
+            selectedTokenMetadata,
+            tokenBalances[selectedTokenMetadata.id]
+          )
         )
-      );
-
-      if (parsedFromValue > parsedBalance) {
+      ) {
         return [true, `Insufficient ${selectedTokenMetadata.symbol} Balance`];
       }
     }

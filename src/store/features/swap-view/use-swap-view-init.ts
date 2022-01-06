@@ -1,10 +1,11 @@
+import BigNumber from 'bignumber.js';
 import { useEffect } from 'react';
 
 import { ENV } from '@/config';
 import { getICPTokenMetadata, ICP_METADATA } from '@/constants';
 import { useAppDispatch } from '@/store';
 import { parseResponseTokenList } from '@/utils/canister';
-import { getAmountOut } from '@/utils/format';
+import { formatAmount, getAmountOut } from '@/utils/format';
 
 import { usePriceStore, useSwapCanisterStore } from '..';
 import { swapViewActions, useSwapViewStore } from '.';
@@ -36,10 +37,13 @@ export const useSwapView = () => {
       (to.metadata.id === ICP_METADATA.id &&
         from.metadata.id === ENV.canisterIds.WICP)
     ) {
+      const value = new BigNumber(from.value).minus(
+        formatAmount(ICP_METADATA.fee, ICP_METADATA.decimals)
+      );
       dispatch(
         swapViewActions.setValue({
           data: 'to',
-          value: from.value,
+          value: value.toNumber() > 0 ? value.toString() : '',
         })
       );
       return;
