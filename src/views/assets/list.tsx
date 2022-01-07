@@ -185,7 +185,7 @@ export const AssetsListView = () => {
                           display="flex"
                           alignItems="center"
                         >
-                          Amount
+                          Balance
                           <Image
                             src={infoSrc}
                             w={4}
