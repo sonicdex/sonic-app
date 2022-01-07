@@ -33,7 +33,7 @@ export const UnwrapProgressModal = () => {
     >
       <ModalOverlay />
 
-      <TransactionProgressModalContent title="Unwrapping WICP">
+      <TransactionProgressModalContent title="Unwrap WICP in progress">
         <Flex alignItems="flex-start">
           {steps?.includes(UnwrapModalDataStep.Withdraw) && (
             <TransactionStep

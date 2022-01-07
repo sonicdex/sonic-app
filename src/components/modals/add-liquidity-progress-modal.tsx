@@ -40,7 +40,7 @@ export const AddLiquidityProgressModal = () => {
       isCentered
     >
       <ModalOverlay />
-      <TransactionProgressModalContent title="Adding Liquidity">
+      <TransactionProgressModalContent title="Add LP in progress">
         <Flex alignItems="flex-start">
           {steps?.includes(AddLiquidityModalDataStep.CreatePair) && (
             <TransactionStep

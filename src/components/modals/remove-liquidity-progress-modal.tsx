@@ -39,7 +39,7 @@ export const RemoveLiquidityProgressModal = () => {
       isCentered
     >
       <ModalOverlay />
-      <TransactionProgressModalContent title="Removing Liquidity">
+      <TransactionProgressModalContent title="Remove LP in progress">
         <Flex alignItems="flex-start">
           <TransactionStep
             status={getStepStatus(RemoveLiquidityModalDataStep.RemoveLiquidity)}

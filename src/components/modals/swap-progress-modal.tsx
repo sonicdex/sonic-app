@@ -27,7 +27,7 @@ export const SwapProgressModal = () => {
   return (
     <Modal onClose={handleClose} isOpen={isSwapProgressOpened} isCentered>
       <ModalOverlay />
-      <TransactionProgressModalContent title="Swap in Progress">
+      <TransactionProgressModalContent title="Swap in progress">
         <Flex alignItems="flex-start">
           {steps?.includes(SwapModalDataStep.Approve) && (
             <TransactionStep

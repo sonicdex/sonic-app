@@ -31,7 +31,7 @@ export const DepositProgressModal = () => {
   return (
     <Modal onClose={handleClose} isOpen={isDepositProgressOpened} isCentered>
       <ModalOverlay />
-      <TransactionProgressModalContent title="Deposit in Progress">
+      <TransactionProgressModalContent title="Deposit in progress">
         <Flex alignItems="flex-start">
           {steps?.includes(DepositModalDataStep.Approve) && (
             <TransactionStep

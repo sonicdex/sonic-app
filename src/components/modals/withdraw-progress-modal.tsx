@@ -31,7 +31,7 @@ export const WithdrawProgressModal = () => {
   return (
     <Modal onClose={handleClose} isOpen={isWithdrawProgressOpened} isCentered>
       <ModalOverlay />
-      <TransactionProgressModalContent title="Withdraw in Progress">
+      <TransactionProgressModalContent title="Withdraw in progress">
         <Flex alignItems="flex-start">
           <TransactionStep
             status={getStepStatus(WithdrawModalDataStep.Withdraw)}
