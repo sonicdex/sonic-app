@@ -35,7 +35,7 @@ export const SwapProgressModal = () => {
               iconSrc={checkPlainSrc}
               chevron
             >
-              Approving usage <br /> {fromTokenSymbol}
+              Approving <br /> {fromTokenSymbol}
             </TransactionStep>
           )}
           {steps?.includes(SwapModalDataStep.Deposit) && (

@@ -49,7 +49,7 @@ export const RemoveLiquidityProgressModal = () => {
               steps?.includes(RemoveLiquidityModalDataStep.Withdraw1)
             }
           >
-            Removing Liquidity <br /> {token0Symbol} + {token1Symbol}
+            Removing LP of <br /> {token0Symbol} + {token1Symbol}
           </TransactionStep>
 
           {steps?.includes(RemoveLiquidityModalDataStep.Withdraw0) && (

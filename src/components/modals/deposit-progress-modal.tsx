@@ -39,7 +39,7 @@ export const DepositProgressModal = () => {
               iconSrc={checkPlainSrc}
               chevron
             >
-              Approving usage <br /> {tokenSymbol}
+              Approving <br /> {tokenSymbol}
             </TransactionStep>
           )}
           <TransactionStep

@@ -57,7 +57,7 @@ export const AddLiquidityProgressModal = () => {
               iconSrc={checkPlainSrc}
               chevron
             >
-              Approving usage <br /> {token0Symbol}
+              Approving <br /> {token0Symbol}
             </TransactionStep>
           )}
           {steps?.includes(AddLiquidityModalDataStep.Deposit0) && (
@@ -75,7 +75,7 @@ export const AddLiquidityProgressModal = () => {
               iconSrc={checkPlainSrc}
               chevron
             >
-              Approving usage <br /> {token1Symbol}
+              Approving <br /> {token1Symbol}
             </TransactionStep>
           )}
           {steps?.includes(AddLiquidityModalDataStep.Deposit1) && (
@@ -91,7 +91,7 @@ export const AddLiquidityProgressModal = () => {
             status={getStepStatus(AddLiquidityModalDataStep.AddLiquidity)}
             iconSrc={dropSrc}
           >
-            Adding Liquidity <br /> {token0Symbol} + {token1Symbol}
+            Adding LP of <br /> {token0Symbol} + {token1Symbol}
           </TransactionStep>
         </Flex>
       </TransactionProgressModalContent>
