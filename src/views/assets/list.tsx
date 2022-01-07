@@ -1,7 +1,4 @@
 import {
-  Alert,
-  AlertIcon,
-  AlertTitle,
   Box,
   HStack,
   // AlertDescription,
@@ -21,7 +18,7 @@ import {
   DisplayValue,
   Header,
   InformationBox,
-  PlugButton,
+  PlugNotConnected,
   TokenBalancesPopover,
 } from '@/components';
 import { getAppAssetsSources } from '@/config/utils';
@@ -110,14 +107,7 @@ export const AssetsListView = () => {
       <Header title="Your Assets" isRefreshing={isRefreshing} />
 
       {!isConnected ? (
-        <>
-          <Alert status="warning" mb={6}>
-            <AlertIcon />
-            <AlertTitle>You are not connected to the wallet</AlertTitle>
-          </Alert>
-
-          <PlugButton />
-        </>
+        <PlugNotConnected message="Your assets will appear here." />
       ) : (
         <Box
           overflow="hidden"

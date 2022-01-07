@@ -11,6 +11,7 @@ import {
   Skeleton,
   Stack,
   Tooltip,
+  useColorModeValue,
 } from '@chakra-ui/react';
 import { FaArrowDown } from '@react-icons/all-files/fa/FaArrowDown';
 import { FaCog } from '@react-icons/all-files/fa/FaCog';
@@ -447,7 +448,19 @@ export const SwapHomeStep = () => {
       />
 
       {!isConnected ? (
-        <PlugButton />
+        <PlugButton
+          leftIcon={undefined}
+          backgroundColor={useColorModeValue('gray.200', 'gray.800')}
+          _before={{}}
+          _hover={{
+            backgroundColor: useColorModeValue('gray.200', 'gray.700'),
+          }}
+          _disabled={{
+            backgroundColor: useColorModeValue('gray.200', 'gray.800'),
+            cursor: 'not-allowed',
+          }}
+          borderRadius="xl"
+        />
       ) : (
         <Button
           isFullWidth
