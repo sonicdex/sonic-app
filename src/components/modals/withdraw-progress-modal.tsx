@@ -1,6 +1,6 @@
 import { Flex, Modal, ModalOverlay } from '@chakra-ui/react';
 
-import { swapSrc } from '@/assets';
+import { withdrawSrc } from '@/assets';
 import {
   modalsSliceActions,
   useAppDispatch,
@@ -35,7 +35,7 @@ export const WithdrawProgressModal = () => {
         <Flex alignItems="flex-start">
           <TransactionStep
             status={getStepStatus(WithdrawModalDataStep.Withdraw)}
-            iconSrc={swapSrc}
+            iconSrc={withdrawSrc}
           >
             Withdrawing <br /> {tokenSymbol}
           </TransactionStep>

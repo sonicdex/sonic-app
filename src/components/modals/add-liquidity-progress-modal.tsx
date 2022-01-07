@@ -1,6 +1,6 @@
 import { Flex, Modal, ModalOverlay } from '@chakra-ui/react';
 
-import { depositSrc, plusSrc, swapSrc } from '@/assets';
+import { checkPlainSrc, depositSrc, dropSrc, plusSrc } from '@/assets';
 import {
   AddLiquidityModalDataStep,
   modalsSliceActions,
@@ -54,7 +54,7 @@ export const AddLiquidityProgressModal = () => {
           {steps?.includes(AddLiquidityModalDataStep.Approve0) && (
             <TransactionStep
               status={getStepStatus(AddLiquidityModalDataStep.Approve0)}
-              iconSrc={depositSrc}
+              iconSrc={checkPlainSrc}
               chevron
             >
               Approving usage <br /> {token0Symbol}
@@ -72,7 +72,7 @@ export const AddLiquidityProgressModal = () => {
           {steps?.includes(AddLiquidityModalDataStep.Approve1) && (
             <TransactionStep
               status={getStepStatus(AddLiquidityModalDataStep.Approve1)}
-              iconSrc={depositSrc}
+              iconSrc={checkPlainSrc}
               chevron
             >
               Approving usage <br /> {token1Symbol}
@@ -89,7 +89,7 @@ export const AddLiquidityProgressModal = () => {
           )}
           <TransactionStep
             status={getStepStatus(AddLiquidityModalDataStep.AddLiquidity)}
-            iconSrc={swapSrc}
+            iconSrc={dropSrc}
           >
             Adding Liquidity <br /> {token0Symbol} + {token1Symbol}
           </TransactionStep>
