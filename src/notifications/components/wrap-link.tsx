@@ -72,7 +72,7 @@ export const WrapLink: React.FC<WrapLinkProps> = ({ id }) => {
         console.error('Wrap Error', err);
 
         addNotification({
-          title: `Failed wrapping ${from.value} ${from.metadata.symbol}`,
+          title: `Wrap ${from.value} ${from.metadata.symbol} failed`,
           type: NotificationType.Error,
           id: Date.now().toString(),
         });

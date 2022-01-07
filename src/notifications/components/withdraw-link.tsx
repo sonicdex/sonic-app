@@ -66,7 +66,7 @@ export const WithdrawLink: React.FC<WithdrawLinkProps> = ({ id }) => {
         dispatch(modalsSliceActions.clearWithdrawModalData());
         dispatch(modalsSliceActions.closeWithdrawProgressModal());
         addNotification({
-          title: 'Withdraw successful',
+          title: `Withdrawn ${value} ${selectedToken?.symbol}`,
           type: NotificationType.Success,
           id: Date.now().toString(),
           transactionLink: '/activity',
@@ -77,7 +77,7 @@ export const WithdrawLink: React.FC<WithdrawLinkProps> = ({ id }) => {
         console.error('Withdraw Error', err);
         dispatch(modalsSliceActions.clearWithdrawModalData());
         addNotification({
-          title: `Withdraw failed ${value} ${selectedToken?.symbol}`,
+          title: `Withdraw ${value} ${selectedToken?.symbol} failed`,
           type: NotificationType.Error,
           id: Date.now().toString(),
         });

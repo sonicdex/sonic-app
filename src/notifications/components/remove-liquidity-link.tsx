@@ -125,7 +125,7 @@ export const RemoveLiquidityLink: React.FC<RemoveLiquidityLinkProps> = ({
         dispatch(modalsSliceActions.clearRemoveLiquidityModalData());
         dispatch(modalsSliceActions.closeRemoveLiquidityProgressModal());
         addNotification({
-          title: `Successfuly removed liquidity: ${token0.value} ${token0.metadata.symbol} + ${token1.value} ${token1.metadata.symbol}`,
+          title: `Removed LP of ${token0.value} ${token0.metadata.symbol} + ${token1.value} ${token1.metadata.symbol}`,
           type: NotificationType.Success,
           id: Date.now().toString(),
           transactionLink: '/activity',
@@ -137,7 +137,7 @@ export const RemoveLiquidityLink: React.FC<RemoveLiquidityLinkProps> = ({
         console.error('Remove liqudity Error', err);
         dispatch(modalsSliceActions.clearRemoveLiquidityModalData());
         addNotification({
-          title: `Remove liquidity failed - ${token0.value} ${token0.metadata.symbol} + ${token1.value} ${token1.metadata.symbol}`,
+          title: `Remove LP of ${token0.value} ${token0.metadata.symbol} + ${token1.value} ${token1.metadata.symbol} failed`,
           type: NotificationType.Error,
           id: Date.now().toString(),
         });

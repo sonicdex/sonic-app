@@ -95,6 +95,7 @@ export const useSwapBatch = ({
               navigate(
                 `/assets/withdraw?tokenId=${swapParams.from.metadata?.id}&amount=${swapParams.from.value}`
               );
+              dispatch(modalsSliceActions.closeSwapFailModal());
               resolve(false);
             },
             // Close callback

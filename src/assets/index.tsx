@@ -31,3 +31,4 @@ export { default as redWarningSrc } from './red-warning.svg';
 export { default as questionMarkSrc } from './question-mark.svg';
 export { default as searchSrc } from './search.svg';
 export { default as redTriangleWarningSrc } from './red-triangle-warning.svg';
+export { default as dropSrc } from './drop.svg';

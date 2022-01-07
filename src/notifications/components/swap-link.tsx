@@ -97,7 +97,7 @@ export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
         dispatch(modalsSliceActions.clearSwapModalData());
 
         addNotification({
-          title: `Failed swapping ${from.value} ${from.metadata.symbol} for ${to.value} ${to.metadata.symbol}`,
+          title: `Swap ${from.value} ${from.metadata.symbol} for ${to.value} ${to.metadata.symbol} failed`,
           type: NotificationType.Error,
           id: Date.now().toString(),
         });

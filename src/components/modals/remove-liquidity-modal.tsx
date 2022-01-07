@@ -59,7 +59,7 @@ export const RemoveLiquidityModal = () => {
 
   const handleRemoveLiquidity = () => {
     addNotification({
-      title: `Removing liquidity: ${token0.metadata?.symbol} + ${token1.metadata?.symbol}`,
+      title: `Remove LP of ${token0.metadata?.symbol} + ${token1.metadata?.symbol}`,
       type: NotificationType.RemoveLiquidity,
       id: String(new Date().getTime()),
     });

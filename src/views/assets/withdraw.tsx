@@ -120,7 +120,7 @@ export const AssetsWithdrawView = () => {
 
   const handleWithdraw = () => {
     addNotification({
-      title: `Withdrawing ${selectedTokenMetadata?.symbol}`,
+      title: `Withdraw ${amount} ${selectedTokenMetadata?.symbol}`,
       type: NotificationType.Withdraw,
       id: String(new Date().getTime()),
     });

@@ -91,7 +91,7 @@ export const AddLiquidityLink: React.FC<AddLiquidityLinkProps> = ({ id }) => {
         dispatch(modalsSliceActions.clearAddLiquidityModalData());
         dispatch(modalsSliceActions.closeAddLiquidityProgressModal());
         addNotification({
-          title: `Successfuly added liquidity: ${token0.value} ${token0.metadata.symbol} + ${token1.value} ${token1.metadata.symbol}`,
+          title: `Added LP of ${token0.value} ${token0.metadata.symbol} + ${token1.value} ${token1.metadata.symbol}`,
           type: NotificationType.Success,
           id: Date.now().toString(),
           transactionLink: '/activity',
@@ -103,7 +103,7 @@ export const AddLiquidityLink: React.FC<AddLiquidityLinkProps> = ({ id }) => {
         console.error('Add Liquidity Error', err);
         dispatch(modalsSliceActions.clearAddLiquidityModalData());
         addNotification({
-          title: `Failed add liquidity ${token0.value} ${token0.metadata.symbol} + ${token1.value} ${token1.metadata.symbol}`,
+          title: `Add LP of ${token0.value} ${token0.metadata.symbol} + ${token1.value} ${token1.metadata.symbol} failed`,
           type: NotificationType.Error,
           id: Date.now().toString(),
         });

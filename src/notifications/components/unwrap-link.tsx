@@ -79,7 +79,7 @@ export const UnwrapLink: React.FC<UnwrapLinkProps> = ({ id }) => {
         console.error('Unwrap Error', err);
 
         addNotification({
-          title: `Failed unwrapping ${from.value} ${from.metadata.symbol}`,
+          title: `Unwrap ${from.value} ${from.metadata.symbol} failed`,
           type: NotificationType.Error,
           id: Date.now().toString(),
         });
