@@ -12,6 +12,7 @@ import React, { useMemo } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
 import { usePlugStore } from '@/store';
+import { theme } from '@/theme';
 
 import { PlugButton } from '..';
 import { LogoBox } from '../core';
@@ -34,13 +35,24 @@ export const Layout: React.FC = ({ children, ...props }) => {
 
   return (
     <>
-      <Container maxW="container.xl">
+      <Container maxW="container.xl" position="sticky" top={0} zIndex={10}>
         <Grid
           as="header"
           py="8"
           templateColumns="repeat(5, 1fr)"
           gap="4"
           alignItems="center"
+          backgroundColor="bg"
+          _after={{
+            content: "''",
+            position: 'absolute',
+            pointerEvents: 'none',
+            height: 10,
+            left: 0,
+            right: 0,
+            bottom: -10,
+            background: `linear-gradient(to bottom, ${theme.colors.bg} 0%, transparent 100%)`,
+          }}
         >
           <GridItem colSpan={1} justifySelf="center" alignItems="center">
             <LogoBox />
@@ -76,8 +88,8 @@ export const Layout: React.FC = ({ children, ...props }) => {
       <Container
         as="main"
         maxW="xl"
-        h={`calc(100vh - ${NAVBAR_HEIGHT} - ${FOOTER_HEIGHT})`}
-        maxH={`calc(100vh - ${NAVBAR_HEIGHT} - ${FOOTER_HEIGHT})`}
+        minH={`calc(100vh - ${NAVBAR_HEIGHT} - ${FOOTER_HEIGHT})`}
+        // maxH={`calc(100vh - ${NAVBAR_HEIGHT} - ${FOOTER_HEIGHT})`}
         py="10"
         display="flex"
         flexDirection="column"
@@ -86,7 +98,15 @@ export const Layout: React.FC = ({ children, ...props }) => {
         {children}
       </Container>
 
-      <chakra.footer px="4" py="2">
+      <chakra.footer
+        px="4"
+        py="2"
+        position="fixed"
+        bottom={0}
+        left={0}
+        right={0}
+        background={`linear-gradient(to bottom, transparent 0%, ${theme.colors.bg} 100%)`}
+      >
         <Text>Sonic v1</Text>
       </chakra.footer>
     </>
