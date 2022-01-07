@@ -645,7 +645,7 @@ export const LiquidityAddView = () => {
         )}
       </Flex>
       {!isConnected ? (
-        <PlugButton />
+        <PlugButton variant="dark" />
       ) : (
         <Button
           isFullWidth
