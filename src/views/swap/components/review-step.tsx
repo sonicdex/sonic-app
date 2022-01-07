@@ -38,7 +38,7 @@ export const SwapReviewStep = () => {
 
   const handleApproveSwap = () => {
     addNotification({
-      title: `Swapping ${from.metadata?.symbol} for ${to.metadata?.symbol}`,
+      title: `Swap ${from.value} ${from.metadata?.symbol} for ${to.value} ${to.metadata?.symbol}`,
       type: NotificationType.Swap,
       id: String(new Date().getTime()),
     });

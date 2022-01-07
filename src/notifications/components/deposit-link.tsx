@@ -95,7 +95,7 @@ export const DepositLink: React.FC<DepositLinkProps> = ({ id }) => {
         dispatch(modalsSliceActions.closeDepositProgressModal());
         getBalances();
         addNotification({
-          title: 'Deposit successful',
+          title: `Deposited ${value} ${selectedToken?.symbol} successful`,
           type: NotificationType.Success,
           id: Date.now().toString(),
           transactionLink: '/activity',
@@ -105,7 +105,7 @@ export const DepositLink: React.FC<DepositLinkProps> = ({ id }) => {
         console.error('Deposit Error', err);
         dispatch(modalsSliceActions.clearDepositModalData());
         addNotification({
-          title: `Deposit failed ${value} ${selectedToken?.symbol}`,
+          title: `Deposit ${value} ${selectedToken?.symbol} failed`,
           type: NotificationType.Error,
           id: Date.now().toString(),
         });
