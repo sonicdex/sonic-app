@@ -447,7 +447,7 @@ export const SwapHomeStep = () => {
       />
 
       {!isConnected ? (
-        <PlugButton />
+        <PlugButton variant="dark" />
       ) : (
         <Button
           isFullWidth

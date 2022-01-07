@@ -1,9 +1,7 @@
 import {
-  Alert,
-  AlertIcon,
-  AlertTitle,
   Box,
   HStack,
+  Image,
   // AlertDescription,
   Stack,
   Text,
@@ -13,6 +11,7 @@ import { FaPlus } from '@react-icons/all-files/fa/FaPlus';
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router';
 
+import { infoSrc } from '@/assets';
 import {
   Asset,
   AssetIconButton,
@@ -21,7 +20,7 @@ import {
   DisplayValue,
   Header,
   InformationBox,
-  PlugButton,
+  PlugNotConnected,
   TokenBalancesPopover,
 } from '@/components';
 import { getAppAssetsSources } from '@/config/utils';
@@ -110,14 +109,7 @@ export const AssetsListView = () => {
       <Header title="Your Assets" isRefreshing={isRefreshing} />
 
       {!isConnected ? (
-        <>
-          <Alert status="warning" mb={6}>
-            <AlertIcon />
-            <AlertTitle>You are not connected to the wallet</AlertTitle>
-          </Alert>
-
-          <PlugButton />
-        </>
+        <PlugNotConnected message="Your assets will appear here." />
       ) : (
         <Box
           overflow="hidden"
@@ -187,8 +179,20 @@ export const AssetsListView = () => {
                       symbol={symbol}
                     >
                       <Box>
-                        <Text fontWeight="bold" color="gray.400">
+                        <Text
+                          fontWeight="bold"
+                          color="gray.400"
+                          display="flex"
+                          alignItems="center"
+                        >
                           Amount
+                          <Image
+                            src={infoSrc}
+                            w={4}
+                            h={4}
+                            ml={1.5}
+                            opacity={0.45}
+                          />
                         </Text>
                         <DisplayValue
                           value={totalBalances?.[id]}

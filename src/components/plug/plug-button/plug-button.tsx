@@ -18,6 +18,7 @@ import { PLUG_WALLET_WEBSITE_URL } from './constants';
 export type PlugButtonProps = Omit<ButtonProps, 'color' | 'variant'> & {
   whitelist?: string[];
   host?: string;
+  variant?: 'default' | 'dark';
 };
 
 export const PlugButton = forwardRef<HTMLButtonElement, PlugButtonProps>(
@@ -25,6 +26,7 @@ export const PlugButton = forwardRef<HTMLButtonElement, PlugButtonProps>(
     { whitelist = Object.values(ENV.canisterIds), host = ENV.host, ...props },
     ref
   ) => {
+    const { variant = 'default' } = props;
     const { state } = usePlugStore();
     const dispatch = useAppDispatch();
 
@@ -62,25 +64,23 @@ export const PlugButton = forwardRef<HTMLButtonElement, PlugButtonProps>(
       return state === FeatureState.Loading;
     }, [state]);
 
-    const bg = useColorModeValue('gray.100', 'gray.900');
-    const bgHover = useColorModeValue('gray.200', 'gray.800');
-
-    return (
-      <Button
-        ref={ref}
-        size="lg"
-        leftIcon={<PlugLogo />}
-        onClick={isLoading ? () => null : handleConnectAttempt}
-        isDisabled={isLoading}
-        borderRadius="full"
-        backgroundColor={bg}
-        _hover={{
-          backgroundColor: bgHover,
-          _disabled: { backgroundColor: bg },
-        }}
-        _active={{ backgroundColor: bgHover }}
-        _disabled={{ backgroundColor: bg, cursor: 'not-allowed' }}
-        _before={{
+    const [color, bg, bgHover, leftIcon, before, borderRadius] = useMemo(() => {
+      if (variant === 'dark') {
+        return [
+          useColorModeValue('gray.500', 'gray.500'),
+          useColorModeValue('gray.100', 'gray.800'),
+          useColorModeValue('gray.200', 'gray.700'),
+          undefined,
+          {},
+          'xl',
+        ];
+      }
+      return [
+        useColorModeValue('gray.500', 'white'),
+        useColorModeValue('gray.100', 'gray.900'),
+        useColorModeValue('gray.200', 'gray.800'),
+        <PlugLogo />,
+        {
           content: "''",
           position: 'absolute',
           top: 0,
@@ -92,7 +92,28 @@ export const PlugButton = forwardRef<HTMLButtonElement, PlugButtonProps>(
           borderRadius: 'inherit',
           background:
             'linear-gradient(93.07deg,#ffd719 0.61%,#f754d4 33.98%,#1fd1ec 65.84%,#48fa6b 97.7%)',
+        },
+        'full',
+      ];
+    }, [variant]);
+
+    return (
+      <Button
+        ref={ref}
+        size="lg"
+        leftIcon={leftIcon}
+        onClick={isLoading ? () => null : handleConnectAttempt}
+        isDisabled={isLoading}
+        borderRadius={borderRadius}
+        backgroundColor={bg}
+        _hover={{
+          backgroundColor: bgHover,
+          _disabled: { backgroundColor: bg },
         }}
+        _active={{ backgroundColor: bgHover }}
+        _disabled={{ backgroundColor: bg, cursor: 'not-allowed' }}
+        _before={before}
+        color={color}
         {...props}
       >
         {isLoading

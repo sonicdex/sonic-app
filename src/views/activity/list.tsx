@@ -1,14 +1,7 @@
-import {
-  Alert,
-  AlertIcon,
-  AlertTitle,
-  Skeleton,
-  Stack,
-  Text,
-} from '@chakra-ui/react';
+import { Skeleton, Stack, Text } from '@chakra-ui/react';
 import { Fragment } from 'react';
 
-import { Header, PlugButton } from '@/components';
+import { Header, PlugNotConnected } from '@/components';
 import {
   activityViewActions,
   FeatureState,
@@ -47,11 +40,7 @@ export const ActivityListView = () => {
     return (
       <>
         <Header title="Your Activity" />
-        <Alert status="warning" mb={6}>
-          <AlertIcon />
-          <AlertTitle>You are not connected to the wallet</AlertTitle>
-        </Alert>
-        <PlugButton />
+        <PlugNotConnected message="Your transaction activity will appear here." />
       </>
     );
   }
