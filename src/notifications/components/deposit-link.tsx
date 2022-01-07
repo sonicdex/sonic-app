@@ -95,7 +95,7 @@ export const DepositLink: React.FC<DepositLinkProps> = ({ id }) => {
         dispatch(modalsSliceActions.closeDepositProgressModal());
         getBalances();
         addNotification({
-          title: `Deposited ${value} ${selectedToken?.symbol} successful`,
+          title: `Deposited ${value} ${selectedToken?.symbol}`,
           type: NotificationType.Success,
           id: Date.now().toString(),
           transactionLink: '/activity',
