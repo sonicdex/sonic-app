@@ -15,6 +15,10 @@ export const useApproveTransactionMemo: CreateTransaction<Deposit> = (
   useMemo(() => {
     if (!token?.id) throw new Error('Token is required');
 
+    const parsedAmount = parseAmount(amount, token.decimals);
+    const toApproveAmount =
+      parsedAmount + token.fee > BigInt(allowance) ? parsedAmount : 0;
+
     return {
       canisterId: token.id,
       idl: TokenIDL.factory,
@@ -24,9 +28,6 @@ export const useApproveTransactionMemo: CreateTransaction<Deposit> = (
         if (onSuccess) onSuccess(res);
       },
       onFail,
-      args: [
-        Principal.fromText(ENV.canisterIds.swap),
-        parseAmount(amount, token.decimals),
-      ],
+      args: [Principal.fromText(ENV.canisterIds.swap), toApproveAmount],
     };
   }, [amount, token, allowance]);
