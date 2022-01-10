@@ -1,14 +1,7 @@
-import {
-  Alert,
-  AlertIcon,
-  AlertTitle,
-  Skeleton,
-  Stack,
-  Text,
-} from '@chakra-ui/react';
+import { Skeleton, Stack, Text } from '@chakra-ui/react';
 import { Fragment } from 'react';
 
-import { Header, PlugButton } from '@/components';
+import { Header, PlugNotConnected } from '@/components';
 import {
   activityViewActions,
   FeatureState,
@@ -17,7 +10,6 @@ import {
   useAppDispatch,
   usePlugStore,
 } from '@/store';
-import { theme } from '@/theme';
 
 import {
   AddLiquidityActivity,
@@ -47,11 +39,7 @@ export const ActivityListView = () => {
     return (
       <>
         <Header title="Your Activity" />
-        <Alert status="warning" mb={6}>
-          <AlertIcon />
-          <AlertTitle>You are not connected to the wallet</AlertTitle>
-        </Alert>
-        <PlugButton />
+        <PlugNotConnected message="Your transaction activity will appear here." />
       </>
     );
   }
@@ -90,23 +78,7 @@ export const ActivityListView = () => {
         title="Your Activity"
         isRefreshing={state === FeatureState.Loading}
       />
-      <Stack
-        mt={-5}
-        mb={-5}
-        spacing={4}
-        overflowX="hidden"
-        position="relative"
-        _after={{
-          content: "''",
-          position: 'absolute',
-          height: 20,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          pointerEvents: 'none',
-          background: `linear-gradient(to bottom, transparent 0%, ${theme.colors.bg} 100%)`,
-        }}
-      >
+      <Stack mt={-5} mb={-5} spacing={4} overflowX="hidden" position="relative">
         <Stack
           overflowX="auto"
           pb={20}

@@ -1,6 +1,6 @@
 import { Flex, Modal, ModalOverlay } from '@chakra-ui/react';
 
-import { depositSrc, plusSrc, swapSrc } from '@/assets';
+import { checkPlainSrc, depositSrc, dropSrc, plusSrc } from '@/assets';
 import {
   AddLiquidityModalDataStep,
   modalsSliceActions,
@@ -40,7 +40,7 @@ export const AddLiquidityProgressModal = () => {
       isCentered
     >
       <ModalOverlay />
-      <TransactionProgressModalContent title="Adding Liquidity">
+      <TransactionProgressModalContent title="Add LP in progress">
         <Flex alignItems="flex-start">
           {steps?.includes(AddLiquidityModalDataStep.CreatePair) && (
             <TransactionStep
@@ -54,10 +54,10 @@ export const AddLiquidityProgressModal = () => {
           {steps?.includes(AddLiquidityModalDataStep.Approve0) && (
             <TransactionStep
               status={getStepStatus(AddLiquidityModalDataStep.Approve0)}
-              iconSrc={depositSrc}
+              iconSrc={checkPlainSrc}
               chevron
             >
-              Approving usage <br /> {token0Symbol}
+              Approving <br /> {token0Symbol}
             </TransactionStep>
           )}
           {steps?.includes(AddLiquidityModalDataStep.Deposit0) && (
@@ -72,10 +72,10 @@ export const AddLiquidityProgressModal = () => {
           {steps?.includes(AddLiquidityModalDataStep.Approve1) && (
             <TransactionStep
               status={getStepStatus(AddLiquidityModalDataStep.Approve1)}
-              iconSrc={depositSrc}
+              iconSrc={checkPlainSrc}
               chevron
             >
-              Approving usage <br /> {token1Symbol}
+              Approving <br /> {token1Symbol}
             </TransactionStep>
           )}
           {steps?.includes(AddLiquidityModalDataStep.Deposit1) && (
@@ -89,9 +89,9 @@ export const AddLiquidityProgressModal = () => {
           )}
           <TransactionStep
             status={getStepStatus(AddLiquidityModalDataStep.AddLiquidity)}
-            iconSrc={swapSrc}
+            iconSrc={dropSrc}
           >
-            Adding Liquidity <br /> {token0Symbol} + {token1Symbol}
+            Adding LP of <br /> {token0Symbol} + {token1Symbol}
           </TransactionStep>
         </Flex>
       </TransactionProgressModalContent>

@@ -1,12 +1,4 @@
-import {
-  Alert,
-  AlertIcon,
-  AlertTitle,
-  Box,
-  HStack,
-  Stack,
-  Text,
-} from '@chakra-ui/react';
+import { Box, HStack, Stack, Text } from '@chakra-ui/react';
 import { FaMinus } from '@react-icons/all-files/fa/FaMinus';
 import { FaPlus } from '@react-icons/all-files/fa/FaPlus';
 import BigNumber from 'bignumber.js';
@@ -21,7 +13,7 @@ import {
   DisplayValue,
   Header,
   InformationBox,
-  PlugButton,
+  PlugNotConnected,
 } from '@/components';
 import { AppTokenMetadata } from '@/models';
 import {
@@ -192,31 +184,25 @@ export const LiquidityListView = () => {
 
   return (
     <>
-      {isBannerOpened && (
-        <InformationBox
-          onClose={handleInformationClose}
-          title={INFORMATION_TITLE}
-          mb={9}
-        >
-          <InformationDescription />
-        </InformationBox>
-      )}
       <Header
         title="Your Liquidity Positions"
         buttonText="Create Position"
         onButtonClick={() => moveToAddLiquidityView()}
         isRefreshing={isRefreshing}
-      />
+      >
+        {isBannerOpened && (
+          <InformationBox
+            onClose={handleInformationClose}
+            title={INFORMATION_TITLE}
+            mb={9}
+          >
+            <InformationDescription />
+          </InformationBox>
+        )}
+      </Header>
 
       {!isConnected ? (
-        <>
-          <Alert status="warning" mb={6}>
-            <AlertIcon />
-            <AlertTitle>You are not connected to the wallet</AlertTitle>
-          </Alert>
-
-          <PlugButton />
-        </>
+        <PlugNotConnected message="Your liquidity positions will appear here." />
       ) : isLoading ? (
         <Stack spacing={4}>
           <Asset isLoading>

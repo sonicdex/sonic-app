@@ -101,7 +101,7 @@ export const LiquidityAddView = () => {
     }
 
     addNotification({
-      title: `Adding liquidity: ${token0.metadata?.symbol} + ${token1.metadata?.symbol}`,
+      title: `Add LP of ${token0.value} ${token0.metadata?.symbol} + ${token1.value} ${token1.metadata?.symbol}`,
       type: NotificationType.AddLiquidity,
       id: String(new Date().getTime()),
     });
@@ -645,7 +645,7 @@ export const LiquidityAddView = () => {
         )}
       </Flex>
       {!isConnected ? (
-        <PlugButton />
+        <PlugButton variant="dark" />
       ) : (
         <Button
           isFullWidth
