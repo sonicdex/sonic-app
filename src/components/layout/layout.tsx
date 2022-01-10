@@ -37,6 +37,8 @@ export const Layout: React.FC = ({ children, ...props }) => {
     <>
       <Container maxW="container.xl" position="sticky" top={0} zIndex={10}>
         <Grid
+          position="relative"
+          zIndex={-2}
           as="header"
           py="8"
           templateColumns="repeat(5, 1fr)"
