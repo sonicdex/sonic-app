@@ -1,6 +1,6 @@
 import { Flex, Text } from '@chakra-ui/react';
 import { FaArrowRight } from '@react-icons/all-files/fa/FaArrowRight';
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import { AppTokenMetadata } from '@/models';
 import { getCurrencyString } from '@/utils/format';
@@ -13,6 +13,14 @@ export type FeeBoxProps = {
 export const FeeBox: React.FC<FeeBoxProps> = ({ isDeposit = false, token }) => {
   if (!token) return null;
 
+  const fee = useMemo(() => {
+    if (isDeposit) {
+      return getCurrencyString(BigInt(2) * token.fee, token.decimals);
+    } else {
+      return getCurrencyString(token.fee, token.decimals);
+    }
+  }, [isDeposit, token]);
+
   return (
     <Flex opacity={0.4} alignItems="center" px={4} fontWeight={400} mb={5}>
       <Text display="flex" alignItems="center">
@@ -22,7 +30,7 @@ export const FeeBox: React.FC<FeeBoxProps> = ({ isDeposit = false, token }) => {
       </Text>
       <Text flex={1} textAlign="right" mx={2}>
         {token.symbol}&nbsp;Fee =&nbsp;
-        {getCurrencyString(token.fee, token.decimals)}
+        {fee}
         &nbsp;{token.symbol}
       </Text>
     </Flex>
