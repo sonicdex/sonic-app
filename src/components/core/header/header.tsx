@@ -6,16 +6,15 @@ type HeaderProps = {
   buttonText?: string;
   onButtonClick?: React.MouseEventHandler<HTMLButtonElement>;
   isRefreshing?: boolean;
-  children?: React.ReactNode;
 };
 
-export const Header = ({
+export const Header: React.FC<HeaderProps> = ({
   title,
   buttonText,
   onButtonClick,
   isRefreshing,
   children,
-}: HeaderProps) => {
+}) => {
   const paddingToLine = buttonText && onButtonClick ? '17px' : '24px';
   const marginTop = buttonText && onButtonClick ? '-8px' : '0px';
 
@@ -23,7 +22,7 @@ export const Header = ({
     <Flex
       position="sticky"
       top="116px"
-      pt={10}
+      pt={5}
       mt={-10}
       mb={5}
       backgroundColor="bg"
