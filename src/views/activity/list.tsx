@@ -10,7 +10,6 @@ import {
   useAppDispatch,
   usePlugStore,
 } from '@/store';
-import { theme } from '@/theme';
 
 import {
   AddLiquidityActivity,
@@ -79,23 +78,7 @@ export const ActivityListView = () => {
         title="Your Activity"
         isRefreshing={state === FeatureState.Loading}
       />
-      <Stack
-        mt={-5}
-        mb={-5}
-        spacing={4}
-        overflowX="hidden"
-        position="relative"
-        _after={{
-          content: "''",
-          position: 'absolute',
-          height: 20,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          pointerEvents: 'none',
-          background: `linear-gradient(to bottom, transparent 0%, ${theme.colors.bg} 100%)`,
-        }}
-      >
+      <Stack mt={-5} mb={-5} spacing={4} overflowX="hidden" position="relative">
         <Stack
           overflowX="auto"
           pb={20}

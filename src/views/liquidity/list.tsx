@@ -184,21 +184,22 @@ export const LiquidityListView = () => {
 
   return (
     <>
-      {isBannerOpened && (
-        <InformationBox
-          onClose={handleInformationClose}
-          title={INFORMATION_TITLE}
-          mb={9}
-        >
-          <InformationDescription />
-        </InformationBox>
-      )}
       <Header
         title="Your Liquidity Positions"
         buttonText="Create Position"
         onButtonClick={() => moveToAddLiquidityView()}
         isRefreshing={isRefreshing}
-      />
+      >
+        {isBannerOpened && (
+          <InformationBox
+            onClose={handleInformationClose}
+            title={INFORMATION_TITLE}
+            mb={9}
+          >
+            <InformationDescription />
+          </InformationBox>
+        )}
+      </Header>
 
       {!isConnected ? (
         <PlugNotConnected message="Your liquidity positions will appear here." />
