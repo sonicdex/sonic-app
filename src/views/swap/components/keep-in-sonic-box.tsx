@@ -25,6 +25,9 @@ type KeepInSonicBoxProps = {
   canHeldInSonic?: boolean;
 };
 
+const KEEP_IN_SONIC_LINK =
+  'https://docs.sonic.ooo/product/assets#keeping-assets-in-sonic-after-a-swap';
+
 export const KeepInSonicBox: React.FC<KeepInSonicBoxProps> = ({
   symbol,
   operation = 'swap',
@@ -46,8 +49,7 @@ export const KeepInSonicBox: React.FC<KeepInSonicBoxProps> = ({
               for high frequency trading where a few extra seconds matter a lot.
               By doing this, you can skip the deposit step on your next trades
               and save 2-3 seconds each time.&nbsp;
-              <Link href="/#" color="#3D52F4">
-                {/* TODO: add correct href */}
+              <Link href={KEEP_IN_SONIC_LINK} color="#3D52F4">
                 Learn More
               </Link>
               .
@@ -64,8 +66,7 @@ export const KeepInSonicBox: React.FC<KeepInSonicBoxProps> = ({
               If you keep your tokens deposited in Sonic (instead of withdrawing
               to Plug) you can start swaps or add liquidity faster on your next
               operation. &nbsp;
-              <Link href="/#" color="#3D52F4">
-                {/* TODO: add correct href */}
+              <Link href={KEEP_IN_SONIC_LINK} color="#3D52F4">
                 Learn More
               </Link>
               .

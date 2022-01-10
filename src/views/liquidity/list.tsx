@@ -30,6 +30,8 @@ import { getCurrency, getCurrencyString } from '@/utils/format';
 const INFORMATION_TITLE = 'Liquidity Provider Rewards';
 const INFORMATION_DESCRIPTION =
   'Liquidity providers earn a 0.3% fee on all trades proportional to their share of the pool. Fees are added to the pool, accrue in real time and can be claimed by withdrawing your liquidity. If you want to learn ';
+const INFORMATION_LINK =
+  'https://docs.sonic.ooo/product/adding-liquidity/claiming-your-rewards';
 
 const InformationDescription = () => (
   <Text color="#888E8F">
@@ -37,7 +39,7 @@ const InformationDescription = () => (
     <Box
       as="a"
       color="#888E8F"
-      href="#"
+      href={INFORMATION_LINK}
       textDecoration="underline"
       _visited={{
         color: '#888E8F',
