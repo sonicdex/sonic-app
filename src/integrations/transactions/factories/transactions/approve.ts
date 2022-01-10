@@ -26,7 +26,7 @@ export const useApproveTransactionMemo: CreateTransaction<Deposit> = (
       onFail,
       args: [
         Principal.fromText(ENV.canisterIds.swap),
-        parseAmount(amount, token.decimals) - BigInt(allowance),
+        parseAmount(amount, token.decimals),
       ],
     };
   }, [amount, token, allowance]);
