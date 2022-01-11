@@ -12,7 +12,7 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { FaArrowRight } from '@react-icons/all-files/fa/FaArrowRight';
-import React, { useCallback, useMemo } from 'react';
+import React, { useMemo } from 'react';
 
 import { infoSrc } from '@/assets';
 import { StackLine } from '@/components';
@@ -20,7 +20,6 @@ import { ICP_METADATA } from '@/constants';
 import { TokenData } from '@/models';
 import { useSwapCanisterStore } from '@/store';
 import {
-  calculatePriceImpact,
   getAmountOut,
   getAmountOutMin,
   getCurrencyString,
@@ -30,31 +29,16 @@ export type ExchangeBoxProps = {
   from: TokenData;
   to: TokenData;
   slippage: string;
+  priceImpact?: string;
 };
 
 export const ExchangeBox: React.FC<ExchangeBoxProps> = ({
   from,
   to,
   slippage,
+  priceImpact,
 }) => {
   const { allPairs } = useSwapCanisterStore();
-
-  const getPriceImpact = useCallback(
-    (reserve0: bigint, reserve1: bigint) => {
-      if (from.metadata?.decimals && to.metadata?.decimals) {
-        return calculatePriceImpact({
-          amountIn: from.value,
-          decimalsIn: from.metadata.decimals,
-          decimalsOut: to.metadata.decimals,
-          reserve0: reserve0.toString(),
-          reserve1: reserve1.toString(),
-        });
-      }
-
-      return '0';
-    },
-    [from, to]
-  );
 
   const { depositFee, withdrawFee } = useMemo(() => {
     if (from.metadata?.id && to.metadata?.id) {
@@ -160,10 +144,9 @@ export const ExchangeBox: React.FC<ExchangeBoxProps> = ({
                       : 0
                   } ${to.metadata.symbol}`}
                 />
-                <StackLine
-                  title="Price Impact"
-                  value={`${getPriceImpact(reserve0, reserve1)}%`}
-                />
+                {priceImpact && (
+                  <StackLine title="Price Impact" value={`${priceImpact}%`} />
+                )}
                 <StackLine title="Allowed Slippage" value={`${slippage}%`} />
                 {/* TODO: add liquidity fee */}
                 {/* <StackLine

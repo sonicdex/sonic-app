@@ -50,7 +50,11 @@ import {
   useSwapViewStore,
   useTokenModalOpener,
 } from '@/store';
-import { getCurrency, getDepositMaxValue } from '@/utils/format';
+import {
+  calculatePriceImpact,
+  getCurrency,
+  getDepositMaxValue,
+} from '@/utils/format';
 import { debounce } from '@/utils/function';
 
 import { ExchangeBox } from '.';
@@ -67,6 +71,7 @@ export const SwapHomeStep = () => {
     icpBalance,
     balancesState,
     supportedTokenListState,
+    allPairs,
     allPairsState,
   } = useSwapCanisterStore();
   const { isConnected } = usePlugStore();
@@ -259,6 +264,30 @@ export const SwapHomeStep = () => {
     to.value,
   ]);
 
+  const priceImpact = useMemo(() => {
+    if (from.metadata?.id && to.metadata?.id) {
+      const { reserve0, reserve1 } =
+        allPairs?.[from.metadata.id]?.[to.metadata.id] || {};
+
+      if (
+        from.metadata?.decimals &&
+        to.metadata?.decimals &&
+        reserve0 &&
+        reserve1
+      ) {
+        return calculatePriceImpact({
+          amountIn: from.value,
+          decimalsIn: from.metadata.decimals,
+          decimalsOut: to.metadata.decimals,
+          reserveIn: reserve0.toString(),
+          reserveOut: reserve1.toString(),
+        });
+      }
+    }
+
+    return undefined;
+  }, [from, to, allPairs]);
+
   const selectedTokenIds = useMemo(() => {
     const selectedIds = [];
     if (from?.metadata?.id) selectedIds.push(from.metadata.id);
@@ -432,13 +461,18 @@ export const SwapHomeStep = () => {
             </TokenContent>
             <TokenBalances>
               <TokenBalancesDetails />
-              <TokenBalancesPrice shouldShowPriceDiff={!isICPSelected} />
+              <TokenBalancesPrice priceImpact={priceImpact} />
             </TokenBalances>
           </Token>
         </Box>
       </Flex>
 
-      <ExchangeBox from={from} to={to} slippage={slippage} />
+      <ExchangeBox
+        from={from}
+        to={to}
+        slippage={slippage}
+        priceImpact={priceImpact}
+      />
 
       <KeepInSonicBox
         canHeldInSonic={!isSecondTokenIsICP}

@@ -32,7 +32,7 @@ export type TokenUniqueProps = {
   tokenMetadata?: AppTokenMetadata;
   tokenListMetadata?: AppTokenMetadata[];
   sources?: TokenSource[];
-  setValue?: (value: string) => any;
+  setValue?: (value: string) => unknown;
   isDisabled?: boolean;
   isLoading?: boolean;
   isBalancesLoading?: boolean;
@@ -174,11 +174,11 @@ export const TokenBalances = (props: FlexProps) => {
 };
 
 export type TokenBalancesPriceProps = BoxProps & {
-  shouldShowPriceDiff?: boolean;
+  priceImpact?: string;
 };
 
 export const TokenBalancesPrice: React.FC<TokenBalancesPriceProps> = ({
-  shouldShowPriceDiff = false,
+  priceImpact,
   ...props
 }) => {
   const { isLoading, value, tokenMetadata } = useTokenContext();
@@ -199,42 +199,34 @@ export const TokenBalancesPrice: React.FC<TokenBalancesPriceProps> = ({
 
   const defaultColor = isActive ? 'gray.50' : 'gray.300';
 
-  const { color, priceDifferencePercentage } = useMemo(() => {
-    // TODO: finish
-    // if (shouldShowPriceDiff) {
-    //   const priceDifferencePercentage = 0;
+  const color = useMemo(() => {
+    if (priceImpact) {
+      const priceImpactNumber = parseFloat(priceImpact);
+      const color =
+        priceImpactNumber >= 0
+          ? 'green.500'
+          : priceImpactNumber >= 0 && priceImpactNumber >= -1
+          ? defaultColor
+          : priceImpactNumber < -1 && priceImpactNumber >= -5
+          ? 'yellow.500'
+          : 'red.500';
 
-    //   const color =
-    //     priceDifferencePercentage > 0
-    //       ? 'green.500'
-    //       : priceDifferencePercentage <= 0 && priceDifferencePercentage >= -1
-    //       ? defaultColor
-    //       : priceDifferencePercentage < -1 && priceDifferencePercentage >= -5
-    //       ? 'yellow.500'
-    //       : 'red.500';
+      return color;
+    }
 
-    //   return {
-    //     color,
-    //     priceDifferencePercentage,
-    //   };
-    // }
-
-    return {
-      color: defaultColor,
-      priceDifferencePercentage: undefined,
-    };
-  }, [isActive, shouldShowPriceDiff, price]);
+    return defaultColor;
+  }, [isActive, priceImpact, price]);
 
   return (
     <Skeleton isLoaded={!isLoading} borderRadius="full">
       <Flex transition="color 400ms" color={defaultColor} {...props}>
         <DisplayValue value={price} prefix="$" />
         &nbsp;
-        {priceDifferencePercentage && (
+        {priceImpact && (
           <DisplayValue
             color={color}
-            value={priceDifferencePercentage}
-            prefix="(-"
+            value={priceImpact}
+            prefix="("
             suffix="%)"
           />
         )}
