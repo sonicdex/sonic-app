@@ -14,7 +14,7 @@ import {
 } from '@chakra-ui/react';
 import { FaArrowDown } from '@react-icons/all-files/fa/FaArrowDown';
 import { FaCog } from '@react-icons/all-files/fa/FaCog';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import {
   PLUG_WALLET_WEBSITE_URL,
@@ -52,13 +52,14 @@ import {
 } from '@/store';
 import { getCurrency, getDepositMaxValue } from '@/utils/format';
 import { debounce } from '@/utils/function';
+import { minimalPaths } from '@/utils/minimal-paths';
 
 import { ExchangeBox } from '.';
 import { KeepInSonicBox } from './keep-in-sonic-box';
 
 export const SwapHomeStep = () => {
   const { addNotification } = useNotificationStore();
-  const { fromTokenOptions, toTokenOptions, from, to, slippage } =
+  const { fromTokenOptions, toTokenOptions, from, to, slippage, tokenList } =
     useSwapViewStore();
   const dispatch = useAppDispatch();
   const {
@@ -68,6 +69,7 @@ export const SwapHomeStep = () => {
     balancesState,
     supportedTokenListState,
     allPairsState,
+    allPairs,
   } = useSwapCanisterStore();
   const { isConnected } = usePlugStore();
 
@@ -313,6 +315,13 @@ export const SwapHomeStep = () => {
       });
     }
   }, [to.metadata, tokenBalances, sonicBalances]);
+
+  useEffect(() => {
+    if (allPairs && tokenList) {
+      console.log('calling minimal paths');
+      minimalPaths(allPairs, tokenList);
+    }
+  }, [allPairs, tokenList]);
 
   return (
     <Stack spacing={4}>
