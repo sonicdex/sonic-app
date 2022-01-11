@@ -10,18 +10,27 @@ export type BigNumberish = BigNumber | Bytes | bigint | string | number;
 
 BigNumber.config({ EXPONENTIAL_AT: 99 });
 
-export const deserialize = (json: string) =>
-  JSON.parse(json, (key, value) => {
-    if (typeof value === 'string' && /^\d+n$/.test(value)) {
-      return BigInt(value.substr(0, value.length - 1));
-    }
-    return value;
-  });
+export const deserialize = (json: string) => {
+  try {
+    return JSON.parse(json, (key, value) => {
+      if (typeof value === 'string' && /^\d+n$/.test(value)) {
+        return BigInt(value.substr(0, value.length - 1));
+      }
+      return value;
+    });
+  } catch {
+    return undefined;
+  }
+};
 
 export const stringify = (data: any) => {
-  return JSON.stringify(data, (key, value) =>
-    typeof value === 'bigint' ? value.toString() + 'n' : value
-  );
+  try {
+    return JSON.stringify(data, (key, value) =>
+      typeof value === 'bigint' ? value.toString() + 'n' : value
+    );
+  } catch {
+    return '';
+  }
 };
 
 export const parseAmount = (val: string, decimals: string | number): bigint => {
@@ -142,7 +151,7 @@ export const getAmountEqualLPToken = ({
     new BigNumber(reserveIn).isZero() ||
     new BigNumber(reserveOut).isZero()
   ) {
-    return '0.00';
+    return '0';
   }
 
   const amountOut = new BigNumber(amountIn)
@@ -158,14 +167,23 @@ export const getAmountEqualLPToken = ({
   return amountOut;
 };
 
-export const getAmountOut = (
-  amountIn: string | number,
-  decimalsIn: string | number,
-  decimalsOut: string | number,
-  reserveIn: string | number,
-  reserveOut: string | number,
-  fee = 3 // means 0.003
-): string => {
+export type GetAmountOutOptions = {
+  amountIn: string | number;
+  decimalsIn: string | number;
+  decimalsOut: string | number;
+  reserveIn: string | number;
+  reserveOut: string | number;
+  fee?: number;
+};
+
+export const getAmountOut = ({
+  amountIn,
+  decimalsIn,
+  decimalsOut,
+  reserveIn,
+  reserveOut,
+  fee = 3,
+}: GetAmountOutOptions): string => {
   if (!amountIn || new BigNumber(amountIn).isZero()) return '';
 
   const amountInWithFee = new BigNumber(amountIn) // amountIn * 997;
@@ -221,29 +239,49 @@ export const getAmountMin = (
     .toString();
 };
 
-export const calculatePriceImpact = (
-  amountIn: string | number,
-  decimalsIn: string | number,
-  amountOut: string | number,
-  decimalsOut: string | number,
-  reserve0: string | number,
-  reserve1: string | number
-): string => {
+export type CalculatePriceImpactOptions = {
+  amountIn: string | number;
+  decimalsIn: string | number;
+  decimalsOut: string | number;
+  reserve0: string | number;
+  reserve1: string | number;
+};
+
+export const calculatePriceImpact = ({
+  amountIn,
+  decimalsIn,
+  decimalsOut,
+  reserve0,
+  reserve1,
+}: CalculatePriceImpactOptions): string => {
   if (
     !amountIn ||
-    !amountOut ||
     new BigNumber(amountIn).isNaN() ||
-    new BigNumber(amountOut).isNaN() ||
     new BigNumber(reserve1).isZero()
   )
-    return '0.00';
-  // price impact = abs(reserve0/reserve1 - (reserve0 + amountIn)/(reserve1 - amountOut))
+    return '0';
+
+  // price impact = abs(reserve0/reserve1 - (reserve0 + amountIn) / (reserve1 - amountOut))
+
+  const amountOut = getAmountOut({
+    amountIn,
+    decimalsIn,
+    decimalsOut,
+    reserveIn: reserve0,
+    reserveOut: reserve1,
+  });
+
+  console.log(amountIn, amountOut, decimalsIn, decimalsOut, reserve0, reserve1);
+
   const aIn = new BigNumber(amountIn).multipliedBy(
     new BigNumber(10).pow(Number(decimalsIn))
   );
   const aOut = new BigNumber(Number(amountOut)).multipliedBy(
     new BigNumber(10).pow(Number(decimalsOut))
   );
+
+  console.log(aIn, aOut);
+
   const a = new BigNumber(reserve0).dividedBy(new BigNumber(reserve1));
   const b = new BigNumber(reserve0).plus(aIn);
   const c = new BigNumber(reserve1).plus(aOut);

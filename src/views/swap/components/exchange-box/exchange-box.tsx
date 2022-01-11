@@ -12,7 +12,7 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { FaArrowRight } from '@react-icons/all-files/fa/FaArrowRight';
-import React from 'react';
+import React, { useCallback, useMemo } from 'react';
 
 import { infoSrc } from '@/assets';
 import { StackLine } from '@/components';
@@ -39,6 +39,41 @@ export const ExchangeBox: React.FC<ExchangeBoxProps> = ({
 }) => {
   const { allPairs } = useSwapCanisterStore();
 
+  const getPriceImpact = useCallback(
+    (reserve0: bigint, reserve1: bigint) => {
+      if (from.metadata?.decimals && to.metadata?.decimals) {
+        return calculatePriceImpact({
+          amountIn: from.value,
+          decimalsIn: from.metadata.decimals,
+          decimalsOut: to.metadata.decimals,
+          reserve0: reserve0.toString(),
+          reserve1: reserve1.toString(),
+        });
+      }
+
+      return '0';
+    },
+    [from, to]
+  );
+
+  const { depositFee, withdrawFee } = useMemo(() => {
+    if (from.metadata?.id && to.metadata?.id) {
+      const depositFee = getCurrencyString(
+        BigInt(2) * from.metadata.fee,
+        from.metadata.decimals
+      );
+
+      const withdrawFee = getCurrencyString(
+        to.metadata.fee,
+        to.metadata.decimals
+      );
+
+      return { depositFee, withdrawFee };
+    }
+
+    return { depositFee: 0, withdrawFee: 0 };
+  }, [from, to]);
+
   if (!from.metadata || !to.metadata) return null;
 
   const [icp, feeMessage] =
@@ -63,7 +98,10 @@ export const ExchangeBox: React.FC<ExchangeBoxProps> = ({
     );
   }
 
-  if (!allPairs || !allPairs[from.metadata.id][to.metadata.id]) return null;
+  if (!allPairs?.[from.metadata.id]?.[to.metadata.id]) {
+    return null;
+  }
+
   const { reserve0, reserve1 } = allPairs[from.metadata.id][to.metadata.id];
 
   return (
@@ -75,13 +113,13 @@ export const ExchangeBox: React.FC<ExchangeBoxProps> = ({
       </Text>
       <Text flex={1} textAlign="right" mx={2}>
         1&nbsp;{from.metadata.symbol}&nbsp;=&nbsp;
-        {getAmountOut(
-          1,
-          from.metadata.decimals,
-          to.metadata.decimals,
-          Number(reserve0),
-          Number(reserve1)
-        )}
+        {getAmountOut({
+          amountIn: 1,
+          decimalsIn: from.metadata.decimals,
+          decimalsOut: to.metadata.decimals,
+          reserveIn: Number(reserve0),
+          reserveOut: Number(reserve1),
+        })}
         &nbsp;
         {to.metadata.symbol}
       </Text>
@@ -124,14 +162,7 @@ export const ExchangeBox: React.FC<ExchangeBoxProps> = ({
                 />
                 <StackLine
                   title="Price Impact"
-                  value={`${calculatePriceImpact(
-                    from.value,
-                    from.metadata.decimals,
-                    to.value,
-                    to.metadata.decimals,
-                    Number(reserve0),
-                    Number(reserve1)
-                  )}%`}
+                  value={`${getPriceImpact(reserve0, reserve1)}%`}
                 />
                 <StackLine title="Allowed Slippage" value={`${slippage}%`} />
                 {/* TODO: add liquidity fee */}
@@ -141,17 +172,11 @@ export const ExchangeBox: React.FC<ExchangeBoxProps> = ({
                 /> */}
                 <StackLine
                   title="Deposit Fee"
-                  value={`${getCurrencyString(
-                    BigInt(2) * from.metadata.fee,
-                    from.metadata.decimals
-                  )} ${from.metadata.symbol}`}
+                  value={`${depositFee} ${from.metadata.symbol}`}
                 />
                 <StackLine
                   title="Withdraw Fee"
-                  value={`${getCurrencyString(
-                    to.metadata.fee,
-                    to.metadata.decimals
-                  )} ${to.metadata.symbol}`}
+                  value={`${withdrawFee} ${to.metadata.symbol}`}
                 />
               </Stack>
             </PopoverBody>
