@@ -95,7 +95,6 @@ export const swapViewSlice = createSlice({
         state.from.value = '';
         state.to.value = '';
       }
-      state.step = SwapStep.Home;
     },
     setSlippage: (state, action: PayloadAction<string>) => {
       state.slippage = action.payload;
