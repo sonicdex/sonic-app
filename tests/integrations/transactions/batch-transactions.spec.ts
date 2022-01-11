@@ -1,6 +1,7 @@
-import { BatchTransactions, Batch } from '@/integrations/transactions';
 import { batchTransactionFailMock, mockPlugProvider } from '@tests/mocks/plug';
 import { mockTransaction } from '@tests/mocks/transactions';
+
+import { Batch, BatchTransactions } from '@/integrations/transactions';
 
 const makeSut = () => {
   const plugMock = mockPlugProvider();
@@ -35,7 +36,7 @@ describe('BatchTransactions', () => {
 
     const result = await sut.execute();
 
-    expect(result).toBe(true);
+    expect(result).toEqual([]);
     expect(sut.getTransactions()).toHaveLength(0);
     expect(providerBatchTransactions).toHaveBeenCalledTimes(1);
   });
@@ -50,7 +51,7 @@ describe('BatchTransactions', () => {
 
     expect(confirmRetryMock).toHaveBeenCalledTimes(1);
     expect(providerBatchTransactions).toHaveBeenCalledTimes(2);
-    expect(result).toBe(true);
+    expect(result).toEqual([]);
     expect(sut.getTransactions()).toHaveLength(0);
   });
 
