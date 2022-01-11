@@ -215,7 +215,7 @@ export const TokenBalancesPrice: React.FC<TokenBalancesPriceProps> = ({
     }
 
     return defaultColor;
-  }, [isActive, priceImpact, price]);
+  }, [priceImpact, defaultColor]);
 
   return (
     <Skeleton isLoaded={!isLoading} borderRadius="full">
@@ -262,7 +262,7 @@ export const TokenBalancesDetails: React.FC<TokenBalancesDetailsProps> = ({
     }
 
     return false;
-  }, [onMaxClick, totalTokenBalance, value]);
+  }, [onMaxClick, tokenMetadata, totalTokenBalance, value]);
 
   return (
     <Skeleton isLoaded={!isLoading} borderRadius="full" minW={20}>
@@ -329,7 +329,7 @@ export const TokenInput: React.FC<TokenInputProps> = (props) => {
         setValue(newValue);
       }
     },
-    [value, tokenMetadata, setValue]
+    [tokenMetadata, setValue]
   );
 
   return (
