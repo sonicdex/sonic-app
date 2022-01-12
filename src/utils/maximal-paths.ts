@@ -105,13 +105,10 @@ export const findMaximalPaths = (weightList: WeightList, source: string) => {
   return nodes;
 };
 
-const parseMaximalPaths = (
-  nodes: GraphNodeList,
-  source: string
-): MinimalPathsResult => {
+const parseMaximalPaths = (nodes: GraphNodeList): MinimalPathsResult => {
   const result: MinimalPathsResult = {};
   for (const node of Object.values(nodes)) {
-    if (node.id === source || node.id === null) continue;
+    if (node.path.size < 2) continue;
     result[node.id] = {
       path: Array.from(node.path),
       coefficient: node.coefficient,
@@ -128,8 +125,7 @@ export const getTokenPaths = (
   const weightList = getWeightList(pairList, tokenList);
   if (!weightList[tokenId]) return {};
   const graphNodes = findMaximalPaths(weightList, tokenId);
-  const maximalPaths = parseMaximalPaths(graphNodes, tokenId);
+  const maximalPaths = parseMaximalPaths(graphNodes);
 
-  console.log('graphNodes', tokenId, maximalPaths);
   return maximalPaths;
 };

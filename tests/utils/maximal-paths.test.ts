@@ -1,33 +1,12 @@
-// import { AppTokenMetadataListObject } from '@/models';
 import {
   findMaximalPaths,
+  getTokenPaths,
   GraphNodeList,
   WeightList,
 } from '@/utils/maximal-paths';
 
-// const tokenListMock: AppTokenMetadataListObject = [
-//   'A',
-//   'B',
-//   'C',
-//   'D',
-//   'E',
-//   'F',
-//   'G',
-// ].reduce(
-//   (list, symbol) => ({
-//     ...list,
-//     [`token${symbol}`]: {
-//       id: `token${symbol}`,
-//       decimals: 8,
-//       fee: BigInt(0),
-//       logo: '',
-//       name: `Token ${symbol}`,
-//       symbol: `T${symbol}`,
-//       totalSupply: BigInt(1000000),
-//     },
-//   }),
-//   {}
-// );
+import { mockAllPairs } from '../mocks/all-pairs';
+import { mockTokenList } from '../mocks/token-list';
 
 describe('findMaximalPaths', () => {
   const case0 = [
@@ -202,4 +181,31 @@ describe('findMaximalPaths', () => {
       });
     }
   );
+});
+
+describe('getTokenPaths', () => {
+  const allPairs = mockAllPairs();
+  const tokenList = mockTokenList();
+
+  test('should return the correct path', () => {
+    const paths = getTokenPaths(allPairs, tokenList, Object.keys(tokenList)[0]);
+    expect(paths).toEqual({
+      'oexpe-biaaa-aaaah-qcf6q-cai': {
+        path: ['onuey-xaaaa-aaaah-qcf7a-cai', 'oexpe-biaaa-aaaah-qcf6q-cai'],
+        coefficient: 0.99698012,
+      },
+      'gagfc-iqaaa-aaaah-qcdvq-cai': {
+        path: ['onuey-xaaaa-aaaah-qcf7a-cai', 'gagfc-iqaaa-aaaah-qcdvq-cai'],
+        coefficient: 0.99699006,
+      },
+      'gvbup-jyaaa-aaaah-qcdwa-cai': {
+        path: [
+          'onuey-xaaaa-aaaah-qcf7a-cai',
+          'gagfc-iqaaa-aaaah-qcdvq-cai',
+          'gvbup-jyaaa-aaaah-qcdwa-cai',
+        ],
+        coefficient: 1.0144484127600635,
+      },
+    });
+  });
 });
