@@ -98,8 +98,6 @@ export const SwapHomeStep = () => {
     const balance = key === 'from' ? fromBalance : toBalance;
     const metadata = key === 'from' ? from.metadata : to.metadata;
 
-    console.log(balance);
-
     if (!balance) {
       return;
     }
