@@ -58,13 +58,17 @@ export const useSwapView = () => {
       dispatch(
         swapViewActions.setValue({
           data: 'to',
-          value: getAmountOut(
-            from.value,
-            from.metadata.decimals,
-            to.metadata.decimals,
-            String(allPairs[from.metadata.id][to.metadata.id].reserve0),
-            String(allPairs[from.metadata.id][to.metadata.id].reserve1)
-          ),
+          value: getAmountOut({
+            amountIn: from.value,
+            decimalsIn: from.metadata.decimals,
+            decimalsOut: to.metadata.decimals,
+            reserveIn: String(
+              allPairs[from.metadata.id][to.metadata.id].reserve0
+            ),
+            reserveOut: String(
+              allPairs[from.metadata.id][to.metadata.id].reserve1
+            ),
+          }),
         })
       );
     }
