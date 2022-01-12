@@ -21,7 +21,7 @@ export type GraphNodeList = {
 };
 
 export type MinimalPath = {
-  distance: number;
+  coefficient: number;
   path: string[];
 };
 
@@ -114,7 +114,7 @@ const parseMaximalPaths = (
     if (node.id === source || node.id === null) continue;
     result[node.id] = {
       path: Array.from(node.path),
-      distance: node.coefficient,
+      coefficient: node.coefficient,
     };
   }
   return result;

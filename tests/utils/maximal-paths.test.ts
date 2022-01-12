@@ -127,7 +127,69 @@ describe('findMaximalPaths', () => {
     },
   ] as [number, WeightList, GraphNodeList];
 
-  test.each([case0, case1] as [number, WeightList, GraphNodeList][])(
+  const case3 = [
+    3,
+    {
+      tokenA: {
+        tokenB: 1.5,
+        tokenC: 0.5,
+      },
+      tokenB: {
+        tokenA: 1.5,
+      },
+      tokenC: {
+        tokenA: 0.5,
+        tokenD: 1.5,
+        tokenE: 2,
+      },
+      tokenD: {
+        tokenC: 1.5,
+        tokenF: 4,
+      },
+      tokenE: {
+        tokenC: 2,
+        tokenF: 0.5,
+      },
+      tokenF: {
+        tokenE: 0.5,
+        tokenD: 4,
+      },
+    },
+    {
+      tokenA: {
+        id: 'tokenA',
+        coefficient: 1,
+        path: new Set(['tokenA']),
+      },
+      tokenB: {
+        id: 'tokenB',
+        coefficient: 1.5,
+        path: new Set(['tokenA', 'tokenB']),
+      },
+      tokenC: {
+        id: 'tokenC',
+        coefficient: 0.5,
+        path: new Set(['tokenA', 'tokenC']),
+      },
+      tokenD: {
+        id: 'tokenD',
+        coefficient: 2,
+        path: new Set(['tokenA', 'tokenC', 'tokenE', 'tokenF', 'tokenD']),
+      },
+      tokenE: {
+        id: 'tokenE',
+        coefficient: 1.5,
+        path: new Set(['tokenA', 'tokenC', 'tokenD', 'tokenF', 'tokenE']),
+      },
+      tokenF: {
+        id: 'tokenF',
+        coefficient: 3,
+        path: new Set(['tokenA', 'tokenC', 'tokenD', 'tokenF']),
+      },
+    },
+  ];
+
+  test.each([case0, case1, case3] as [number, WeightList, GraphNodeList][])(
     'should return the correct path case%i',
     (index, weights, expected) => {
       const paths = findMaximalPaths(weights, 'tokenA');
