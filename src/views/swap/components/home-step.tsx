@@ -52,7 +52,7 @@ import {
 } from '@/store';
 import { getCurrency, getDepositMaxValue } from '@/utils/format';
 import { debounce } from '@/utils/function';
-import { minimalPaths } from '@/utils/minimal-paths';
+import { getTokenPaths } from '@/utils/maximal-paths';
 
 import { ExchangeBox } from '.';
 import { KeepInSonicBox } from './keep-in-sonic-box';
@@ -317,11 +317,10 @@ export const SwapHomeStep = () => {
   }, [to.metadata, tokenBalances, sonicBalances]);
 
   useEffect(() => {
-    if (allPairs && tokenList) {
-      console.log('calling minimal paths');
-      minimalPaths(allPairs, tokenList);
+    if (allPairs && tokenList && from.metadata?.id) {
+      getTokenPaths(allPairs, tokenList, from.metadata.id);
     }
-  }, [allPairs, tokenList]);
+  }, [allPairs, tokenList, from]);
 
   return (
     <Stack spacing={4}>
