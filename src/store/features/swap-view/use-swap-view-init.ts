@@ -24,7 +24,7 @@ export const useSwapView = () => {
       ...supportedTokenList,
     ]);
     dispatch(swapViewActions.setTokenList(tokenList));
-  }, [supportedTokenList]);
+  }, [dispatch, icpPrice, supportedTokenList]);
 
   useEffect(() => {
     if (!from.metadata) return;
@@ -72,5 +72,8 @@ export const useSwapView = () => {
         })
       );
     }
+    // FIXME: With all of the deps in this effect, it is causing
+    //        review step update.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [from.value, from.metadata, to.metadata]);
 };

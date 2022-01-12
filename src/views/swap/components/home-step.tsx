@@ -14,7 +14,7 @@ import {
 } from '@chakra-ui/react';
 import { FaArrowDown } from '@react-icons/all-files/fa/FaArrowDown';
 import { FaCog } from '@react-icons/all-files/fa/FaCog';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import {
   PLUG_WALLET_WEBSITE_URL,
@@ -34,7 +34,11 @@ import {
 import { ENV } from '@/config';
 import { getAppAssetsSources } from '@/config/utils';
 import { ICP_METADATA } from '@/constants';
-import { useICPSelectionDetectorMemo, useTokenBalanceMemo } from '@/hooks';
+import {
+  useICPSelectionDetectorMemo,
+  useQuery,
+  useTokenBalanceMemo,
+} from '@/hooks';
 import { useBalances } from '@/hooks/use-balances';
 import { plug } from '@/integrations/plug';
 import {
@@ -42,6 +46,7 @@ import {
   INITIAL_SWAP_SLIPPAGE,
   NotificationType,
   SwapStep,
+  SwapTokenDataKey,
   swapViewActions,
   useAppDispatch,
   useNotificationStore,
@@ -50,7 +55,11 @@ import {
   useSwapViewStore,
   useTokenModalOpener,
 } from '@/store';
-import { getCurrency, getDepositMaxValue } from '@/utils/format';
+import {
+  calculatePriceImpact,
+  getCurrency,
+  getDepositMaxValue,
+} from '@/utils/format';
 import { debounce } from '@/utils/function';
 
 import { ExchangeBox } from '.';
@@ -60,6 +69,7 @@ export const SwapHomeStep = () => {
   const { addNotification } = useNotificationStore();
   const { fromTokenOptions, toTokenOptions, from, to, slippage } =
     useSwapViewStore();
+  const query = useQuery();
   const dispatch = useAppDispatch();
   const {
     sonicBalances,
@@ -67,16 +77,16 @@ export const SwapHomeStep = () => {
     icpBalance,
     balancesState,
     supportedTokenListState,
+    allPairs,
     allPairsState,
   } = useSwapCanisterStore();
   const { isConnected } = usePlugStore();
+  const [autoSlippage, setAutoSlippage] = useState(true);
 
   const openSelectTokenModal = useTokenModalOpener();
 
   const fromBalance = useTokenBalanceMemo(from.metadata?.id);
-  // const toBalance = useTokenBalance(to.metadata?.id);
-
-  const [autoSlippage, setAutoSlippage] = useState(true);
+  const toBalance = useTokenBalanceMemo(to.metadata?.id);
 
   const { totalBalances } = useBalances();
 
@@ -84,95 +94,31 @@ export const SwapHomeStep = () => {
     dispatch(swapViewActions.switchTokens());
   };
 
-  const handleFromMaxClick = () => {
-    if (!fromBalance) return;
+  const handleMaxClick = (key: SwapTokenDataKey) => {
+    const balance = key === 'from' ? fromBalance : toBalance;
+    const metadata = key === 'from' ? from.metadata : to.metadata;
+
+    if (!balance) {
+      return;
+    }
+
     dispatch(
       swapViewActions.setValue({
-        data: 'from',
-        value: getDepositMaxValue(from.metadata, fromBalance),
+        data: key,
+        value: getDepositMaxValue(metadata, balance),
       })
     );
   };
 
-  // TODO: Add if 2nd input will be unblocked
-  // const handleToMaxClick = () => {
-  //   dispatch(
-  //     swapViewActions.setValue({
-  //       data: 'to',
-  //       value:
-  //         totalBalances && to.token
-  //           ? getCurrencyString(toBalance!, to.metadata?.decimals)
-  //           : '',
-  //     })
-  //   );
-  // };
+  const handleSelectToken = (key: SwapTokenDataKey) => {
+    const options = key === 'from' ? fromTokenOptions : toTokenOptions;
 
-  const handleSelectFromToken = () => {
     openSelectTokenModal({
-      metadata: fromTokenOptions,
+      metadata: options,
       onSelect: (tokenId) =>
-        dispatch(swapViewActions.setToken({ data: 'from', tokenId })),
+        dispatch(swapViewActions.setToken({ data: key, tokenId })),
       selectedTokenIds,
     });
-  };
-
-  const handleSelectToToken = () => {
-    openSelectTokenModal({
-      metadata: toTokenOptions,
-      onSelect: (tokenId) =>
-        dispatch(swapViewActions.setToken({ data: 'to', tokenId })),
-      selectedTokenIds,
-    });
-  };
-
-  const handleWrapICP = () => {
-    const plugProviderVersionNumber = Number(
-      plug?.versions.provider.split('.').join('')
-    );
-
-    if (plugProviderVersionNumber >= 160) {
-      addNotification({
-        title: `Wrapping ${from.value} ${from.metadata?.symbol}`,
-        type: NotificationType.Wrap,
-        id: String(new Date().getTime()),
-      });
-      debounce(
-        () => dispatch(swapViewActions.setValue({ data: 'from', value: '' })),
-        300
-      );
-    } else {
-      addNotification({
-        title: (
-          <>
-            You're using an outdated version of Plug, please update to the
-            latest one{' '}
-            <Link
-              color="blue.400"
-              href={PLUG_WALLET_WEBSITE_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              here
-            </Link>
-            .
-          </>
-        ),
-        type: NotificationType.Error,
-        id: String(new Date().getTime()),
-      });
-    }
-  };
-
-  const handleUnwrapICP = () => {
-    addNotification({
-      title: `Unwrapping ${from.value} ${from.metadata?.symbol}`,
-      type: NotificationType.Unwrap,
-      id: String(new Date().getTime()),
-    });
-    debounce(
-      () => dispatch(swapViewActions.setValue({ data: 'from', value: '' })),
-      300
-    );
   };
 
   const isFetchingNotStarted = useMemo(
@@ -193,6 +139,56 @@ export const SwapHomeStep = () => {
   const [buttonDisabled, buttonMessage, onButtonClick] = useMemo<
     [boolean, string, (() => void)?]
   >(() => {
+    const handleWrapICP = () => {
+      const plugProviderVersionNumber = Number(
+        plug?.versions.provider.split('.').join('')
+      );
+
+      if (plugProviderVersionNumber >= 160) {
+        addNotification({
+          title: `Wrapping ${from.value} ${from.metadata?.symbol}`,
+          type: NotificationType.Wrap,
+          id: String(new Date().getTime()),
+        });
+        debounce(
+          () => dispatch(swapViewActions.setValue({ data: 'from', value: '' })),
+          300
+        );
+      } else {
+        addNotification({
+          title: (
+            <>
+              You're using an outdated version of Plug, please update to the
+              latest one{' '}
+              <Link
+                color="blue.400"
+                href={PLUG_WALLET_WEBSITE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                here
+              </Link>
+              .
+            </>
+          ),
+          type: NotificationType.Error,
+          id: String(new Date().getTime()),
+        });
+      }
+    };
+
+    const handleUnwrapICP = () => {
+      addNotification({
+        title: `Unwrapping ${from.value} ${from.metadata?.symbol}`,
+        type: NotificationType.Unwrap,
+        id: String(new Date().getTime()),
+      });
+      debounce(
+        () => dispatch(swapViewActions.setValue({ data: 'from', value: '' })),
+        300
+      );
+    };
+
     if (isLoading) return [true, 'Loading'];
     if (isFetchingNotStarted || !from.metadata) return [true, 'Fetching'];
     if (!to.metadata) return [true, 'Select a Token'];
@@ -245,19 +241,42 @@ export const SwapHomeStep = () => {
       () => dispatch(swapViewActions.setStep(SwapStep.Review)),
     ];
   }, [
-    handleUnwrapICP,
-    handleWrapICP,
-    dispatch,
-    swapViewActions,
     isLoading,
     isFetchingNotStarted,
+    from.metadata,
+    from.value,
+    to.metadata,
+    to.value,
+    toTokenOptions,
     totalBalances,
     fromBalance,
-    from.metadata,
-    to.metadata,
-    from.value,
-    to.value,
+    addNotification,
+    dispatch,
   ]);
+
+  const priceImpact = useMemo(() => {
+    if (from.metadata?.id && to.metadata?.id) {
+      const { reserve0, reserve1 } =
+        allPairs?.[from.metadata.id]?.[to.metadata.id] || {};
+
+      if (
+        from.metadata?.decimals &&
+        to.metadata?.decimals &&
+        reserve0 &&
+        reserve1
+      ) {
+        return calculatePriceImpact({
+          amountIn: from.value,
+          decimalsIn: from.metadata.decimals,
+          decimalsOut: to.metadata.decimals,
+          reserveIn: reserve0.toString(),
+          reserveOut: reserve1.toString(),
+        });
+      }
+    }
+
+    return undefined;
+  }, [from, to, allPairs]);
 
   const selectedTokenIds = useMemo(() => {
     const selectedIds = [];
@@ -293,7 +312,7 @@ export const SwapHomeStep = () => {
         },
       });
     }
-  }, [from.metadata, tokenBalances, sonicBalances]);
+  }, [from.metadata, tokenBalances, sonicBalances, icpBalance]);
 
   const toSources = useMemo(() => {
     if (to.metadata) {
@@ -312,7 +331,33 @@ export const SwapHomeStep = () => {
         },
       });
     }
-  }, [to.metadata, tokenBalances, sonicBalances]);
+  }, [to.metadata, tokenBalances, sonicBalances, icpBalance]);
+
+  useEffect(() => {
+    if (!isLoading && fromTokenOptions && toTokenOptions) {
+      const tokenFromId = query.get('from');
+      const tokenToId = query.get('to');
+
+      if (tokenFromId) {
+        const from = fromTokenOptions.find(({ id }) => id === tokenFromId);
+        if (from?.id) {
+          dispatch(
+            swapViewActions.setToken({ data: 'from', tokenId: from.id })
+          );
+          dispatch(swapViewActions.setValue({ data: 'from', value: '' }));
+        }
+      }
+
+      if (tokenToId) {
+        const to = toTokenOptions.find(({ id }) => id === tokenToId);
+        if (to?.id) {
+          dispatch(swapViewActions.setToken({ data: 'to', tokenId: to.id }));
+          dispatch(swapViewActions.setValue({ data: 'to', value: '' }));
+        }
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoading]);
 
   return (
     <Stack spacing={4}>
@@ -363,7 +408,7 @@ export const SwapHomeStep = () => {
             sources={fromSources}
           >
             <TokenContent>
-              <TokenDetailsButton onClick={handleSelectFromToken}>
+              <TokenDetailsButton onClick={() => handleSelectToken('from')}>
                 <TokenDetailsLogo />
                 <TokenDetailsSymbol />
               </TokenDetailsButton>
@@ -371,7 +416,7 @@ export const SwapHomeStep = () => {
               <TokenInput autoFocus />
             </TokenContent>
             <TokenBalances>
-              <TokenBalancesDetails onMaxClick={handleFromMaxClick} />
+              <TokenBalancesDetails onMaxClick={() => handleMaxClick('from')} />
               <TokenBalancesPrice />
             </TokenBalances>
           </Token>
@@ -411,13 +456,13 @@ export const SwapHomeStep = () => {
           >
             <TokenContent>
               {to.metadata ? (
-                <TokenDetailsButton onClick={handleSelectToToken}>
+                <TokenDetailsButton onClick={() => handleSelectToken('to')}>
                   <TokenDetailsLogo />
                   <TokenDetailsSymbol />
                 </TokenDetailsButton>
               ) : (
                 <TokenDetailsButton
-                  onClick={handleSelectToToken}
+                  onClick={() => handleSelectToken('to')}
                   isDisabled={selectTokenButtonDisabled}
                   variant={isLoading ? 'solid' : 'gradient'}
                   colorScheme={isLoading ? 'gray' : 'dark-blue'}
@@ -432,13 +477,18 @@ export const SwapHomeStep = () => {
             </TokenContent>
             <TokenBalances>
               <TokenBalancesDetails />
-              <TokenBalancesPrice shouldShowPriceDiff={!isICPSelected} />
+              <TokenBalancesPrice priceImpact={priceImpact} />
             </TokenBalances>
           </Token>
         </Box>
       </Flex>
 
-      <ExchangeBox from={from} to={to} slippage={slippage} />
+      <ExchangeBox
+        from={from}
+        to={to}
+        slippage={slippage}
+        priceImpact={priceImpact}
+      />
 
       <KeepInSonicBox
         canHeldInSonic={!isSecondTokenIsICP}

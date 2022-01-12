@@ -1,4 +1,5 @@
 import { Box, Button, Flex, Image, Stack } from '@chakra-ui/react';
+import { useMemo } from 'react';
 
 import { arrowDownSrc } from '@/assets';
 import {
@@ -24,13 +25,14 @@ import {
   useSwapCanisterStore,
   useSwapViewStore,
 } from '@/store';
+import { calculatePriceImpact } from '@/utils/format';
 import { debounce } from '@/utils/function';
 
 import { ExchangeBox } from '.';
 import { KeepInSonicBox } from './keep-in-sonic-box';
 
 export const SwapReviewStep = () => {
-  const { sonicBalances, tokenBalances } = useSwapCanisterStore();
+  const { sonicBalances, tokenBalances, allPairs } = useSwapCanisterStore();
   const { addNotification } = useNotificationStore();
   const { fromTokenOptions, toTokenOptions, from, to, slippage } =
     useSwapViewStore();
@@ -48,8 +50,34 @@ export const SwapReviewStep = () => {
     );
   };
 
-  const { isFirstTokenIsICP, isSecondTokenIsICP, isICPSelected } =
-    useICPSelectionDetectorMemo(from.metadata?.id, to.metadata?.id);
+  const priceImpact = useMemo(() => {
+    if (from.metadata?.id && to.metadata?.id) {
+      const { reserve0, reserve1 } =
+        allPairs?.[from.metadata.id]?.[to.metadata.id] || {};
+
+      if (
+        from.metadata?.decimals &&
+        to.metadata?.decimals &&
+        reserve0 &&
+        reserve1
+      ) {
+        return calculatePriceImpact({
+          amountIn: from.value,
+          decimalsIn: from.metadata.decimals,
+          decimalsOut: to.metadata.decimals,
+          reserveIn: reserve0.toString(),
+          reserveOut: reserve1.toString(),
+        });
+      }
+    }
+
+    return undefined;
+  }, [from, to, allPairs]);
+
+  const { isFirstTokenIsICP, isSecondTokenIsICP } = useICPSelectionDetectorMemo(
+    from.metadata?.id,
+    to.metadata?.id
+  );
 
   return (
     <Stack spacing={4}>
@@ -139,13 +167,19 @@ export const SwapReviewStep = () => {
             </TokenContent>
             <TokenBalances>
               <TokenBalancesDetails />
-              <TokenBalancesPrice shouldShowPriceDiff={!isICPSelected} />
+              <TokenBalancesPrice priceImpact={priceImpact} />
             </TokenBalances>
           </Token>
         </Box>
       </Flex>
 
-      <ExchangeBox from={from} to={to} slippage={slippage} />
+      <ExchangeBox
+        from={from}
+        to={to}
+        slippage={slippage}
+        priceImpact={priceImpact}
+      />
+
       <KeepInSonicBox
         canHeldInSonic={!isSecondTokenIsICP}
         symbol={to.metadata?.symbol}
