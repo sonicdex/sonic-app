@@ -3,11 +3,11 @@ import { AppTokenMetadataListObject, PairList } from '@/models';
 import { getAmountOut } from './format';
 
 export type WeightItems = {
-  [id: string]: number;
+  [tokenId: string]: number;
 };
 
 export type WeightList = {
-  [id: string]: WeightItems;
+  [tokenId: string]: WeightItems;
 };
 
 export type GraphNode = {
@@ -17,7 +17,7 @@ export type GraphNode = {
 };
 
 export type GraphNodeList = {
-  [id: string]: GraphNode;
+  [tokenId: string]: GraphNode;
 };
 
 export type MinimalPath = {
@@ -26,7 +26,7 @@ export type MinimalPath = {
 };
 
 export type MinimalPathsResult = {
-  [id: string]: MinimalPath;
+  [tokenId: string]: MinimalPath;
 };
 
 const getWeightList = (
