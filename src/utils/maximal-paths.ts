@@ -125,7 +125,5 @@ export const getTokenPaths = (
   const weightList = getWeightList(pairList, tokenList);
   if (!weightList[tokenId]) return {};
   const graphNodes = findMaximalPaths(weightList, tokenId);
-  const maximalPaths = parseMaximalPaths(graphNodes);
-
-  return maximalPaths;
+  return parseMaximalPaths(graphNodes);
 };

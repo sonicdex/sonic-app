@@ -14,7 +14,7 @@ import {
 } from '@chakra-ui/react';
 import { FaArrowDown } from '@react-icons/all-files/fa/FaArrowDown';
 import { FaCog } from '@react-icons/all-files/fa/FaCog';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import {
   PLUG_WALLET_WEBSITE_URL,
@@ -52,7 +52,6 @@ import {
 } from '@/store';
 import { getCurrency, getDepositMaxValue } from '@/utils/format';
 import { debounce } from '@/utils/function';
-import { getTokenPaths } from '@/utils/maximal-paths';
 
 import { ExchangeBox } from '.';
 import { KeepInSonicBox } from './keep-in-sonic-box';
@@ -110,6 +109,7 @@ export const SwapHomeStep = () => {
   // };
 
   const handleSelectFromToken = () => {
+    if (!allPairs || !tokenList) return;
     openSelectTokenModal({
       metadata: fromTokenOptions,
       onSelect: (tokenId) =>
@@ -119,6 +119,7 @@ export const SwapHomeStep = () => {
   };
 
   const handleSelectToToken = () => {
+    if (!allPairs || !tokenList) return;
     openSelectTokenModal({
       metadata: toTokenOptions,
       onSelect: (tokenId) =>
@@ -315,12 +316,6 @@ export const SwapHomeStep = () => {
       });
     }
   }, [to.metadata, tokenBalances, sonicBalances]);
-
-  useEffect(() => {
-    if (allPairs && tokenList && from.metadata?.id) {
-      getTokenPaths(allPairs, tokenList, from.metadata.id);
-    }
-  }, [allPairs, tokenList, from]);
 
   return (
     <Stack spacing={4}>

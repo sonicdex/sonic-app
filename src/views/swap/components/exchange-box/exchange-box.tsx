@@ -12,23 +12,21 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { FaArrowRight } from '@react-icons/all-files/fa/FaArrowRight';
-import React, { useCallback, useMemo } from 'react';
+import React, { useMemo } from 'react';
 
 import { infoSrc } from '@/assets';
 import { StackLine } from '@/components';
 import { ICP_METADATA } from '@/constants';
-import { TokenData } from '@/models';
-import { useSwapCanisterStore } from '@/store';
+import { SwapTokenMetadata, TokenData } from '@/models';
 import {
-  calculatePriceImpact,
-  getAmountOut,
   getAmountOutMin,
   getCurrencyString,
+  getSwapAmountOut,
 } from '@/utils/format';
 
 export type ExchangeBoxProps = {
-  from: TokenData;
-  to: TokenData;
+  from: TokenData<SwapTokenMetadata>;
+  to: TokenData<SwapTokenMetadata>;
   slippage: string;
 };
 
@@ -37,24 +35,23 @@ export const ExchangeBox: React.FC<ExchangeBoxProps> = ({
   to,
   slippage,
 }) => {
-  const { allPairs } = useSwapCanisterStore();
+  // FIXME: price impact
+  // const getPriceImpact = useCallback(
+  //   (reserve0: bigint, reserve1: bigint) => {
+  //     if (from.metadata?.decimals && to.metadata?.decimals) {
+  //       return calculatePriceImpact({
+  //         amountIn: from.value,
+  //         decimalsIn: from.metadata.decimals,
+  //         decimalsOut: to.metadata.decimals,
+  //         reserve0: reserve0.toString(),
+  //         reserve1: reserve1.toString(),
+  //       });
+  //     }
 
-  const getPriceImpact = useCallback(
-    (reserve0: bigint, reserve1: bigint) => {
-      if (from.metadata?.decimals && to.metadata?.decimals) {
-        return calculatePriceImpact({
-          amountIn: from.value,
-          decimalsIn: from.metadata.decimals,
-          decimalsOut: to.metadata.decimals,
-          reserve0: reserve0.toString(),
-          reserve1: reserve1.toString(),
-        });
-      }
-
-      return '0';
-    },
-    [from, to]
-  );
+  //     return '0';
+  //   },
+  //   [from, to]
+  // );
 
   const { depositFee, withdrawFee } = useMemo(() => {
     if (from.metadata?.id && to.metadata?.id) {
@@ -98,12 +95,6 @@ export const ExchangeBox: React.FC<ExchangeBoxProps> = ({
     );
   }
 
-  if (!allPairs?.[from.metadata.id]?.[to.metadata.id]) {
-    return null;
-  }
-
-  const { reserve0, reserve1 } = allPairs[from.metadata.id][to.metadata.id];
-
   return (
     <Flex opacity={0.4} alignItems="center" px={4} fontWeight={400}>
       <Text display="flex" alignItems="center">
@@ -113,13 +104,7 @@ export const ExchangeBox: React.FC<ExchangeBoxProps> = ({
       </Text>
       <Text flex={1} textAlign="right" mx={2}>
         1&nbsp;{from.metadata.symbol}&nbsp;=&nbsp;
-        {getAmountOut({
-          amountIn: 1,
-          decimalsIn: from.metadata.decimals,
-          decimalsOut: to.metadata.decimals,
-          reserveIn: Number(reserve0),
-          reserveOut: Number(reserve1),
-        })}
+        {getSwapAmountOut({ metadata: from.metadata, value: '1' }, to)}
         &nbsp;
         {to.metadata.symbol}
       </Text>
@@ -162,7 +147,9 @@ export const ExchangeBox: React.FC<ExchangeBoxProps> = ({
                 />
                 <StackLine
                   title="Price Impact"
-                  value={`${getPriceImpact(reserve0, reserve1)}%`}
+                  // value={`${getPriceImpact(reserve0, reserve1)}%`}
+                  // FIXME: price impact
+                  value={`100%`}
                 />
                 <StackLine title="Allowed Slippage" value={`${slippage}%`} />
                 {/* TODO: add liquidity fee */}

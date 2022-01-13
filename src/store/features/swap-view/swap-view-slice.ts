@@ -1,8 +1,14 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { AppTokenMetadataListObject, TokenData } from '@/models';
-import type { RootState } from '@/store';
+import {
+  AppTokenMetadataListObject,
+  PairList,
+  SwapTokenMetadata,
+  TokenData,
+} from '@/models';
+import { RootState } from '@/store';
 import { FeatureState } from '@/store';
+import { getTokenPaths } from '@/utils/maximal-paths';
 
 export type SwapTokenDataKey = 'from' | 'to';
 
@@ -14,9 +20,10 @@ export enum SwapStep {
 interface SwapViewState {
   step: SwapStep;
   state: FeatureState;
-  from: TokenData;
-  to: TokenData;
+  from: TokenData<SwapTokenMetadata>;
+  to: TokenData<SwapTokenMetadata>;
   tokenList?: AppTokenMetadataListObject;
+  allPairs?: PairList;
   slippage: string;
   keepInSonic: boolean;
 }
@@ -35,6 +42,7 @@ const initialState: SwapViewState = {
     value: '',
   },
   tokenList: undefined,
+  allPairs: undefined,
   slippage: INITIAL_SWAP_SLIPPAGE,
   keepInSonic: false,
 };
@@ -64,11 +72,18 @@ export const swapViewSlice = createSlice({
         tokenId: string | undefined;
       }>
     ) => {
-      state[action.payload.data].metadata =
-        action.payload.tokenId && state.tokenList
-          ? state.tokenList[action.payload.tokenId]
-          : undefined;
-      if (action.payload.data === 'from') {
+      const { allPairs, tokenList } = state;
+      const { data, tokenId } = action.payload;
+      if (tokenId && tokenList && allPairs) {
+        const paths = getTokenPaths(allPairs as PairList, tokenList, tokenId);
+        state[data].metadata = {
+          ...tokenList[tokenId],
+          paths,
+        };
+      } else {
+        state[data].metadata = undefined;
+      }
+      if (data === 'from') {
         state.from.value = '';
         state.to.value = '';
         state.to.metadata = undefined;
@@ -91,10 +106,13 @@ export const swapViewSlice = createSlice({
       state.tokenList = action.payload;
       const tokens = Object.values(action.payload);
       if (!state.from.metadata) {
-        state.from.metadata = tokens[0];
+        state.from.metadata = { ...tokens[0], paths: {} };
         state.from.value = '';
         state.to.value = '';
       }
+    },
+    setAllPairs: (state, action: PayloadAction<PairList | undefined>) => {
+      state.allPairs = action.payload;
     },
     setSlippage: (state, action: PayloadAction<string>) => {
       state.slippage = action.payload;
