@@ -8,7 +8,7 @@ import { getAmountMin, parseAmount } from '@/utils/format';
 
 import { CreateTransaction, Swap } from '../../models';
 
-export type SwapTransaction = Transaction
+export type SwapTransaction = Transaction;
 
 export interface SwapExtraArgs {
   principal: Principal;
@@ -42,7 +42,7 @@ export const useSwapExactTokensTransactionMemo: CreateTransaction<Swap> = (
       args: [
         amountIn,
         amountOutMin,
-        [from.metadata.id, to.metadata.id],
+        from.metadata.paths[to.metadata.id].path,
         Principal.fromText(principalId),
         BigInt(currentTime),
       ],

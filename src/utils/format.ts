@@ -4,7 +4,7 @@ import { ethers } from 'ethers';
 import { formatUnits, parseUnits } from 'ethers/lib/utils';
 
 import { ICP_METADATA } from '@/constants';
-import { AppTokenMetadata } from '@/models';
+import { AppTokenMetadata, SwapTokenMetadata, TokenData } from '@/models';
 
 export type BigNumberish = BigNumber | Bytes | bigint | string | number;
 
@@ -360,4 +360,14 @@ export const getDepositMaxValue = (
   }
 
   return '';
+};
+
+export const getSwapAmountOut = (
+  tokenIn: TokenData<SwapTokenMetadata>,
+  tokenOut: TokenData<SwapTokenMetadata>
+): string => {
+  if (!tokenIn.metadata || !tokenOut.metadata || !tokenIn.value) return '';
+  return new BigNumber(tokenIn.metadata.paths[tokenOut.metadata.id].amountOut)
+    .dp(tokenOut.metadata.decimals)
+    .toString();
 };

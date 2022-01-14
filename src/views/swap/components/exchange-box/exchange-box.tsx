@@ -12,33 +12,37 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { FaArrowRight } from '@react-icons/all-files/fa/FaArrowRight';
+import BigNumber from 'bignumber.js';
 import React, { useMemo } from 'react';
 
 import { infoSrc } from '@/assets';
 import { StackLine } from '@/components';
 import { ICP_METADATA } from '@/constants';
-import { TokenData } from '@/models';
-import { useSwapCanisterStore } from '@/store';
+import { useSwapViewStore } from '@/store';
 import {
-  getAmountOut,
   getAmountOutMin,
   getCurrencyString,
+  getSwapAmountOut,
 } from '@/utils/format';
 
-export type ExchangeBoxProps = {
-  from: TokenData;
-  to: TokenData;
-  slippage: string;
-  priceImpact?: string;
-};
+export const ExchangeBox: React.FC = () => {
+  const { from, to, slippage, baseTokenPaths } = useSwapViewStore();
 
-export const ExchangeBox: React.FC<ExchangeBoxProps> = ({
-  from,
-  to,
-  slippage,
-  priceImpact,
-}) => {
-  const { allPairs } = useSwapCanisterStore();
+  // FIXME: price impact
+  const priceImpact = useMemo(() => {
+    if (from.metadata && to.metadata && baseTokenPaths[to.metadata.id]) {
+      const expectedValue = new BigNumber(from.value).multipliedBy(
+        baseTokenPaths[to.metadata.id].amountOut
+      );
+      const realValue = new BigNumber(to.value);
+      const percentage = realValue
+        .dividedBy(expectedValue)
+        .minus(1)
+        .multipliedBy(100);
+      return percentage.dp(3).toNumber();
+    }
+    return 0;
+  }, [from, to, baseTokenPaths]);
 
   const { depositFee, withdrawFee } = useMemo(() => {
     if (from.metadata?.id && to.metadata?.id) {
@@ -82,12 +86,6 @@ export const ExchangeBox: React.FC<ExchangeBoxProps> = ({
     );
   }
 
-  if (!allPairs?.[from.metadata.id]?.[to.metadata.id]) {
-    return null;
-  }
-
-  const { reserve0, reserve1 } = allPairs[from.metadata.id][to.metadata.id];
-
   return (
     <Flex opacity={0.4} alignItems="center" px={4} fontWeight={400}>
       <Text display="flex" alignItems="center">
@@ -97,13 +95,10 @@ export const ExchangeBox: React.FC<ExchangeBoxProps> = ({
       </Text>
       <Text flex={1} textAlign="right" mx={2}>
         1&nbsp;{from.metadata.symbol}&nbsp;=&nbsp;
-        {getAmountOut({
-          amountIn: 1,
-          decimalsIn: from.metadata.decimals,
-          decimalsOut: to.metadata.decimals,
-          reserveIn: Number(reserve0),
-          reserveOut: Number(reserve1),
-        })}
+        {getSwapAmountOut(
+          { metadata: { ...from.metadata, paths: baseTokenPaths }, value: '1' },
+          to
+        )}
         &nbsp;
         {to.metadata.symbol}
       </Text>
@@ -144,9 +139,7 @@ export const ExchangeBox: React.FC<ExchangeBoxProps> = ({
                       : 0
                   } ${to.metadata.symbol}`}
                 />
-                {priceImpact && (
-                  <StackLine title="Price Impact" value={`${priceImpact}%`} />
-                )}
+                <StackLine title="Price Impact" value={`${priceImpact}%`} />
                 <StackLine title="Allowed Slippage" value={`${slippage}%`} />
                 {/* TODO: add liquidity fee */}
                 {/* <StackLine
