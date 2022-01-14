@@ -27,8 +27,9 @@ export const useSwapViewStore = () => {
       return [fromTokenOptions, icpToTokenOptions];
     }
 
+    const toTokenPathsIds = Object.keys(state.from.metadata.paths);
     const toTokenOptions = fromTokenOptions.filter((token) =>
-      Boolean(allPairs?.[state.from.metadata!.id]?.[token.id])
+      toTokenPathsIds.includes(token.id)
     );
 
     if (state.from.metadata.id === ENV.canisterIds.WICP) {
@@ -37,7 +38,7 @@ export const useSwapViewStore = () => {
       );
 
       if (icpToken) {
-        toTokenOptions.unshift(icpToken);
+        toTokenOptions.unshift({ ...icpToken });
       }
     }
 

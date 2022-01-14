@@ -483,12 +483,7 @@ export const SwapHomeStep = () => {
         </Box>
       </Flex>
 
-      <ExchangeBox
-        from={from}
-        to={to}
-        slippage={slippage}
-        priceImpact={priceImpact}
-      />
+      <ExchangeBox />
 
       <KeepInSonicBox
         canHeldInSonic={!isSecondTokenIsICP}

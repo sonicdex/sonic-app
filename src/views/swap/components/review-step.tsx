@@ -34,8 +34,7 @@ import { KeepInSonicBox } from './keep-in-sonic-box';
 export const SwapReviewStep = () => {
   const { sonicBalances, tokenBalances, allPairs } = useSwapCanisterStore();
   const { addNotification } = useNotificationStore();
-  const { fromTokenOptions, toTokenOptions, from, to, slippage } =
-    useSwapViewStore();
+  const { fromTokenOptions, toTokenOptions, from, to } = useSwapViewStore();
   const dispatch = useAppDispatch();
 
   const handleApproveSwap = () => {
@@ -173,12 +172,7 @@ export const SwapReviewStep = () => {
         </Box>
       </Flex>
 
-      <ExchangeBox
-        from={from}
-        to={to}
-        slippage={slippage}
-        priceImpact={priceImpact}
-      />
+      <ExchangeBox />
 
       <KeepInSonicBox
         canHeldInSonic={!isSecondTokenIsICP}

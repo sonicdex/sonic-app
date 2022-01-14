@@ -5,7 +5,7 @@ import { ENV } from '@/config';
 import { getICPTokenMetadata, ICP_METADATA } from '@/constants';
 import { useAppDispatch } from '@/store';
 import { parseResponseTokenList } from '@/utils/canister';
-import { formatAmount, getAmountOut } from '@/utils/format';
+import { formatAmount, getSwapAmountOut } from '@/utils/format';
 
 import { usePriceStore, useSwapCanisterStore } from '..';
 import { swapViewActions, useSwapViewStore } from '.';
@@ -25,6 +25,10 @@ export const useSwapView = () => {
     ]);
     dispatch(swapViewActions.setTokenList(tokenList));
   }, [dispatch, icpPrice, supportedTokenList]);
+
+  useEffect(() => {
+    dispatch(swapViewActions.setAllPairs(allPairs));
+  }, [allPairs]);
 
   useEffect(() => {
     if (!from.metadata) return;
@@ -49,31 +53,11 @@ export const useSwapView = () => {
       return;
     }
 
-    if (
-      allPairs[from.metadata.id] &&
-      !allPairs[from.metadata.id][to.metadata.id]
-    ) {
-      dispatch(swapViewActions.setToken({ data: 'to', tokenId: undefined }));
-    } else {
-      dispatch(
-        swapViewActions.setValue({
-          data: 'to',
-          value: getAmountOut({
-            amountIn: from.value,
-            decimalsIn: from.metadata.decimals,
-            decimalsOut: to.metadata.decimals,
-            reserveIn: String(
-              allPairs[from.metadata.id][to.metadata.id].reserve0
-            ),
-            reserveOut: String(
-              allPairs[from.metadata.id][to.metadata.id].reserve1
-            ),
-          }),
-        })
-      );
-    }
-    // FIXME: With all of the deps in this effect, it is causing
-    //        review step update.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    dispatch(
+      swapViewActions.setValue({
+        data: 'to',
+        value: getSwapAmountOut(from, to),
+      })
+    );
   }, [from.value, from.metadata, to.metadata]);
 };
