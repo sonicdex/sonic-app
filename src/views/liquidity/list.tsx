@@ -110,7 +110,7 @@ export const LiquidityListView = () => {
       supportedTokenListState === FeatureState.Refreshing ||
       userLPBalancesState === FeatureState.Refreshing
     );
-  }, [supportedTokenListState, userLPBalancesState]);
+  }, [allPairsState, supportedTokenListState, userLPBalancesState]);
 
   const pairedUserLPTokens = useMemo(() => {
     if (userLPBalances && supportedTokenList && allPairs) {
@@ -150,7 +150,7 @@ export const LiquidityListView = () => {
         ];
       }, [] as PairedUserLPToken[]);
     }
-  }, [userLPBalances, supportedTokenList]);
+  }, [userLPBalances, supportedTokenList, allPairs]);
 
   const getUserLPValue = useCallback(
     (
@@ -181,7 +181,7 @@ export const LiquidityListView = () => {
 
       return '0';
     },
-    [userLPBalances, allPairs]
+    [allPairs]
   );
 
   return (

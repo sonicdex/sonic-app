@@ -243,21 +243,21 @@ export type CalculatePriceImpactOptions = {
   amountIn: string | number;
   decimalsIn: string | number;
   decimalsOut: string | number;
-  reserve0: string | number;
-  reserve1: string | number;
+  reserveIn: string | number;
+  reserveOut: string | number;
 };
 
 export const calculatePriceImpact = ({
   amountIn,
   decimalsIn,
   decimalsOut,
-  reserve0,
-  reserve1,
+  reserveIn,
+  reserveOut,
 }: CalculatePriceImpactOptions): string => {
   if (
     !amountIn ||
     new BigNumber(amountIn).isNaN() ||
-    new BigNumber(reserve1).isZero()
+    new BigNumber(reserveOut).isZero()
   )
     return '0';
 
@@ -267,11 +267,9 @@ export const calculatePriceImpact = ({
     amountIn,
     decimalsIn,
     decimalsOut,
-    reserveIn: reserve0,
-    reserveOut: reserve1,
+    reserveIn,
+    reserveOut,
   });
-
-  console.log(amountIn, amountOut, decimalsIn, decimalsOut, reserve0, reserve1);
 
   const aIn = new BigNumber(amountIn).multipliedBy(
     new BigNumber(10).pow(Number(decimalsIn))
@@ -280,11 +278,9 @@ export const calculatePriceImpact = ({
     new BigNumber(10).pow(Number(decimalsOut))
   );
 
-  console.log(aIn, aOut);
-
-  const a = new BigNumber(reserve0).dividedBy(new BigNumber(reserve1));
-  const b = new BigNumber(reserve0).plus(aIn);
-  const c = new BigNumber(reserve1).plus(aOut);
+  const a = new BigNumber(reserveIn).dividedBy(new BigNumber(reserveOut));
+  const b = new BigNumber(reserveIn).plus(aIn);
+  const c = new BigNumber(reserveOut).plus(aOut);
   const impact = a.minus(b.dividedBy(c)).abs().multipliedBy(100).toFixed(2);
   return impact;
 };

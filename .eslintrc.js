@@ -24,7 +24,11 @@ module.exports = {
     'testing-library',
     'jest-dom',
   ],
-  extends: ['plugin:@typescript-eslint/recommended', 'prettier'],
+  extends: [
+    'plugin:@typescript-eslint/recommended',
+    'plugin:react-hooks/recommended',
+    'prettier',
+  ],
   rules: {
     '@typescript-eslint/explicit-function-return-type': [
       'error',

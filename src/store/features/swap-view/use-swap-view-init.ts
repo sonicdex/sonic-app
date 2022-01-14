@@ -24,7 +24,7 @@ export const useSwapView = () => {
       ...supportedTokenList,
     ]);
     dispatch(swapViewActions.setTokenList(tokenList));
-  }, [supportedTokenList]);
+  }, [dispatch, icpPrice, supportedTokenList]);
 
   useEffect(() => {
     dispatch(swapViewActions.setAllPairs(allPairs));

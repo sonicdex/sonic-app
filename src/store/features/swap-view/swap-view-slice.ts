@@ -6,8 +6,7 @@ import {
   SwapTokenMetadata,
   TokenData,
 } from '@/models';
-import { RootState } from '@/store';
-import { FeatureState } from '@/store';
+import { FeatureState, RootState } from '@/store';
 import { getTokenPaths, MaximalPathsList } from '@/utils/maximal-paths';
 
 export type SwapTokenDataKey = 'from' | 'to';
@@ -88,12 +87,7 @@ export const swapViewSlice = createSlice({
       const { allPairs, tokenList } = state;
       const { data, tokenId } = action.payload;
       if (tokenId && tokenList && allPairs) {
-        const paths = getTokenPaths(
-          allPairs as PairList,
-          tokenList,
-          tokenId,
-          '1'
-        );
+        const paths = getTokenPaths(allPairs as PairList, tokenList, tokenId);
         state[data].metadata = {
           ...tokenList[tokenId],
           paths,
@@ -112,22 +106,32 @@ export const swapViewSlice = createSlice({
       state.step = SwapStep.Home;
     },
     switchTokens: (state) => {
-      if (state.from.metadata && state.to.metadata) {
+      if (
+        state.from.metadata &&
+        state.to.metadata &&
+        state.tokenList &&
+        state.allPairs
+      ) {
         const temp = state.from.metadata;
-        state.from.metadata = state.to.metadata;
+        state.from.metadata = {
+          ...state.to.metadata,
+          paths: getTokenPaths(
+            state.allPairs as PairList,
+            state.tokenList,
+            state.to.metadata.id,
+            state.to.value
+          ),
+        };
         state.to.metadata = temp;
         state.from.value = state.to.value;
         state.step = SwapStep.Home;
 
-        if (state.tokenList && state.allPairs) {
-          const paths = getTokenPaths(
-            state.allPairs as PairList,
-            state.tokenList,
-            state.from.metadata.id,
-            '1'
-          );
-          state.baseTokenPaths = paths;
-        }
+        const paths = getTokenPaths(
+          state.allPairs as PairList,
+          state.tokenList,
+          state.from.metadata.id
+        );
+        state.baseTokenPaths = paths;
       }
     },
     setTokenList: (
