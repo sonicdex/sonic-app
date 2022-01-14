@@ -93,7 +93,7 @@ export const UnwrapLink: React.FC<UnwrapLinkProps> = ({ id }) => {
     <Link
       target="_blank"
       rel="noreferrer"
-      color="#3D52F4"
+      color="dark-gray.500"
       onClick={handleOpenModal}
     >
       View progress

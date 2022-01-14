@@ -375,7 +375,7 @@ export const SwapHomeStep = () => {
             />
           </Tooltip>
           <MenuList
-            bg="#1E1E1E"
+            bg="custom.2"
             border="none"
             borderRadius={20}
             ml={-20}

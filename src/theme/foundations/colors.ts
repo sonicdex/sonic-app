@@ -11,7 +11,12 @@ export const colors = {
     800: '#232629',
     900: '#0B0D0F',
   },
-  bg: '#151515',
+  black: '#151515',
+  custom: {
+    1: '#888E8F',
+    2: '#1E1E1E',
+    3: '#282828',
+  },
   ['dark-blue']: {
     50: '#eceefe',
     100: '#d8dcfd',

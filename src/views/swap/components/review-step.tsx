@@ -127,7 +127,7 @@ export const SwapReviewStep = () => {
           height={10}
           py={3}
           px={3}
-          bg="#3D52F4"
+          bg="dark-gray.500"
           mt={-2}
           mb={-2}
           zIndex={1200}

@@ -115,7 +115,7 @@ export const AddLiquidityLink: React.FC<AddLiquidityLinkProps> = ({ id }) => {
     <Link
       target="_blank"
       rel="noreferrer"
-      color="#3D52F4"
+      color="dark-gray.500"
       onClick={handleOpenModal}
     >
       View progress

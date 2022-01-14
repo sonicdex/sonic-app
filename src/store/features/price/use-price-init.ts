@@ -81,7 +81,7 @@ export const usePriceInit = () => {
         swapCanisterActions.setSupportedTokenList(supportedTokenListWithPrices)
       );
     }
-  }, [icpPrice, supportedTokenListState, allPairsState]);
+  }, [icpPrice, supportedTokenListState, allPairsState, dispatch, allPairs]);
 
   const _getICPPrice = useKeepSync(
     'getICPPrice',
@@ -112,7 +112,7 @@ export const usePriceInit = () => {
           }
         }
       },
-      [state]
+      [dispatch, state]
     )
   );
 };

@@ -55,7 +55,7 @@ export const PlugMenu: FC<Omit<MenuProps, 'children'>> = (props) => {
 
   return (
     <Menu {...props}>
-      <MenuButton borderRadius="full" px="4" h="12" bg="#1E1E1E">
+      <MenuButton borderRadius="full" px="4" h="12" bg="custom.2">
         <Flex direction="row" alignItems="center">
           {state === FeatureState.Loading ? <Spinner /> : <PlugLogo />}
           <Box ml="2" fontWeight={600}>
@@ -64,7 +64,7 @@ export const PlugMenu: FC<Omit<MenuProps, 'children'>> = (props) => {
           <ChevronIcon />
         </Flex>
       </MenuButton>
-      <MenuList bg="#1E1E1E" border="none" borderRadius="xl" overflow="hidden">
+      <MenuList bg="custom.2" border="none" borderRadius="xl" overflow="hidden">
         <MenuItem fontWeight="bold" onClick={handleCopy}>
           <HStack direction="row">
             <Image alt="copy" src={copySrc} />

@@ -22,7 +22,7 @@ export const PlugConfirmationModal = ({
 }: PlugConfirmationModalProps) => (
   <Modal onClose={onClose} isOpen={isOpen} isCentered>
     <ModalOverlay />
-    <ModalContent bg="#1E1E1E" borderRadius={5}>
+    <ModalContent bg="custom.2" borderRadius={5}>
       <ModalBody pt={9} px={18} pb={9}>
         <Image
           position="absolute"
@@ -35,10 +35,10 @@ export const PlugConfirmationModal = ({
           alt="close"
         />
         <Flex direction="column" alignItems="center">
-          <Heading as="h3" color="#F6FCFD" fontWeight={700} fontSize="md">
+          <Heading as="h3" color="gray.50" fontWeight={700} fontSize="md">
             Waiting for confirmation
           </Heading>
-          <Text color="#888E8F" fontSize="md" mt={3} mb={5}>
+          <Text color="custom.1" fontSize="md" mt={3} mb={5}>
             Please confirm this transaction in Plug
           </Text>
           <Image width={24} src={logoSrc} alt="Sonic" />

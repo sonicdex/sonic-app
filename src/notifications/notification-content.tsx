@@ -43,7 +43,7 @@ export const NotificationContent: React.FC<NotificationContentProps> = ({
 
   return (
     <Flex direction="column" alignItems="flex-start">
-      <Text color="#F6FCFD" fontSize="md" fontWeight={700} maxWidth={60}>
+      <Text color="gray.50" fontSize="md" fontWeight={700} maxWidth={60}>
         {title}
       </Text>
 

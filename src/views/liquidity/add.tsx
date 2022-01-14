@@ -430,7 +430,7 @@ export const LiquidityAddView = () => {
             />
           </Tooltip>
           <MenuList
-            bg="#1E1E1E"
+            bg="custom.2"
             border="none"
             borderRadius={20}
             ml={-20}
@@ -486,7 +486,7 @@ export const LiquidityAddView = () => {
           border="1px solid #373737"
           py={3}
           px={3}
-          bg="#1E1E1E"
+          bg="custom.2"
           mt={-2}
           mb={-2}
           zIndex={1200}
@@ -541,7 +541,7 @@ export const LiquidityAddView = () => {
                   border="1px solid #373737"
                   py={3}
                   px={3}
-                  bg="#1E1E1E"
+                  bg="custom.2"
                   mt={-2}
                   mb={-2}
                   zIndex={1200}
@@ -591,7 +591,7 @@ export const LiquidityAddView = () => {
 
                     <TokenInput />
                   </TokenContent>
-                  <TokenBalances color="#888E8F">
+                  <TokenBalances color="custom.1">
                     Share of Pool:
                     <Text flex={1} textAlign="right">
                       {liquidityPercentage}

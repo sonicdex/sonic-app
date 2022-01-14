@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 
 import { ENV } from '@/config';
 import { getICPTokenMetadata, ICP_METADATA } from '@/constants';
+import { useICPSelectionDetectorMemo } from '@/hooks';
 import { useAppDispatch } from '@/store';
 import { parseResponseTokenList } from '@/utils/canister';
 import { formatAmount, getAmountOut } from '@/utils/format';
@@ -15,6 +16,25 @@ export const useSwapView = () => {
   const { icpPrice } = usePriceStore();
   const { allPairs, supportedTokenList } = useSwapCanisterStore();
   const { from, to } = useSwapViewStore();
+
+  const { isFirstTokenIsICP, isSecondTokenIsICP } = useICPSelectionDetectorMemo(
+    from.metadata?.id,
+    to.metadata?.id
+  );
+
+  function handleICPToWICPChange() {
+    const value = new BigNumber(from.value).minus(
+      formatAmount(ICP_METADATA.fee, ICP_METADATA.decimals)
+    );
+    dispatch(
+      swapViewActions.setValue({
+        data: 'to',
+        value: value.toNumber() > 0 ? value.toString() : '',
+      })
+    );
+  }
+
+  // TODO: Add XTC case
 
   useEffect(() => {
     if (!supportedTokenList) return;
@@ -32,20 +52,10 @@ export const useSwapView = () => {
     if (!allPairs) return;
 
     if (
-      (from.metadata.id === ICP_METADATA.id &&
-        to.metadata.id === ENV.canisterIds.WICP) ||
-      (to.metadata.id === ICP_METADATA.id &&
-        from.metadata.id === ENV.canisterIds.WICP)
+      (isFirstTokenIsICP && to.metadata.id === ENV.canisterIds.WICP) ||
+      (isSecondTokenIsICP && from.metadata.id === ENV.canisterIds.WICP)
     ) {
-      const value = new BigNumber(from.value).minus(
-        formatAmount(ICP_METADATA.fee, ICP_METADATA.decimals)
-      );
-      dispatch(
-        swapViewActions.setValue({
-          data: 'to',
-          value: value.toNumber() > 0 ? value.toString() : '',
-        })
-      );
+      handleICPToWICPChange();
       return;
     }
 

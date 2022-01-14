@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 
 import { ENV } from '@/config';
 import { ICP_METADATA } from '@/constants';
+import { AppTokenMetadata } from '@/models';
 import { selectSwapViewState, useAppSelector } from '@/store';
 
 import { useSwapCanisterStore } from '..';
@@ -18,11 +19,18 @@ export const useSwapViewStore = () => {
     if (!allPairs) return [fromTokenOptions, []];
 
     if (state.from.metadata.id === ICP_METADATA.id) {
-      const wicpToken = fromTokenOptions.find(
+      const wicpTokenMetadata = fromTokenOptions.find(
         (token) => token.id === ENV.canisterIds.WICP
       );
 
-      const icpToTokenOptions = wicpToken ? [wicpToken] : undefined;
+      const xtcTokenMetadata = fromTokenOptions.find(
+        (token) => token.id === ENV.canisterIds.XTC
+      );
+
+      const icpToTokenOptions: AppTokenMetadata[] = [
+        ...(wicpTokenMetadata ? [wicpTokenMetadata] : []),
+        ...(xtcTokenMetadata ? [xtcTokenMetadata] : []),
+      ];
 
       return [fromTokenOptions, icpToTokenOptions];
     }

@@ -48,7 +48,7 @@ export const Asset = ({
         borderRadius="xl"
         alignItems="center"
         justifyContent="space-between"
-        bg="#1E1E1E"
+        bg="custom.2"
         px={5}
         py={4}
         {...props}
@@ -100,7 +100,7 @@ export const AssetTitleBlock = ({
         mb={isLoading ? 2 : 0}
         width={isLoading ? 60 : 'unset'}
       >
-        <Heading as="h3" fontSize="lg" fontWeight={700} color="#F6FCFD">
+        <Heading as="h3" fontSize="lg" fontWeight={700} color="gray.50">
           {title}
         </Heading>
       </Skeleton>
