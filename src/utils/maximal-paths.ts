@@ -16,13 +16,13 @@ export type GraphNodeList = {
   [tokenId: string]: GraphNode;
 };
 
-export type MinimalPath = {
+export type MaximalPath = {
   amountOut: number;
   path: string[];
 };
 
-export type MinimalPathsResult = {
-  [tokenId: string]: MinimalPath;
+export type MaximalPathsList = {
+  [tokenId: string]: MaximalPath;
 };
 
 export const findMaximalPaths = (
@@ -96,8 +96,8 @@ export const findMaximalPaths = (
   return nodes;
 };
 
-const parseMaximalPaths = (nodes: GraphNodeList): MinimalPathsResult => {
-  const result: MinimalPathsResult = {};
+const parseMaximalPaths = (nodes: GraphNodeList): MaximalPathsList => {
+  const result: MaximalPathsList = {};
   for (const node of Object.values(nodes)) {
     if (node.path.size < 2) continue;
     result[node.id] = {
@@ -113,7 +113,7 @@ export const getTokenPaths = (
   tokenList: AppTokenMetadataListObject,
   tokenId: string,
   amount = '1'
-): MinimalPathsResult => {
+): MaximalPathsList => {
   if (!pairList[tokenId]) return {};
   const graphNodes = findMaximalPaths(
     pairList,

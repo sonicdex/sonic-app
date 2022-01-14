@@ -8,7 +8,7 @@ import {
 } from '@/models';
 import { RootState } from '@/store';
 import { FeatureState } from '@/store';
-import { getTokenPaths, MinimalPathsResult } from '@/utils/maximal-paths';
+import { getTokenPaths, MaximalPathsList } from '@/utils/maximal-paths';
 
 export type SwapTokenDataKey = 'from' | 'to';
 
@@ -26,7 +26,7 @@ interface SwapViewState {
   allPairs?: PairList;
   slippage: string;
   keepInSonic: boolean;
-  baseTokenPaths: MinimalPathsResult;
+  baseTokenPaths: MaximalPathsList;
 }
 
 export const INITIAL_SWAP_SLIPPAGE = '0.5';

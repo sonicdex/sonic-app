@@ -1,5 +1,5 @@
 import { SwapIDL } from '@/did';
-import { MinimalPathsResult } from '@/utils/maximal-paths';
+import { MaximalPathsList } from '@/utils/maximal-paths';
 
 export type AppTokenMetadata = SwapIDL.TokenInfoExt & {
   logo: string;
@@ -16,5 +16,5 @@ export interface TokenData<M = AppTokenMetadata> {
 }
 
 export interface SwapTokenMetadata extends AppTokenMetadata {
-  paths: MinimalPathsResult;
+  paths: MaximalPathsList;
 }
