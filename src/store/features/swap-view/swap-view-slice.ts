@@ -8,7 +8,7 @@ import {
 } from '@/models';
 import { RootState } from '@/store';
 import { FeatureState } from '@/store';
-import { getTokenPaths } from '@/utils/maximal-paths';
+import { getTokenPaths, MinimalPathsResult } from '@/utils/maximal-paths';
 
 export type SwapTokenDataKey = 'from' | 'to';
 
@@ -26,6 +26,7 @@ interface SwapViewState {
   allPairs?: PairList;
   slippage: string;
   keepInSonic: boolean;
+  baseTokenPaths: MinimalPathsResult;
 }
 
 export const INITIAL_SWAP_SLIPPAGE = '0.5';
@@ -45,6 +46,7 @@ const initialState: SwapViewState = {
   allPairs: undefined,
   slippage: INITIAL_SWAP_SLIPPAGE,
   keepInSonic: false,
+  baseTokenPaths: {},
 };
 
 export const swapViewSlice = createSlice({
@@ -86,11 +88,19 @@ export const swapViewSlice = createSlice({
       const { allPairs, tokenList } = state;
       const { data, tokenId } = action.payload;
       if (tokenId && tokenList && allPairs) {
-        const paths = getTokenPaths(allPairs as PairList, tokenList, tokenId);
+        const paths = getTokenPaths(
+          allPairs as PairList,
+          tokenList,
+          tokenId,
+          '1'
+        );
         state[data].metadata = {
           ...tokenList[tokenId],
           paths,
         };
+        if (data === 'from') {
+          state.baseTokenPaths = paths;
+        }
       } else {
         state[data].metadata = undefined;
       }
@@ -108,6 +118,16 @@ export const swapViewSlice = createSlice({
         state.to.metadata = temp;
         state.from.value = state.to.value;
         state.step = SwapStep.Home;
+
+        if (state.tokenList && state.allPairs) {
+          const paths = getTokenPaths(
+            state.allPairs as PairList,
+            state.tokenList,
+            state.from.metadata.id,
+            '1'
+          );
+          state.baseTokenPaths = paths;
+        }
       }
     },
     setTokenList: (

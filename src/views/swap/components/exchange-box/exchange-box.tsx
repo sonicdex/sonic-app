@@ -12,46 +12,37 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { FaArrowRight } from '@react-icons/all-files/fa/FaArrowRight';
+import BigNumber from 'bignumber.js';
 import React, { useMemo } from 'react';
 
 import { infoSrc } from '@/assets';
 import { StackLine } from '@/components';
 import { ICP_METADATA } from '@/constants';
-import { SwapTokenMetadata, TokenData } from '@/models';
+import { useSwapViewStore } from '@/store';
 import {
   getAmountOutMin,
   getCurrencyString,
   getSwapAmountOut,
 } from '@/utils/format';
 
-export type ExchangeBoxProps = {
-  from: TokenData<SwapTokenMetadata>;
-  to: TokenData<SwapTokenMetadata>;
-  slippage: string;
-};
+export const ExchangeBox: React.FC = () => {
+  const { from, to, slippage, baseTokenPaths } = useSwapViewStore();
 
-export const ExchangeBox: React.FC<ExchangeBoxProps> = ({
-  from,
-  to,
-  slippage,
-}) => {
   // FIXME: price impact
-  // const getPriceImpact = useCallback(
-  //   (reserve0: bigint, reserve1: bigint) => {
-  //     if (from.metadata?.decimals && to.metadata?.decimals) {
-  //       return calculatePriceImpact({
-  //         amountIn: from.value,
-  //         decimalsIn: from.metadata.decimals,
-  //         decimalsOut: to.metadata.decimals,
-  //         reserve0: reserve0.toString(),
-  //         reserve1: reserve1.toString(),
-  //       });
-  //     }
-
-  //     return '0';
-  //   },
-  //   [from, to]
-  // );
+  const priceImpact = useMemo(() => {
+    if (from.metadata && to.metadata && baseTokenPaths[to.metadata.id]) {
+      const expectedValue = new BigNumber(from.value).multipliedBy(
+        baseTokenPaths[to.metadata.id].amountOut
+      );
+      const realValue = new BigNumber(to.value);
+      const percentage = realValue
+        .dividedBy(expectedValue)
+        .minus(1)
+        .multipliedBy(100);
+      return percentage.dp(3).toNumber();
+    }
+    return 0;
+  }, [from, to, baseTokenPaths]);
 
   const { depositFee, withdrawFee } = useMemo(() => {
     if (from.metadata?.id && to.metadata?.id) {
@@ -104,7 +95,10 @@ export const ExchangeBox: React.FC<ExchangeBoxProps> = ({
       </Text>
       <Text flex={1} textAlign="right" mx={2}>
         1&nbsp;{from.metadata.symbol}&nbsp;=&nbsp;
-        {getSwapAmountOut({ metadata: from.metadata, value: '1' }, to)}
+        {getSwapAmountOut(
+          { metadata: { ...from.metadata, paths: baseTokenPaths }, value: '1' },
+          to
+        )}
         &nbsp;
         {to.metadata.symbol}
       </Text>
@@ -145,12 +139,7 @@ export const ExchangeBox: React.FC<ExchangeBoxProps> = ({
                       : 0
                   } ${to.metadata.symbol}`}
                 />
-                <StackLine
-                  title="Price Impact"
-                  // value={`${getPriceImpact(reserve0, reserve1)}%`}
-                  // FIXME: price impact
-                  value={`100%`}
-                />
+                <StackLine title="Price Impact" value={`${priceImpact}%`} />
                 <StackLine title="Allowed Slippage" value={`${slippage}%`} />
                 {/* TODO: add liquidity fee */}
                 {/* <StackLine
