@@ -11,7 +11,11 @@ export const EmptyMobile = () => {
       flexDirection="column"
       justifyContent="center"
       alignItems="center"
-      minHeight="100vh"
+      position="fixed"
+      top={0}
+      left={0}
+      right={0}
+      bottom={0}
     >
       <Image src={logoSrc} m="8vh" height="10vh" />
 
