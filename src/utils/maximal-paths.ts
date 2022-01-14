@@ -2,17 +2,13 @@ import { AppTokenMetadataListObject, PairList } from '@/models';
 
 import { getAmountOut } from './format';
 
-export type WeightItems = {
-  [tokenId: string]: number;
-};
-
 export type WeightList = {
-  [tokenId: string]: WeightItems;
+  [tokenId: string]: number;
 };
 
 export type GraphNode = {
   id: string;
-  coefficient: number;
+  amountOut: number;
   path: Set<string>;
 };
 
@@ -21,7 +17,7 @@ export type GraphNodeList = {
 };
 
 export type MinimalPath = {
-  coefficient: number;
+  amountOut: number;
   path: string[];
 };
 
@@ -29,73 +25,68 @@ export type MinimalPathsResult = {
   [tokenId: string]: MinimalPath;
 };
 
-const getWeightList = (
+export const findMaximalPaths = (
   pairList: PairList,
-  tokenList: AppTokenMetadataListObject
-): WeightList => {
-  return Object.values(pairList).reduce((weightList, paired) => {
-    let _t0id = '';
-    const pairedWeights = Object.values(paired).reduce((weightItems, pair) => {
-      const { token0: t0id, token1: t1id, reserve0, reserve1 } = pair;
-      const token0 = tokenList[t0id];
-      const token1 = tokenList[t1id];
-
-      _t0id = t0id;
-
-      const weight = getAmountOut({
-        amountIn: 1,
-        decimalsIn: token0.decimals,
-        decimalsOut: token1.decimals,
-        reserveIn: Number(reserve0),
-        reserveOut: Number(reserve1),
-      });
-
-      return {
-        ...weightItems,
-        [t1id]: Number(weight),
-      };
-    }, {} as WeightItems);
-
-    return {
-      ...weightList,
-      [_t0id]: pairedWeights,
-    };
-  }, {} as WeightList);
-};
-
-export const findMaximalPaths = (weightList: WeightList, source: string) => {
-  const nodes = Object.keys(weightList).reduce((_nodes, tokenId) => {
+  tokenList: AppTokenMetadataListObject,
+  source: string,
+  initialAmount: number
+) => {
+  const nodes = Object.keys(pairList).reduce((_nodes, tokenId) => {
     return {
       ..._nodes,
       [tokenId]: {
         id: tokenId,
-        coefficient: 0,
+        amountOut: -1,
         path: new Set<string>(),
       },
     };
   }, {} as GraphNodeList);
 
+  const getNeighborsWeights = (
+    node: GraphNode,
+    pathDistance: number
+  ): WeightList => {
+    const neighborsIds = Object.keys(pairList[node.id]);
+    return neighborsIds.reduce<WeightList>((weightItems, neighborId) => {
+      const weight = getAmountOut({
+        amountIn: pathDistance,
+        decimalsIn: tokenList[node.id].decimals,
+        decimalsOut: tokenList[neighborId].decimals,
+        reserveIn: Number(pairList[node.id][neighborId].reserve0),
+        reserveOut: Number(pairList[node.id][neighborId].reserve1),
+      });
+      return {
+        ...weightItems,
+        [neighborId]: Number(weight),
+      };
+    }, {});
+  };
+
   const testNode = (
     node: GraphNode,
     path: Set<string> = new Set(),
-    pathDistance = 1
+    pathDistance = initialAmount,
+    pathWeightList: WeightList = {}
   ) => {
     const previousId = [...path].pop();
 
-    const newPathDistance = previousId
-      ? pathDistance * weightList[previousId][node.id]
-      : pathDistance;
+    const newPathDistance = previousId ? pathWeightList[node.id] : pathDistance;
     const newPath = new Set([...path, node.id]);
 
-    if (newPathDistance > node.coefficient) {
-      node.coefficient = newPathDistance;
+    if (newPathDistance > node.amountOut) {
+      node.amountOut = newPathDistance;
       node.path = newPath;
     }
 
-    for (const neighborId in weightList[node.id]) {
+    for (const neighborId in pairList[node.id]) {
       const neighbor = nodes[neighborId];
       if (!path.has(neighborId)) {
-        testNode(neighbor, newPath, newPathDistance);
+        testNode(
+          neighbor,
+          newPath,
+          newPathDistance,
+          getNeighborsWeights(node, newPathDistance)
+        );
       }
     }
   };
@@ -111,7 +102,7 @@ const parseMaximalPaths = (nodes: GraphNodeList): MinimalPathsResult => {
     if (node.path.size < 2) continue;
     result[node.id] = {
       path: Array.from(node.path),
-      coefficient: node.coefficient,
+      amountOut: node.amountOut,
     };
   }
   return result;
@@ -120,10 +111,15 @@ const parseMaximalPaths = (nodes: GraphNodeList): MinimalPathsResult => {
 export const getTokenPaths = (
   pairList: PairList,
   tokenList: AppTokenMetadataListObject,
-  tokenId: string
+  tokenId: string,
+  amount = '1'
 ): MinimalPathsResult => {
-  const weightList = getWeightList(pairList, tokenList);
-  if (!weightList[tokenId]) return {};
-  const graphNodes = findMaximalPaths(weightList, tokenId);
+  if (!pairList[tokenId]) return {};
+  const graphNodes = findMaximalPaths(
+    pairList,
+    tokenList,
+    tokenId,
+    Number(amount)
+  );
   return parseMaximalPaths(graphNodes);
 };
