@@ -4,6 +4,7 @@ import { useCallback, useMemo } from 'react';
 import { ENV, getFromStorage, saveToStorage } from '@/config';
 import { ICP_METADATA } from '@/constants';
 import { SwapIDL, TokenIDL } from '@/did';
+import { XTCIDL } from '@/did/sonic/xtc.did';
 import { ActorAdapter, appActors, useSwapActor } from '@/integrations/actor';
 import { Balances } from '@/models';
 import {
@@ -105,10 +106,17 @@ export const useBalances = () => {
                   try {
                     const tokenCanisterId = balance[0];
 
+                    // FIXME: When XTC will be more compatible with DIP20
+                    // we can remove XTCIDL factory
+                    const _interfaceFactory =
+                      tokenCanisterId === ENV.canisterIds.XTC
+                        ? XTCIDL.factory
+                        : TokenIDL.factory;
+
                     const tokenActor: TokenIDL.Factory =
                       await new ActorAdapter().createActor(
                         tokenCanisterId,
-                        TokenIDL.factory
+                        _interfaceFactory
                       );
 
                     const storageKey = `${tokenCanisterId}-logo`;

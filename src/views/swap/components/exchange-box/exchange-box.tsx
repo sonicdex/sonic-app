@@ -28,7 +28,6 @@ import {
 export const ExchangeBox: React.FC = () => {
   const { from, to, slippage, baseTokenPaths } = useSwapViewStore();
 
-  // FIXME: price impact
   const priceImpact = useMemo(() => {
     if (from.metadata && to.metadata && baseTokenPaths[to.metadata.id]) {
       const expectedValue = new BigNumber(from.value).multipliedBy(
