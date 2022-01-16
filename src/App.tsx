@@ -43,7 +43,6 @@ export const App = () => {
   useSwapCanisterInit();
   useLiquidityViewInit();
 
-  // TODO: Remove after plug mobile connection
   if (isAnyMobileDevice) {
     return <EmptyMobile />;
   }

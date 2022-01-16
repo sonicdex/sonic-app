@@ -245,7 +245,7 @@ export const TokenSelectModal = () => {
         <ModalFooter>
           <Button
             as={Link}
-            href={ENV.tokenRequestURL}
+            href={ENV.URLs.tokenRequestForm}
             isFullWidth
             variant="gradient"
             colorScheme="dark-blue"

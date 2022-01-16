@@ -223,13 +223,13 @@ export const SwapHomeStep = () => {
 
     if (
       from.metadata.id === ICP_METADATA.id &&
-      to.metadata.id === ENV.canisterIds.WICP
+      to.metadata.id === ENV.canistersPrincipalIDs.WICP
     ) {
       return [false, 'Wrap', handleWrapICP];
     }
 
     if (
-      from.metadata.id === ENV.canisterIds.WICP &&
+      from.metadata.id === ENV.canistersPrincipalIDs.WICP &&
       to.metadata.id === ICP_METADATA.id
     ) {
       return [false, 'Unwrap', handleUnwrapICP];

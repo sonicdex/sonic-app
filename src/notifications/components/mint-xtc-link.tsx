@@ -2,22 +2,22 @@ import { Link } from '@chakra-ui/react';
 import { useEffect, useMemo } from 'react';
 
 import { useBalances } from '@/hooks/use-balances';
-import { useMintWICPBatch } from '@/integrations/transactions/factories/batch/mint-wicp';
+import { useMintXTCBatch } from '@/integrations/transactions/factories/batch/mint-xtc';
 import {
+  MintXTCModalDataStep,
   modalsSliceActions,
   NotificationType,
   useAppDispatch,
   useNotificationStore,
   useSwapViewStore,
-  WrapModalDataStep,
 } from '@/store';
 import { deserialize, stringify } from '@/utils/format';
 
-export interface WrapLinkProps {
+export interface MintXTCLinkProps {
   id: string;
 }
 
-export const WrapLink: React.FC<WrapLinkProps> = ({ id }) => {
+export const MintXTCLink: React.FC<MintXTCLinkProps> = ({ id }) => {
   const dispatch = useAppDispatch();
   const swapViewStore = useSwapViewStore();
   const { addNotification, popNotification } = useNotificationStore();
@@ -29,20 +29,20 @@ export const WrapLink: React.FC<WrapLinkProps> = ({ id }) => {
     return deserialize(stringify({ from, keepInSonic }));
   }, []);
 
-  const [batch, openWrapModal] = useMintWICPBatch({
+  const [batch, openMintXTCProgressModal] = useMintXTCBatch({
     amount: from.value,
     keepInSonic,
   });
 
   const handleStateChange = () => {
     if (
-      Object.values(WrapModalDataStep).includes(
-        batch.state as WrapModalDataStep
+      Object.values(MintXTCModalDataStep).includes(
+        batch.state as MintXTCModalDataStep
       )
     ) {
       dispatch(
-        modalsSliceActions.setWrapModalData({
-          step: batch.state as WrapModalDataStep,
+        modalsSliceActions.setMintXTCModalData({
+          step: batch.state as MintXTCModalDataStep,
         })
       );
     }
@@ -50,18 +50,18 @@ export const WrapLink: React.FC<WrapLinkProps> = ({ id }) => {
 
   const handleOpenModal = () => {
     handleStateChange();
-    openWrapModal();
+    openMintXTCProgressModal();
   };
-  useEffect(handleStateChange, [batch.state]);
+  useEffect(handleStateChange, [batch.state, dispatch]);
 
   useEffect(() => {
     batch
       .execute()
       .then(() => {
-        dispatch(modalsSliceActions.closeWrapProgressModal());
+        dispatch(modalsSliceActions.closeMintXTCProgressModal());
 
         addNotification({
-          title: `Wrapped ${from.value} ${from.metadata.symbol}`,
+          title: `Minted ${from.value} ${from.metadata.symbol}`,
           type: NotificationType.Success,
           id: Date.now().toString(),
           transactionLink: '/activity',
@@ -69,10 +69,10 @@ export const WrapLink: React.FC<WrapLinkProps> = ({ id }) => {
         getBalances();
       })
       .catch((err) => {
-        console.error('Wrap Error', err);
+        console.error('Mint Error', err);
 
         addNotification({
-          title: `Wrap ${from.value} ${from.metadata.symbol} failed`,
+          title: `Mint ${from.value} ${from.metadata.symbol} failed`,
           type: NotificationType.Error,
           id: Date.now().toString(),
         });

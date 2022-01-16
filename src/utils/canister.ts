@@ -29,13 +29,13 @@ export const parseResponseSupportedTokenList = (
   price?: string
 ): AppTokenMetadata[] => {
   return response.map((token) => {
-    // TODO: remove hardcode, once XTC logo will be fixed
+    // FIXME: remove hardcode, once XTC logo will be fixed
     let logo;
-    if (token.id === ENV.canisterIds.XTC) {
+    if (token.id === ENV.canistersPrincipalIDs.XTC) {
       logo = xtcSrc;
     }
 
-    if (token.id !== ENV.canisterIds.XTC) {
+    if (token.id !== ENV.canistersPrincipalIDs.XTC) {
       logo = getFromStorage(`${token.id}-logo`) ?? questionMarkSrc;
     }
 

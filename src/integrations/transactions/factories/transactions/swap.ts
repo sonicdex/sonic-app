@@ -31,7 +31,7 @@ export const useSwapExactTokensTransactionMemo: CreateTransaction<Swap> = (
     const currentTime = (new Date().getTime() + 5 * 60 * 1000) * 10000000;
 
     return {
-      canisterId: ENV.canisterIds.swap,
+      canisterId: ENV.canistersPrincipalIDs.swap,
       idl: SwapIDL.factory,
       methodName: 'swapExactTokensForTokens',
       onFail,
@@ -66,7 +66,7 @@ export const useSwapForExactTokensTransactionMemo: CreateTransaction<Swap> = (
     const currentTime = (new Date().getTime() + 5 * 60 * 1000) * 10000000;
 
     return {
-      canisterId: ENV.canisterIds.swap,
+      canisterId: ENV.canistersPrincipalIDs.swap,
       idl: SwapIDL.factory,
       methodName: 'swapTokensForExactTokens',
       onFail,

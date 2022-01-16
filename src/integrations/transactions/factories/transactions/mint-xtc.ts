@@ -1,11 +1,11 @@
 import { useMemo } from 'react';
 
 import { ENV } from '@/config';
-import { TokenIDL } from '@/did';
+import { XTCIDL } from '@/did';
 
-import { CreateTransaction, MintWICP } from '../../models';
+import { CreateTransaction, MintXTC } from '../../models';
 
-export const useMintWICPTransactionMemo: CreateTransaction<MintWICP> = (
+export const useMintXTCTransactionMemo: CreateTransaction<MintXTC> = (
   options = {},
   onSuccess,
   onFail
@@ -13,14 +13,14 @@ export const useMintWICPTransactionMemo: CreateTransaction<MintWICP> = (
   useMemo(() => {
     const { blockHeight, subaccount = [] } = options;
     return {
-      canisterId: ENV.canistersPrincipalIDs.WICP,
-      idl: TokenIDL.factory,
-      methodName: 'mint',
-      onSuccess: async (res: TokenIDL.Result) => {
+      canisterId: ENV.canistersPrincipalIDs.XTC,
+      idl: XTCIDL.factory,
+      methodName: 'mint_by_icp',
+      onSuccess: async (res: XTCIDL.TxReceipt) => {
         if ('Err' in res) throw new Error(JSON.stringify(Object.keys(res.Err)));
         if (onSuccess) onSuccess(res);
       },
-      onFail: async (err: any, prevTransactionsData: any[]) => {
+      onFail: async (err: string, prevTransactionsData: any[]) => {
         if (onFail) onFail(err, prevTransactionsData);
       },
       args: (prevResponses: any[]) => {

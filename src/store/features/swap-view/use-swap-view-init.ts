@@ -34,8 +34,6 @@ export const useSwapView = () => {
     );
   }
 
-  // TODO: Add XTC case
-
   useEffect(() => {
     if (!supportedTokenList) return;
 
@@ -56,8 +54,10 @@ export const useSwapView = () => {
     if (!allPairs) return;
 
     if (
-      (isFirstTokenIsICP && to.metadata.id === ENV.canisterIds.WICP) ||
-      (isSecondTokenIsICP && from.metadata.id === ENV.canisterIds.WICP)
+      (isFirstTokenIsICP &&
+        to.metadata.id === ENV.canistersPrincipalIDs.WICP) ||
+      (isSecondTokenIsICP &&
+        from.metadata.id === ENV.canistersPrincipalIDs.WICP)
     ) {
       handleICPToWICPChange();
       return;

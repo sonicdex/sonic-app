@@ -17,7 +17,7 @@ export const useWithdrawWICPTransactionMemo: CreateTransaction<WithdrawWICP> = (
     if (!toAccountId) throw new Error('Account ID is required');
 
     return {
-      canisterId: ENV.canisterIds.WICP,
+      canisterId: ENV.canistersPrincipalIDs.WICP,
       idl: TokenIDL.factory,
       methodName: 'withdraw',
       onSuccess: async (res: TokenIDL.Result) => {

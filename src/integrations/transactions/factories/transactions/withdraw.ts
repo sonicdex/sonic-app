@@ -17,7 +17,7 @@ export const useWithdrawTransactionMemo: CreateTransaction<Withdraw> = (
 
     return {
       args: [Principal.fromText(token.id), parseAmount(amount, token.decimals)],
-      canisterId: ENV.canisterIds.swap,
+      canisterId: ENV.canistersPrincipalIDs.swap,
       idl: SwapIDL.factory,
       methodName: 'withdraw',
       onSuccess: async (res: SwapIDL.Result) => {
@@ -26,4 +26,4 @@ export const useWithdrawTransactionMemo: CreateTransaction<Withdraw> = (
       },
       onFail,
     };
-  }, [amount, token]);
+  }, [amount, token, onFail, onSuccess]);

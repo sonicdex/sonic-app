@@ -20,11 +20,11 @@ export const useSwapViewStore = () => {
 
     if (state.from.metadata.id === ICP_METADATA.id) {
       const wicpTokenMetadata = fromTokenOptions.find(
-        (token) => token.id === ENV.canisterIds.WICP
+        (token) => token.id === ENV.canistersPrincipalIDs.WICP
       );
 
       const xtcTokenMetadata = fromTokenOptions.find(
-        (token) => token.id === ENV.canisterIds.XTC
+        (token) => token.id === ENV.canistersPrincipalIDs.XTC
       );
 
       const icpToTokenOptions: AppTokenMetadata[] = [
@@ -40,7 +40,7 @@ export const useSwapViewStore = () => {
       toTokenPathsIds.includes(token.id)
     );
 
-    if (state.from.metadata.id === ENV.canisterIds.WICP) {
+    if (state.from.metadata.id === ENV.canistersPrincipalIDs.WICP) {
       const icpToken = fromTokenOptions.find(
         (token) => token.id === ICP_METADATA.id
       );

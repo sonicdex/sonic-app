@@ -5,9 +5,9 @@ import { useMemo } from 'react';
 import { ENV } from '@/config';
 import { SwapIDL } from '@/did';
 
-import { CreatePair,CreateTransaction } from '../../models';
+import { CreatePair, CreateTransaction } from '../../models';
 
-export type CreatePairTransaction = Transaction
+export type CreatePairTransaction = Transaction;
 
 export interface CreatePairExtraArgs {
   principal: Principal;
@@ -23,7 +23,7 @@ export const useCreatePairTransactionMemo: CreateTransaction<CreatePair> = (
       throw new Error('Tokens are required');
 
     return {
-      canisterId: ENV.canisterIds.swap,
+      canisterId: ENV.canistersPrincipalIDs.swap,
       idl: SwapIDL.factory,
       methodName: 'createPair',
       onFail: async (res: SwapIDL.Result) => {

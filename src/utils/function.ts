@@ -13,5 +13,5 @@ export const debounce = (
 };
 
 export const createCAPLink = (transaction: string): string => {
-  return `https://explorer.cap.ooo/app-transactions/${ENV.canisterIds.swap}/${transaction}`;
+  return `https://explorer.cap.ooo/app-transactions/${ENV.canistersPrincipalIDs.swap}/${transaction}`;
 };

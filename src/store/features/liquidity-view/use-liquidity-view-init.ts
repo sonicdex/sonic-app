@@ -18,8 +18,9 @@ export const useLiquidityViewInit = () => {
   useEffect(() => {
     if (supportedTokenList) {
       const token =
-        supportedTokenList.find((token) => token.id === ENV.canisterIds.WICP) ??
-        supportedTokenList[0];
+        supportedTokenList.find(
+          (token) => token.id === ENV.canistersPrincipalIDs.WICP
+        ) ?? supportedTokenList[0];
 
       dispatch(liquidityViewActions.setToken({ data: 'token0', token }));
     }

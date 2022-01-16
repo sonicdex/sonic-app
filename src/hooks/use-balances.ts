@@ -39,7 +39,8 @@ export const useBalances = () => {
         try {
           if (userLPBalancesState === FeatureState.Loading) return;
           const swapActor =
-            _swapActor ?? (appActors[ENV.canisterIds.swap] as SwapIDL.Factory);
+            _swapActor ??
+            (appActors[ENV.canistersPrincipalIDs.swap] as SwapIDL.Factory);
 
           if (!swapActor) throw new Error('Swap actor not found');
           if (!principalId) throw new Error('Principal ID not found');
@@ -86,7 +87,8 @@ export const useBalances = () => {
           if (balancesState === FeatureState.Loading) return;
 
           const swapActor =
-            _swapActor ?? (appActors[ENV.canisterIds.swap] as SwapIDL.Factory);
+            _swapActor ??
+            (appActors[ENV.canistersPrincipalIDs.swap] as SwapIDL.Factory);
 
           if (!swapActor) throw new Error('Swap actor not found');
           if (!principalId) throw new Error('Principal ID not found');
@@ -109,7 +111,7 @@ export const useBalances = () => {
                     // FIXME: When XTC will be more compatible with DIP20
                     // we can remove XTCIDL factory
                     const _interfaceFactory =
-                      tokenCanisterId === ENV.canisterIds.XTC
+                      tokenCanisterId === ENV.canistersPrincipalIDs.XTC
                         ? XTCIDL.factory
                         : TokenIDL.factory;
 
@@ -179,11 +181,13 @@ export const useBalances = () => {
 
   const totalBalances = useMemo(() => {
     if (tokenBalances && sonicBalances) {
-      return sumBalances(tokenBalances, sonicBalances);
+      return sumBalances(tokenBalances, sonicBalances, {
+        [ICP_METADATA.id]: icpBalance ?? 0,
+      });
     }
 
     return undefined;
-  }, [tokenBalances, sonicBalances]);
+  }, [tokenBalances, sonicBalances, icpBalance]);
 
   return {
     totalBalances,

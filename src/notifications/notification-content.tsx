@@ -13,6 +13,7 @@ import {
   WithdrawLink,
   WrapLink,
 } from './components';
+import { MintXTCLink } from './components/mint-xtc-link';
 
 export type NotificationContentProps = Pick<
   NotificationBoxProps,
@@ -35,10 +36,11 @@ export const NotificationContent: React.FC<NotificationContentProps> = ({
     [NotificationType.Unwrap]: <UnwrapLink id={id} />,
     [NotificationType.Wrap]: <WrapLink id={id} />,
     [NotificationType.Deposit]: <DepositLink id={id} />,
+    [NotificationType.MintXTC]: <MintXTCLink id={id} />,
     [NotificationType.Success]: transactionLink ? (
       <TransactionLink transactionLink={transactionLink} />
     ) : null,
-    [NotificationType.Error]: <></>, // TODO: Add error
+    [NotificationType.Error]: <></>, // TODO: Add error link
   };
 
   return (

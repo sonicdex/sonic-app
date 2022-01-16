@@ -16,7 +16,7 @@ export const useDepositTransactionMemo: CreateTransaction<Deposit> = (
     if (!token?.id) throw new Error('Token is required');
 
     return {
-      canisterId: ENV.canisterIds.swap,
+      canisterId: ENV.canistersPrincipalIDs.swap,
       idl: SwapIDL.factory,
       methodName: 'deposit',
       onSuccess: async (res: SwapIDL.Result) => {

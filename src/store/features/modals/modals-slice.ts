@@ -2,7 +2,23 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import type { RootState } from '@/store';
 
-export type ModalsCallback = (arg0?: any) => any;
+export type ModalsCallback = (...args: unknown[]) => any;
+
+export enum MintXTCModalDataStep {
+  LedgerTransfer = 'ledgerTransfer',
+  MintXTC = 'mintXTC',
+  Approve = 'approve',
+  Deposit = 'deposit',
+}
+
+export type MintXTCModalData<
+  RetryCallback = ModalsCallback,
+  CancelCallback = ModalsCallback
+> = {
+  step?: MintXTCModalDataStep;
+  steps?: MintXTCModalDataStep[];
+  callbacks?: [RetryCallback, CancelCallback];
+};
 
 export enum WrapModalDataStep {
   LedgerTransfer = 'ledgerTransfer',
@@ -10,6 +26,7 @@ export enum WrapModalDataStep {
   Approve = 'approve',
   Deposit = 'deposit',
 }
+
 export type WrapModalData = {
   step?: WrapModalDataStep;
   steps?: WrapModalDataStep[];
@@ -105,6 +122,10 @@ type TokenSelectData = {
 
 // Define a type for the slice state
 interface ModalsState {
+  isMintXTCProgressModalOpened: boolean;
+  isMintXTCFailModalOpened: boolean;
+  mintXTCModalData: MintXTCModalData;
+
   isWrapProgressModalOpened: boolean;
   isWrapFailModalOpened: boolean;
   wrapModalData: WrapModalData;
@@ -141,6 +162,10 @@ interface ModalsState {
   isAllowanceVerifyModalOpened: boolean;
   allowanceModalData: AllowanceVerifyModalData;
 }
+
+const initialMintXTCModalData: MintXTCModalData = {
+  step: undefined,
+};
 
 const initialWrapModalData: WrapModalData = {
   step: undefined,
@@ -180,6 +205,10 @@ const initialTokenSelectData: TokenSelectData = {
 
 // Define the initial state using that type
 const initialState: ModalsState = {
+  isMintXTCProgressModalOpened: false,
+  isMintXTCFailModalOpened: false,
+  mintXTCModalData: initialMintXTCModalData,
+
   isWrapProgressModalOpened: false,
   isWrapFailModalOpened: false,
   wrapModalData: initialWrapModalData,
@@ -222,6 +251,28 @@ export const modalsSlice = createSlice({
   // `createSlice` will infer the state type from the `initialState` argument
   initialState,
   reducers: {
+    openMintXTCProgressModal: (state) => {
+      state.isMintXTCProgressModalOpened = true;
+    },
+    closeMintXTCProgressModal: (state) => {
+      state.isMintXTCProgressModalOpened = false;
+    },
+    openMintXTCFailModal: (state) => {
+      state.isMintXTCFailModalOpened = true;
+    },
+    closeMintXTCFailModal: (state) => {
+      state.isMintXTCFailModalOpened = false;
+    },
+    clearMintXTCModalData: (state) => {
+      state.mintXTCModalData = initialMintXTCModalData;
+    },
+    setMintXTCModalData: (state, action: PayloadAction<MintXTCModalData>) => {
+      state.mintXTCModalData = {
+        ...state.mintXTCModalData,
+        ...action.payload,
+      };
+    },
+
     openWrapProgressModal: (state) => {
       state.isWrapProgressModalOpened = true;
     },
