@@ -3,10 +3,12 @@ import { useEffect } from 'react';
 
 import { ENV } from '@/config';
 import { getICPTokenMetadata, ICP_METADATA } from '@/constants';
-import { useICPSelectionDetectorMemo } from '@/hooks';
+import { useTokenSelectionChecker } from '@/hooks';
+import { PairList } from '@/models';
 import { useAppDispatch } from '@/store';
 import { parseResponseTokenList } from '@/utils/canister';
 import { formatAmount, getSwapAmountOut } from '@/utils/format';
+import { getTokenPaths } from '@/utils/maximal-paths';
 
 import { usePriceStore, useSwapCanisterStore } from '..';
 import { swapViewActions, useSwapViewStore } from '.';
@@ -15,12 +17,18 @@ export const useSwapView = () => {
   const dispatch = useAppDispatch();
   const { icpPrice } = usePriceStore();
   const { allPairs, supportedTokenList } = useSwapCanisterStore();
-  const { from, to } = useSwapViewStore();
+  const { from, to, tokenList } = useSwapViewStore();
 
-  const { isFirstTokenIsICP, isSecondTokenIsICP } = useICPSelectionDetectorMemo(
-    from.metadata?.id,
-    to.metadata?.id
-  );
+  const { isTokenSelected: isICPSelected } = useTokenSelectionChecker({
+    id0: from.metadata?.id,
+    id1: to.metadata?.id,
+  });
+
+  const { isTokenSelected: isWICPSelected } = useTokenSelectionChecker({
+    id0: from.metadata?.id,
+    id1: to.metadata?.id,
+    targetId: ENV.canistersPrincipalIDs.WICP,
+  });
 
   function handleICPToWICPChange() {
     const value = new BigNumber(from.value).minus(
@@ -32,6 +40,36 @@ export const useSwapView = () => {
         value: value.toNumber() > 0 ? value.toString() : '',
       })
     );
+  }
+
+  function handleICPToTokenChange() {
+    const wrappedICPMetadata = supportedTokenList?.find(
+      (token) => token.id === ENV.canistersPrincipalIDs.WICP
+    );
+
+    if (wrappedICPMetadata && tokenList) {
+      const paths = getTokenPaths(
+        allPairs as PairList,
+        tokenList,
+        wrappedICPMetadata.id,
+        from.value
+      );
+
+      console.log('cp', paths);
+
+      const fromWICP = {
+        ...from,
+        metadata: wrappedICPMetadata,
+        paths,
+      };
+
+      dispatch(
+        swapViewActions.setValue({
+          data: 'to',
+          value: getSwapAmountOut(fromWICP, to),
+        })
+      );
+    }
   }
 
   useEffect(() => {
@@ -46,21 +84,20 @@ export const useSwapView = () => {
 
   useEffect(() => {
     dispatch(swapViewActions.setAllPairs(allPairs));
-  }, [allPairs]);
+  }, [allPairs, dispatch]);
 
   useEffect(() => {
     if (!from.metadata) return;
     if (!to.metadata) return;
     if (!allPairs) return;
 
-    if (
-      (isFirstTokenIsICP &&
-        to.metadata.id === ENV.canistersPrincipalIDs.WICP) ||
-      (isSecondTokenIsICP &&
-        from.metadata.id === ENV.canistersPrincipalIDs.WICP)
-    ) {
+    if (isICPSelected && isWICPSelected) {
       handleICPToWICPChange();
       return;
+    }
+
+    if (isICPSelected) {
+      handleICPToTokenChange();
     }
 
     dispatch(
@@ -69,5 +106,5 @@ export const useSwapView = () => {
         value: getSwapAmountOut(from, to),
       })
     );
-  }, [from.value, from.metadata, to.metadata]);
+  }, [from, to.metadata, dispatch]);
 };

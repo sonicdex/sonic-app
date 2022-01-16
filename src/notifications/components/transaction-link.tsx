@@ -9,7 +9,7 @@ export const TransactionLink: React.FC<TransactionLinkProps> = ({
   transactionLink,
 }) => {
   return (
-    <Link href={transactionLink} rel="noreferrer" color="dark-gray.500">
+    <Link href={transactionLink} rel="noreferrer" color="dark-blue.500">
       View in activity tab
     </Link>
   );

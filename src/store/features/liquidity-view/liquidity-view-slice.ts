@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { getFromStorage, LocalStorageKey, saveToStorage } from '@/config';
-import { AppTokenMetadata, Pair, TokenData } from '@/models';
+import { AppTokenMetadata, BaseTokenData, Pair } from '@/models';
 import { FeatureState, RootState } from '@/store';
 
 export type LiquidityTokenDataKey = 'token0' | 'token1';
@@ -10,8 +10,8 @@ interface LiquidityViewState {
   isBannerOpened: boolean;
   pairState: FeatureState;
   state: FeatureState;
-  token0: TokenData;
-  token1: TokenData;
+  token0: BaseTokenData;
+  token1: BaseTokenData;
   removeAmountPercentage: number;
   pair?: Pair;
   slippage: string;

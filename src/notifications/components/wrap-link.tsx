@@ -86,7 +86,7 @@ export const WrapLink: React.FC<WrapLinkProps> = ({ id }) => {
     <Link
       target="_blank"
       rel="noreferrer"
-      color="dark-gray.500"
+      color="dark-blue.500"
       onClick={handleOpenModal}
     >
       View progress

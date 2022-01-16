@@ -36,7 +36,7 @@ export const parseResponseSupportedTokenList = (
     }
 
     if (token.id !== ENV.canistersPrincipalIDs.XTC) {
-      logo = getFromStorage(`${token.id}-logo`) ?? questionMarkSrc;
+      logo = getFromStorage(`${token.id}-logo`) || questionMarkSrc;
     }
 
     return {

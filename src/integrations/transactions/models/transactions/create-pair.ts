@@ -1,6 +1,6 @@
-import { TokenData } from '@/models';
+import { BaseTokenData } from '@/models';
 
 export interface CreatePair {
-  token0: TokenData;
-  token1: TokenData;
+  token0: BaseTokenData;
+  token1: BaseTokenData;
 }

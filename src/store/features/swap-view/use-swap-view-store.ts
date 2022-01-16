@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 
 import { ENV } from '@/config';
 import { ICP_METADATA } from '@/constants';
+import { useTokenSelectionChecker } from '@/hooks';
 import { AppTokenMetadata } from '@/models';
 import { selectSwapViewState, useAppSelector } from '@/store';
 
@@ -9,16 +10,26 @@ import { useSwapCanisterStore } from '..';
 
 export const useSwapViewStore = () => {
   const state = useAppSelector(selectSwapViewState);
+  const { from, tokenList } = state;
   const { allPairs } = useSwapCanisterStore();
 
-  const [fromTokenOptions, toTokenOptions] = useMemo(() => {
-    if (!state.from.metadata || !state.tokenList) return [[], []];
+  const { isTokenSelected: isICPSelected } = useTokenSelectionChecker({
+    id0: from.metadata?.id,
+  });
 
-    const fromTokenOptions = Object.values(state.tokenList);
+  const { isTokenSelected: isWICPSelected } = useTokenSelectionChecker({
+    id0: from.metadata?.id,
+    targetId: ENV.canistersPrincipalIDs.WICP,
+  });
+
+  const [fromTokenOptions, toTokenOptions] = useMemo(() => {
+    if (!from.metadata || !tokenList) return [[], []];
+
+    const fromTokenOptions = Object.values(tokenList);
 
     if (!allPairs) return [fromTokenOptions, []];
 
-    if (state.from.metadata.id === ICP_METADATA.id) {
+    if (isICPSelected) {
       const wicpTokenMetadata = fromTokenOptions.find(
         (token) => token.id === ENV.canistersPrincipalIDs.WICP
       );
@@ -35,12 +46,12 @@ export const useSwapViewStore = () => {
       return [fromTokenOptions, icpToTokenOptions];
     }
 
-    const toTokenPathsIds = Object.keys(state.from.metadata.paths);
+    const toTokenPathsIds = Object.keys(from.paths);
     const toTokenOptions = fromTokenOptions.filter((token) =>
       toTokenPathsIds.includes(token.id)
     );
 
-    if (state.from.metadata.id === ENV.canistersPrincipalIDs.WICP) {
+    if (isWICPSelected) {
       const icpToken = fromTokenOptions.find(
         (token) => token.id === ICP_METADATA.id
       );
@@ -51,7 +62,14 @@ export const useSwapViewStore = () => {
     }
 
     return [fromTokenOptions, toTokenOptions];
-  }, [state.tokenList, state.from.metadata, allPairs]);
+  }, [
+    from.metadata,
+    from.paths,
+    tokenList,
+    allPairs,
+    isICPSelected,
+    isWICPSelected,
+  ]);
 
   return {
     ...state,

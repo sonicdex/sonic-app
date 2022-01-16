@@ -61,7 +61,7 @@ export const Token: React.FC<TokenProps> = ({
   children,
   ...tokenProps
 }) => {
-  const border = shouldGlow ? '1px solid dark-gray.500' : '1px solid #373737';
+  const border = shouldGlow ? '1px solid dark-blue.500' : '1px solid #373737';
   const background = shouldGlow ? 'black' : 'custom.2';
 
   return (
@@ -358,6 +358,6 @@ const TokenGlow = () => (
     height="100%"
     filter="blur(6px)"
     zIndex={-100}
-    bg="dark-gray.500"
+    bg="dark-blue.500"
   />
 );

@@ -15,7 +15,7 @@ export const SlippageSettings = ({
   isAutoSlippage,
   setIsAutoSlippage,
 }: SlippageSettingsProps) => {
-  const inputBorderColor = isAutoSlippage ? 'custom.3' : 'dark-gray.500';
+  const inputBorderColor = isAutoSlippage ? 'custom.3' : 'dark-blue.500';
   const inputColor = isAutoSlippage ? 'custom.1' : 'gray.50';
 
   const handleInputClick = () => {

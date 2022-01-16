@@ -95,7 +95,7 @@ export const ExchangeBox: React.FC = () => {
       <Text flex={1} textAlign="right" mx={2}>
         1&nbsp;{from.metadata.symbol}&nbsp;=&nbsp;
         {getSwapAmountOut(
-          { metadata: { ...from.metadata, paths: baseTokenPaths }, value: '1' },
+          { metadata: from.metadata, paths: baseTokenPaths, value: '1' },
           to
         )}
         &nbsp;
