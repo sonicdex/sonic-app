@@ -25,7 +25,7 @@ export const useSwapView = () => {
   const dispatch = useAppDispatch();
   const { icpPrice } = usePriceStore();
   const { allPairs, supportedTokenList } = useSwapCanisterStore();
-  const { from, to, tokenList } = useSwapViewStore();
+  const { from, to, tokenList, keepInSonic } = useSwapViewStore();
   const { ICPXDRconversionRate } = useCyclesMintingCanisterStore();
 
   const { isTokenSelected: isICPSelected } = useTokenSelectionChecker({
@@ -76,11 +76,13 @@ export const useSwapView = () => {
         decimals: xtcMetadata.decimals,
       });
 
-      const xtcFee = formatAmount(xtcMetadata.fee, xtcMetadata.decimals);
+      const xtcFee = new BigNumber(
+        formatAmount(xtcMetadata.fee, xtcMetadata.decimals)
+      );
 
       const cycles = cyclesWithFees
         .minus(icpFeeInXTC.multipliedBy(2))
-        .minus(xtcFee);
+        .minus(xtcFee.multipliedBy(keepInSonic ? 3 : 1));
 
       dispatch(
         swapViewActions.setValue({
@@ -157,5 +159,5 @@ export const useSwapView = () => {
         value: getSwapAmountOut(from, to),
       })
     );
-  }, [from, to.metadata, dispatch]);
+  }, [from, to.metadata, dispatch, keepInSonic]);
 };

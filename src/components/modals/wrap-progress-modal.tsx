@@ -1,6 +1,6 @@
 import { Flex, Modal, ModalOverlay } from '@chakra-ui/react';
 
-import { checkSrc, depositSrc, swapSrc, withdrawSrc } from '@/assets';
+import { checkPlainSrc, depositSrc, swapSrc, withdrawSrc } from '@/assets';
 import {
   modalsSliceActions,
   useAppDispatch,
@@ -50,7 +50,7 @@ export const WrapProgressModal = () => {
           {steps?.includes(WrapModalDataStep.Approve) && (
             <TransactionStep
               status={getStepStatus(WrapModalDataStep.Approve)}
-              iconSrc={checkSrc}
+              iconSrc={checkPlainSrc}
               chevron
             >
               Approving <br /> WICP

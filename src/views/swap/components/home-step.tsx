@@ -497,7 +497,8 @@ export const SwapHomeStep = () => {
             zIndex="overlay"
             bg="gray.800"
             onClick={switchTokens}
-            isDisabled={!to.metadata || toTokenOptions.length === 0}
+            // TODO: Replace hardcoding with a proper solution
+            isDisabled={!to.metadata || (isFromTokenIsICP && isToTokenIsXTC)}
             pointerEvents={!to.metadata ? 'none' : 'all'}
             _hover={{
               '& > svg': {
@@ -553,7 +554,13 @@ export const SwapHomeStep = () => {
       <KeepInSonicBox
         canHeldInSonic={!isToTokenIsICP}
         symbol={to.metadata?.symbol}
-        operation={isFromTokenIsICP ? 'wrap' : 'swap'}
+        operation={
+          isFromTokenIsICP && isToTokenIsWICP
+            ? 'wrap'
+            : isFromTokenIsICP && isToTokenIsXTC
+            ? 'mint'
+            : 'swap'
+        }
       />
 
       {!isConnected ? (

@@ -17,7 +17,7 @@ import { useMemo } from 'react';
 import { infoSrc } from '@/assets';
 import { swapViewActions, useAppDispatch, useSwapViewStore } from '@/store';
 
-type OperationType = 'swap' | 'wrap';
+type OperationType = 'swap' | 'wrap' | 'mint';
 
 type KeepInSonicBoxProps = {
   symbol?: string;
@@ -56,6 +56,7 @@ export const KeepInSonicBox: React.FC<KeepInSonicBoxProps> = ({
             </>
           ),
         };
+      case 'mint':
       case 'wrap':
         return {
           label: `Deposit ${
