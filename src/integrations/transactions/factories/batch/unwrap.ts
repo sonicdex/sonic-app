@@ -18,12 +18,15 @@ import {
 } from '../transactions';
 import { getAmountDependsOnBalance } from '.';
 
-type Unwrap = {
+type UseUnwrapBatchOptions = {
   amount: string;
   toAccountId?: string;
 };
 
-export const useUnwrapBatch = ({ amount, toAccountId }: Unwrap) => {
+export const useUnwrapBatch = ({
+  amount,
+  toAccountId,
+}: UseUnwrapBatchOptions) => {
   const { tokenList } = useSwapViewStore();
   const { tokenBalances } = useSwapCanisterStore();
   const dispatch = useAppDispatch();
@@ -32,9 +35,9 @@ export const useUnwrapBatch = ({ amount, toAccountId }: Unwrap) => {
   if (!tokenList) throw new Error('Token list is required');
 
   const withdraw = useWithdrawTransactionMemo({
-    token: tokenList[ENV.canisterIds.WICP],
+    token: tokenList[ENV.canistersPrincipalIDs.WICP],
     amount: getAmountDependsOnBalance(
-      tokenBalances[ENV.canisterIds.WICP],
+      tokenBalances[ENV.canistersPrincipalIDs.WICP],
       ICP_METADATA.decimals,
       amount
     ),
@@ -60,7 +63,7 @@ export const useUnwrapBatch = ({ amount, toAccountId }: Unwrap) => {
     };
 
     return _transactions;
-  }, [withdrawWICP]);
+  }, [withdrawWICP, withdraw]);
 
   const handleOpenBatchModal = () => {
     dispatch(

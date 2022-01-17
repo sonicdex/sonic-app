@@ -4,7 +4,12 @@ import { ethers } from 'ethers';
 import { formatUnits, parseUnits } from 'ethers/lib/utils';
 
 import { ICP_METADATA } from '@/constants';
-import { AppTokenMetadata, SwapTokenMetadata, TokenData } from '@/models';
+import { AppTokenMetadata } from '@/models';
+import { SwapTokenData } from '@/store';
+import {
+  DEFAULT_CYCLES_PER_XDR,
+  TOKEN_SUBDIVIDABLE_BY,
+} from '@/store/features/cycles-minting-canister/cycles-minting-canister.constants';
 
 export type BigNumberish = BigNumber | Bytes | bigint | string | number;
 
@@ -91,7 +96,27 @@ export const getAmountLP = ({
   return Math.min(Number(one), Number(two)).toString();
 };
 
-interface GetLPPercentageString extends GetAmountLPOptions {
+export type GetXTCValueFromICPOptions = {
+  amount: string;
+  conversionRate: string;
+  fee: bigint;
+  decimals: number;
+};
+
+export function getXTCValueFromICP({
+  amount,
+  conversionRate,
+  fee,
+  decimals,
+}: GetXTCValueFromICPOptions) {
+  return new BigNumber(amount)
+    .multipliedBy(new BigNumber(conversionRate))
+    .multipliedBy(new BigNumber(DEFAULT_CYCLES_PER_XDR))
+    .dividedBy(new BigNumber(TOKEN_SUBDIVIDABLE_BY * 100_000_000))
+    .minus(formatAmount(fee, decimals));
+}
+
+export interface GetLPPercentageString extends GetAmountLPOptions {
   token0Decimals: number | bigint;
   token1Decimals: number | bigint;
 }
@@ -363,11 +388,18 @@ export const getDepositMaxValue = (
 };
 
 export const getSwapAmountOut = (
-  tokenIn: TokenData<SwapTokenMetadata>,
-  tokenOut: TokenData<SwapTokenMetadata>
+  tokenIn: SwapTokenData,
+  tokenOut: SwapTokenData
 ): string => {
   if (!tokenIn.metadata || !tokenOut.metadata || !tokenIn.value) return '';
-  return new BigNumber(tokenIn.metadata.paths[tokenOut.metadata.id].amountOut)
-    .dp(tokenOut.metadata.decimals)
-    .toString();
+
+  const path = tokenIn.paths[tokenOut.metadata.id];
+
+  if (path) {
+    return new BigNumber(path.amountOut)
+      .dp(tokenOut.metadata.decimals)
+      .toString();
+  }
+
+  return '';
 };

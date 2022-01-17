@@ -25,7 +25,7 @@ export const TransactionProgressModalContent: React.FC<ModalContentProps> = ({
       as={Flex}
       direction="column"
       alignItems="center"
-      bg="#1E1E1E"
+      bg="custom.2"
       pt="37px"
       px="37px"
       pb="43px"
@@ -34,10 +34,10 @@ export const TransactionProgressModalContent: React.FC<ModalContentProps> = ({
       minWidth="fit-content"
     >
       <ModalCloseButton />
-      <Heading as="h1" color="#F6FCFD" fontWeight={700} fontSize={22} mb={3}>
+      <Heading as="h1" color="gray.50" fontWeight={700} fontSize={22} mb={3}>
         {title}
       </Heading>
-      <Text as="p" color="#888E8F" mb="33px">
+      <Text as="p" color="custom.1" mb="33px">
         Please wait some time for transactions to finish
       </Text>
       <Flex direction="row" justifyContent="center">

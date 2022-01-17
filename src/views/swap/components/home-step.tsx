@@ -14,7 +14,7 @@ import {
 } from '@chakra-ui/react';
 import { FaArrowDown } from '@react-icons/all-files/fa/FaArrowDown';
 import { FaCog } from '@react-icons/all-files/fa/FaCog';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
   PLUG_WALLET_WEBSITE_URL,
@@ -35,9 +35,9 @@ import { ENV } from '@/config';
 import { getAppAssetsSources } from '@/config/utils';
 import { ICP_METADATA } from '@/constants';
 import {
-  useICPSelectionDetectorMemo,
   useQuery,
   useTokenBalanceMemo,
+  useTokenSelectionChecker,
 } from '@/hooks';
 import { useBalances } from '@/hooks/use-balances';
 import { plug } from '@/integrations/plug';
@@ -84,6 +84,30 @@ export const SwapHomeStep = () => {
   const [autoSlippage, setAutoSlippage] = useState(true);
 
   const openSelectTokenModal = useTokenModalOpener();
+
+  const {
+    isFirstIsSelected: isFromTokenIsICP,
+    isSecondIsSelected: isToTokenIsICP,
+    isTokenSelected: isICPSelected,
+  } = useTokenSelectionChecker({
+    id0: from.metadata?.id,
+    id1: to.metadata?.id,
+  });
+
+  const {
+    isFirstIsSelected: isFromTokenIsWICP,
+    isSecondIsSelected: isToTokenIsWICP,
+  } = useTokenSelectionChecker({
+    id0: from.metadata?.id,
+    id1: to.metadata?.id,
+    targetId: ENV.canistersPrincipalIDs.WICP,
+  });
+
+  const { isSecondIsSelected: isToTokenIsXTC } = useTokenSelectionChecker({
+    id0: from.metadata?.id,
+    id1: to.metadata?.id,
+    targetId: ENV.canistersPrincipalIDs.XTC,
+  });
 
   const fromBalance = useTokenBalanceMemo(from.metadata?.id);
   const toBalance = useTokenBalanceMemo(to.metadata?.id);
@@ -136,59 +160,98 @@ export const SwapHomeStep = () => {
     [balancesState, supportedTokenListState, allPairsState]
   );
 
-  const [buttonDisabled, buttonMessage, onButtonClick] = useMemo<
-    [boolean, string, (() => void)?]
-  >(() => {
-    const handleWrapICP = () => {
-      const plugProviderVersionNumber = Number(
-        plug?.versions.provider.split('.').join('')
-      );
+  const checkIsPlugProviderVersionCompatible = useCallback(() => {
+    const plugProviderVersionNumber = Number(
+      plug?.versions.provider.split('.').join('')
+    );
 
-      if (plugProviderVersionNumber >= 160) {
-        addNotification({
-          title: `Wrapping ${from.value} ${from.metadata?.symbol}`,
-          type: NotificationType.Wrap,
-          id: String(new Date().getTime()),
-        });
-        debounce(
-          () => dispatch(swapViewActions.setValue({ data: 'from', value: '' })),
-          300
-        );
-      } else {
-        addNotification({
-          title: (
-            <>
-              You're using an outdated version of Plug, please update to the
-              latest one{' '}
-              <Link
-                color="blue.400"
-                href={PLUG_WALLET_WEBSITE_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                here
-              </Link>
-              .
-            </>
-          ),
-          type: NotificationType.Error,
-          id: String(new Date().getTime()),
-        });
-      }
-    };
+    const plugInpageProviderVersionWithChainedBatchTranscations = 160;
 
-    const handleUnwrapICP = () => {
+    if (
+      plugProviderVersionNumber >=
+      plugInpageProviderVersionWithChainedBatchTranscations
+    ) {
+      return true;
+    } else {
       addNotification({
-        title: `Unwrapping ${from.value} ${from.metadata?.symbol}`,
-        type: NotificationType.Unwrap,
+        title: (
+          <>
+            You're using an outdated version of Plug, please update to the
+            latest one{' '}
+            <Link
+              color="blue.400"
+              href={PLUG_WALLET_WEBSITE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              here
+            </Link>
+            .
+          </>
+        ),
+        type: NotificationType.Error,
+        id: String(new Date().getTime()),
+      });
+      return false;
+    }
+  }, [addNotification]);
+
+  // TODO: calculate conversion rate and add more UI.
+  const handleMintXTC = useCallback(() => {
+    if (checkIsPlugProviderVersionCompatible()) {
+      addNotification({
+        title: `Minting ${to.value} ${to.metadata?.symbol}`,
+        type: NotificationType.MintXTC,
         id: String(new Date().getTime()),
       });
       debounce(
         () => dispatch(swapViewActions.setValue({ data: 'from', value: '' })),
         300
       );
-    };
+    }
+  }, [
+    addNotification,
+    checkIsPlugProviderVersionCompatible,
+    dispatch,
+    to.metadata?.symbol,
+    to.value,
+  ]);
 
+  const handleWrapICP = useCallback(() => {
+    if (checkIsPlugProviderVersionCompatible()) {
+      addNotification({
+        title: `Wrapping ${from.value} ${from.metadata?.symbol}`,
+        type: NotificationType.Wrap,
+        id: String(new Date().getTime()),
+      });
+      debounce(
+        () => dispatch(swapViewActions.setValue({ data: 'from', value: '' })),
+        300
+      );
+    }
+  }, [
+    addNotification,
+    checkIsPlugProviderVersionCompatible,
+    dispatch,
+    from.metadata?.symbol,
+    from.value,
+  ]);
+
+  const handleUnwrapICP = useCallback(() => {
+    addNotification({
+      title: `Unwrapping ${from.value} ${from.metadata?.symbol}`,
+      type: NotificationType.Unwrap,
+      id: String(new Date().getTime()),
+    });
+    debounce(
+      () => dispatch(swapViewActions.setValue({ data: 'from', value: '' })),
+      300
+    );
+  }, [addNotification, dispatch, from.metadata?.symbol, from.value]);
+
+  const [buttonDisabled, buttonMessage, onButtonClick] = useMemo<
+    [boolean, string, (() => void)?]
+  >(() => {
     if (isLoading) return [true, 'Loading'];
     if (isFetchingNotStarted || !from.metadata) return [true, 'Fetching'];
     if (!to.metadata) return [true, 'Select a Token'];
@@ -221,18 +284,16 @@ export const SwapHomeStep = () => {
       }
     }
 
-    if (
-      from.metadata.id === ICP_METADATA.id &&
-      to.metadata.id === ENV.canisterIds.WICP
-    ) {
+    if (isFromTokenIsICP && isToTokenIsWICP) {
       return [false, 'Wrap', handleWrapICP];
     }
 
-    if (
-      from.metadata.id === ENV.canisterIds.WICP &&
-      to.metadata.id === ICP_METADATA.id
-    ) {
+    if (isFromTokenIsWICP && isToTokenIsICP) {
       return [false, 'Unwrap', handleUnwrapICP];
+    }
+
+    if (isFromTokenIsICP && isToTokenIsXTC) {
+      return [false, 'Mint XTC', handleMintXTC];
     }
 
     return [
@@ -250,7 +311,14 @@ export const SwapHomeStep = () => {
     toTokenOptions,
     totalBalances,
     fromBalance,
-    addNotification,
+    isFromTokenIsICP,
+    isToTokenIsXTC,
+    isToTokenIsWICP,
+    isFromTokenIsWICP,
+    isToTokenIsICP,
+    handleMintXTC,
+    handleWrapICP,
+    handleUnwrapICP,
     dispatch,
   ]);
 
@@ -291,9 +359,6 @@ export const SwapHomeStep = () => {
       return [true, 'No pairs available'];
     return [false, 'Select a Token'];
   }, [toTokenOptions]);
-
-  const { isFirstTokenIsICP, isSecondTokenIsICP, isICPSelected } =
-    useICPSelectionDetectorMemo(from.metadata?.id, to.metadata?.id);
 
   const fromSources = useMemo(() => {
     if (from.metadata) {
@@ -375,7 +440,7 @@ export const SwapHomeStep = () => {
             />
           </Tooltip>
           <MenuList
-            bg="#1E1E1E"
+            bg="custom.2"
             border="none"
             borderRadius={20}
             ml={-20}
@@ -432,7 +497,7 @@ export const SwapHomeStep = () => {
             zIndex="overlay"
             bg="gray.800"
             onClick={switchTokens}
-            isDisabled={!to.metadata}
+            isDisabled={!to.metadata || toTokenOptions.length === 0}
             pointerEvents={!to.metadata ? 'none' : 'all'}
             _hover={{
               '& > svg': {
@@ -486,9 +551,9 @@ export const SwapHomeStep = () => {
       <ExchangeBox />
 
       <KeepInSonicBox
-        canHeldInSonic={!isSecondTokenIsICP}
+        canHeldInSonic={!isToTokenIsICP}
         symbol={to.metadata?.symbol}
-        operation={isFirstTokenIsICP ? 'wrap' : 'swap'}
+        operation={isFromTokenIsICP ? 'wrap' : 'swap'}
       />
 
       {!isConnected ? (

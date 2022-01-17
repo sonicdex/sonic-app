@@ -1,5 +1,6 @@
 export * from './activity-view';
 export * from './assets-view';
+export * from './cycles-minting-canister';
 export * from './deposit-view';
 export * from './keep-sync';
 export * from './liquidity-view';

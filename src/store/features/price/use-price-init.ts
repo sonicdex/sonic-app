@@ -36,27 +36,28 @@ export const usePriceInit = () => {
       const supportedTokenListWithPrices = supportedTokenList.map((token) => {
         let tokenPrice;
 
-        if (token.id === ENV.canisterIds.WICP) {
+        if (token.id === ENV.canistersPrincipalIDs.WICP) {
           tokenPrice = icpPrice;
         }
 
-        if (token.id !== ENV.canisterIds.WICP) {
-          const wicpToTokenPair = allPairs?.[ENV.canisterIds.WICP]?.[token.id];
+        if (token.id !== ENV.canistersPrincipalIDs.WICP) {
+          const wicpToTokenPair =
+            allPairs?.[ENV.canistersPrincipalIDs.WICP]?.[token.id];
           const tokenDecimals = supportedTokenList.find(
             ({ id }) => id === token.id
           )?.decimals;
           const wicpDecimals = supportedTokenList.find(
-            ({ id }) => id === ENV.canisterIds.WICP
+            ({ id }) => id === ENV.canistersPrincipalIDs.WICP
           )?.decimals;
 
           if (wicpToTokenPair && tokenDecimals && wicpDecimals) {
             const wicpReserve =
-              wicpToTokenPair.token0 === ENV.canisterIds.WICP
+              wicpToTokenPair.token0 === ENV.canistersPrincipalIDs.WICP
                 ? wicpToTokenPair.reserve0
                 : wicpToTokenPair.reserve1;
 
             const tokenReserve =
-              wicpToTokenPair.token0 === ENV.canisterIds.WICP
+              wicpToTokenPair.token0 === ENV.canistersPrincipalIDs.WICP
                 ? wicpToTokenPair.reserve1
                 : wicpToTokenPair.reserve0;
 
@@ -81,7 +82,7 @@ export const usePriceInit = () => {
         swapCanisterActions.setSupportedTokenList(supportedTokenListWithPrices)
       );
     }
-  }, [icpPrice, supportedTokenListState, allPairsState]);
+  }, [icpPrice, supportedTokenListState, allPairsState, dispatch, allPairs]);
 
   const _getICPPrice = useKeepSync(
     'getICPPrice',
@@ -112,7 +113,7 @@ export const usePriceInit = () => {
           }
         }
       },
-      [state]
+      [dispatch, state]
     )
   );
 };

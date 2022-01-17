@@ -12,7 +12,7 @@ const appTheme = {
   styles: {
     global: (props: any) => ({
       body: {
-        bg: mode('white', 'bg')(props),
+        bg: mode('white', 'black')(props),
       },
     }),
   },

@@ -29,7 +29,7 @@ const baseStyleDialog: SystemStyleFunction = (props) => {
 
   return {
     borderRadius: 'xl',
-    bg: mode('white', '#1E1E1E')(props),
+    bg: mode('white', 'custom.2')(props),
     color: 'inherit',
     my: '3.75rem',
     zIndex: 'modal',

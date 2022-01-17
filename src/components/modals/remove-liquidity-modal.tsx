@@ -206,7 +206,7 @@ export const RemoveLiquidityModal = () => {
                 }
                 colorScheme="dark-blue"
                 size="lg"
-                color={keepInSonic ? '#FFFFFF' : '#888E8F'}
+                color={keepInSonic ? 'white' : 'custom.1'}
                 fontWeight={600}
               >
                 Keep tokens in Sonic after removing liqudity

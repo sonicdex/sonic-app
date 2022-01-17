@@ -98,7 +98,7 @@ export const AssetsListView = () => {
             mb={9}
             onClose={handleBannerClose}
           >
-            <Text color="#888E8F">
+            <Text color="custom.1">
               View all the assets you have deposited or obtained on Sonic
               through our Liquidity and Swaps protocols, and deposit more or
               withdraw them to your wallet.
@@ -178,7 +178,7 @@ export const AssetsListView = () => {
                     </Text>
                     <DisplayValue
                       fontWeight="bold"
-                      prefix="$"
+                      prefix="~$"
                       value={price ?? 0}
                     />
                   </Box>

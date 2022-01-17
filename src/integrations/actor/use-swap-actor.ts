@@ -5,6 +5,6 @@ import { useActor } from '.';
 
 export const useSwapActor = () =>
   useActor<SwapIDL.Factory>({
-    canisterId: ENV.canisterIds.swap,
+    canisterId: ENV.canistersPrincipalIDs.swap,
     interfaceFactory: SwapIDL.factory,
   });

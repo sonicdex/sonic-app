@@ -151,7 +151,7 @@ export const RemoveLiquidityLink: React.FC<RemoveLiquidityLinkProps> = ({
     <Link
       target="_blank"
       rel="noreferrer"
-      color="#3D52F4"
+      color="dark-blue.500"
       onClick={handleOpenModal}
     >
       View progress

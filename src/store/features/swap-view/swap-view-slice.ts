@@ -1,15 +1,19 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import {
+  AppTokenMetadata,
   AppTokenMetadataListObject,
+  BaseTokenData,
   PairList,
-  SwapTokenMetadata,
-  TokenData,
 } from '@/models';
 import { FeatureState, RootState } from '@/store';
 import { getTokenPaths, MaximalPathsList } from '@/utils/maximal-paths';
 
 export type SwapTokenDataKey = 'from' | 'to';
+
+export interface SwapTokenData<M = AppTokenMetadata> extends BaseTokenData<M> {
+  paths: MaximalPathsList;
+}
 
 export enum SwapStep {
   Home,
@@ -19,8 +23,8 @@ export enum SwapStep {
 interface SwapViewState {
   step: SwapStep;
   state: FeatureState;
-  from: TokenData<SwapTokenMetadata>;
-  to: TokenData<SwapTokenMetadata>;
+  from: SwapTokenData;
+  to: SwapTokenData;
   tokenList?: AppTokenMetadataListObject;
   allPairs?: PairList;
   slippage: string;
@@ -34,10 +38,12 @@ const initialState: SwapViewState = {
   step: SwapStep?.Home,
   state: FeatureState?.Idle,
   from: {
+    paths: {},
     metadata: undefined,
     value: '',
   },
   to: {
+    paths: {},
     metadata: undefined,
     value: '',
   },
@@ -72,7 +78,7 @@ export const swapViewSlice = createSlice({
           state.from.metadata.id,
           value
         );
-        state.from.metadata.paths = paths;
+        state.from.paths = paths;
       }
       state[data].value = value;
       state.step = SwapStep.Home;
@@ -88,10 +94,11 @@ export const swapViewSlice = createSlice({
       const { data, tokenId } = action.payload;
       if (tokenId && tokenList && allPairs) {
         const paths = getTokenPaths(allPairs as PairList, tokenList, tokenId);
+
         state[data].metadata = {
           ...tokenList[tokenId],
-          paths,
         };
+        state[data].paths = paths;
         if (data === 'from') {
           state.baseTokenPaths = paths;
         }
@@ -99,7 +106,6 @@ export const swapViewSlice = createSlice({
         state[data].metadata = undefined;
       }
       if (data === 'from') {
-        state.from.value = '';
         state.to.value = '';
         state.to.metadata = undefined;
       }
@@ -115,13 +121,13 @@ export const swapViewSlice = createSlice({
         const temp = state.from.metadata;
         state.from.metadata = {
           ...state.to.metadata,
-          paths: getTokenPaths(
-            state.allPairs as PairList,
-            state.tokenList,
-            state.to.metadata.id,
-            state.to.value
-          ),
         };
+        state.from.paths = getTokenPaths(
+          state.allPairs as PairList,
+          state.tokenList,
+          state.to.metadata.id,
+          state.to.value
+        );
         state.to.metadata = temp;
         state.from.value = state.to.value;
         state.step = SwapStep.Home;
@@ -141,7 +147,8 @@ export const swapViewSlice = createSlice({
       state.tokenList = action.payload;
       const tokens = Object.values(action.payload);
       if (!state.from.metadata) {
-        state.from.metadata = { ...tokens[0], paths: {} };
+        state.from.metadata = { ...tokens[0] };
+        state.from.paths = {};
         state.from.value = '';
         state.to.value = '';
       }

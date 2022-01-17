@@ -106,7 +106,7 @@ export const TokenSelectModal = () => {
       size="md"
     >
       <ModalOverlay />
-      <ModalContent bg="#1E1E1E">
+      <ModalContent bg="custom.2">
         <ModalCloseButton zIndex="docked" />
         <ModalHeader>
           {addToken ? (
@@ -119,7 +119,7 @@ export const TokenSelectModal = () => {
               cursor="pointer"
               transition="background 400ms"
               _hover={{
-                background: '#282828',
+                background: 'custom.3',
               }}
             >
               <Image src={arrowBackSrc} alt="Back" />
@@ -130,7 +130,7 @@ export const TokenSelectModal = () => {
               direction="column"
               alignItems="center"
               position="sticky"
-              bg="#1E1E1E"
+              bg="custom.2"
               top={0}
             >
               <Heading as="h1" fontWeight={700} fontSize="lg">
@@ -219,7 +219,7 @@ export const TokenSelectModal = () => {
                       </Text>
                     </Skeleton>
                     <Skeleton isLoaded={!isLoading} minWidth={17} ml={2}>
-                      <Text pl={2} color="#888E8F">
+                      <Text pl={2} color="custom.1">
                         {importTokenData.name}
                       </Text>
                     </Skeleton>
@@ -245,7 +245,7 @@ export const TokenSelectModal = () => {
         <ModalFooter>
           <Button
             as={Link}
-            href={ENV.tokenRequestURL}
+            href={ENV.URLs.tokenRequestForm}
             isFullWidth
             variant="gradient"
             colorScheme="dark-blue"

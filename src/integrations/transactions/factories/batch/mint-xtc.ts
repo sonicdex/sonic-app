@@ -2,46 +2,48 @@ import { useMemo } from 'react';
 
 import { ENV } from '@/config';
 import {
+  MintXTCModalDataStep,
   modalsSliceActions,
   NotificationType,
   useAppDispatch,
   useNotificationStore,
   useSwapViewStore,
-  WrapModalDataStep,
 } from '@/store';
 
 import { Batch } from '../..';
-import { useBatchHook } from '..';
 import {
   useApproveTransactionMemo,
+  useBatchHook,
   useDepositTransactionMemo,
   useLedgerTransferTransactionMemo,
-  useMintWICPTransactionMemo,
-} from '../transactions';
+} from '..';
+import { useMintXTCTransactionMemo } from '../transactions/mint-xtc';
 
-export const WICP_ACCOUNT_ID =
-  'cc659fe529756bae6f72db9937c6c60cf7ad57eb4ac5f930a75748927aab469a';
-
-type Wrap = {
+export type UseMintXTCBatchOptions = {
   keepInSonic?: boolean;
   amount: string;
 };
 
-export const useWrapBatch = ({ amount, keepInSonic = false }: Wrap) => {
+export const useMintXTCBatch = ({
+  amount,
+  keepInSonic,
+}: UseMintXTCBatchOptions) => {
   const { tokenList } = useSwapViewStore();
   const dispatch = useAppDispatch();
   const { addNotification } = useNotificationStore();
 
+  if (!tokenList) throw new Error('Token list is required');
+
   const depositParams = {
-    token: tokenList![ENV.canisterIds.WICP],
+    token: tokenList[ENV.canistersPrincipalIDs.XTC],
     amount: amount.toString(),
   };
 
   const ledgerTransfer = useLedgerTransferTransactionMemo({
-    toAccountId: WICP_ACCOUNT_ID,
+    toAccountId: ENV.accountIDs.XTC,
     amount,
   });
-  const mintWICP = useMintWICPTransactionMemo(
+  const mintXTC = useMintXTCTransactionMemo(
     {},
     undefined,
     // TODO: Add strict types
@@ -49,8 +51,9 @@ export const useWrapBatch = ({ amount, keepInSonic = false }: Wrap) => {
       const blockHeight = (
         prevTransactionsData?.[0]?.response as bigint | undefined
       )?.toString();
+
       addNotification({
-        title: `The minting of WICP is failed, please use DFX to finish minting your WICP "dfx canister --no-wallet --network ic call utozz-siaaa-aaaam-qaaxq-cai mint '(0, ${blockHeight})'"`,
+        title: `The minting of XTC is failed, please use DFX to finish minting your XTC "dfx canister --no-wallet --network ic call ${ENV.canistersPrincipalIDs.XTC} mint '(0, ${blockHeight})'"`,
         type: NotificationType.Error,
         timeout: 'none',
         id: Date.now().toString(),
@@ -61,9 +64,9 @@ export const useWrapBatch = ({ amount, keepInSonic = false }: Wrap) => {
   const deposit = useDepositTransactionMemo(depositParams);
 
   const transactions = useMemo(() => {
-    let transactions: Partial<Record<WrapModalDataStep, any>> = {
+    let transactions: Partial<Record<MintXTCModalDataStep, any>> = {
       ledgerTransfer,
-      mintWICP,
+      mintXTC,
     };
 
     if (keepInSonic) {
@@ -75,25 +78,25 @@ export const useWrapBatch = ({ amount, keepInSonic = false }: Wrap) => {
     }
 
     return transactions;
-  }, [ledgerTransfer, mintWICP, approve, deposit, keepInSonic]);
+  }, [ledgerTransfer, mintXTC, approve, deposit, keepInSonic]);
 
   const handleOpenBatchModal = () => {
     dispatch(
-      modalsSliceActions.setWrapModalData({
-        steps: Object.keys(transactions) as WrapModalDataStep[],
+      modalsSliceActions.setMintXTCModalData({
+        steps: Object.keys(transactions) as MintXTCModalDataStep[],
       })
     );
-    dispatch(modalsSliceActions.openWrapProgressModal());
+    dispatch(modalsSliceActions.openMintXTCProgressModal());
   };
 
   return [
     useBatchHook({
       transactions,
       handleRetry: () => {
-        dispatch(modalsSliceActions.closeWrapProgressModal());
+        dispatch(modalsSliceActions.closeMintXTCProgressModal());
         return Promise.resolve(false);
       },
     }),
     handleOpenBatchModal,
-  ] as [Batch.Hook<WrapModalDataStep>, () => void];
+  ] as [Batch.Hook<MintXTCModalDataStep>, () => void];
 };

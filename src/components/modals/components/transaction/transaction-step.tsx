@@ -22,14 +22,14 @@ export const TransactionStep = ({
   const { color, weight, opacity } = useMemo(() => {
     if (status === StepStatus.Disabled) {
       return {
-        color: '#888E8F',
+        color: 'custom.1',
         weight: 400,
         opacity: 0.4,
       };
     }
 
     return {
-      color: '#FFFFFF',
+      color: 'white',
       weight: 600,
       opacity: 1,
     };

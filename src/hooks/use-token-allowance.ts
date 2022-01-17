@@ -20,7 +20,7 @@ export const useTokenAllowance = (tokenId?: string): number | undefined => {
       actor
         .allowance(
           Principal.fromText(principalId),
-          Principal.fromText(ENV.canisterIds.swap)
+          Principal.fromText(ENV.canistersPrincipalIDs.swap)
         )
         .then((res) => {
           setAllowance(Number(res));

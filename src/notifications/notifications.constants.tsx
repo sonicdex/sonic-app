@@ -1,9 +1,9 @@
-import { Link,Text } from '@chakra-ui/react';
+import { Link, Text } from '@chakra-ui/react';
 
 const SWAP_ERROR_LINK = '#';
 
 const SwapError = () => (
-  <Text color="#888E8F">
+  <Text color="custom.1">
     Since the swap failed, your assets are now deposited in Sonic, you can
     either retry the swap or{' '}
     <Link

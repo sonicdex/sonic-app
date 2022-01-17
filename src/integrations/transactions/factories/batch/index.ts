@@ -5,4 +5,4 @@ export * from './swap';
 export * from './unwrap';
 export * from './utils';
 export * from './withdraw';
-export * from './wrap';
+export * from './mint-wicp';

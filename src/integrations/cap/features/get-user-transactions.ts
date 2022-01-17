@@ -12,7 +12,7 @@ export const getUserTransactions = async (
   page = 0
 ): Promise<MappedCapHistoryLog[]> => {
   const capRoot = await getCapRootInstance({
-    canisterId: ENV.canisterIds.swapCapRoot,
+    canisterId: ENV.canistersPrincipalIDs.swapCapRoot,
   });
 
   const result = (await capRoot.get_user_transactions({

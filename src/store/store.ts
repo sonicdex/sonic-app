@@ -2,6 +2,7 @@ import { configureStore } from '@reduxjs/toolkit';
 
 import activityViewReducer from '@/store/features/activity-view/activity-view-slice';
 import assetsViewReducer from '@/store/features/assets-view/assets-view-slice';
+import cyclesMintingCanisterReducer from '@/store/features/cycles-minting-canister/cycles-minting-canister-slice';
 import depositViewReducer from '@/store/features/deposit-view/deposit-view-slice';
 import keepSyncReducer from '@/store/features/keep-sync/keep-sync-slice';
 import liquidityViewReducer from '@/store/features/liquidity-view/liquidity-view-slice';
@@ -15,18 +16,20 @@ import withdrawViewReducer from '@/store/features/withdraw-view/withdraw-view-sl
 
 export const store = configureStore({
   reducer: {
+    cyclesMinting: cyclesMintingCanisterReducer,
     plug: plugReducer,
     modals: modalsReducer,
     notification: notificationReducer,
     swap: swapReducer,
+    price: priceReducer,
+    keepSync: keepSyncReducer,
+
     activityView: activityViewReducer,
     assetsView: assetsViewReducer,
     depositView: depositViewReducer,
     liquidityView: liquidityViewReducer,
     swapView: swapViewReducer,
     withdrawView: withdrawViewReducer,
-    price: priceReducer,
-    keepSync: keepSyncReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

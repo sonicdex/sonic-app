@@ -14,6 +14,7 @@ export enum NotificationType {
   RemoveLiquidity,
   Unwrap,
   Wrap,
+  MintXTC,
 }
 
 export interface Notification {

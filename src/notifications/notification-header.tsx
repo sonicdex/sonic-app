@@ -31,6 +31,7 @@ const NotificationIcon = ({ type }: { type: NotificationType }) => {
     case NotificationType.AddLiquidity:
     case NotificationType.RemoveLiquidity:
     case NotificationType.Deposit:
+    case NotificationType.MintXTC:
     case NotificationType.Withdraw:
       return <Spinner position="absolute" top={4} left={4} />;
     default:

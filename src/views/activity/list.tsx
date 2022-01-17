@@ -65,7 +65,7 @@ export const ActivityListView = () => {
           title="Your Activity"
           isRefreshing={state === FeatureState.Loading}
         />
-        <Text textAlign="center" color="#888E8F">
+        <Text textAlign="center" color="custom.1">
           You have no activity
         </Text>
       </>

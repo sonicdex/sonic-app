@@ -31,7 +31,7 @@ export const useSwapExactTokensTransactionMemo: CreateTransaction<Swap> = (
     const currentTime = (new Date().getTime() + 5 * 60 * 1000) * 10000000;
 
     return {
-      canisterId: ENV.canisterIds.swap,
+      canisterId: ENV.canistersPrincipalIDs.swap,
       idl: SwapIDL.factory,
       methodName: 'swapExactTokensForTokens',
       onFail,
@@ -42,12 +42,22 @@ export const useSwapExactTokensTransactionMemo: CreateTransaction<Swap> = (
       args: [
         amountIn,
         amountOutMin,
-        from.metadata.paths[to.metadata.id].path,
+        from.paths[to.metadata.id].path,
         Principal.fromText(principalId),
         BigInt(currentTime),
       ],
     };
-  }, [from, to, slippage]);
+  }, [
+    from.metadata,
+    from.value,
+    from.paths,
+    to.metadata,
+    to.value,
+    principalId,
+    slippage,
+    onFail,
+    onSuccess,
+  ]);
 
 export const useSwapForExactTokensTransactionMemo: CreateTransaction<Swap> = (
   { from, to, slippage, principalId }: Swap,
@@ -66,7 +76,7 @@ export const useSwapForExactTokensTransactionMemo: CreateTransaction<Swap> = (
     const currentTime = (new Date().getTime() + 5 * 60 * 1000) * 10000000;
 
     return {
-      canisterId: ENV.canisterIds.swap,
+      canisterId: ENV.canistersPrincipalIDs.swap,
       idl: SwapIDL.factory,
       methodName: 'swapTokensForExactTokens',
       onFail,
@@ -82,4 +92,13 @@ export const useSwapForExactTokensTransactionMemo: CreateTransaction<Swap> = (
         BigInt(currentTime),
       ],
     };
-  }, [from, to, slippage]);
+  }, [
+    from.metadata,
+    from.value,
+    to.metadata,
+    to.value,
+    principalId,
+    slippage,
+    onFail,
+    onSuccess,
+  ]);

@@ -19,9 +19,9 @@ export const ViewHeader: React.FC<ViewHeaderProps> = ({
       <Flex
         py={3}
         px={5}
-        bg="#1E1E1E"
+        bg="custom.2"
         fontSize="lg"
-        color="#F6FCFD"
+        color="gray.50"
         fontWeight={700}
         textAlign="center"
         borderTopRadius={20}

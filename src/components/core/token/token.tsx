@@ -61,8 +61,8 @@ export const Token: React.FC<TokenProps> = ({
   children,
   ...tokenProps
 }) => {
-  const border = shouldGlow ? '1px solid #3D52F4' : '1px solid #373737';
-  const background = shouldGlow ? '#151515' : '#1E1E1E';
+  const border = shouldGlow ? '1px solid dark-blue.500' : '1px solid #373737';
+  const background = shouldGlow ? 'black' : 'custom.2';
 
   return (
     <TokenProvider value={{ shouldGlow, ...tokenProps }}>
@@ -220,7 +220,7 @@ export const TokenBalancesPrice: React.FC<TokenBalancesPriceProps> = ({
   return (
     <Skeleton isLoaded={!isLoading} borderRadius="full">
       <Flex transition="color 400ms" color={defaultColor} {...props}>
-        <DisplayValue value={price} prefix="$" />
+        {price !== 0 && <DisplayValue value={price} prefix="~$" />}
         &nbsp;
         {priceImpact && (
           <DisplayValue
@@ -266,7 +266,7 @@ export const TokenBalancesDetails: React.FC<TokenBalancesDetailsProps> = ({
 
   return (
     <Skeleton isLoaded={!isLoading} borderRadius="full" minW={20}>
-      <Flex direction="row" color="#888E8F" {...props}>
+      <Flex direction="row" color="custom.1" {...props}>
         <HStack>
           <TokenBalancesPopover
             sources={sources}
@@ -301,7 +301,7 @@ type TokenInputProps = NumberInputProps;
 export const TokenInput: React.FC<TokenInputProps> = (props) => {
   const { isLoading, isDisabled, shouldGlow, value, setValue, tokenMetadata } =
     useTokenContext();
-  const background = shouldGlow ? '#151515' : '#1E1E1E';
+  const background = shouldGlow ? 'black' : 'custom.2';
 
   const isActive = useMemo(() => {
     if (isLoading || parseFloat(value || '0') <= 0) {
@@ -338,7 +338,7 @@ export const TokenInput: React.FC<TokenInputProps> = (props) => {
         isDisabled={isDisabled}
         value={value}
         setValue={handleChange}
-        color={isActive ? '#F6FCFD' : '#888E8F'}
+        color={isActive ? 'gray.50' : 'custom.1'}
         background={background}
         {...props}
       />
@@ -358,6 +358,6 @@ const TokenGlow = () => (
     height="100%"
     filter="blur(6px)"
     zIndex={-100}
-    bg="#3D52F4"
+    bg="dark-blue.500"
   />
 );

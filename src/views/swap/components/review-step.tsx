@@ -15,7 +15,7 @@ import {
   ViewHeader,
 } from '@/components';
 import { getAppAssetsSources } from '@/config/utils';
-import { useICPSelectionDetectorMemo } from '@/hooks';
+import { useTokenSelectionChecker } from '@/hooks';
 import {
   NotificationType,
   SwapStep,
@@ -34,7 +34,7 @@ import { KeepInSonicBox } from './keep-in-sonic-box';
 export const SwapReviewStep = () => {
   const { sonicBalances, tokenBalances, allPairs } = useSwapCanisterStore();
   const { addNotification } = useNotificationStore();
-  const { fromTokenOptions, toTokenOptions, from, to } = useSwapViewStore();
+  const { from, to } = useSwapViewStore();
   const dispatch = useAppDispatch();
 
   const handleApproveSwap = () => {
@@ -73,10 +73,13 @@ export const SwapReviewStep = () => {
     return undefined;
   }, [from, to, allPairs]);
 
-  const { isFirstTokenIsICP, isSecondTokenIsICP } = useICPSelectionDetectorMemo(
-    from.metadata?.id,
-    to.metadata?.id
-  );
+  const {
+    isFirstIsSelected: isFirstTokenIsICP,
+    isSecondIsSelected: isSecondTokenIsICP,
+  } = useTokenSelectionChecker({
+    id0: from.metadata?.id,
+    id1: to.metadata?.id,
+  });
 
   return (
     <Stack spacing={4}>
@@ -91,7 +94,6 @@ export const SwapReviewStep = () => {
             setValue={(value) =>
               dispatch(swapViewActions.setValue({ data: 'from', value }))
             }
-            tokenListMetadata={fromTokenOptions}
             tokenMetadata={from.metadata}
             sources={getAppAssetsSources({
               balances: {
@@ -126,7 +128,7 @@ export const SwapReviewStep = () => {
           height={10}
           py={3}
           px={3}
-          bg="#3D52F4"
+          bg="dark-blue.500"
           mt={-2}
           mb={-2}
           zIndex={1200}
@@ -139,7 +141,6 @@ export const SwapReviewStep = () => {
             setValue={(value) =>
               dispatch(swapViewActions.setValue({ data: 'to', value }))
             }
-            tokenListMetadata={toTokenOptions}
             tokenMetadata={to.metadata}
             sources={getAppAssetsSources({
               balances: {

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 
 import { getUserTransactions } from '@/integrations/cap';
 import { FeatureState, useAppDispatch } from '@/store';
@@ -20,7 +20,24 @@ export const useActivityView = () => {
         parseResponseTokenList(supportedTokenList)
       )
     );
-  }, [supportedTokenList]);
+  }, [supportedTokenList, dispatch]);
+
+  const getUserTransactionsPage = useCallback(
+    (_principalId: string, page: number) => {
+      dispatch(activityViewActions.setState(FeatureState.Loading));
+      getUserTransactions(_principalId, page)
+        .then((res) => {
+          dispatch(activityViewActions.pushActivityList(res));
+          dispatch(activityViewActions.setState(FeatureState.Idle));
+          if (res.length === 0) dispatch(activityViewActions.setEndReached());
+        })
+        .catch((err) => {
+          console.error('getUserTransactions', err);
+          dispatch(activityViewActions.setState(FeatureState.Error));
+        });
+    },
+    [dispatch]
+  );
 
   useEffect(() => {
     if (principalId) {
@@ -28,25 +45,11 @@ export const useActivityView = () => {
     } else {
       dispatch(activityViewActions.clearActivityList());
     }
-  }, [page, principalId]);
+  }, [page, principalId, dispatch, getUserTransactionsPage]);
 
   useEffect(() => {
     // Updates page 0 activity tab is opened and already has activities
     if (principalId && Object.keys(activityList).length > 0)
       getUserTransactionsPage(principalId, 0);
-  }, [principalId]);
-
-  const getUserTransactionsPage = (_principalId: string, page: number) => {
-    dispatch(activityViewActions.setState(FeatureState.Loading));
-    getUserTransactions(_principalId, page)
-      .then((res) => {
-        dispatch(activityViewActions.pushActivityList(res));
-        dispatch(activityViewActions.setState(FeatureState.Idle));
-        if (res.length === 0) dispatch(activityViewActions.setEndReached());
-      })
-      .catch((err) => {
-        console.error('getUserTransactions', err);
-        dispatch(activityViewActions.setState(FeatureState.Error));
-      });
-  };
+  }, [principalId, getUserTransactionsPage]);
 };
