@@ -59,9 +59,7 @@ export const useSwapView = () => {
   }
 
   function handleICPToXTCChange() {
-    const xtcMetadata = supportedTokenList?.find(
-      (token) => token.id === ENV.canistersPrincipalIDs.XTC
-    );
+    const xtcMetadata = tokenList?.[ENV.canistersPrincipalIDs.XTC];
 
     if (ICPXDRconversionRate && xtcMetadata) {
       const cyclesWithFees = getXTCValueFromICP({

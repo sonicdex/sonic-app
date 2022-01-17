@@ -1,6 +1,6 @@
 import { Flex, Modal, ModalOverlay } from '@chakra-ui/react';
 
-import { depositSrc, swapSrc, withdrawSrc } from '@/assets';
+import { checkSrc, depositSrc, swapSrc, withdrawSrc } from '@/assets';
 import {
   MintXTCModalDataStep,
   modalsSliceActions,
@@ -35,7 +35,7 @@ export const MintXTCProgressModal = () => {
         <Flex alignItems="flex-start">
           <TransactionStep
             status={getStepStatus(MintXTCModalDataStep.LedgerTransfer)}
-            iconSrc={depositSrc}
+            iconSrc={withdrawSrc}
             chevron
           >
             Ledger Transfer <br /> ICP
@@ -53,7 +53,7 @@ export const MintXTCProgressModal = () => {
           {steps?.includes(MintXTCModalDataStep.Approve) && (
             <TransactionStep
               status={getStepStatus(MintXTCModalDataStep.Approve)}
-              iconSrc={withdrawSrc}
+              iconSrc={checkSrc}
               chevron
             >
               Approving <br /> XTC
@@ -62,7 +62,7 @@ export const MintXTCProgressModal = () => {
           {steps?.includes(MintXTCModalDataStep.Deposit) && (
             <TransactionStep
               status={getStepStatus(MintXTCModalDataStep.Deposit)}
-              iconSrc={withdrawSrc}
+              iconSrc={depositSrc}
             >
               Depositing <br /> XTC
             </TransactionStep>
