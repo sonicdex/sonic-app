@@ -48,10 +48,10 @@ export const useMintXTCBatch = ({
     undefined,
     // TODO: Add strict types
     (err: any, prevTransactionsData: any) => {
-      console.log(prevTransactionsData, err);
       const blockHeight = (
         prevTransactionsData?.[0]?.response as bigint | undefined
       )?.toString();
+
       addNotification({
         title: `The minting of XTC is failed, please use DFX to finish minting your XTC "dfx canister --no-wallet --network ic call ${ENV.canistersPrincipalIDs.XTC} mint '(0, ${blockHeight})'"`,
         type: NotificationType.Error,
