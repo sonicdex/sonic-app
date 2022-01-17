@@ -10,7 +10,11 @@ import { parseResponseTokenList } from '@/utils/canister';
 import { formatAmount, getSwapAmountOut } from '@/utils/format';
 import { getTokenPaths } from '@/utils/maximal-paths';
 
-import { usePriceStore, useSwapCanisterStore } from '..';
+import {
+  useCyclesMintingCanisterStore,
+  usePriceStore,
+  useSwapCanisterStore,
+} from '..';
 import { swapViewActions, useSwapViewStore } from '.';
 
 export const useSwapView = () => {
@@ -18,6 +22,7 @@ export const useSwapView = () => {
   const { icpPrice } = usePriceStore();
   const { allPairs, supportedTokenList } = useSwapCanisterStore();
   const { from, to, tokenList } = useSwapViewStore();
+  const { ICPXDRconversionRate } = useCyclesMintingCanisterStore();
 
   const { isTokenSelected: isICPSelected } = useTokenSelectionChecker({
     id0: from.metadata?.id,
@@ -28,6 +33,12 @@ export const useSwapView = () => {
     id0: from.metadata?.id,
     id1: to.metadata?.id,
     targetId: ENV.canistersPrincipalIDs.WICP,
+  });
+
+  const { isTokenSelected: isXTCSelected } = useTokenSelectionChecker({
+    id0: from.metadata?.id,
+    id1: to.metadata?.id,
+    targetId: ENV.canistersPrincipalIDs.XTC,
   });
 
   function handleICPToWICPChange() {
@@ -42,6 +53,10 @@ export const useSwapView = () => {
     );
   }
 
+  function handleICPToXTCChange() {
+    console.log(ICPXDRconversionRate);
+  }
+
   function handleICPToTokenChange() {
     const wrappedICPMetadata = supportedTokenList?.find(
       (token) => token.id === ENV.canistersPrincipalIDs.WICP
@@ -54,8 +69,6 @@ export const useSwapView = () => {
         wrappedICPMetadata.id,
         from.value
       );
-
-      console.log('cp', paths);
 
       const fromWICP = {
         ...from,
@@ -87,17 +100,21 @@ export const useSwapView = () => {
   }, [allPairs, dispatch]);
 
   useEffect(() => {
-    if (!from.metadata) return;
-    if (!to.metadata) return;
-    if (!allPairs) return;
+    if (!from.metadata || !to.metadata || !allPairs) return;
 
     if (isICPSelected && isWICPSelected) {
       handleICPToWICPChange();
       return;
     }
 
+    if (isICPSelected && isXTCSelected) {
+      handleICPToXTCChange();
+      return;
+    }
+
     if (isICPSelected) {
       handleICPToTokenChange();
+      return;
     }
 
     dispatch(

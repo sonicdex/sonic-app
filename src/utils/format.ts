@@ -371,7 +371,11 @@ export const getSwapAmountOut = (
 
   const path = tokenIn.paths[tokenOut.metadata.id];
 
-  return new BigNumber(path.amountOut)
-    .dp(tokenOut.metadata.decimals)
-    .toString();
+  if (path) {
+    return new BigNumber(path.amountOut)
+      .dp(tokenOut.metadata.decimals)
+      .toString();
+  }
+
+  return '0';
 };

@@ -30,6 +30,7 @@ import {
 } from './components/modals';
 import { usePlugInit } from './integrations/plug';
 import {
+  useCyclesMintingCanisterInit,
   useLiquidityViewInit,
   usePriceInit,
   useSwapCanisterInit,
@@ -38,6 +39,7 @@ import {
 export const App = () => {
   const isAnyMobileDevice = isMobile(window.navigator).any;
 
+  useCyclesMintingCanisterInit();
   usePlugInit();
   usePriceInit();
   useSwapCanisterInit();

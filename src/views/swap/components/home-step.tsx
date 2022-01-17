@@ -103,6 +103,12 @@ export const SwapHomeStep = () => {
     targetId: ENV.canistersPrincipalIDs.WICP,
   });
 
+  const { isSecondIsSelected: isToTokenIsXTC } = useTokenSelectionChecker({
+    id0: from.metadata?.id,
+    id1: to.metadata?.id,
+    targetId: ENV.canistersPrincipalIDs.XTC,
+  });
+
   const fromBalance = useTokenBalanceMemo(from.metadata?.id);
   const toBalance = useTokenBalanceMemo(to.metadata?.id);
 
@@ -154,12 +160,20 @@ export const SwapHomeStep = () => {
     [balancesState, supportedTokenListState, allPairsState]
   );
 
+  // TODO: calculate conversion rate and add more UI
+  const handleMintXTC = useCallback(() => {}, []);
+
   const handleWrapICP = useCallback(() => {
     const plugProviderVersionNumber = Number(
       plug?.versions.provider.split('.').join('')
     );
 
-    if (plugProviderVersionNumber >= 160) {
+    const plugInpageProviderVersionWithChainedBatchTranscations = 160;
+
+    if (
+      plugProviderVersionNumber >=
+      plugInpageProviderVersionWithChainedBatchTranscations
+    ) {
       addNotification({
         title: `Wrapping ${from.value} ${from.metadata?.symbol}`,
         type: NotificationType.Wrap,
@@ -237,6 +251,10 @@ export const SwapHomeStep = () => {
       ) {
         return [true, `Insufficient ${from.metadata.symbol} Balance`];
       }
+    }
+
+    if (isFromTokenIsICP && isToTokenIsXTC) {
+      return [false, 'Mint XTC', handleMintXTC];
     }
 
     if (isFromTokenIsICP && isToTokenIsWICP) {
