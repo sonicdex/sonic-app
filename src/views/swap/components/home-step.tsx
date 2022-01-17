@@ -497,7 +497,7 @@ export const SwapHomeStep = () => {
             zIndex="overlay"
             bg="gray.800"
             onClick={switchTokens}
-            isDisabled={!to.metadata}
+            isDisabled={!to.metadata || toTokenOptions.length === 0}
             pointerEvents={!to.metadata ? 'none' : 'all'}
             _hover={{
               '& > svg': {
