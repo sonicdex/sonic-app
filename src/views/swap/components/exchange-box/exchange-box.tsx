@@ -26,6 +26,8 @@ import {
   getSwapAmountOut,
 } from '@/utils/format';
 
+import { ChainPopover } from '.';
+
 export const ExchangeBox: React.FC = () => {
   const { from, to, slippage, baseTokenPaths } = useSwapViewStore();
 
@@ -138,12 +140,8 @@ export const ExchangeBox: React.FC = () => {
   }
 
   return (
-    <Flex opacity={0.4} alignItems="center" px={4} fontWeight={400}>
-      <Text display="flex" alignItems="center">
-        {from.metadata.symbol}&nbsp;
-        <FaArrowRight />
-        &nbsp;{to.metadata.symbol}
-      </Text>
+    <Flex alignItems="center" px={4} fontWeight={400}>
+      <ChainPopover from={from} to={to} />
       <Text flex={1} textAlign="right" mx={2}>
         1&nbsp;{from.metadata.symbol}&nbsp;=&nbsp;
         {getSwapAmountOut(
