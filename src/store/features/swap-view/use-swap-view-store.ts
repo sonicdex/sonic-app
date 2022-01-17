@@ -30,13 +30,8 @@ export const useSwapViewStore = () => {
     if (!allPairs) return [fromTokenOptions, []];
 
     if (isICPSelected) {
-      const wicpTokenMetadata = fromTokenOptions.find(
-        (token) => token.id === ENV.canistersPrincipalIDs.WICP
-      );
-
-      const xtcTokenMetadata = fromTokenOptions.find(
-        (token) => token.id === ENV.canistersPrincipalIDs.XTC
-      );
+      const wicpTokenMetadata = tokenList[ENV.canistersPrincipalIDs.WICP];
+      const xtcTokenMetadata = tokenList[ENV.canistersPrincipalIDs.XTC];
 
       const icpToTokenOptions: AppTokenMetadata[] = [
         ...(wicpTokenMetadata ? [wicpTokenMetadata] : []),

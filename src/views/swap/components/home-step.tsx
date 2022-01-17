@@ -160,10 +160,7 @@ export const SwapHomeStep = () => {
     [balancesState, supportedTokenListState, allPairsState]
   );
 
-  // TODO: calculate conversion rate and add more UI
-  const handleMintXTC = useCallback(() => {}, []);
-
-  const handleWrapICP = useCallback(() => {
+  const checkIsPlugProviderVersionCompatible = useCallback(() => {
     const plugProviderVersionNumber = Number(
       plug?.versions.provider.split('.').join('')
     );
@@ -174,15 +171,7 @@ export const SwapHomeStep = () => {
       plugProviderVersionNumber >=
       plugInpageProviderVersionWithChainedBatchTranscations
     ) {
-      addNotification({
-        title: `Wrapping ${from.value} ${from.metadata?.symbol}`,
-        type: NotificationType.Wrap,
-        id: String(new Date().getTime()),
-      });
-      debounce(
-        () => dispatch(swapViewActions.setValue({ data: 'from', value: '' })),
-        300
-      );
+      return true;
     } else {
       addNotification({
         title: (
@@ -203,8 +192,50 @@ export const SwapHomeStep = () => {
         type: NotificationType.Error,
         id: String(new Date().getTime()),
       });
+      return false;
     }
-  }, [addNotification, dispatch, from.metadata?.symbol, from.value]);
+  }, [addNotification]);
+
+  // TODO: calculate conversion rate and add more UI.
+  const handleMintXTC = useCallback(() => {
+    if (checkIsPlugProviderVersionCompatible()) {
+      addNotification({
+        title: `Minting ${from.value} ${from.metadata?.symbol}`,
+        type: NotificationType.MintXTC,
+        id: String(new Date().getTime()),
+      });
+      debounce(
+        () => dispatch(swapViewActions.setValue({ data: 'from', value: '' })),
+        300
+      );
+    }
+  }, [
+    addNotification,
+    checkIsPlugProviderVersionCompatible,
+    dispatch,
+    from.metadata?.symbol,
+    from.value,
+  ]);
+
+  const handleWrapICP = useCallback(() => {
+    if (checkIsPlugProviderVersionCompatible()) {
+      addNotification({
+        title: `Wrapping ${from.value} ${from.metadata?.symbol}`,
+        type: NotificationType.Wrap,
+        id: String(new Date().getTime()),
+      });
+      debounce(
+        () => dispatch(swapViewActions.setValue({ data: 'from', value: '' })),
+        300
+      );
+    }
+  }, [
+    addNotification,
+    checkIsPlugProviderVersionCompatible,
+    dispatch,
+    from.metadata?.symbol,
+    from.value,
+  ]);
 
   const handleUnwrapICP = useCallback(() => {
     addNotification({
@@ -253,16 +284,16 @@ export const SwapHomeStep = () => {
       }
     }
 
-    if (isFromTokenIsICP && isToTokenIsXTC) {
-      return [false, 'Mint XTC', handleMintXTC];
-    }
-
     if (isFromTokenIsICP && isToTokenIsWICP) {
       return [false, 'Wrap', handleWrapICP];
     }
 
     if (isFromTokenIsWICP && isToTokenIsICP) {
       return [false, 'Unwrap', handleUnwrapICP];
+    }
+
+    if (isFromTokenIsICP && isToTokenIsXTC) {
+      return [false, 'Mint XTC', handleMintXTC];
     }
 
     return [
@@ -281,9 +312,11 @@ export const SwapHomeStep = () => {
     totalBalances,
     fromBalance,
     isFromTokenIsICP,
+    isToTokenIsXTC,
     isToTokenIsWICP,
     isFromTokenIsWICP,
     isToTokenIsICP,
+    handleMintXTC,
     handleWrapICP,
     handleUnwrapICP,
     dispatch,

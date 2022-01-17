@@ -1,3 +1,5 @@
+import { useMemo } from 'react';
+
 import { ICP_METADATA } from '@/constants';
 
 export type UseTokenSelectionCheckerOptions = {
@@ -15,8 +17,8 @@ export const useTokenSelectionChecker = ({
   id1,
   targetId = ICP_METADATA.id,
 }: UseTokenSelectionCheckerOptions) => {
-  const isFirstIsSelected = id0 === targetId;
-  const isSecondIsSelected = id1 === targetId;
+  const isFirstIsSelected = useMemo(() => id0 === targetId, [id0, targetId]);
+  const isSecondIsSelected = useMemo(() => id1 === targetId, [id1, targetId]);
 
   return {
     isFirstIsSelected,

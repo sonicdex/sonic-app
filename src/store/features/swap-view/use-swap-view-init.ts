@@ -15,6 +15,10 @@ import {
   usePriceStore,
   useSwapCanisterStore,
 } from '..';
+import {
+  DEFAULT_CYCLES_PER_XDR,
+  TOKEN_SUBDIVIDABLE_BY,
+} from '../cycles-minting-canister/cycles-minting-canister.constants';
 import { swapViewActions, useSwapViewStore } from '.';
 
 export const useSwapView = () => {
@@ -54,7 +58,19 @@ export const useSwapView = () => {
   }
 
   function handleICPToXTCChange() {
-    console.log(ICPXDRconversionRate);
+    if (ICPXDRconversionRate) {
+      const cycles = new BigNumber(from.value)
+        .multipliedBy(new BigNumber(ICPXDRconversionRate))
+        .multipliedBy(new BigNumber(DEFAULT_CYCLES_PER_XDR))
+        .dividedBy(new BigNumber(TOKEN_SUBDIVIDABLE_BY * 100_000_000));
+
+      dispatch(
+        swapViewActions.setValue({
+          data: 'to',
+          value: cycles.toNumber() > 0 ? cycles.toString() : '',
+        })
+      );
+    }
   }
 
   function handleICPToTokenChange() {

@@ -20,9 +20,7 @@ export const useMintXTCTransactionMemo: CreateTransaction<MintXTC> = (
         if ('Err' in res) throw new Error(JSON.stringify(Object.keys(res.Err)));
         if (onSuccess) onSuccess(res);
       },
-      onFail: async (err: string, prevTransactionsData: any[]) => {
-        if (onFail) onFail(err, prevTransactionsData);
-      },
+      onFail,
       args: (prevResponses: any[]) => {
         const argBlockHeight = prevResponses[0]?.response;
 

@@ -377,5 +377,5 @@ export const getSwapAmountOut = (
       .toString();
   }
 
-  return '0';
+  return '';
 };
