@@ -49,6 +49,7 @@ export const useSwapView = () => {
     const value = new BigNumber(from.value).minus(
       formatAmount(ICP_METADATA.fee, ICP_METADATA.decimals)
     );
+
     dispatch(
       swapViewActions.setValue({
         data: 'to',
@@ -58,11 +59,16 @@ export const useSwapView = () => {
   }
 
   function handleICPToXTCChange() {
-    if (ICPXDRconversionRate) {
+    const xtcMetadata = supportedTokenList?.find(
+      (token) => token.id === ENV.canistersPrincipalIDs.XTC
+    );
+
+    if (ICPXDRconversionRate && xtcMetadata) {
       const cycles = new BigNumber(from.value)
         .multipliedBy(new BigNumber(ICPXDRconversionRate))
         .multipliedBy(new BigNumber(DEFAULT_CYCLES_PER_XDR))
-        .dividedBy(new BigNumber(TOKEN_SUBDIVIDABLE_BY * 100_000_000));
+        .dividedBy(new BigNumber(TOKEN_SUBDIVIDABLE_BY * 100_000_000))
+        .minus(formatAmount(xtcMetadata.fee, xtcMetadata.decimals));
 
       dispatch(
         swapViewActions.setValue({

@@ -18,6 +18,7 @@ import {
   AddLiquidityProgressModal,
   AllowanceVerifyModal,
   DepositProgressModal,
+  MintXTCProgressModal,
   RemoveLiquidityFailModal,
   RemoveLiquidityModal,
   RemoveLiquidityProgressModal,
@@ -63,7 +64,7 @@ export const App = () => {
         <RemoveLiquidityProgressModal />
         <UnwrapProgressModal />
         <WrapProgressModal />
-
+        <MintXTCProgressModal />
         <SwapFailModal />
         <AddLiquidityFailModal />
         <RemoveLiquidityFailModal />

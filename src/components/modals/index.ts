@@ -3,6 +3,7 @@ export * from './add-liquidity-progress-modal';
 export * from './allowance-verify-modal';
 export * from './components';
 export * from './deposit-progress-modal';
+export * from './mint-xtc-progress-modal';
 export * from './plug-confirmation-modal';
 export * from './remove-liquidity-fail-modal';
 export * from './remove-liquidity-modal-asset';

@@ -17,7 +17,8 @@ import React, { useMemo } from 'react';
 
 import { infoSrc } from '@/assets';
 import { StackLine } from '@/components';
-import { ICP_METADATA } from '@/constants';
+import { ENV } from '@/config';
+import { useTokenSelectionChecker } from '@/hooks';
 import { useSwapViewStore } from '@/store';
 import {
   getAmountOutMin,
@@ -27,6 +28,32 @@ import {
 
 export const ExchangeBox: React.FC = () => {
   const { from, to, slippage, baseTokenPaths } = useSwapViewStore();
+
+  const {
+    isFirstIsSelected: isFromTokenIsICP,
+    isSecondIsSelected: isToTokenIsICP,
+  } = useTokenSelectionChecker({
+    id0: from.metadata?.id,
+    id1: to.metadata?.id,
+  });
+
+  const {
+    isFirstIsSelected: isFromTokenIsWICP,
+    isSecondIsSelected: isToTokenIsWICP,
+  } = useTokenSelectionChecker({
+    id0: from.metadata?.id,
+    id1: to.metadata?.id,
+    targetId: ENV.canistersPrincipalIDs.WICP,
+  });
+
+  const {
+    isFirstIsSelected: isFromTokenIsXTC,
+    isSecondIsSelected: isToTokenIsXTC,
+  } = useTokenSelectionChecker({
+    id0: from.metadata?.id,
+    id1: to.metadata?.id,
+    targetId: ENV.canistersPrincipalIDs.XTC,
+  });
 
   const priceImpact = useMemo(() => {
     if (from.metadata && to.metadata && baseTokenPaths[to.metadata.id]) {
@@ -61,16 +88,41 @@ export const ExchangeBox: React.FC = () => {
     return { depositFee: 0, withdrawFee: 0 };
   }, [from, to]);
 
+  const { icpMetadata, operation, fee } = useMemo(() => {
+    const icpMetadata = isFromTokenIsICP
+      ? from.metadata
+      : isToTokenIsICP
+      ? to.metadata
+      : undefined;
+
+    const operation = isFromTokenIsWICP
+      ? 'Unwrap'
+      : isToTokenIsWICP
+      ? 'Wrap'
+      : isFromTokenIsXTC
+      ? 'Swap'
+      : isToTokenIsXTC
+      ? 'Mint XTC'
+      : undefined;
+
+    const fee =
+      icpMetadata && getCurrencyString(icpMetadata.fee, icpMetadata.decimals);
+
+    return { icpMetadata, operation, fee };
+  }, [
+    from.metadata,
+    isFromTokenIsICP,
+    isFromTokenIsWICP,
+    isFromTokenIsXTC,
+    isToTokenIsICP,
+    isToTokenIsWICP,
+    isToTokenIsXTC,
+    to.metadata,
+  ]);
+
   if (!from.metadata || !to.metadata) return null;
 
-  const [icp, feeMessage] =
-    from.metadata.id === ICP_METADATA.id
-      ? [from.metadata, 'Wrap']
-      : to.metadata.id === ICP_METADATA.id
-      ? [to.metadata, 'Unwrap']
-      : [];
-
-  if (icp) {
+  if (icpMetadata) {
     return (
       <Flex opacity={0.4} alignItems="center" px={4} fontWeight={400}>
         <Text display="flex" alignItems="center">
@@ -79,7 +131,7 @@ export const ExchangeBox: React.FC = () => {
           &nbsp;{to.metadata.symbol}
         </Text>
         <Text flex={1} textAlign="right">
-          {feeMessage} Fee = {getCurrencyString(icp.fee, icp.decimals)}
+          {operation} Fee = {fee}
         </Text>
       </Flex>
     );

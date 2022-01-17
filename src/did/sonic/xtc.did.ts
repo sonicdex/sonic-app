@@ -82,13 +82,17 @@ export namespace XTCIDL {
   export type TransactionId = bigint;
   export type TransactionStatus = { FAILED: null } | { SUCCEEDED: null };
   export type TxError =
+    | { NotifyDfxFailed: null }
     | { InsufficientAllowance: null }
+    | { UnexpectedCyclesResponse: null }
     | { InsufficientBalance: null }
+    | { InsufficientXTCFee: null }
     | { ErrorOperationStyle: null }
     | { Unauthorized: null }
     | { LedgerTrap: null }
     | { ErrorTo: null }
     | { Other: null }
+    | { FetchRateFailed: null }
     | { BlockUsed: null }
     | { AmountTooSmall: null };
   export type TxReceipt = { Ok: bigint } | { Err: TxError };
@@ -122,14 +126,21 @@ export namespace XTCIDL {
       offset: [] | [bigint];
       limit: number;
     }) => Promise<EventsConnection>;
+    getBlockUsed: () => Promise<Array<bigint>>;
     getMetadata: () => Promise<Metadata>;
     getTransaction: (arg_0: bigint) => Promise<TxRecord>;
     getTransactions: (arg_0: bigint, arg_1: bigint) => Promise<Array<TxRecord>>;
+    get_map_block_used: (arg_0: bigint) => Promise<[] | [bigint]>;
     get_transaction: (arg_0: TransactionId) => Promise<[] | [Event]>;
     halt: () => Promise<undefined>;
     historySize: () => Promise<bigint>;
+    isBlockUsed: (arg_0: bigint) => Promise<boolean>;
     logo: () => Promise<string>;
     mint: (arg_0: Principal, arg_1: bigint) => Promise<MintResult>;
+    mint_by_icp: (
+      arg_0: [] | [Array<number>],
+      arg_1: bigint
+    ) => Promise<TxReceipt>;
     name: () => Promise<string>;
     nameErc20: () => Promise<string>;
     stats: () => Promise<Stats>;
@@ -168,13 +179,17 @@ export namespace XTCIDL {
 
   export const factory: IDL.InterfaceFactory = ({ IDL }) => {
     const TxError = IDL.Variant({
+      NotifyDfxFailed: IDL.Null,
       InsufficientAllowance: IDL.Null,
+      UnexpectedCyclesResponse: IDL.Null,
       InsufficientBalance: IDL.Null,
+      InsufficientXTCFee: IDL.Null,
       ErrorOperationStyle: IDL.Null,
       Unauthorized: IDL.Null,
       LedgerTrap: IDL.Null,
       ErrorTo: IDL.Null,
       Other: IDL.Null,
+      FetchRateFailed: IDL.Null,
       BlockUsed: IDL.Null,
       AmountTooSmall: IDL.Null,
     });
@@ -283,7 +298,6 @@ export namespace XTCIDL {
       Err: IDL.Text,
     });
     const ResultSend = IDL.Variant({ Ok: IDL.Null, Err: IDL.Text });
-
     return IDL.Service({
       allowance: IDL.Func([IDL.Principal, IDL.Principal], [IDL.Nat], ['query']),
       approve: IDL.Func([IDL.Principal, IDL.Nat], [TxReceipt], []),
@@ -300,14 +314,26 @@ export namespace XTCIDL {
         [EventsConnection],
         ['query']
       ),
+      getBlockUsed: IDL.Func([], [IDL.Vec(IDL.Nat64)], ['query']),
       getMetadata: IDL.Func([], [Metadata], ['query']),
       getTransaction: IDL.Func([IDL.Nat], [TxRecord], []),
       getTransactions: IDL.Func([IDL.Nat, IDL.Nat], [IDL.Vec(TxRecord)], []),
+      get_map_block_used: IDL.Func(
+        [IDL.Nat64],
+        [IDL.Opt(IDL.Nat64)],
+        ['query']
+      ),
       get_transaction: IDL.Func([TransactionId], [IDL.Opt(Event)], []),
       halt: IDL.Func([], [], []),
       historySize: IDL.Func([], [IDL.Nat], ['query']),
+      isBlockUsed: IDL.Func([IDL.Nat64], [IDL.Bool], ['query']),
       logo: IDL.Func([], [IDL.Text], ['query']),
       mint: IDL.Func([IDL.Principal, IDL.Nat], [MintResult], []),
+      mint_by_icp: IDL.Func(
+        [IDL.Opt(IDL.Vec(IDL.Nat8)), IDL.Nat64],
+        [TxReceipt],
+        []
+      ),
       name: IDL.Func([], [IDL.Text], ['query']),
       nameErc20: IDL.Func([], [IDL.Text], ['query']),
       stats: IDL.Func([], [Stats], ['query']),

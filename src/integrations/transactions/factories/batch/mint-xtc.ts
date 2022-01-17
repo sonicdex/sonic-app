@@ -48,6 +48,7 @@ export const useMintXTCBatch = ({
     undefined,
     // TODO: Add strict types
     (err: any, prevTransactionsData: any) => {
+      console.log(prevTransactionsData, err);
       const blockHeight = (
         prevTransactionsData?.[0]?.response as bigint | undefined
       )?.toString();

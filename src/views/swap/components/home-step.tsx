@@ -200,7 +200,7 @@ export const SwapHomeStep = () => {
   const handleMintXTC = useCallback(() => {
     if (checkIsPlugProviderVersionCompatible()) {
       addNotification({
-        title: `Minting ${from.value} ${from.metadata?.symbol}`,
+        title: `Minting ${to.value} ${to.metadata?.symbol}`,
         type: NotificationType.MintXTC,
         id: String(new Date().getTime()),
       });
@@ -213,8 +213,8 @@ export const SwapHomeStep = () => {
     addNotification,
     checkIsPlugProviderVersionCompatible,
     dispatch,
-    from.metadata?.symbol,
-    from.value,
+    to.metadata?.symbol,
+    to.value,
   ]);
 
   const handleWrapICP = useCallback(() => {
