@@ -16,18 +16,24 @@ import BigNumber from 'bignumber.js';
 import React, { useMemo } from 'react';
 
 import { infoSrc } from '@/assets';
-import { StackLine } from '@/components';
+import { DisplayValue, StackLine } from '@/components';
 import { ENV } from '@/config';
+import { ICP_METADATA } from '@/constants';
 import { useTokenSelectionChecker } from '@/hooks';
-import { useSwapViewStore } from '@/store';
+import { useCyclesMintingCanisterStore, useSwapViewStore } from '@/store';
 import {
+  formatAmount,
   getAmountOutMin,
   getCurrencyString,
   getSwapAmountOut,
+  getXTCValueFromICP,
 } from '@/utils/format';
 
 export const ExchangeBox: React.FC = () => {
-  const { from, to, slippage, baseTokenPaths } = useSwapViewStore();
+  const { from, to, slippage, baseTokenPaths, keepInSonic } =
+    useSwapViewStore();
+
+  const { ICPXDRconversionRate } = useCyclesMintingCanisterStore();
 
   const {
     isFirstIsSelected: isFromTokenIsICP,
@@ -88,12 +94,14 @@ export const ExchangeBox: React.FC = () => {
     return { depositFee: 0, withdrawFee: 0 };
   }, [from, to]);
 
-  const { icpMetadata, operation, fee } = useMemo(() => {
+  const { icpMetadata, operation, fee, feeSymbol } = useMemo(() => {
     const icpMetadata = isFromTokenIsICP
       ? from.metadata
       : isToTokenIsICP
       ? to.metadata
       : undefined;
+
+    const xtcMetadata = isToTokenIsXTC && to.metadata;
 
     const operation = isFromTokenIsWICP
       ? 'Unwrap'
@@ -105,19 +113,47 @@ export const ExchangeBox: React.FC = () => {
       ? 'Mint XTC'
       : undefined;
 
-    const fee =
-      icpMetadata && getCurrencyString(icpMetadata.fee, icpMetadata.decimals);
+    const icpFeeInXTC =
+      xtcMetadata && ICPXDRconversionRate
+        ? getXTCValueFromICP({
+            amount: formatAmount(ICP_METADATA.fee, ICP_METADATA.decimals),
+            conversionRate: ICPXDRconversionRate,
+            fee: xtcMetadata.fee,
+            decimals: xtcMetadata.decimals,
+          })
+        : new BigNumber(0);
 
-    return { icpMetadata, operation, fee };
+    const xtcFee = icpMetadata
+      ? new BigNumber(
+          getCurrencyString(
+            (to.metadata?.fee ?? BigInt(0)) *
+              (keepInSonic ? BigInt(3) : BigInt(1)),
+            to.metadata?.decimals
+          )
+        )
+          .plus(icpFeeInXTC.multipliedBy(2))
+          .toString()
+      : '0';
+
+    const wicpFee = icpMetadata
+      ? getCurrencyString(icpMetadata.fee, icpMetadata.decimals)
+      : '0';
+
+    const fee = isToTokenIsXTC ? xtcFee : wicpFee;
+    const feeSymbol = isToTokenIsXTC ? 'XTC' : 'ICP';
+
+    return { icpMetadata, operation, fee, feeSymbol };
   }, [
-    from.metadata,
     isFromTokenIsICP,
-    isFromTokenIsWICP,
-    isFromTokenIsXTC,
+    from.metadata,
     isToTokenIsICP,
-    isToTokenIsWICP,
-    isToTokenIsXTC,
     to.metadata,
+    isToTokenIsXTC,
+    isFromTokenIsWICP,
+    isToTokenIsWICP,
+    isFromTokenIsXTC,
+    ICPXDRconversionRate,
+    keepInSonic,
   ]);
 
   if (!from.metadata || !to.metadata) return null;
@@ -131,7 +167,7 @@ export const ExchangeBox: React.FC = () => {
           &nbsp;{to.metadata.symbol}
         </Text>
         <Text flex={1} textAlign="right">
-          {operation} Fee = {fee}
+          {operation} Fee = <DisplayValue as="span" value={fee} /> {feeSymbol}
         </Text>
       </Flex>
     );

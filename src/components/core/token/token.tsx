@@ -218,7 +218,7 @@ export const TokenBalancesPrice: React.FC<TokenBalancesPriceProps> = ({
   }, [priceImpact, defaultColor]);
 
   return (
-    <Skeleton isLoaded={!isLoading} borderRadius="full">
+    <Skeleton isLoaded={!isLoading} borderRadius="full" minWidth={5}>
       <Flex transition="color 400ms" color={defaultColor} {...props}>
         {price !== 0 && <DisplayValue value={price} prefix="~$" />}
         &nbsp;

@@ -1,6 +1,6 @@
 import { Flex, Modal, ModalOverlay } from '@chakra-ui/react';
 
-import { checkSrc, depositSrc, swapSrc, withdrawSrc } from '@/assets';
+import { checkPlainSrc, depositSrc, swapSrc, withdrawSrc } from '@/assets';
 import {
   MintXTCModalDataStep,
   modalsSliceActions,
@@ -53,7 +53,7 @@ export const MintXTCProgressModal = () => {
           {steps?.includes(MintXTCModalDataStep.Approve) && (
             <TransactionStep
               status={getStepStatus(MintXTCModalDataStep.Approve)}
-              iconSrc={checkSrc}
+              iconSrc={checkPlainSrc}
               chevron
             >
               Approving <br /> XTC
