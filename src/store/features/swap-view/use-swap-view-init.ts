@@ -7,7 +7,11 @@ import { useTokenSelectionChecker } from '@/hooks';
 import { PairList } from '@/models';
 import { useAppDispatch } from '@/store';
 import { parseResponseTokenList } from '@/utils/canister';
-import { formatAmount, getSwapAmountOut } from '@/utils/format';
+import {
+  formatAmount,
+  getSwapAmountOut,
+  getXTCValueFromICP,
+} from '@/utils/format';
 import { getTokenPaths } from '@/utils/maximal-paths';
 
 import {
@@ -15,10 +19,6 @@ import {
   usePriceStore,
   useSwapCanisterStore,
 } from '..';
-import {
-  DEFAULT_CYCLES_PER_XDR,
-  TOKEN_SUBDIVIDABLE_BY,
-} from '../cycles-minting-canister/cycles-minting-canister.constants';
 import { swapViewActions, useSwapViewStore } from '.';
 
 export const useSwapView = () => {
@@ -64,11 +64,25 @@ export const useSwapView = () => {
     );
 
     if (ICPXDRconversionRate && xtcMetadata) {
-      const cycles = new BigNumber(from.value)
-        .multipliedBy(new BigNumber(ICPXDRconversionRate))
-        .multipliedBy(new BigNumber(DEFAULT_CYCLES_PER_XDR))
-        .dividedBy(new BigNumber(TOKEN_SUBDIVIDABLE_BY * 100_000_000))
-        .minus(formatAmount(xtcMetadata.fee, xtcMetadata.decimals));
+      const cyclesWithFees = getXTCValueFromICP({
+        amount: from.value,
+        conversionRate: ICPXDRconversionRate,
+        fee: xtcMetadata.fee,
+        decimals: xtcMetadata.decimals,
+      });
+
+      const icpFeeInXTC = getXTCValueFromICP({
+        amount: formatAmount(ICP_METADATA.fee, ICP_METADATA.decimals),
+        conversionRate: ICPXDRconversionRate,
+        fee: xtcMetadata.fee,
+        decimals: xtcMetadata.decimals,
+      });
+
+      const xtcFee = formatAmount(xtcMetadata.fee, xtcMetadata.decimals);
+
+      const cycles = cyclesWithFees
+        .minus(icpFeeInXTC.multipliedBy(2))
+        .minus(xtcFee);
 
       dispatch(
         swapViewActions.setValue({
