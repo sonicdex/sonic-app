@@ -31,6 +31,8 @@ export const WithdrawActivity = ({
 
   const token = tokenList[tokenId];
 
+  if (!token) return null;
+
   return (
     <Asset type="token" imageSources={[token.logo]}>
       <HStack spacing={4}>

@@ -1,7 +1,7 @@
 import { Principal } from '@dfinity/principal';
 import { useCallback, useMemo } from 'react';
 
-import { ENV, getFromStorage, saveToStorage } from '@/config';
+import { ENV } from '@/config';
 import { ICP_METADATA } from '@/constants';
 import { SwapIDL, TokenIDL } from '@/did';
 import { XTCIDL } from '@/did/sonic/xtc.did';
@@ -120,18 +120,6 @@ export const useBalances = () => {
                         tokenCanisterId,
                         _interfaceFactory
                       );
-
-                    const storageKey = `${tokenCanisterId}-logo`;
-                    const logo = getFromStorage(storageKey);
-
-                    if (!logo) {
-                      try {
-                        const tokenLogo = await tokenActor.logo();
-                        saveToStorage(storageKey, tokenLogo);
-                      } catch (e) {
-                        console.error('Token Logo not found', e);
-                      }
-                    }
 
                     const tokenBalance = await tokenActor.balanceOf(
                       Principal.fromText(principalId)

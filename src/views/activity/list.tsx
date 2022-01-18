@@ -1,5 +1,5 @@
 import { Skeleton, Stack, Text } from '@chakra-ui/react';
-import { Fragment } from 'react';
+import React, { Fragment } from 'react';
 
 import { Header, PlugNotConnected } from '@/components';
 import {
@@ -100,47 +100,26 @@ export const ActivityListView = () => {
             <Fragment key={index}>
               <Text>{new Date(date).toDateString()}</Text>
               {transactions.map((transaction, index) => {
+                const renderActivity = (
+                  Activity: React.FC<any>
+                ): JSX.Element => (
+                  <Activity
+                    key={index}
+                    {...transaction.details}
+                    time={transaction.time}
+                  />
+                );
                 switch (transaction.operation) {
                   case 'swap':
-                    return (
-                      <SwapActivity
-                        key={index}
-                        {...(transaction.details as any)}
-                        time={transaction.time}
-                      />
-                    );
+                    return renderActivity(SwapActivity);
                   case 'addLiquidity':
-                    return (
-                      <AddLiquidityActivity
-                        key={index}
-                        {...(transaction.details as any)}
-                        time={transaction.time}
-                      />
-                    );
+                    return renderActivity(AddLiquidityActivity);
                   case 'removeLiquidity':
-                    return (
-                      <RemoveLiquidityActivity
-                        key={index}
-                        {...(transaction.details as any)}
-                        time={transaction.time}
-                      />
-                    );
+                    return renderActivity(RemoveLiquidityActivity);
                   case 'withdraw':
-                    return (
-                      <WithdrawActivity
-                        key={index}
-                        {...(transaction.details as any)}
-                        time={transaction.time}
-                      />
-                    );
+                    return renderActivity(WithdrawActivity);
                   case 'deposit':
-                    return (
-                      <DepositActivity
-                        key={index}
-                        {...(transaction.details as any)}
-                        time={transaction.time}
-                      />
-                    );
+                    return renderActivity(DepositActivity);
                   default:
                     return null;
                 }

@@ -1,5 +1,5 @@
-import { questionMarkSrc, xtcSrc } from '@/assets';
-import { ENV, getFromStorage } from '@/config';
+import { questionMarkSrc } from '@/assets';
+import { getFromStorage } from '@/config';
 import { SwapIDL } from '@/did';
 import {
   AppTokenMetadata,
@@ -29,15 +29,7 @@ export const parseResponseSupportedTokenList = (
   price?: string
 ): AppTokenMetadata[] => {
   return response.map((token) => {
-    // FIXME: remove hardcode, once XTC logo will be fixed
-    let logo;
-    if (token.id === ENV.canistersPrincipalIDs.XTC) {
-      logo = xtcSrc;
-    }
-
-    if (token.id !== ENV.canistersPrincipalIDs.XTC) {
-      logo = getFromStorage(`${token.id}-logo`) || questionMarkSrc;
-    }
+    const logo = getFromStorage(`${token.id}-logo`) || questionMarkSrc;
 
     return {
       ...token,
