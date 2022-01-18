@@ -373,8 +373,6 @@ export const formatValue = (value: string): string => {
     return fixStringEnding(`${nat.slice(0, -3)}.${nat.slice(-3, -1)}`) + 'k';
   } else if (thousands < 9) {
     return fixStringEnding(`${nat.slice(0, -6)}.${nat.slice(-6, -4)}`) + 'M';
-  } else if (thousands < 0) {
-    return `> 999M`;
   } else {
     return `> 999M`;
   }
