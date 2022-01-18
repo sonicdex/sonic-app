@@ -22,6 +22,7 @@ import { ICP_METADATA } from '@/constants';
 import { useTokenSelectionChecker } from '@/hooks';
 import { useCyclesMintingCanisterStore, useSwapViewStore } from '@/store';
 import {
+  calculatePriceImpact,
   formatAmount,
   getAmountOutMin,
   getCurrencyString,
@@ -64,19 +65,17 @@ export const ExchangeBox: React.FC = () => {
   });
 
   const priceImpact = useMemo(() => {
-    if (from.metadata && to.metadata && baseTokenPaths[to.metadata.id]) {
-      const expectedValue = new BigNumber(from.value).multipliedBy(
-        baseTokenPaths[to.metadata.id].amountOut
-      );
-      const realValue = new BigNumber(to.value);
-      const percentage = realValue
-        .dividedBy(expectedValue)
-        .minus(1)
-        .multipliedBy(100);
-      return percentage.dp(3).toNumber();
+    if (from.metadata?.price && to.metadata?.price) {
+      return calculatePriceImpact({
+        amountIn: from.value,
+        amountOut: to.value,
+        priceIn: from.metadata.price,
+        priceOut: to.metadata.price,
+      });
     }
-    return 0;
-  }, [from, to, baseTokenPaths]);
+
+    return '';
+  }, [from, to]);
 
   const { depositFee, withdrawFee } = useMemo(() => {
     if (from.metadata?.id && to.metadata?.id) {
@@ -224,7 +223,12 @@ export const ExchangeBox: React.FC = () => {
                       : 0
                   } ${to.metadata.symbol}`}
                 />
-                <StackLine title="Price Impact" value={`${priceImpact}%`} />
+                <StackLine
+                  title="Price Impact"
+                  value={
+                    <DisplayValue as="span" value={priceImpact} suffix="%" />
+                  }
+                />
                 <StackLine title="Allowed Slippage" value={`${slippage}%`} />
                 {/* TODO: add liquidity fee */}
                 {/* <StackLine

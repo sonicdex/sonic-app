@@ -32,7 +32,7 @@ import { ExchangeBox } from '.';
 import { KeepInSonicBox } from './keep-in-sonic-box';
 
 export const SwapReviewStep = () => {
-  const { sonicBalances, tokenBalances, allPairs } = useSwapCanisterStore();
+  const { sonicBalances, tokenBalances } = useSwapCanisterStore();
   const { addNotification } = useNotificationStore();
   const { from, to } = useSwapViewStore();
   const dispatch = useAppDispatch();
@@ -50,28 +50,17 @@ export const SwapReviewStep = () => {
   };
 
   const priceImpact = useMemo(() => {
-    if (from.metadata?.id && to.metadata?.id) {
-      const { reserve0, reserve1 } =
-        allPairs?.[from.metadata.id]?.[to.metadata.id] || {};
-
-      if (
-        from.metadata?.decimals &&
-        to.metadata?.decimals &&
-        reserve0 &&
-        reserve1
-      ) {
-        return calculatePriceImpact({
-          amountIn: from.value,
-          decimalsIn: from.metadata.decimals,
-          decimalsOut: to.metadata.decimals,
-          reserveIn: reserve0.toString(),
-          reserveOut: reserve1.toString(),
-        });
-      }
+    if (from.metadata?.price && to.metadata?.price) {
+      return calculatePriceImpact({
+        amountIn: from.value,
+        amountOut: to.value,
+        priceIn: from.metadata.price,
+        priceOut: to.metadata.price,
+      });
     }
 
-    return undefined;
-  }, [from, to, allPairs]);
+    return '';
+  }, [from, to]);
 
   const {
     isFirstIsSelected: isFirstTokenIsICP,

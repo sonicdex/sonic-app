@@ -265,49 +265,74 @@ export const getAmountMin = (
 };
 
 export type CalculatePriceImpactOptions = {
-  amountIn: string | number;
-  decimalsIn: string | number;
-  decimalsOut: string | number;
-  reserveIn: string | number;
-  reserveOut: string | number;
+  priceIn?: string | number;
+  priceOut?: string | number;
+  amountIn?: string | number;
+  amountOut?: string | number;
 };
 
 export const calculatePriceImpact = ({
   amountIn,
-  decimalsIn,
-  decimalsOut,
-  reserveIn,
-  reserveOut,
+  amountOut,
+  priceIn,
+  priceOut,
 }: CalculatePriceImpactOptions): string => {
   if (
     !amountIn ||
+    new BigNumber(amountIn).isZero() ||
     new BigNumber(amountIn).isNaN() ||
-    new BigNumber(reserveOut).isZero()
+    !amountOut ||
+    new BigNumber(amountOut).isZero() ||
+    new BigNumber(amountOut).isNaN() ||
+    !priceIn ||
+    new BigNumber(priceIn).isZero() ||
+    new BigNumber(priceIn).isNaN() ||
+    !priceOut ||
+    new BigNumber(priceOut).isZero() ||
+    new BigNumber(priceOut).isNaN()
   )
     return '0';
 
-  // price impact = abs(reserve0/reserve1 - (reserve0 + amountIn) / (reserve1 - amountOut))
-
-  const amountOut = getAmountOut({
-    amountIn,
-    decimalsIn,
-    decimalsOut,
-    reserveIn,
-    reserveOut,
-  });
-
-  const aIn = new BigNumber(amountIn).multipliedBy(
-    new BigNumber(10).pow(Number(decimalsIn))
+  const _amountOut = new BigNumber(
+    calculatePriceBasedOnAmount({
+      amount: amountOut,
+      price: priceOut,
+    })
   );
-  const aOut = new BigNumber(Number(amountOut)).multipliedBy(
-    new BigNumber(10).pow(Number(decimalsOut))
+  const _amountIn = new BigNumber(
+    calculatePriceBasedOnAmount({
+      amount: amountIn,
+      price: priceOut,
+    })
   );
 
-  const a = new BigNumber(reserveIn).dividedBy(new BigNumber(reserveOut));
-  const b = new BigNumber(reserveIn).plus(aIn);
-  const c = new BigNumber(reserveOut).plus(aOut);
-  const impact = a.minus(b.dividedBy(c)).abs().multipliedBy(100).toFixed(2);
-  return impact;
+  const priceDifference = _amountOut.minus(_amountIn);
+  const priceImpact = priceDifference.dividedBy(_amountOut).multipliedBy(100);
+
+  return priceImpact.toString();
+};
+
+export type CalculatePriceBasedOnAmountOptions = {
+  amount?: string | number;
+  price?: string | number;
+};
+
+export const calculatePriceBasedOnAmount = ({
+  amount,
+  price,
+}: CalculatePriceBasedOnAmountOptions) => {
+  if (
+    !amount ||
+    new BigNumber(amount).isZero() ||
+    new BigNumber(amount).isNaN() ||
+    !price ||
+    new BigNumber(price).isZero() ||
+    new BigNumber(price).isNaN()
+  ) {
+    return '0';
+  }
+
+  return new BigNumber(price).multipliedBy(amount).toString();
 };
 
 export const formatAmount = (
@@ -327,6 +352,11 @@ const fixStringEnding = (str: string) => {
 
 export const formatValue = (value: string): string => {
   const [nat = '0', decimals = '0'] = value.replace(/^0+/, '').split('.');
+
+  if (Math.sign(Number(value)) === -1) {
+    return fixStringEnding(`${nat || 0}.${decimals.slice(0, 2)}`);
+  }
+
   const thousands = Math.floor(Math.log10(Number(nat)));
 
   if (thousands < 3) {
@@ -338,6 +368,8 @@ export const formatValue = (value: string): string => {
     return fixStringEnding(`${nat.slice(0, -3)}.${nat.slice(-3, -1)}`) + 'k';
   } else if (thousands < 9) {
     return fixStringEnding(`${nat.slice(0, -6)}.${nat.slice(-6, -4)}`) + 'M';
+  } else if (thousands < 0) {
+    return `> 999M`;
   } else {
     return `> 999M`;
   }
