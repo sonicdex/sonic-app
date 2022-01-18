@@ -24,7 +24,7 @@ export const DisplayValue = forwardRef<DisplayValueProps, 'p'>(
       const display = formatValue(tooltip);
 
       return [display, tooltip, disableTooltip || String(tooltip).length <= 4];
-    }, [value, decimals]);
+    }, [value, decimals, disableTooltip]);
 
     return (
       <Tooltip label={tooltipLabel} isDisabled={isDisabled}>

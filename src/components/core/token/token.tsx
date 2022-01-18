@@ -14,13 +14,15 @@ import {
   TextProps,
 } from '@chakra-ui/react';
 import { createContext } from '@chakra-ui/react-utils';
-import BigNumber from 'bignumber.js';
 import React, { useCallback, useMemo } from 'react';
 
 import { chevronDownSrc, questionMarkSrc } from '@/assets';
 import { NumberInput } from '@/components';
 import { AppTokenMetadata } from '@/models';
-import { getDepositMaxValue } from '@/utils/format';
+import {
+  calculatePriceBasedOnAmount,
+  getDepositMaxValue,
+} from '@/utils/format';
 
 import { DisplayValue, NumberInputProps } from '..';
 import { TokenBalancesPopover } from '../token-balances-popover';
@@ -192,9 +194,10 @@ export const TokenBalancesPrice: React.FC<TokenBalancesPriceProps> = ({
   }, [isLoading, value]);
 
   const price = useMemo(() => {
-    return new BigNumber(tokenMetadata?.price ?? 0)
-      .multipliedBy(value || '0')
-      .toNumber();
+    return calculatePriceBasedOnAmount({
+      amount: value,
+      price: tokenMetadata?.price,
+    });
   }, [tokenMetadata, value]);
 
   const defaultColor = isActive ? 'gray.50' : 'gray.300';
@@ -203,9 +206,9 @@ export const TokenBalancesPrice: React.FC<TokenBalancesPriceProps> = ({
     if (priceImpact) {
       const priceImpactNumber = parseFloat(priceImpact);
       const color =
-        priceImpactNumber >= 0
+        priceImpactNumber > 0
           ? 'green.500'
-          : priceImpactNumber >= 0 && priceImpactNumber >= -1
+          : priceImpactNumber <= 0 && priceImpactNumber >= -1
           ? defaultColor
           : priceImpactNumber < -1 && priceImpactNumber >= -5
           ? 'yellow.500'
@@ -220,7 +223,7 @@ export const TokenBalancesPrice: React.FC<TokenBalancesPriceProps> = ({
   return (
     <Skeleton isLoaded={!isLoading} borderRadius="full" minWidth={5}>
       <Flex transition="color 400ms" color={defaultColor} {...props}>
-        {price !== 0 && <DisplayValue value={price} prefix="~$" />}
+        {price !== '0' && <DisplayValue value={price} prefix="~$" />}
         &nbsp;
         {priceImpact && (
           <DisplayValue

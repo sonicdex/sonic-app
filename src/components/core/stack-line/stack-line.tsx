@@ -3,7 +3,7 @@ import React from 'react';
 
 export type StackLineProps = {
   title: string;
-  value: string;
+  value: React.ReactNode;
 };
 
 export const StackLine: React.FC<StackLineProps> = ({ value, title }) => {
