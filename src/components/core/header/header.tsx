@@ -25,7 +25,7 @@ export const Header: React.FC<HeaderProps> = ({
       pt={5}
       mt={-10}
       mb={5}
-      backgroundColor="bg"
+      backgroundColor="black"
       zIndex={10}
       flexDirection="column"
     >
