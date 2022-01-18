@@ -337,10 +337,9 @@ export const SwapHomeStep = () => {
   const selectedTokenIds = useMemo(() => {
     const selectedIds = [];
     if (from?.metadata?.id) selectedIds.push(from.metadata.id);
-    if (to?.metadata?.id) selectedIds.push(to.metadata.id);
 
     return selectedIds;
-  }, [from?.metadata?.id, to?.metadata?.id]);
+  }, [from?.metadata?.id]);
 
   const [selectTokenButtonDisabled, selectTokenButtonText] = useMemo(() => {
     if (toTokenOptions && toTokenOptions.length <= 0)
