@@ -29,6 +29,7 @@ import {
   WithdrawProgressModal,
   WrapProgressModal,
 } from './components/modals';
+import { useTokenLogos } from './hooks';
 import { usePlugInit } from './integrations/plug';
 import {
   useCyclesMintingCanisterInit,
@@ -45,6 +46,7 @@ export const App = () => {
   usePriceInit();
   useSwapCanisterInit();
   useLiquidityViewInit();
+  useTokenLogos();
 
   if (isAnyMobileDevice) {
     return <EmptyMobile />;
