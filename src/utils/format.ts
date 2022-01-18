@@ -309,6 +309,11 @@ export const calculatePriceImpact = ({
   const priceDifference = _amountOut.minus(_amountIn);
   const priceImpact = priceDifference.dividedBy(_amountOut).multipliedBy(100);
 
+  // Price impact formulas:
+  // used ((priceOut - priceIn) / priceOut) * 100
+  // alternative (priceOut/priceOut - priceIn/priceOut) * 100
+  // alternative (1 - (priceIn/priceOut)) * 100
+
   return priceImpact.toString();
 };
 
