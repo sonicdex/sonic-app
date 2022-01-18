@@ -24,4 +24,3 @@ export { default as sonicCircleSrc } from './sonic-circle.svg';
 export { default as swapSrc } from './swap.svg';
 export { default as transparentGreenCheckSrc } from './transparent-green-check.svg';
 export { default as withdrawSrc } from './withdraw.svg';
-export { default as xtcSrc } from './xtc.svg';
