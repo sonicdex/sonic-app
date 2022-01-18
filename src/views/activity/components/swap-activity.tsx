@@ -35,6 +35,8 @@ export const SwapActivity = ({
   const fromToken = tokenList[from];
   const toToken = tokenList[to];
 
+  if (!fromToken || !toToken) return null;
+
   return (
     <Asset type="swap" imageSources={[fromToken.logo, toToken.logo]}>
       <HStack spacing={4}>
