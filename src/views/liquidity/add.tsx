@@ -210,7 +210,7 @@ export const LiquidityAddView = () => {
 
   const isBalancesLoading = useMemo(
     () => balancesState === FeatureState.Loading,
-    [token0Balance, token1Balance]
+    [balancesState]
   );
 
   const isLoading = useMemo(() => {
@@ -248,7 +248,15 @@ export const LiquidityAddView = () => {
 
     if (isReviewing) return [false, 'Confirm Supply'];
     return [false, 'Review Supply'];
-  }, [isLoading, isReviewing, totalBalances, token0, token1]);
+  }, [
+    isLoading,
+    token0,
+    token1,
+    totalBalances,
+    token0Balance,
+    token1Balance,
+    isReviewing,
+  ]);
 
   const selectedTokenIds = useMemo(() => {
     const selectedIds = [];
@@ -363,6 +371,23 @@ export const LiquidityAddView = () => {
     }
   }, [token1.metadata, tokenBalances, sonicBalances]);
 
+  const { fee0, fee1 } = useMemo(() => {
+    if (token0.metadata && token1.metadata) {
+      const fee0 = getCurrencyString(
+        token0.metadata.fee + token0.metadata.fee,
+        token0.metadata.decimals
+      );
+      const fee1 = getCurrencyString(
+        token1.metadata.fee + token1.metadata.fee,
+        token1.metadata.decimals
+      );
+
+      return { fee0, fee1 };
+    }
+
+    return { fee0: '0', fee1: '0' };
+  }, [token0.metadata, token1.metadata]);
+
   useEffect(() => {
     if (!isLoading && supportedTokenList) {
       const token1Id = query.get('token1');
@@ -387,24 +412,8 @@ export const LiquidityAddView = () => {
         dispatch(liquidityViewActions.setValue({ data: 'token1', value: '' }));
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoading]);
-
-  const { fee0, fee1 } = useMemo(() => {
-    if (token0.metadata && token1.metadata) {
-      const fee0 = getCurrencyString(
-        token0.metadata.fee + token0.metadata.fee,
-        token0.metadata.decimals
-      );
-      const fee1 = getCurrencyString(
-        token1.metadata.fee + token1.metadata.fee,
-        token1.metadata.decimals
-      );
-
-      return { fee0, fee1 };
-    }
-
-    return { fee0: '0', fee1: '0' };
-  }, [token0.metadata, token1.metadata]);
 
   return (
     <Stack spacing={4}>
@@ -421,7 +430,7 @@ export const LiquidityAddView = () => {
             />
           </Tooltip>
           <MenuList
-            bg="#1E1E1E"
+            bg="custom.2"
             border="none"
             borderRadius={20}
             ml={-20}
@@ -477,7 +486,7 @@ export const LiquidityAddView = () => {
           border="1px solid #373737"
           py={3}
           px={3}
-          bg="#1E1E1E"
+          bg="custom.2"
           mt={-2}
           mb={-2}
           zIndex={1200}
@@ -532,7 +541,7 @@ export const LiquidityAddView = () => {
                   border="1px solid #373737"
                   py={3}
                   px={3}
-                  bg="#1E1E1E"
+                  bg="custom.2"
                   mt={-2}
                   mb={-2}
                   zIndex={1200}
@@ -582,7 +591,7 @@ export const LiquidityAddView = () => {
 
                     <TokenInput />
                   </TokenContent>
-                  <TokenBalances color="#888E8F">
+                  <TokenBalances color="custom.1">
                     Share of Pool:
                     <Text flex={1} textAlign="right">
                       {liquidityPercentage}

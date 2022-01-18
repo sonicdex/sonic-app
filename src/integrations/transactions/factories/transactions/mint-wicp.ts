@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
 import { ENV } from '@/config';
-import { WICPIDL } from '@/did';
+import { TokenIDL } from '@/did';
 
 import { CreateTransaction, MintWICP } from '../../models';
 
@@ -13,10 +13,10 @@ export const useMintWICPTransactionMemo: CreateTransaction<MintWICP> = (
   useMemo(() => {
     const { blockHeight, subaccount = [] } = options;
     return {
-      canisterId: ENV.canisterIds.WICP,
-      idl: WICPIDL.factory,
+      canisterId: ENV.canistersPrincipalIDs.WICP,
+      idl: TokenIDL.factory,
       methodName: 'mint',
-      onSuccess: async (res: WICPIDL.TxReceipt) => {
+      onSuccess: async (res: TokenIDL.Result) => {
         if ('Err' in res) throw new Error(JSON.stringify(Object.keys(res.Err)));
         if (onSuccess) onSuccess(res);
       },
@@ -29,4 +29,4 @@ export const useMintWICPTransactionMemo: CreateTransaction<MintWICP> = (
         return [subaccount, blockHeight ?? argBlockHeight];
       },
     };
-  }, [options]);
+  }, [onFail, onSuccess, options]);

@@ -12,49 +12,70 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { FaArrowRight } from '@react-icons/all-files/fa/FaArrowRight';
-import React, { useCallback, useMemo } from 'react';
+import BigNumber from 'bignumber.js';
+import React, { useMemo } from 'react';
 
 import { infoSrc } from '@/assets';
-import { StackLine } from '@/components';
+import { DisplayValue, StackLine } from '@/components';
+import { ENV } from '@/config';
 import { ICP_METADATA } from '@/constants';
-import { TokenData } from '@/models';
-import { useSwapCanisterStore } from '@/store';
+import { useTokenSelectionChecker } from '@/hooks';
+import { useCyclesMintingCanisterStore, useSwapViewStore } from '@/store';
 import {
   calculatePriceImpact,
-  getAmountOut,
+  formatAmount,
   getAmountOutMin,
   getCurrencyString,
+  getSwapAmountOut,
+  getXTCValueFromICP,
 } from '@/utils/format';
 
-export type ExchangeBoxProps = {
-  from: TokenData;
-  to: TokenData;
-  slippage: string;
-};
+import { ChainPopover } from '.';
 
-export const ExchangeBox: React.FC<ExchangeBoxProps> = ({
-  from,
-  to,
-  slippage,
-}) => {
-  const { allPairs } = useSwapCanisterStore();
+export const ExchangeBox: React.FC = () => {
+  const { from, to, slippage, baseTokenPaths, keepInSonic } =
+    useSwapViewStore();
 
-  const getPriceImpact = useCallback(
-    (reserve0: bigint, reserve1: bigint) => {
-      if (from.metadata?.decimals && to.metadata?.decimals) {
-        return calculatePriceImpact({
-          amountIn: from.value,
-          decimalsIn: from.metadata.decimals,
-          decimalsOut: to.metadata.decimals,
-          reserve0: reserve0.toString(),
-          reserve1: reserve1.toString(),
-        });
-      }
+  const { ICPXDRconversionRate } = useCyclesMintingCanisterStore();
 
-      return '0';
-    },
-    [from, to]
-  );
+  const {
+    isFirstIsSelected: isFromTokenIsICP,
+    isSecondIsSelected: isToTokenIsICP,
+  } = useTokenSelectionChecker({
+    id0: from.metadata?.id,
+    id1: to.metadata?.id,
+  });
+
+  const {
+    isFirstIsSelected: isFromTokenIsWICP,
+    isSecondIsSelected: isToTokenIsWICP,
+  } = useTokenSelectionChecker({
+    id0: from.metadata?.id,
+    id1: to.metadata?.id,
+    targetId: ENV.canistersPrincipalIDs.WICP,
+  });
+
+  const {
+    isFirstIsSelected: isFromTokenIsXTC,
+    isSecondIsSelected: isToTokenIsXTC,
+  } = useTokenSelectionChecker({
+    id0: from.metadata?.id,
+    id1: to.metadata?.id,
+    targetId: ENV.canistersPrincipalIDs.XTC,
+  });
+
+  const priceImpact = useMemo(() => {
+    if (from.metadata?.price && to.metadata?.price) {
+      return calculatePriceImpact({
+        amountIn: from.value,
+        amountOut: to.value,
+        priceIn: from.metadata.price,
+        priceOut: to.metadata.price,
+      });
+    }
+
+    return '';
+  }, [from, to]);
 
   const { depositFee, withdrawFee } = useMemo(() => {
     if (from.metadata?.id && to.metadata?.id) {
@@ -74,16 +95,71 @@ export const ExchangeBox: React.FC<ExchangeBoxProps> = ({
     return { depositFee: 0, withdrawFee: 0 };
   }, [from, to]);
 
+  const { icpMetadata, operation, fee, feeSymbol } = useMemo(() => {
+    const icpMetadata = isFromTokenIsICP
+      ? from.metadata
+      : isToTokenIsICP
+      ? to.metadata
+      : undefined;
+
+    const xtcMetadata = isToTokenIsXTC && to.metadata;
+
+    const operation = isFromTokenIsWICP
+      ? 'Unwrap'
+      : isToTokenIsWICP
+      ? 'Wrap'
+      : isFromTokenIsXTC
+      ? 'Swap'
+      : isToTokenIsXTC
+      ? 'Mint XTC'
+      : undefined;
+
+    const icpFeeInXTC =
+      xtcMetadata && ICPXDRconversionRate
+        ? getXTCValueFromICP({
+            amount: formatAmount(ICP_METADATA.fee, ICP_METADATA.decimals),
+            conversionRate: ICPXDRconversionRate,
+            fee: xtcMetadata.fee,
+            decimals: xtcMetadata.decimals,
+          })
+        : new BigNumber(0);
+
+    const xtcFee = icpMetadata
+      ? new BigNumber(
+          getCurrencyString(
+            (to.metadata?.fee ?? BigInt(0)) *
+              (keepInSonic ? BigInt(3) : BigInt(1)),
+            to.metadata?.decimals
+          )
+        )
+          .plus(icpFeeInXTC.multipliedBy(2))
+          .toString()
+      : '0';
+
+    const wicpFee = icpMetadata
+      ? getCurrencyString(icpMetadata.fee, icpMetadata.decimals)
+      : '0';
+
+    const fee = isToTokenIsXTC ? xtcFee : wicpFee;
+    const feeSymbol = isToTokenIsXTC ? 'XTC' : 'ICP';
+
+    return { icpMetadata, operation, fee, feeSymbol };
+  }, [
+    isFromTokenIsICP,
+    from.metadata,
+    isToTokenIsICP,
+    to.metadata,
+    isToTokenIsXTC,
+    isFromTokenIsWICP,
+    isToTokenIsWICP,
+    isFromTokenIsXTC,
+    ICPXDRconversionRate,
+    keepInSonic,
+  ]);
+
   if (!from.metadata || !to.metadata) return null;
 
-  const [icp, feeMessage] =
-    from.metadata.id === ICP_METADATA.id
-      ? [from.metadata, 'Wrap']
-      : to.metadata.id === ICP_METADATA.id
-      ? [to.metadata, 'Unwrap']
-      : [];
-
-  if (icp) {
+  if (icpMetadata) {
     return (
       <Flex opacity={0.4} alignItems="center" px={4} fontWeight={400}>
         <Text display="flex" alignItems="center">
@@ -92,34 +168,21 @@ export const ExchangeBox: React.FC<ExchangeBoxProps> = ({
           &nbsp;{to.metadata.symbol}
         </Text>
         <Text flex={1} textAlign="right">
-          {feeMessage} Fee = {getCurrencyString(icp.fee, icp.decimals)}
+          {operation} Fee = <DisplayValue as="span" value={fee} /> {feeSymbol}
         </Text>
       </Flex>
     );
   }
 
-  if (!allPairs?.[from.metadata.id]?.[to.metadata.id]) {
-    return null;
-  }
-
-  const { reserve0, reserve1 } = allPairs[from.metadata.id][to.metadata.id];
-
   return (
-    <Flex opacity={0.4} alignItems="center" px={4} fontWeight={400}>
-      <Text display="flex" alignItems="center">
-        {from.metadata.symbol}&nbsp;
-        <FaArrowRight />
-        &nbsp;{to.metadata.symbol}
-      </Text>
+    <Flex alignItems="center" px={4} fontWeight={400}>
+      <ChainPopover from={from} to={to} />
       <Text flex={1} textAlign="right" mx={2}>
         1&nbsp;{from.metadata.symbol}&nbsp;=&nbsp;
-        {getAmountOut({
-          amountIn: 1,
-          decimalsIn: from.metadata.decimals,
-          decimalsOut: to.metadata.decimals,
-          reserveIn: Number(reserve0),
-          reserveOut: Number(reserve1),
-        })}
+        {getSwapAmountOut(
+          { metadata: from.metadata, paths: baseTokenPaths, value: '1' },
+          to
+        )}
         &nbsp;
         {to.metadata.symbol}
       </Text>
@@ -162,7 +225,9 @@ export const ExchangeBox: React.FC<ExchangeBoxProps> = ({
                 />
                 <StackLine
                   title="Price Impact"
-                  value={`${getPriceImpact(reserve0, reserve1)}%`}
+                  value={
+                    <DisplayValue as="span" value={priceImpact} suffix="%" />
+                  }
                 />
                 <StackLine title="Allowed Slippage" value={`${slippage}%`} />
                 {/* TODO: add liquidity fee */}

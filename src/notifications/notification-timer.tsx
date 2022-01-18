@@ -20,13 +20,6 @@ export const NotificationTimer: React.FC<NotificationTimerProps> = ({
   timeout = '10s',
   handleClose,
 }) => {
-  if (
-    (type !== NotificationType.Success && type !== NotificationType.Error) ||
-    timeout === 'none'
-  ) {
-    return null;
-  }
-
   const color = useMemo(() => {
     switch (type) {
       case NotificationType.Success:
@@ -37,6 +30,13 @@ export const NotificationTimer: React.FC<NotificationTimerProps> = ({
         return 'gray.500';
     }
   }, [type]);
+
+  if (
+    (type !== NotificationType.Success && type !== NotificationType.Error) ||
+    timeout === 'none'
+  ) {
+    return null;
+  }
 
   const collapseAnimation = `${reduceWidth} ${timeout} forwards linear`;
 

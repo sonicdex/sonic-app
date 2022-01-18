@@ -25,7 +25,7 @@ export const Header: React.FC<HeaderProps> = ({
       pt={5}
       mt={-10}
       mb={5}
-      backgroundColor="bg"
+      backgroundColor="black"
       zIndex={10}
       flexDirection="column"
     >
@@ -36,9 +36,10 @@ export const Header: React.FC<HeaderProps> = ({
         alignItems="center"
         pb={paddingToLine}
         mt={marginTop}
-        borderBottom="1px solid #373737"
+        borderBottom="1px solid"
+        borderColor="custom.3"
       >
-        <Box as="h3" fontWeight={700} color="#F6FCFD">
+        <Box as="h3" fontWeight={700} color="gray.50">
           {title}
           {isRefreshing && <Spinner width={3} height={3} mx={3} />}
         </Box>

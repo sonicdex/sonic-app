@@ -44,7 +44,7 @@ export const Layout: React.FC = ({ children, ...props }) => {
           templateColumns="repeat(5, 1fr)"
           gap="4"
           alignItems="center"
-          backgroundColor="bg"
+          backgroundColor="black"
           _after={{
             content: "''",
             position: 'absolute',

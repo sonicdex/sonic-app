@@ -16,7 +16,7 @@ type CircleIconProps = {
 export const CircleIcon = ({ status, iconSrc }: CircleIconProps) => {
   const spinAnimation = `${spin} infinite 2s linear`;
 
-  const bg = status === StepStatus.Disabled ? '#353535' : '#3D52F4';
+  const bg = status === StepStatus.Disabled ? 'custom.3' : 'dark-blue.500';
   const opacity = status === StepStatus.Disabled ? 0.5 : 1;
   const checkOpacity = status === StepStatus.Done ? 1 : 0;
 
@@ -27,7 +27,7 @@ export const CircleIcon = ({ status, iconSrc }: CircleIconProps) => {
           w="45px"
           h="45px"
           borderRadius={45}
-          bg="#3D52F4"
+          bg="dark-blue.500"
           filter="blur(10px)"
           position="absolute"
         />

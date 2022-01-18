@@ -1,4 +1,5 @@
 import { Box, Button, Flex, Image, Stack } from '@chakra-ui/react';
+import { useMemo } from 'react';
 
 import { arrowDownSrc } from '@/assets';
 import {
@@ -14,7 +15,7 @@ import {
   ViewHeader,
 } from '@/components';
 import { getAppAssetsSources } from '@/config/utils';
-import { useICPSelectionDetectorMemo } from '@/hooks';
+import { useTokenSelectionChecker } from '@/hooks';
 import {
   NotificationType,
   SwapStep,
@@ -24,6 +25,7 @@ import {
   useSwapCanisterStore,
   useSwapViewStore,
 } from '@/store';
+import { calculatePriceImpact } from '@/utils/format';
 import { debounce } from '@/utils/function';
 
 import { ExchangeBox } from '.';
@@ -32,8 +34,7 @@ import { KeepInSonicBox } from './keep-in-sonic-box';
 export const SwapReviewStep = () => {
   const { sonicBalances, tokenBalances } = useSwapCanisterStore();
   const { addNotification } = useNotificationStore();
-  const { fromTokenOptions, toTokenOptions, from, to, slippage } =
-    useSwapViewStore();
+  const { from, to } = useSwapViewStore();
   const dispatch = useAppDispatch();
 
   const handleApproveSwap = () => {
@@ -48,8 +49,26 @@ export const SwapReviewStep = () => {
     );
   };
 
-  const { isFirstTokenIsICP, isSecondTokenIsICP, isICPSelected } =
-    useICPSelectionDetectorMemo(from.metadata?.id, to.metadata?.id);
+  const priceImpact = useMemo(() => {
+    if (from.metadata?.price && to.metadata?.price) {
+      return calculatePriceImpact({
+        amountIn: from.value,
+        amountOut: to.value,
+        priceIn: from.metadata.price,
+        priceOut: to.metadata.price,
+      });
+    }
+
+    return '';
+  }, [from, to]);
+
+  const {
+    isFirstIsSelected: isFirstTokenIsICP,
+    isSecondIsSelected: isSecondTokenIsICP,
+  } = useTokenSelectionChecker({
+    id0: from.metadata?.id,
+    id1: to.metadata?.id,
+  });
 
   return (
     <Stack spacing={4}>
@@ -64,7 +83,6 @@ export const SwapReviewStep = () => {
             setValue={(value) =>
               dispatch(swapViewActions.setValue({ data: 'from', value }))
             }
-            tokenListMetadata={fromTokenOptions}
             tokenMetadata={from.metadata}
             sources={getAppAssetsSources({
               balances: {
@@ -99,7 +117,7 @@ export const SwapReviewStep = () => {
           height={10}
           py={3}
           px={3}
-          bg="#3D52F4"
+          bg="dark-blue.500"
           mt={-2}
           mb={-2}
           zIndex={1200}
@@ -112,7 +130,6 @@ export const SwapReviewStep = () => {
             setValue={(value) =>
               dispatch(swapViewActions.setValue({ data: 'to', value }))
             }
-            tokenListMetadata={toTokenOptions}
             tokenMetadata={to.metadata}
             sources={getAppAssetsSources({
               balances: {
@@ -139,13 +156,14 @@ export const SwapReviewStep = () => {
             </TokenContent>
             <TokenBalances>
               <TokenBalancesDetails />
-              <TokenBalancesPrice shouldShowPriceDiff={!isICPSelected} />
+              <TokenBalancesPrice priceImpact={priceImpact} />
             </TokenBalances>
           </Token>
         </Box>
       </Flex>
 
-      <ExchangeBox from={from} to={to} slippage={slippage} />
+      <ExchangeBox />
+
       <KeepInSonicBox
         canHeldInSonic={!isSecondTokenIsICP}
         symbol={to.metadata?.symbol}

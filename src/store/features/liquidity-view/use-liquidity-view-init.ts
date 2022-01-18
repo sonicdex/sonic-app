@@ -1,5 +1,5 @@
 import { Principal } from '@dfinity/principal';
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 
 import { ENV } from '@/config';
 import { useSwapActor } from '@/integrations/actor';
@@ -15,23 +15,7 @@ export const useLiquidityViewInit = () => {
   const { supportedTokenList } = useSwapCanisterStore();
   const swapActor = useSwapActor();
 
-  useEffect(() => {
-    if (supportedTokenList) {
-      const token =
-        supportedTokenList.find((token) => token.id === ENV.canisterIds.WICP) ??
-        supportedTokenList[0];
-
-      dispatch(liquidityViewActions.setToken({ data: 'token0', token }));
-    }
-  }, [supportedTokenList]);
-
-  useEffect(() => {
-    if (token0.metadata?.id && token1.metadata?.id) {
-      getPair();
-    }
-  }, [token0.metadata?.id, token1.metadata?.id]);
-
-  async function getPair() {
+  const getPair = useCallback(async () => {
     if (swapActor && token0.metadata?.id && token1.metadata?.id) {
       try {
         dispatch(liquidityViewActions.setPairState(FeatureState.Loading));
@@ -50,5 +34,22 @@ export const useLiquidityViewInit = () => {
         dispatch(liquidityViewActions.setPairState(FeatureState.Error));
       }
     }
-  }
+  }, [dispatch, swapActor, token0.metadata?.id, token1.metadata?.id]);
+
+  useEffect(() => {
+    if (supportedTokenList) {
+      const token =
+        supportedTokenList.find(
+          (token) => token.id === ENV.canistersPrincipalIDs.WICP
+        ) ?? supportedTokenList[0];
+
+      dispatch(liquidityViewActions.setToken({ data: 'token0', token }));
+    }
+  }, [supportedTokenList, dispatch]);
+
+  useEffect(() => {
+    if (token0.metadata?.id && token1.metadata?.id) {
+      getPair();
+    }
+  }, [token0.metadata?.id, token1.metadata?.id, getPair]);
 };

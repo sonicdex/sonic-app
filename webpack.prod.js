@@ -58,6 +58,7 @@ module.exports = (env) => {
         WICP_CANISTER_ID: 'utozz-siaaa-aaaam-qaaxq-cai',
         XTC_CANISTER_ID: 'aanaa-xaaaa-aaaah-aaeiq-cai',
         SWAP_CAP_ROOT_CANISTER_ID: '3qxje-uqaaa-aaaah-qcn4q-cai',
+        CYCLES_MINTING_CANISTER_ID: 'rkp4c-7iaaa-aaaaa-aaaca-cai',
         ROSETTA_BASE_API: 'https://rosetta-api.internetcomputer.org/',
       }),
       new InlineChunkHtmlPlugin(HtmlWebpackPlugin, [/runtime-.+[.]js/]),

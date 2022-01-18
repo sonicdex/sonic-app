@@ -18,6 +18,7 @@ import {
   AddLiquidityProgressModal,
   AllowanceVerifyModal,
   DepositProgressModal,
+  MintXTCProgressModal,
   RemoveLiquidityFailModal,
   RemoveLiquidityModal,
   RemoveLiquidityProgressModal,
@@ -28,8 +29,10 @@ import {
   WithdrawProgressModal,
   WrapProgressModal,
 } from './components/modals';
+import { useTokenLogos } from './hooks';
 import { usePlugInit } from './integrations/plug';
 import {
+  useCyclesMintingCanisterInit,
   useLiquidityViewInit,
   usePriceInit,
   useSwapCanisterInit,
@@ -38,12 +41,13 @@ import {
 export const App = () => {
   const isAnyMobileDevice = isMobile(window.navigator).any;
 
+  useCyclesMintingCanisterInit();
   usePlugInit();
   usePriceInit();
   useSwapCanisterInit();
   useLiquidityViewInit();
+  useTokenLogos();
 
-  // TODO: Remove after plug mobile connection
   if (isAnyMobileDevice) {
     return <EmptyMobile />;
   }
@@ -62,7 +66,7 @@ export const App = () => {
         <RemoveLiquidityProgressModal />
         <UnwrapProgressModal />
         <WrapProgressModal />
-
+        <MintXTCProgressModal />
         <SwapFailModal />
         <AddLiquidityFailModal />
         <RemoveLiquidityFailModal />

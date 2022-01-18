@@ -5,6 +5,11 @@ import { formatUnits, parseUnits } from 'ethers/lib/utils';
 
 import { ICP_METADATA } from '@/constants';
 import { AppTokenMetadata } from '@/models';
+import { SwapTokenData } from '@/store';
+import {
+  DEFAULT_CYCLES_PER_XDR,
+  TOKEN_SUBDIVIDABLE_BY,
+} from '@/store/features/cycles-minting-canister/cycles-minting-canister.constants';
 
 export type BigNumberish = BigNumber | Bytes | bigint | string | number;
 
@@ -91,7 +96,27 @@ export const getAmountLP = ({
   return Math.min(Number(one), Number(two)).toString();
 };
 
-interface GetLPPercentageString extends GetAmountLPOptions {
+export type GetXTCValueFromICPOptions = {
+  amount: string;
+  conversionRate: string;
+  fee: bigint;
+  decimals: number;
+};
+
+export function getXTCValueFromICP({
+  amount,
+  conversionRate,
+  fee,
+  decimals,
+}: GetXTCValueFromICPOptions) {
+  return new BigNumber(amount)
+    .multipliedBy(new BigNumber(conversionRate))
+    .multipliedBy(new BigNumber(DEFAULT_CYCLES_PER_XDR))
+    .dividedBy(new BigNumber(TOKEN_SUBDIVIDABLE_BY * 100_000_000))
+    .minus(formatAmount(fee, decimals));
+}
+
+export interface GetLPPercentageString extends GetAmountLPOptions {
   token0Decimals: number | bigint;
   token1Decimals: number | bigint;
 }
@@ -240,53 +265,79 @@ export const getAmountMin = (
 };
 
 export type CalculatePriceImpactOptions = {
-  amountIn: string | number;
-  decimalsIn: string | number;
-  decimalsOut: string | number;
-  reserve0: string | number;
-  reserve1: string | number;
+  priceIn?: string | number;
+  priceOut?: string | number;
+  amountIn?: string | number;
+  amountOut?: string | number;
 };
 
 export const calculatePriceImpact = ({
   amountIn,
-  decimalsIn,
-  decimalsOut,
-  reserve0,
-  reserve1,
+  amountOut,
+  priceIn,
+  priceOut,
 }: CalculatePriceImpactOptions): string => {
   if (
     !amountIn ||
+    new BigNumber(amountIn).isZero() ||
     new BigNumber(amountIn).isNaN() ||
-    new BigNumber(reserve1).isZero()
+    !amountOut ||
+    new BigNumber(amountOut).isZero() ||
+    new BigNumber(amountOut).isNaN() ||
+    !priceIn ||
+    new BigNumber(priceIn).isZero() ||
+    new BigNumber(priceIn).isNaN() ||
+    !priceOut ||
+    new BigNumber(priceOut).isZero() ||
+    new BigNumber(priceOut).isNaN()
   )
     return '0';
 
-  // price impact = abs(reserve0/reserve1 - (reserve0 + amountIn) / (reserve1 - amountOut))
-
-  const amountOut = getAmountOut({
-    amountIn,
-    decimalsIn,
-    decimalsOut,
-    reserveIn: reserve0,
-    reserveOut: reserve1,
-  });
-
-  console.log(amountIn, amountOut, decimalsIn, decimalsOut, reserve0, reserve1);
-
-  const aIn = new BigNumber(amountIn).multipliedBy(
-    new BigNumber(10).pow(Number(decimalsIn))
+  const _amountOut = new BigNumber(
+    calculatePriceBasedOnAmount({
+      amount: amountOut,
+      price: priceOut,
+    })
   );
-  const aOut = new BigNumber(Number(amountOut)).multipliedBy(
-    new BigNumber(10).pow(Number(decimalsOut))
+  const _amountIn = new BigNumber(
+    calculatePriceBasedOnAmount({
+      amount: amountIn,
+      price: priceOut,
+    })
   );
 
-  console.log(aIn, aOut);
+  const priceDifference = _amountOut.minus(_amountIn);
+  const priceImpact = priceDifference.dividedBy(_amountOut).multipliedBy(100);
 
-  const a = new BigNumber(reserve0).dividedBy(new BigNumber(reserve1));
-  const b = new BigNumber(reserve0).plus(aIn);
-  const c = new BigNumber(reserve1).plus(aOut);
-  const impact = a.minus(b.dividedBy(c)).abs().multipliedBy(100).toFixed(2);
-  return impact;
+  // Price impact formulas:
+  // used ((priceOut - priceIn) / priceOut) * 100
+  // alternative (priceOut/priceOut - priceIn/priceOut) * 100
+  // alternative (1 - (priceIn/priceOut)) * 100
+
+  return priceImpact.toString();
+};
+
+export type CalculatePriceBasedOnAmountOptions = {
+  amount?: string | number;
+  price?: string | number;
+};
+
+export const calculatePriceBasedOnAmount = ({
+  amount,
+  price,
+}: CalculatePriceBasedOnAmountOptions) => {
+  if (
+    !amount ||
+    new BigNumber(amount).isZero() ||
+    new BigNumber(amount).isNaN() ||
+    !price ||
+    new BigNumber(price).isZero() ||
+    new BigNumber(price).isNaN()
+  ) {
+    return '0';
+  }
+
+  return new BigNumber(price).multipliedBy(amount).toString();
 };
 
 export const formatAmount = (
@@ -306,6 +357,11 @@ const fixStringEnding = (str: string) => {
 
 export const formatValue = (value: string): string => {
   const [nat = '0', decimals = '0'] = value.replace(/^0+/, '').split('.');
+
+  if (Math.sign(Number(value)) === -1) {
+    return fixStringEnding(`${nat || 0}.${decimals.slice(0, 2)}`);
+  }
+
   const thousands = Math.floor(Math.log10(Number(nat)));
 
   if (thousands < 3) {
@@ -361,6 +417,23 @@ export const getDepositMaxValue = (
 
   if (value > 0) {
     return getCurrencyString(value, token.decimals);
+  }
+
+  return '';
+};
+
+export const getSwapAmountOut = (
+  tokenIn: SwapTokenData,
+  tokenOut: SwapTokenData
+): string => {
+  if (!tokenIn.metadata || !tokenOut.metadata || !tokenIn.value) return '';
+
+  const path = tokenIn.paths[tokenOut.metadata.id];
+
+  if (path) {
+    return new BigNumber(path.amountOut)
+      .dp(tokenOut.metadata.decimals)
+      .toString();
   }
 
   return '';

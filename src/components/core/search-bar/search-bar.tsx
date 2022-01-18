@@ -20,7 +20,7 @@ export const SearchBar = ({ search, setSearch }: SearchBarProps) => {
       boxSizing="border-box"
       px={4}
       mb={4}
-      bg="#282828"
+      bg="custom.3"
       w="100%"
       h={10}
       borderRadius={12}
@@ -29,16 +29,16 @@ export const SearchBar = ({ search, setSearch }: SearchBarProps) => {
       <Box
         as="input"
         value={search}
-        bg="#282828"
+        bg="custom.3"
         border="none"
         w="100%"
-        color="#F6FCFD"
+        color="gray.50"
         outline="none"
         fontWeight={400}
         placeholder="Search by name or canister id"
         onChange={handleSearchChange}
         _placeholder={{
-          color: '#888E8F',
+          color: 'custom.1',
         }}
       />
     </Flex>

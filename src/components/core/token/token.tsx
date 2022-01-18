@@ -14,13 +14,15 @@ import {
   TextProps,
 } from '@chakra-ui/react';
 import { createContext } from '@chakra-ui/react-utils';
-import BigNumber from 'bignumber.js';
 import React, { useCallback, useMemo } from 'react';
 
 import { chevronDownSrc, questionMarkSrc } from '@/assets';
 import { NumberInput } from '@/components';
 import { AppTokenMetadata } from '@/models';
-import { getDepositMaxValue } from '@/utils/format';
+import {
+  calculatePriceBasedOnAmount,
+  getDepositMaxValue,
+} from '@/utils/format';
 
 import { DisplayValue, NumberInputProps } from '..';
 import { TokenBalancesPopover } from '../token-balances-popover';
@@ -32,7 +34,7 @@ export type TokenUniqueProps = {
   tokenMetadata?: AppTokenMetadata;
   tokenListMetadata?: AppTokenMetadata[];
   sources?: TokenSource[];
-  setValue?: (value: string) => any;
+  setValue?: (value: string) => unknown;
   isDisabled?: boolean;
   isLoading?: boolean;
   isBalancesLoading?: boolean;
@@ -61,8 +63,8 @@ export const Token: React.FC<TokenProps> = ({
   children,
   ...tokenProps
 }) => {
-  const border = shouldGlow ? '1px solid #3D52F4' : '1px solid #373737';
-  const background = shouldGlow ? '#151515' : '#1E1E1E';
+  const border = shouldGlow ? '1px solid dark-blue.500' : '1px solid #373737';
+  const background = shouldGlow ? 'black' : 'custom.2';
 
   return (
     <TokenProvider value={{ shouldGlow, ...tokenProps }}>
@@ -174,11 +176,11 @@ export const TokenBalances = (props: FlexProps) => {
 };
 
 export type TokenBalancesPriceProps = BoxProps & {
-  shouldShowPriceDiff?: boolean;
+  priceImpact?: string;
 };
 
 export const TokenBalancesPrice: React.FC<TokenBalancesPriceProps> = ({
-  shouldShowPriceDiff = false,
+  priceImpact,
   ...props
 }) => {
   const { isLoading, value, tokenMetadata } = useTokenContext();
@@ -192,49 +194,42 @@ export const TokenBalancesPrice: React.FC<TokenBalancesPriceProps> = ({
   }, [isLoading, value]);
 
   const price = useMemo(() => {
-    return new BigNumber(tokenMetadata?.price ?? 0)
-      .multipliedBy(value || '0')
-      .toNumber();
+    return calculatePriceBasedOnAmount({
+      amount: value,
+      price: tokenMetadata?.price,
+    });
   }, [tokenMetadata, value]);
 
   const defaultColor = isActive ? 'gray.50' : 'gray.300';
 
-  const { color, priceDifferencePercentage } = useMemo(() => {
-    // TODO: finish
-    // if (shouldShowPriceDiff) {
-    //   const priceDifferencePercentage = 0;
+  const color = useMemo(() => {
+    if (priceImpact) {
+      const priceImpactNumber = parseFloat(priceImpact);
+      const color =
+        priceImpactNumber > 0
+          ? 'green.500'
+          : priceImpactNumber <= 0 && priceImpactNumber >= -1
+          ? defaultColor
+          : priceImpactNumber < -1 && priceImpactNumber >= -5
+          ? 'yellow.500'
+          : 'red.500';
 
-    //   const color =
-    //     priceDifferencePercentage > 0
-    //       ? 'green.500'
-    //       : priceDifferencePercentage <= 0 && priceDifferencePercentage >= -1
-    //       ? defaultColor
-    //       : priceDifferencePercentage < -1 && priceDifferencePercentage >= -5
-    //       ? 'yellow.500'
-    //       : 'red.500';
+      return color;
+    }
 
-    //   return {
-    //     color,
-    //     priceDifferencePercentage,
-    //   };
-    // }
-
-    return {
-      color: defaultColor,
-      priceDifferencePercentage: undefined,
-    };
-  }, [isActive, shouldShowPriceDiff, price]);
+    return defaultColor;
+  }, [priceImpact, defaultColor]);
 
   return (
-    <Skeleton isLoaded={!isLoading} borderRadius="full">
+    <Skeleton isLoaded={!isLoading} borderRadius="full" minWidth={5}>
       <Flex transition="color 400ms" color={defaultColor} {...props}>
-        <DisplayValue value={price} prefix="$" />
+        {price !== '0' && <DisplayValue value={price} prefix="~$" />}
         &nbsp;
-        {priceDifferencePercentage && (
+        {priceImpact && (
           <DisplayValue
             color={color}
-            value={priceDifferencePercentage}
-            prefix="(-"
+            value={priceImpact}
+            prefix="("
             suffix="%)"
           />
         )}
@@ -270,11 +265,11 @@ export const TokenBalancesDetails: React.FC<TokenBalancesDetailsProps> = ({
     }
 
     return false;
-  }, [onMaxClick, totalTokenBalance, value]);
+  }, [onMaxClick, tokenMetadata, totalTokenBalance, value]);
 
   return (
     <Skeleton isLoaded={!isLoading} borderRadius="full" minW={20}>
-      <Flex direction="row" color="#888E8F" {...props}>
+      <Flex direction="row" color="custom.1" {...props}>
         <HStack>
           <TokenBalancesPopover
             sources={sources}
@@ -309,7 +304,7 @@ type TokenInputProps = NumberInputProps;
 export const TokenInput: React.FC<TokenInputProps> = (props) => {
   const { isLoading, isDisabled, shouldGlow, value, setValue, tokenMetadata } =
     useTokenContext();
-  const background = shouldGlow ? '#151515' : '#1E1E1E';
+  const background = shouldGlow ? 'black' : 'custom.2';
 
   const isActive = useMemo(() => {
     if (isLoading || parseFloat(value || '0') <= 0) {
@@ -337,7 +332,7 @@ export const TokenInput: React.FC<TokenInputProps> = (props) => {
         setValue(newValue);
       }
     },
-    [value, tokenMetadata, setValue]
+    [tokenMetadata, setValue]
   );
 
   return (
@@ -346,7 +341,7 @@ export const TokenInput: React.FC<TokenInputProps> = (props) => {
         isDisabled={isDisabled}
         value={value}
         setValue={handleChange}
-        color={isActive ? '#F6FCFD' : '#888E8F'}
+        color={isActive ? 'gray.50' : 'custom.1'}
         background={background}
         {...props}
       />
@@ -366,6 +361,6 @@ const TokenGlow = () => (
     height="100%"
     filter="blur(6px)"
     zIndex={-100}
-    bg="#3D52F4"
+    bg="dark-blue.500"
   />
 );

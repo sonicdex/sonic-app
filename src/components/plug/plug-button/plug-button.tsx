@@ -23,18 +23,75 @@ export type PlugButtonProps = Omit<ButtonProps, 'color' | 'variant'> & {
 
 export const PlugButton = forwardRef<HTMLButtonElement, PlugButtonProps>(
   (
-    { whitelist = Object.values(ENV.canisterIds), host = ENV.host, ...props },
+    {
+      whitelist = Object.values(ENV.canistersPrincipalIDs),
+      host = ENV.host,
+      ...props
+    },
     ref
   ) => {
     const { variant = 'default' } = props;
     const { state } = usePlugStore();
     const dispatch = useAppDispatch();
 
+    const isPlugPAPIExists = Boolean(window.ic?.plug);
+
+    const isLoading = useMemo(() => {
+      return state === FeatureState.Loading;
+    }, [state]);
+
+    const colorDark = useColorModeValue('gray.500', 'gray.500');
+    const bgDark = useColorModeValue('gray.100', 'gray.800');
+    const bgHoverDark = useColorModeValue('gray.200', 'gray.700');
+
+    const colorLight = useColorModeValue('gray.500', 'white');
+    const bgLight = useColorModeValue('gray.100', 'gray.900');
+    const bgHoverLight = useColorModeValue('gray.200', 'gray.800');
+
+    const { color, bg, bgHover, leftIcon, before, borderRadius } =
+      useMemo(() => {
+        if (variant === 'dark') {
+          return {
+            color: colorDark,
+            bg: bgDark,
+            bgHover: bgHoverDark,
+            borderRadius: 'xl',
+          };
+        }
+
+        return {
+          color: colorLight,
+          bg: bgLight,
+          bgHover: bgHoverLight,
+          leftIcon: <PlugLogo />,
+          before: {
+            content: "''",
+            position: 'absolute',
+            top: 0,
+            right: 0,
+            bottom: 0,
+            left: 0,
+            zIndex: 'hide',
+            margin: '-2px',
+            borderRadius: 'inherit',
+            background:
+              'linear-gradient(93.07deg,#ffd719 0.61%,#f754d4 33.98%,#1fd1ec 65.84%,#48fa6b 97.7%)',
+          },
+          borderRadius: 'full',
+        };
+      }, [
+        bgDark,
+        bgHoverDark,
+        bgHoverLight,
+        bgLight,
+        colorDark,
+        colorLight,
+        variant,
+      ]);
+
     const handleConnect = (isConnected: boolean) => {
       dispatch(plugActions.setIsConnected(isConnected));
     };
-
-    const isPlugPAPIExists = Boolean(window.ic?.plug);
 
     const handleConnectAttempt = async () => {
       if (!isPlugPAPIExists) {
@@ -59,43 +116,6 @@ export const PlugButton = forwardRef<HTMLButtonElement, PlugButtonProps>(
         dispatch(plugActions.setState(FeatureState.Idle));
       }
     };
-
-    const isLoading = useMemo(() => {
-      return state === FeatureState.Loading;
-    }, [state]);
-
-    const [color, bg, bgHover, leftIcon, before, borderRadius] = useMemo(() => {
-      if (variant === 'dark') {
-        return [
-          useColorModeValue('gray.500', 'gray.500'),
-          useColorModeValue('gray.100', 'gray.800'),
-          useColorModeValue('gray.200', 'gray.700'),
-          undefined,
-          {},
-          'xl',
-        ];
-      }
-      return [
-        useColorModeValue('gray.500', 'white'),
-        useColorModeValue('gray.100', 'gray.900'),
-        useColorModeValue('gray.200', 'gray.800'),
-        <PlugLogo />,
-        {
-          content: "''",
-          position: 'absolute',
-          top: 0,
-          right: 0,
-          bottom: 0,
-          left: 0,
-          zIndex: 'hide',
-          margin: '-2px',
-          borderRadius: 'inherit',
-          background:
-            'linear-gradient(93.07deg,#ffd719 0.61%,#f754d4 33.98%,#1fd1ec 65.84%,#48fa6b 97.7%)',
-        },
-        'full',
-      ];
-    }, [variant]);
 
     return (
       <Button

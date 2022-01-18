@@ -9,7 +9,7 @@ export type AppTokenMetadataListObject = {
   [canisterId: string]: AppTokenMetadata;
 };
 
-export interface TokenData {
-  metadata?: AppTokenMetadata;
+export interface BaseTokenData<M = AppTokenMetadata> {
+  metadata?: M;
   value: string;
 }

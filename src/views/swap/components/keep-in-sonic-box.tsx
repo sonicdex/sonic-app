@@ -17,7 +17,7 @@ import { useMemo } from 'react';
 import { infoSrc } from '@/assets';
 import { swapViewActions, useAppDispatch, useSwapViewStore } from '@/store';
 
-type OperationType = 'swap' | 'wrap';
+type OperationType = 'swap' | 'wrap' | 'mint';
 
 type KeepInSonicBoxProps = {
   symbol?: string;
@@ -49,13 +49,14 @@ export const KeepInSonicBox: React.FC<KeepInSonicBoxProps> = ({
               for high frequency trading where a few extra seconds matter a lot.
               By doing this, you can skip the deposit step on your next trades
               and save 2-3 seconds each time.&nbsp;
-              <Link href={KEEP_IN_SONIC_LINK} color="#3D52F4">
+              <Link href={KEEP_IN_SONIC_LINK} color="dark-blue.500">
                 Learn More
               </Link>
               .
             </>
           ),
         };
+      case 'mint':
       case 'wrap':
         return {
           label: `Deposit ${
@@ -66,7 +67,7 @@ export const KeepInSonicBox: React.FC<KeepInSonicBoxProps> = ({
               If you keep your tokens deposited in Sonic (instead of withdrawing
               to Plug) you can start swaps or add liquidity faster on your next
               operation. &nbsp;
-              <Link href={KEEP_IN_SONIC_LINK} color="#3D52F4">
+              <Link href={KEEP_IN_SONIC_LINK} color="dark-blue.500">
                 Learn More
               </Link>
               .
@@ -87,7 +88,7 @@ export const KeepInSonicBox: React.FC<KeepInSonicBoxProps> = ({
       justifyContent="space-between"
       alignItems="center"
       borderRadius="xl"
-      bg="#1E1E1E"
+      bg="custom.2"
       px={5}
       py={4}
       mb={5}
@@ -101,7 +102,7 @@ export const KeepInSonicBox: React.FC<KeepInSonicBoxProps> = ({
                 dispatch(swapViewActions.setKeepInSonic(e.target.checked))
               }
               colorScheme="dark-blue"
-              color={keepInSonic ? '#FFFFFF' : '#888E8F'}
+              color={keepInSonic ? 'white' : 'custom.1'}
               fontWeight={600}
             >
               {label}

@@ -13,7 +13,7 @@ export const ImportTokenImage = ({
     return (
       <Flex
         borderRadius={26}
-        bg="#6B7280"
+        bg="gray.500"
         w={10}
         h={10}
         alignItems="center"

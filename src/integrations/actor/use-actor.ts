@@ -18,7 +18,7 @@ export const useActor = <T extends AppActors>(
       .createActor<T>(props.canisterId, props.interfaceFactory)
       .then((newActor) => setActor(newActor))
       .catch((error) => console.error(error));
-  }, [isConnected, props.canisterId]);
+  }, [isConnected, props.canisterId, props.interfaceFactory]);
 
   return actor;
 };

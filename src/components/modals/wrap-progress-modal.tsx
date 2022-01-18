@@ -1,6 +1,6 @@
 import { Flex, Modal, ModalOverlay } from '@chakra-ui/react';
 
-import { depositSrc, swapSrc, withdrawSrc } from '@/assets';
+import { checkPlainSrc, depositSrc, swapSrc, withdrawSrc } from '@/assets';
 import {
   modalsSliceActions,
   useAppDispatch,
@@ -31,7 +31,7 @@ export const WrapProgressModal = () => {
         <Flex alignItems="flex-start">
           <TransactionStep
             status={getStepStatus(WrapModalDataStep.LedgerTransfer)}
-            iconSrc={depositSrc}
+            iconSrc={withdrawSrc}
             chevron
           >
             Ledger Transfer <br />
@@ -50,7 +50,7 @@ export const WrapProgressModal = () => {
           {steps?.includes(WrapModalDataStep.Approve) && (
             <TransactionStep
               status={getStepStatus(WrapModalDataStep.Approve)}
-              iconSrc={withdrawSrc}
+              iconSrc={checkPlainSrc}
               chevron
             >
               Approving <br /> WICP
@@ -59,7 +59,7 @@ export const WrapProgressModal = () => {
           {steps?.includes(WrapModalDataStep.Deposit) && (
             <TransactionStep
               status={getStepStatus(WrapModalDataStep.Deposit)}
-              iconSrc={withdrawSrc}
+              iconSrc={depositSrc}
             >
               Depositing <br /> WICP
             </TransactionStep>

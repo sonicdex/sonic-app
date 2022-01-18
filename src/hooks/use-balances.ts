@@ -1,9 +1,10 @@
 import { Principal } from '@dfinity/principal';
 import { useCallback, useMemo } from 'react';
 
-import { ENV, getFromStorage, saveToStorage } from '@/config';
+import { ENV } from '@/config';
 import { ICP_METADATA } from '@/constants';
-import { SwapIDL, TokenIDL, WICPIDL } from '@/did';
+import { SwapIDL, TokenIDL } from '@/did';
+import { XTCIDL } from '@/did/sonic/xtc.did';
 import { ActorAdapter, appActors, useSwapActor } from '@/integrations/actor';
 import { Balances } from '@/models';
 import {
@@ -38,7 +39,8 @@ export const useBalances = () => {
         try {
           if (userLPBalancesState === FeatureState.Loading) return;
           const swapActor =
-            _swapActor ?? (appActors[ENV.canisterIds.swap] as SwapIDL.Factory);
+            _swapActor ??
+            (appActors[ENV.canistersPrincipalIDs.swap] as SwapIDL.Factory);
 
           if (!swapActor) throw new Error('Swap actor not found');
           if (!principalId) throw new Error('Principal ID not found');
@@ -73,7 +75,7 @@ export const useBalances = () => {
           );
         }
       },
-      [_swapActor, userLPBalancesState, principalId]
+      [_swapActor, userLPBalancesState, principalId, dispatch]
     )
   );
 
@@ -85,7 +87,8 @@ export const useBalances = () => {
           if (balancesState === FeatureState.Loading) return;
 
           const swapActor =
-            _swapActor ?? (appActors[ENV.canisterIds.swap] as SwapIDL.Factory);
+            _swapActor ??
+            (appActors[ENV.canistersPrincipalIDs.swap] as SwapIDL.Factory);
 
           if (!swapActor) throw new Error('Swap actor not found');
           if (!principalId) throw new Error('Principal ID not found');
@@ -105,9 +108,11 @@ export const useBalances = () => {
                   try {
                     const tokenCanisterId = balance[0];
 
+                    // FIXME: When XTC will be more compatible with DIP20
+                    // we can remove XTCIDL factory
                     const _interfaceFactory =
-                      tokenCanisterId === ENV.canisterIds.WICP
-                        ? WICPIDL.factory
+                      tokenCanisterId === ENV.canistersPrincipalIDs.XTC
+                        ? XTCIDL.factory
                         : TokenIDL.factory;
 
                     const tokenActor: TokenIDL.Factory =
@@ -115,18 +120,6 @@ export const useBalances = () => {
                         tokenCanisterId,
                         _interfaceFactory
                       );
-
-                    const storageKey = `${tokenCanisterId}-logo`;
-                    const logo = getFromStorage(storageKey);
-
-                    if (!logo) {
-                      try {
-                        const tokenLogo = await tokenActor.logo();
-                        saveToStorage(storageKey, tokenLogo);
-                      } catch (e) {
-                        console.error('Token Logo not found', e);
-                      }
-                    }
 
                     const tokenBalance = await tokenActor.balanceOf(
                       Principal.fromText(principalId)
@@ -176,11 +169,13 @@ export const useBalances = () => {
 
   const totalBalances = useMemo(() => {
     if (tokenBalances && sonicBalances) {
-      return sumBalances(tokenBalances, sonicBalances);
+      return sumBalances(tokenBalances, sonicBalances, {
+        [ICP_METADATA.id]: icpBalance ?? 0,
+      });
     }
 
     return undefined;
-  }, [tokenBalances, sonicBalances]);
+  }, [tokenBalances, sonicBalances, icpBalance]);
 
   return {
     totalBalances,

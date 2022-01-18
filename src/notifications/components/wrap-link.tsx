@@ -2,7 +2,7 @@ import { Link } from '@chakra-ui/react';
 import { useEffect, useMemo } from 'react';
 
 import { useBalances } from '@/hooks/use-balances';
-import { useWrapBatch } from '@/integrations/transactions/factories/batch/wrap';
+import { useMintWICPBatch } from '@/integrations/transactions/factories/batch/mint-wicp';
 import {
   modalsSliceActions,
   NotificationType,
@@ -29,7 +29,7 @@ export const WrapLink: React.FC<WrapLinkProps> = ({ id }) => {
     return deserialize(stringify({ from, keepInSonic }));
   }, []);
 
-  const [batch, openWrapModal] = useWrapBatch({
+  const [batch, openWrapModal] = useMintWICPBatch({
     amount: from.value,
     keepInSonic,
   });
@@ -86,7 +86,7 @@ export const WrapLink: React.FC<WrapLinkProps> = ({ id }) => {
     <Link
       target="_blank"
       rel="noreferrer"
-      color="#3D52F4"
+      color="dark-blue.500"
       onClick={handleOpenModal}
     >
       View progress

@@ -6,7 +6,7 @@ import {
   Flex,
   Tooltip,
 } from '@chakra-ui/react';
-import { ReactNode,useState } from 'react';
+import { ReactNode, useState } from 'react';
 
 type InformationBoxTypes = BoxProps & {
   title: string;
@@ -41,7 +41,7 @@ export const InformationBox = ({
         {...props}
       >
         <Flex direction="row" justifyContent="space-between" mb={2}>
-          <Box as="h3" fontSize="lg" fontWeight="bold" color="#F6FCFD">
+          <Box as="h3" fontSize="lg" fontWeight="bold" color="gray.50">
             {title}
           </Box>
           <Tooltip label="Close">

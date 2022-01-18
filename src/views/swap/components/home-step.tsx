@@ -14,7 +14,7 @@ import {
 } from '@chakra-ui/react';
 import { FaArrowDown } from '@react-icons/all-files/fa/FaArrowDown';
 import { FaCog } from '@react-icons/all-files/fa/FaCog';
-import { useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
   PLUG_WALLET_WEBSITE_URL,
@@ -34,7 +34,11 @@ import {
 import { ENV } from '@/config';
 import { getAppAssetsSources } from '@/config/utils';
 import { ICP_METADATA } from '@/constants';
-import { useICPSelectionDetectorMemo, useTokenBalanceMemo } from '@/hooks';
+import {
+  useQuery,
+  useTokenBalanceMemo,
+  useTokenSelectionChecker,
+} from '@/hooks';
 import { useBalances } from '@/hooks/use-balances';
 import { plug } from '@/integrations/plug';
 import {
@@ -42,6 +46,7 @@ import {
   INITIAL_SWAP_SLIPPAGE,
   NotificationType,
   SwapStep,
+  SwapTokenDataKey,
   swapViewActions,
   useAppDispatch,
   useNotificationStore,
@@ -50,7 +55,11 @@ import {
   useSwapViewStore,
   useTokenModalOpener,
 } from '@/store';
-import { getCurrency, getDepositMaxValue } from '@/utils/format';
+import {
+  calculatePriceImpact,
+  getCurrency,
+  getDepositMaxValue,
+} from '@/utils/format';
 import { debounce } from '@/utils/function';
 
 import { ExchangeBox } from '.';
@@ -60,6 +69,7 @@ export const SwapHomeStep = () => {
   const { addNotification } = useNotificationStore();
   const { fromTokenOptions, toTokenOptions, from, to, slippage } =
     useSwapViewStore();
+  const query = useQuery();
   const dispatch = useAppDispatch();
   const {
     sonicBalances,
@@ -70,13 +80,36 @@ export const SwapHomeStep = () => {
     allPairsState,
   } = useSwapCanisterStore();
   const { isConnected } = usePlugStore();
+  const [autoSlippage, setAutoSlippage] = useState(true);
 
   const openSelectTokenModal = useTokenModalOpener();
 
-  const fromBalance = useTokenBalanceMemo(from.metadata?.id);
-  // const toBalance = useTokenBalance(to.metadata?.id);
+  const {
+    isFirstIsSelected: isFromTokenIsICP,
+    isSecondIsSelected: isToTokenIsICP,
+    isTokenSelected: isICPSelected,
+  } = useTokenSelectionChecker({
+    id0: from.metadata?.id,
+    id1: to.metadata?.id,
+  });
 
-  const [autoSlippage, setAutoSlippage] = useState(true);
+  const {
+    isFirstIsSelected: isFromTokenIsWICP,
+    isSecondIsSelected: isToTokenIsWICP,
+  } = useTokenSelectionChecker({
+    id0: from.metadata?.id,
+    id1: to.metadata?.id,
+    targetId: ENV.canistersPrincipalIDs.WICP,
+  });
+
+  const { isSecondIsSelected: isToTokenIsXTC } = useTokenSelectionChecker({
+    id0: from.metadata?.id,
+    id1: to.metadata?.id,
+    targetId: ENV.canistersPrincipalIDs.XTC,
+  });
+
+  const fromBalance = useTokenBalanceMemo(from.metadata?.id);
+  const toBalance = useTokenBalanceMemo(to.metadata?.id);
 
   const { totalBalances } = useBalances();
 
@@ -84,62 +117,60 @@ export const SwapHomeStep = () => {
     dispatch(swapViewActions.switchTokens());
   };
 
-  const handleFromMaxClick = () => {
-    if (!fromBalance) return;
+  const handleMaxClick = (key: SwapTokenDataKey) => {
+    const balance = key === 'from' ? fromBalance : toBalance;
+    const metadata = key === 'from' ? from.metadata : to.metadata;
+
+    if (!balance) {
+      return;
+    }
+
     dispatch(
       swapViewActions.setValue({
-        data: 'from',
-        value: getDepositMaxValue(from.metadata, fromBalance),
+        data: key,
+        value: getDepositMaxValue(metadata, balance),
       })
     );
   };
 
-  // TODO: Add if 2nd input will be unblocked
-  // const handleToMaxClick = () => {
-  //   dispatch(
-  //     swapViewActions.setValue({
-  //       data: 'to',
-  //       value:
-  //         totalBalances && to.token
-  //           ? getCurrencyString(toBalance!, to.metadata?.decimals)
-  //           : '',
-  //     })
-  //   );
-  // };
+  const handleSelectToken = (key: SwapTokenDataKey) => {
+    const options = key === 'from' ? fromTokenOptions : toTokenOptions;
 
-  const handleSelectFromToken = () => {
     openSelectTokenModal({
-      metadata: fromTokenOptions,
+      metadata: options,
       onSelect: (tokenId) =>
-        dispatch(swapViewActions.setToken({ data: 'from', tokenId })),
+        dispatch(swapViewActions.setToken({ data: key, tokenId })),
       selectedTokenIds,
     });
   };
 
-  const handleSelectToToken = () => {
-    openSelectTokenModal({
-      metadata: toTokenOptions,
-      onSelect: (tokenId) =>
-        dispatch(swapViewActions.setToken({ data: 'to', tokenId })),
-      selectedTokenIds,
-    });
-  };
+  const isFetchingNotStarted = useMemo(
+    () =>
+      allPairsState === FeatureState.NotStarted ||
+      supportedTokenListState === FeatureState.NotStarted,
+    [supportedTokenListState, allPairsState]
+  );
 
-  const handleWrapICP = () => {
+  const isLoading = useMemo(
+    () =>
+      balancesState === FeatureState.Loading ||
+      supportedTokenListState === FeatureState.Loading ||
+      allPairsState === FeatureState.Loading,
+    [balancesState, supportedTokenListState, allPairsState]
+  );
+
+  const checkIsPlugProviderVersionCompatible = useCallback(() => {
     const plugProviderVersionNumber = Number(
       plug?.versions.provider.split('.').join('')
     );
 
-    if (plugProviderVersionNumber >= 160) {
-      addNotification({
-        title: `Wrapping ${from.value} ${from.metadata?.symbol}`,
-        type: NotificationType.Wrap,
-        id: String(new Date().getTime()),
-      });
-      debounce(
-        () => dispatch(swapViewActions.setValue({ data: 'from', value: '' })),
-        300
-      );
+    const plugInpageProviderVersionWithChainedBatchTranscations = 160;
+
+    if (
+      plugProviderVersionNumber >=
+      plugInpageProviderVersionWithChainedBatchTranscations
+    ) {
+      return true;
     } else {
       addNotification({
         title: (
@@ -160,10 +191,52 @@ export const SwapHomeStep = () => {
         type: NotificationType.Error,
         id: String(new Date().getTime()),
       });
+      return false;
     }
-  };
+  }, [addNotification]);
 
-  const handleUnwrapICP = () => {
+  // TODO: calculate conversion rate and add more UI.
+  const handleMintXTC = useCallback(() => {
+    if (checkIsPlugProviderVersionCompatible()) {
+      addNotification({
+        title: `Minting ${to.value} ${to.metadata?.symbol}`,
+        type: NotificationType.MintXTC,
+        id: String(new Date().getTime()),
+      });
+      debounce(
+        () => dispatch(swapViewActions.setValue({ data: 'from', value: '' })),
+        300
+      );
+    }
+  }, [
+    addNotification,
+    checkIsPlugProviderVersionCompatible,
+    dispatch,
+    to.metadata?.symbol,
+    to.value,
+  ]);
+
+  const handleWrapICP = useCallback(() => {
+    if (checkIsPlugProviderVersionCompatible()) {
+      addNotification({
+        title: `Wrapping ${from.value} ${from.metadata?.symbol}`,
+        type: NotificationType.Wrap,
+        id: String(new Date().getTime()),
+      });
+      debounce(
+        () => dispatch(swapViewActions.setValue({ data: 'from', value: '' })),
+        300
+      );
+    }
+  }, [
+    addNotification,
+    checkIsPlugProviderVersionCompatible,
+    dispatch,
+    from.metadata?.symbol,
+    from.value,
+  ]);
+
+  const handleUnwrapICP = useCallback(() => {
     addNotification({
       title: `Unwrapping ${from.value} ${from.metadata?.symbol}`,
       type: NotificationType.Unwrap,
@@ -173,22 +246,7 @@ export const SwapHomeStep = () => {
       () => dispatch(swapViewActions.setValue({ data: 'from', value: '' })),
       300
     );
-  };
-
-  const isFetchingNotStarted = useMemo(
-    () =>
-      allPairsState === FeatureState.NotStarted ||
-      supportedTokenListState === FeatureState.NotStarted,
-    [supportedTokenListState, allPairsState]
-  );
-
-  const isLoading = useMemo(
-    () =>
-      balancesState === FeatureState.Loading ||
-      supportedTokenListState === FeatureState.Loading ||
-      allPairsState === FeatureState.Loading,
-    [balancesState, supportedTokenListState, allPairsState]
-  );
+  }, [addNotification, dispatch, from.metadata?.symbol, from.value]);
 
   const [buttonDisabled, buttonMessage, onButtonClick] = useMemo<
     [boolean, string, (() => void)?]
@@ -225,18 +283,16 @@ export const SwapHomeStep = () => {
       }
     }
 
-    if (
-      from.metadata.id === ICP_METADATA.id &&
-      to.metadata.id === ENV.canisterIds.WICP
-    ) {
+    if (isFromTokenIsICP && isToTokenIsWICP) {
       return [false, 'Wrap', handleWrapICP];
     }
 
-    if (
-      from.metadata.id === ENV.canisterIds.WICP &&
-      to.metadata.id === ICP_METADATA.id
-    ) {
+    if (isFromTokenIsWICP && isToTokenIsICP) {
       return [false, 'Unwrap', handleUnwrapICP];
+    }
+
+    if (isFromTokenIsICP && isToTokenIsXTC) {
+      return [false, 'Mint XTC', handleMintXTC];
     }
 
     return [
@@ -245,19 +301,38 @@ export const SwapHomeStep = () => {
       () => dispatch(swapViewActions.setStep(SwapStep.Review)),
     ];
   }, [
-    handleUnwrapICP,
-    handleWrapICP,
-    dispatch,
-    swapViewActions,
     isLoading,
     isFetchingNotStarted,
+    from.metadata,
+    from.value,
+    to.metadata,
+    to.value,
+    toTokenOptions,
     totalBalances,
     fromBalance,
-    from.metadata,
-    to.metadata,
-    from.value,
-    to.value,
+    isFromTokenIsICP,
+    isToTokenIsXTC,
+    isToTokenIsWICP,
+    isFromTokenIsWICP,
+    isToTokenIsICP,
+    handleMintXTC,
+    handleWrapICP,
+    handleUnwrapICP,
+    dispatch,
   ]);
+
+  const priceImpact = useMemo(() => {
+    if (from.metadata?.price && to.metadata?.price) {
+      return calculatePriceImpact({
+        amountIn: from.value,
+        amountOut: to.value,
+        priceIn: from.metadata.price,
+        priceOut: to.metadata.price,
+      });
+    }
+
+    return '';
+  }, [from, to]);
 
   const selectedTokenIds = useMemo(() => {
     const selectedIds = [];
@@ -272,9 +347,6 @@ export const SwapHomeStep = () => {
       return [true, 'No pairs available'];
     return [false, 'Select a Token'];
   }, [toTokenOptions]);
-
-  const { isFirstTokenIsICP, isSecondTokenIsICP, isICPSelected } =
-    useICPSelectionDetectorMemo(from.metadata?.id, to.metadata?.id);
 
   const fromSources = useMemo(() => {
     if (from.metadata) {
@@ -293,7 +365,7 @@ export const SwapHomeStep = () => {
         },
       });
     }
-  }, [from.metadata, tokenBalances, sonicBalances]);
+  }, [from.metadata, tokenBalances, sonicBalances, icpBalance]);
 
   const toSources = useMemo(() => {
     if (to.metadata) {
@@ -312,7 +384,33 @@ export const SwapHomeStep = () => {
         },
       });
     }
-  }, [to.metadata, tokenBalances, sonicBalances]);
+  }, [to.metadata, tokenBalances, sonicBalances, icpBalance]);
+
+  useEffect(() => {
+    if (!isLoading && fromTokenOptions && toTokenOptions) {
+      const tokenFromId = query.get('from');
+      const tokenToId = query.get('to');
+
+      if (tokenFromId) {
+        const from = fromTokenOptions.find(({ id }) => id === tokenFromId);
+        if (from?.id) {
+          dispatch(
+            swapViewActions.setToken({ data: 'from', tokenId: from.id })
+          );
+          dispatch(swapViewActions.setValue({ data: 'from', value: '' }));
+        }
+      }
+
+      if (tokenToId) {
+        const to = toTokenOptions.find(({ id }) => id === tokenToId);
+        if (to?.id) {
+          dispatch(swapViewActions.setToken({ data: 'to', tokenId: to.id }));
+          dispatch(swapViewActions.setValue({ data: 'to', value: '' }));
+        }
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoading]);
 
   return (
     <Stack spacing={4}>
@@ -330,7 +428,7 @@ export const SwapHomeStep = () => {
             />
           </Tooltip>
           <MenuList
-            bg="#1E1E1E"
+            bg="custom.2"
             border="none"
             borderRadius={20}
             ml={-20}
@@ -363,7 +461,7 @@ export const SwapHomeStep = () => {
             sources={fromSources}
           >
             <TokenContent>
-              <TokenDetailsButton onClick={handleSelectFromToken}>
+              <TokenDetailsButton onClick={() => handleSelectToken('from')}>
                 <TokenDetailsLogo />
                 <TokenDetailsSymbol />
               </TokenDetailsButton>
@@ -371,7 +469,7 @@ export const SwapHomeStep = () => {
               <TokenInput autoFocus />
             </TokenContent>
             <TokenBalances>
-              <TokenBalancesDetails onMaxClick={handleFromMaxClick} />
+              <TokenBalancesDetails onMaxClick={() => handleMaxClick('from')} />
               <TokenBalancesPrice />
             </TokenBalances>
           </Token>
@@ -387,7 +485,8 @@ export const SwapHomeStep = () => {
             zIndex="overlay"
             bg="gray.800"
             onClick={switchTokens}
-            isDisabled={!to.metadata}
+            // TODO: Replace hardcoding with a proper solution
+            isDisabled={!to.metadata || (isFromTokenIsICP && isToTokenIsXTC)}
             pointerEvents={!to.metadata ? 'none' : 'all'}
             _hover={{
               '& > svg': {
@@ -411,13 +510,13 @@ export const SwapHomeStep = () => {
           >
             <TokenContent>
               {to.metadata ? (
-                <TokenDetailsButton onClick={handleSelectToToken}>
+                <TokenDetailsButton onClick={() => handleSelectToken('to')}>
                   <TokenDetailsLogo />
                   <TokenDetailsSymbol />
                 </TokenDetailsButton>
               ) : (
                 <TokenDetailsButton
-                  onClick={handleSelectToToken}
+                  onClick={() => handleSelectToken('to')}
                   isDisabled={selectTokenButtonDisabled}
                   variant={isLoading ? 'solid' : 'gradient'}
                   colorScheme={isLoading ? 'gray' : 'dark-blue'}
@@ -432,18 +531,24 @@ export const SwapHomeStep = () => {
             </TokenContent>
             <TokenBalances>
               <TokenBalancesDetails />
-              <TokenBalancesPrice shouldShowPriceDiff={!isICPSelected} />
+              <TokenBalancesPrice priceImpact={priceImpact} />
             </TokenBalances>
           </Token>
         </Box>
       </Flex>
 
-      <ExchangeBox from={from} to={to} slippage={slippage} />
+      <ExchangeBox />
 
       <KeepInSonicBox
-        canHeldInSonic={!isSecondTokenIsICP}
+        canHeldInSonic={!isToTokenIsICP}
         symbol={to.metadata?.symbol}
-        operation={isFirstTokenIsICP ? 'wrap' : 'swap'}
+        operation={
+          isFromTokenIsICP && isToTokenIsWICP
+            ? 'wrap'
+            : isFromTokenIsICP && isToTokenIsXTC
+            ? 'mint'
+            : 'swap'
+        }
       />
 
       {!isConnected ? (

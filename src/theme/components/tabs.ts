@@ -146,7 +146,7 @@ const variantEnclosedColored: PartsStyleFunction<typeof parts> = (props) => {
         marginEnd: '-1px',
       },
       _selected: {
-        bg: mode('#fff', 'gray.800')(props),
+        bg: mode('white', 'gray.800')(props),
         color: mode(`${c}.600`, `${c}.300`)(props),
         borderColor: 'inherit',
         borderTopColor: 'currentColor',

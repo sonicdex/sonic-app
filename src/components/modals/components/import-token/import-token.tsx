@@ -36,22 +36,22 @@ export const ImportToken = ({
         Import Token
       </Heading>
       <ImportTokenImage logo={logo} />
-      <Text mt={2} fontSize={18} fontWeight={700} color="#F6FCFD">
+      <Text mt={2} fontSize={18} fontWeight={700} color="gray.50">
         {symbol}
       </Text>
-      <Text color="#888E8F">{name}</Text>
+      <Text color="custom.1">{name}</Text>
       <Flex
         mt={5}
         mb={6}
         py={3}
         w="100%"
-        bg="#282828"
+        bg="custom.3"
         borderRadius={20}
         justifyContent="center"
         alignItems="center"
         direction="row"
       >
-        <Text color="#F6FCFD">{id}</Text>
+        <Text color="gray.50">{id}</Text>
       </Flex>
       <Box
         position="relative"
@@ -73,7 +73,7 @@ export const ImportToken = ({
         <Text fontSize={18} color="#E58279" fontWeight={700} mb={2}>
           Trade at your own risk!
         </Text>
-        <Text color="#F6FCFD">
+        <Text color="gray.50">
           Swapping from ICP to WICP is not reccomended at this moment due to the
           IC restriction. Swapping from WICP to ICP is only allowed on Sonic P2P
           market.
@@ -84,7 +84,7 @@ export const ImportToken = ({
         alignSelf="flex-start"
         onChange={(e) => setUnderstandRisk(e.target.checked)}
         size="lg"
-        color="#F6FCFD"
+        color="gray.50"
         fontWeight={600}
         mb={6}
       >

@@ -10,7 +10,7 @@ export const Toggle = ({ toggle, onToggle }: ToggleProps) => (
     direction="row"
     cursor="pointer"
     p={1.5}
-    bg="#1E1E1E"
+    bg="custom.2"
     width="fit-content"
     borderRadius={100}
     position="relative"
@@ -20,7 +20,7 @@ export const Toggle = ({ toggle, onToggle }: ToggleProps) => (
     <Box
       height={10}
       width={16}
-      bg="linear-gradient(108.08deg, #3D52F4 0%, #192985 100%)"
+      bg="linear-gradient(108.08deg, dark-blue.500 0%, #192985 100%)"
       borderRadius={100}
       position="absolute"
       marginLeft={toggle ? '0px' : '63px'}

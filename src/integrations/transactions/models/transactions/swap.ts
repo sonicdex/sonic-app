@@ -1,8 +1,8 @@
-import { TokenData } from '@/models';
+import { SwapTokenData } from '@/store';
 
 export type Swap = {
-  from: TokenData;
-  to: TokenData;
+  from: SwapTokenData;
+  to: SwapTokenData;
   slippage: number;
   principalId?: string;
   allowance?: number;

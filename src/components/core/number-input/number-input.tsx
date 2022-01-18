@@ -1,4 +1,4 @@
-import { Input, InputProps } from '@chakra-ui/react';
+import { forwardRef, Input, InputProps } from '@chakra-ui/react';
 import { ChangeEvent } from 'react';
 
 export type NumberInputProps = InputProps & {
@@ -6,36 +6,35 @@ export type NumberInputProps = InputProps & {
   placeholder?: string;
 };
 
-export const NumberInput = ({
-  placeholder = '0.00',
-  setValue,
-  ...props
-}: NumberInputProps) => {
-  const handleValueChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
+export const NumberInput = forwardRef<NumberInputProps, 'input'>(
+  ({ placeholder = '0.00', setValue, ...props }, ref) => {
+    const handleValueChange = (event: ChangeEvent<HTMLInputElement>) => {
+      const value = event.target.value;
 
-    if (isNaN(Number(value))) return;
+      if (isNaN(Number(value))) return;
 
-    if (setValue) {
-      setValue(value);
-    }
-  };
+      if (setValue) {
+        setValue(value);
+      }
+    };
 
-  return (
-    <Input
-      variant="unstyled"
-      type="text"
-      textAlign="right"
-      fontSize="3xl"
-      fontWeight={700}
-      backgroundColor="transparent"
-      color="gray.300"
-      outline="none"
-      transition="color 400ms"
-      onChange={handleValueChange}
-      placeholder={placeholder}
-      _placeholder={{ color: 'gray.300' }}
-      {...props}
-    />
-  );
-};
+    return (
+      <Input
+        ref={ref}
+        variant="unstyled"
+        type="text"
+        textAlign="right"
+        fontSize="3xl"
+        fontWeight={700}
+        backgroundColor="transparent"
+        color="gray.300"
+        outline="none"
+        transition="color 400ms"
+        onChange={handleValueChange}
+        placeholder={placeholder}
+        _placeholder={{ color: 'gray.300' }}
+        {...props}
+      />
+    );
+  }
+);

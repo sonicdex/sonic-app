@@ -28,6 +28,9 @@ export const useApproveTransactionMemo: CreateTransaction<Deposit> = (
         if (onSuccess) onSuccess(res);
       },
       onFail,
-      args: [Principal.fromText(ENV.canisterIds.swap), toApproveAmount],
+      args: [
+        Principal.fromText(ENV.canistersPrincipalIDs.swap),
+        toApproveAmount,
+      ],
     };
   }, [amount, token, allowance]);

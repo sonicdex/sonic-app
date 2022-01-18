@@ -16,3 +16,7 @@ coverage
 # Webpack
 /dist
 public/js
+
+# Env
+.env*
+!.env.example

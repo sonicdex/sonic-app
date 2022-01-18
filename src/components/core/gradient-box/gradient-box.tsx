@@ -1,5 +1,5 @@
 import { useColorModeValue } from '@chakra-ui/color-mode';
-import { Box,Flex } from '@chakra-ui/react';
+import { Box, Flex } from '@chakra-ui/react';
 import { FC, HTMLAttributes } from 'react';
 
 type GradientBoxProps = HTMLAttributes<HTMLDivElement> & {
@@ -63,7 +63,7 @@ export const GradientBox: FC<GradientBoxProps> = ({
       />
       <Box
         position="absolute"
-        bg="#1E1E1E"
+        bg="gray.900"
         height={6}
         width={6}
         borderRadius="full"

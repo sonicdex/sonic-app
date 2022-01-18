@@ -34,15 +34,15 @@ const INFORMATION_LINK =
   'https://docs.sonic.ooo/product/adding-liquidity/claiming-your-rewards';
 
 const InformationDescription = () => (
-  <Text color="#888E8F">
+  <Text color="custom.1">
     {INFORMATION_DESCRIPTION}
     <Box
       as="a"
-      color="#888E8F"
+      color="custom.1"
       href={INFORMATION_LINK}
       textDecoration="underline"
       _visited={{
-        color: '#888E8F',
+        color: 'custom.1',
       }}
     >
       review our documentation
@@ -110,7 +110,7 @@ export const LiquidityListView = () => {
       supportedTokenListState === FeatureState.Refreshing ||
       userLPBalancesState === FeatureState.Refreshing
     );
-  }, [supportedTokenListState, userLPBalancesState]);
+  }, [allPairsState, supportedTokenListState, userLPBalancesState]);
 
   const pairedUserLPTokens = useMemo(() => {
     if (userLPBalances && supportedTokenList && allPairs) {
@@ -150,7 +150,7 @@ export const LiquidityListView = () => {
         ];
       }, [] as PairedUserLPToken[]);
     }
-  }, [userLPBalances, supportedTokenList]);
+  }, [userLPBalances, supportedTokenList, allPairs]);
 
   const getUserLPValue = useCallback(
     (
@@ -181,7 +181,7 @@ export const LiquidityListView = () => {
 
       return '0';
     },
-    [userLPBalances, allPairs]
+    [allPairs]
   );
 
   return (
@@ -278,7 +278,7 @@ export const LiquidityListView = () => {
                   </Text>
                   <DisplayValue
                     color="green.400"
-                    prefix="$"
+                    prefix="~$"
                     value={getUserLPValue(
                       token0,
                       token1,
