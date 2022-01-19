@@ -14,7 +14,7 @@ export const ENV = {
   accountIDs: {
     XTC:
       process.env.XTC_ACCOUNT_ID ||
-      '7e968a04a6714e9f5bca8cbb0117d97279fd2f917b292a92f514599e38ec742f',
+      '758bdb7e54b73605d1d743da9f3aad70637d4cddcba03db13137eaf35f12d375',
     WICP:
       process.env.WICP_ACCOUNT_ID ||
       'cc659fe529756bae6f72db9937c6c60cf7ad57eb4ac5f930a75748927aab469a',
