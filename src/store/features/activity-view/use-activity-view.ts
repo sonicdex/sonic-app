@@ -22,8 +22,6 @@ export const useActivityView = () => {
     );
   }, [supportedTokenList, dispatch]);
 
-  console.log(supportedTokenList);
-
   const getUserTransactionsPage = useCallback(
     (_principalId: string, page: number) => {
       dispatch(activityViewActions.setState(FeatureState.Loading));

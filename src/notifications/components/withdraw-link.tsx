@@ -57,7 +57,7 @@ export const WithdrawLink: React.FC<WithdrawLinkProps> = ({ id }) => {
     openModal();
   };
 
-  useEffect(handleStateChange, [batch.state]);
+  useEffect(handleStateChange, [batch.state, dispatch]);
 
   useEffect(() => {
     batch

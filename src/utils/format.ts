@@ -302,12 +302,15 @@ export const calculatePriceImpact = ({
   const _amountIn = new BigNumber(
     calculatePriceBasedOnAmount({
       amount: amountIn,
-      price: priceOut,
+      price: priceIn,
     })
   );
 
-  const priceDifference = _amountOut.minus(_amountIn);
-  const priceImpact = priceDifference.dividedBy(_amountOut).multipliedBy(100);
+  // const priceDifference = _amountOut.minus(_amountIn);
+  const priceImpact = new BigNumber(1)
+    .minus(new BigNumber(_amountOut).dividedBy(_amountIn))
+    .multipliedBy(100)
+    .negated();
 
   // Price impact formulas:
   // used ((priceOut - priceIn) / priceOut) * 100
