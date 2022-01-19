@@ -7,6 +7,7 @@ import { ENV } from '@/config';
 import { requestConnect } from '@/integrations/plug';
 import {
   FeatureState,
+  modalsSliceActions,
   plugActions,
   useAppDispatch,
   usePlugStore,
@@ -117,12 +118,26 @@ export const PlugButton = forwardRef<HTMLButtonElement, PlugButtonProps>(
       }
     };
 
+    const handleClick = () => {
+      const successCallback = () => {
+        dispatch(modalsSliceActions.closeTermsAndConditionsModal());
+        handleConnectAttempt();
+      };
+      const closeCallback = () => handleConnect(false);
+      dispatch(
+        modalsSliceActions.setTermsAndConditionsModalData({
+          callbacks: [successCallback, closeCallback],
+        })
+      );
+      dispatch(modalsSliceActions.openTermsAndConditionsModal());
+    };
+
     return (
       <Button
         ref={ref}
         size="lg"
         leftIcon={leftIcon}
-        onClick={isLoading ? () => null : handleConnectAttempt}
+        onClick={isLoading ? undefined : handleClick}
         isDisabled={isLoading}
         borderRadius={borderRadius}
         backgroundColor={bg}
