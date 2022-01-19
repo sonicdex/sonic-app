@@ -24,6 +24,7 @@ import {
   RemoveLiquidityProgressModal,
   SwapFailModal,
   SwapProgressModal,
+  TermsAndConditionsModal,
   TokenSelectModal,
   UnwrapProgressModal,
   WithdrawProgressModal,
@@ -70,8 +71,8 @@ export const App = () => {
         <SwapFailModal />
         <AddLiquidityFailModal />
         <RemoveLiquidityFailModal />
-
         <AllowanceVerifyModal />
+        <TermsAndConditionsModal />
 
         <Routes>
           <Route path="/swap" element={<SwapView />} />
