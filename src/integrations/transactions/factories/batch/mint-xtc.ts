@@ -53,7 +53,7 @@ export const useMintXTCBatch = ({
       )?.toString();
 
       addNotification({
-        title: `The minting of XTC is failed, please use DFX to finish minting your XTC "dfx canister --no-wallet --network ic call ${ENV.canistersPrincipalIDs.XTC} mint '(0, ${blockHeight})'"`,
+        title: `The minting of XTC is failed, please use DFX to finish minting your XTC "dfx canister --network ic call ${ENV.canistersPrincipalIDs.XTC} mint '(null, ${blockHeight}:nat64)'"`,
         type: NotificationType.Error,
         timeout: 'none',
         id: Date.now().toString(),
