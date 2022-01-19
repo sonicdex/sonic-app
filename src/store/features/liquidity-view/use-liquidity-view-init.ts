@@ -37,7 +37,7 @@ export const useLiquidityViewInit = () => {
   }, [dispatch, swapActor, token0.metadata?.id, token1.metadata?.id]);
 
   useEffect(() => {
-    if (supportedTokenList) {
+    if (supportedTokenList && !token0.metadata?.id) {
       const token =
         supportedTokenList.find(
           (token) => token.id === ENV.canistersPrincipalIDs.WICP
