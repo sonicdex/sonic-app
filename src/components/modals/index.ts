@@ -16,3 +16,4 @@ export * from './unwrap-progress-modal';
 export * from './use-step-status';
 export * from './withdraw-progress-modal';
 export * from './wrap-progress-modal';
+export * from './terms-and-conditions-modal';
