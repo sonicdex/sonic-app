@@ -306,16 +306,13 @@ export const calculatePriceImpact = ({
     })
   );
 
-  // const priceDifference = _amountOut.minus(_amountIn);
   const priceImpact = new BigNumber(1)
     .minus(new BigNumber(_amountOut).dividedBy(_amountIn))
     .multipliedBy(100)
     .negated();
 
   // Price impact formulas:
-  // used ((priceOut - priceIn) / priceOut) * 100
-  // alternative (priceOut/priceOut - priceIn/priceOut) * 100
-  // alternative (1 - (priceIn/priceOut)) * 100
+  // ((1 - (priceOut/priceIn)) * 100) * -1
 
   return priceImpact.toString();
 };
