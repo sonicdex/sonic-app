@@ -380,7 +380,7 @@ export const formatValue = (value: string): string => {
 
 export const getAmountOutMin = (
   value: number | string,
-  tolerance: number | string,
+  tolerance: number | string, // Percentage
   decimals: number | string,
   tokenFees: {
     fee: number | string | bigint;
@@ -388,7 +388,7 @@ export const getAmountOutMin = (
   }[]
 ) => {
   const withoutFees = new BigNumber('1')
-    .minus(new BigNumber(tolerance))
+    .minus(new BigNumber(tolerance).dividedBy(100))
     .multipliedBy(new BigNumber(value))
     .dp(Number(decimals));
 
