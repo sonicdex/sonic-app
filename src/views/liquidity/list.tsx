@@ -189,7 +189,7 @@ export const LiquidityListView = () => {
   );
 
   const headerColor = useColorModeValue('gray.600', 'gray.400');
-  const successColor = useColorModeValue('green.600', 'green.400');
+  const successColor = useColorModeValue('green.500', 'green.400');
 
   return (
     <>
