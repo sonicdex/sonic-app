@@ -96,12 +96,14 @@ export const Layout: React.FC = ({ children, ...props }) => {
           <GridItem colSpan={1} justifySelf="center">
             <HStack>
               {isConnected ? <PlugMenu /> : <PlugButton />}
-              <Tooltip label="Change color mode">
+              <Tooltip
+                label={colorMode === 'dark' ? 'Light mode' : 'Dark mode'}
+              >
                 <IconButton
-                  colorScheme={colorMode === 'light' ? 'dark-blue' : 'yellow'}
+                  colorScheme={colorMode === 'dark' ? 'dark-blue' : 'yellow'}
                   variant="outline"
-                  aria-label="Change color mode"
-                  icon={colorMode === 'light' ? <FaMoon /> : <FaSun />}
+                  aria-label={colorMode === 'dark' ? 'Light mode' : 'Dark mode'}
+                  icon={colorMode === 'dark' ? <FaMoon /> : <FaSun />}
                   onClick={toggleColorMode}
                 />
               </Tooltip>
