@@ -118,36 +118,38 @@ export const LiquidityListView = () => {
       const existentPairs = new Set();
 
       return lpBalancesPairIDs.reduce((acc, tokenId0) => {
-        const tokenId1 = Object.keys(userLPBalances[tokenId0])[0];
-        if (existentPairs.has(`${tokenId0}:${tokenId1}`)) return acc;
-        existentPairs.add(`${tokenId0}:${tokenId1}`);
+        const pairedList: PairedUserLPToken[] = [];
 
-        const token0 = supportedTokenList.find(
-          (token) => token.id === tokenId0
-        );
-        const token1 = supportedTokenList.find(
-          (token) => token.id === tokenId1
-        );
+        for (const tokenId1 in userLPBalances[tokenId0]) {
+          if (existentPairs.has(`${tokenId1}:${tokenId0}`)) continue;
+          existentPairs.add(`${tokenId0}:${tokenId1}`);
 
-        const userShares = getCurrencyString(
-          userLPBalances[tokenId0][tokenId1],
-          Math.round(((token0?.decimals ?? 0) + (token1?.decimals ?? 0)) / 2)
-        );
+          const token0 = supportedTokenList.find(
+            (token) => token.id === tokenId0
+          );
+          const token1 = supportedTokenList.find(
+            (token) => token.id === tokenId1
+          );
 
-        const totalShares = getCurrencyString(
-          allPairs?.[tokenId0]?.[tokenId1]?.totalSupply,
-          Math.round(((token0?.decimals ?? 0) + (token1?.decimals ?? 0)) / 2)
-        );
+          const userShares = getCurrencyString(
+            userLPBalances[tokenId0][tokenId1],
+            Math.round(((token0?.decimals ?? 0) + (token1?.decimals ?? 0)) / 2)
+          );
 
-        return [
-          ...acc,
-          {
+          const totalShares = getCurrencyString(
+            allPairs?.[tokenId0]?.[tokenId1]?.totalSupply,
+            Math.round(((token0?.decimals ?? 0) + (token1?.decimals ?? 0)) / 2)
+          );
+
+          pairedList.push({
             token0,
             token1,
             userShares,
             totalShares,
-          } as PairedUserLPToken,
-        ];
+          } as PairedUserLPToken);
+        }
+
+        return [...acc, ...pairedList];
       }, [] as PairedUserLPToken[]);
     }
   }, [userLPBalances, supportedTokenList, allPairs]);
