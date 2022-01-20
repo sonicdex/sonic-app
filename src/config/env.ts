@@ -23,7 +23,7 @@ export const ENV = {
   URLs: {
     termsAndConditions:
       process.env.TERMS_AND_CONDITIONS ||
-      'https://discord.com/channels/@me/901137314187718727/933777677117173760',
+      'https://docs.metasportsbball.xyz/resources/disclaimer-terms',
     tokenRequestForm:
       process.env.TOKEN_REQUEST_FORM_URL ||
       'https://form.typeform.com/to/YnSyAUn0',
