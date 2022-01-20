@@ -27,8 +27,8 @@ export const useAddLiquidityTransactionMemo: CreateTransaction<AddLiquidity> = (
     const amount1Desired = parseAmount(token1.value, token1.metadata.decimals);
 
     const amount0Min = parseAmount(
-      getAmountMin(token1.value, slippage, token1.metadata.decimals),
-      token1.metadata.decimals
+      getAmountMin(token0.value, slippage, token0.metadata.decimals),
+      token0.metadata.decimals
     );
     const amount1Min = parseAmount(
       getAmountMin(token1.value, slippage, token1.metadata.decimals),
@@ -36,6 +36,8 @@ export const useAddLiquidityTransactionMemo: CreateTransaction<AddLiquidity> = (
     );
 
     const currentTime = (new Date().getTime() + 5 * 60 * 1000) * 10000000;
+
+    console.log(amount0Desired, amount0Min, amount1Desired, amount1Min);
 
     return {
       canisterId: ENV.canistersPrincipalIDs.swap,
