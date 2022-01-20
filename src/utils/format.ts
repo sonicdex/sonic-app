@@ -4,7 +4,7 @@ import { ethers } from 'ethers';
 import { formatUnits, parseUnits } from 'ethers/lib/utils';
 
 import { ICP_METADATA } from '@/constants';
-import { AppTokenMetadata } from '@/models';
+import { AppTokenMetadata, PairList } from '@/models';
 import { SwapTokenData } from '@/store';
 import {
   DEFAULT_CYCLES_PER_XDR,
@@ -227,31 +227,6 @@ export const getAmountOut = ({
     .toFixed(Number(decimalsOut));
 };
 
-export const getAmountIn = (
-  amountOut: string,
-  decimalsIn: string,
-  decimalsOut: string,
-  reserveIn: string,
-  reserveOut: string
-): string => {
-  if (!amountOut || new BigNumber(amountOut).isZero()) return '';
-  const numerator = new BigNumber(reserveIn) // reserveIn * amountOut * 1000;
-    .multipliedBy(
-      new BigNumber(amountOut).multipliedBy(new BigNumber(10).pow(decimalsOut))
-    )
-    .multipliedBy(new BigNumber('1000'));
-  const denominator = new BigNumber(reserveOut) // (reserveOut - amountOut) * 997;
-    .minus(
-      new BigNumber(amountOut).multipliedBy(new BigNumber(10).pow(decimalsOut))
-    )
-    .multipliedBy(new BigNumber('997'));
-  return numerator
-    .dividedBy(denominator)
-    .plus(new BigNumber('1'))
-    .dividedBy(new BigNumber(10).pow(decimalsIn))
-    .toFixed(Number(decimalsIn));
-};
-
 export const getAmountMin = (
   value: number | string,
   tolerance: number | string, // Percentage
@@ -379,28 +354,58 @@ export const formatValue = (value: string): string => {
 };
 
 export const getAmountOutMin = (
-  value: number | string,
-  tolerance: number | string, // Percentage
-  decimals: number | string,
-  tokenFees: {
-    fee: number | string | bigint;
-    decimals: number | string | bigint;
-  }[]
+  from: SwapTokenData,
+  to: SwapTokenData,
+  slippage: string,
+  allPairs?: PairList,
+  hasDeposit?: boolean,
+  hasWithdraw?: boolean
 ) => {
-  const withoutFees = new BigNumber('1')
-    .minus(new BigNumber(tolerance).dividedBy(100))
-    .multipliedBy(new BigNumber(value))
-    .dp(Number(decimals));
+  if (
+    !from.metadata ||
+    new BigNumber(from.value).isZero() ||
+    new BigNumber(from.value).isNaN() ||
+    !to.metadata ||
+    new BigNumber(to.value).isZero() ||
+    new BigNumber(to.value).isNaN() ||
+    !allPairs
+  )
+    return '0';
 
-  const withFees = tokenFees.reduce((acc, { fee, decimals }) => {
-    return acc.minus(
-      new BigNumber(Number(fee)).dividedBy(
-        new BigNumber(10).pow(Number(decimals))
+  const pair = allPairs[from.metadata.id]?.[to.metadata.id];
+  if (!pair) return '0';
+
+  let fromValue = new BigNumber(from.value);
+
+  if (hasDeposit) {
+    fromValue = fromValue.minus(
+      new BigNumber(2 * Number(from.metadata.fee)).dividedBy(
+        new BigNumber(10).pow(from.metadata.decimals)
       )
     );
-  }, withoutFees);
+  }
 
-  return withFees;
+  const toValue = getAmountOut({
+    amountIn: fromValue.toString(),
+    decimalsIn: from.metadata.decimals,
+    decimalsOut: to.metadata.decimals,
+    reserveIn: Number(pair.reserve0),
+    reserveOut: Number(pair.reserve1),
+  });
+
+  let result = new BigNumber(toValue).multipliedBy(
+    new BigNumber('1').minus(new BigNumber(slippage).dividedBy(100))
+  );
+
+  if (hasWithdraw) {
+    result = result.minus(
+      new BigNumber(Number(to.metadata.fee)).dividedBy(
+        new BigNumber(10).pow(to.metadata.decimals)
+      )
+    );
+  }
+
+  return result.dp(Number(to.metadata.decimals)).toString();
 };
 
 export const getDepositMaxValue = (
