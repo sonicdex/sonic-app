@@ -234,7 +234,11 @@ export const LiquidityAddView = () => {
     if (parsedToken1Value <= 0)
       return [true, `Enter ${token1.metadata.symbol} Amount`];
 
-    if (totalBalances && token0Balance && token1Balance) {
+    if (
+      totalBalances &&
+      typeof token0Balance === 'number' &&
+      typeof token1Balance === 'number'
+    ) {
       if (
         parsedToken0Value >
         Number(getDepositMaxValue(token0.metadata, token0Balance))

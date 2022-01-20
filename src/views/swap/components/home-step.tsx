@@ -276,7 +276,7 @@ export const SwapHomeStep = () => {
       return [true, `${to.metadata.symbol} amount must be greater than fee`];
     }
 
-    if (totalBalances && fromBalance) {
+    if (totalBalances && typeof fromBalance === 'number') {
       if (
         parsedFromValue > Number(getDepositMaxValue(from.metadata, fromBalance))
       ) {
