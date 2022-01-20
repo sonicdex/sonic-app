@@ -119,7 +119,7 @@ export const LiquidityListView = () => {
 
       return lpBalancesPairIDs.reduce((acc, tokenId0) => {
         const tokenId1 = Object.keys(userLPBalances[tokenId0])[0];
-        if (existentPairs.has(`${tokenId1}:${tokenId0}`)) return acc;
+        if (existentPairs.has(`${tokenId0}:${tokenId1}`)) return acc;
         existentPairs.add(`${tokenId0}:${tokenId1}`);
 
         const token0 = supportedTokenList.find(
