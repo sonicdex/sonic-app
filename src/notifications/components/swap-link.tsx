@@ -1,6 +1,7 @@
 import { Link } from '@chakra-ui/react';
 import { useEffect, useMemo } from 'react';
 
+import { useAllPairs } from '@/hooks';
 import { useBalances } from '@/hooks/use-balances';
 import { useTokenAllowance } from '@/hooks/use-token-allowance';
 import { useSwapBatch } from '@/integrations/transactions';
@@ -25,6 +26,7 @@ export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
   const { addNotification, popNotification } = useNotificationStore();
   const { principalId } = usePlugStore();
   const { getBalances } = useBalances();
+  const { getAllPairs } = useAllPairs();
 
   const { from, to, slippage, keepInSonic } = useMemo(() => {
     // Clone current state just for this batch
@@ -91,6 +93,7 @@ export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
           transactionLink: '/activity',
         });
         getBalances();
+        getAllPairs();
       })
       .catch((err) => {
         dispatch(modalsSliceActions.clearSwapModalData());

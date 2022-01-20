@@ -1,6 +1,7 @@
 import { Link } from '@chakra-ui/react';
 import { useEffect, useMemo } from 'react';
 
+import { useAllPairs } from '@/hooks';
 import { useBalances } from '@/hooks/use-balances';
 import { useTokenAllowance } from '@/hooks/use-token-allowance';
 import { useAddLiquidityBatch } from '@/integrations/transactions';
@@ -23,6 +24,7 @@ export const AddLiquidityLink: React.FC<AddLiquidityLinkProps> = ({ id }) => {
   const liquidityViewStore = useLiquidityViewStore();
   const { addNotification, popNotification } = useNotificationStore();
   const { getBalances, getUserPositiveLPBalances } = useBalances();
+  const { getAllPairs } = useAllPairs();
 
   const { token0, token1, slippage } = useMemo(() => {
     // Clone current state just for this batch
@@ -97,6 +99,7 @@ export const AddLiquidityLink: React.FC<AddLiquidityLinkProps> = ({ id }) => {
           transactionLink: '/activity',
         });
         getBalances();
+        getAllPairs();
         getUserPositiveLPBalances();
       })
       .catch((err) => {
