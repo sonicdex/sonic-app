@@ -19,7 +19,7 @@ import React, { useMemo } from 'react';
 import { DisplayValue, StackLine } from '@/components';
 import { ENV } from '@/config';
 import { ICP_METADATA } from '@/constants';
-import { useTokenSelectionChecker } from '@/hooks';
+import { useBalances, useTokenSelectionChecker } from '@/hooks';
 import { useCyclesMintingCanisterStore, useSwapViewStore } from '@/store';
 import {
   calculatePriceImpact,
@@ -33,8 +33,10 @@ import {
 import { ChainPopover } from '.';
 
 export const ExchangeBox: React.FC = () => {
-  const { from, to, slippage, baseTokenPaths, keepInSonic } =
+  const { from, to, slippage, baseTokenPaths, keepInSonic, allPairs } =
     useSwapViewStore();
+
+  const { sonicBalances } = useBalances();
 
   const { ICPXDRconversionRate } = useCyclesMintingCanisterStore();
 
@@ -78,22 +80,26 @@ export const ExchangeBox: React.FC = () => {
   }, [from, to]);
 
   const { depositFee, withdrawFee } = useMemo(() => {
-    if (from.metadata?.id && to.metadata?.id) {
-      const depositFee = getCurrencyString(
-        BigInt(2) * from.metadata.fee,
-        from.metadata.decimals
-      );
+    if (from.metadata?.id && to.metadata?.id && sonicBalances) {
+      const hasDeposit = sonicBalances[from.metadata.id] < Number(from.value);
+      const depositFee =
+        hasDeposit && Number(from.metadata.fee) > 0
+          ? getCurrencyString(
+              BigInt(2) * from.metadata.fee,
+              from.metadata.decimals
+            )
+          : undefined;
 
-      const withdrawFee = getCurrencyString(
-        to.metadata.fee,
-        to.metadata.decimals
-      );
+      const withdrawFee =
+        !keepInSonic && Number(to.metadata.fee) > 0
+          ? getCurrencyString(to.metadata.fee, to.metadata.decimals)
+          : undefined;
 
       return { depositFee, withdrawFee };
     }
 
-    return { depositFee: 0, withdrawFee: 0 };
-  }, [from, to]);
+    return {};
+  }, [from, to, sonicBalances, keepInSonic]);
 
   const { icpMetadata, operation, fee, feeSymbol } = useMemo(() => {
     const icpMetadata = isFromTokenIsICP
@@ -200,25 +206,14 @@ export const ExchangeBox: React.FC = () => {
               <Stack>
                 <StackLine
                   title="Minimum Received"
-                  value={`${
-                    to.value
-                      ? getAmountOutMin(
-                          to.value,
-                          Number(slippage) / 100,
-                          to.metadata.decimals,
-                          [
-                            {
-                              fee: from.metadata.fee,
-                              decimals: from.metadata.decimals,
-                            },
-                            {
-                              fee: to.metadata.fee,
-                              decimals: to.metadata.decimals,
-                            },
-                          ]
-                        )
-                      : 0
-                  } ${to.metadata.symbol}`}
+                  value={`${getAmountOutMin(
+                    from,
+                    to,
+                    slippage,
+                    allPairs,
+                    Boolean(depositFee),
+                    keepInSonic
+                  )} ${to.metadata.symbol}`}
                 />
                 <StackLine
                   title="Price Impact"
@@ -232,14 +227,18 @@ export const ExchangeBox: React.FC = () => {
                   title="Liquidity Provider Fee"
                   value={`${10} ${to.metadata.symbol}`}
                 /> */}
-                <StackLine
-                  title="Deposit Fee"
-                  value={`${depositFee} ${from.metadata.symbol}`}
-                />
-                <StackLine
-                  title="Withdraw Fee"
-                  value={`${withdrawFee} ${to.metadata.symbol}`}
-                />
+                {depositFee && (
+                  <StackLine
+                    title="Deposit Fee"
+                    value={`${depositFee} ${from.metadata.symbol}`}
+                  />
+                )}
+                {withdrawFee && (
+                  <StackLine
+                    title="Withdraw Fee"
+                    value={`${withdrawFee} ${to.metadata.symbol}`}
+                  />
+                )}
               </Stack>
             </PopoverBody>
           </PopoverContent>
