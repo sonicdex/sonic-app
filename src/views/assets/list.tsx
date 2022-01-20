@@ -10,7 +10,7 @@ import {
 import { FaInfoCircle } from '@react-icons/all-files/fa/FaInfoCircle';
 import { FaMinus } from '@react-icons/all-files/fa/FaMinus';
 import { FaPlus } from '@react-icons/all-files/fa/FaPlus';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router';
 
 import {
@@ -92,6 +92,30 @@ export const AssetsListView = () => {
 
   const assetsDetailsTextColor = useColorModeValue('gray.800', 'custom.1');
   const headerColor = useColorModeValue('gray.600', 'gray.400');
+
+  const getCanWithdraw = useCallback(
+    (tokenId: string) => {
+      console.log('sb', tokenId, sonicBalances?.[tokenId]);
+      if (sonicBalances?.[tokenId] === 0) {
+        return false;
+      }
+
+      return true;
+    },
+    [sonicBalances]
+  );
+
+  const getCanDeposit = useCallback(
+    (tokenId: string) => {
+      console.log('tb', tokenId, tokenBalances?.[tokenId]);
+      if (tokenBalances?.[tokenId] === 0) {
+        return false;
+      }
+
+      return true;
+    },
+    [tokenBalances]
+  );
 
   return (
     <>
@@ -192,12 +216,14 @@ export const AssetsListView = () => {
                       aria-label={`Withdraw ${symbol}`}
                       icon={<FaMinus />}
                       onClick={() => navigateToWithdraw(id)}
+                      isDisabled={!getCanWithdraw(id)}
                     />
                     <AssetIconButton
                       colorScheme="dark-blue"
                       aria-label={`Deposit ${symbol}`}
                       icon={<FaPlus />}
                       onClick={() => navigateToDeposit(id)}
+                      isDisabled={!getCanDeposit(id)}
                     />
                   </HStack>
                 </Asset>
