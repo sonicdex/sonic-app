@@ -112,6 +112,10 @@ export type AllowanceVerifyModalData = {
   callbacks?: [ModalsCallback, ModalsCallback];
 };
 
+export type TermsAndConditionsModalData = {
+  callbacks?: [ModalsCallback, ModalsCallback];
+};
+
 type TokenSelectData = {
   tokens: string;
   selectedTokenIds?: string[];
@@ -161,6 +165,9 @@ interface ModalsState {
 
   isAllowanceVerifyModalOpened: boolean;
   allowanceModalData: AllowanceVerifyModalData;
+
+  isTermsAndConditionsModalOpened: boolean;
+  termsAndConditionsModalData: TermsAndConditionsModalData;
 }
 
 const initialMintXTCModalData: MintXTCModalData = {
@@ -244,6 +251,9 @@ const initialState: ModalsState = {
 
   isAllowanceVerifyModalOpened: false,
   allowanceModalData: {},
+
+  isTermsAndConditionsModalOpened: false,
+  termsAndConditionsModalData: {},
 };
 
 export const modalsSlice = createSlice({
@@ -467,6 +477,19 @@ export const modalsSlice = createSlice({
       action: PayloadAction<AllowanceVerifyModalData>
     ) => {
       state.allowanceModalData = action.payload;
+    },
+
+    openTermsAndConditionsModal: (state) => {
+      state.isTermsAndConditionsModalOpened = true;
+    },
+    closeTermsAndConditionsModal: (state) => {
+      state.isTermsAndConditionsModalOpened = false;
+    },
+    setTermsAndConditionsModalData: (
+      state,
+      action: PayloadAction<TermsAndConditionsModalData>
+    ) => {
+      state.termsAndConditionsModalData = action.payload;
     },
   },
 });
