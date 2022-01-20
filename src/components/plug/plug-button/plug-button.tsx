@@ -3,7 +3,7 @@ import { useColorModeValue } from '@chakra-ui/color-mode';
 import type { Provider } from '@psychedelic/plug-inpage-provider';
 import { forwardRef, useMemo } from 'react';
 
-import { ENV } from '@/config';
+import { ENV, getFromStorage, LocalStorageKey, saveToStorage } from '@/config';
 import { requestConnect } from '@/integrations/plug';
 import {
   FeatureState,
@@ -124,12 +124,31 @@ export const PlugButton = forwardRef<HTMLButtonElement, PlugButtonProps>(
         handleConnectAttempt();
       };
       const closeCallback = () => handleConnect(false);
-      dispatch(
-        modalsSliceActions.setTermsAndConditionsModalData({
-          callbacks: [successCallback, closeCallback],
-        })
+
+      const isTermsAccepted = getFromStorage(
+        LocalStorageKey.TermsAndConditionsAccepted
       );
-      dispatch(modalsSliceActions.openTermsAndConditionsModal());
+
+      if (isTermsAccepted === 'true') {
+        successCallback();
+      } else {
+        dispatch(
+          modalsSliceActions.setTermsAndConditionsModalData({
+            callbacks: [
+              () => {
+                saveToStorage(
+                  LocalStorageKey.TermsAndConditionsAccepted,
+                  'true'
+                );
+                successCallback();
+              },
+              closeCallback,
+            ],
+          })
+        );
+
+        dispatch(modalsSliceActions.openTermsAndConditionsModal());
+      }
     };
 
     return (
