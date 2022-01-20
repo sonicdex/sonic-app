@@ -1,4 +1,6 @@
-import { Box, Button, Flex } from '@chakra-ui/react';
+import { Box, Button, Flex, HStack, Icon, Stack, Text } from '@chakra-ui/react';
+import { FaExclamationTriangle } from '@react-icons/all-files/fa/FaExclamationTriangle';
+import { useMemo } from 'react';
 
 import { NumberInput } from '@/components';
 
@@ -41,20 +43,29 @@ export const SlippageSettings = ({
     setSlippage(String(Number(e.target.value)));
   };
 
+  const warningMessage = useMemo(() => {
+    if (Number(slippage) < 0.25) {
+      return 'Your tolerance is set very low, the transaction may fail.';
+    }
+
+    if (Number(slippage) > 5) {
+      return 'Your slippage tolerance is set very high, the received amount of tokens may reduced because of it. Consider reducing it.';
+    }
+  }, [slippage]);
+
   return (
-    <Box px={5} pt={3} pb={6}>
+    <Stack zIndex="popover" px={5} pt={3} pb={3}>
       <Box
         as="h1"
         pb={2}
         textAlign="left"
         fontSize="16px"
-        mb={3}
         w="100%"
         borderBottom="1px solid #373737"
       >
         Transaction Settings
       </Box>
-      <Box as="p" fontSize="14px" textAlign="left" fontWeight={400} mb={3}>
+      <Box as="p" fontSize="14px" textAlign="left" fontWeight={400}>
         Slippage tolerance
       </Box>
       <Flex direction="row" alignItems="center">
@@ -98,6 +109,14 @@ export const SlippageSettings = ({
           />
         </Box>
       </Flex>
-    </Box>
+      {warningMessage && (
+        <HStack textAlign="left" color="yellow.500" maxW="320px" spacing={4}>
+          <Icon as={FaExclamationTriangle} height={6} width={6} />
+          <Text fontWeight="normal" fontSize="sm">
+            {warningMessage}
+          </Text>
+        </HStack>
+      )}
+    </Stack>
   );
 };

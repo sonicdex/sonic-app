@@ -1,6 +1,6 @@
 export const ENV = {
   host: process.env.HOST || 'https://boundary.ic0.app/',
-
+  swapCanisterFee: Number(process.env.SWAP_CANISTER_FEE) || 10000,
   canistersPrincipalIDs: {
     ledger: process.env.LEDGER_CANISTER_ID || 'ryjl3-tyaaa-aaaaa-aaaba-cai',
     swap: process.env.SWAP_CANISTER_ID || 'r444h-piaaa-aaaah-qcl3q-cai',

@@ -84,11 +84,9 @@ export const RemoveLiquidityLink: React.FC<RemoveLiquidityLinkProps> = ({
     }
 
     return {};
-  }, [
-    liquidityViewStore.token0.metadata,
-    liquidityViewStore.token1.metadata,
-    userLPBalances,
-  ]);
+    // Note: Should be called one time
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const [batch, openRemoveLiquidityModal] = useRemoveLiquidityBatch({
     token0,
