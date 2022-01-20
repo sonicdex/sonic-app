@@ -1,7 +1,7 @@
-import { Box, Flex, Image } from '@chakra-ui/react';
+import { Box, Flex, Icon, useColorModeValue } from '@chakra-ui/react';
+import { FaChevronRight } from '@react-icons/all-files/fa/FaChevronRight';
 import { useMemo } from 'react';
 
-import { doubleRightChevronSrc } from '@/assets';
 import { CircleIcon } from '@/components';
 
 import { StepStatus } from '../..';
@@ -19,21 +19,24 @@ export const TransactionStep = ({
   status,
   chevron = false,
 }: TransactionStepProps) => {
+  const colorDisabled = useColorModeValue('gray.600', 'custom.1');
+  const colorEnabled = useColorModeValue('gray.800', 'white');
+
   const { color, weight, opacity } = useMemo(() => {
     if (status === StepStatus.Disabled) {
       return {
-        color: 'custom.1',
+        color: colorDisabled,
         weight: 400,
         opacity: 0.4,
       };
     }
 
     return {
-      color: 'white',
+      color: colorEnabled,
       weight: 600,
       opacity: 1,
     };
-  }, [status]);
+  }, [colorDisabled, colorEnabled, status]);
 
   return (
     <>
@@ -63,9 +66,8 @@ export const TransactionStep = ({
       </Flex>
       {chevron && (
         <Box>
-          <Image
-            alt="next transaction"
-            src={doubleRightChevronSrc}
+          <Icon
+            as={FaChevronRight}
             m={4}
             opacity={opacity}
             transition="opacity 400ms"

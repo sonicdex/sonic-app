@@ -5,6 +5,7 @@ import {
   Collapse,
   Flex,
   Tooltip,
+  useColorModeValue,
 } from '@chakra-ui/react';
 import { ReactNode, useState } from 'react';
 
@@ -29,19 +30,14 @@ export const InformationBox = ({
     }
   };
 
+  const titleColor = useColorModeValue('gray.800', 'gray.50');
+  const bg = useColorModeValue('dark-blue.100', 'rgba(57, 77, 231, 0.2)');
+
   return (
     <Collapse in={collapse} unmountOnExit={true}>
-      <Box
-        bg="rgba(57, 77, 231, 0.2)"
-        pt={4}
-        px={5}
-        pb={5}
-        mb={5}
-        borderRadius="xl"
-        {...props}
-      >
+      <Box bg={bg} pt={4} px={5} pb={5} mb={5} borderRadius="xl" {...props}>
         <Flex direction="row" justifyContent="space-between" mb={2}>
-          <Box as="h3" fontSize="lg" fontWeight="bold" color="gray.50">
+          <Box as="h3" fontSize="lg" fontWeight="bold" color={titleColor}>
             {title}
           </Box>
           <Tooltip label="Close">

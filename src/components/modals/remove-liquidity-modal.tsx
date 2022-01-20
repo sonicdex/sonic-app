@@ -23,11 +23,13 @@ import {
   SliderTrack,
   Stack,
   Tooltip,
+  useColorModeValue,
 } from '@chakra-ui/react';
 import { FaArrowDown } from '@react-icons/all-files/fa/FaArrowDown';
 import BigNumber from 'bignumber.js';
 import { useMemo } from 'react';
 
+import { ENV } from '@/config';
 import {
   liquidityViewActions,
   modalsSliceActions,
@@ -113,7 +115,42 @@ export const RemoveLiquidityModal = () => {
     }
 
     return { balance0: '', balance1: '' };
-  }, [userLPBalances, token0, token1, removeAmountPercentage]);
+  }, [userLPBalances, allPairs, token0, token1, removeAmountPercentage]);
+
+  const { buttonMessage, isAmountIsLow } = useMemo(() => {
+    const AMOUNT_TOO_LOW_LABEL = 'Amount is too low';
+
+    if (userLPBalances && token0.metadata && token1.metadata) {
+      const tokensLPBalance =
+        userLPBalances[token0.metadata.id]?.[token1.metadata.id];
+      const lpAmount = (removeAmountPercentage / 100) * tokensLPBalance;
+
+      const isAmountIsLow = lpAmount <= ENV.swapCanisterFee;
+
+      return {
+        buttonMessage: isAmountIsLow ? AMOUNT_TOO_LOW_LABEL : 'Remove',
+        isAmountIsLow,
+      };
+    }
+
+    return {
+      buttonMessage: AMOUNT_TOO_LOW_LABEL,
+      isAmountIsLow: true,
+    };
+  }, [
+    removeAmountPercentage,
+    token0.metadata,
+    token1.metadata,
+    userLPBalances,
+  ]);
+
+  const borderColor = useColorModeValue('gray.300', 'gray.700');
+
+  const checkboxColorKeepInSonic = useColorModeValue('black', 'white');
+  const checkboxColorNotKeepInSonic = useColorModeValue('gray.600', 'custom.1');
+  const checkboxColor = keepInSonic
+    ? checkboxColorKeepInSonic
+    : checkboxColorNotKeepInSonic;
 
   return (
     <Modal
@@ -175,7 +212,7 @@ export const RemoveLiquidityModal = () => {
               p={2.5}
               borderWidth="1px"
               borderStyle="solid"
-              borderColor="gray.700"
+              borderColor={borderColor}
               borderRadius="md"
             >
               <FaArrowDown />
@@ -206,7 +243,7 @@ export const RemoveLiquidityModal = () => {
                 }
                 colorScheme="dark-blue"
                 size="lg"
-                color={keepInSonic ? 'white' : 'custom.1'}
+                color={checkboxColor}
                 fontWeight={600}
               >
                 Keep tokens in Sonic after removing liqudity
@@ -222,9 +259,10 @@ export const RemoveLiquidityModal = () => {
             mb={3}
             size="lg"
             isFullWidth
+            isDisabled={isAmountIsLow}
             onClick={handleRemoveLiquidity}
           >
-            Remove
+            {buttonMessage}
           </Button>
         </ModalFooter>
       </ModalContent>

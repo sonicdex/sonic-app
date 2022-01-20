@@ -1,4 +1,4 @@
-import { ChakraProvider, ColorModeProvider } from '@chakra-ui/react';
+import { ChakraProvider, ColorModeScript } from '@chakra-ui/react';
 import ReactDOM from 'react-dom';
 import { Provider as ReduxProvider } from 'react-redux';
 
@@ -8,12 +8,13 @@ import { App } from './App';
 import { store } from './store';
 
 ReactDOM.render(
-  <ChakraProvider theme={theme} resetCSS>
-    <ColorModeProvider options={theme.config}>
+  <>
+    <ColorModeScript initialColorMode={theme.config.initialColorMode} />
+    <ChakraProvider theme={theme} resetCSS>
       <ReduxProvider store={store}>
         <App />
       </ReduxProvider>
-    </ColorModeProvider>
-  </ChakraProvider>,
+    </ChakraProvider>
+  </>,
   document.getElementById('sonic-app-root')
 );

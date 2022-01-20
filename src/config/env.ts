@@ -1,6 +1,6 @@
 export const ENV = {
   host: process.env.HOST || 'https://boundary.ic0.app/',
-
+  swapCanisterFee: Number(process.env.SWAP_CANISTER_FEE) || 10000,
   canistersPrincipalIDs: {
     ledger: process.env.LEDGER_CANISTER_ID || 'ryjl3-tyaaa-aaaaa-aaaba-cai',
     swap: process.env.SWAP_CANISTER_ID || 'r444h-piaaa-aaaah-qcl3q-cai',
@@ -20,6 +20,9 @@ export const ENV = {
       'cc659fe529756bae6f72db9937c6c60cf7ad57eb4ac5f930a75748927aab469a',
   },
   URLs: {
+    termsAndConditions:
+      process.env.TERMS_AND_CONDITIONS ||
+      'https://discord.com/channels/@me/901137314187718727/933777677117173760',
     tokenRequestForm:
       process.env.TOKEN_REQUEST_FORM_URL ||
       'https://form.typeform.com/to/YnSyAUn0',

@@ -2,7 +2,7 @@ import {
   Checkbox,
   Flex,
   FormControl,
-  Image,
+  Icon,
   Link,
   Popover,
   PopoverArrow,
@@ -11,10 +11,11 @@ import {
   PopoverTrigger,
   Portal,
   Text,
+  useColorModeValue,
 } from '@chakra-ui/react';
+import { FaInfoCircle } from '@react-icons/all-files/fa/FaInfoCircle';
 import { useMemo } from 'react';
 
-import { infoSrc } from '@/assets';
 import { swapViewActions, useAppDispatch, useSwapViewStore } from '@/store';
 
 type OperationType = 'swap' | 'wrap' | 'mint';
@@ -36,6 +37,16 @@ export const KeepInSonicBox: React.FC<KeepInSonicBoxProps> = ({
   const { keepInSonic } = useSwapViewStore();
   const dispatch = useAppDispatch();
 
+  const linkColor = useColorModeValue('dark-blue.300', 'dark-blue.500');
+  const bg = useColorModeValue('gray.50', 'custom.2');
+  const shadow = useColorModeValue('md', 'none');
+
+  const checkboxColorKeepInSonic = useColorModeValue('black', 'white');
+  const checkboxColorNotKeepInSonic = useColorModeValue('gray.600', 'custom.1');
+  const checkboxColor = keepInSonic
+    ? checkboxColorKeepInSonic
+    : checkboxColorNotKeepInSonic;
+
   const { label, popoverLabel } = useMemo(() => {
     switch (operation) {
       case 'swap':
@@ -49,7 +60,7 @@ export const KeepInSonicBox: React.FC<KeepInSonicBoxProps> = ({
               for high frequency trading where a few extra seconds matter a lot.
               By doing this, you can skip the deposit step on your next trades
               and save 2-3 seconds each time.&nbsp;
-              <Link href={KEEP_IN_SONIC_LINK} color="dark-blue.500">
+              <Link href={KEEP_IN_SONIC_LINK} color={linkColor}>
                 Learn More
               </Link>
               .
@@ -67,7 +78,7 @@ export const KeepInSonicBox: React.FC<KeepInSonicBoxProps> = ({
               If you keep your tokens deposited in Sonic (instead of withdrawing
               to Plug) you can start swaps or add liquidity faster on your next
               operation. &nbsp;
-              <Link href={KEEP_IN_SONIC_LINK} color="dark-blue.500">
+              <Link href={KEEP_IN_SONIC_LINK} color={linkColor}>
                 Learn More
               </Link>
               .
@@ -88,7 +99,8 @@ export const KeepInSonicBox: React.FC<KeepInSonicBoxProps> = ({
       justifyContent="space-between"
       alignItems="center"
       borderRadius="xl"
-      bg="custom.2"
+      bg={bg}
+      shadow={shadow}
       px={5}
       py={4}
       mb={5}
@@ -102,7 +114,7 @@ export const KeepInSonicBox: React.FC<KeepInSonicBoxProps> = ({
                 dispatch(swapViewActions.setKeepInSonic(e.target.checked))
               }
               colorScheme="dark-blue"
-              color={keepInSonic ? 'white' : 'custom.1'}
+              color={checkboxColor}
               fontWeight={600}
             >
               {label}
@@ -110,13 +122,14 @@ export const KeepInSonicBox: React.FC<KeepInSonicBoxProps> = ({
           </FormControl>
           <Popover trigger="hover">
             <PopoverTrigger>
-              <Image
-                alt="info"
-                src={infoSrc}
-                width={5}
-                transition="opacity 200ms"
-                opacity={keepInSonic ? 1 : 0.5}
-              />
+              <Flex>
+                <Icon
+                  as={FaInfoCircle}
+                  width={5}
+                  transition="opacity 200ms"
+                  opacity={keepInSonic ? 1 : 0.5}
+                />
+              </Flex>
             </PopoverTrigger>
             <Portal>
               <PopoverContent>

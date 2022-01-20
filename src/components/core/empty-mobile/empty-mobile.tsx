@@ -1,4 +1,4 @@
-import { Flex, Image, Link, Text } from '@chakra-ui/react';
+import { Flex, Image, Link, Text, useColorModeValue } from '@chakra-ui/react';
 import { FaBook } from '@react-icons/all-files/fa/FaBook';
 import { FaDiscord } from '@react-icons/all-files/fa/FaDiscord';
 import { FaTwitter } from '@react-icons/all-files/fa/FaTwitter';
@@ -6,6 +6,8 @@ import { FaTwitter } from '@react-icons/all-files/fa/FaTwitter';
 import { logoSrc } from '@/assets';
 
 export const EmptyMobile = () => {
+  const color = useColorModeValue('gray.600', 'gray.300');
+
   return (
     <Flex
       flexDirection="column"
@@ -41,7 +43,7 @@ export const EmptyMobile = () => {
         justifyContent="space-around"
         alignItems="center"
         width={200}
-        color="gray.300"
+        color={color}
       >
         <Link href="https://discord.gg/EkmnRd99h6" target="_blank">
           <FaDiscord size={40} />

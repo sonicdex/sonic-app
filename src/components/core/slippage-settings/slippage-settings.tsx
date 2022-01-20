@@ -1,4 +1,15 @@
-import { Box, Button, Flex } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Flex,
+  HStack,
+  Icon,
+  Stack,
+  Text,
+  useColorModeValue,
+} from '@chakra-ui/react';
+import { FaExclamationTriangle } from '@react-icons/all-files/fa/FaExclamationTriangle';
+import { useMemo } from 'react';
 
 import { NumberInput } from '@/components';
 
@@ -15,8 +26,17 @@ export const SlippageSettings = ({
   isAutoSlippage,
   setIsAutoSlippage,
 }: SlippageSettingsProps) => {
-  const inputBorderColor = isAutoSlippage ? 'custom.3' : 'dark-blue.500';
-  const inputColor = isAutoSlippage ? 'custom.1' : 'gray.50';
+  const inputBorderColorDisabled = useColorModeValue('gray.300', 'custom.3');
+  const inputBorderColorEnabled = 'dark-blue.500';
+  const inputBorderColor = isAutoSlippage
+    ? inputBorderColorDisabled
+    : inputBorderColorEnabled;
+
+  const inputColorDisabled = useColorModeValue('gray.600', 'custom.1');
+  const inputColorEnabled = useColorModeValue('gray.800', 'gray.50');
+  const inputColor = isAutoSlippage ? inputColorDisabled : inputColorEnabled;
+
+  const yellowColor = useColorModeValue('yellow.600', 'yellow.500');
 
   const handleInputClick = () => {
     if (isAutoSlippage) setIsAutoSlippage(false);
@@ -41,20 +61,29 @@ export const SlippageSettings = ({
     setSlippage(String(Number(e.target.value)));
   };
 
+  const warningMessage = useMemo(() => {
+    if (Number(slippage) < 0.25) {
+      return 'Your tolerance is set very low, the transaction may fail.';
+    }
+
+    if (Number(slippage) > 5) {
+      return 'Your slippage tolerance is set very high, the received amount of tokens may reduced because of it. Consider reducing it.';
+    }
+  }, [slippage]);
+
   return (
-    <Box px={5} pt={3} pb={6}>
+    <Stack zIndex="popover" px={5} pt={3} pb={3}>
       <Box
         as="h1"
         pb={2}
         textAlign="left"
         fontSize="16px"
-        mb={3}
         w="100%"
         borderBottom="1px solid #373737"
       >
         Transaction Settings
       </Box>
-      <Box as="p" fontSize="14px" textAlign="left" fontWeight={400} mb={3}>
+      <Box as="p" fontSize="14px" textAlign="left" fontWeight={400}>
         Slippage tolerance
       </Box>
       <Flex direction="row" alignItems="center">
@@ -98,6 +127,14 @@ export const SlippageSettings = ({
           />
         </Box>
       </Flex>
-    </Box>
+      {warningMessage && (
+        <HStack textAlign="left" color={yellowColor} maxW="320px" spacing={4}>
+          <Icon as={FaExclamationTriangle} height={6} width={6} />
+          <Text fontWeight="normal" fontSize="sm">
+            {warningMessage}
+          </Text>
+        </HStack>
+      )}
+    </Stack>
   );
 };

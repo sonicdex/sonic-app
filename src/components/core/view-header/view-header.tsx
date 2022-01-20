@@ -1,4 +1,10 @@
-import { Box, Flex, IconButton, Tooltip } from '@chakra-ui/react';
+import {
+  Box,
+  Flex,
+  IconButton,
+  Tooltip,
+  useColorModeValue,
+} from '@chakra-ui/react';
 import { FaArrowLeft } from '@react-icons/all-files/fa/FaArrowLeft';
 
 type ViewHeaderProps = {
@@ -14,14 +20,19 @@ export const ViewHeader: React.FC<ViewHeaderProps> = ({
   const titleRightAdjustment = children ? 8 : 'auto';
   const titleLeftAdjustment = onArrowBack ? 8 : 'auto';
 
+  const bg = useColorModeValue('gray.50', 'custom.2');
+  const shadow = useColorModeValue('md', 'none');
+  const color = useColorModeValue('gray.800', 'gray.50');
+
   return (
     <Flex direction="column">
       <Flex
         py={3}
         px={5}
-        bg="custom.2"
+        bg={bg}
+        shadow={shadow}
         fontSize="lg"
-        color="gray.50"
+        color={color}
         fontWeight={700}
         textAlign="center"
         borderTopRadius={20}
