@@ -429,13 +429,7 @@ export const LiquidityAddView = () => {
               ml="auto"
             />
           </Tooltip>
-          <MenuList
-            bg="custom.2"
-            border="none"
-            borderRadius={20}
-            ml={-20}
-            py={0}
-          >
+          <MenuList bg="custom.2" border="none" borderRadius={20} py={0}>
             <SlippageSettings
               slippage={slippage}
               setSlippage={(value) =>

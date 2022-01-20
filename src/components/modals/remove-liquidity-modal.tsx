@@ -28,6 +28,7 @@ import { FaArrowDown } from '@react-icons/all-files/fa/FaArrowDown';
 import BigNumber from 'bignumber.js';
 import { useMemo } from 'react';
 
+import { ENV } from '@/config';
 import {
   liquidityViewActions,
   modalsSliceActions,
@@ -113,7 +114,34 @@ export const RemoveLiquidityModal = () => {
     }
 
     return { balance0: '', balance1: '' };
-  }, [userLPBalances, token0, token1, removeAmountPercentage]);
+  }, [userLPBalances, allPairs, token0, token1, removeAmountPercentage]);
+
+  const { buttonMessage, isAmountIsLow } = useMemo(() => {
+    const AMOUNT_TOO_LOW_LABEL = 'Amount is too low';
+
+    if (userLPBalances && token0.metadata && token1.metadata) {
+      const tokensLPBalance =
+        userLPBalances[token0.metadata.id]?.[token1.metadata.id];
+      const lpAmount = (removeAmountPercentage / 100) * tokensLPBalance;
+
+      const isAmountIsLow = lpAmount <= ENV.swapCanisterFee;
+
+      return {
+        buttonMessage: isAmountIsLow ? AMOUNT_TOO_LOW_LABEL : 'Remove',
+        isAmountIsLow,
+      };
+    }
+
+    return {
+      buttonMessage: AMOUNT_TOO_LOW_LABEL,
+      isAmountIsLow: true,
+    };
+  }, [
+    removeAmountPercentage,
+    token0.metadata,
+    token1.metadata,
+    userLPBalances,
+  ]);
 
   return (
     <Modal
@@ -222,10 +250,10 @@ export const RemoveLiquidityModal = () => {
             mb={3}
             size="lg"
             isFullWidth
-            isDisabled={removeAmountPercentage === 0}
+            isDisabled={isAmountIsLow}
             onClick={handleRemoveLiquidity}
           >
-            Remove
+            {buttonMessage}
           </Button>
         </ModalFooter>
       </ModalContent>

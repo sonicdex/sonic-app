@@ -93,14 +93,21 @@ export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
         getBalances();
       })
       .catch((err) => {
-        console.error('Swap Error', err);
         dispatch(modalsSliceActions.clearSwapModalData());
 
-        addNotification({
-          title: `Swap ${from.value} ${from.metadata.symbol} for ${to.value} ${to.metadata.symbol} failed`,
-          type: NotificationType.Error,
-          id: Date.now().toString(),
-        });
+        if (err.message === 'slippage: insufficient output amount') {
+          addNotification({
+            title: `Slippage is too low to swap ${from.value} ${from.metadata.symbol} for ${to.value} ${to.metadata.symbol}`,
+            type: NotificationType.Error,
+            id: Date.now().toString(),
+          });
+        } else {
+          addNotification({
+            title: `Swap ${from.value} ${from.metadata.symbol} for ${to.value} ${to.metadata.symbol} failed`,
+            type: NotificationType.Error,
+            id: Date.now().toString(),
+          });
+        }
       })
       .finally(() => popNotification(id));
   }, [allowance]);
