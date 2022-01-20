@@ -222,6 +222,7 @@ export const RemoveLiquidityModal = () => {
             mb={3}
             size="lg"
             isFullWidth
+            isDisabled={removeAmountPercentage === 0}
             onClick={handleRemoveLiquidity}
           >
             Remove

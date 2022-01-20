@@ -31,8 +31,6 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
     throw new Error('Sonic balance are required');
   }
 
-  console.log(addLiquidityParams);
-
   if (
     !addLiquidityParams.token0.metadata ||
     !addLiquidityParams.token1.metadata

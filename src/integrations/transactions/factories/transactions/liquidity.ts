@@ -37,8 +37,6 @@ export const useAddLiquidityTransactionMemo: CreateTransaction<AddLiquidity> = (
 
     const currentTime = (new Date().getTime() + 5 * 60 * 1000) * 10000000;
 
-    console.log(amount0Desired, amount0Min, amount1Desired, amount1Min);
-
     return {
       canisterId: ENV.canistersPrincipalIDs.swap,
       idl: SwapIDL.factory,
