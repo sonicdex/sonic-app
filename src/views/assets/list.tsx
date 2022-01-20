@@ -95,7 +95,6 @@ export const AssetsListView = () => {
 
   const getCanWithdraw = useCallback(
     (tokenId: string) => {
-      console.log('sb', tokenId, sonicBalances?.[tokenId]);
       if (sonicBalances?.[tokenId] === 0) {
         return false;
       }
@@ -107,7 +106,6 @@ export const AssetsListView = () => {
 
   const getCanDeposit = useCallback(
     (tokenId: string) => {
-      console.log('tb', tokenId, tokenBalances?.[tokenId]);
       if (tokenBalances?.[tokenId] === 0) {
         return false;
       }
