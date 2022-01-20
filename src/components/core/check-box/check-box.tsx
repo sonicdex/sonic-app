@@ -1,4 +1,4 @@
-import { Fade, Flex, Image } from '@chakra-ui/react';
+import { Fade, Flex, Image, useColorModeValue } from '@chakra-ui/react';
 import { MouseEvent } from 'react';
 
 import { checkPlainSrc } from '@/assets';
@@ -9,6 +9,8 @@ type CheckboxProps = {
 };
 
 export const Checkbox = ({ checked, onClick }: CheckboxProps) => {
+  const borderColor = useColorModeValue('gray.600', 'custom.1');
+
   return (
     <Flex
       cursor="pointer"
@@ -17,7 +19,7 @@ export const Checkbox = ({ checked, onClick }: CheckboxProps) => {
       height={6}
       onClick={onClick}
       border={checked ? 'none' : '1.5px solid'}
-      borderColor="custom.1"
+      borderColor={borderColor}
       bg={checked ? 'dark-blue.400' : ''}
       alignItems="center"
       justifyContent="center"

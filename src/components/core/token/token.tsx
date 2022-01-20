@@ -7,16 +7,19 @@ import {
   FlexProps,
   forwardRef,
   HStack,
+  Icon,
   Image,
   ImageProps,
   Skeleton,
   Text,
   TextProps,
+  useColorModeValue,
 } from '@chakra-ui/react';
 import { createContext } from '@chakra-ui/react-utils';
+import { FaChevronDown } from '@react-icons/all-files/fa/FaChevronDown';
 import React, { useCallback, useMemo } from 'react';
 
-import { chevronDownSrc, questionMarkSrc } from '@/assets';
+import { questionMarkSrc } from '@/assets';
 import { NumberInput } from '@/components';
 import { AppTokenMetadata } from '@/models';
 import {
@@ -63,21 +66,29 @@ export const Token: React.FC<TokenProps> = ({
   children,
   ...tokenProps
 }) => {
-  const border = shouldGlow ? '1px solid dark-blue.500' : '1px solid #373737';
-  const background = shouldGlow ? 'black' : 'custom.2';
+  const borderGlow = useColorModeValue('dark-blue.300', 'dark-blue.500');
+  const borderNotGlow = useColorModeValue('gray.50', '#373737');
+  const borderColor = shouldGlow ? borderGlow : borderNotGlow;
+
+  const backgroundGlow = useColorModeValue('white', 'black');
+  const backgroundNotGlow = useColorModeValue('gray.50', 'custom.2');
+  const background = shouldGlow ? backgroundGlow : backgroundNotGlow;
+
+  const shadow = useColorModeValue('lg', 'none');
 
   return (
     <TokenProvider value={{ shouldGlow, ...tokenProps }}>
       <Box
         borderRadius={20}
         bg={background}
-        border={border}
+        border="1px solid"
+        borderColor={borderColor}
+        shadow={shadow}
         pt={5}
         px={5}
         pb={4}
         transition="border 400ms"
         position="relative"
-        _hover={{ border }}
         {...htmlProps}
       >
         {shouldGlow && <TokenGlow />}
@@ -116,7 +127,7 @@ export const TokenDetailsButton = forwardRef<TokenDetailsButtonProps, 'button'>(
         {...props}
       >
         {children}
-        <Image ml={2.5} width={3} src={chevronDownSrc} alt="chevron down" />
+        <Icon as={FaChevronDown} ml={2.5} width={3} />
       </Button>
     );
   }
@@ -199,8 +210,9 @@ export const TokenBalancesPrice: React.FC<TokenBalancesPriceProps> = ({
       price: tokenMetadata?.price,
     });
   }, [tokenMetadata, value]);
-
-  const defaultColor = isActive ? 'gray.50' : 'gray.300';
+  const defaultColorActive = useColorModeValue('gray.800', 'gray.50');
+  const defaultColorInactive = useColorModeValue('gray.600', 'gray.300');
+  const defaultColor = isActive ? defaultColorActive : defaultColorInactive;
 
   const color = useMemo(() => {
     if (priceImpact) {
@@ -267,9 +279,11 @@ export const TokenBalancesDetails: React.FC<TokenBalancesDetailsProps> = ({
     return false;
   }, [onMaxClick, tokenMetadata, totalTokenBalance, value]);
 
+  const color = useColorModeValue('gray.600', 'custom.1');
+
   return (
     <Skeleton isLoaded={!isLoading} borderRadius="full" minW={20}>
-      <Flex direction="row" color="custom.1" {...props}>
+      <Flex direction="row" color={color} {...props}>
         <HStack>
           <TokenBalancesPopover
             sources={sources}
@@ -334,6 +348,9 @@ export const TokenInput: React.FC<TokenInputProps> = (props) => {
     },
     [tokenMetadata, setValue]
   );
+  const activeColor = useColorModeValue('gray.800', 'gray.50');
+  const inactiveColor = useColorModeValue('gray.400', 'custom.1');
+  const color = isActive ? activeColor : inactiveColor;
 
   return (
     <Skeleton isLoaded={!isLoading} borderRadius="full">
@@ -341,7 +358,7 @@ export const TokenInput: React.FC<TokenInputProps> = (props) => {
         isDisabled={isDisabled}
         value={value}
         setValue={handleChange}
-        color={isActive ? 'gray.50' : 'custom.1'}
+        color={color}
         background={background}
         {...props}
       />

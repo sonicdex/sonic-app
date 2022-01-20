@@ -17,6 +17,7 @@ import {
   Stack,
   Text,
   Tooltip,
+  useColorModeValue,
 } from '@chakra-ui/react';
 import { FaHdd } from '@react-icons/all-files/fa/FaHdd';
 import { useEffect, useMemo, useState } from 'react';
@@ -97,6 +98,10 @@ export const TokenSelectModal = () => {
     dispatch(modalsSliceActions.closeTokenSelectModal());
   };
 
+  const bg = useColorModeValue('gray.50', 'custom.2');
+  const color = useColorModeValue('gray.600', 'custom.1');
+  const emptyColor = useColorModeValue('gray.600', 'gray.300');
+
   return (
     <Modal
       isOpen={isTokenSelectOpened}
@@ -106,7 +111,7 @@ export const TokenSelectModal = () => {
       size="md"
     >
       <ModalOverlay />
-      <ModalContent bg="custom.2">
+      <ModalContent bg={bg}>
         <ModalCloseButton zIndex="docked" />
         <ModalHeader>
           {addToken ? (
@@ -130,7 +135,7 @@ export const TokenSelectModal = () => {
               direction="column"
               alignItems="center"
               position="sticky"
-              bg="custom.2"
+              bg={bg}
               top={0}
             >
               <Heading as="h1" fontWeight={700} fontSize="lg">
@@ -180,7 +185,7 @@ export const TokenSelectModal = () => {
                   />
                 ))
               ) : (
-                <Stack color="gray.300" alignItems="center" pt={2}>
+                <Stack color={emptyColor} alignItems="center" pt={2}>
                   <Icon as={FaHdd} />
 
                   <Text textAlign="center">
@@ -219,7 +224,7 @@ export const TokenSelectModal = () => {
                       </Text>
                     </Skeleton>
                     <Skeleton isLoaded={!isLoading} minWidth={17} ml={2}>
-                      <Text pl={2} color="custom.1">
+                      <Text pl={2} color={color}>
                         {importTokenData.name}
                       </Text>
                     </Skeleton>
@@ -283,6 +288,8 @@ const TokenSelectItem = ({
 }: TokenSelectItemProps) => {
   const tokenOpacity = isSelected ? 0.3 : 1;
 
+  const nameColor = useColorModeValue('gray.700', 'gray.300');
+
   return (
     <Flex
       alignItems="center"
@@ -312,7 +319,7 @@ const TokenSelectItem = ({
           </Skeleton>
           <Skeleton isLoaded={!isLoading} flex={1} overflow="hidden">
             <Tooltip label={name} openDelay={1000}>
-              <Text fontSize="sm" color="gray.300">
+              <Text fontSize="sm" color={nameColor}>
                 {name}
               </Text>
             </Tooltip>

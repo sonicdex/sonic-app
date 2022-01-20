@@ -11,6 +11,7 @@ import {
   Text,
   Tooltip,
   TooltipProps,
+  useColorModeValue,
 } from '@chakra-ui/react';
 import { createContext } from '@chakra-ui/react-utils';
 
@@ -40,6 +41,9 @@ export const Asset = ({
   isLoading = false,
   ...props
 }: AssetProps) => {
+  const bg = useColorModeValue('gray.50', 'custom.2');
+  const shadow = useColorModeValue('lg', 'none');
+
   return (
     <AssetProvider value={{ isLoading, type, imageSources }}>
       <Flex
@@ -48,7 +52,8 @@ export const Asset = ({
         borderRadius="xl"
         alignItems="center"
         justifyContent="space-between"
-        bg="custom.2"
+        bg={bg}
+        shadow={shadow}
         px={5}
         py={4}
         {...props}
@@ -93,6 +98,9 @@ export const AssetTitleBlock = ({
   ...props
 }: AssetTitleBlockProps) => {
   const { isLoading } = useAssetContext();
+  const color = useColorModeValue('gray.800', 'gray.50');
+  const subtitleColor = useColorModeValue('gray.600', 'gray.400');
+
   return (
     <Box ml={4} {...props}>
       <Skeleton
@@ -100,12 +108,12 @@ export const AssetTitleBlock = ({
         mb={isLoading ? 2 : 0}
         width={isLoading ? 60 : 'unset'}
       >
-        <Heading as="h3" fontSize="lg" fontWeight={700} color="gray.50">
+        <Heading as="h3" fontSize="lg" fontWeight={700} color={color}>
           {title}
         </Heading>
       </Skeleton>
       <Skeleton isLoaded={!isLoading} width={isLoading ? 40 : 'unset'}>
-        <Text fontSize="sm" color="gray.400">
+        <Text fontSize="sm" color={subtitleColor}>
           {subtitle}
         </Text>
       </Skeleton>

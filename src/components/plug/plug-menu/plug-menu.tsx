@@ -2,6 +2,7 @@ import {
   Box,
   Flex,
   HStack,
+  Icon,
   Image,
   Menu,
   MenuButton,
@@ -9,11 +10,13 @@ import {
   MenuList,
   MenuProps,
   Text,
+  useColorModeValue,
 } from '@chakra-ui/react';
 import { Spinner } from '@chakra-ui/spinner';
+import { FaChevronDown } from '@react-icons/all-files/fa/FaChevronDown';
 import { FC, useMemo } from 'react';
 
-import { chevronDownSrc, copySrc, exitSrc } from '@/assets';
+import { copySrc, exitSrc } from '@/assets';
 import { disconnect } from '@/integrations/plug';
 import {
   FeatureState,
@@ -53,18 +56,27 @@ export const PlugMenu: FC<Omit<MenuProps, 'children'>> = (props) => {
     }
   };
 
+  const bg = useColorModeValue('gray.50', 'custom.2');
+  const shadow = useColorModeValue('lg', 'none');
+
   return (
     <Menu {...props}>
-      <MenuButton borderRadius="full" px="4" h="12" bg="custom.2">
+      <MenuButton borderRadius="full" px="4" h="12" bg={bg} shadow={shadow}>
         <Flex direction="row" alignItems="center">
           {state === FeatureState.Loading ? <Spinner /> : <PlugLogo />}
           <Box ml="2" fontWeight={600}>
             {shortPrincipalId}
           </Box>
-          <ChevronIcon />
+          <Icon as={FaChevronDown} ml={3} />
         </Flex>
       </MenuButton>
-      <MenuList bg="custom.2" border="none" borderRadius="xl" overflow="hidden">
+      <MenuList
+        bg={bg}
+        shadow={shadow}
+        border="none"
+        borderRadius="xl"
+        overflow="hidden"
+      >
         <MenuItem fontWeight="bold" onClick={handleCopy}>
           <HStack direction="row">
             <Image alt="copy" src={copySrc} />
@@ -83,5 +95,3 @@ export const PlugMenu: FC<Omit<MenuProps, 'children'>> = (props) => {
 };
 
 PlugMenu.displayName = 'PlugPrincipalIDTag';
-
-const ChevronIcon = () => <Image alt="down" ml={3} src={chevronDownSrc} />;

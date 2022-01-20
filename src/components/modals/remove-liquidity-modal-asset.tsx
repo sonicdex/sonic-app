@@ -1,5 +1,6 @@
 import { Image } from '@chakra-ui/image';
 import { Box, Flex, HStack, Text } from '@chakra-ui/layout';
+import { useColorModeValue } from '@chakra-ui/react';
 import BigNumber from 'bignumber.js';
 import { FC, useMemo } from 'react';
 
@@ -23,13 +24,15 @@ export const RemoveLiquidityModalAsset: FC<RemoveLiquidityModalAssetProps> = ({
     [balance, price]
   );
 
+  const bg = useColorModeValue('gray.100', 'gray.700');
+
   return (
     <Flex justifyContent="space-between">
       <HStack
         pl={2}
         py={2}
         pr={4}
-        bg="gray.700"
+        bg={bg}
         borderRadius="full"
         alignSelf="center"
       >

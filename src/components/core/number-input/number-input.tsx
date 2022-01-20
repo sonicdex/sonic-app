@@ -1,4 +1,9 @@
-import { forwardRef, Input, InputProps } from '@chakra-ui/react';
+import {
+  forwardRef,
+  Input,
+  InputProps,
+  useColorModeValue,
+} from '@chakra-ui/react';
 import { ChangeEvent } from 'react';
 
 export type NumberInputProps = InputProps & {
@@ -18,6 +23,8 @@ export const NumberInput = forwardRef<NumberInputProps, 'input'>(
       }
     };
 
+    const color = useColorModeValue('gray.600', 'gray.300');
+
     return (
       <Input
         ref={ref}
@@ -27,12 +34,12 @@ export const NumberInput = forwardRef<NumberInputProps, 'input'>(
         fontSize="3xl"
         fontWeight={700}
         backgroundColor="transparent"
-        color="gray.300"
+        color={color}
         outline="none"
         transition="color 400ms"
         onChange={handleValueChange}
         placeholder={placeholder}
-        _placeholder={{ color: 'gray.300' }}
+        _placeholder={{ color: color }}
         {...props}
       />
     );

@@ -1,4 +1,4 @@
-import { Skeleton, Stack, Text } from '@chakra-ui/react';
+import { Skeleton, Stack, Text, useColorModeValue } from '@chakra-ui/react';
 import React, { Fragment } from 'react';
 
 import { Header, PlugNotConnected } from '@/components';
@@ -25,6 +25,8 @@ export const ActivityListView = () => {
   const { isConnected } = usePlugStore();
   const { activityList, state, page, endReached } = useActivityViewStore();
   const dispatch = useAppDispatch();
+
+  const color = useColorModeValue('gray.600', 'custom.1');
 
   const scrollHandler = (e: any): void => {
     if (endReached || state === FeatureState.Loading) return;
@@ -65,7 +67,7 @@ export const ActivityListView = () => {
           title="Your Activity"
           isRefreshing={state === FeatureState.Loading}
         />
-        <Text textAlign="center" color="custom.1">
+        <Text textAlign="center" color={color}>
           You have no activity
         </Text>
       </>

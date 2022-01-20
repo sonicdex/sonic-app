@@ -1,6 +1,6 @@
 import {
   Flex,
-  Image,
+  Icon,
   Popover,
   PopoverArrow,
   PopoverBody,
@@ -12,10 +12,10 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { FaArrowRight } from '@react-icons/all-files/fa/FaArrowRight';
+import { FaInfoCircle } from '@react-icons/all-files/fa/FaInfoCircle';
 import BigNumber from 'bignumber.js';
 import React, { useMemo } from 'react';
 
-import { infoSrc } from '@/assets';
 import { DisplayValue, StackLine } from '@/components';
 import { ENV } from '@/config';
 import { ICP_METADATA } from '@/constants';
@@ -188,12 +188,9 @@ export const ExchangeBox: React.FC = () => {
       </Text>
       <Popover trigger="hover">
         <PopoverTrigger>
-          <Image
-            alt="info"
-            src={infoSrc}
-            width={5}
-            transition="opacity 200ms"
-          />
+          <Flex>
+            <Icon as={FaInfoCircle} width={5} transition="opacity 200ms" />
+          </Flex>
         </PopoverTrigger>
         <Portal>
           <PopoverContent minWidth="400px">

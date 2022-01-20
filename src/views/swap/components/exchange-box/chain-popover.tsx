@@ -6,6 +6,7 @@ import {
   PopoverBody,
   PopoverContent,
   PopoverTrigger,
+  useColorModeValue,
 } from '@chakra-ui/react';
 import { FaArrowRight } from '@react-icons/all-files/fa/FaArrowRight';
 import { FaLink } from '@react-icons/all-files/fa/FaLink';
@@ -27,6 +28,8 @@ export const ChainPopover: React.FC<ChainPopoverProps> = ({ from, to }) => {
     }
     return [];
   }, [from, to]);
+
+  const bg = useColorModeValue('gray.200', 'gray.700');
 
   if (!path || !tokenList || !isChained)
     return (
@@ -61,7 +64,7 @@ export const ChainPopover: React.FC<ChainPopoverProps> = ({ from, to }) => {
                   px={2}
                   py={1}
                   borderRadius={4}
-                  backgroundColor="gray.700"
+                  backgroundColor={bg}
                   fontSize={12}
                   justifyContent="center"
                   alignItems="center"

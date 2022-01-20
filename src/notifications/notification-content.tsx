@@ -1,4 +1,4 @@
-import { Flex, Text } from '@chakra-ui/react';
+import { Flex, Text, useColorModeValue } from '@chakra-ui/react';
 
 import { NotificationType } from '@/store';
 
@@ -43,9 +43,11 @@ export const NotificationContent: React.FC<NotificationContentProps> = ({
     [NotificationType.Error]: <></>, // TODO: Add error link
   };
 
+  const color = useColorModeValue('gray.800', 'gray.50');
+
   return (
     <Flex direction="column" alignItems="flex-start">
-      <Text color="gray.50" fontSize="md" fontWeight={700} maxWidth={60}>
+      <Text color={color} fontSize="md" fontWeight={700} maxWidth={60}>
         {title}
       </Text>
 

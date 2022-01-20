@@ -6,7 +6,7 @@ import {
   PopoverHeader,
   PopoverTrigger,
 } from '@chakra-ui/popover';
-import { Heading, HStack, Image } from '@chakra-ui/react';
+import { Heading, HStack, Image, useColorModeValue } from '@chakra-ui/react';
 import { FC, useMemo } from 'react';
 
 import { TokenSource } from '@/components';
@@ -31,6 +31,8 @@ export const TokenBalancesPopover: FC<TokenBalancesPopoverProps> = ({
     [sources]
   );
 
+  const color = useColorModeValue('gray.800', 'gray.50');
+
   if (filteredSources.length === 0) {
     return null;
   }
@@ -45,7 +47,7 @@ export const TokenBalancesPopover: FC<TokenBalancesPopoverProps> = ({
             ))}
         </HStack>
       </PopoverTrigger>
-      <PopoverContent color="gray.50">
+      <PopoverContent color={color}>
         <PopoverArrow />
         <PopoverHeader>
           <Heading as="h3" size="sm">

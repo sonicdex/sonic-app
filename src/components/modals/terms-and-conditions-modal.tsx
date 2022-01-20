@@ -8,8 +8,10 @@ import {
   ModalHeader,
   ModalOverlay,
   Text,
+  useColorModeValue,
 } from '@chakra-ui/react';
 
+import { ENV } from '@/config';
 import { modalsSliceActions, useAppDispatch, useModalsStore } from '@/store';
 
 export const TermsAndConditionsModal = () => {
@@ -26,6 +28,8 @@ export const TermsAndConditionsModal = () => {
     dispatch(modalsSliceActions.closeTermsAndConditionsModal());
   };
 
+  const color = useColorModeValue('gray.600', 'custom.1');
+
   return (
     <Modal onClose={handleClose} isOpen={isOpened} isCentered>
       <ModalOverlay />
@@ -37,9 +41,11 @@ export const TermsAndConditionsModal = () => {
       >
         <ModalCloseButton />
         <ModalHeader borderBottom="none">Terms and Conditions</ModalHeader>
-        <Text as="p" color="custom.1" maxW={370}>
+        <Text as="p" color={color} maxW={370}>
           Please read &nbsp;
-          <Link color="dark-blue.600">Sonic's terms & conditions</Link>
+          <Link color="dark-blue.600" href={ENV.URLs.termsAndConditions}>
+            Sonic's terms & conditions
+          </Link>
           &nbsp;carefully.
           <br />
           By clicking "I agree" you acknowledge that you have read and accepted
