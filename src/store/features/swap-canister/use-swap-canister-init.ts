@@ -1,5 +1,6 @@
 import { useCallback, useEffect } from 'react';
 
+import { useAllPairs } from '@/hooks';
 import { useBalances } from '@/hooks/use-balances';
 import {
   FeatureState,
@@ -8,10 +9,7 @@ import {
   usePlugStore,
   useSwapCanisterStore,
 } from '@/store';
-import {
-  parseResponseAllPairs,
-  parseResponseSupportedTokenList,
-} from '@/utils/canister';
+import { parseResponseSupportedTokenList } from '@/utils/canister';
 
 import { useSwapActor } from '../../../integrations/actor/use-swap-actor';
 import { useKeepSync } from '../keep-sync';
@@ -19,7 +17,8 @@ import { useKeepSync } from '../keep-sync';
 export const useSwapCanisterInit = () => {
   const { getBalances, getUserPositiveLPBalances } = useBalances();
   const { principalId, isConnected, state: plugState } = usePlugStore();
-  const { supportedTokenListState, allPairsState } = useSwapCanisterStore();
+  const { supportedTokenListState } = useSwapCanisterStore();
+  const { getAllPairs } = useAllPairs();
 
   const swapActor = useSwapActor();
 
@@ -86,38 +85,6 @@ export const useSwapCanisterInit = () => {
         }
       },
       [swapActor, supportedTokenListState]
-    )
-  );
-
-  const getAllPairs = useKeepSync(
-    'getAllPairs',
-    useCallback(
-      async (isRefreshing?: boolean) => {
-        if (swapActor && allPairsState !== FeatureState.Loading) {
-          try {
-            dispatch(
-              swapCanisterActions.setAllPairsState(
-                isRefreshing ? FeatureState.Refreshing : FeatureState.Loading
-              )
-            );
-            const response = await swapActor.getAllPairs();
-
-            if (response) {
-              dispatch(
-                swapCanisterActions.setAllPairs(parseResponseAllPairs(response))
-              );
-            } else {
-              throw new Error('No "getAllPairs" response');
-            }
-
-            dispatch(swapCanisterActions.setAllPairsState(FeatureState.Idle));
-          } catch (error) {
-            console.error('getAllPairs: ', error);
-            dispatch(swapCanisterActions.setAllPairsState(FeatureState.Error));
-          }
-        }
-      },
-      [swapActor, allPairsState]
     )
   );
 };
