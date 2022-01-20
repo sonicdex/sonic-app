@@ -45,11 +45,11 @@ export const SlippageSettings = ({
 
   const warningMessage = useMemo(() => {
     if (Number(slippage) < 0.25) {
-      return 'Your transaction may fail';
+      return 'Your tolerance is set very low, the transaction may fail.';
     }
 
     if (Number(slippage) > 5) {
-      return 'Your slippage tolerance is set very high, the received amount of tokens may reduced because of it.';
+      return 'Your slippage tolerance is set very high, the received amount of tokens may reduced because of it. Consider reducing it.';
     }
   }, [slippage]);
 
