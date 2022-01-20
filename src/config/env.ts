@@ -4,7 +4,7 @@ export const ENV = {
   isDarkModeEnabled: process.env.IS_DARK_MODE_ENABLED === 'true',
   canistersPrincipalIDs: {
     ledger: process.env.LEDGER_CANISTER_ID || 'ryjl3-tyaaa-aaaaa-aaaba-cai',
-    swap: process.env.SWAP_CANISTER_ID || 'r444h-piaaa-aaaah-qcl3q-cai',
+    swap: process.env.SWAP_CANISTER_ID || '3xwpq-ziaaa-aaaah-qcn4a-cai',
     cyclesMinting:
       process.env.CYCLES_MINTING_CANISTER_ID || 'rkp4c-7iaaa-aaaaa-aaaca-cai',
     WICP: process.env.WICP_CANISTER_ID || 'utozz-siaaa-aaaam-qaaxq-cai',
