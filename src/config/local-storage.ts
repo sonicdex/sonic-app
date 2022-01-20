@@ -2,6 +2,7 @@ export enum LocalStorageKey {
   Logos = 'logos',
   LiquidityBannerDisabled = 'liquidityBannerDisabled',
   AssetsBannerDisabled = 'assetsBannerDisabled',
+  TermsAndConditionsAccepted = 'termsAndConditionsAccepted',
 }
 
 export function getFromStorage(key: LocalStorageKey | string): any | undefined {
