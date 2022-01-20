@@ -419,6 +419,11 @@ export const LiquidityAddView = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoading]);
 
+  const handleSetIsAutoSlippage = (isAutoSlippage: boolean) => {
+    setAutoSlippage(isAutoSlippage);
+    dispatch(liquidityViewActions.setSlippage(INITIAL_LIQUIDITY_SLIPPAGE));
+  };
+
   const menuListShadow = useColorModeValue('lg', 'none');
   const menuListBg = useColorModeValue('gray.50', 'custom.2');
   const color = useColorModeValue('gray.600', 'custom.1');
@@ -427,7 +432,11 @@ export const LiquidityAddView = () => {
   return (
     <Stack spacing={4}>
       <ViewHeader onArrowBack={handlePreviousStep} title="Add Liquidity">
-        <Menu>
+        <Menu
+          onClose={() =>
+            Number(slippage) >= 50 && handleSetIsAutoSlippage(true)
+          }
+        >
           <Tooltip label="Adjust the slippage">
             <MenuButton
               as={IconButton}
@@ -451,12 +460,7 @@ export const LiquidityAddView = () => {
                 dispatch(liquidityViewActions.setSlippage(value))
               }
               isAutoSlippage={autoSlippage}
-              setIsAutoSlippage={(value) => {
-                setAutoSlippage(value);
-                dispatch(
-                  liquidityViewActions.setSlippage(INITIAL_LIQUIDITY_SLIPPAGE)
-                );
-              }}
+              setIsAutoSlippage={handleSetIsAutoSlippage}
             />
           </MenuList>
         </Menu>

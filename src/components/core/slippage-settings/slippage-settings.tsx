@@ -37,6 +37,8 @@ export const SlippageSettings = ({
   const inputColor = isAutoSlippage ? inputColorDisabled : inputColorEnabled;
 
   const yellowColor = useColorModeValue('yellow.600', 'yellow.500');
+  const redColor = useColorModeValue('red.600', 'red.500');
+  const messageColor = Number(slippage) >= 50 ? redColor : yellowColor;
 
   const handleInputClick = () => {
     if (isAutoSlippage) setIsAutoSlippage(false);
@@ -47,11 +49,10 @@ export const SlippageSettings = ({
   };
 
   const handleChange = (value: string) => {
+    setIsAutoSlippage(false);
     const num = Number(value);
     if (num < 0) {
       setSlippage('0');
-    } else if (num > 100) {
-      setSlippage('100');
     } else {
       setSlippage(value.replace(/^0+/, '').replace(/^\./, '0.') || '0');
     }
@@ -62,12 +63,16 @@ export const SlippageSettings = ({
   };
 
   const warningMessage = useMemo(() => {
-    if (Number(slippage) < 0.25) {
-      return 'Your tolerance is set very low, the transaction may fail.';
+    if (Number(slippage) > 50) {
+      return 'Enter a valid slippage percentage (default: 0.5%)';
     }
 
     if (Number(slippage) > 5) {
       return 'Your slippage tolerance is set very high, the received amount of tokens may reduced because of it. Consider reducing it.';
+    }
+
+    if (Number(slippage) < 0.25) {
+      return 'Your slippage tolerance is set very low, the transaction may fail.';
     }
   }, [slippage]);
 
@@ -128,7 +133,7 @@ export const SlippageSettings = ({
         </Box>
       </Flex>
       {warningMessage && (
-        <HStack textAlign="left" color={yellowColor} maxW="320px" spacing={4}>
+        <HStack textAlign="left" color={messageColor} maxW="320px" spacing={4}>
           <Icon as={FaExclamationTriangle} height={6} width={6} />
           <Text fontWeight="normal" fontSize="sm">
             {warningMessage}
