@@ -16,6 +16,8 @@ export const SearchBar = ({ search, setSearch }: SearchBarProps) => {
   };
 
   const bg = useColorModeValue('gray.100', 'custom.3');
+  const color = useColorModeValue('gray.800', 'gray.50');
+  const shadow = useColorModeValue('lg', 'none');
 
   return (
     <Flex
@@ -23,6 +25,7 @@ export const SearchBar = ({ search, setSearch }: SearchBarProps) => {
       px={4}
       mb={4}
       bg={bg}
+      shadow={shadow}
       w="100%"
       h={10}
       borderRadius={12}
@@ -34,7 +37,7 @@ export const SearchBar = ({ search, setSearch }: SearchBarProps) => {
         bg={bg}
         border="none"
         w="100%"
-        color="gray.50"
+        color={color}
         outline="none"
         fontWeight={400}
         placeholder="Search by name or canister id"

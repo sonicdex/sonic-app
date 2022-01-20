@@ -299,14 +299,14 @@ export const LiquidityListView = () => {
 
                 <HStack>
                   <AssetIconButton
-                    aria-label="Remove liquidity"
+                    aria-label="Remove Liquidity"
                     icon={<FaMinus />}
                     onClick={() =>
                       handleOpenRemoveLiquidityModal(token0, token1)
                     }
                   />
                   <AssetIconButton
-                    aria-label="Add liquidity"
+                    aria-label="Add Liquidity"
                     colorScheme="dark-blue"
                     icon={<FaPlus />}
                     onClick={() => moveToAddLiquidityView(token0.id, token1.id)}

@@ -42,12 +42,12 @@ export const PlugButton = forwardRef<HTMLButtonElement, PlugButtonProps>(
     }, [state]);
 
     const colorDark = useColorModeValue('gray.800', 'gray.500');
-    const bgDark = useColorModeValue('gray.100', 'gray.800');
-    const bgHoverDark = useColorModeValue('gray.100', 'gray.700');
+    const bgDark = useColorModeValue('gray.50', 'gray.800');
+    const bgHoverDark = useColorModeValue('gray.50', 'gray.700');
 
     const colorLight = useColorModeValue('gray.800', 'white');
-    const bgLight = useColorModeValue('gray.100', 'gray.900');
-    const bgHoverLight = useColorModeValue('gray.100', 'gray.800');
+    const bgLight = useColorModeValue('gray.50', 'gray.900');
+    const bgHoverLight = useColorModeValue('gray.50', 'gray.800');
 
     const { color, bg, bgHover, leftIcon, before, borderRadius } =
       useMemo(() => {
