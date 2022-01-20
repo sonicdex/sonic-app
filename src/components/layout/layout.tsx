@@ -18,6 +18,7 @@ import { FaSun } from '@react-icons/all-files/fa/FaSun';
 import React, { useMemo } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
+import { ENV } from '@/config';
 import { usePlugStore } from '@/store';
 import { theme } from '@/theme';
 
@@ -96,17 +97,21 @@ export const Layout: React.FC = ({ children, ...props }) => {
           <GridItem colSpan={1} justifySelf="center">
             <HStack>
               {isConnected ? <PlugMenu /> : <PlugButton />}
-              <Tooltip
-                label={colorMode === 'dark' ? 'Light mode' : 'Dark mode'}
-              >
-                <IconButton
-                  colorScheme={colorMode === 'dark' ? 'dark-blue' : 'yellow'}
-                  variant="outline"
-                  aria-label={colorMode === 'dark' ? 'Light mode' : 'Dark mode'}
-                  icon={colorMode === 'dark' ? <FaMoon /> : <FaSun />}
-                  onClick={toggleColorMode}
-                />
-              </Tooltip>
+              {ENV.isDarkModeEnabled && (
+                <Tooltip
+                  label={colorMode === 'dark' ? 'Light mode' : 'Dark mode'}
+                >
+                  <IconButton
+                    colorScheme={colorMode === 'dark' ? 'dark-blue' : 'yellow'}
+                    variant="outline"
+                    aria-label={
+                      colorMode === 'dark' ? 'Light mode' : 'Dark mode'
+                    }
+                    icon={colorMode === 'dark' ? <FaMoon /> : <FaSun />}
+                    onClick={toggleColorMode}
+                  />
+                </Tooltip>
+              )}
             </HStack>
           </GridItem>
         </Grid>
