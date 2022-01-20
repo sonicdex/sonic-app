@@ -412,6 +412,11 @@ export const SwapHomeStep = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoading]);
 
+  const handleSetIsAutoSlippage = (isAutoSlippage: boolean) => {
+    setAutoSlippage(isAutoSlippage);
+    dispatch(swapViewActions.setSlippage(INITIAL_SWAP_SLIPPAGE));
+  };
+
   const swapPlacementButtonBg = useColorModeValue('gray.200', 'gray.800');
   const menuListBg = useColorModeValue('gray.50', 'custom.2');
   const menuListShadow = useColorModeValue('lg', 'none');
@@ -419,7 +424,11 @@ export const SwapHomeStep = () => {
   return (
     <Stack spacing={4}>
       <ViewHeader title="Swap">
-        <Menu>
+        <Menu
+          onClose={() =>
+            Number(slippage) >= 50 && handleSetIsAutoSlippage(true)
+          }
+        >
           <Tooltip label="Adjust the slippage">
             <MenuButton
               as={IconButton}
@@ -445,10 +454,7 @@ export const SwapHomeStep = () => {
               setSlippage={(value) =>
                 dispatch(swapViewActions.setSlippage(value))
               }
-              setIsAutoSlippage={(value) => {
-                setAutoSlippage(value);
-                dispatch(swapViewActions.setSlippage(INITIAL_SWAP_SLIPPAGE));
-              }}
+              setIsAutoSlippage={handleSetIsAutoSlippage}
             />
           </MenuList>
         </Menu>
