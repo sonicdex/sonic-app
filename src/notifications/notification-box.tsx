@@ -1,4 +1,4 @@
-import { Box, Collapse } from '@chakra-ui/react';
+import { Box, Collapse, useColorModeValue } from '@chakra-ui/react';
 import { useState } from 'react';
 
 import { Notification } from '@/store';
@@ -28,13 +28,15 @@ export const NotificationBox = ({
     setTimeout(onClose, 300);
   };
 
+  const bg = useColorModeValue('gray.50', 'custom.2');
+
   return (
     <Collapse in={show} animateOpacity unmountOnExit>
       <Box
         width={80}
         position="relative"
         borderRadius={5}
-        bg="custom.2"
+        bg={bg}
         mb={8}
         pt={4}
         pr={10}

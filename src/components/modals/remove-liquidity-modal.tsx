@@ -23,6 +23,7 @@ import {
   SliderTrack,
   Stack,
   Tooltip,
+  useColorModeValue,
 } from '@chakra-ui/react';
 import { FaArrowDown } from '@react-icons/all-files/fa/FaArrowDown';
 import BigNumber from 'bignumber.js';
@@ -143,6 +144,14 @@ export const RemoveLiquidityModal = () => {
     userLPBalances,
   ]);
 
+  const borderColor = useColorModeValue('gray.300', 'gray.700');
+
+  const checkboxColorKeepInSonic = useColorModeValue('black', 'white');
+  const checkboxColorNotKeepInSonic = useColorModeValue('gray.600', 'custom.1');
+  const checkboxColor = keepInSonic
+    ? checkboxColorKeepInSonic
+    : checkboxColorNotKeepInSonic;
+
   return (
     <Modal
       isCentered
@@ -203,7 +212,7 @@ export const RemoveLiquidityModal = () => {
               p={2.5}
               borderWidth="1px"
               borderStyle="solid"
-              borderColor="gray.700"
+              borderColor={borderColor}
               borderRadius="md"
             >
               <FaArrowDown />
@@ -234,7 +243,7 @@ export const RemoveLiquidityModal = () => {
                 }
                 colorScheme="dark-blue"
                 size="lg"
-                color={keepInSonic ? 'white' : 'custom.1'}
+                color={checkboxColor}
                 fontWeight={600}
               >
                 Keep tokens in Sonic after removing liqudity

@@ -1,4 +1,10 @@
-import { Box, Button, Flex, Spinner } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Flex,
+  Spinner,
+  useColorModeValue,
+} from '@chakra-ui/react';
 import React from 'react';
 
 type HeaderProps = {
@@ -18,6 +24,10 @@ export const Header: React.FC<HeaderProps> = ({
   const paddingToLine = buttonText && onButtonClick ? '17px' : '24px';
   const marginTop = buttonText && onButtonClick ? '-8px' : '0px';
 
+  const color = useColorModeValue('gray.800', 'gray.50');
+  const borderColor = useColorModeValue('gray.100', 'custom.3');
+  const backgroundColor = useColorModeValue('white', 'black');
+
   return (
     <Flex
       position="sticky"
@@ -25,7 +35,8 @@ export const Header: React.FC<HeaderProps> = ({
       pt={5}
       mt={-10}
       mb={5}
-      backgroundColor="black"
+      backgroundColor={backgroundColor}
+      transition="background 200ms"
       zIndex={10}
       flexDirection="column"
     >
@@ -37,9 +48,9 @@ export const Header: React.FC<HeaderProps> = ({
         pb={paddingToLine}
         mt={marginTop}
         borderBottom="1px solid"
-        borderColor="custom.3"
+        borderColor={borderColor}
       >
-        <Box as="h3" fontWeight={700} color="gray.50">
+        <Box as="h3" fontWeight={700} color={color}>
           {title}
           {isRefreshing && <Spinner width={3} height={3} mx={3} />}
         </Box>

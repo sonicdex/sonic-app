@@ -1,17 +1,18 @@
 import {
   Box,
   HStack,
-  Image,
+  Icon,
   // AlertDescription,
   Stack,
   Text,
+  useColorModeValue,
 } from '@chakra-ui/react';
+import { FaInfoCircle } from '@react-icons/all-files/fa/FaInfoCircle';
 import { FaMinus } from '@react-icons/all-files/fa/FaMinus';
 import { FaPlus } from '@react-icons/all-files/fa/FaPlus';
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router';
 
-import { infoSrc } from '@/assets';
 import {
   Asset,
   AssetIconButton,
@@ -89,6 +90,9 @@ export const AssetsListView = () => {
     [supportedTokenListState, balancesState]
   );
 
+  const assetsDetailsTextColor = useColorModeValue('gray.800', 'custom.1');
+  const headerColor = useColorModeValue('gray.600', 'gray.400');
+
   return (
     <>
       <Header title="Your Assets" isRefreshing={isRefreshing}>
@@ -98,7 +102,7 @@ export const AssetsListView = () => {
             mb={9}
             onClose={handleBannerClose}
           >
-            <Text color="custom.1">
+            <Text color={assetsDetailsTextColor}>
               View all the assets you have deposited or obtained on Sonic
               through our Liquidity and Swaps protocols, and deposit more or
               withdraw them to your wallet.
@@ -151,13 +155,13 @@ export const AssetsListView = () => {
                     <Box>
                       <Text
                         fontWeight="bold"
-                        color="gray.400"
+                        color={headerColor}
                         display="flex"
                         alignItems="center"
                       >
                         Balance
-                        <Image
-                          src={infoSrc}
+                        <Icon
+                          as={FaInfoCircle}
                           w={4}
                           h={4}
                           ml={1.5}
@@ -173,7 +177,7 @@ export const AssetsListView = () => {
                     </Box>
                   </TokenBalancesPopover>
                   <Box>
-                    <Text fontWeight="bold" color="gray.400">
+                    <Text fontWeight="bold" color={headerColor}>
                       Price
                     </Text>
                     <DisplayValue
@@ -200,7 +204,7 @@ export const AssetsListView = () => {
               )
             )
           ) : (
-            <Text textAlign="center" color="gray.400">
+            <Text textAlign="center" color={headerColor}>
               No assets available
             </Text>
           )}

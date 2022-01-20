@@ -1,4 +1,13 @@
-import { Box, Button, Flex, HStack, Icon, Stack, Text } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Flex,
+  HStack,
+  Icon,
+  Stack,
+  Text,
+  useColorModeValue,
+} from '@chakra-ui/react';
 import { FaExclamationTriangle } from '@react-icons/all-files/fa/FaExclamationTriangle';
 import { useMemo } from 'react';
 
@@ -17,8 +26,17 @@ export const SlippageSettings = ({
   isAutoSlippage,
   setIsAutoSlippage,
 }: SlippageSettingsProps) => {
-  const inputBorderColor = isAutoSlippage ? 'custom.3' : 'dark-blue.500';
-  const inputColor = isAutoSlippage ? 'custom.1' : 'gray.50';
+  const inputBorderColorDisabled = useColorModeValue('gray.300', 'custom.3');
+  const inputBorderColorEnabled = 'dark-blue.500';
+  const inputBorderColor = isAutoSlippage
+    ? inputBorderColorDisabled
+    : inputBorderColorEnabled;
+
+  const inputColorDisabled = useColorModeValue('gray.600', 'custom.1');
+  const inputColorEnabled = useColorModeValue('gray.800', 'gray.50');
+  const inputColor = isAutoSlippage ? inputColorDisabled : inputColorEnabled;
+
+  const yellowColor = useColorModeValue('yellow.600', 'yellow.500');
 
   const handleInputClick = () => {
     if (isAutoSlippage) setIsAutoSlippage(false);
@@ -110,7 +128,7 @@ export const SlippageSettings = ({
         </Box>
       </Flex>
       {warningMessage && (
-        <HStack textAlign="left" color="yellow.500" maxW="320px" spacing={4}>
+        <HStack textAlign="left" color={yellowColor} maxW="320px" spacing={4}>
           <Icon as={FaExclamationTriangle} height={6} width={6} />
           <Text fontWeight="normal" fontSize="sm">
             {warningMessage}

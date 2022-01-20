@@ -13,7 +13,6 @@ export * from './number-input';
 export * from './search-bar';
 export * from './slippage-settings';
 export * from './stack-line';
-export * from './toggle';
 export * from './token';
 export * from './token-balances-popover';
 export * from './view-header';

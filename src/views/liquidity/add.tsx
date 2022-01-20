@@ -1,10 +1,11 @@
 import {
   Box,
   Button,
+  Center,
   Flex,
   HStack,
+  Icon,
   IconButton,
-  Image,
   Menu,
   MenuButton,
   MenuList,
@@ -18,13 +19,16 @@ import {
   Stack,
   Text,
   Tooltip,
+  useColorModeValue,
 } from '@chakra-ui/react';
 import { FaCog } from '@react-icons/all-files/fa/FaCog';
+import { FaEquals } from '@react-icons/all-files/fa/FaEquals';
+import { FaInfoCircle } from '@react-icons/all-files/fa/FaInfoCircle';
+import { FaPlus } from '@react-icons/all-files/fa/FaPlus';
 import BigNumber from 'bignumber.js';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 
-import { equalSrc, infoSrc, plusSrc } from '@/assets';
 import {
   DisplayValue,
   LPImageBlock,
@@ -415,6 +419,11 @@ export const LiquidityAddView = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoading]);
 
+  const menuListShadow = useColorModeValue('lg', 'none');
+  const menuListBg = useColorModeValue('gray.50', 'custom.2');
+  const color = useColorModeValue('gray.600', 'custom.1');
+  const bg = useColorModeValue('gray.100', 'gray.800');
+
   return (
     <Stack spacing={4}>
       <ViewHeader onArrowBack={handlePreviousStep} title="Add Liquidity">
@@ -429,7 +438,13 @@ export const LiquidityAddView = () => {
               ml="auto"
             />
           </Tooltip>
-          <MenuList bg="custom.2" border="none" borderRadius={20} py={0}>
+          <MenuList
+            shadow={menuListShadow}
+            bg={menuListBg}
+            border="none"
+            borderRadius={20}
+            py={0}
+          >
             <SlippageSettings
               slippage={slippage}
               setSlippage={(value) =>
@@ -473,20 +488,18 @@ export const LiquidityAddView = () => {
             </TokenBalances>
           </Token>
         </Box>
-        <Box
+        <Center
           borderRadius={12}
           width={10}
           height={10}
           border="1px solid #373737"
-          py={3}
-          px={3}
-          bg="custom.2"
+          bg={menuListBg}
           mt={-2}
           mb={-2}
           zIndex={1200}
         >
-          <Image alt="plus" m="auto" src={plusSrc} />
-        </Box>
+          <Icon as={FaPlus} />
+        </Center>
         <Box width="100%">
           <Token
             value={token1.value}
@@ -528,22 +541,20 @@ export const LiquidityAddView = () => {
           <>
             {isReviewing && (
               <>
-                <Flex
+                <Center
                   borderRadius={12}
                   width={10}
                   height={10}
                   border="1px solid #373737"
-                  py={3}
-                  px={3}
-                  bg="custom.2"
+                  bg={menuListBg}
                   mt={-2}
                   mb={-2}
                   zIndex={1200}
                   justifyContent="center"
                   alignItems="center"
                 >
-                  <Image alt="equal" m="auto" src={equalSrc} />
-                </Flex>
+                  <Icon as={FaEquals} />
+                </Center>
 
                 <Token value={liquidityValue} isDisabled shouldGlow>
                   <TokenContent>
@@ -551,7 +562,7 @@ export const LiquidityAddView = () => {
                       borderRadius="full"
                       mr={5}
                       minWidth="fit-content"
-                      background="gray.800"
+                      background={bg}
                       height={10}
                       px={4}
                       justifyContent="center"
@@ -571,7 +582,9 @@ export const LiquidityAddView = () => {
 
                       <Popover trigger="hover">
                         <PopoverTrigger>
-                          <Image alt="info" ml={2.5} width={4} src={infoSrc} />
+                          <Flex>
+                            <Icon as={FaInfoCircle} ml={2.5} width={4} />
+                          </Flex>
                         </PopoverTrigger>
                         <PopoverContent>
                           <PopoverArrow />
@@ -585,7 +598,7 @@ export const LiquidityAddView = () => {
 
                     <TokenInput />
                   </TokenContent>
-                  <TokenBalances color="custom.1">
+                  <TokenBalances color={color}>
                     Share of Pool:
                     <Text flex={1} textAlign="right">
                       {liquidityPercentage}
@@ -616,9 +629,8 @@ export const LiquidityAddView = () => {
                   </Text>
                   <Popover trigger="hover">
                     <PopoverTrigger>
-                      <Image
-                        alt="info"
-                        src={infoSrc}
+                      <Icon
+                        as={FaInfoCircle}
                         width={5}
                         transition="opacity 200ms"
                         opacity={0.6}

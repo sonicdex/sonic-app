@@ -6,6 +6,7 @@ import {
   Heading,
   Image,
   Text,
+  useColorModeValue,
 } from '@chakra-ui/react';
 import { useState } from 'react';
 
@@ -30,6 +31,9 @@ export const ImportToken = ({
 }: ImportTokenProps) => {
   const [understandRisk, setUnderstandRisk] = useState(false);
 
+  const bg = useColorModeValue('gray.100', 'custom.3');
+  const color = useColorModeValue('gray.600', 'custom.1');
+
   return (
     <Flex direction="column" width="100%" alignItems="center">
       <Heading as="h1" fontWeight={700} fontSize={18} mb={6}>
@@ -39,13 +43,13 @@ export const ImportToken = ({
       <Text mt={2} fontSize={18} fontWeight={700} color="gray.50">
         {symbol}
       </Text>
-      <Text color="custom.1">{name}</Text>
+      <Text color={color}>{name}</Text>
       <Flex
         mt={5}
         mb={6}
         py={3}
         w="100%"
-        bg="custom.3"
+        bg={bg}
         borderRadius={20}
         justifyContent="center"
         alignItems="center"

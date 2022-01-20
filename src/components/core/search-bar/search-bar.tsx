@@ -1,4 +1,4 @@
-import { Box, Flex, Image } from '@chakra-ui/react';
+import { Box, Flex, Image, useColorModeValue } from '@chakra-ui/react';
 import { ChangeEvent } from 'react';
 
 import { searchSrc } from '@/assets';
@@ -15,12 +15,14 @@ export const SearchBar = ({ search, setSearch }: SearchBarProps) => {
     setSearch(inputValue);
   };
 
+  const bg = useColorModeValue('gray.100', 'custom.3');
+
   return (
     <Flex
       boxSizing="border-box"
       px={4}
       mb={4}
-      bg="custom.3"
+      bg={bg}
       w="100%"
       h={10}
       borderRadius={12}
@@ -29,7 +31,7 @@ export const SearchBar = ({ search, setSearch }: SearchBarProps) => {
       <Box
         as="input"
         value={search}
-        bg="custom.3"
+        bg={bg}
         border="none"
         w="100%"
         color="gray.50"

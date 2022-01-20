@@ -1,4 +1,4 @@
-import { Box, HStack, Stack, Text } from '@chakra-ui/react';
+import { Box, HStack, Stack, Text, useColorModeValue } from '@chakra-ui/react';
 import { FaMinus } from '@react-icons/all-files/fa/FaMinus';
 import { FaPlus } from '@react-icons/all-files/fa/FaPlus';
 import BigNumber from 'bignumber.js';
@@ -33,23 +33,27 @@ const INFORMATION_DESCRIPTION =
 const INFORMATION_LINK =
   'https://docs.sonic.ooo/product/adding-liquidity/claiming-your-rewards';
 
-const InformationDescription = () => (
-  <Text color="custom.1">
-    {INFORMATION_DESCRIPTION}
-    <Box
-      as="a"
-      color="custom.1"
-      href={INFORMATION_LINK}
-      textDecoration="underline"
-      _visited={{
-        color: 'custom.1',
-      }}
-    >
-      review our documentation
-    </Box>
-    .
-  </Text>
-);
+const InformationDescription = () => {
+  const color = useColorModeValue('gray.600', 'custom.1');
+
+  return (
+    <Text color={color}>
+      {INFORMATION_DESCRIPTION}
+      <Box
+        as="a"
+        color={color}
+        href={INFORMATION_LINK}
+        textDecoration="underline"
+        _visited={{
+          color: color,
+        }}
+      >
+        review our documentation
+      </Box>
+      .
+    </Text>
+  );
+};
 
 type PairedUserLPToken = {
   token0: AppTokenMetadata;
@@ -184,6 +188,9 @@ export const LiquidityListView = () => {
     [allPairs]
   );
 
+  const headerColor = useColorModeValue('gray.600', 'gray.400');
+  const successColor = useColorModeValue('green.600', 'green.400');
+
   return (
     <>
       <Header
@@ -232,7 +239,7 @@ export const LiquidityListView = () => {
           </Asset>
         </Stack>
       ) : !pairedUserLPTokens?.length ? (
-        <Text textAlign="center" color="gray.400">
+        <Text textAlign="center" color={headerColor}>
           You have no liquidity positions
         </Text>
       ) : (
@@ -266,18 +273,18 @@ export const LiquidityListView = () => {
                   />
                 </HStack>
                 <Box>
-                  <Text fontWeight="bold" color="gray.400">
+                  <Text fontWeight="bold" color={headerColor}>
                     LP Tokens
                   </Text>
                   <DisplayValue value={userShares} />
                 </Box>
 
                 <Box>
-                  <Text fontWeight="bold" color="gray.400">
+                  <Text fontWeight="bold" color={headerColor}>
                     LP Value
                   </Text>
                   <DisplayValue
-                    color="green.400"
+                    color={successColor}
                     prefix="~$"
                     value={getUserLPValue(
                       token0,

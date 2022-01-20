@@ -3,11 +3,18 @@ import {
   Container,
   Grid,
   GridItem,
+  HStack,
+  IconButton,
   Tab,
   TabList,
   Tabs,
   Text,
+  Tooltip,
+  useColorMode,
+  useColorModeValue,
 } from '@chakra-ui/react';
+import { FaMoon } from '@react-icons/all-files/fa/FaMoon';
+import { FaSun } from '@react-icons/all-files/fa/FaSun';
 import React, { useMemo } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
@@ -33,6 +40,10 @@ export const Layout: React.FC = ({ children, ...props }) => {
     [location]
   );
 
+  const backgroundColor = useColorModeValue('white', 'black');
+
+  const { colorMode, toggleColorMode } = useColorMode();
+
   return (
     <>
       <Container maxW="container.xl" position="sticky" top={0} zIndex={10}>
@@ -44,7 +55,8 @@ export const Layout: React.FC = ({ children, ...props }) => {
           templateColumns="repeat(5, 1fr)"
           gap="4"
           alignItems="center"
-          backgroundColor="black"
+          backgroundColor={backgroundColor}
+          transition="background 200ms"
           _after={{
             content: "''",
             position: 'absolute',
@@ -82,7 +94,18 @@ export const Layout: React.FC = ({ children, ...props }) => {
             </chakra.nav>
           </GridItem>
           <GridItem colSpan={1} justifySelf="center">
-            {isConnected ? <PlugMenu /> : <PlugButton />}
+            <HStack>
+              {isConnected ? <PlugMenu /> : <PlugButton />}
+              <Tooltip label="Change color mode">
+                <IconButton
+                  colorScheme={colorMode === 'light' ? 'dark-blue' : 'yellow'}
+                  variant="outline"
+                  aria-label="Change color mode"
+                  icon={colorMode === 'light' ? <FaMoon /> : <FaSun />}
+                  onClick={toggleColorMode}
+                />
+              </Tooltip>
+            </HStack>
           </GridItem>
         </Grid>
       </Container>

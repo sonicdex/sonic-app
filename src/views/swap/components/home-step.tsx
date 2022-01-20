@@ -11,6 +11,7 @@ import {
   Skeleton,
   Stack,
   Tooltip,
+  useColorModeValue,
 } from '@chakra-ui/react';
 import { FaArrowDown } from '@react-icons/all-files/fa/FaArrowDown';
 import { FaCog } from '@react-icons/all-files/fa/FaCog';
@@ -411,6 +412,10 @@ export const SwapHomeStep = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoading]);
 
+  const swapPlacementButtonBg = useColorModeValue('gray.200', 'gray.800');
+  const menuListBg = useColorModeValue('gray.50', 'custom.2');
+  const menuListShadow = useColorModeValue('lg', 'none');
+
   return (
     <Stack spacing={4}>
       <ViewHeader title="Swap">
@@ -427,7 +432,8 @@ export const SwapHomeStep = () => {
             />
           </Tooltip>
           <MenuList
-            bg="custom.2"
+            bg={menuListBg}
+            shadow={menuListShadow}
             border="none"
             borderRadius={20}
             ml={-20}
@@ -482,7 +488,7 @@ export const SwapHomeStep = () => {
             mt={-2}
             mb={-2}
             zIndex="overlay"
-            bg="gray.800"
+            bg={swapPlacementButtonBg}
             onClick={switchTokens}
             // TODO: Replace hardcoding with a proper solution
             isDisabled={!to.metadata || (isFromTokenIsICP && isToTokenIsXTC)}
