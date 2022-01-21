@@ -76,10 +76,9 @@ export const LiquidityAddView = () => {
   const query = useQuery();
 
   const { isConnected } = usePlugStore();
-  const { allPairs } = useSwapCanisterStore();
 
   const { addNotification } = useNotificationStore();
-  const { token0, token1, slippage, pair } = useLiquidityViewStore();
+  const { token0, token1, slippage, pair, pairState } = useLiquidityViewStore();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { tokenBalances, sonicBalances, totalBalances } = useBalances();
@@ -184,7 +183,6 @@ export const LiquidityAddView = () => {
       if (
         token0.metadata &&
         token1.metadata &&
-        allPairs?.[token0.metadata.id]?.[token1.metadata.id]
       ) {
         const lpValue = getAmountEqualLPToken({
           amountIn,
@@ -207,7 +205,6 @@ export const LiquidityAddView = () => {
       }
     },
     [
-      allPairs,
       dispatch,
       pair?.reserve0,
       pair?.reserve1,
@@ -229,8 +226,11 @@ export const LiquidityAddView = () => {
   );
 
   const isLoading = useMemo(() => {
-    return supportedTokenListState === FeatureState.Loading;
-  }, [supportedTokenListState]);
+    return (
+      supportedTokenListState === FeatureState.Loading ||
+      pairState === FeatureState.Loading
+    );
+  }, [supportedTokenListState, pairState]);
 
   const [buttonDisabled, buttonMessage] = useMemo<[boolean, string]>(() => {
     if (isLoading) return [true, 'Loading'];

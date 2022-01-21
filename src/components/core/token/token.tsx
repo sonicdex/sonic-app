@@ -118,6 +118,7 @@ type TokenDetailsButtonProps = ButtonProps;
 
 export const TokenDetailsButton = forwardRef<TokenDetailsButtonProps, 'button'>(
   ({ children, ...props }, ref) => {
+    const { isLoading } = useTokenContext();
     return (
       <Button
         ref={ref}
@@ -125,6 +126,7 @@ export const TokenDetailsButton = forwardRef<TokenDetailsButtonProps, 'button'>(
         mr={5}
         minWidth="fit-content"
         {...props}
+        isDisabled={isLoading || props.isDisabled}
       >
         {children}
         <Icon as={FaChevronDown} ml={2.5} width={3} />
