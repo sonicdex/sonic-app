@@ -162,28 +162,24 @@ export const LiquidityListView = () => {
     (
       token0: AppTokenMetadata,
       token1: AppTokenMetadata,
-      totalShares: string,
-      userShares: string
+      totalShares?: string,
+      userShares?: string
     ) => {
       // How many LP tokens I have divided by total LP tokens in the pool = percentage of a pool
       // Multiply poap by amount of tokens of each reserves
       // Multiply by a price
       const pair = allPairs?.[token0.id]?.[token1.id];
 
-      if (pair && token0.price && token1.price) {
-        const lpPrice = new BigNumber(
-          new BigNumber(getCurrency(pair.reserve0.toString(), token0.decimals))
-            .multipliedBy(
-              getCurrency(pair.reserve1.toString(), token1.decimals)
-            )
-            .sqrt()
-        )
-          .multipliedBy(
-            new BigNumber(token0.price).multipliedBy(token1.price).sqrt()
-          )
-          .dividedBy(new BigNumber(totalShares).multipliedBy(2));
+      if (pair && token0.price && token1.price && totalShares && userShares) {
+        const token0Price = new BigNumber(token0.price).multipliedBy(
+          getCurrency(pair.reserve0, token0.decimals)
+        );
+        const token1Price = new BigNumber(token1.price).multipliedBy(
+          getCurrency(pair.reserve1, token1.decimals)
+        );
+        const priceByLP = token0Price.plus(token1Price).dividedBy(totalShares);
 
-        const userLPValue = new BigNumber(userShares).multipliedBy(lpPrice);
+        const userLPValue = new BigNumber(userShares).multipliedBy(priceByLP);
 
         return userLPValue.toString();
       }
@@ -260,64 +256,68 @@ export const LiquidityListView = () => {
           pb={8}
           overflow="auto"
         >
-          {pairedUserLPTokens.map(({ token0, token1, userShares }, index) => {
-            if (!token0.id || !token1.id) {
-              return null;
+          {pairedUserLPTokens.map(
+            ({ token0, token1, userShares, totalShares }, index) => {
+              if (!token0.id || !token1.id) {
+                return null;
+              }
+
+              return (
+                <Asset
+                  key={index}
+                  type="lp"
+                  imageSources={[token0.logo, token1.logo]}
+                >
+                  <HStack spacing={4}>
+                    <AssetImageBlock />
+                    <AssetTitleBlock
+                      title={`${token0.symbol}/${token1.symbol}`}
+                    />
+                  </HStack>
+                  <Box>
+                    <Text fontWeight="bold" color={headerColor}>
+                      LP Tokens
+                    </Text>
+                    <DisplayValue value={userShares} />
+                  </Box>
+
+                  <Box>
+                    <Text fontWeight="bold" color={headerColor}>
+                      LP Value
+                    </Text>
+                    <DisplayValue
+                      color={successColor}
+                      prefix="~$"
+                      value={getUserLPValue(
+                        token0,
+                        token1,
+                        totalShares,
+                        userShares
+                      )}
+                    />
+                  </Box>
+
+                  <HStack>
+                    <AssetIconButton
+                      aria-label="Remove Liquidity"
+                      icon={<FaMinus />}
+                      onClick={() =>
+                        handleOpenRemoveLiquidityModal(token0, token1)
+                      }
+                    />
+                    <AssetIconButton
+                      aria-label="Add Liquidity"
+                      colorScheme="dark-blue"
+                      icon={<FaPlus />}
+                      onClick={() =>
+                        moveToAddLiquidityView(token0.id, token1.id)
+                      }
+                    />
+                  </HStack>
+                </Asset>
+              );
             }
-
-            return (
-              <Asset
-                key={index}
-                type="lp"
-                imageSources={[token0.logo, token1.logo]}
-              >
-                <HStack spacing={4}>
-                  <AssetImageBlock />
-                  <AssetTitleBlock
-                    title={`${token0.symbol}/${token1.symbol}`}
-                  />
-                </HStack>
-                <Box>
-                  <Text fontWeight="bold" color={headerColor}>
-                    LP Tokens
-                  </Text>
-                  <DisplayValue value={userShares} />
-                </Box>
-
-                <Box>
-                  <Text fontWeight="bold" color={headerColor}>
-                    LP Value
-                  </Text>
-                  <DisplayValue
-                    color={successColor}
-                    prefix="~$"
-                    value={getUserLPValue(
-                      token0,
-                      token1,
-                      userShares,
-                      userShares
-                    )}
-                  />
-                </Box>
-
-                <HStack>
-                  <AssetIconButton
-                    aria-label="Remove Liquidity"
-                    icon={<FaMinus />}
-                    onClick={() =>
-                      handleOpenRemoveLiquidityModal(token0, token1)
-                    }
-                  />
-                  <AssetIconButton
-                    aria-label="Add Liquidity"
-                    colorScheme="dark-blue"
-                    icon={<FaPlus />}
-                    onClick={() => moveToAddLiquidityView(token0.id, token1.id)}
-                  />
-                </HStack>
-              </Asset>
-            );
-          })}
+          )}
         </Stack>
       )}
     </>
