@@ -180,10 +180,7 @@ export const LiquidityAddView = () => {
       dispatch(
         liquidityViewActions.setValue({ data: dataKey, value: amountIn })
       );
-      if (
-        token0.metadata &&
-        token1.metadata &&
-      ) {
+      if (token0.metadata && token1.metadata) {
         const lpValue = getAmountEqualLPToken({
           amountIn,
           reserveIn,
