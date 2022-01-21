@@ -90,20 +90,28 @@ export const RemoveLiquidityModal = () => {
           pair.reserve1.toString(),
           token1.metadata.decimals
         );
+
+        const normalizedTotalSupply = getCurrency(
+          pair.totalSupply.toString(),
+          Math.round((token0.metadata.decimals + token1.metadata.decimals) / 2)
+        );
+
         const normalizedTokenBalance = getCurrency(
           tokenBalance.toString(),
           Math.round((token0.metadata.decimals + token1.metadata.decimals) / 2)
         );
 
+        normalizedTotalSupply;
+
         const balance0 = new BigNumber(normalizedTokenBalance)
-          .pow(2)
-          .dividedBy(normalizedReserve1)
+          .dividedBy(normalizedTotalSupply)
+          .multipliedBy(normalizedReserve0)
           .multipliedBy(removeAmountPercentage / 100)
           .toString();
 
         const balance1 = new BigNumber(normalizedTokenBalance)
-          .pow(2)
-          .dividedBy(normalizedReserve0)
+          .dividedBy(normalizedTotalSupply)
+          .multipliedBy(normalizedReserve1)
           .multipliedBy(removeAmountPercentage / 100)
           .toString();
 
