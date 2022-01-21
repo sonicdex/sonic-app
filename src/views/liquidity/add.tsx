@@ -26,7 +26,7 @@ import { FaEquals } from '@react-icons/all-files/fa/FaEquals';
 import { FaInfoCircle } from '@react-icons/all-files/fa/FaInfoCircle';
 import { FaPlus } from '@react-icons/all-files/fa/FaPlus';
 import BigNumber from 'bignumber.js';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 
 import {
@@ -159,53 +159,64 @@ export const LiquidityAddView = () => {
 
   // Utils
 
-  const setInAndOutTokenValues = (
-    dataKey: LiquidityTokenDataKey,
-    value?: string
-  ) => {
-    const [amountIn, reserveIn, reserveOut, decimalsIn, decimalsOut] =
-      dataKey === 'token0'
-        ? [
-            value ?? token0.value,
-            String(pair?.reserve0),
-            String(pair?.reserve1),
-            Number(token0.metadata?.decimals),
-            Number(token1.metadata?.decimals),
-          ]
-        : [
-            value ?? token1.value,
-            String(pair?.reserve1),
-            String(pair?.reserve0),
-            Number(token1.metadata?.decimals),
-            Number(token0.metadata?.decimals),
-          ];
+  const setInAndOutTokenValues = useCallback(
+    (dataKey: LiquidityTokenDataKey, value?: string) => {
+      const [amountIn, reserveIn, reserveOut, decimalsIn, decimalsOut] =
+        dataKey === 'token0'
+          ? [
+              value ?? token0.value,
+              String(pair?.reserve0),
+              String(pair?.reserve1),
+              Number(token0.metadata?.decimals),
+              Number(token1.metadata?.decimals),
+            ]
+          : [
+              value ?? token1.value,
+              String(pair?.reserve1),
+              String(pair?.reserve0),
+              Number(token1.metadata?.decimals),
+              Number(token0.metadata?.decimals),
+            ];
 
-    dispatch(liquidityViewActions.setValue({ data: dataKey, value: amountIn }));
-    if (
-      token0.metadata &&
-      token1.metadata &&
-      allPairs?.[token0.metadata.id]?.[token1.metadata.id]
-    ) {
-      const lpValue = getAmountEqualLPToken({
-        amountIn,
-        reserveIn,
-        reserveOut,
-        decimalsIn,
-        decimalsOut,
-      });
+      dispatch(
+        liquidityViewActions.setValue({ data: dataKey, value: amountIn })
+      );
+      if (
+        token0.metadata &&
+        token1.metadata &&
+        allPairs?.[token0.metadata.id]?.[token1.metadata.id]
+      ) {
+        const lpValue = getAmountEqualLPToken({
+          amountIn,
+          reserveIn,
+          reserveOut,
+          decimalsIn,
+          decimalsOut,
+        });
 
-      const reversedDataKey = dataKey === 'token0' ? 'token1' : 'token0';
+        const reversedDataKey = dataKey === 'token0' ? 'token1' : 'token0';
 
-      if (lpValue) {
-        dispatch(
-          liquidityViewActions.setValue({
-            data: reversedDataKey,
-            value: lpValue,
-          })
-        );
+        if (lpValue) {
+          dispatch(
+            liquidityViewActions.setValue({
+              data: reversedDataKey,
+              value: lpValue,
+            })
+          );
+        }
       }
-    }
-  };
+    },
+    [
+      allPairs,
+      dispatch,
+      pair?.reserve0,
+      pair?.reserve1,
+      token0.metadata,
+      token0.value,
+      token1.metadata,
+      token1.value,
+    ]
+  );
 
   // Memorized values
 
@@ -637,12 +648,14 @@ export const LiquidityAddView = () => {
                   </Text>
                   <Popover trigger="hover">
                     <PopoverTrigger>
-                      <Icon
-                        as={FaInfoCircle}
-                        width={5}
-                        transition="opacity 200ms"
-                        opacity={0.6}
-                      />
+                      <Flex>
+                        <Icon
+                          as={FaInfoCircle}
+                          width={5}
+                          transition="opacity 200ms"
+                          opacity={0.6}
+                        />
+                      </Flex>
                     </PopoverTrigger>
                     <PopoverContent minWidth="400px">
                       <PopoverHeader>Transaction Details</PopoverHeader>

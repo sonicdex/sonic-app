@@ -87,11 +87,13 @@ export const getAmountLP = ({
 }: GetAmountLPOptions) => {
   const one = new BigNumber(token0Amount)
     .times(new BigNumber(totalSupply))
-    .div(new BigNumber(reserve0));
+    .div(new BigNumber(reserve0))
+    .multipliedBy(100);
 
   const two = new BigNumber(token1Amount)
     .times(new BigNumber(totalSupply))
-    .div(new BigNumber(reserve1));
+    .div(new BigNumber(reserve1))
+    .multipliedBy(100);
 
   return Math.min(Number(one), Number(two)).toString();
 };
@@ -142,9 +144,9 @@ export const getLPPercentageString = ({
     totalSupply,
   });
 
-  const result = new BigNumber(amountLp)
-    .dividedBy(new BigNumber(amountLp).plus(new BigNumber(totalSupply)))
-    .multipliedBy(100);
+  const result = new BigNumber(amountLp).dividedBy(
+    new BigNumber(amountLp).plus(new BigNumber(totalSupply))
+  );
 
   if (result.isEqualTo(0)) return '0%';
 

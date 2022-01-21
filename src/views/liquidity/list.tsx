@@ -165,6 +165,9 @@ export const LiquidityListView = () => {
       totalShares: string,
       userShares: string
     ) => {
+      // How many LP tokens I have divided by total LP tokens in the pool = percentage of a pool
+      // Multiply poap by amount of tokens of each reserves
+      // Multiply by a price
       const pair = allPairs?.[token0.id]?.[token1.id];
 
       if (pair && token0.price && token1.price) {

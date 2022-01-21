@@ -23,7 +23,7 @@ export const ENV = {
   URLs: {
     termsAndConditions:
       process.env.TERMS_AND_CONDITIONS ||
-      'https://docs.metasportsbball.xyz/resources/disclaimer-terms',
+      'https://docs.sonic.ooo/resources/disclaimer-terms',
     tokenRequestForm:
       process.env.TOKEN_REQUEST_FORM_URL ||
       'https://form.typeform.com/to/YnSyAUn0',
