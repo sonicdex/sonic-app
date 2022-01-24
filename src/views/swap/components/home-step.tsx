@@ -414,7 +414,12 @@ export const SwapHomeStep = () => {
 
   const handleSetIsAutoSlippage = (isAutoSlippage: boolean) => {
     setAutoSlippage(isAutoSlippage);
-    dispatch(swapViewActions.setSlippage(INITIAL_SWAP_SLIPPAGE));
+  };
+
+  const handleMenuClose = () => {
+    if (autoSlippage) {
+      dispatch(swapViewActions.setSlippage(INITIAL_SWAP_SLIPPAGE));
+    }
   };
 
   const swapPlacementButtonBg = useColorModeValue('gray.50', 'gray.800');
@@ -424,11 +429,7 @@ export const SwapHomeStep = () => {
   return (
     <Stack spacing={4}>
       <ViewHeader title="Swap">
-        <Menu
-          onClose={() =>
-            Number(slippage) >= 50 && handleSetIsAutoSlippage(true)
-          }
-        >
+        <Menu onClose={handleMenuClose}>
           <Tooltip label="Adjust the slippage">
             <MenuButton
               as={IconButton}

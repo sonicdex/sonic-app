@@ -23,7 +23,7 @@ export const NumberInput = forwardRef<NumberInputProps, 'input'>(
       }
     };
 
-    const color = useColorModeValue('gray.600', 'gray.300');
+    const color = useColorModeValue('gray.500', 'gray.300');
 
     return (
       <Input

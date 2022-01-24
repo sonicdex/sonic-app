@@ -5,6 +5,8 @@ import {
   Flex,
   HStack,
   Icon,
+  InputGroup,
+  InputRightElement,
   Stack,
   Text,
   useColorModeValue,
@@ -27,13 +29,13 @@ export const SlippageSettings = ({
   isAutoSlippage,
   setIsAutoSlippage,
 }: SlippageSettingsProps) => {
-  const inputBorderColorDisabled = useColorModeValue('gray.300', 'custom.4');
+  const inputBorderColorDisabled = useColorModeValue('gray.200', 'custom.4');
   const inputBorderColorEnabled = 'dark-blue.500';
   const inputBorderColor = isAutoSlippage
     ? inputBorderColorDisabled
     : inputBorderColorEnabled;
 
-  const inputColorDisabled = useColorModeValue('gray.600', 'custom.1');
+  const inputColorDisabled = useColorModeValue('gray.400', 'custom.1');
   const inputColorEnabled = useColorModeValue('gray.800', 'gray.50');
   const inputColor = isAutoSlippage ? inputColorDisabled : inputColorEnabled;
 
@@ -65,6 +67,7 @@ export const SlippageSettings = ({
 
   const warningMessage = useMemo(() => {
     if (Number(slippage) > 50) {
+      setIsAutoSlippage(true);
       return 'Enter a valid slippage percentage (default: 0.5%)';
     }
 
@@ -96,36 +99,26 @@ export const SlippageSettings = ({
         >
           Auto
         </Button>
-        <Box
-          _after={{
-            content: '"%"',
-            fontWeight: 600,
-            fontSize: '14px',
-            ml: 1,
-            mr: 4,
-          }}
-          onClick={handleInputClick}
-          borderColor={inputBorderColor}
-          borderStyle="solid"
-          borderWidth="1px"
-          borderRadius="full"
-          display="inline-block"
-        >
+        <InputGroup color={inputColor} fontWeight={600}>
           <NumberInput
+            opacity={1}
+            color={inputColor}
+            borderColor={inputBorderColor}
+            borderStyle="solid"
+            borderWidth="1px"
+            borderRadius="full"
             value={slippage}
             setValue={handleChange}
+            onClick={handleInputClick}
             onBlur={handleBlur}
-            ml={4}
-            py={2.5}
-            px={2.5}
+            pr={8}
+            pl={2.5}
+            pt={2.5}
+            pb={2}
             fontSize="sm"
-            fontWeight={600}
-            color={inputColor}
-            borderRadius="full"
-            margin-right="25px"
-            w="unset"
           />
-        </Box>
+          <InputRightElement fontSize="sm">%</InputRightElement>
+        </InputGroup>
       </Flex>
       {warningMessage && (
         <HStack textAlign="left" color={messageColor} maxW="320px" spacing={4}>

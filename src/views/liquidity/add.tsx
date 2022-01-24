@@ -433,7 +433,12 @@ export const LiquidityAddView = () => {
 
   const handleSetIsAutoSlippage = (isAutoSlippage: boolean) => {
     setAutoSlippage(isAutoSlippage);
-    dispatch(liquidityViewActions.setSlippage(INITIAL_LIQUIDITY_SLIPPAGE));
+  };
+
+  const handleMenuClose = () => {
+    if (autoSlippage) {
+      dispatch(liquidityViewActions.setSlippage(INITIAL_LIQUIDITY_SLIPPAGE));
+    }
   };
 
   const menuListShadow = useColorModeValue('lg', 'none');
@@ -446,11 +451,7 @@ export const LiquidityAddView = () => {
   return (
     <Stack spacing={4}>
       <ViewHeader onArrowBack={handlePreviousStep} title="Add Liquidity">
-        <Menu
-          onClose={() =>
-            Number(slippage) >= 50 && handleSetIsAutoSlippage(true)
-          }
-        >
+        <Menu onClose={handleMenuClose}>
           <Tooltip label="Adjust the slippage">
             <MenuButton
               as={IconButton}
@@ -502,7 +503,9 @@ export const LiquidityAddView = () => {
               <TokenBalancesDetails
                 onMaxClick={() => handleTokenMaxClick('token0')}
               />
-              <TokenBalancesPrice />
+              <TokenBalancesPrice>
+                {/* TODO: tooltip XTC ICP */}
+              </TokenBalancesPrice>
             </TokenBalances>
           </Token>
         </Box>
