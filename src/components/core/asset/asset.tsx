@@ -74,7 +74,7 @@ export const AssetIconButton = ({
   const { isLoading } = useAssetContext();
 
   return (
-    <SkeletonCircle h={10} w={10} isLoaded={!isLoading}>
+    <SkeletonCircle h={10} w={10} minW="fit-content" isLoaded={!isLoading}>
       <Tooltip label={ariaLabel} {...tooltipProps}>
         <IconButton
           isRound
@@ -113,9 +113,18 @@ export const AssetTitleBlock = ({
         </Heading>
       </Skeleton>
       <Skeleton isLoaded={!isLoading} width={isLoading ? 40 : 'unset'}>
-        <Text fontSize="sm" color={subtitleColor}>
-          {subtitle}
-        </Text>
+        <Tooltip label={subtitle} openDelay={1000}>
+          <Text
+            fontSize="sm"
+            color={subtitleColor}
+            textOverflow="ellipsis"
+            whiteSpace="nowrap"
+            overflow="hidden"
+            maxW="100%"
+          >
+            {subtitle}
+          </Text>
+        </Tooltip>
       </Skeleton>
     </Box>
   );
