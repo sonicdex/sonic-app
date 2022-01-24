@@ -417,9 +417,9 @@ export const SwapHomeStep = () => {
     dispatch(swapViewActions.setSlippage(INITIAL_SWAP_SLIPPAGE));
   };
 
-  const swapPlacementButtonBg = useColorModeValue('gray.200', 'gray.800');
-  const menuListBg = useColorModeValue('gray.50', 'custom.2');
+  const swapPlacementButtonBg = useColorModeValue('gray.50', 'gray.800');
   const menuListShadow = useColorModeValue('lg', 'none');
+  const menuListBg = useColorModeValue('white', 'custom.3');
 
   return (
     <Stack spacing={4}>

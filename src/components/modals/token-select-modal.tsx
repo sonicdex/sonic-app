@@ -98,7 +98,7 @@ export const TokenSelectModal = () => {
     dispatch(modalsSliceActions.closeTokenSelectModal());
   };
 
-  const bg = useColorModeValue('gray.50', 'custom.2');
+  const bg = useColorModeValue('white', 'custom.2');
   const color = useColorModeValue('gray.600', 'custom.1');
   const emptyColor = useColorModeValue('gray.600', 'gray.300');
 
@@ -299,12 +299,13 @@ const TokenSelectItem = ({
       cursor="pointer"
       width="100%"
       transition="border 400ms"
-      border="1px solid transparent"
+      border="1px solid"
+      borderColor={isSelected ? 'custom.4' : 'transparent'}
       opacity={tokenOpacity}
       borderRadius="20px"
       onClick={onSelect}
       _hover={{
-        border: !isSelected && '1px solid #4F4F4F',
+        borderColor: 'custom.4',
       }}
     >
       <Stack direction="row" alignItems="center" spacing={4}>

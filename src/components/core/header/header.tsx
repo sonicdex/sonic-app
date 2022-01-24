@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  Divider,
   Flex,
   Spinner,
   useColorModeValue,
@@ -25,8 +26,7 @@ export const Header: React.FC<HeaderProps> = ({
   const marginTop = buttonText && onButtonClick ? '-8px' : '0px';
 
   const color = useColorModeValue('gray.800', 'gray.50');
-  const borderColor = useColorModeValue('gray.100', 'custom.3');
-  const backgroundColor = useColorModeValue('white', 'black');
+  const backgroundColor = useColorModeValue('dark-blue.50', 'black');
 
   return (
     <Flex
@@ -47,8 +47,6 @@ export const Header: React.FC<HeaderProps> = ({
         alignItems="center"
         pb={paddingToLine}
         mt={marginTop}
-        borderBottom="1px solid"
-        borderColor={borderColor}
       >
         <Box as="h3" fontWeight={700} color={color}>
           {title}
@@ -64,6 +62,7 @@ export const Header: React.FC<HeaderProps> = ({
           </Button>
         )}
       </Flex>
+      <Divider />
     </Flex>
   );
 };

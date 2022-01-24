@@ -15,7 +15,7 @@ type TransactionFailedModalContentProps = {
 export const TransactionFailedModalContent: React.FC<
   TransactionFailedModalContentProps
 > = ({ title, children }) => {
-  const bg = useColorModeValue('gray.50', 'custom.2');
+  const bg = useColorModeValue('white', 'custom.2');
   const color = useColorModeValue('gray.600', 'custom.1');
 
   return (

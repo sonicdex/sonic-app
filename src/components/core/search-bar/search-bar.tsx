@@ -15,7 +15,7 @@ export const SearchBar = ({ search, setSearch }: SearchBarProps) => {
     setSearch(inputValue);
   };
 
-  const bg = useColorModeValue('gray.100', 'custom.3');
+  const bg = useColorModeValue('gray.50', 'custom.3');
   const color = useColorModeValue('gray.800', 'gray.50');
   const shadow = useColorModeValue('base', 'none');
 

@@ -42,7 +42,7 @@ export const Layout: React.FC = ({ children, ...props }) => {
     [location]
   );
 
-  const backgroundColor = useColorModeValue('white', 'black');
+  const backgroundColor = useColorModeValue('dark-blue.50', 'black');
 
   const { colorMode, toggleColorMode } = useColorMode();
 
