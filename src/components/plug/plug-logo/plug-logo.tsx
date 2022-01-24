@@ -1,4 +1,8 @@
+import { useColorModeValue } from '@chakra-ui/react';
+
 export const PlugLogo = () => {
+  const socketColor = useColorModeValue('black', 'white');
+
   return (
     <svg
       width="18"
@@ -10,11 +14,11 @@ export const PlugLogo = () => {
       <g clipPath="url(#clip0_88:618)">
         <path
           d="M3.36523 0.413793C3.36523 0.185261 3.54425 0 3.76509 0H5.59107C5.81191 0 5.99093 0.185261 5.99093 0.413793V6.66207H3.36523V0.413793Z"
-          fill="white"
+          fill={socketColor}
         />
         <path
           d="M11.9492 0.413793C11.9492 0.185261 12.1282 0 12.3491 0H14.1751C14.3959 0 14.5749 0.185261 14.5749 0.413793V6.66207H11.9492V0.413793Z"
-          fill="white"
+          fill={socketColor}
         />
         <path
           d="M0 7.75323C0 7.1522 0.470772 6.66504 1.0515 6.66504H16.9423C17.523 6.66504 17.9938 7.1522 17.9938 7.75323V13.1736C17.9938 18.3157 13.9658 22.4842 8.99687 22.4842C4.02805 22.4842 0 18.3157 0 13.1736V7.75323Z"

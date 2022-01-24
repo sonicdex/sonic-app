@@ -16,6 +16,7 @@ export const colors = {
     1: '#888E8F',
     2: '#1E1E1E',
     3: '#282828',
+    4: '#373737',
   },
   ['dark-blue']: {
     50: '#eceefe',

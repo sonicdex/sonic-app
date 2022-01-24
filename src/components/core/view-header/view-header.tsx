@@ -20,8 +20,8 @@ export const ViewHeader: React.FC<ViewHeaderProps> = ({
   const titleRightAdjustment = children ? 8 : 'auto';
   const titleLeftAdjustment = onArrowBack ? 8 : 'auto';
 
-  const bg = useColorModeValue('gray.50', 'custom.2');
-  const shadow = useColorModeValue('md', 'none');
+  const bg = useColorModeValue('white', 'custom.2');
+  const shadow = useColorModeValue('base', 'none');
   const color = useColorModeValue('gray.800', 'gray.50');
 
   return (

@@ -67,14 +67,14 @@ export const Token: React.FC<TokenProps> = ({
   ...tokenProps
 }) => {
   const borderGlow = useColorModeValue('dark-blue.300', 'dark-blue.500');
-  const borderNotGlow = useColorModeValue('gray.50', '#373737');
+  const borderNotGlow = useColorModeValue('gray.200', 'custom.4');
   const borderColor = shouldGlow ? borderGlow : borderNotGlow;
 
   const backgroundGlow = useColorModeValue('white', 'black');
-  const backgroundNotGlow = useColorModeValue('gray.50', 'custom.2');
+  const backgroundNotGlow = useColorModeValue('white', 'custom.2');
   const background = shouldGlow ? backgroundGlow : backgroundNotGlow;
 
-  const shadow = useColorModeValue('lg', 'none');
+  const shadow = useColorModeValue('base', 'none');
 
   return (
     <TokenProvider value={{ shouldGlow, ...tokenProps }}>
@@ -84,9 +84,8 @@ export const Token: React.FC<TokenProps> = ({
         border="1px solid"
         borderColor={borderColor}
         shadow={shadow}
-        pt={5}
+        py={5}
         px={5}
-        pb={4}
         transition="border 400ms"
         position="relative"
         {...htmlProps}
@@ -194,6 +193,7 @@ export type TokenBalancesPriceProps = BoxProps & {
 
 export const TokenBalancesPrice: React.FC<TokenBalancesPriceProps> = ({
   priceImpact,
+  children,
   ...props
 }) => {
   const { isLoading, value, tokenMetadata } = useTokenContext();
@@ -247,6 +247,7 @@ export const TokenBalancesPrice: React.FC<TokenBalancesPriceProps> = ({
             suffix="%)"
           />
         )}
+        {children}
       </Flex>
     </Skeleton>
   );

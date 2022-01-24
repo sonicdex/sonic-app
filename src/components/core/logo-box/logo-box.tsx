@@ -4,8 +4,8 @@ import { useColorModeValue } from '@chakra-ui/react';
 import { Logo } from '../logo';
 
 export const LogoBox = () => {
-  const stackBg = useColorModeValue('gray.50', 'gray.800');
-  const shadow = useColorModeValue('lg', 'none');
+  const stackBg = useColorModeValue('white', 'gray.800');
+  const shadow = useColorModeValue('base', 'none');
 
   return (
     <Stack

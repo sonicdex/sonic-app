@@ -9,7 +9,7 @@ const common = require('./webpack.common.js');
 module.exports = (env) => {
   return merge(common(env), {
     mode: 'production',
-    devtool: 'source-map',
+    devtool: 'hidden-source-map',
     target: 'browserslist',
     bail: true,
     output: {
