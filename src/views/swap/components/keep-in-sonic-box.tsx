@@ -39,7 +39,7 @@ export const KeepInSonicBox: React.FC<KeepInSonicBoxProps> = ({
 
   const linkColor = useColorModeValue('dark-blue.300', 'dark-blue.500');
   const bg = useColorModeValue('gray.50', 'custom.2');
-  const shadow = useColorModeValue('md', 'none');
+  const shadow = useColorModeValue('base', 'none');
 
   const checkboxColorKeepInSonic = useColorModeValue('black', 'white');
   const checkboxColorNotKeepInSonic = useColorModeValue('gray.600', 'custom.1');

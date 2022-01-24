@@ -17,7 +17,7 @@ export const SearchBar = ({ search, setSearch }: SearchBarProps) => {
 
   const bg = useColorModeValue('gray.100', 'custom.3');
   const color = useColorModeValue('gray.800', 'gray.50');
-  const shadow = useColorModeValue('lg', 'none');
+  const shadow = useColorModeValue('base', 'none');
 
   return (
     <Flex

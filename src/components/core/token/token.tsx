@@ -74,7 +74,7 @@ export const Token: React.FC<TokenProps> = ({
   const backgroundNotGlow = useColorModeValue('gray.50', 'custom.2');
   const background = shouldGlow ? backgroundGlow : backgroundNotGlow;
 
-  const shadow = useColorModeValue('lg', 'none');
+  const shadow = useColorModeValue('base', 'none');
 
   return (
     <TokenProvider value={{ shouldGlow, ...tokenProps }}>

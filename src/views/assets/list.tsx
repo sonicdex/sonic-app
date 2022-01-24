@@ -34,6 +34,7 @@ import {
   usePlugStore,
   useSwapCanisterStore,
 } from '@/store';
+import { getCurrencyString } from '@/utils/format';
 
 export const AssetsListView = () => {
   const dispatch = useAppDispatch();
@@ -114,6 +115,18 @@ export const AssetsListView = () => {
     },
     [tokenBalances]
   );
+
+  const getAssetPriceByBalanceAmount = (
+    price?: string,
+    balanceAmount?: number,
+    decimals?: number
+  ) => {
+    if (price && balanceAmount && decimals) {
+      return Number(price) * Number(getCurrencyString(balanceAmount, decimals));
+    }
+
+    return price;
+  };
 
   return (
     <>
@@ -205,7 +218,13 @@ export const AssetsListView = () => {
                     <DisplayValue
                       fontWeight="bold"
                       prefix="~$"
-                      value={price ?? 0}
+                      value={
+                        getAssetPriceByBalanceAmount(
+                          price,
+                          totalBalances?.[id],
+                          decimals
+                        ) ?? 0
+                      }
                     />
                   </Box>
 
