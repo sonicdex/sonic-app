@@ -2,7 +2,7 @@
   "name": "sonic-app",
   "version": "0.0.1",
   "description": "Sonic application built with React and Typescript.",
-  "main": "index.js",
+  "main": "dist/index.js",
   "private": true,
   "scripts": {
     "dev": "webpack-cli serve --open --config webpack.dev.js",

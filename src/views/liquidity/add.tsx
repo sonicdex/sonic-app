@@ -437,9 +437,11 @@ export const LiquidityAddView = () => {
   };
 
   const menuListShadow = useColorModeValue('lg', 'none');
-  const menuListBg = useColorModeValue('gray.50', 'custom.2');
+  const menuListBg = useColorModeValue('white', 'custom.3');
   const color = useColorModeValue('gray.600', 'custom.1');
   const bg = useColorModeValue('gray.100', 'gray.800');
+  const iconBorderColor = useColorModeValue('gray.200', 'custom.4');
+  const textColor = useColorModeValue('gray.700', 'gray.300');
 
   return (
     <Stack spacing={4}>
@@ -508,11 +510,12 @@ export const LiquidityAddView = () => {
           borderRadius={12}
           width={10}
           height={10}
-          border="1px solid #373737"
+          border="1px solid"
+          borderColor={iconBorderColor}
           bg={menuListBg}
           mt={-2}
           mb={-2}
-          zIndex={1200}
+          zIndex="docked"
         >
           <Icon as={FaPlus} />
         </Center>
@@ -561,13 +564,14 @@ export const LiquidityAddView = () => {
                   borderRadius={12}
                   width={10}
                   height={10}
-                  border="1px solid #373737"
+                  border="1px solid"
+                  borderColor={iconBorderColor}
                   bg={menuListBg}
                   mt={-2}
                   mb={-2}
-                  zIndex={1200}
                   justifyContent="center"
                   alignItems="center"
+                  zIndex="docked"
                 >
                   <Icon as={FaEquals} />
                 </Center>
@@ -632,13 +636,13 @@ export const LiquidityAddView = () => {
                 mt={5}
                 px={5}
               >
-                <Text color="gray.300">
+                <Text color={textColor}>
                   {`1 ${token0.metadata?.symbol} = `}{' '}
                   <DisplayValue as="span" value={token1Price} />{' '}
                   {` ${token1.metadata?.symbol}`}
                 </Text>
                 <HStack>
-                  <Text color="gray.300">
+                  <Text color={textColor}>
                     {`1 ${token1.metadata?.symbol} = `}{' '}
                     <DisplayValue as="span" value={token0Price} />{' '}
                     {`${token0.metadata?.symbol}`}

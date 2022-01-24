@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  Divider,
   Flex,
   HStack,
   Icon,
@@ -26,7 +27,7 @@ export const SlippageSettings = ({
   isAutoSlippage,
   setIsAutoSlippage,
 }: SlippageSettingsProps) => {
-  const inputBorderColorDisabled = useColorModeValue('gray.300', 'custom.3');
+  const inputBorderColorDisabled = useColorModeValue('gray.300', 'custom.4');
   const inputBorderColorEnabled = 'dark-blue.500';
   const inputBorderColor = isAutoSlippage
     ? inputBorderColorDisabled
@@ -78,16 +79,10 @@ export const SlippageSettings = ({
 
   return (
     <Stack zIndex="popover" px={5} pt={3} pb={3}>
-      <Box
-        as="h1"
-        pb={2}
-        textAlign="left"
-        fontSize="16px"
-        w="100%"
-        borderBottom="1px solid #373737"
-      >
+      <Box as="h1" textAlign="left" fontSize="16px" w="100%">
         Transaction Settings
       </Box>
+      <Divider />
       <Box as="p" fontSize="14px" textAlign="left" fontWeight={400}>
         Slippage tolerance
       </Box>

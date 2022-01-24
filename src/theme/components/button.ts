@@ -150,11 +150,11 @@ const variantGradient: SystemStyleFunction = (props) => {
   const { colorScheme: c, theme } = props;
 
   const gradientColor0 = mode(
-    theme.colors[c][300],
+    theme.colors[c][400],
     theme.colors[c][500]
   )(props);
   const gradientColor1 = mode(
-    theme.colors[c][500],
+    theme.colors[c][600],
     theme.colors[c][700]
   )(props);
 
@@ -165,12 +165,14 @@ const variantGradient: SystemStyleFunction = (props) => {
     color: mode(`white`, `gray.50`)(props),
     bg: background,
     _disabled: {
-      background: 'gray.700',
+      background: mode('gray.200', 'gray.700')(props),
+      color: mode(`gray.800`, `gray.50`)(props),
     },
     _hover: {
       background,
       _disabled: {
-        background: 'gray.700',
+        background: mode('gray.200', 'gray.700')(props),
+        color: mode(`gray.800`, `gray.50`)(props),
       },
     },
     _active: {
