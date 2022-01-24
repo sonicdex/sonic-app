@@ -93,14 +93,23 @@ export const swapViewSlice = createSlice({
       const { allPairs, tokenList } = state;
       const { data, tokenId } = action.payload;
       if (tokenId && tokenList && allPairs) {
-        const paths = getTokenPaths(allPairs as PairList, tokenList, tokenId);
+        const paths = getTokenPaths(
+          allPairs as PairList,
+          tokenList,
+          tokenId,
+          state.from.value
+        );
 
         state[data].metadata = {
           ...tokenList[tokenId],
         };
         state[data].paths = paths;
         if (data === 'from') {
-          state.baseTokenPaths = paths;
+          state.baseTokenPaths = getTokenPaths(
+            allPairs as PairList,
+            tokenList,
+            tokenId
+          );
         }
       } else {
         state[data].metadata = undefined;
