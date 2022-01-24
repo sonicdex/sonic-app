@@ -1,5 +1,5 @@
 import {
-  Box,
+  Flex,
   HStack,
   Icon,
   // AlertDescription,
@@ -25,16 +25,31 @@ import {
   TokenBalancesPopover,
 } from '@/components';
 import { getAppAssetsSources } from '@/config/utils';
+import { ICP_METADATA } from '@/constants';
 import { useBalances } from '@/hooks/use-balances';
+import { AppTokenMetadata } from '@/models';
 import {
   assetsViewActions,
   FeatureState,
   useAppDispatch,
   useAssetsViewStore,
   usePlugStore,
+  usePriceStore,
   useSwapCanisterStore,
 } from '@/store';
 import { getCurrencyString } from '@/utils/format';
+
+const getAssetPriceByBalanceAmount = (
+  price?: string,
+  balanceAmount?: number,
+  decimals?: number
+) => {
+  if (price && balanceAmount && decimals) {
+    return Number(price) * Number(getCurrencyString(balanceAmount, decimals));
+  }
+
+  return price;
+};
 
 export const AssetsListView = () => {
   const dispatch = useAppDispatch();
@@ -42,6 +57,7 @@ export const AssetsListView = () => {
   const { totalBalances, sonicBalances, tokenBalances } = useBalances();
   const { supportedTokenListState, balancesState, supportedTokenList } =
     useSwapCanisterStore();
+  const { icpPrice } = usePriceStore();
   const { isConnected } = usePlugStore();
 
   const navigate = useNavigate();
@@ -63,14 +79,19 @@ export const AssetsListView = () => {
   };
 
   const notEmptyTokenList = useMemo(() => {
-    if (supportedTokenList && totalBalances) {
-      return supportedTokenList.filter(
+    const supportedTokenListWithICP: AppTokenMetadata[] = [
+      Object.assign({}, ICP_METADATA, { price: icpPrice }),
+      ...(supportedTokenList || []),
+    ];
+
+    if (totalBalances) {
+      return supportedTokenListWithICP.filter(
         (token) => totalBalances[token.id] !== 0
       );
     }
 
     return [];
-  }, [supportedTokenList, totalBalances]);
+  }, [supportedTokenList, totalBalances, icpPrice]);
 
   const isTokenListPresent = useMemo(
     () => notEmptyTokenList && notEmptyTokenList.length > 0,
@@ -96,37 +117,25 @@ export const AssetsListView = () => {
 
   const getCanWithdraw = useCallback(
     (tokenId: string) => {
-      if (sonicBalances?.[tokenId] === 0) {
-        return false;
-      }
-
-      return true;
+      return (
+        tokenId !== ICP_METADATA.id &&
+        sonicBalances &&
+        sonicBalances[tokenId] > 0
+      );
     },
     [sonicBalances]
   );
 
   const getCanDeposit = useCallback(
     (tokenId: string) => {
-      if (tokenBalances?.[tokenId] === 0) {
-        return false;
-      }
-
-      return true;
+      return (
+        tokenId !== ICP_METADATA.id &&
+        tokenBalances &&
+        tokenBalances[tokenId] > 0
+      );
     },
     [tokenBalances]
   );
-
-  const getAssetPriceByBalanceAmount = (
-    price?: string,
-    balanceAmount?: number,
-    decimals?: number
-  ) => {
-    if (price && balanceAmount && decimals) {
-      return Number(price) * Number(getCurrencyString(balanceAmount, decimals));
-    }
-
-    return price;
-  };
 
   return (
     <>
@@ -169,25 +178,38 @@ export const AssetsListView = () => {
               </Asset>
             </>
           ) : isTokenListPresent ? (
-            notEmptyTokenList?.map(
+            notEmptyTokenList.map(
               ({ id, name, symbol, decimals, price, logo }) => (
                 <Asset key={id} imageSources={[logo]}>
-                  <HStack spacing={4}>
+                  <HStack
+                    spacing={4}
+                    flex={2}
+                    maxW="180px"
+                    overflow="hidden"
+                    mr={4}
+                  >
                     <AssetImageBlock />
-                    <AssetTitleBlock title={symbol} subtitle={name} />
+                    <AssetTitleBlock
+                      title={symbol}
+                      subtitle={name}
+                      overflow="hidden"
+                    />
                   </HStack>
 
                   <TokenBalancesPopover
                     sources={getAppAssetsSources({
                       balances: {
-                        plug: tokenBalances?.[id],
+                        plug:
+                          id === ICP_METADATA.id
+                            ? totalBalances?.[id]
+                            : tokenBalances?.[id],
                         sonic: sonicBalances?.[id],
                       },
                     })}
                     decimals={decimals}
                     symbol={symbol}
                   >
-                    <Box>
+                    <Flex flex={1} direction="column">
                       <Text
                         fontWeight="bold"
                         color={headerColor}
@@ -209,9 +231,9 @@ export const AssetsListView = () => {
                         fontWeight="bold"
                         disableTooltip
                       />
-                    </Box>
+                    </Flex>
                   </TokenBalancesPopover>
-                  <Box>
+                  <Flex flex={1} direction="column">
                     <Text fontWeight="bold" color={headerColor}>
                       Price
                     </Text>
@@ -226,7 +248,7 @@ export const AssetsListView = () => {
                         ) ?? 0
                       }
                     />
-                  </Box>
+                  </Flex>
 
                   <HStack>
                     <AssetIconButton

@@ -13,7 +13,7 @@ export const SwapImageBlock: React.FC<SwapImageBlockProps> = ({
   imageSources = [questionMarkSrc, questionMarkSrc],
 }) => {
   return (
-    <Box width={10} height={10} position="relative">
+    <Box width={10} height={10} position="relative" minW="fit-content">
       <SkeletonCircle h={6} w={6} isLoaded={!isLoading}>
         <Image
           alt="token from"
