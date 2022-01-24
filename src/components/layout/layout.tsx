@@ -5,6 +5,7 @@ import {
   GridItem,
   HStack,
   IconButton,
+  Link as ChakraLink,
   Tab,
   TabList,
   Tabs,
@@ -69,8 +70,31 @@ export const Layout: React.FC = ({ children, ...props }) => {
             background: `linear-gradient(to bottom, ${theme.colors.bg} 0%, transparent 100%)`,
           }}
         >
-          <GridItem colSpan={1} justifySelf="center" alignItems="center">
+          <GridItem
+            as={HStack}
+            spacing={4}
+            colSpan={1}
+            justifySelf="center"
+            alignItems="center"
+          >
             <LogoBox />
+            <ChakraLink
+              href={ENV.URLs.sonicDocs}
+              target="_blank"
+              rel="noopener noreferrer"
+              fontWeight="bold"
+            >
+              Docs
+            </ChakraLink>
+
+            <ChakraLink
+              href={`${ENV.URLs.sonicDocs}/dev/swaps-api`}
+              target="_blank"
+              rel="noopener noreferrer"
+              fontWeight="bold"
+            >
+              API
+            </ChakraLink>
           </GridItem>
           <GridItem colSpan={3} justifySelf="center">
             <chakra.nav>

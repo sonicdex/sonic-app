@@ -21,8 +21,9 @@ export const ENV = {
       'cc659fe529756bae6f72db9937c6c60cf7ad57eb4ac5f930a75748927aab469a',
   },
   URLs: {
+    sonicDocs: process.env.SONIC_DOCS_URL || 'https://docs.sonic.ooo',
     termsAndConditions:
-      process.env.TERMS_AND_CONDITIONS ||
+      process.env.TERMS_AND_CONDITIONS_URL ||
       'https://docs.sonic.ooo/resources/disclaimer-terms',
     tokenRequestForm:
       process.env.TOKEN_REQUEST_FORM_URL ||

@@ -3,6 +3,7 @@ const webpack = require('webpack');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 require('dotenv').config();
 const CopyPlugin = require('copy-webpack-plugin');
+const { EnvironmentPlugin } = require('webpack');
 
 module.exports = () => {
   return {
@@ -53,6 +54,9 @@ module.exports = () => {
       new webpack.ProvidePlugin({
         Buffer: [require.resolve('buffer/'), 'Buffer'],
         process: 'process/browser',
+      }),
+      new EnvironmentPlugin({
+        SONIC_DOCS_URL: 'https://docs.sonic.ooo',
       }),
       new CopyPlugin({
         patterns: [
