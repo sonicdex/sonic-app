@@ -322,6 +322,28 @@ export const SwapHomeStep = () => {
     dispatch,
   ]);
 
+  const headerTitle = useMemo(() => {
+    if (isFromTokenIsICP && isToTokenIsXTC) {
+      return 'Mint XTC';
+    }
+
+    if (isFromTokenIsICP && isToTokenIsWICP) {
+      return 'Wrap';
+    }
+
+    if (isFromTokenIsWICP && isToTokenIsICP) {
+      return 'Unwrap';
+    }
+
+    return 'Swap';
+  }, [
+    isFromTokenIsICP,
+    isToTokenIsXTC,
+    isToTokenIsWICP,
+    isFromTokenIsWICP,
+    isToTokenIsICP,
+  ]);
+
   const priceImpact = useMemo(() => {
     if (from.metadata?.price && to.metadata?.price) {
       return calculatePriceImpact({
@@ -428,7 +450,7 @@ export const SwapHomeStep = () => {
 
   return (
     <Stack spacing={4}>
-      <ViewHeader title="Swap">
+      <ViewHeader title={headerTitle}>
         <Menu onClose={handleMenuClose}>
           <Tooltip label="Adjust the slippage">
             <MenuButton
