@@ -26,7 +26,12 @@ import { arrowBackSrc, questionMarkSrc } from '@/assets';
 import { ENV } from '@/config';
 import { useBalances } from '@/hooks/use-balances';
 import { AppTokenMetadata } from '@/models';
-import { modalsSliceActions, useAppDispatch, useModalsStore } from '@/store';
+import {
+  FeatureState,
+  modalsSliceActions,
+  useAppDispatch,
+  useModalsStore,
+} from '@/store';
 import { deserialize } from '@/utils/format';
 
 import { DisplayValue, SearchBar } from '..';
@@ -273,6 +278,7 @@ type TokenSelectItemProps = Partial<{
   decimals: number;
   isSelected: boolean;
   isLoading: boolean;
+
   logoSrc: string;
 }>;
 
@@ -284,8 +290,15 @@ const TokenSelectItem = ({
   decimals = 0,
   isSelected = false,
   isLoading = false,
+
   logoSrc = questionMarkSrc,
 }: TokenSelectItemProps) => {
+  const { balancesState } = useBalances();
+
+  const isBalancesUpdating = useMemo(() => {
+    return balancesState === FeatureState.Updating;
+  }, [balancesState]);
+
   const tokenOpacity = isSelected ? 0.3 : 1;
 
   const nameColor = useColorModeValue('gray.700', 'gray.300');
@@ -329,6 +342,7 @@ const TokenSelectItem = ({
       </Stack>
       <Skeleton isLoaded={!isLoading} minWidth="fit-content" ml={3}>
         <DisplayValue
+          isUpdating={isBalancesUpdating}
           value={balance}
           decimals={decimals}
           as="p"

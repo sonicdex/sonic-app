@@ -22,10 +22,10 @@ import {
   PlugButton,
   SlippageSettings,
   Token,
-  TokenBalances,
-  TokenBalancesDetails,
-  TokenBalancesPrice,
   TokenContent,
+  TokenData,
+  TokenDataBalances,
+  TokenDataPrice,
   TokenDetailsButton,
   TokenDetailsLogo,
   TokenDetailsSymbol,
@@ -52,6 +52,7 @@ import {
   useAppDispatch,
   useNotificationStore,
   usePlugStore,
+  usePriceStore,
   useSwapCanisterStore,
   useSwapViewStore,
   useTokenModalOpener,
@@ -80,6 +81,7 @@ export const SwapHomeStep = () => {
     supportedTokenListState,
     allPairsState,
   } = useSwapCanisterStore();
+  const { state: priceState } = usePriceStore();
   const { isConnected } = usePlugStore();
   const [autoSlippage, setAutoSlippage] = useState(true);
 
@@ -158,6 +160,15 @@ export const SwapHomeStep = () => {
       supportedTokenListState === FeatureState.Loading ||
       allPairsState === FeatureState.Loading,
     [balancesState, supportedTokenListState, allPairsState]
+  );
+
+  const isBalancesUpdating = useMemo(
+    () => balancesState === FeatureState.Updating,
+    [balancesState]
+  );
+  const isPriceUpdating = useMemo(
+    () => priceState === FeatureState.Updating,
+    [priceState]
   );
 
   const checkIsPlugProviderVersionCompatible = useCallback(() => {
@@ -502,10 +513,13 @@ export const SwapHomeStep = () => {
 
               <TokenInput autoFocus />
             </TokenContent>
-            <TokenBalances>
-              <TokenBalancesDetails onMaxClick={() => handleMaxClick('from')} />
-              <TokenBalancesPrice />
-            </TokenBalances>
+            <TokenData>
+              <TokenDataBalances
+                isUpdating={isBalancesUpdating}
+                onMaxClick={() => handleMaxClick('from')}
+              />
+              <TokenDataPrice isUpdating={isPriceUpdating} />
+            </TokenData>
           </Token>
         </Box>
 
@@ -563,10 +577,13 @@ export const SwapHomeStep = () => {
 
               <TokenInput />
             </TokenContent>
-            <TokenBalances>
-              <TokenBalancesDetails />
-              <TokenBalancesPrice priceImpact={priceImpact} />
-            </TokenBalances>
+            <TokenData>
+              <TokenDataBalances isUpdating={isBalancesUpdating} />
+              <TokenDataPrice
+                isUpdating={isPriceUpdating}
+                priceImpact={priceImpact}
+              />
+            </TokenData>
           </Token>
         </Box>
       </Flex>

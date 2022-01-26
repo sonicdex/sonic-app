@@ -11,6 +11,7 @@ import { DisplayValue } from '..';
 
 type RemoveLiquidityModalAssetProps = Partial<AppTokenMetadata> & {
   balance: string;
+  isUpdating?: boolean;
 };
 
 export const RemoveLiquidityModalAsset: FC<RemoveLiquidityModalAssetProps> = ({
@@ -18,6 +19,7 @@ export const RemoveLiquidityModalAsset: FC<RemoveLiquidityModalAssetProps> = ({
   logo = questionMarkSrc,
   balance = 0,
   price = 0,
+  isUpdating,
 }) => {
   const balancePrice = useMemo(
     () => new BigNumber(price ?? 0).multipliedBy(balance ?? 0).toNumber(),
@@ -41,10 +43,14 @@ export const RemoveLiquidityModalAsset: FC<RemoveLiquidityModalAssetProps> = ({
       </HStack>
       <Box textAlign="end">
         <Text fontSize="xl" fontWeight="bold">
-          <DisplayValue value={balance} />
+          <DisplayValue value={balance} isUpdating={isUpdating} />
         </Text>
         <Text fontSize="xs">
-          <DisplayValue value={balancePrice} prefix="~$" />
+          <DisplayValue
+            value={balancePrice}
+            prefix="~$"
+            isUpdating={isUpdating}
+          />
         </Text>
       </Box>
     </Flex>

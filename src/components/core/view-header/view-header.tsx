@@ -21,7 +21,7 @@ export const ViewHeader: React.FC<ViewHeaderProps> = ({
   const titleLeftAdjustment = onArrowBack ? 8 : 'auto';
 
   const bg = useColorModeValue('white', 'custom.2');
-  const shadow = useColorModeValue('base', 'none');
+  const shadow = useColorModeValue('sm', 'none');
   const color = useColorModeValue('gray.800', 'gray.50');
 
   return (

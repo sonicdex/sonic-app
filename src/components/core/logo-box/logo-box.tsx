@@ -5,7 +5,7 @@ import { Logo } from '../logo';
 
 export const LogoBox = () => {
   const stackBg = useColorModeValue('white', 'gray.800');
-  const shadow = useColorModeValue('base', 'none');
+  const shadow = useColorModeValue('sm', 'none');
 
   return (
     <Stack

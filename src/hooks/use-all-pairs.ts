@@ -32,7 +32,7 @@ export const useAllPairs = () => {
           if (allPairsState !== FeatureState.Loading) {
             dispatch(
               swapCanisterActions.setAllPairsState(
-                isRefreshing ? FeatureState.Refreshing : FeatureState.Loading
+                isRefreshing ? FeatureState.Updating : FeatureState.Loading
               )
             );
             const response = await swapActor.getAllPairs();

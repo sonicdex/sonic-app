@@ -5,10 +5,10 @@ import { useNavigate } from 'react-router';
 import { plugCircleSrc } from '@/assets';
 import {
   Token,
-  TokenBalances,
-  TokenBalancesDetails,
-  TokenBalancesPrice,
   TokenContent,
+  TokenData,
+  TokenDataBalances,
+  TokenDataPrice,
   TokenDetailsButton,
   TokenDetailsLogo,
   TokenDetailsSymbol,
@@ -175,10 +175,10 @@ export const AssetsDepositView = () => {
 
             <TokenInput autoFocus />
           </TokenContent>
-          <TokenBalances>
-            <TokenBalancesDetails onMaxClick={handleMaxClick} />
-            <TokenBalancesPrice />
-          </TokenBalances>
+          <TokenData>
+            <TokenDataBalances onMaxClick={handleMaxClick} />
+            <TokenDataPrice />
+          </TokenData>
         </Token>
       </Box>
       <FeeBox token={selectedTokenMetadata} isDeposit />

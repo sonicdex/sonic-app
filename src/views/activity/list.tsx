@@ -65,7 +65,7 @@ export const ActivityListView = () => {
       <>
         <Header
           title="Your Activity"
-          isRefreshing={state === FeatureState.Loading}
+          isUpdating={state === FeatureState.Loading}
         />
         <Text textAlign="center" color={color}>
           You have no activity
@@ -78,7 +78,7 @@ export const ActivityListView = () => {
     <>
       <Header
         title="Your Activity"
-        isRefreshing={state === FeatureState.Loading}
+        isUpdating={state === FeatureState.Loading}
       />
       <Stack mt={-5} mb={-5} spacing={4} overflowX="hidden" position="relative">
         <Stack

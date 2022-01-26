@@ -12,14 +12,14 @@ type HeaderProps = {
   title: string;
   buttonText?: string;
   onButtonClick?: React.MouseEventHandler<HTMLButtonElement>;
-  isRefreshing?: boolean;
+  isUpdating?: boolean;
 };
 
 export const Header: React.FC<HeaderProps> = ({
   title,
   buttonText,
   onButtonClick,
-  isRefreshing,
+  isUpdating,
   children,
 }) => {
   const paddingToLine = buttonText && onButtonClick ? '17px' : '24px';
@@ -50,7 +50,7 @@ export const Header: React.FC<HeaderProps> = ({
       >
         <Box as="h3" fontWeight={700} color={color}>
           {title}
-          {isRefreshing && <Spinner width={3} height={3} mx={3} />}
+          {isUpdating && <Spinner width={3} height={3} mx={3} />}
         </Box>
         {buttonText && onButtonClick && (
           <Button

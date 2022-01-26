@@ -12,6 +12,6 @@ export const checkIsConnected = () => window.ic?.plug?.isConnected();
 
 export const getPrincipal = () => window.ic?.plug?.getPrincipal();
 
-export const requestBalance = () => window.ic?.plug?.requestBalance();
+export const requestBalance = () => (window.ic?.plug as any)?.requestBalance();
 
 export const disconnect = () => window.ic?.plug?.disconnect();
