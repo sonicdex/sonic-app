@@ -22,6 +22,7 @@ import { FaBook } from '@react-icons/all-files/fa/FaBook';
 import { FaEllipsisH } from '@react-icons/all-files/fa/FaEllipsisH';
 import { FaMoon } from '@react-icons/all-files/fa/FaMoon';
 import { FaNetworkWired } from '@react-icons/all-files/fa/FaNetworkWired';
+import { FaRedo } from '@react-icons/all-files/fa/FaRedo';
 import { FaSun } from '@react-icons/all-files/fa/FaSun';
 import React, { useMemo } from 'react';
 import { Link, useLocation } from 'react-router-dom';
@@ -53,6 +54,9 @@ export const Layout: React.FC = ({ children, ...props }) => {
   const backgroundColor = useColorModeValue('dark-blue.50', 'black');
 
   const { colorMode, toggleColorMode } = useColorMode();
+
+  const menuBg = useColorModeValue('white', 'custom.2');
+  const menuShadow = useColorModeValue('sm', 'none');
 
   return (
     <>
@@ -118,9 +122,12 @@ export const Layout: React.FC = ({ children, ...props }) => {
                     as={IconButton}
                     aria-label="Menu"
                     icon={<FaEllipsisH />}
+                    borderRadius="full"
+                    bg={menuBg}
+                    shadow={menuShadow}
                   />
                 </Tooltip>
-                <MenuList>
+                <MenuList bg={menuBg} shadow={menuShadow}>
                   <ChakraLink
                     href={ENV.URLs.sonicDocs}
                     target="_blank"
@@ -137,6 +144,7 @@ export const Layout: React.FC = ({ children, ...props }) => {
                   >
                     <MenuItem icon={<FaNetworkWired />}>API</MenuItem>
                   </ChakraLink>
+                  <MenuItem icon={<FaRedo />}>Re-try transaction</MenuItem>
                   {ENV.isDarkModeEnabled && (
                     <MenuItem
                       onClick={toggleColorMode}
