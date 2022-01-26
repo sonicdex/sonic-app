@@ -40,7 +40,6 @@ export type TokenUniqueProps = {
   setValue?: (value: string) => unknown;
   isDisabled?: boolean;
   isLoading?: boolean;
-  isBalancesLoading?: boolean;
   shouldGlow?: boolean;
 };
 
@@ -74,7 +73,7 @@ export const Token: React.FC<TokenProps> = ({
   const backgroundNotGlow = useColorModeValue('white', 'custom.2');
   const background = shouldGlow ? backgroundGlow : backgroundNotGlow;
 
-  const shadow = useColorModeValue('base', 'none');
+  const shadow = useColorModeValue('sm', 'none');
 
   return (
     <TokenProvider value={{ shouldGlow, ...tokenProps }}>
@@ -183,15 +182,24 @@ export const TokenDetailsSymbol: React.FC<TextProps> = (props) => {
 
 // === Balances ===
 
-export const TokenBalances = (props: FlexProps) => {
-  return <Flex direction="row" justifyContent="space-between" {...props} />;
+export const TokenData = (props: FlexProps) => {
+  return (
+    <Flex
+      direction="row"
+      alignItems="center"
+      justifyContent="space-between"
+      {...props}
+    />
+  );
 };
 
-export type TokenBalancesPriceProps = BoxProps & {
+export type TokenDataPriceProps = BoxProps & {
+  isUpdating?: boolean;
   priceImpact?: string;
 };
 
-export const TokenBalancesPrice: React.FC<TokenBalancesPriceProps> = ({
+export const TokenDataPrice: React.FC<TokenDataPriceProps> = ({
+  isUpdating,
   priceImpact,
   children,
   ...props
@@ -211,7 +219,8 @@ export const TokenBalancesPrice: React.FC<TokenBalancesPriceProps> = ({
       amount: value,
       price: tokenMetadata?.price,
     });
-  }, [tokenMetadata, value]);
+  }, [tokenMetadata?.price, value]);
+
   const defaultColorActive = useColorModeValue('gray.800', 'gray.50');
   const defaultColorInactive = useColorModeValue('gray.600', 'gray.300');
   const defaultColor = isActive ? defaultColorActive : defaultColorInactive;
@@ -234,13 +243,24 @@ export const TokenBalancesPrice: React.FC<TokenBalancesPriceProps> = ({
     return defaultColor;
   }, [priceImpact, defaultColor]);
 
+  const isPrice = useMemo(() => {
+    return price !== '0';
+  }, [price]);
+
   return (
     <Skeleton isLoaded={!isLoading} borderRadius="full" minWidth={5}>
-      <Flex transition="color 400ms" color={defaultColor} {...props}>
-        {price !== '0' && <DisplayValue value={price} prefix="~$" />}
-        &nbsp;
+      <HStack
+        transition="color 400ms"
+        alignItems="center"
+        color={defaultColor}
+        {...props}
+      >
+        {isPrice && (
+          <DisplayValue isUpdating={isUpdating} value={price} prefix="~$" />
+        )}
         {priceImpact && (
           <DisplayValue
+            isUpdating={isUpdating}
             color={color}
             value={priceImpact}
             prefix="("
@@ -248,16 +268,18 @@ export const TokenBalancesPrice: React.FC<TokenBalancesPriceProps> = ({
           />
         )}
         {children}
-      </Flex>
+      </HStack>
     </Skeleton>
   );
 };
 
-export type TokenBalancesDetailsProps = FlexProps & {
+export type TokeDataBalancesProps = FlexProps & {
+  isUpdating?: boolean;
   onMaxClick?: () => unknown | Promise<unknown>;
 };
 
-export const TokenBalancesDetails: React.FC<TokenBalancesDetailsProps> = ({
+export const TokenDataBalances: React.FC<TokeDataBalancesProps> = ({
+  isUpdating,
   onMaxClick,
   ...props
 }) => {
@@ -296,6 +318,7 @@ export const TokenBalancesDetails: React.FC<TokenBalancesDetailsProps> = ({
 
           {typeof totalTokenBalance === 'number' && (
             <DisplayValue
+              isUpdating={isUpdating}
               value={totalTokenBalance}
               decimals={tokenMetadata?.decimals || 0}
               prefix="Balance: "

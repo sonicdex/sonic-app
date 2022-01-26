@@ -47,7 +47,7 @@ export const useBalances = () => {
 
           dispatch(
             swapCanisterActions.setUserLPBalancesState(
-              isRefreshing ? FeatureState.Refreshing : FeatureState.Loading
+              isRefreshing ? FeatureState.Updating : FeatureState.Loading
             )
           );
           const response = await swapActor.getUserLPBalancesAbove(
@@ -94,7 +94,7 @@ export const useBalances = () => {
           if (!principalId) throw new Error('Principal ID not found');
           dispatch(
             swapCanisterActions.setBalancesState(
-              isRefreshing ? FeatureState.Refreshing : FeatureState.Loading
+              isRefreshing ? FeatureState.Updating : FeatureState.Loading
             )
           );
 
@@ -182,6 +182,8 @@ export const useBalances = () => {
     sonicBalances,
     tokenBalances,
     icpBalance,
+    balancesState,
+    userLPBalancesState,
     getBalances,
     getUserPositiveLPBalances,
   };

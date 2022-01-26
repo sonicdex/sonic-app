@@ -105,10 +105,10 @@ export const AssetsListView = () => {
     [supportedTokenListState, balancesState]
   );
 
-  const isRefreshing = useMemo(
+  const isUpdating = useMemo(
     () =>
-      supportedTokenListState === FeatureState.Refreshing ||
-      balancesState === FeatureState.Refreshing,
+      supportedTokenListState === FeatureState.Updating ||
+      balancesState === FeatureState.Updating,
     [supportedTokenListState, balancesState]
   );
 
@@ -139,7 +139,7 @@ export const AssetsListView = () => {
 
   return (
     <>
-      <Header title="Your Assets" isRefreshing={isRefreshing}>
+      <Header title="Your Assets" isUpdating={isUpdating}>
         {isBannerOpened && (
           <InformationBox
             title="Assets Details"
@@ -226,6 +226,7 @@ export const AssetsListView = () => {
                         />
                       </Text>
                       <DisplayValue
+                        isUpdating={isUpdating}
                         value={totalBalances?.[id]}
                         decimals={decimals}
                         fontWeight="bold"
@@ -238,6 +239,7 @@ export const AssetsListView = () => {
                       Price
                     </Text>
                     <DisplayValue
+                      isUpdating={isUpdating}
                       fontWeight="bold"
                       prefix="~$"
                       value={

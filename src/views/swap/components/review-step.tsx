@@ -4,10 +4,10 @@ import { useMemo } from 'react';
 import { arrowDownSrc } from '@/assets';
 import {
   Token,
-  TokenBalances,
-  TokenBalancesDetails,
-  TokenBalancesPrice,
   TokenContent,
+  TokenData,
+  TokenDataBalances,
+  TokenDataPrice,
   TokenDetailsButton,
   TokenDetailsLogo,
   TokenDetailsSymbol,
@@ -105,10 +105,10 @@ export const SwapReviewStep = () => {
 
               <TokenInput />
             </TokenContent>
-            <TokenBalances>
-              <TokenBalancesDetails />
-              <TokenBalancesPrice />
-            </TokenBalances>
+            <TokenData>
+              <TokenDataBalances />
+              <TokenDataPrice />
+            </TokenData>
           </Token>
         </Box>
         <Box
@@ -154,10 +154,10 @@ export const SwapReviewStep = () => {
 
               <TokenInput />
             </TokenContent>
-            <TokenBalances>
-              <TokenBalancesDetails />
-              <TokenBalancesPrice priceImpact={priceImpact} />
-            </TokenBalances>
+            <TokenData>
+              <TokenDataBalances />
+              <TokenDataPrice priceImpact={priceImpact} />
+            </TokenData>
           </Token>
         </Box>
       </Flex>

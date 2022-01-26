@@ -108,13 +108,17 @@ export const LiquidityListView = () => {
     );
   }, [allPairsState, supportedTokenListState, userLPBalancesState]);
 
-  const isRefreshing = useMemo(() => {
+  const isUserLPBalancesUpdating = useMemo(() => {
+    return userLPBalancesState === FeatureState.Updating;
+  }, [userLPBalancesState]);
+
+  const isUpdating = useMemo(() => {
     return (
-      allPairsState === FeatureState.Refreshing ||
-      supportedTokenListState === FeatureState.Refreshing ||
-      userLPBalancesState === FeatureState.Refreshing
+      allPairsState === FeatureState.Updating ||
+      supportedTokenListState === FeatureState.Updating ||
+      isUserLPBalancesUpdating
     );
-  }, [allPairsState, supportedTokenListState, userLPBalancesState]);
+  }, [allPairsState, supportedTokenListState, isUserLPBalancesUpdating]);
 
   const pairedUserLPTokens = useMemo(() => {
     if (userLPBalances && supportedTokenList && allPairs) {
@@ -198,7 +202,7 @@ export const LiquidityListView = () => {
         title="Your Liquidity Positions"
         buttonText="Create Position"
         onButtonClick={() => moveToAddLiquidityView()}
-        isRefreshing={isRefreshing}
+        isUpdating={isUpdating}
       >
         {isBannerOpened && (
           <InformationBox
@@ -278,7 +282,10 @@ export const LiquidityListView = () => {
                     <Text fontWeight="bold" color={headerColor}>
                       LP Tokens
                     </Text>
-                    <DisplayValue value={userShares} />
+                    <DisplayValue
+                      value={userShares}
+                      isUpdating={isUserLPBalancesUpdating}
+                    />
                   </Box>
 
                   <Box>
@@ -287,6 +294,7 @@ export const LiquidityListView = () => {
                     </Text>
                     <DisplayValue
                       color={successColor}
+                      isUpdating={isUserLPBalancesUpdating}
                       prefix="~$"
                       value={getUserLPValue(
                         token0,

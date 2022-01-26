@@ -55,7 +55,7 @@ export const useSwapCanisterInit = () => {
           try {
             dispatch(
               swapCanisterActions.setSupportedTokensListState(
-                isRefreshing ? FeatureState.Refreshing : FeatureState.Loading
+                isRefreshing ? FeatureState.Updating : FeatureState.Loading
               )
             );
 

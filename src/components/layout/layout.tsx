@@ -6,6 +6,10 @@ import {
   HStack,
   IconButton,
   Link as ChakraLink,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
   Tab,
   TabList,
   Tabs,
@@ -14,7 +18,11 @@ import {
   useColorMode,
   useColorModeValue,
 } from '@chakra-ui/react';
+import { FaBook } from '@react-icons/all-files/fa/FaBook';
+import { FaEllipsisH } from '@react-icons/all-files/fa/FaEllipsisH';
 import { FaMoon } from '@react-icons/all-files/fa/FaMoon';
+import { FaNetworkWired } from '@react-icons/all-files/fa/FaNetworkWired';
+import { FaRedo } from '@react-icons/all-files/fa/FaRedo';
 import { FaSun } from '@react-icons/all-files/fa/FaSun';
 import React, { useMemo } from 'react';
 import { Link, useLocation } from 'react-router-dom';
@@ -23,6 +31,7 @@ import { ENV } from '@/config';
 import { usePlugStore } from '@/store';
 import { theme } from '@/theme';
 
+import packageJSON from '../../../package.json';
 import { PlugButton } from '..';
 import { LogoBox } from '../core';
 import { PlugMenu } from '../plug/plug-menu';
@@ -45,6 +54,9 @@ export const Layout: React.FC = ({ children, ...props }) => {
   const backgroundColor = useColorModeValue('dark-blue.50', 'black');
 
   const { colorMode, toggleColorMode } = useColorMode();
+
+  const menuBg = useColorModeValue('white', 'custom.2');
+  const menuShadow = useColorModeValue('sm', 'none');
 
   return (
     <>
@@ -78,23 +90,6 @@ export const Layout: React.FC = ({ children, ...props }) => {
             alignItems="center"
           >
             <LogoBox />
-            <ChakraLink
-              href={ENV.URLs.sonicDocs}
-              target="_blank"
-              rel="noopener noreferrer"
-              fontWeight="bold"
-            >
-              Docs
-            </ChakraLink>
-
-            <ChakraLink
-              href={`${ENV.URLs.sonicDocs}/dev/swaps-api`}
-              target="_blank"
-              rel="noopener noreferrer"
-              fontWeight="bold"
-            >
-              API
-            </ChakraLink>
           </GridItem>
           <GridItem colSpan={3} justifySelf="center">
             <chakra.nav>
@@ -121,21 +116,45 @@ export const Layout: React.FC = ({ children, ...props }) => {
           <GridItem colSpan={1} justifySelf="center">
             <HStack>
               {isConnected ? <PlugMenu /> : <PlugButton />}
-              {ENV.isDarkModeEnabled && (
-                <Tooltip
-                  label={colorMode === 'dark' ? 'Light mode' : 'Dark mode'}
-                >
-                  <IconButton
-                    colorScheme={colorMode === 'dark' ? 'dark-blue' : 'yellow'}
-                    variant="outline"
-                    aria-label={
-                      colorMode === 'dark' ? 'Light mode' : 'Dark mode'
-                    }
-                    icon={colorMode === 'dark' ? <FaMoon /> : <FaSun />}
-                    onClick={toggleColorMode}
+              <Menu placement="bottom-end">
+                <Tooltip label="Menu">
+                  <MenuButton
+                    as={IconButton}
+                    aria-label="Menu"
+                    icon={<FaEllipsisH />}
+                    borderRadius="full"
+                    bg={menuBg}
+                    shadow={menuShadow}
                   />
                 </Tooltip>
-              )}
+                <MenuList bg={menuBg} shadow={menuShadow}>
+                  <ChakraLink
+                    href={ENV.URLs.sonicDocs}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    fontWeight="bold"
+                  >
+                    <MenuItem icon={<FaBook />}>Documentation</MenuItem>
+                  </ChakraLink>
+                  <ChakraLink
+                    href={ENV.URLs.sonicDocs}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    fontWeight="bold"
+                  >
+                    <MenuItem icon={<FaNetworkWired />}>API</MenuItem>
+                  </ChakraLink>
+                  <MenuItem icon={<FaRedo />}>Re-try transaction</MenuItem>
+                  {ENV.isDarkModeEnabled && (
+                    <MenuItem
+                      onClick={toggleColorMode}
+                      icon={colorMode === 'dark' ? <FaMoon /> : <FaSun />}
+                    >
+                      {colorMode === 'dark' ? 'Light mode' : 'Dark mode'}
+                    </MenuItem>
+                  )}
+                </MenuList>
+              </Menu>
             </HStack>
           </GridItem>
         </Grid>
@@ -163,7 +182,7 @@ export const Layout: React.FC = ({ children, ...props }) => {
         right={0}
         background={`linear-gradient(to bottom, transparent 0%, ${theme.colors.bg} 100%)`}
       >
-        <Text>Sonic v1</Text>
+        <Text>Sonic v{packageJSON.version}</Text>
       </chakra.footer>
     </>
   );

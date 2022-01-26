@@ -31,6 +31,7 @@ import { useMemo } from 'react';
 
 import { ENV } from '@/config';
 import {
+  FeatureState,
   liquidityViewActions,
   modalsSliceActions,
   NotificationType,
@@ -53,7 +54,8 @@ export const RemoveLiquidityModal = () => {
   const { addNotification } = useNotificationStore();
   const { token0, token1, removeAmountPercentage, keepInSonic } =
     useLiquidityViewStore();
-  const { allPairs, userLPBalances } = useSwapCanisterStore();
+  const { allPairs, userLPBalances, userLPBalancesState } =
+    useSwapCanisterStore();
 
   const handleModalClose = () => {
     dispatch(modalsSliceActions.closeRemoveLiquidityModal());
@@ -74,6 +76,10 @@ export const RemoveLiquidityModal = () => {
   const handleSliderChange = (value: number) => {
     dispatch(liquidityViewActions.setRemoveAmountPercentage(value));
   };
+
+  const isBalancesUpdating = useMemo(() => {
+    return userLPBalancesState === FeatureState.Updating;
+  }, [userLPBalancesState]);
 
   const balances = useMemo(() => {
     if (userLPBalances && allPairs && token0.metadata && token1.metadata) {
@@ -233,10 +239,12 @@ export const RemoveLiquidityModal = () => {
             <RemoveLiquidityModalAsset
               {...token0.metadata}
               balance={balances.balance0}
+              isUpdating={isBalancesUpdating}
             />
             <RemoveLiquidityModalAsset
               {...token1.metadata}
               balance={balances.balance1}
+              isUpdating={isBalancesUpdating}
             />
           </Stack>
 
