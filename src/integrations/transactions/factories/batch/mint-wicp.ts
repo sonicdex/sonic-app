@@ -1,16 +1,15 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 import { ENV } from '@/config';
 import {
   modalsSliceActions,
-  NotificationType,
   useAppDispatch,
-  useNotificationStore,
+  useModalsStore,
   useSwapViewStore,
+  WrapModalData,
   WrapModalDataStep,
 } from '@/store';
 
-import { Batch } from '../..';
 import { useBatchHook } from '..';
 import {
   useApproveTransactionMemo,
@@ -28,9 +27,13 @@ export const useMintWICPBatch = ({
   amount,
   keepInSonic = false,
 }: UseMintWICPBatchOptions) => {
+  const [numberOfRetries, setNumberOfRetries] = useState(0);
   const { tokenList } = useSwapViewStore();
+  const {
+    wrapModalData: { callbacks: [retryCallback] = [] },
+    wrapUncompleteBlockHeights,
+  } = useModalsStore();
   const dispatch = useAppDispatch();
-  const { addNotification } = useNotificationStore();
 
   if (!tokenList) throw new Error('Token list is required');
 
@@ -43,22 +46,7 @@ export const useMintWICPBatch = ({
     toAccountId: ENV.accountIDs.WICP,
     amount,
   });
-  const mintWICP = useMintWICPTransactionMemo(
-    {},
-    undefined,
-    // TODO: Add strict types
-    (err: any, prevTransactionsData: any) => {
-      const blockHeight = (
-        prevTransactionsData?.[0]?.response as bigint | undefined
-      )?.toString();
-      addNotification({
-        title: `The minting of WICP is failed, please use DFX to finish minting your WICP "dfx canister --network ic call ${ENV.canistersPrincipalIDs.WICP} mint '(null, ${blockHeight}:nat64)'"`,
-        type: NotificationType.Error,
-        timeout: 'none',
-        id: Date.now().toString(),
-      });
-    }
-  );
+  const mintWICP = useMintWICPTransactionMemo({});
   const approve = useApproveTransactionMemo(depositParams);
   const deposit = useDepositTransactionMemo(depositParams);
 
@@ -79,23 +67,59 @@ export const useMintWICPBatch = ({
     return transactions;
   }, [ledgerTransfer, mintWICP, approve, deposit, keepInSonic]);
 
-  const handleOpenBatchModal = () => {
-    dispatch(
-      modalsSliceActions.setWrapModalData({
-        steps: Object.keys(transactions) as WrapModalDataStep[],
-      })
-    );
-    dispatch(modalsSliceActions.openWrapProgressModal());
-  };
+  const openBatchModal = useCallback(() => {
+    const steps = Object.keys(transactions) as WrapModalData['steps'];
 
-  return [
-    useBatchHook({
-      transactions,
-      handleRetry: () => {
-        dispatch(modalsSliceActions.closeWrapProgressModal());
-        return Promise.resolve(false);
-      },
-    }),
-    handleOpenBatchModal,
-  ] as [Batch.Hook<WrapModalDataStep>, () => void];
+    dispatch(modalsSliceActions.setWrapModalData({ steps }));
+    dispatch(modalsSliceActions.openWrapProgressModal());
+  }, [dispatch, transactions]);
+
+  const batch = useBatchHook<WrapModalDataStep>({
+    transactions,
+    handleRetry: async (error, prevResponses) => {
+      const failedBlockHeight = prevResponses?.[0]?.response as
+        | bigint
+        | undefined;
+
+      if (failedBlockHeight) {
+        dispatch(
+          modalsSliceActions.setWrapUncompleteBlockHeights([
+            ...(wrapUncompleteBlockHeights ? wrapUncompleteBlockHeights : []),
+            failedBlockHeight,
+          ])
+        );
+      }
+
+      return new Promise<boolean>((resolve) => {
+        dispatch(
+          modalsSliceActions.setWrapModalData({
+            callbacks: [
+              // Retry callback
+              () => {
+                openBatchModal();
+                resolve(true);
+              },
+              // Close callback
+              () => {
+                resolve(false);
+              },
+            ],
+          })
+        );
+
+        if (numberOfRetries === 0 && retryCallback) {
+          retryCallback();
+        }
+
+        if (numberOfRetries >= 1 || !retryCallback) {
+          dispatch(modalsSliceActions.closeWrapProgressModal());
+          dispatch(modalsSliceActions.openWrapFailModal());
+        }
+
+        setNumberOfRetries(numberOfRetries + 1);
+      });
+    },
+  });
+
+  return { batch, openBatchModal };
 };

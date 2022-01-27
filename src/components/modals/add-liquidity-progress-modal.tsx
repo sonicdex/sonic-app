@@ -1,7 +1,8 @@
-import { Flex, Modal, ModalOverlay } from '@chakra-ui/react';
+import { Flex } from '@chakra-ui/react';
 
 import { checkPlainSrc, depositSrc, dropSrc, plusSrc } from '@/assets';
 import {
+  AddLiquidityModalData,
   AddLiquidityModalDataStep,
   modalsSliceActions,
   useAppDispatch,
@@ -9,7 +10,7 @@ import {
 } from '@/store';
 
 import { useStepStatus } from '.';
-import { TransactionProgressModalContent, TransactionStep } from './components';
+import { TransactionProgressModal, TransactionStep } from './components';
 
 export const AddLiquidityProgressModal = () => {
   const dispatch = useAppDispatch();
@@ -22,7 +23,7 @@ export const AddLiquidityProgressModal = () => {
     step: activeStep,
   } = addLiquidityModalData;
 
-  const getStepStatus = useStepStatus<AddLiquidityModalDataStep>({
+  const getStepStatus = useStepStatus<AddLiquidityModalData['step']>({
     activeStep,
     steps,
   });
@@ -32,67 +33,65 @@ export const AddLiquidityProgressModal = () => {
   };
 
   return (
-    <Modal
+    <TransactionProgressModal
       onClose={handleClose}
       isOpen={isAddLiquidityProgressModalOpened}
       isCentered
+      title="Add LP in progress"
     >
-      <ModalOverlay />
-      <TransactionProgressModalContent title="Add LP in progress">
-        <Flex alignItems="flex-start">
-          {steps?.includes(AddLiquidityModalDataStep.CreatePair) && (
-            <TransactionStep
-              status={getStepStatus(AddLiquidityModalDataStep.CreatePair)}
-              iconSrc={plusSrc}
-              chevron
-            >
-              Creating pair <br /> {token0Symbol} - {token1Symbol}
-            </TransactionStep>
-          )}
-          {steps?.includes(AddLiquidityModalDataStep.Approve0) && (
-            <TransactionStep
-              status={getStepStatus(AddLiquidityModalDataStep.Approve0)}
-              iconSrc={checkPlainSrc}
-              chevron
-            >
-              Approving <br /> {token0Symbol}
-            </TransactionStep>
-          )}
-          {steps?.includes(AddLiquidityModalDataStep.Deposit0) && (
-            <TransactionStep
-              status={getStepStatus(AddLiquidityModalDataStep.Deposit0)}
-              iconSrc={depositSrc}
-              chevron
-            >
-              Depositing <br /> {token0Symbol}
-            </TransactionStep>
-          )}
-          {steps?.includes(AddLiquidityModalDataStep.Approve1) && (
-            <TransactionStep
-              status={getStepStatus(AddLiquidityModalDataStep.Approve1)}
-              iconSrc={checkPlainSrc}
-              chevron
-            >
-              Approving <br /> {token1Symbol}
-            </TransactionStep>
-          )}
-          {steps?.includes(AddLiquidityModalDataStep.Deposit1) && (
-            <TransactionStep
-              status={getStepStatus(AddLiquidityModalDataStep.Deposit1)}
-              iconSrc={depositSrc}
-              chevron
-            >
-              Depositing <br /> {token1Symbol}
-            </TransactionStep>
-          )}
+      <Flex alignItems="flex-start">
+        {steps?.includes(AddLiquidityModalDataStep.CreatePair) && (
           <TransactionStep
-            status={getStepStatus(AddLiquidityModalDataStep.AddLiquidity)}
-            iconSrc={dropSrc}
+            status={getStepStatus(AddLiquidityModalDataStep.CreatePair)}
+            iconSrc={plusSrc}
+            chevron
           >
-            Adding LP of <br /> {token0Symbol} + {token1Symbol}
+            Creating pair <br /> {token0Symbol} - {token1Symbol}
           </TransactionStep>
-        </Flex>
-      </TransactionProgressModalContent>
-    </Modal>
+        )}
+        {steps?.includes(AddLiquidityModalDataStep.Approve0) && (
+          <TransactionStep
+            status={getStepStatus(AddLiquidityModalDataStep.Approve0)}
+            iconSrc={checkPlainSrc}
+            chevron
+          >
+            Approving <br /> {token0Symbol}
+          </TransactionStep>
+        )}
+        {steps?.includes(AddLiquidityModalDataStep.Deposit0) && (
+          <TransactionStep
+            status={getStepStatus(AddLiquidityModalDataStep.Deposit0)}
+            iconSrc={depositSrc}
+            chevron
+          >
+            Depositing <br /> {token0Symbol}
+          </TransactionStep>
+        )}
+        {steps?.includes(AddLiquidityModalDataStep.Approve1) && (
+          <TransactionStep
+            status={getStepStatus(AddLiquidityModalDataStep.Approve1)}
+            iconSrc={checkPlainSrc}
+            chevron
+          >
+            Approving <br /> {token1Symbol}
+          </TransactionStep>
+        )}
+        {steps?.includes(AddLiquidityModalDataStep.Deposit1) && (
+          <TransactionStep
+            status={getStepStatus(AddLiquidityModalDataStep.Deposit1)}
+            iconSrc={depositSrc}
+            chevron
+          >
+            Depositing <br /> {token1Symbol}
+          </TransactionStep>
+        )}
+        <TransactionStep
+          status={getStepStatus(AddLiquidityModalDataStep.AddLiquidity)}
+          iconSrc={dropSrc}
+        >
+          Adding LP of <br /> {token0Symbol} + {token1Symbol}
+        </TransactionStep>
+      </Flex>
+    </TransactionProgressModal>
   );
 };

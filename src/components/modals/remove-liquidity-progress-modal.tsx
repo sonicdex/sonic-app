@@ -1,15 +1,16 @@
-import { Flex, Modal, ModalOverlay } from '@chakra-ui/react';
+import { Flex } from '@chakra-ui/react';
 
 import { dropSrc, withdrawSrc } from '@/assets';
 import {
   modalsSliceActions,
+  RemoveLiquidityModalData,
   RemoveLiquidityModalDataStep,
   useAppDispatch,
   useModalsStore,
 } from '@/store';
 
 import { useStepStatus } from '.';
-import { TransactionProgressModalContent, TransactionStep } from './components';
+import { TransactionProgressModal, TransactionStep } from './components';
 
 export const RemoveLiquidityProgressModal = () => {
   const dispatch = useAppDispatch();
@@ -21,7 +22,7 @@ export const RemoveLiquidityProgressModal = () => {
     token0Symbol,
     step: activeStep,
   } = removeLiquidityModalData;
-  const getStepStatus = useStepStatus<RemoveLiquidityModalDataStep>({
+  const getStepStatus = useStepStatus<RemoveLiquidityModalData['step']>({
     activeStep,
     steps,
   });
@@ -31,44 +32,42 @@ export const RemoveLiquidityProgressModal = () => {
   };
 
   return (
-    <Modal
+    <TransactionProgressModal
       onClose={handleClose}
       isOpen={isRemoveLiquidityProgressModalOpened}
       isCentered
+      title="Remove LP in progress"
     >
-      <ModalOverlay />
-      <TransactionProgressModalContent title="Remove LP in progress">
-        <Flex alignItems="flex-start">
-          <TransactionStep
-            status={getStepStatus(RemoveLiquidityModalDataStep.RemoveLiquidity)}
-            iconSrc={dropSrc}
-            chevron={
-              steps?.includes(RemoveLiquidityModalDataStep.Withdraw0) ||
-              steps?.includes(RemoveLiquidityModalDataStep.Withdraw1)
-            }
-          >
-            Removing LP of <br /> {token0Symbol} + {token1Symbol}
-          </TransactionStep>
+      <Flex alignItems="flex-start">
+        <TransactionStep
+          status={getStepStatus(RemoveLiquidityModalDataStep.RemoveLiquidity)}
+          iconSrc={dropSrc}
+          chevron={
+            steps?.includes(RemoveLiquidityModalDataStep.Withdraw0) ||
+            steps?.includes(RemoveLiquidityModalDataStep.Withdraw1)
+          }
+        >
+          Removing LP of <br /> {token0Symbol} + {token1Symbol}
+        </TransactionStep>
 
-          {steps?.includes(RemoveLiquidityModalDataStep.Withdraw0) && (
-            <TransactionStep
-              status={getStepStatus(RemoveLiquidityModalDataStep.Withdraw0)}
-              iconSrc={withdrawSrc}
-              chevron={steps?.includes(RemoveLiquidityModalDataStep.Withdraw1)}
-            >
-              Withdrawing <br /> {token0Symbol}
-            </TransactionStep>
-          )}
-          {steps?.includes(RemoveLiquidityModalDataStep.Withdraw1) && (
-            <TransactionStep
-              status={getStepStatus(RemoveLiquidityModalDataStep.Withdraw1)}
-              iconSrc={withdrawSrc}
-            >
-              Withdrawing <br /> {token1Symbol}
-            </TransactionStep>
-          )}
-        </Flex>
-      </TransactionProgressModalContent>
-    </Modal>
+        {steps?.includes(RemoveLiquidityModalDataStep.Withdraw0) && (
+          <TransactionStep
+            status={getStepStatus(RemoveLiquidityModalDataStep.Withdraw0)}
+            iconSrc={withdrawSrc}
+            chevron={steps?.includes(RemoveLiquidityModalDataStep.Withdraw1)}
+          >
+            Withdrawing <br /> {token0Symbol}
+          </TransactionStep>
+        )}
+        {steps?.includes(RemoveLiquidityModalDataStep.Withdraw1) && (
+          <TransactionStep
+            status={getStepStatus(RemoveLiquidityModalDataStep.Withdraw1)}
+            iconSrc={withdrawSrc}
+          >
+            Withdrawing <br /> {token1Symbol}
+          </TransactionStep>
+        )}
+      </Flex>
+    </TransactionProgressModal>
   );
 };

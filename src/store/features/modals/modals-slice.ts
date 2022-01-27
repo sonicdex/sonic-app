@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
+import { Batch } from '@/integrations/transactions';
 import type { RootState } from '@/store';
 
 export type ModalsCallback = (...args: unknown[]) => any;
@@ -15,8 +16,8 @@ export type MintXTCModalData<
   RetryCallback = ModalsCallback,
   CancelCallback = ModalsCallback
 > = {
-  step?: MintXTCModalDataStep;
-  steps?: MintXTCModalDataStep[];
+  step?: MintXTCModalDataStep | Batch.DefaultHookState;
+  steps?: (MintXTCModalDataStep | Batch.DefaultHookState)[];
   callbacks?: [RetryCallback, CancelCallback];
 };
 
@@ -28,8 +29,8 @@ export enum WrapModalDataStep {
 }
 
 export type WrapModalData = {
-  step?: WrapModalDataStep;
-  steps?: WrapModalDataStep[];
+  step?: WrapModalDataStep | Batch.DefaultHookState;
+  steps?: (WrapModalDataStep | Batch.DefaultHookState)[];
   callbacks?: [ModalsCallback, ModalsCallback];
 };
 
@@ -38,8 +39,8 @@ export enum UnwrapModalDataStep {
   WithdrawWICP = 'withdrawWICP',
 }
 export type UnwrapModalData = {
-  step?: UnwrapModalDataStep;
-  steps?: UnwrapModalDataStep[];
+  step?: UnwrapModalDataStep | Batch.DefaultHookState;
+  steps?: (UnwrapModalDataStep | Batch.DefaultHookState)[];
   callbacks?: [ModalsCallback, ModalsCallback];
 };
 
@@ -50,8 +51,8 @@ export enum SwapModalDataStep {
   Withdraw = 'withdraw',
 }
 export type SwapModalData = {
-  step?: SwapModalDataStep;
-  steps?: SwapModalDataStep[];
+  step?: SwapModalDataStep | Batch.DefaultHookState;
+  steps?: (SwapModalDataStep | Batch.DefaultHookState)[];
   fromTokenSymbol?: string;
   toTokenSymbol?: string;
   callbacks?: [ModalsCallback, ModalsCallback, ModalsCallback];
@@ -62,8 +63,8 @@ export enum DepositModalDataStep {
   Deposit = 'deposit',
 }
 export type DepositModalData = {
-  step?: DepositModalDataStep;
-  steps?: DepositModalDataStep[];
+  step?: DepositModalDataStep | Batch.DefaultHookState;
+  steps?: (DepositModalDataStep | Batch.DefaultHookState)[];
   tokenSymbol?: string;
   callbacks?: [ModalsCallback, ModalsCallback];
 };
@@ -72,8 +73,8 @@ export enum WithdrawModalDataStep {
   Withdraw = 'withdraw',
 }
 export type WithdrawModalData = {
-  step?: WithdrawModalDataStep;
-  steps?: WithdrawModalDataStep[];
+  step?: WithdrawModalDataStep | Batch.DefaultHookState;
+  steps?: (WithdrawModalDataStep | Batch.DefaultHookState)[];
   tokenSymbol?: string;
   callbacks?: [ModalsCallback, ModalsCallback];
 };
@@ -87,8 +88,8 @@ export enum AddLiquidityModalDataStep {
   AddLiquidity = 'addLiquidity',
 }
 export type AddLiquidityModalData = {
-  step?: AddLiquidityModalDataStep;
-  steps?: AddLiquidityModalDataStep[];
+  step?: AddLiquidityModalDataStep | Batch.DefaultHookState;
+  steps?: (AddLiquidityModalDataStep | Batch.DefaultHookState)[];
   token0Symbol?: string;
   token1Symbol?: string;
   callbacks?: [ModalsCallback, ModalsCallback];
@@ -100,8 +101,8 @@ export enum RemoveLiquidityModalDataStep {
   Withdraw1 = 'withdraw1',
 }
 export type RemoveLiquidityModalData = {
-  step?: RemoveLiquidityModalDataStep;
-  steps?: RemoveLiquidityModalDataStep[];
+  step?: RemoveLiquidityModalDataStep | Batch.DefaultHookState;
+  steps?: (RemoveLiquidityModalDataStep | Batch.DefaultHookState)[];
   token0Symbol?: string;
   token1Symbol?: string;
   callbacks?: [ModalsCallback, ModalsCallback];
@@ -129,14 +130,17 @@ interface ModalsState {
   isMintXTCProgressModalOpened: boolean;
   isMintXTCFailModalOpened: boolean;
   mintXTCModalData: MintXTCModalData;
+  mintXTCUncompleteBlockHeights?: bigint[];
 
   isWrapProgressModalOpened: boolean;
   isWrapFailModalOpened: boolean;
   wrapModalData: WrapModalData;
+  wrapUncompleteBlockHeights?: bigint[];
 
   isUnwrapProgressModalOpened: boolean;
   isUnwrapFailModalOpened: boolean;
   unwrapModalData: UnwrapModalData;
+  unwrapUncompleteBlockHeights?: bigint[];
 
   isSwapProgressModalOpened: boolean;
   isSwapFailModalOpened: boolean;
@@ -215,14 +219,17 @@ const initialState: ModalsState = {
   isMintXTCProgressModalOpened: false,
   isMintXTCFailModalOpened: false,
   mintXTCModalData: initialMintXTCModalData,
+  mintXTCUncompleteBlockHeights: undefined,
 
   isWrapProgressModalOpened: false,
   isWrapFailModalOpened: false,
   wrapModalData: initialWrapModalData,
+  wrapUncompleteBlockHeights: undefined,
 
   isUnwrapProgressModalOpened: false,
   isUnwrapFailModalOpened: false,
   unwrapModalData: initialUnwrapModalData,
+  unwrapUncompleteBlockHeights: undefined,
 
   isSwapProgressModalOpened: false,
   isSwapFailModalOpened: false,
@@ -282,6 +289,12 @@ export const modalsSlice = createSlice({
         ...action.payload,
       };
     },
+    setMintXTCUncompleteBlockHeights: (
+      state,
+      action: PayloadAction<bigint[]>
+    ) => {
+      state.mintXTCUncompleteBlockHeights = action.payload;
+    },
 
     openWrapProgressModal: (state) => {
       state.isWrapProgressModalOpened = true;
@@ -304,6 +317,9 @@ export const modalsSlice = createSlice({
         ...action.payload,
       };
     },
+    setWrapUncompleteBlockHeights: (state, action: PayloadAction<bigint[]>) => {
+      state.wrapUncompleteBlockHeights = action.payload;
+    },
 
     openUnwrapProgressModal: (state) => {
       state.isUnwrapProgressModalOpened = true;
@@ -325,6 +341,12 @@ export const modalsSlice = createSlice({
         ...state.unwrapModalData,
         ...action.payload,
       };
+    },
+    setUnwrapUncompleteBlockHeights: (
+      state,
+      action: PayloadAction<bigint[]>
+    ) => {
+      state.unwrapUncompleteBlockHeights = action.payload;
     },
 
     openSwapProgressModal: (state) => {

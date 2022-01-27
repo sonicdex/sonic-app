@@ -48,7 +48,7 @@ export const DepositLink: React.FC<DepositLinkProps> = ({ id }) => {
 
   const allowance = useTokenAllowance(selectedToken?.id);
 
-  const [batch, openDepositModal] = useDepositBatch({
+  const { batch, openBatchModal } = useDepositBatch({
     amount: value,
     token: selectedToken,
     allowance,
@@ -72,7 +72,8 @@ export const DepositLink: React.FC<DepositLinkProps> = ({ id }) => {
     if (typeof allowance === 'number') {
       dispatch(modalsSliceActions.closeAllowanceVerifyModal());
       handleStateChange();
-      openDepositModal();
+
+      openBatchModal();
     } else {
       dispatch(
         modalsSliceActions.setAllowanceVerifyModalData({
@@ -83,7 +84,7 @@ export const DepositLink: React.FC<DepositLinkProps> = ({ id }) => {
     }
   };
 
-  useEffect(handleStateChange, [batch.state]);
+  useEffect(handleStateChange, [batch.state, dispatch]);
 
   useEffect(() => {
     handleOpenModal();

@@ -20,7 +20,7 @@ export const UnwrapFailModal = () => {
       onClose={handleClose}
       isOpen={isUnwrapFailModalOpened}
       isCentered
-      title="Unwrap ICP Failed"
+      title="ICP Unwrapping Failed"
     >
       <Button
         variant="gradient"

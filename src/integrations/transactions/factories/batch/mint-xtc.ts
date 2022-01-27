@@ -10,7 +10,6 @@ import {
   useSwapViewStore,
 } from '@/store';
 
-import { Batch } from '../..';
 import {
   useApproveTransactionMemo,
   useBatchHook,
@@ -80,7 +79,7 @@ export const useMintXTCBatch = ({
     return transactions;
   }, [ledgerTransfer, mintXTC, approve, deposit, keepInSonic]);
 
-  const handleOpenBatchModal = () => {
+  const openBatchModal = () => {
     dispatch(
       modalsSliceActions.setMintXTCModalData({
         steps: Object.keys(transactions) as MintXTCModalDataStep[],
@@ -89,14 +88,16 @@ export const useMintXTCBatch = ({
     dispatch(modalsSliceActions.openMintXTCProgressModal());
   };
 
-  return [
-    useBatchHook({
+  return {
+    batch: useBatchHook({
       transactions,
       handleRetry: () => {
         dispatch(modalsSliceActions.closeMintXTCProgressModal());
+        dispatch(modalsSliceActions.openMintXTCFailModal());
+
         return Promise.resolve(false);
       },
     }),
-    handleOpenBatchModal,
-  ] as [Batch.Hook<MintXTCModalDataStep>, () => void];
+    openBatchModal,
+  };
 };

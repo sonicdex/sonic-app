@@ -1,7 +1,8 @@
-import { Flex, Modal, ModalOverlay } from '@chakra-ui/react';
+import { Flex } from '@chakra-ui/react';
 
 import { checkPlainSrc, depositSrc } from '@/assets';
 import {
+  DepositModalData,
   DepositModalDataStep,
   modalsSliceActions,
   useAppDispatch,
@@ -9,14 +10,14 @@ import {
 } from '@/store';
 
 import { useStepStatus } from '.';
-import { TransactionProgressModalContent, TransactionStep } from './components';
+import { TransactionProgressModal, TransactionStep } from './components';
 
 export const DepositProgressModal = () => {
   const dispatch = useAppDispatch();
   const { isDepositProgressModalOpened, depositModalData } = useModalsStore();
   const { steps, tokenSymbol, step: activeStep } = depositModalData;
 
-  const getStepStatus = useStepStatus<DepositModalDataStep>({
+  const getStepStatus = useStepStatus<DepositModalData['step']>({
     activeStep,
     steps,
   });
@@ -26,31 +27,29 @@ export const DepositProgressModal = () => {
   };
 
   return (
-    <Modal
+    <TransactionProgressModal
       onClose={handleClose}
       isOpen={isDepositProgressModalOpened}
       isCentered
+      title="Deposit in progress"
     >
-      <ModalOverlay />
-      <TransactionProgressModalContent title="Deposit in progress">
-        <Flex alignItems="flex-start">
-          {steps?.includes(DepositModalDataStep.Approve) && (
-            <TransactionStep
-              status={getStepStatus(DepositModalDataStep.Approve)}
-              iconSrc={checkPlainSrc}
-              chevron
-            >
-              Approving <br /> {tokenSymbol}
-            </TransactionStep>
-          )}
+      <Flex alignItems="flex-start">
+        {steps?.includes(DepositModalDataStep.Approve) && (
           <TransactionStep
-            status={getStepStatus(DepositModalDataStep.Deposit)}
-            iconSrc={depositSrc}
+            status={getStepStatus(DepositModalDataStep.Approve)}
+            iconSrc={checkPlainSrc}
+            chevron
           >
-            Depositing <br /> {tokenSymbol}
+            Approving <br /> {tokenSymbol}
           </TransactionStep>
-        </Flex>
-      </TransactionProgressModalContent>
-    </Modal>
+        )}
+        <TransactionStep
+          status={getStepStatus(DepositModalDataStep.Deposit)}
+          iconSrc={depositSrc}
+        >
+          Depositing <br /> {tokenSymbol}
+        </TransactionStep>
+      </Flex>
+    </TransactionProgressModal>
   );
 };

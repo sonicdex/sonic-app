@@ -29,7 +29,7 @@ export const WrapLink: React.FC<WrapLinkProps> = ({ id }) => {
     return deserialize(stringify({ from, keepInSonic }));
   }, []);
 
-  const [batch, openWrapModal] = useMintWICPBatch({
+  const { batch, openBatchModal } = useMintWICPBatch({
     amount: from.value,
     keepInSonic,
   });
@@ -42,7 +42,7 @@ export const WrapLink: React.FC<WrapLinkProps> = ({ id }) => {
     ) {
       dispatch(
         modalsSliceActions.setWrapModalData({
-          step: batch.state as WrapModalDataStep,
+          step: batch.state,
         })
       );
     }
@@ -50,9 +50,11 @@ export const WrapLink: React.FC<WrapLinkProps> = ({ id }) => {
 
   const handleOpenModal = () => {
     handleStateChange();
-    openWrapModal();
+
+    openBatchModal();
   };
-  useEffect(handleStateChange, [batch.state]);
+
+  useEffect(handleStateChange, [batch.state, dispatch]);
 
   useEffect(() => {
     batch

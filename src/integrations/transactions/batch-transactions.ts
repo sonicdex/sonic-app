@@ -14,7 +14,10 @@ export class BatchTransactions implements Batch.Controller {
 
   constructor(
     private provider?: Provider,
-    private handleRetry?: (error: unknown) => Promise<boolean>
+    private handleRetry?: (
+      error: unknown,
+      prevResponses?: TransactionPrevResponse[]
+    ) => Promise<boolean>
   ) {}
 
   public push(transaction: Transaction): BatchTransactions {
@@ -71,7 +74,8 @@ export class BatchTransactions implements Batch.Controller {
     error: unknown,
     prevResponses?: TransactionPrevResponse[]
   ): Promise<void> {
-    const retry = this.handleRetry && (await this.handleRetry(error));
+    const retry =
+      this.handleRetry && (await this.handleRetry(error, prevResponses));
     if (retry) {
       this.start();
     } else {

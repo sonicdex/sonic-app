@@ -1,22 +1,23 @@
-import { Flex, Modal, ModalOverlay } from '@chakra-ui/react';
+import { Flex } from '@chakra-ui/react';
 
 import { withdrawSrc } from '@/assets';
 import {
   modalsSliceActions,
   useAppDispatch,
   useModalsStore,
+  WithdrawModalData,
   WithdrawModalDataStep,
 } from '@/store';
 
 import { useStepStatus } from '.';
-import { TransactionProgressModalContent, TransactionStep } from './components';
+import { TransactionProgressModal, TransactionStep } from './components';
 
 export const WithdrawProgressModal = () => {
   const dispatch = useAppDispatch();
   const { isWithdrawProgressModalOpened, withdrawModalData } = useModalsStore();
   const { tokenSymbol, steps, step: activeStep } = withdrawModalData;
 
-  const getStepStatus = useStepStatus<WithdrawModalDataStep>({
+  const getStepStatus = useStepStatus<WithdrawModalData['step']>({
     activeStep,
     steps,
   });
@@ -26,22 +27,20 @@ export const WithdrawProgressModal = () => {
   };
 
   return (
-    <Modal
+    <TransactionProgressModal
+      title="Withdraw in progress"
       onClose={handleClose}
       isOpen={isWithdrawProgressModalOpened}
       isCentered
     >
-      <ModalOverlay />
-      <TransactionProgressModalContent title="Withdraw in progress">
-        <Flex alignItems="flex-start">
-          <TransactionStep
-            status={getStepStatus(WithdrawModalDataStep.Withdraw)}
-            iconSrc={withdrawSrc}
-          >
-            Withdrawing <br /> {tokenSymbol}
-          </TransactionStep>
-        </Flex>
-      </TransactionProgressModalContent>
-    </Modal>
+      <Flex alignItems="flex-start">
+        <TransactionStep
+          status={getStepStatus(WithdrawModalDataStep.Withdraw)}
+          iconSrc={withdrawSrc}
+        >
+          Withdrawing <br /> {tokenSymbol}
+        </TransactionStep>
+      </Flex>
+    </TransactionProgressModal>
   );
 };

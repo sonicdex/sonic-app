@@ -1,4 +1,7 @@
-import type { Transaction } from '@psychedelic/plug-inpage-provider/dist/src/Provider';
+import type {
+  Transaction,
+  TransactionPrevResponse,
+} from '@psychedelic/plug-inpage-provider/dist/src/Provider';
 
 import { CreateTransaction } from '.';
 
@@ -33,7 +36,7 @@ export namespace Batch {
     [key: number]: string;
   };
 
-  export interface Hook<State extends PropertyKey> {
+  export interface Hook<State> {
     execute: Batch.Execute;
     state: State | DefaultHookState;
     error: unknown;
@@ -43,10 +46,9 @@ export namespace Batch {
     transactions: {
       [key: string]: ReturnType<CreateTransaction<Model, Transaction>>;
     };
-    handleRetry?: (error: unknown) => Promise<boolean>;
+    handleRetry?: (
+      error: unknown,
+      prevResponses?: TransactionPrevResponse[]
+    ) => Promise<boolean>;
   }
-
-  export type CreateHook = <Model>(
-    props: HookProps<Model>
-  ) => Hook<keyof HookProps<Model>['transactions']>;
 }

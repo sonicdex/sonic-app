@@ -20,7 +20,7 @@ export const WrapFailModal = () => {
       onClose={handleClose}
       isOpen={isWrapFailModalOpened}
       isCentered
-      title="Wrap ICP Failed"
+      title="ICP Wrapping Failed"
     >
       <Button
         variant="gradient"

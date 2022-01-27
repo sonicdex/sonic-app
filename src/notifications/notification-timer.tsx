@@ -17,7 +17,7 @@ export interface NotificationTimerProps {
 
 export const NotificationTimer: React.FC<NotificationTimerProps> = ({
   type,
-  timeout = '10s',
+  timeout = '5s',
   handleClose,
 }) => {
   const color = useMemo(() => {

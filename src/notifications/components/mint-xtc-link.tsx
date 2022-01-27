@@ -29,7 +29,7 @@ export const MintXTCLink: React.FC<MintXTCLinkProps> = ({ id }) => {
     return deserialize(stringify({ from, keepInSonic }));
   }, []);
 
-  const [batch, openMintXTCProgressModal] = useMintXTCBatch({
+  const { batch, openBatchModal } = useMintXTCBatch({
     amount: from.value,
     keepInSonic,
   });
@@ -50,7 +50,8 @@ export const MintXTCLink: React.FC<MintXTCLinkProps> = ({ id }) => {
 
   const handleOpenModal = () => {
     handleStateChange();
-    openMintXTCProgressModal();
+
+    openBatchModal();
   };
   useEffect(handleStateChange, [batch.state, dispatch]);
 

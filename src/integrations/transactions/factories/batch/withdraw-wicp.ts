@@ -10,7 +10,6 @@ import {
   useSwapViewStore,
 } from '@/store';
 
-import { Batch } from '../..';
 import { useBatchHook } from '..';
 import {
   useWithdrawTransactionMemo,
@@ -65,7 +64,7 @@ export const useWithdrawWICPBatch = ({
     return _transactions;
   }, [withdrawWICP, withdraw]);
 
-  const handleOpenBatchModal = () => {
+  const openBatchModal = () => {
     dispatch(
       modalsSliceActions.setUnwrapModalData({
         steps: Object.keys(transactions) as UnwrapModalDataStep[],
@@ -73,16 +72,17 @@ export const useWithdrawWICPBatch = ({
     );
 
     dispatch(modalsSliceActions.openUnwrapProgressModal());
+    dispatch(modalsSliceActions.openUnwrapFailModal());
   };
 
-  return [
-    useBatchHook({
+  return {
+    batch: useBatchHook({
       transactions,
       handleRetry: () => {
         dispatch(modalsSliceActions.closeUnwrapProgressModal());
         return Promise.resolve(false);
       },
     }),
-    handleOpenBatchModal,
-  ] as [Batch.Hook<UnwrapModalDataStep>, () => void];
+    openBatchModal,
+  };
 };

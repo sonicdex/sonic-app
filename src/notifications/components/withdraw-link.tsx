@@ -33,7 +33,7 @@ export const WithdrawLink: React.FC<WithdrawLinkProps> = ({ id }) => {
     return undefined;
   }, [supportedTokenList, tokenId]);
 
-  const [batch, openModal] = useWithdrawBatch({
+  const { batch, openBatchModal } = useWithdrawBatch({
     amount: value,
     token: selectedToken,
   });
@@ -54,7 +54,7 @@ export const WithdrawLink: React.FC<WithdrawLinkProps> = ({ id }) => {
 
   const handleOpenModal = () => {
     handleStateChange();
-    openModal();
+    openBatchModal();
   };
 
   useEffect(handleStateChange, [batch.state, dispatch]);

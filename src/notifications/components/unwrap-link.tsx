@@ -33,7 +33,7 @@ export const UnwrapLink: React.FC<UnwrapLinkProps> = ({ id }) => {
     return deserialize(stringify({ from }));
   }, []);
 
-  const [batch, openUnwrapModal] = useWithdrawWICPBatch({
+  const { batch, openBatchModal } = useWithdrawWICPBatch({
     amount: from.value,
     toAccountId: principalId
       ? getAccountId(Principal.fromText(principalId))
@@ -56,10 +56,11 @@ export const UnwrapLink: React.FC<UnwrapLinkProps> = ({ id }) => {
 
   const handleOpenModal = () => {
     handleStateChange();
-    openUnwrapModal();
+
+    openBatchModal();
   };
 
-  useEffect(handleStateChange, [batch.state]);
+  useEffect(handleStateChange, [batch.state, dispatch]);
 
   useEffect(() => {
     batch

@@ -37,7 +37,7 @@ export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
 
   const allowance = useTokenAllowance(from.metadata?.id);
 
-  const [batch, openSwapModal] = useSwapBatch({
+  const { batch, openBatchModal } = useSwapBatch({
     from,
     to,
     slippage: Number(slippage),
@@ -64,7 +64,8 @@ export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
     if (typeof allowance === 'number') {
       dispatch(modalsSliceActions.closeAllowanceVerifyModal());
       handleStateChange();
-      openSwapModal();
+
+      openBatchModal();
     } else {
       dispatch(
         modalsSliceActions.setAllowanceVerifyModalData({
@@ -75,7 +76,7 @@ export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
     }
   };
 
-  useEffect(handleStateChange, [batch.state]);
+  useEffect(handleStateChange, [batch.state, dispatch]);
 
   useEffect(() => {
     handleOpenModal();
