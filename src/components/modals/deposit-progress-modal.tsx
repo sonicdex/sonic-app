@@ -13,11 +13,8 @@ import { TransactionProgressModalContent, TransactionStep } from './components';
 
 export const DepositProgressModal = () => {
   const dispatch = useAppDispatch();
-  const {
-    isDepositProgressModalOpened: isDepositProgressOpened,
-    depositModalData: depositData,
-  } = useModalsStore();
-  const { steps, tokenSymbol, step: activeStep } = depositData;
+  const { isDepositProgressModalOpened, depositModalData } = useModalsStore();
+  const { steps, tokenSymbol, step: activeStep } = depositModalData;
 
   const getStepStatus = useStepStatus<DepositModalDataStep>({
     activeStep,
@@ -29,7 +26,11 @@ export const DepositProgressModal = () => {
   };
 
   return (
-    <Modal onClose={handleClose} isOpen={isDepositProgressOpened} isCentered>
+    <Modal
+      onClose={handleClose}
+      isOpen={isDepositProgressModalOpened}
+      isCentered
+    >
       <ModalOverlay />
       <TransactionProgressModalContent title="Deposit in progress">
         <Flex alignItems="flex-start">

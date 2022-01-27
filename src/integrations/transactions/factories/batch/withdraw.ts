@@ -5,7 +5,7 @@ import {
 } from '@/store';
 
 import { Batch, Withdraw } from '../..';
-import { useBatchHook,useWithdrawTransactionMemo } from '..';
+import { useBatchHook, useWithdrawTransactionMemo } from '..';
 
 export const useWithdrawBatch = (withdraw: Withdraw) => {
   const dispatch = useAppDispatch();
@@ -27,6 +27,8 @@ export const useWithdrawBatch = (withdraw: Withdraw) => {
       },
       handleRetry: () => {
         dispatch(modalsSliceActions.closeWithdrawProgressModal());
+        dispatch(modalsSliceActions.openWithdrawFailModal());
+
         return Promise.resolve(false);
       },
     }),

@@ -13,11 +13,13 @@ import { TransactionProgressModalContent, TransactionStep } from './components';
 
 export const SwapProgressModal = () => {
   const dispatch = useAppDispatch();
+  const { isSwapProgressModalOpened, swapModalData } = useModalsStore();
   const {
-    isSwapProgressModalOpened: isSwapProgressOpened,
-    swapModalData: swapData,
-  } = useModalsStore();
-  const { steps, fromTokenSymbol, toTokenSymbol, step: activeStep } = swapData;
+    steps,
+    fromTokenSymbol,
+    toTokenSymbol,
+    step: activeStep,
+  } = swapModalData;
   const getStepStatus = useStepStatus<SwapModalDataStep>({ activeStep, steps });
 
   const handleClose = () => {
@@ -25,7 +27,7 @@ export const SwapProgressModal = () => {
   };
 
   return (
-    <Modal onClose={handleClose} isOpen={isSwapProgressOpened} isCentered>
+    <Modal onClose={handleClose} isOpen={isSwapProgressModalOpened} isCentered>
       <ModalOverlay />
       <TransactionProgressModalContent title="Swap in progress">
         <Flex alignItems="flex-start">

@@ -13,16 +13,14 @@ import { TransactionProgressModalContent, TransactionStep } from './components';
 
 export const AddLiquidityProgressModal = () => {
   const dispatch = useAppDispatch();
-  const {
-    isAddLiquidityProgressModalOpened: isAddLiquidityProgressOpened,
-    addLiquidityModalData: addLiquidityData,
-  } = useModalsStore();
+  const { isAddLiquidityProgressModalOpened, addLiquidityModalData } =
+    useModalsStore();
   const {
     steps,
     token1Symbol,
     token0Symbol,
     step: activeStep,
-  } = addLiquidityData;
+  } = addLiquidityModalData;
 
   const getStepStatus = useStepStatus<AddLiquidityModalDataStep>({
     activeStep,
@@ -36,7 +34,7 @@ export const AddLiquidityProgressModal = () => {
   return (
     <Modal
       onClose={handleClose}
-      isOpen={isAddLiquidityProgressOpened}
+      isOpen={isAddLiquidityProgressModalOpened}
       isCentered
     >
       <ModalOverlay />

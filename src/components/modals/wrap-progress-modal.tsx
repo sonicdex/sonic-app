@@ -13,11 +13,8 @@ import { TransactionProgressModalContent, TransactionStep } from './components';
 
 export const WrapProgressModal = () => {
   const dispatch = useAppDispatch();
-  const {
-    isWrapProgressModalOpened: isWrapProgressOpened,
-    wrapModalData: wrapData,
-  } = useModalsStore();
-  const { steps, step: activeStep } = wrapData;
+  const { isWrapProgressModalOpened, wrapModalData } = useModalsStore();
+  const { steps, step: activeStep } = wrapModalData;
   const getStepStatus = useStepStatus<WrapModalDataStep>({ activeStep, steps });
 
   const handleClose = () => {
@@ -25,7 +22,7 @@ export const WrapProgressModal = () => {
   };
 
   return (
-    <Modal onClose={handleClose} isOpen={isWrapProgressOpened} isCentered>
+    <Modal onClose={handleClose} isOpen={isWrapProgressModalOpened} isCentered>
       <ModalOverlay />
       <TransactionProgressModalContent title="Wrap ICP in progress">
         <Flex alignItems="flex-start">

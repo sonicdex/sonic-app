@@ -4,27 +4,26 @@ import { modalsSliceActions, useAppDispatch, useModalsStore } from '@/store';
 
 import { TransactionFailedModal } from './components';
 
-export const AddLiquidityFailModal = () => {
+export const MintXTCFailModal = () => {
   const {
-    isAddLiquidityFailModalOpened: isAddLiquidityFailOpened,
-    addLiquidityModalData: addLiquidityData,
+    isMintXTCFailModalOpened: isRemoveLiquidityFailOpened,
+    mintXTCModalData,
   } = useModalsStore();
-  const { callbacks: [addLiquidityCallback, closeCallback] = [] } =
-    addLiquidityData;
+  const { callbacks: [retryCallback, closeCallback] = [] } = mintXTCModalData;
 
   const dispatch = useAppDispatch();
 
   const handleClose = () => {
     if (closeCallback) closeCallback();
-    dispatch(modalsSliceActions.closeAddLiquidityFailModal());
+    dispatch(modalsSliceActions.closeMintXTCFailModal());
   };
 
   return (
     <TransactionFailedModal
       onClose={handleClose}
-      isOpen={isAddLiquidityFailOpened}
+      isOpen={isRemoveLiquidityFailOpened}
       isCentered
-      title="Add Liquidity Failed"
+      title="Mint XTC Failed"
     >
       <Button
         variant="gradient"
@@ -32,7 +31,7 @@ export const AddLiquidityFailModal = () => {
         borderRadius={12}
         fontWeight={700}
         fontSize={18}
-        onClick={addLiquidityCallback}
+        onClick={retryCallback}
         isFullWidth
       >
         Retry
@@ -44,7 +43,7 @@ export const AddLiquidityFailModal = () => {
         onClick={handleClose}
         isFullWidth
       >
-        Close
+        Later
       </Button>
     </TransactionFailedModal>
   );

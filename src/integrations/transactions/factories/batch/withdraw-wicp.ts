@@ -18,15 +18,15 @@ import {
 } from '../transactions';
 import { getAmountDependsOnBalance } from '.';
 
-type UseUnwrapBatchOptions = {
+type UseWithdrawWICPBatchOptions = {
   amount: string;
   toAccountId?: string;
 };
 
-export const useUnwrapBatch = ({
+export const useWithdrawWICPBatch = ({
   amount,
   toAccountId,
-}: UseUnwrapBatchOptions) => {
+}: UseWithdrawWICPBatchOptions) => {
   const { tokenList } = useSwapViewStore();
   const { tokenBalances } = useSwapCanisterStore();
   const dispatch = useAppDispatch();

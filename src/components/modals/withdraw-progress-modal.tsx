@@ -13,11 +13,8 @@ import { TransactionProgressModalContent, TransactionStep } from './components';
 
 export const WithdrawProgressModal = () => {
   const dispatch = useAppDispatch();
-  const {
-    isWithdrawProgressModalOpened: isWithdrawProgressOpened,
-    withdrawModalData: withdrawData,
-  } = useModalsStore();
-  const { tokenSymbol, steps, step: activeStep } = withdrawData;
+  const { isWithdrawProgressModalOpened, withdrawModalData } = useModalsStore();
+  const { tokenSymbol, steps, step: activeStep } = withdrawModalData;
 
   const getStepStatus = useStepStatus<WithdrawModalDataStep>({
     activeStep,
@@ -29,7 +26,11 @@ export const WithdrawProgressModal = () => {
   };
 
   return (
-    <Modal onClose={handleClose} isOpen={isWithdrawProgressOpened} isCentered>
+    <Modal
+      onClose={handleClose}
+      isOpen={isWithdrawProgressModalOpened}
+      isCentered
+    >
       <ModalOverlay />
       <TransactionProgressModalContent title="Withdraw in progress">
         <Flex alignItems="flex-start">

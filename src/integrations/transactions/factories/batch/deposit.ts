@@ -44,6 +44,8 @@ export const useDepositBatch = (deposit: Deposit) => {
       transactions,
       handleRetry: () => {
         dispatch(modalsSliceActions.closeDepositProgressModal());
+        dispatch(modalsSliceActions.openDepositFailModal());
+
         return Promise.resolve(false);
       },
     }),

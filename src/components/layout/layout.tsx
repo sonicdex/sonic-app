@@ -14,7 +14,6 @@ import {
   TabList,
   Tabs,
   Text,
-  Tooltip,
   useColorMode,
   useColorModeValue,
 } from '@chakra-ui/react';
@@ -117,16 +116,15 @@ export const Layout: React.FC = ({ children, ...props }) => {
             <HStack>
               {isConnected ? <PlugMenu /> : <PlugButton />}
               <Menu placement="bottom-end">
-                <Tooltip label="Menu">
-                  <MenuButton
-                    as={IconButton}
-                    aria-label="Menu"
-                    icon={<FaEllipsisH />}
-                    borderRadius="full"
-                    bg={menuBg}
-                    shadow={menuShadow}
-                  />
-                </Tooltip>
+                <MenuButton
+                  as={IconButton}
+                  aria-label="Menu"
+                  icon={<FaEllipsisH />}
+                  borderRadius="full"
+                  bg={menuBg}
+                  shadow={menuShadow}
+                />
+
                 <MenuList bg={menuBg} shadow={menuShadow}>
                   <ChakraLink
                     href={ENV.URLs.sonicDocs}

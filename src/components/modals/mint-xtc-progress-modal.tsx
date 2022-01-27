@@ -15,6 +15,7 @@ export const MintXTCProgressModal = () => {
   const dispatch = useAppDispatch();
   const { isMintXTCProgressModalOpened, mintXTCModalData } = useModalsStore();
   const { steps, step: activeStep } = mintXTCModalData;
+
   const getStepStatus = useStepStatus<MintXTCModalDataStep>({
     activeStep,
     steps,

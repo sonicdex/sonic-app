@@ -18,6 +18,7 @@ import {
   AddLiquidityProgressModal,
   AllowanceVerifyModal,
   DepositProgressModal,
+  MintXTCFailModal,
   MintXTCProgressModal,
   RemoveLiquidityFailModal,
   RemoveLiquidityModal,
@@ -26,8 +27,10 @@ import {
   SwapProgressModal,
   TermsAndConditionsModal,
   TokenSelectModal,
+  UnwrapFailModal,
   UnwrapProgressModal,
   WithdrawProgressModal,
+  WrapFailModal,
   WrapProgressModal,
 } from './components/modals';
 import { useTokenLogos } from './hooks';
@@ -58,21 +61,32 @@ export const App = () => {
       <Layout>
         <NotificationManager />
 
-        <RemoveLiquidityModal />
-        <SwapProgressModal />
-        <TokenSelectModal />
-        <WithdrawProgressModal />
-        <DepositProgressModal />
-        <AddLiquidityProgressModal />
-        <RemoveLiquidityProgressModal />
-        <UnwrapProgressModal />
-        <WrapProgressModal />
-        <MintXTCProgressModal />
-        <SwapFailModal />
-        <AddLiquidityFailModal />
-        <RemoveLiquidityFailModal />
-        <AllowanceVerifyModal />
         <TermsAndConditionsModal />
+        <RemoveLiquidityModal />
+        <TokenSelectModal />
+        <AllowanceVerifyModal />
+
+        <SwapProgressModal />
+        <SwapFailModal />
+
+        <WithdrawProgressModal />
+
+        <DepositProgressModal />
+
+        <AddLiquidityProgressModal />
+        <AddLiquidityFailModal />
+
+        <RemoveLiquidityProgressModal />
+        <RemoveLiquidityFailModal />
+
+        <UnwrapProgressModal />
+        <UnwrapFailModal />
+
+        <MintXTCProgressModal />
+        <MintXTCFailModal />
+
+        <WrapProgressModal />
+        <WrapFailModal />
 
         <Routes>
           <Route path="/swap" element={<SwapView />} />

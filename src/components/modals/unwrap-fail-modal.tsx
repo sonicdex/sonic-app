@@ -4,27 +4,23 @@ import { modalsSliceActions, useAppDispatch, useModalsStore } from '@/store';
 
 import { TransactionFailedModal } from './components';
 
-export const AddLiquidityFailModal = () => {
-  const {
-    isAddLiquidityFailModalOpened: isAddLiquidityFailOpened,
-    addLiquidityModalData: addLiquidityData,
-  } = useModalsStore();
-  const { callbacks: [addLiquidityCallback, closeCallback] = [] } =
-    addLiquidityData;
+export const UnwrapFailModal = () => {
+  const { isUnwrapFailModalOpened, unwrapModalData } = useModalsStore();
+  const { callbacks: [retryCallback, closeCallback] = [] } = unwrapModalData;
 
   const dispatch = useAppDispatch();
 
   const handleClose = () => {
     if (closeCallback) closeCallback();
-    dispatch(modalsSliceActions.closeAddLiquidityFailModal());
+    dispatch(modalsSliceActions.closeUnwrapFailModal());
   };
 
   return (
     <TransactionFailedModal
       onClose={handleClose}
-      isOpen={isAddLiquidityFailOpened}
+      isOpen={isUnwrapFailModalOpened}
       isCentered
-      title="Add Liquidity Failed"
+      title="Unwrap ICP Failed"
     >
       <Button
         variant="gradient"
@@ -32,7 +28,7 @@ export const AddLiquidityFailModal = () => {
         borderRadius={12}
         fontWeight={700}
         fontSize={18}
-        onClick={addLiquidityCallback}
+        onClick={retryCallback}
         isFullWidth
       >
         Retry
@@ -44,7 +40,7 @@ export const AddLiquidityFailModal = () => {
         onClick={handleClose}
         isFullWidth
       >
-        Close
+        Later
       </Button>
     </TransactionFailedModal>
   );

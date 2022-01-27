@@ -3,7 +3,7 @@ import { Principal } from '@dfinity/principal';
 import { useEffect, useMemo } from 'react';
 
 import { useBalances } from '@/hooks/use-balances';
-import { useUnwrapBatch } from '@/integrations/transactions';
+import { useWithdrawWICPBatch } from '@/integrations/transactions';
 import {
   modalsSliceActions,
   NotificationType,
@@ -33,7 +33,7 @@ export const UnwrapLink: React.FC<UnwrapLinkProps> = ({ id }) => {
     return deserialize(stringify({ from }));
   }, []);
 
-  const [batch, openUnwrapModal] = useUnwrapBatch({
+  const [batch, openUnwrapModal] = useWithdrawWICPBatch({
     amount: from.value,
     toAccountId: principalId
       ? getAccountId(Principal.fromText(principalId))
