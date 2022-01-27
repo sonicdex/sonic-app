@@ -194,7 +194,7 @@ const variantSolidRounded: PartsStyleFunction<typeof parts> = (props) => {
     },
     tablist: {
       shadow: mode('base', 'none')(props),
-      backgroundColor: mode(`white`, `gray.800`)(props),
+      backgroundColor: mode(`gray.50`, `gray.800`)(props),
       borderRadius: 'full',
       p: '1.5',
     },

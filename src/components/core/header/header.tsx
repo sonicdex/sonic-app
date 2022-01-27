@@ -26,7 +26,7 @@ export const Header: React.FC<HeaderProps> = ({
   const marginTop = buttonText && onButtonClick ? '-8px' : '0px';
 
   const color = useColorModeValue('gray.800', 'gray.50');
-  const backgroundColor = useColorModeValue('dark-blue.50', 'black');
+  const backgroundColor = useColorModeValue('custom.5', 'black');
 
   return (
     <Flex

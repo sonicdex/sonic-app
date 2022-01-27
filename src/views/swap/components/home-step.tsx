@@ -457,7 +457,7 @@ export const SwapHomeStep = () => {
 
   const swapPlacementButtonBg = useColorModeValue('gray.50', 'gray.800');
   const menuListShadow = useColorModeValue('lg', 'none');
-  const menuListBg = useColorModeValue('white', 'custom.3');
+  const menuListBg = useColorModeValue('gray.50', 'custom.3');
 
   return (
     <Stack spacing={4}>

@@ -41,7 +41,7 @@ export const Asset = ({
   isLoading = false,
   ...props
 }: AssetProps) => {
-  const bg = useColorModeValue('white', 'custom.2');
+  const bg = useColorModeValue('gray.50', 'custom.2');
   const shadow = useColorModeValue('sm', 'none');
 
   return (

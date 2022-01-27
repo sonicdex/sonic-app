@@ -66,11 +66,11 @@ export const Token: React.FC<TokenProps> = ({
   ...tokenProps
 }) => {
   const borderGlow = useColorModeValue('dark-blue.300', 'dark-blue.500');
-  const borderNotGlow = useColorModeValue('gray.200', 'custom.4');
+  const borderNotGlow = useColorModeValue('gray.100', 'custom.4');
   const borderColor = shouldGlow ? borderGlow : borderNotGlow;
 
-  const backgroundGlow = useColorModeValue('white', 'black');
-  const backgroundNotGlow = useColorModeValue('white', 'custom.2');
+  const backgroundGlow = useColorModeValue('gray.50', 'black');
+  const backgroundNotGlow = useColorModeValue('gray.50', 'custom.2');
   const background = shouldGlow ? backgroundGlow : backgroundNotGlow;
 
   const shadow = useColorModeValue('sm', 'none');
