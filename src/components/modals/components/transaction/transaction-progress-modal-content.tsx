@@ -21,7 +21,7 @@ export const TransactionProgressModalContent: React.FC<ModalContentProps> = ({
   title,
   ...props
 }) => {
-  const bg = useColorModeValue('white', 'custom.2');
+  const bg = useColorModeValue('gray.50', 'custom.2');
   const color = useColorModeValue('gray.600', 'custom.1');
 
   const titleColor = useColorModeValue('gray.800', 'gray.50');

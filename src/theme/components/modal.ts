@@ -43,7 +43,6 @@ const baseStyleHeader: SystemStyleObject = {
   py: 4,
   borderStyle: 'solid',
   borderBottomWidth: '1px',
-  borderColor: 'gray.700',
   fontSize: 'xl',
   fontWeight: 'semibold',
   textAlign: 'center',

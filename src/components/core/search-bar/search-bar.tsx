@@ -23,7 +23,6 @@ export const SearchBar = ({ search, setSearch }: SearchBarProps) => {
     <Flex
       boxSizing="border-box"
       px={4}
-      mb={4}
       bg={bg}
       shadow={shadow}
       w="100%"

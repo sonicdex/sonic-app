@@ -51,11 +51,11 @@ export const Layout: React.FC = ({ children, ...props }) => {
     [location]
   );
 
-  const backgroundColor = useColorModeValue('dark-blue.50', 'black');
+  const backgroundColor = useColorModeValue('custom.5', 'black');
 
   const { colorMode, toggleColorMode } = useColorMode();
 
-  const menuBg = useColorModeValue('white', 'custom.2');
+  const menuBg = useColorModeValue('gray.50', 'custom.2');
   const menuShadow = useColorModeValue('sm', 'none');
 
   return (
@@ -144,7 +144,6 @@ export const Layout: React.FC = ({ children, ...props }) => {
                   >
                     <MenuItem icon={<FaNetworkWired />}>API</MenuItem>
                   </ChakraLink>
-                  <MenuItem icon={<FaRedo />}>Re-try transaction</MenuItem>
                   {ENV.isDarkModeEnabled && (
                     <MenuItem
                       onClick={toggleColorMode}
@@ -153,6 +152,7 @@ export const Layout: React.FC = ({ children, ...props }) => {
                       {colorMode === 'dark' ? 'Light mode' : 'Dark mode'}
                     </MenuItem>
                   )}
+                  <MenuItem icon={<FaRedo />}>Retry transaction</MenuItem>
                 </MenuList>
               </Menu>
             </HStack>

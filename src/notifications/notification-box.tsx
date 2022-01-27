@@ -28,7 +28,7 @@ export const NotificationBox = ({
     setTimeout(onClose, 300);
   };
 
-  const bg = useColorModeValue('white', 'custom.2');
+  const bg = useColorModeValue('gray.50', 'custom.2');
 
   return (
     <Collapse in={show} animateOpacity unmountOnExit>

@@ -448,7 +448,7 @@ export const LiquidityAddView = () => {
   };
 
   const menuListShadow = useColorModeValue('lg', 'none');
-  const menuListBg = useColorModeValue('white', 'custom.3');
+  const menuListBg = useColorModeValue('gray.50', 'custom.3');
   const color = useColorModeValue('gray.600', 'custom.1');
   const bg = useColorModeValue('gray.100', 'gray.800');
   const iconBorderColor = useColorModeValue('gray.200', 'custom.4');
