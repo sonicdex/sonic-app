@@ -153,7 +153,6 @@ interface ModalsState {
   isUnwrapProgressModalOpened: boolean;
   isUnwrapFailModalOpened: boolean;
   unwrapModalData: UnwrapModalData;
-  unwrapUncompleteBlockHeights?: bigint[];
 
   isSwapProgressModalOpened: boolean;
   isSwapFailModalOpened: boolean;
@@ -249,7 +248,6 @@ const initialState: ModalsState = {
   isUnwrapProgressModalOpened: false,
   isUnwrapFailModalOpened: false,
   unwrapModalData: initialUnwrapModalData,
-  unwrapUncompleteBlockHeights: undefined,
 
   isSwapProgressModalOpened: false,
   isSwapFailModalOpened: false,
@@ -374,12 +372,6 @@ export const modalsSlice = createSlice({
         ...state.unwrapModalData,
         ...action.payload,
       };
-    },
-    setUnwrapUncompleteBlockHeights: (
-      state,
-      action: PayloadAction<bigint[]>
-    ) => {
-      state.unwrapUncompleteBlockHeights = action.payload;
     },
 
     openSwapProgressModal: (state) => {

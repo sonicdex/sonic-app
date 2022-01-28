@@ -5,7 +5,6 @@ export enum LocalStorageKey {
   TermsAndConditionsAccepted = 'termsAndConditionsAccepted',
 
   MintWICPUncompleteBlockHeights = 'mintWICPUncompleteBlockHeights',
-  WithdrawWICPUncompleteBlockHeights = 'withdrawWICPUncompleteBlockHeights',
   MintXTCUncompleteBlockHeights = 'mintXTCUncompleteBlockHeights',
 }
 

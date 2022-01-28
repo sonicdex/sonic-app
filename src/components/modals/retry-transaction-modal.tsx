@@ -86,7 +86,7 @@ export const RetryTransactionModal = () => {
       <ModalContent as="form" onSubmit={handleSubmit} noValidate>
         <ModalCloseButton />
         <ModalHeader>
-          Retry transaction{' '}
+          Retry minting{' '}
           <Text textAlign="center" fontSize="sm" color={color}>
             Using this form you can retry any of your failed mint transactions.
           </Text>
