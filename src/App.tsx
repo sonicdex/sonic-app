@@ -23,6 +23,7 @@ import {
   RemoveLiquidityFailModal,
   RemoveLiquidityModal,
   RemoveLiquidityProgressModal,
+  RetryTransactionModal,
   SwapFailModal,
   SwapProgressModal,
   TermsAndConditionsModal,
@@ -65,6 +66,7 @@ export const App = () => {
         <RemoveLiquidityModal />
         <TokenSelectModal />
         <AllowanceVerifyModal />
+        <RetryTransactionModal />
 
         <SwapProgressModal />
         <SwapFailModal />

@@ -27,7 +27,7 @@ import React, { useMemo } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
 import { ENV } from '@/config';
-import { usePlugStore } from '@/store';
+import { modalsSliceActions, useAppDispatch, usePlugStore } from '@/store';
 import { theme } from '@/theme';
 
 import packageJSON from '../../../package.json';
@@ -42,6 +42,7 @@ import {
 
 export const Layout: React.FC = ({ children, ...props }) => {
   const { isConnected } = usePlugStore();
+  const dispatch = useAppDispatch();
   const location = useLocation();
 
   const currentTabIndex = useMemo(
@@ -69,7 +70,7 @@ export const Layout: React.FC = ({ children, ...props }) => {
           gap="4"
           alignItems="center"
           backgroundColor={backgroundColor}
-          transition="background 200ms"
+          transition="background-color 200ms"
           _after={{
             content: "''",
             position: 'absolute',
@@ -150,7 +151,14 @@ export const Layout: React.FC = ({ children, ...props }) => {
                       {colorMode === 'dark' ? 'Light mode' : 'Dark mode'}
                     </MenuItem>
                   )}
-                  <MenuItem icon={<FaRedo />}>Retry transaction</MenuItem>
+                  <MenuItem
+                    onClick={() =>
+                      dispatch(modalsSliceActions.openRetryTransactionModal())
+                    }
+                    icon={<FaRedo />}
+                  >
+                    Retry transaction
+                  </MenuItem>
                 </MenuList>
               </Menu>
             </HStack>

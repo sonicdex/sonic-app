@@ -5,6 +5,16 @@ import type { RootState } from '@/store';
 
 export type ModalsCallback = (...args: unknown[]) => any;
 
+export enum RetryTransactionToken {
+  XTC = 'XTC',
+  WICP = 'WICP',
+}
+
+export type RetryTransactionModalData = {
+  token?: RetryTransactionToken;
+  blockHeight?: bigint;
+};
+
 export enum MintXTCModalDataStep {
   LedgerTransfer = 'ledgerTransfer',
   MintXTC = 'mintXTC',
@@ -127,6 +137,9 @@ type TokenSelectData = {
 
 // Define a type for the slice state
 interface ModalsState {
+  retryTransactionModalOpened: boolean;
+  retryTransactionModalData: RetryTransactionModalData;
+
   isMintXTCProgressModalOpened: boolean;
   isMintXTCFailModalOpened: boolean;
   mintXTCModalData: MintXTCModalData;
@@ -174,6 +187,10 @@ interface ModalsState {
   termsAndConditionsModalData: TermsAndConditionsModalData;
 }
 
+const initialRetryTransactionModalData: RetryTransactionModalData = {
+  token: RetryTransactionToken.WICP,
+};
+
 const initialMintXTCModalData: MintXTCModalData = {
   step: undefined,
 };
@@ -216,6 +233,9 @@ const initialTokenSelectData: TokenSelectData = {
 
 // Define the initial state using that type
 const initialState: ModalsState = {
+  retryTransactionModalOpened: false,
+  retryTransactionModalData: initialRetryTransactionModalData,
+
   isMintXTCProgressModalOpened: false,
   isMintXTCFailModalOpened: false,
   mintXTCModalData: initialMintXTCModalData,
@@ -268,6 +288,19 @@ export const modalsSlice = createSlice({
   // `createSlice` will infer the state type from the `initialState` argument
   initialState,
   reducers: {
+    openRetryTransactionModal: (
+      state,
+      action: PayloadAction<RetryTransactionModalData | undefined>
+    ) => {
+      state.retryTransactionModalOpened = true;
+      state.retryTransactionModalData =
+        action.payload ?? initialRetryTransactionModalData;
+    },
+    closeRetryTransactionModal: (state) => {
+      state.retryTransactionModalOpened = false;
+      state.retryTransactionModalData = initialRetryTransactionModalData;
+    },
+
     openMintXTCProgressModal: (state) => {
       state.isMintXTCProgressModalOpened = true;
     },

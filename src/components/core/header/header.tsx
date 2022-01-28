@@ -36,8 +36,8 @@ export const Header: React.FC<HeaderProps> = ({
       mt={-10}
       mb={5}
       backgroundColor={backgroundColor}
-      transition="background 200ms"
-      zIndex={10}
+      transition="background-color 200ms"
+      zIndex={1}
       flexDirection="column"
     >
       {children}
