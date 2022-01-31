@@ -1,6 +1,7 @@
 import { Button } from '@chakra-ui/react';
 import { useEffect } from 'react';
 
+import { LocalStorageKey, removeFromStorage } from '@/config';
 import { useBalances } from '@/hooks/use-balances';
 import { useFinishMintBatch } from '@/integrations/transactions/factories/batch/finish-mint';
 import {
@@ -53,6 +54,10 @@ export const FinishMintLink: React.FC<FinishMintLinkProps> = ({ id }) => {
           id: Date.now().toString(),
           transactionLink: '/activity',
         });
+
+        removeFromStorage(LocalStorageKey.MintWICPUncompleteBlockHeights);
+        removeFromStorage(LocalStorageKey.MintXTCUncompleteBlockHeights);
+
         getBalances();
       })
       .catch((err) => {

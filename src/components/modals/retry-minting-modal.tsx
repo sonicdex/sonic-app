@@ -16,14 +16,13 @@ import {
   Select,
   Stack,
   Text,
-  Tooltip,
   useColorModeValue,
 } from '@chakra-ui/react';
 import { FormEvent, useState } from 'react';
 
 import {
   modalsSliceActions,
-  RetryTransactionToken,
+  RetryMintingToken,
   useAppDispatch,
   useModalsStore,
 } from '@/store';
@@ -31,20 +30,20 @@ import {
 const TOKEN_OPTIONS = [
   {
     label: 'WICP',
-    value: RetryTransactionToken.WICP,
+    value: RetryMintingToken.WICP,
   },
   {
     label: 'XTC',
-    value: RetryTransactionToken.XTC,
+    value: RetryMintingToken.XTC,
   },
 ];
 
-export const RetryTransactionModal = () => {
+export const RetryMintingModal = () => {
   const color = useColorModeValue('gray.600', 'gray.400');
 
   const {
-    retryTransactionModalOpened,
-    retryTransactionModalData: { token, blockHeight } = {},
+    retryMintingModalOpened,
+    retryMintingModalData: { token, blockHeight } = {},
   } = useModalsStore();
 
   const [_blockHeight, setBlockHeight] = useState(String(blockHeight ?? ''));
@@ -59,7 +58,7 @@ export const RetryTransactionModal = () => {
   const dispatch = useAppDispatch();
 
   const handleClose = () => {
-    dispatch(modalsSliceActions.closeRetryTransactionModal());
+    dispatch(modalsSliceActions.closeRetryMintingModal());
   };
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -77,11 +76,7 @@ export const RetryTransactionModal = () => {
   };
 
   return (
-    <Modal
-      isOpen={retryTransactionModalOpened}
-      onClose={handleClose}
-      isCentered
-    >
+    <Modal isOpen={retryMintingModalOpened} onClose={handleClose} isCentered>
       <ModalOverlay />
       <ModalContent as="form" onSubmit={handleSubmit} noValidate>
         <ModalCloseButton />
@@ -100,9 +95,7 @@ export const RetryTransactionModal = () => {
             <FormLabel>Token</FormLabel>
             <Select
               value={_token}
-              onChange={(e) =>
-                setToken(e.target.value as RetryTransactionToken)
-              }
+              onChange={(e) => setToken(e.target.value as RetryMintingToken)}
             >
               {TOKEN_OPTIONS.map((option) => (
                 <option key={option.value} value={option.value}>
@@ -119,13 +112,13 @@ export const RetryTransactionModal = () => {
             isInvalid={Boolean(blockHeightErrorMessage)}
           >
             <FormLabel>Block height</FormLabel>
-            <Tooltip label="Block height of your transaciton is needed for completing the transaction.">
-              <Input
-                value={_blockHeight}
-                onChange={(e) => setBlockHeight(e.target.value)}
-                placeholder="2021024"
-              />
-            </Tooltip>
+
+            <Input
+              value={_blockHeight}
+              onChange={(e) => setBlockHeight(e.target.value)}
+              placeholder="2021024"
+            />
+
             <FormErrorMessage>{blockHeightErrorMessage}</FormErrorMessage>
             <FormHelperText>
               You can find block height in your activity tab or transaction

@@ -5,13 +5,13 @@ import type { RootState } from '@/store';
 
 export type ModalsCallback = (...args: unknown[]) => any;
 
-export enum RetryTransactionToken {
+export enum RetryMintingToken {
   XTC = 'XTC',
   WICP = 'WICP',
 }
 
-export type RetryTransactionModalData = {
-  token?: RetryTransactionToken;
+export type RetryMintingModalData = {
+  token?: RetryMintingToken;
   blockHeight?: bigint;
 };
 
@@ -145,8 +145,8 @@ interface ModalsState {
   finishMintStarted: boolean;
   finishMintData: FinishMintData;
 
-  retryTransactionModalOpened: boolean;
-  retryTransactionModalData: RetryTransactionModalData;
+  retryMintingModalOpened: boolean;
+  retryMintingModalData: RetryMintingModalData;
 
   isMintXTCProgressModalOpened: boolean;
   isMintXTCFailModalOpened: boolean;
@@ -194,8 +194,8 @@ interface ModalsState {
   termsAndConditionsModalData: TermsAndConditionsModalData;
 }
 
-const initialRetryTransactionModalData: RetryTransactionModalData = {
-  token: RetryTransactionToken.WICP,
+const initialRetryTransactionModalData: RetryMintingModalData = {
+  token: RetryMintingToken.WICP,
 };
 
 const initialMintXTCModalData: MintXTCModalData = {
@@ -247,8 +247,8 @@ const initialState: ModalsState = {
   finishMintStarted: false,
   finishMintData: initialFinishMintData,
 
-  retryTransactionModalOpened: false,
-  retryTransactionModalData: initialRetryTransactionModalData,
+  retryMintingModalOpened: false,
+  retryMintingModalData: initialRetryTransactionModalData,
 
   isMintXTCProgressModalOpened: false,
   isMintXTCFailModalOpened: false,
@@ -319,17 +319,17 @@ export const modalsSlice = createSlice({
       state.finishMintData = action.payload ?? initialFinishMintData;
     },
 
-    openRetryTransactionModal: (
+    openRetryMintingModal: (
       state,
-      action: PayloadAction<RetryTransactionModalData | undefined>
+      action: PayloadAction<RetryMintingModalData | undefined>
     ) => {
-      state.retryTransactionModalOpened = true;
-      state.retryTransactionModalData =
+      state.retryMintingModalOpened = true;
+      state.retryMintingModalData =
         action.payload ?? initialRetryTransactionModalData;
     },
-    closeRetryTransactionModal: (state) => {
-      state.retryTransactionModalOpened = false;
-      state.retryTransactionModalData = initialRetryTransactionModalData;
+    closeRetryMintingModal: (state) => {
+      state.retryMintingModalOpened = false;
+      state.retryMintingModalData = initialRetryTransactionModalData;
     },
 
     openMintXTCProgressModal: (state) => {

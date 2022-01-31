@@ -141,7 +141,7 @@ export const Layout: React.FC = ({ children, ...props }) => {
                   )}
                   <MenuItem
                     onClick={() =>
-                      dispatch(modalsSliceActions.openRetryTransactionModal())
+                      dispatch(modalsSliceActions.openRetryMintingModal())
                     }
                     icon={<FaRedo />}
                   >

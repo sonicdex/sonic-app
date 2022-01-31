@@ -12,7 +12,7 @@ export * from './remove-liquidity-fail-modal';
 export * from './remove-liquidity-modal-asset';
 export * from './remove-liquidity-modal';
 export * from './remove-liquidity-progress-modal';
-export * from './retry-transaction-modal';
+export * from './retry-minting-modal';
 export * from './swap-fail-modal';
 export * from './swap-progress-modal';
 export * from './terms-and-conditions-modal';

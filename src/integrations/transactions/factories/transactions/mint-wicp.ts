@@ -30,8 +30,6 @@ export const getMintWICPTransaction: CreateTransaction<MintWICP> = (
       return [
         subaccount,
         blockHeight ?? argBlockHeight ?? lastUncompleteBlockHeight,
-        // TODO: remove after WICP retry done
-        123,
       ];
     },
   };
