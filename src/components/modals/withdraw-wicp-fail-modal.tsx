@@ -4,21 +4,23 @@ import { modalsSliceActions, useAppDispatch, useModalsStore } from '@/store';
 
 import { TransactionFailedModal } from './components';
 
-export const UnwrapFailModal = () => {
-  const { isUnwrapFailModalOpened, unwrapModalData } = useModalsStore();
-  const { callbacks: [retryCallback, closeCallback] = [] } = unwrapModalData;
+export const WithdrawWICPFailModal = () => {
+  const { isWithdrawWICPFailModalOpened, withdrawWICPModalData } =
+    useModalsStore();
+  const { callbacks: [retryCallback, closeCallback] = [] } =
+    withdrawWICPModalData;
 
   const dispatch = useAppDispatch();
 
   const handleClose = () => {
     if (closeCallback) closeCallback();
-    dispatch(modalsSliceActions.closeUnwrapFailModal());
+    dispatch(modalsSliceActions.closeWithdrawWICPFailModal());
   };
 
   return (
     <TransactionFailedModal
       onClose={handleClose}
-      isOpen={isUnwrapFailModalOpened}
+      isOpen={isWithdrawWICPFailModalOpened}
       isCentered
       title="ICP Unwrapping Failed"
     >

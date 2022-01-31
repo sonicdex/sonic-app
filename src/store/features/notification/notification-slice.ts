@@ -12,8 +12,8 @@ export enum NotificationType {
   Withdraw,
   AddLiquidity,
   RemoveLiquidity,
-  Unwrap,
-  Wrap,
+  WithdrawWICP,
+  MintWICP,
   MintXTC,
   FinishMint,
 }

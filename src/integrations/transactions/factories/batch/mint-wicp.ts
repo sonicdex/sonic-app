@@ -2,37 +2,39 @@ import { useCallback, useMemo, useState } from 'react';
 
 import { ENV, getFromStorage, LocalStorageKey, saveToStorage } from '@/config';
 import {
+  MintWICPModalData,
+  MintWICPModalDataStep,
   modalsSliceActions,
   useAppDispatch,
   useModalsStore,
   useSwapViewStore,
-  WrapModalData,
-  WrapModalDataStep,
 } from '@/store';
 
 import { useBatchHook } from '..';
 import {
+  getMintWICPTransaction,
   useApproveTransactionMemo,
   useDepositTransactionMemo,
   useLedgerTransferTransactionMemo,
-  useMintWICPTransactionMemo,
 } from '../transactions';
 
 type UseMintWICPBatchOptions = {
-  keepInSonic?: boolean;
   amount: string;
+  blockHeight?: bigint;
+  keepInSonic?: boolean;
 };
 
 export const useMintWICPBatch = ({
   amount,
+  blockHeight,
   keepInSonic = false,
 }: UseMintWICPBatchOptions) => {
   const [numberOfRetries, setNumberOfRetries] = useState(0);
 
   const { tokenList } = useSwapViewStore();
   const {
-    wrapModalData: { callbacks: [retryCallback] = [] },
-    mintWICPUncompleteBlockHeights: wrapUncompleteBlockHeights,
+    mintWICPModalData: { callbacks: [retryCallback] = [] },
+    mintWICPUncompleteBlockHeights,
   } = useModalsStore();
   const dispatch = useAppDispatch();
 
@@ -47,15 +49,21 @@ export const useMintWICPBatch = ({
     toAccountId: ENV.accountIDs.WICP,
     amount,
   });
-  const mintWICP = useMintWICPTransactionMemo({});
+  const mintWICP = getMintWICPTransaction({ blockHeight });
   const approve = useApproveTransactionMemo(depositParams);
   const deposit = useDepositTransactionMemo(depositParams);
 
   const transactions = useMemo(() => {
-    let transactions: Partial<Record<WrapModalDataStep, any>> = {
-      ledgerTransfer,
+    let transactions: Partial<Record<MintWICPModalDataStep, any>> = {
       mintWICP,
     };
+
+    if (!blockHeight) {
+      transactions = {
+        ledgerTransfer,
+        ...transactions,
+      };
+    }
 
     if (keepInSonic) {
       transactions = {
@@ -66,16 +74,16 @@ export const useMintWICPBatch = ({
     }
 
     return transactions;
-  }, [ledgerTransfer, mintWICP, approve, deposit, keepInSonic]);
+  }, [ledgerTransfer, mintWICP, approve, deposit, blockHeight, keepInSonic]);
 
   const openBatchModal = useCallback(() => {
-    const steps = Object.keys(transactions) as WrapModalData['steps'];
+    const steps = Object.keys(transactions) as MintWICPModalData['steps'];
 
-    dispatch(modalsSliceActions.setWrapModalData({ steps }));
-    dispatch(modalsSliceActions.openWrapProgressModal());
+    dispatch(modalsSliceActions.setMintWICPModalData({ steps }));
+    dispatch(modalsSliceActions.openMintWICPProgressModal());
   }, [dispatch, transactions]);
 
-  const batch = useBatchHook<WrapModalDataStep>({
+  const batch = useBatchHook<MintWICPModalDataStep>({
     transactions,
     handleRetry: async (error, prevResponses) => {
       const failedBlockHeight = prevResponses?.[0]?.response as
@@ -85,7 +93,9 @@ export const useMintWICPBatch = ({
       if (failedBlockHeight) {
         dispatch(
           modalsSliceActions.setMintWICPUncompleteBlockHeights([
-            ...(wrapUncompleteBlockHeights ? wrapUncompleteBlockHeights : []),
+            ...(mintWICPUncompleteBlockHeights
+              ? mintWICPUncompleteBlockHeights
+              : []),
             String(failedBlockHeight),
           ])
         );
@@ -93,7 +103,7 @@ export const useMintWICPBatch = ({
 
       return new Promise<boolean>((resolve) => {
         dispatch(
-          modalsSliceActions.setWrapModalData({
+          modalsSliceActions.setMintWICPModalData({
             callbacks: [
               // Retry callback
               () => {
@@ -107,8 +117,10 @@ export const useMintWICPBatch = ({
                 );
 
                 saveToStorage(LocalStorageKey.MintWICPUncompleteBlockHeights, [
-                  ...prevMintWICPBlockHeight,
-                  failedBlockHeight,
+                  ...(typeof prevMintWICPBlockHeight !== 'undefined'
+                    ? prevMintWICPBlockHeight
+                    : []),
+                  String(failedBlockHeight),
                 ]);
                 resolve(false);
               },
@@ -121,8 +133,8 @@ export const useMintWICPBatch = ({
         }
 
         if (numberOfRetries >= 1 || !retryCallback) {
-          dispatch(modalsSliceActions.closeWrapProgressModal());
-          dispatch(modalsSliceActions.openWrapFailModal());
+          dispatch(modalsSliceActions.closeMintWICPProgressModal());
+          dispatch(modalsSliceActions.openMintWICPFailModal());
         }
 
         setNumberOfRetries(numberOfRetries + 1);

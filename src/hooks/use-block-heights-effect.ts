@@ -4,6 +4,7 @@ import { getFromStorage, LocalStorageKey } from '@/config';
 import {
   modalsSliceActions,
   NotificationType,
+  useAppDispatch,
   useNotificationStore,
 } from '@/store';
 
@@ -14,6 +15,7 @@ const PLURAL_BLOCK_HEIGHTS_LENGTH_TITLE =
 
 export const useBlockHeightsEffect = () => {
   const { addNotification } = useNotificationStore();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     const blockHeightsWICP = getFromStorage(
@@ -24,9 +26,21 @@ export const useBlockHeightsEffect = () => {
     );
 
     if (blockHeightsWICP || blockHeightsXTC) {
-      const totalLength = blockHeightsWICP.length + blockHeightsXTC.length;
+      const totalLength =
+        blockHeightsWICP?.length ?? 0 + blockHeightsXTC?.length ?? 0;
 
-      if (totalLength > 1) {
+      if (blockHeightsWICP) {
+        dispatch(
+          modalsSliceActions.setMintWICPUncompleteBlockHeights(blockHeightsWICP)
+        );
+      }
+      if (blockHeightsXTC) {
+        dispatch(
+          modalsSliceActions.setMintXTCUncompleteBlockHeights(blockHeightsXTC)
+        );
+      }
+
+      if (totalLength >= 1) {
         addNotification({
           id: String(new Date().getTime()),
           title:
@@ -36,14 +50,7 @@ export const useBlockHeightsEffect = () => {
           type: NotificationType.FinishMint,
         });
       }
-
-      if (blockHeightsWICP) {
-        modalsSliceActions.setMintWICPUncompleteBlockHeights(blockHeightsWICP);
-      }
-
-      if (blockHeightsXTC) {
-        modalsSliceActions.setMintXTCUncompleteBlockHeights(blockHeightsXTC);
-      }
     }
-  });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 };

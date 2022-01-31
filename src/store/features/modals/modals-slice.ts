@@ -31,26 +31,26 @@ export type MintXTCModalData<
   callbacks?: [RetryCallback, CancelCallback];
 };
 
-export enum WrapModalDataStep {
+export enum MintWICPModalDataStep {
   LedgerTransfer = 'ledgerTransfer',
   MintWIPC = 'mintWICP',
   Approve = 'approve',
   Deposit = 'deposit',
 }
 
-export type WrapModalData = {
-  step?: WrapModalDataStep | Batch.DefaultHookState;
-  steps?: (WrapModalDataStep | Batch.DefaultHookState)[];
+export type MintWICPModalData = {
+  step?: MintWICPModalDataStep | Batch.DefaultHookState;
+  steps?: (MintWICPModalDataStep | Batch.DefaultHookState)[];
   callbacks?: [ModalsCallback, ModalsCallback];
 };
 
-export enum UnwrapModalDataStep {
+export enum WithdrawWICPModalDataStep {
   Withdraw = 'withdraw',
   WithdrawWICP = 'withdrawWICP',
 }
-export type UnwrapModalData = {
-  step?: UnwrapModalDataStep | Batch.DefaultHookState;
-  steps?: (UnwrapModalDataStep | Batch.DefaultHookState)[];
+export type WithdrawWICPModalData = {
+  step?: WithdrawWICPModalDataStep | Batch.DefaultHookState;
+  steps?: (WithdrawWICPModalDataStep | Batch.DefaultHookState)[];
   callbacks?: [ModalsCallback, ModalsCallback];
 };
 
@@ -153,14 +153,14 @@ interface ModalsState {
   mintXTCModalData: MintXTCModalData;
   mintXTCUncompleteBlockHeights?: string[];
 
-  isWrapProgressModalOpened: boolean;
-  isWrapFailModalOpened: boolean;
-  wrapModalData: WrapModalData;
+  isMintWICPProgressModalOpened: boolean;
+  isMintWICPFailModalOpened: boolean;
+  mintWICPModalData: MintWICPModalData;
   mintWICPUncompleteBlockHeights?: string[];
 
-  isUnwrapProgressModalOpened: boolean;
-  isUnwrapFailModalOpened: boolean;
-  unwrapModalData: UnwrapModalData;
+  isWithdrawWICPProgressModalOpened: boolean;
+  isWithdrawWICPFailModalOpened: boolean;
+  withdrawWICPModalData: WithdrawWICPModalData;
 
   isSwapProgressModalOpened: boolean;
   isSwapFailModalOpened: boolean;
@@ -202,11 +202,11 @@ const initialMintXTCModalData: MintXTCModalData = {
   step: undefined,
 };
 
-const initialWrapModalData: WrapModalData = {
+const initialMintWICPModalData: MintWICPModalData = {
   step: undefined,
 };
 
-const initialUnwrapModalData: UnwrapModalData = {
+const initialWithdrawWICPModalData: WithdrawWICPModalData = {
   step: undefined,
 };
 
@@ -255,14 +255,14 @@ const initialState: ModalsState = {
   mintXTCModalData: initialMintXTCModalData,
   mintXTCUncompleteBlockHeights: undefined,
 
-  isWrapProgressModalOpened: false,
-  isWrapFailModalOpened: false,
-  wrapModalData: initialWrapModalData,
+  isMintWICPProgressModalOpened: false,
+  isMintWICPFailModalOpened: false,
+  mintWICPModalData: initialMintWICPModalData,
   mintWICPUncompleteBlockHeights: undefined,
 
-  isUnwrapProgressModalOpened: false,
-  isUnwrapFailModalOpened: false,
-  unwrapModalData: initialUnwrapModalData,
+  isWithdrawWICPProgressModalOpened: false,
+  isWithdrawWICPFailModalOpened: false,
+  withdrawWICPModalData: initialWithdrawWICPModalData,
 
   isSwapProgressModalOpened: false,
   isSwapFailModalOpened: false,
@@ -360,24 +360,24 @@ export const modalsSlice = createSlice({
       state.mintXTCUncompleteBlockHeights = action.payload;
     },
 
-    openWrapProgressModal: (state) => {
-      state.isWrapProgressModalOpened = true;
+    openMintWICPProgressModal: (state) => {
+      state.isMintWICPProgressModalOpened = true;
     },
-    closeWrapProgressModal: (state) => {
-      state.isWrapProgressModalOpened = false;
+    closeMintWICPProgressModal: (state) => {
+      state.isMintWICPProgressModalOpened = false;
     },
-    openWrapFailModal: (state) => {
-      state.isWrapFailModalOpened = true;
+    openMintWICPFailModal: (state) => {
+      state.isMintWICPFailModalOpened = true;
     },
-    closeWrapFailModal: (state) => {
-      state.isWrapFailModalOpened = false;
+    closeMintWICPFailModal: (state) => {
+      state.isMintWICPFailModalOpened = false;
     },
-    clearWrapModalData: (state) => {
-      state.wrapModalData = initialWrapModalData;
+    clearMintWICPModalData: (state) => {
+      state.mintWICPModalData = initialMintWICPModalData;
     },
-    setWrapModalData: (state, action: PayloadAction<WrapModalData>) => {
-      state.wrapModalData = {
-        ...state.wrapModalData,
+    setMintWICPModalData: (state, action: PayloadAction<MintWICPModalData>) => {
+      state.mintWICPModalData = {
+        ...state.mintWICPModalData,
         ...action.payload,
       };
     },
@@ -388,24 +388,27 @@ export const modalsSlice = createSlice({
       state.mintWICPUncompleteBlockHeights = action.payload;
     },
 
-    openUnwrapProgressModal: (state) => {
-      state.isUnwrapProgressModalOpened = true;
+    openWithdrawWICPProgressModal: (state) => {
+      state.isWithdrawWICPProgressModalOpened = true;
     },
-    closeUnwrapProgressModal: (state) => {
-      state.isUnwrapProgressModalOpened = false;
+    closeWithdrawWICPProgressModal: (state) => {
+      state.isWithdrawWICPProgressModalOpened = false;
     },
-    openUnwrapFailModal: (state) => {
-      state.isUnwrapFailModalOpened = true;
+    openWithdrawWICPFailModal: (state) => {
+      state.isWithdrawWICPFailModalOpened = true;
     },
-    closeUnwrapFailModal: (state) => {
-      state.isUnwrapFailModalOpened = false;
+    closeWithdrawWICPFailModal: (state) => {
+      state.isWithdrawWICPFailModalOpened = false;
     },
-    clearUnwrapModalData: (state) => {
-      state.unwrapModalData = initialUnwrapModalData;
+    clearWithdrawWICPModalData: (state) => {
+      state.withdrawWICPModalData = initialWithdrawWICPModalData;
     },
-    setUnwrapModalData: (state, action: PayloadAction<UnwrapModalData>) => {
-      state.unwrapModalData = {
-        ...state.unwrapModalData,
+    setWithdrawWICPModalData: (
+      state,
+      action: PayloadAction<WithdrawWICPModalData>
+    ) => {
+      state.withdrawWICPModalData = {
+        ...state.withdrawWICPModalData,
         ...action.payload,
       };
     },

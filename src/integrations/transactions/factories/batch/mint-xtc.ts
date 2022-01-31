@@ -14,15 +14,17 @@ import {
   useDepositTransactionMemo,
   useLedgerTransferTransactionMemo,
 } from '..';
-import { useMintXTCTransactionMemo } from '../transactions/mint-xtc';
+import { getMintXTCTransaction } from '../transactions/mint-xtc';
 
 export type UseMintXTCBatchOptions = {
-  keepInSonic?: boolean;
   amount: string;
+  blockHeight?: bigint;
+  keepInSonic?: boolean;
 };
 
 export const useMintXTCBatch = ({
   amount,
+  blockHeight,
   keepInSonic,
 }: UseMintXTCBatchOptions) => {
   const { tokenList } = useSwapViewStore();
@@ -39,15 +41,21 @@ export const useMintXTCBatch = ({
     toAccountId: ENV.accountIDs.XTC,
     amount,
   });
-  const mintXTC = useMintXTCTransactionMemo({});
+  const mintXTC = getMintXTCTransaction({ blockHeight });
   const approve = useApproveTransactionMemo(depositParams);
   const deposit = useDepositTransactionMemo(depositParams);
 
   const transactions = useMemo(() => {
     let transactions: Partial<Record<MintXTCModalDataStep, any>> = {
-      ledgerTransfer,
       mintXTC,
     };
+
+    if (!blockHeight) {
+      transactions = {
+        ledgerTransfer,
+        ...transactions,
+      };
+    }
 
     if (keepInSonic) {
       transactions = {
@@ -58,7 +66,7 @@ export const useMintXTCBatch = ({
     }
 
     return transactions;
-  }, [ledgerTransfer, mintXTC, approve, deposit, keepInSonic]);
+  }, [ledgerTransfer, mintXTC, blockHeight, approve, deposit, keepInSonic]);
 
   const openBatchModal = () => {
     dispatch(

@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 
 import { modalsSliceActions, useAppDispatch } from '@/store';
 
-import { useBatchHook, useMintWICPTransactionMemo } from '..';
-import { useMintXTCTransactionMemo } from '../transactions/mint-xtc';
+import { getMintWICPTransaction, useBatchHook } from '..';
+import { getMintXTCTransaction } from '../transactions/mint-xtc';
 
 export type UseFinishMintBatchOptions = {
   blockHeights: {
@@ -19,34 +19,28 @@ export const useFinishMintBatch = ({
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    console.log(blockHeights);
-    const blockHeightsWICP = blockHeights.WICP;
-    const blockHeightsXTC = blockHeights.XTC;
-
     let transactions: Record<string, any> = {};
 
-    blockHeightsWICP?.forEach((blockHeight: string, index) => {
+    blockHeights.WICP?.forEach((blockHeight: string, index) => {
       transactions = {
         ...transactions,
-        // eslint-disable-next-line react-hooks/rules-of-hooks
-        [`WICP-${index}`]: useMintWICPTransactionMemo({
+        [`WICP-${index}`]: getMintWICPTransaction({
           blockHeight: BigInt(blockHeight),
         }),
       };
     });
 
-    blockHeightsXTC?.forEach((blockHeight: string, index) => {
+    blockHeights.XTC?.forEach((blockHeight: string, index) => {
       transactions = {
         ...transactions,
-        // eslint-disable-next-line react-hooks/rules-of-hooks
-        [`XTC-${index}`]: useMintXTCTransactionMemo({
+        [`XTC-${index}`]: getMintXTCTransaction({
           blockHeight: BigInt(blockHeight),
         }),
       };
     });
 
     setTransactions(transactions);
-  }, [blockHeights]);
+  }, [blockHeights.WICP, blockHeights.XTC]);
 
   const startMinting = () => {
     dispatch(

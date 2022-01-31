@@ -4,10 +4,10 @@ import { ENV } from '@/config';
 import { ICP_METADATA } from '@/constants';
 import {
   modalsSliceActions,
-  UnwrapModalDataStep,
   useAppDispatch,
   useSwapCanisterStore,
   useSwapViewStore,
+  WithdrawWICPModalDataStep,
 } from '@/store';
 
 import { useBatchHook } from '..';
@@ -66,20 +66,21 @@ export const useWithdrawWICPBatch = ({
 
   const openBatchModal = () => {
     dispatch(
-      modalsSliceActions.setUnwrapModalData({
-        steps: Object.keys(transactions) as UnwrapModalDataStep[],
+      modalsSliceActions.setWithdrawWICPModalData({
+        steps: Object.keys(transactions) as WithdrawWICPModalDataStep[],
       })
     );
 
-    dispatch(modalsSliceActions.openUnwrapProgressModal());
-    dispatch(modalsSliceActions.openUnwrapFailModal());
+    dispatch(modalsSliceActions.openWithdrawWICPProgressModal());
   };
 
   return {
     batch: useBatchHook({
       transactions,
       handleRetry: () => {
-        dispatch(modalsSliceActions.closeUnwrapProgressModal());
+        dispatch(modalsSliceActions.closeWithdrawWICPProgressModal());
+        dispatch(modalsSliceActions.openWithdrawWICPFailModal());
+
         return Promise.resolve(false);
       },
     }),

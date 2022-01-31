@@ -228,11 +228,11 @@ export const SwapHomeStep = () => {
     to.value,
   ]);
 
-  const handleWrapICP = useCallback(() => {
+  const handleMintWICP = useCallback(() => {
     if (checkIsPlugProviderVersionCompatible()) {
       addNotification({
         title: `Wrapping ${from.value} ${from.metadata?.symbol}`,
-        type: NotificationType.Wrap,
+        type: NotificationType.MintWICP,
         id: String(new Date().getTime()),
       });
       debounce(
@@ -248,10 +248,10 @@ export const SwapHomeStep = () => {
     from.value,
   ]);
 
-  const handleUnwrapICP = useCallback(() => {
+  const handleWithdrawWICP = useCallback(() => {
     addNotification({
       title: `Unwrapping ${from.value} ${from.metadata?.symbol}`,
-      type: NotificationType.Unwrap,
+      type: NotificationType.WithdrawWICP,
       id: String(new Date().getTime()),
     });
     debounce(
@@ -296,11 +296,11 @@ export const SwapHomeStep = () => {
     }
 
     if (isFromTokenIsICP && isToTokenIsWICP) {
-      return [false, 'Wrap', handleWrapICP];
+      return [false, 'Wrap', handleMintWICP];
     }
 
     if (isFromTokenIsWICP && isToTokenIsICP) {
-      return [false, 'Unwrap', handleUnwrapICP];
+      return [false, 'Unwrap', handleWithdrawWICP];
     }
 
     if (isFromTokenIsICP && isToTokenIsXTC) {
@@ -328,8 +328,8 @@ export const SwapHomeStep = () => {
     isFromTokenIsWICP,
     isToTokenIsICP,
     handleMintXTC,
-    handleWrapICP,
-    handleUnwrapICP,
+    handleMintWICP,
+    handleWithdrawWICP,
     dispatch,
   ]);
 

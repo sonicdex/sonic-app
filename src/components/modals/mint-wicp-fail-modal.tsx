@@ -4,21 +4,21 @@ import { modalsSliceActions, useAppDispatch, useModalsStore } from '@/store';
 
 import { TransactionFailedModal } from './components';
 
-export const WrapFailModal = () => {
-  const { isWrapFailModalOpened, wrapModalData } = useModalsStore();
-  const { callbacks: [retryCallback, closeCallback] = [] } = wrapModalData;
+export const MintWICPFailModal = () => {
+  const { isMintWICPFailModalOpened, mintWICPModalData } = useModalsStore();
+  const { callbacks: [retryCallback, closeCallback] = [] } = mintWICPModalData;
 
   const dispatch = useAppDispatch();
 
   const handleClose = () => {
     if (closeCallback) closeCallback();
-    dispatch(modalsSliceActions.closeWrapFailModal());
+    dispatch(modalsSliceActions.closeMintWICPFailModal());
   };
 
   return (
     <TransactionFailedModal
       onClose={handleClose}
-      isOpen={isWrapFailModalOpened}
+      isOpen={isMintWICPFailModalOpened}
       isCentered
       title="ICP Wrapping Failed"
     >

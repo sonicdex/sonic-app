@@ -18,6 +18,8 @@ import {
   AddLiquidityProgressModal,
   AllowanceVerifyModal,
   DepositProgressModal,
+  MintWICPFailModal,
+  MintWICPProgressModal,
   MintXTCFailModal,
   MintXTCProgressModal,
   RemoveLiquidityFailModal,
@@ -28,11 +30,9 @@ import {
   SwapProgressModal,
   TermsAndConditionsModal,
   TokenSelectModal,
-  UnwrapFailModal,
-  UnwrapProgressModal,
   WithdrawProgressModal,
-  WrapFailModal,
-  WrapProgressModal,
+  WithdrawWICPFailModal,
+  WithdrawWICPProgressModal,
 } from './components/modals';
 import { useTokenLogos } from './hooks';
 import { useBlockHeightsEffect } from './hooks/use-block-heights-effect';
@@ -84,14 +84,14 @@ export const App = () => {
         <RemoveLiquidityProgressModal />
         <RemoveLiquidityFailModal />
 
-        <UnwrapProgressModal />
-        <UnwrapFailModal />
+        <WithdrawWICPProgressModal />
+        <WithdrawWICPFailModal />
 
         <MintXTCProgressModal />
         <MintXTCFailModal />
 
-        <WrapProgressModal />
-        <WrapFailModal />
+        <MintWICPProgressModal />
+        <MintWICPFailModal />
 
         <Routes>
           <Route path="/swap" element={<SwapView />} />

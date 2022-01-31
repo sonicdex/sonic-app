@@ -2,39 +2,39 @@ import { Flex } from '@chakra-ui/react';
 
 import { checkPlainSrc, depositSrc, swapSrc, withdrawSrc } from '@/assets';
 import {
+  MintWICPModalData,
+  MintWICPModalDataStep,
   modalsSliceActions,
   useAppDispatch,
   useModalsStore,
-  WrapModalData,
-  WrapModalDataStep,
 } from '@/store';
 
 import { useStepStatus } from '.';
 import { TransactionProgressModal, TransactionStep } from './components';
 
-export const WrapProgressModal = () => {
+export const MintWICPProgressModal = () => {
   const dispatch = useAppDispatch();
-  const { isWrapProgressModalOpened, wrapModalData } = useModalsStore();
-  const { steps, step: activeStep } = wrapModalData;
-  const getStepStatus = useStepStatus<WrapModalData['step']>({
+  const { isMintWICPProgressModalOpened, mintWICPModalData } = useModalsStore();
+  const { steps, step: activeStep } = mintWICPModalData;
+  const getStepStatus = useStepStatus<MintWICPModalData['step']>({
     activeStep,
     steps,
   });
 
   const handleClose = () => {
-    dispatch(modalsSliceActions.closeWrapProgressModal());
+    dispatch(modalsSliceActions.closeMintWICPProgressModal());
   };
 
   return (
     <TransactionProgressModal
       onClose={handleClose}
-      isOpen={isWrapProgressModalOpened}
+      isOpen={isMintWICPProgressModalOpened}
       isCentered
       title="ICP wrapping in progress"
     >
       <Flex alignItems="flex-start">
         <TransactionStep
-          status={getStepStatus(WrapModalDataStep.LedgerTransfer)}
+          status={getStepStatus(MintWICPModalDataStep.LedgerTransfer)}
           iconSrc={withdrawSrc}
           chevron
         >
@@ -42,27 +42,27 @@ export const WrapProgressModal = () => {
           ICP
         </TransactionStep>
         <TransactionStep
-          status={getStepStatus(WrapModalDataStep.MintWIPC)}
+          status={getStepStatus(MintWICPModalDataStep.MintWIPC)}
           iconSrc={swapSrc}
           chevron={
-            steps?.includes(WrapModalDataStep.Approve) ||
-            steps?.includes(WrapModalDataStep.Deposit)
+            steps?.includes(MintWICPModalDataStep.Approve) ||
+            steps?.includes(MintWICPModalDataStep.Deposit)
           }
         >
           Minting <br /> WICP
         </TransactionStep>
-        {steps?.includes(WrapModalDataStep.Approve) && (
+        {steps?.includes(MintWICPModalDataStep.Approve) && (
           <TransactionStep
-            status={getStepStatus(WrapModalDataStep.Approve)}
+            status={getStepStatus(MintWICPModalDataStep.Approve)}
             iconSrc={checkPlainSrc}
             chevron
           >
             Approving <br /> WICP
           </TransactionStep>
         )}
-        {steps?.includes(WrapModalDataStep.Deposit) && (
+        {steps?.includes(MintWICPModalDataStep.Deposit) && (
           <TransactionStep
-            status={getStepStatus(WrapModalDataStep.Deposit)}
+            status={getStepStatus(MintWICPModalDataStep.Deposit)}
             iconSrc={depositSrc}
           >
             Depositing <br /> WICP

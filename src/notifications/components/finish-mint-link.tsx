@@ -38,6 +38,7 @@ export const FinishMintLink: React.FC<FinishMintLinkProps> = ({ id }) => {
       })
     );
   };
+
   useEffect(handleStateChange, [batch.state, dispatch]);
 
   const handleFinishMint = () => {

@@ -7,12 +7,12 @@ import {
   AddLiquidityLink,
   DepositLink,
   FinishMintLink,
+  MintWICPLink,
   RemoveLiquidityLink,
   SwapLink,
   TransactionLink,
-  UnwrapLink,
   WithdrawLink,
-  WrapLink,
+  WithdrawWICPLink,
 } from './components';
 import { MintXTCLink } from './components/mint-xtc-link';
 
@@ -34,8 +34,8 @@ export const NotificationContent: React.FC<NotificationContentProps> = ({
     [NotificationType.RemoveLiquidity]: <RemoveLiquidityLink id={id} />,
     [NotificationType.Withdraw]: <WithdrawLink id={id} />,
     [NotificationType.Deposit]: <DepositLink id={id} />,
-    [NotificationType.Unwrap]: <UnwrapLink id={id} />,
-    [NotificationType.Wrap]: <WrapLink id={id} />,
+    [NotificationType.WithdrawWICP]: <WithdrawWICPLink id={id} />,
+    [NotificationType.MintWICP]: <MintWICPLink id={id} />,
     [NotificationType.Deposit]: <DepositLink id={id} />,
     [NotificationType.MintXTC]: <MintXTCLink id={id} />,
     [NotificationType.Success]: transactionLink ? (
