@@ -105,6 +105,11 @@ export type AddLiquidityModalData = {
   callbacks?: [ModalsCallback, ModalsCallback];
 };
 
+export type FinishMintData = {
+  step?: string | Batch.DefaultHookState;
+  steps?: (string | Batch.DefaultHookState)[];
+};
+
 export enum RemoveLiquidityModalDataStep {
   RemoveLiquidity = 'removeLiquidity',
   Withdraw0 = 'withdraw0',
@@ -137,18 +142,21 @@ type TokenSelectData = {
 
 // Define a type for the slice state
 interface ModalsState {
+  finishMintStarted: boolean;
+  finishMintData: FinishMintData;
+
   retryTransactionModalOpened: boolean;
   retryTransactionModalData: RetryTransactionModalData;
 
   isMintXTCProgressModalOpened: boolean;
   isMintXTCFailModalOpened: boolean;
   mintXTCModalData: MintXTCModalData;
-  mintXTCUncompleteBlockHeights?: bigint[];
+  mintXTCUncompleteBlockHeights?: string[];
 
   isWrapProgressModalOpened: boolean;
   isWrapFailModalOpened: boolean;
   wrapModalData: WrapModalData;
-  wrapUncompleteBlockHeights?: bigint[];
+  mintWICPUncompleteBlockHeights?: string[];
 
   isUnwrapProgressModalOpened: boolean;
   isUnwrapFailModalOpened: boolean;
@@ -222,6 +230,10 @@ const initialRemoveLiquidityModalData: RemoveLiquidityModalData = {
   step: undefined,
 };
 
+const initialFinishMintData: FinishMintData = {
+  step: undefined,
+};
+
 const initialTokenSelectData: TokenSelectData = {
   onSelect: () => null,
   tokens: '[]',
@@ -232,6 +244,9 @@ const initialTokenSelectData: TokenSelectData = {
 
 // Define the initial state using that type
 const initialState: ModalsState = {
+  finishMintStarted: false,
+  finishMintData: initialFinishMintData,
+
   retryTransactionModalOpened: false,
   retryTransactionModalData: initialRetryTransactionModalData,
 
@@ -243,7 +258,7 @@ const initialState: ModalsState = {
   isWrapProgressModalOpened: false,
   isWrapFailModalOpened: false,
   wrapModalData: initialWrapModalData,
-  wrapUncompleteBlockHeights: undefined,
+  mintWICPUncompleteBlockHeights: undefined,
 
   isUnwrapProgressModalOpened: false,
   isUnwrapFailModalOpened: false,
@@ -286,6 +301,24 @@ export const modalsSlice = createSlice({
   // `createSlice` will infer the state type from the `initialState` argument
   initialState,
   reducers: {
+    startFinishMinting: (
+      state,
+      action: PayloadAction<FinishMintData | undefined>
+    ) => {
+      state.finishMintStarted = true;
+      state.finishMintData = action.payload ?? initialFinishMintData;
+    },
+    endFinishMinting: (state) => {
+      state.finishMintStarted = false;
+      state.finishMintData = initialFinishMintData;
+    },
+    setFinishMintData: (
+      state,
+      action: PayloadAction<FinishMintData | undefined>
+    ) => {
+      state.finishMintData = action.payload ?? initialFinishMintData;
+    },
+
     openRetryTransactionModal: (
       state,
       action: PayloadAction<RetryTransactionModalData | undefined>
@@ -322,7 +355,7 @@ export const modalsSlice = createSlice({
     },
     setMintXTCUncompleteBlockHeights: (
       state,
-      action: PayloadAction<bigint[]>
+      action: PayloadAction<string[]>
     ) => {
       state.mintXTCUncompleteBlockHeights = action.payload;
     },
@@ -348,8 +381,11 @@ export const modalsSlice = createSlice({
         ...action.payload,
       };
     },
-    setWrapUncompleteBlockHeights: (state, action: PayloadAction<bigint[]>) => {
-      state.wrapUncompleteBlockHeights = action.payload;
+    setMintWICPUncompleteBlockHeights: (
+      state,
+      action: PayloadAction<string[]>
+    ) => {
+      state.mintWICPUncompleteBlockHeights = action.payload;
     },
 
     openUnwrapProgressModal: (state) => {

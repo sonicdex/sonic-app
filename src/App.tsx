@@ -35,6 +35,7 @@ import {
   WrapProgressModal,
 } from './components/modals';
 import { useTokenLogos } from './hooks';
+import { useBlockHeightsEffect } from './hooks/use-block-heights-effect';
 import { usePlugInit } from './integrations/plug';
 import {
   useCyclesMintingCanisterInit,
@@ -52,6 +53,8 @@ export const App = () => {
   useSwapCanisterInit();
   useLiquidityViewInit();
   useTokenLogos();
+
+  useBlockHeightsEffect();
 
   if (isAnyMobileDevice) {
     return <EmptyMobile />;

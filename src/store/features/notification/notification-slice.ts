@@ -15,6 +15,7 @@ export enum NotificationType {
   Unwrap,
   Wrap,
   MintXTC,
+  FinishMint,
 }
 
 export interface Notification {

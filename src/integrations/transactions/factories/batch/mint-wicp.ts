@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from 'react';
 
-import { ENV } from '@/config';
+import { ENV, getFromStorage, LocalStorageKey, saveToStorage } from '@/config';
 import {
   modalsSliceActions,
   useAppDispatch,
@@ -28,10 +28,11 @@ export const useMintWICPBatch = ({
   keepInSonic = false,
 }: UseMintWICPBatchOptions) => {
   const [numberOfRetries, setNumberOfRetries] = useState(0);
+
   const { tokenList } = useSwapViewStore();
   const {
     wrapModalData: { callbacks: [retryCallback] = [] },
-    wrapUncompleteBlockHeights,
+    mintWICPUncompleteBlockHeights: wrapUncompleteBlockHeights,
   } = useModalsStore();
   const dispatch = useAppDispatch();
 
@@ -83,9 +84,9 @@ export const useMintWICPBatch = ({
 
       if (failedBlockHeight) {
         dispatch(
-          modalsSliceActions.setWrapUncompleteBlockHeights([
+          modalsSliceActions.setMintWICPUncompleteBlockHeights([
             ...(wrapUncompleteBlockHeights ? wrapUncompleteBlockHeights : []),
-            failedBlockHeight,
+            String(failedBlockHeight),
           ])
         );
       }
@@ -101,6 +102,14 @@ export const useMintWICPBatch = ({
               },
               // Close callback
               () => {
+                const prevMintWICPBlockHeight = getFromStorage(
+                  LocalStorageKey.MintWICPUncompleteBlockHeights
+                );
+
+                saveToStorage(LocalStorageKey.MintWICPUncompleteBlockHeights, [
+                  ...prevMintWICPBlockHeight,
+                  failedBlockHeight,
+                ]);
                 resolve(false);
               },
             ],

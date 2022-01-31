@@ -36,7 +36,7 @@ export const RemoveLiquidityProgressModal = () => {
       onClose={handleClose}
       isOpen={isRemoveLiquidityProgressModalOpened}
       isCentered
-      title="Remove LP in progress"
+      title="Removing LP in progress"
     >
       <Flex alignItems="flex-start">
         <TransactionStep
@@ -47,7 +47,7 @@ export const RemoveLiquidityProgressModal = () => {
             steps?.includes(RemoveLiquidityModalDataStep.Withdraw1)
           }
         >
-          Removing LP of <br /> {token0Symbol} + {token1Symbol}
+          Removing Liquidity Position of <br /> {token0Symbol} + {token1Symbol}
         </TransactionStep>
 
         {steps?.includes(RemoveLiquidityModalDataStep.Withdraw0) && (

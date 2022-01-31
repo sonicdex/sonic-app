@@ -6,6 +6,7 @@ import { NotificationBoxProps } from '.';
 import {
   AddLiquidityLink,
   DepositLink,
+  FinishMintLink,
   RemoveLiquidityLink,
   SwapLink,
   TransactionLink,
@@ -27,7 +28,7 @@ export const NotificationContent: React.FC<NotificationContentProps> = ({
   transactionLink,
   id,
 }) => {
-  const notificationComponents = {
+  const notificationNode = {
     [NotificationType.Swap]: <SwapLink id={id} />,
     [NotificationType.AddLiquidity]: <AddLiquidityLink id={id} />,
     [NotificationType.RemoveLiquidity]: <RemoveLiquidityLink id={id} />,
@@ -40,6 +41,7 @@ export const NotificationContent: React.FC<NotificationContentProps> = ({
     [NotificationType.Success]: transactionLink ? (
       <TransactionLink transactionLink={transactionLink} />
     ) : null,
+    [NotificationType.FinishMint]: <FinishMintLink id={id} />,
     [NotificationType.Error]: <></>, // TODO: Add error link
   };
 
@@ -51,7 +53,7 @@ export const NotificationContent: React.FC<NotificationContentProps> = ({
         {title}
       </Text>
 
-      {notificationComponents[type]}
+      {notificationNode[type]}
 
       {children}
     </Flex>

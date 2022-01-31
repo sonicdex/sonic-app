@@ -11,7 +11,8 @@ export const useMintWICPTransactionMemo: CreateTransaction<MintWICP> = (
   onSuccess,
   onFail
 ) => {
-  const { wrapUncompleteBlockHeights } = useModalsStore();
+  const { mintWICPUncompleteBlockHeights: wrapUncompleteBlockHeights } =
+    useModalsStore();
   const lastUncompleteBlockHeight = wrapUncompleteBlockHeights?.at(-1);
 
   return useMemo(() => {

@@ -4,9 +4,7 @@ import { ENV } from '@/config';
 import {
   MintXTCModalDataStep,
   modalsSliceActions,
-  NotificationType,
   useAppDispatch,
-  useNotificationStore,
   useSwapViewStore,
 } from '@/store';
 
@@ -29,7 +27,6 @@ export const useMintXTCBatch = ({
 }: UseMintXTCBatchOptions) => {
   const { tokenList } = useSwapViewStore();
   const dispatch = useAppDispatch();
-  const { addNotification } = useNotificationStore();
 
   if (!tokenList) throw new Error('Token list is required');
 
@@ -42,23 +39,7 @@ export const useMintXTCBatch = ({
     toAccountId: ENV.accountIDs.XTC,
     amount,
   });
-  const mintXTC = useMintXTCTransactionMemo(
-    {},
-    undefined,
-    // TODO: Add strict types
-    (err: any, prevTransactionsData: any) => {
-      const blockHeight = (
-        prevTransactionsData?.[0]?.response as bigint | undefined
-      )?.toString();
-
-      addNotification({
-        title: `The minting of XTC is failed, please use DFX to finish minting your XTC "dfx canister --network ic call ${ENV.canistersPrincipalIDs.XTC} mint '(null, ${blockHeight}:nat64)'"`,
-        type: NotificationType.Error,
-        timeout: 'none',
-        id: Date.now().toString(),
-      });
-    }
-  );
+  const mintXTC = useMintXTCTransactionMemo({});
   const approve = useApproveTransactionMemo(depositParams);
   const deposit = useDepositTransactionMemo(depositParams);
 
