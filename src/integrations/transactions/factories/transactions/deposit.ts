@@ -13,7 +13,9 @@ export const useDepositTransactionMemo: CreateTransaction<Deposit> = (
   onFail
 ) =>
   useMemo(() => {
-    if (!token?.id) throw new Error('Token is required');
+    if (!token?.id) {
+      return;
+    }
 
     return {
       canisterId: ENV.canistersPrincipalIDs.swap,
@@ -26,7 +28,7 @@ export const useDepositTransactionMemo: CreateTransaction<Deposit> = (
       onFail,
       args: [
         Principal.fromText(token?.id),
-        parseAmount(amount, token?.decimals),
+        amount ? parseAmount(amount, token?.decimals) : BigInt(0),
       ],
     };
   }, [amount, token]);

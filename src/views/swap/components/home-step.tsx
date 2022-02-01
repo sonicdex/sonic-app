@@ -8,13 +8,20 @@ import {
   Menu,
   MenuButton,
   MenuList,
+  Popover,
+  PopoverArrow,
+  PopoverBody,
+  PopoverContent,
+  PopoverTrigger,
   Skeleton,
   Stack,
+  Text,
   Tooltip,
   useColorModeValue,
 } from '@chakra-ui/react';
 import { FaArrowDown } from '@react-icons/all-files/fa/FaArrowDown';
 import { FaCog } from '@react-icons/all-files/fa/FaCog';
+import { FaInfoCircle } from '@react-icons/all-files/fa/FaInfoCircle';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
@@ -207,7 +214,6 @@ export const SwapHomeStep = () => {
     }
   }, [addNotification]);
 
-  // TODO: calculate conversion rate and add more UI.
   const handleMintXTC = useCallback(() => {
     if (checkIsPlugProviderVersionCompatible()) {
       addNotification({
@@ -533,7 +539,6 @@ export const SwapHomeStep = () => {
             zIndex="overlay"
             bg={swapPlacementButtonBg}
             onClick={switchTokens}
-            // TODO: Replace hardcoding with a proper solution
             isDisabled={!to.metadata || (isFromTokenIsICP && isToTokenIsXTC)}
             pointerEvents={!to.metadata ? 'none' : 'all'}
             _hover={{
@@ -582,7 +587,26 @@ export const SwapHomeStep = () => {
               <TokenDataPrice
                 isUpdating={isPriceUpdating}
                 priceImpact={priceImpact}
-              />
+              >
+                {isToTokenIsXTC && isFromTokenIsICP && (
+                  <Popover trigger="hover">
+                    <PopoverTrigger>
+                      <Box>
+                        <FaInfoCircle />
+                      </Box>
+                    </PopoverTrigger>
+                    <PopoverContent>
+                      <PopoverArrow />
+                      <PopoverBody>
+                        <Text>
+                          This price is shown based on profitability of Minting
+                          an XTC to the current WICP to XTC liquidity pool value
+                        </Text>
+                      </PopoverBody>
+                    </PopoverContent>
+                  </Popover>
+                )}
+              </TokenDataPrice>
             </TokenData>
           </Token>
         </Box>

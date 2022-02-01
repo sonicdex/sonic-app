@@ -33,14 +33,16 @@ export const MintWICPProgressModal = () => {
       title="ICP wrapping in progress"
     >
       <Flex alignItems="flex-start">
-        <TransactionStep
-          status={getStepStatus(MintWICPModalDataStep.LedgerTransfer)}
-          iconSrc={withdrawSrc}
-          chevron
-        >
-          Ledger Transfer <br />
-          ICP
-        </TransactionStep>
+        {steps?.includes(MintWICPModalDataStep.LedgerTransfer) && (
+          <TransactionStep
+            status={getStepStatus(MintWICPModalDataStep.LedgerTransfer)}
+            iconSrc={withdrawSrc}
+            chevron
+          >
+            Ledger Transfer <br />
+            ICP
+          </TransactionStep>
+        )}
         <TransactionStep
           status={getStepStatus(MintWICPModalDataStep.MintWIPC)}
           iconSrc={swapSrc}

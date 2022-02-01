@@ -19,7 +19,7 @@ import {
 } from '../transactions';
 
 type UseMintWICPBatchOptions = {
-  amount: string;
+  amount?: string;
   blockHeight?: bigint;
   keepInSonic?: boolean;
 };
@@ -38,11 +38,9 @@ export const useMintWICPBatch = ({
   } = useModalsStore();
   const dispatch = useAppDispatch();
 
-  if (!tokenList) throw new Error('Token list is required');
-
   const depositParams = {
-    token: tokenList[ENV.canistersPrincipalIDs.WICP],
-    amount: amount.toString(),
+    token: tokenList?.[ENV.canistersPrincipalIDs.WICP],
+    amount: amount?.toString(),
   };
 
   const ledgerTransfer = useLedgerTransferTransactionMemo({
@@ -116,12 +114,18 @@ export const useMintWICPBatch = ({
                   LocalStorageKey.MintWICPUncompleteBlockHeights
                 );
 
-                saveToStorage(LocalStorageKey.MintWICPUncompleteBlockHeights, [
-                  ...(typeof prevMintWICPBlockHeight !== 'undefined'
-                    ? prevMintWICPBlockHeight
-                    : []),
-                  String(failedBlockHeight),
-                ]);
+                if (failedBlockHeight) {
+                  saveToStorage(
+                    LocalStorageKey.MintWICPUncompleteBlockHeights,
+                    [
+                      ...(typeof prevMintWICPBlockHeight !== 'undefined'
+                        ? prevMintWICPBlockHeight
+                        : []),
+                      String(failedBlockHeight),
+                    ]
+                  );
+                }
+
                 resolve(false);
               },
             ],

@@ -510,9 +510,7 @@ export const LiquidityAddView = () => {
                 isUpdating={isBalancesUpdating}
                 onMaxClick={() => handleTokenMaxClick('token0')}
               />
-              <TokenDataPrice isUpdating={isPriceUpdating}>
-                {/* TODO: tooltip XTC ICP */}
-              </TokenDataPrice>
+              <TokenDataPrice isUpdating={isPriceUpdating} />
             </TokenData>
           </Token>
         </Box>

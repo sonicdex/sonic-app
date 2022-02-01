@@ -6,6 +6,7 @@ import {
   FormLabel,
   HStack,
   Input,
+  Link,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -18,14 +19,25 @@ import {
   Text,
   useColorModeValue,
 } from '@chakra-ui/react';
-import { FormEvent, useState } from 'react';
+import { FaRedoAlt } from '@react-icons/all-files/fa/FaRedoAlt';
+import { FormEvent, useCallback, useMemo, useState } from 'react';
 
+import { useBalances } from '@/hooks';
+import { checkIfPlugProviderVersionCompatible } from '@/integrations/plug';
+import { useMintWICPBatch } from '@/integrations/transactions';
 import {
+  MintWICPModalDataStep,
   modalsSliceActions,
+  NotificationType,
   RetryMintingToken,
   useAppDispatch,
   useModalsStore,
+  useNotificationStore,
 } from '@/store';
+
+import { PLUG_WALLET_WEBSITE_URL } from '..';
+
+const PLUG_PROVIDER_CHAINED_BATCH_VERSION = 160;
 
 const TOKEN_OPTIONS = [
   {
@@ -45,48 +57,186 @@ export const RetryMintingModal = () => {
     retryMintingModalOpened,
     retryMintingModalData: { token, blockHeight } = {},
   } = useModalsStore();
-
+  const { addNotification } = useNotificationStore();
+  const { getBalances } = useBalances();
   const [_blockHeight, setBlockHeight] = useState(String(blockHeight ?? ''));
+  const [_token, setToken] = useState(token);
   const [blockHeightErrorMessage, setBlockHeightErrorMessage] = useState<
     string | undefined
   >(undefined);
-  const [_token, setToken] = useState(token);
   const [tokenErrorMessage, setTokenErrorMessage] = useState<
     string | undefined
   >(undefined);
 
   const dispatch = useAppDispatch();
 
+  const { batch, openBatchModal } = useMintWICPBatch({
+    blockHeight: BigInt(_blockHeight),
+  });
+
+  const handleStateChange = () => {
+    if (
+      Object.values(MintWICPModalDataStep).includes(
+        batch.state as MintWICPModalDataStep
+      )
+    ) {
+      dispatch(
+        modalsSliceActions.setMintWICPModalData({
+          step: batch.state,
+        })
+      );
+    }
+  };
+
+  const handleMintXTC = useCallback(() => {
+    const isVersionCompatible = checkIfPlugProviderVersionCompatible(
+      PLUG_PROVIDER_CHAINED_BATCH_VERSION
+    );
+
+    if (!isVersionCompatible) {
+      addNotification({
+        title: (
+          <>
+            You're using an outdated version of Plug, please update to the
+            latest one{' '}
+            <Link
+              color="blue.400"
+              href={PLUG_WALLET_WEBSITE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              here
+            </Link>
+            .
+          </>
+        ),
+        type: NotificationType.Error,
+        id: String(new Date().getTime()),
+      });
+
+      return;
+    }
+
+    if (isVersionCompatible) {
+      setBlockHeight('');
+    }
+  }, [addNotification]);
+
+  const handleMintWICP = useCallback(() => {
+    const isVersionCompatible = checkIfPlugProviderVersionCompatible(
+      PLUG_PROVIDER_CHAINED_BATCH_VERSION
+    );
+
+    if (!isVersionCompatible) {
+      addNotification({
+        title: (
+          <>
+            You're using an outdated version of Plug, please update to the
+            latest one{' '}
+            <Link
+              color="blue.400"
+              href={PLUG_WALLET_WEBSITE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              here
+            </Link>
+            .
+          </>
+        ),
+        type: NotificationType.Error,
+        id: String(new Date().getTime()),
+      });
+
+      return;
+    }
+
+    const handleOpenModal = () => {
+      handleStateChange();
+
+      openBatchModal();
+    };
+
+    if (isVersionCompatible) {
+      batch
+        .execute()
+        .then(() => {
+          dispatch(modalsSliceActions.closeMintWICPProgressModal());
+
+          addNotification({
+            title: `Wrapped ICP`,
+            type: NotificationType.Success,
+            id: Date.now().toString(),
+            transactionLink: '/activity',
+          });
+          getBalances();
+        })
+        .catch((err) => {
+          console.error('Wrap Error', err);
+
+          addNotification({
+            title: `Wrap ICP failed`,
+            type: NotificationType.Error,
+            id: Date.now().toString(),
+          });
+        });
+
+      handleOpenModal();
+
+      setBlockHeight('');
+    }
+  }, [addNotification]);
+
   const handleClose = () => {
     dispatch(modalsSliceActions.closeRetryMintingModal());
   };
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    setBlockHeightErrorMessage(undefined);
+    setTokenErrorMessage(undefined);
     e.preventDefault();
 
     if (!_blockHeight || !_token) {
       if (!_blockHeight) {
-        setBlockHeightErrorMessage('Block height is required');
+        setBlockHeightErrorMessage('Block Height is required');
       }
       if (!_token) {
         setTokenErrorMessage('Token is required');
       }
       return;
     }
+    if (_token === RetryMintingToken.XTC) {
+      handleMintXTC();
+    }
+
+    if (_token === RetryMintingToken.WICP) {
+      handleMintWICP();
+    }
+
+    handleClose();
   };
+
+  const linkColor = useColorModeValue('dark-blue.500', 'dark-blue.400');
+
+  const { activityTabURL, transactionExplorerURL } = useMemo(() => {
+    return {
+      activityTabURL: '',
+      transactionExplorerURL: '',
+    };
+  }, []);
 
   return (
     <Modal isOpen={retryMintingModalOpened} onClose={handleClose} isCentered>
       <ModalOverlay />
       <ModalContent as="form" onSubmit={handleSubmit} noValidate>
         <ModalCloseButton />
-        <ModalHeader>
+        <ModalHeader borderBottom="none">
           Retry minting{' '}
           <Text textAlign="center" fontSize="sm" color={color}>
-            Using this form you can retry any of your failed mint transactions.
+            Use this form to retry any of your failed mints.
           </Text>
         </ModalHeader>
-        <ModalBody as={Stack}>
+        <ModalBody as={Stack} spacing={4}>
           <FormControl
             name="token"
             isRequired
@@ -111,7 +261,7 @@ export const RetryMintingModal = () => {
             isRequired
             isInvalid={Boolean(blockHeightErrorMessage)}
           >
-            <FormLabel>Block height</FormLabel>
+            <FormLabel>Transaction Block Height</FormLabel>
 
             <Input
               value={_blockHeight}
@@ -121,16 +271,27 @@ export const RetryMintingModal = () => {
 
             <FormErrorMessage>{blockHeightErrorMessage}</FormErrorMessage>
             <FormHelperText>
-              You can find block height in your activity tab or transaction
-              explorer.
+              You can find block height in your{' '}
+              <Link color={linkColor} href={activityTabURL}>
+                activity tab
+              </Link>{' '}
+              or{' '}
+              <Link color={linkColor} href={transactionExplorerURL}>
+                transaction explorer.
+              </Link>
             </FormHelperText>
           </FormControl>
         </ModalBody>
         <ModalFooter as={HStack}>
-          <Button type="submit" variant="gradient" colorScheme="dark-blue">
-            Submit
+          <Button
+            leftIcon={<FaRedoAlt />}
+            isFullWidth
+            type="submit"
+            variant="gradient"
+            colorScheme="dark-blue"
+          >
+            Retry
           </Button>
-          <Button onClick={handleClose}>Close</Button>
         </ModalFooter>
       </ModalContent>
     </Modal>

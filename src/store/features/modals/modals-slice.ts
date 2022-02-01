@@ -42,6 +42,7 @@ export type MintWICPModalData = {
   step?: MintWICPModalDataStep | Batch.DefaultHookState;
   steps?: (MintWICPModalDataStep | Batch.DefaultHookState)[];
   callbacks?: [ModalsCallback, ModalsCallback];
+  blockHeight?: bigint;
 };
 
 export enum WithdrawWICPModalDataStep {
@@ -359,6 +360,12 @@ export const modalsSlice = createSlice({
     ) => {
       state.mintXTCUncompleteBlockHeights = action.payload;
     },
+    addMintXTCUncompleteBlockHeight: (state, action: PayloadAction<string>) => {
+      if (state.mintXTCUncompleteBlockHeights === undefined) {
+        state.mintXTCUncompleteBlockHeights = [];
+      }
+      state.mintXTCUncompleteBlockHeights.push(action.payload);
+    },
 
     openMintWICPProgressModal: (state) => {
       state.isMintWICPProgressModalOpened = true;
@@ -386,6 +393,15 @@ export const modalsSlice = createSlice({
       action: PayloadAction<string[]>
     ) => {
       state.mintWICPUncompleteBlockHeights = action.payload;
+    },
+    addMintWICPUncompleteBlockHeight: (
+      state,
+      action: PayloadAction<string>
+    ) => {
+      if (state.mintWICPUncompleteBlockHeights === undefined) {
+        state.mintWICPUncompleteBlockHeights = [];
+      }
+      state.mintWICPUncompleteBlockHeights.push(action.payload);
     },
 
     openWithdrawWICPProgressModal: (state) => {
