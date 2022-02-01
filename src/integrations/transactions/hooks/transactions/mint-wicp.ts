@@ -6,11 +6,8 @@ import { CreateTransaction, MintWICP } from '../../models';
 export const getMintWICPTransaction: CreateTransaction<MintWICP> = (
   options = {},
   onSuccess,
-  onFail,
-  blockHeights
+  onFail
 ) => {
-  const lastUncompleteBlockHeight = blockHeights?.at(-1);
-
   const { blockHeight, subaccount = [] } = options;
 
   return {
@@ -26,10 +23,11 @@ export const getMintWICPTransaction: CreateTransaction<MintWICP> = (
     },
     args: (prevResponses: any[]) => {
       const argBlockHeight = prevResponses?.[0]?.response;
+      console.log(argBlockHeight);
 
       return [
         subaccount,
-        blockHeight ?? argBlockHeight ?? lastUncompleteBlockHeight,
+        (blockHeight && BigInt(blockHeight)) ?? argBlockHeight,
       ];
     },
   };

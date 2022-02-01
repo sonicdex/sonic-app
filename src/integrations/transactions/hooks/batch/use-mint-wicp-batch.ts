@@ -20,7 +20,7 @@ import {
 
 type UseMintWICPBatchOptions = {
   amount?: string;
-  blockHeight?: bigint;
+  blockHeight?: string;
   keepInSonic?: boolean;
 };
 

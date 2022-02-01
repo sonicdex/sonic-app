@@ -9,10 +9,6 @@ import { CreatePair, CreateTransaction } from '../../models';
 
 export type CreatePairTransaction = Transaction;
 
-export interface CreatePairExtraArgs {
-  principal: Principal;
-}
-
 export const useCreatePairTransactionMemo: CreateTransaction<CreatePair> = (
   { token0, token1 }: CreatePair,
   onSuccess,

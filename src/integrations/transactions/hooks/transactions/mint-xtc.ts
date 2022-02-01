@@ -9,6 +9,7 @@ export const getMintXTCTransaction: CreateTransaction<MintXTC> = (
   onFail
 ) => {
   const { blockHeight, subaccount = [] } = options;
+
   return {
     canisterId: ENV.canistersPrincipalIDs.XTC,
     idl: XTCIDL.factory,
@@ -20,8 +21,12 @@ export const getMintXTCTransaction: CreateTransaction<MintXTC> = (
     onFail,
     args: (prevResponses: any[]) => {
       const argBlockHeight = prevResponses[0]?.response;
+      console.log(argBlockHeight);
 
-      return [subaccount, blockHeight ?? argBlockHeight];
+      return [
+        subaccount,
+        (blockHeight && BigInt(blockHeight)) ?? argBlockHeight,
+      ];
     },
   };
 };

@@ -18,7 +18,7 @@ import { getMintXTCTransaction } from '../transactions/mint-xtc';
 
 export type UseMintXTCBatchOptions = {
   amount: string;
-  blockHeight?: bigint;
+  blockHeight?: string;
   keepInSonic?: boolean;
 };
 

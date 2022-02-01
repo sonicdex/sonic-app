@@ -24,9 +24,8 @@ export const checkIfPlugProviderVersionCompatible = (version: number) => {
   if (plugProviderVersionNumber >= version) {
     return true;
   }
-  {
-    return false;
-  }
+
+  return false;
 };
 
 export const executeIfPlugProviderVersionCompatible = (

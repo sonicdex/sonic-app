@@ -16,7 +16,10 @@ import {
   useSwapExactTokensTransactionMemo,
   useWithdrawTransactionMemo,
 } from '..';
-import { getAmountDependsOnBalance, getDepositTransactions } from './utils';
+import {
+  getAmountDependsOnBalance,
+  getDepositTransactions,
+} from './batch.utils';
 
 export interface ExtraDepositSwapBatchOptions {
   keepInSonic: boolean;

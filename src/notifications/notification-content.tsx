@@ -6,7 +6,7 @@ import { NotificationBoxProps } from '.';
 import {
   AddLiquidityLink,
   DepositLink,
-  FinishMintLink,
+  MintAutoFinishLink,
   MintWICPLink,
   RemoveLiquidityLink,
   SwapLink,
@@ -41,7 +41,8 @@ export const NotificationContent: React.FC<NotificationContentProps> = ({
     [NotificationType.Success]: transactionLink ? (
       <TransactionLink transactionLink={transactionLink} />
     ) : null,
-    [NotificationType.FinishMint]: <FinishMintLink id={id} />,
+    [NotificationType.FinishMint]: <MintAutoFinishLink id={id} />,
+    [NotificationType.Pending]: <></>, // TODO: Add pending link
     [NotificationType.Error]: <></>, // TODO: Add error link
   };
 

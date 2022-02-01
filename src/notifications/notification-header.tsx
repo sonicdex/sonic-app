@@ -26,6 +26,7 @@ const NotificationIcon = ({ type }: { type: NotificationType }) => {
           left={4}
         />
       );
+    case NotificationType.Pending:
     case NotificationType.MintWICP:
     case NotificationType.WithdrawWICP:
     case NotificationType.Swap:

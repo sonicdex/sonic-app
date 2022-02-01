@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 
 import { LocalStorageKey, removeFromStorage } from '@/config';
 import { useBalances } from '@/hooks/use-balances';
-import { useFinishMintBatch } from '@/integrations/transactions/factories/batch/finish-mint';
+import { useMintMultipleBatch } from '@/integrations/transactions/hooks/batch/use-mint-multiple-batch';
 import {
   modalsSliceActions,
   NotificationType,
@@ -12,11 +12,13 @@ import {
   useNotificationStore,
 } from '@/store';
 
-export interface FinishMintLinkProps {
+export interface MintAutoFinishLinkProps {
   id: string;
 }
 
-export const FinishMintLink: React.FC<FinishMintLinkProps> = ({ id }) => {
+export const MintAutoFinishLink: React.FC<MintAutoFinishLinkProps> = ({
+  id,
+}) => {
   const dispatch = useAppDispatch();
   const { addNotification, popNotification } = useNotificationStore();
   const { getBalances } = useBalances();
@@ -25,7 +27,7 @@ export const FinishMintLink: React.FC<FinishMintLinkProps> = ({ id }) => {
     useModalsStore();
 
   // FIXME: Rewrite to useEffect if needed
-  const { batch, startMinting } = useFinishMintBatch({
+  const { batch, startMinting } = useMintMultipleBatch({
     blockHeights: {
       WICP: mintWICPUncompleteBlockHeights,
       XTC: mintXTCUncompleteBlockHeights,

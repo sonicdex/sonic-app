@@ -2,7 +2,7 @@ import { Link } from '@chakra-ui/react';
 import { useEffect, useMemo } from 'react';
 
 import { useBalances } from '@/hooks/use-balances';
-import { useWithdrawBatch } from '@/integrations/transactions/factories/batch/withdraw';
+import { useWithdrawBatch } from '@/integrations/transactions/hooks/batch/use-withdraw-batch';
 import {
   modalsSliceActions,
   NotificationType,

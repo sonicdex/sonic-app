@@ -16,7 +16,10 @@ import {
   useDepositTransactionMemo,
 } from '..';
 import { useCreatePairTransactionMemo } from '../transactions/create-pair';
-import { getAmountDependsOnBalance, getDepositTransactions } from './utils';
+import {
+  getAmountDependsOnBalance,
+  getDepositTransactions,
+} from './batch.utils';
 
 interface Transactions {
   [transactionName: string]: any;

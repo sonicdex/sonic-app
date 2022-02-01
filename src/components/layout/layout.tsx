@@ -139,14 +139,17 @@ export const Layout: React.FC = ({ children, ...props }) => {
                       {colorMode === 'dark' ? 'Light mode' : 'Dark mode'}
                     </MenuItem>
                   )}
-                  <MenuItem
-                    onClick={() =>
-                      dispatch(modalsSliceActions.openRetryMintingModal())
-                    }
-                    icon={<FaRedo />}
-                  >
-                    Retry minting
-                  </MenuItem>
+                  {isConnected && (
+                    <MenuItem
+                      onClick={() =>
+                        dispatch(modalsSliceActions.openRetryMintingModal())
+                      }
+                      icon={<FaRedo />}
+                    >
+                      Retry minting
+                    </MenuItem>
+                  )}
+
                   <MenuDivider />
                   <ChakraLink
                     href={ENV.URLs.twitter}

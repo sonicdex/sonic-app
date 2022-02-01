@@ -2,7 +2,7 @@ import { Link } from '@chakra-ui/react';
 import { useEffect, useMemo } from 'react';
 
 import { useBalances } from '@/hooks/use-balances';
-import { useMintXTCBatch } from '@/integrations/transactions/factories/batch/mint-xtc';
+import { useMintXTCBatch } from '@/integrations/transactions/hooks/batch/use-mint-xtc-batch';
 import {
   MintXTCModalDataStep,
   modalsSliceActions,

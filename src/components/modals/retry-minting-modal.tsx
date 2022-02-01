@@ -20,7 +20,15 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react';
 import { FaRedoAlt } from '@react-icons/all-files/fa/FaRedoAlt';
-import { FormEvent, useCallback, useMemo, useState } from 'react';
+import {
+  ChangeEvent,
+  FormEvent,
+  KeyboardEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 
 import { useBalances } from '@/hooks';
 import { checkIfPlugProviderVersionCompatible } from '@/integrations/plug';
@@ -57,7 +65,7 @@ export const RetryMintingModal = () => {
     retryMintingModalOpened,
     retryMintingModalData: { token, blockHeight } = {},
   } = useModalsStore();
-  const { addNotification } = useNotificationStore();
+  const { addNotification, popNotification } = useNotificationStore();
   const { getBalances } = useBalances();
   const [_blockHeight, setBlockHeight] = useState(String(blockHeight ?? ''));
   const [_token, setToken] = useState(token);
@@ -71,7 +79,7 @@ export const RetryMintingModal = () => {
   const dispatch = useAppDispatch();
 
   const { batch, openBatchModal } = useMintWICPBatch({
-    blockHeight: BigInt(_blockHeight),
+    blockHeight: _blockHeight,
   });
 
   const handleStateChange = () => {
@@ -87,6 +95,8 @@ export const RetryMintingModal = () => {
       );
     }
   };
+
+  useEffect(handleStateChange, [batch.state, dispatch]);
 
   const handleMintXTC = useCallback(() => {
     const isVersionCompatible = checkIfPlugProviderVersionCompatible(
@@ -151,8 +161,26 @@ export const RetryMintingModal = () => {
       return;
     }
 
+    const id = String(new Date().getTime());
+
     const handleOpenModal = () => {
-      handleStateChange();
+      addNotification({
+        title: (
+          <>
+            Minting WICP <br />{' '}
+            <Link
+              target="_blank"
+              rel="noreferrer"
+              color="dark-blue.500"
+              onClick={openBatchModal}
+            >
+              View progress
+            </Link>
+          </>
+        ),
+        type: NotificationType.Pending,
+        id,
+      });
 
       openBatchModal();
     };
@@ -163,6 +191,7 @@ export const RetryMintingModal = () => {
         .then(() => {
           dispatch(modalsSliceActions.closeMintWICPProgressModal());
 
+          popNotification(id);
           addNotification({
             title: `Wrapped ICP`,
             type: NotificationType.Success,
@@ -173,9 +202,14 @@ export const RetryMintingModal = () => {
         })
         .catch((err) => {
           console.error('Wrap Error', err);
+          const isRestrictedBlockHeight =
+            err?.message?.includes('Unauthorized');
 
+          popNotification(id);
           addNotification({
-            title: `Wrap ICP failed`,
+            title: isRestrictedBlockHeight
+              ? `Transaction index doesn't belongs to your wallet address`
+              : `Wrap failed`,
             type: NotificationType.Error,
             id: Date.now().toString(),
           });
@@ -225,6 +259,13 @@ export const RetryMintingModal = () => {
     };
   }, []);
 
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setBlockHeight(e.target.value);
+  };
+
+  const blockInvalidBlockHeightChar = (e: KeyboardEvent<HTMLInputElement>) =>
+    ['e', 'E', '+', '-'].includes(e.key) && e.preventDefault();
+
   return (
     <Modal isOpen={retryMintingModalOpened} onClose={handleClose} isCentered>
       <ModalOverlay />
@@ -265,8 +306,10 @@ export const RetryMintingModal = () => {
 
             <Input
               value={_blockHeight}
-              onChange={(e) => setBlockHeight(e.target.value)}
+              onKeyDown={blockInvalidBlockHeightChar}
+              onChange={handleChange}
               placeholder="2021024"
+              type="number"
             />
 
             <FormErrorMessage>{blockHeightErrorMessage}</FormErrorMessage>

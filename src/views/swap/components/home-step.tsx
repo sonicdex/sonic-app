@@ -464,6 +464,7 @@ export const SwapHomeStep = () => {
   const swapPlacementButtonBg = useColorModeValue('gray.50', 'gray.800');
   const menuListShadow = useColorModeValue('lg', 'none');
   const menuListBg = useColorModeValue('gray.50', 'custom.3');
+  const linkColor = useColorModeValue('dark-blue.500', 'dark-blue.400');
 
   return (
     <Stack spacing={4}>
@@ -558,7 +559,6 @@ export const SwapHomeStep = () => {
             tokenListMetadata={toTokenOptions}
             tokenMetadata={to.metadata}
             isLoading={isLoading}
-            isDisabled={true}
             sources={toSources}
           >
             <TokenContent>
@@ -591,7 +591,7 @@ export const SwapHomeStep = () => {
                 {isToTokenIsXTC && isFromTokenIsICP && (
                   <Popover trigger="hover">
                     <PopoverTrigger>
-                      <Box>
+                      <Box tabIndex={0}>
                         <FaInfoCircle />
                       </Box>
                     </PopoverTrigger>
@@ -599,8 +599,18 @@ export const SwapHomeStep = () => {
                       <PopoverArrow />
                       <PopoverBody>
                         <Text>
-                          This price is shown based on profitability of Minting
-                          an XTC to the current WICP to XTC liquidity pool value
+                          This price & percentage shows the current difference
+                          between minting and swapping to XTC from ICP. If
+                          negative, it's better to mint; if positive, it's
+                          better to swap.{' '}
+                          <Link
+                            color={linkColor}
+                            rel="noopener noreferrer"
+                            target="_blank"
+                            href={`${ENV.URLs.sonicDocs}/developer-guides/front-end-integrations#icp-xtc`}
+                          >
+                            Learn More.
+                          </Link>
                         </Text>
                       </PopoverBody>
                     </PopoverContent>

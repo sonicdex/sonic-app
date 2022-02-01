@@ -2,7 +2,7 @@ import { Link } from '@chakra-ui/react';
 import { useEffect, useMemo } from 'react';
 
 import { useBalances } from '@/hooks/use-balances';
-import { useMintWICPBatch } from '@/integrations/transactions/factories/batch/mint-wicp';
+import { useMintWICPBatch } from '@/integrations/transactions/hooks/batch/use-mint-wicp-batch';
 import {
   MintWICPModalDataStep,
   modalsSliceActions,
