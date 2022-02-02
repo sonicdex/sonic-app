@@ -57,7 +57,7 @@ export const PlugMenu: FC<Omit<MenuProps, 'children'>> = (props) => {
   };
 
   const bg = useColorModeValue('gray.50', 'custom.2');
-  const shadow = useColorModeValue('sm', 'none');
+  const shadow = useColorModeValue('base', 'none');
 
   return (
     <Menu {...props}>

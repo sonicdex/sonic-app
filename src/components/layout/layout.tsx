@@ -60,7 +60,7 @@ export const Layout: React.FC = ({ children, ...props }) => {
   const { colorMode, toggleColorMode } = useColorMode();
 
   const menuBg = useColorModeValue('gray.50', 'custom.2');
-  const menuShadow = useColorModeValue('sm', 'none');
+  const menuShadow = useColorModeValue('base', 'none');
 
   return (
     <>
