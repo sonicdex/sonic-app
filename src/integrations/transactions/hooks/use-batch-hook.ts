@@ -5,11 +5,11 @@ import { plug } from '@/integrations/plug';
 import { BatchTransactions } from '..';
 import { Batch } from '../models';
 
-export const useBatchHook: Batch.CreateHook = ({
+export const useBatchHook = <Model>({
   transactions,
   handleRetry,
-}) => {
-  const [state, setState] = useState<string>(Batch.DefaultHookState.Idle);
+}: Batch.HookProps<Model>): Batch.Hook<Model> => {
+  const [state, setState] = useState(Batch.DefaultHookState.Idle);
   const [error, setError] = useState<unknown>();
 
   const handleError = (error: unknown): void => {
@@ -17,9 +17,10 @@ export const useBatchHook: Batch.CreateHook = ({
     setState(Batch.DefaultHookState.Error);
   };
 
-  const states = useMemo(() => {
-    return Object.keys(transactions);
-  }, [transactions]);
+  const states = useMemo(
+    () => Object.keys(transactions) as Batch.DefaultHookState[],
+    [transactions]
+  );
 
   const batch = useMemo(() => {
     const newBatch = new BatchTransactions(plug, handleRetry);
@@ -51,10 +52,13 @@ export const useBatchHook: Batch.CreateHook = ({
     });
 
     return newBatch;
-  }, [transactions]);
+  }, [transactions, handleRetry]);
 
   const execute = (): Promise<unknown> => {
-    if (state !== Batch.DefaultHookState.Idle) {
+    if (
+      state !== Batch.DefaultHookState.Idle &&
+      state !== Batch.DefaultHookState.Error
+    ) {
       return Promise.reject('Batch is not idle');
     }
     setState(states[0]);

@@ -88,7 +88,7 @@ export const RemoveLiquidityLink: React.FC<RemoveLiquidityLinkProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const [batch, openRemoveLiquidityModal] = useRemoveLiquidityBatch({
+  const { batch, openBatchModal } = useRemoveLiquidityBatch({
     token0,
     token1,
     principalId,
@@ -111,10 +111,11 @@ export const RemoveLiquidityLink: React.FC<RemoveLiquidityLinkProps> = ({
 
   const handleOpenModal = () => {
     handleStateChange();
-    openRemoveLiquidityModal();
+
+    openBatchModal();
   };
 
-  useEffect(handleStateChange, [batch.state]);
+  useEffect(handleStateChange, [batch.state, dispatch]);
 
   useEffect(() => {
     batch

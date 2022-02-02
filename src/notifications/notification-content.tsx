@@ -6,14 +6,16 @@ import { NotificationBoxProps } from '.';
 import {
   AddLiquidityLink,
   DepositLink,
+  MintAutoLink,
+  MintManualLink,
+  MintWICPLink,
+  MintXTCLink,
   RemoveLiquidityLink,
   SwapLink,
   TransactionLink,
-  UnwrapLink,
   WithdrawLink,
-  WrapLink,
+  WithdrawWICPLink,
 } from './components';
-import { MintXTCLink } from './components/mint-xtc-link';
 
 export type NotificationContentProps = Pick<
   NotificationBoxProps,
@@ -27,19 +29,22 @@ export const NotificationContent: React.FC<NotificationContentProps> = ({
   transactionLink,
   id,
 }) => {
-  const notificationComponents = {
+  const notificationNode = {
     [NotificationType.Swap]: <SwapLink id={id} />,
     [NotificationType.AddLiquidity]: <AddLiquidityLink id={id} />,
     [NotificationType.RemoveLiquidity]: <RemoveLiquidityLink id={id} />,
     [NotificationType.Withdraw]: <WithdrawLink id={id} />,
     [NotificationType.Deposit]: <DepositLink id={id} />,
-    [NotificationType.Unwrap]: <UnwrapLink id={id} />,
-    [NotificationType.Wrap]: <WrapLink id={id} />,
+    [NotificationType.WithdrawWICP]: <WithdrawWICPLink id={id} />,
+    [NotificationType.MintWICP]: <MintWICPLink id={id} />,
     [NotificationType.Deposit]: <DepositLink id={id} />,
     [NotificationType.MintXTC]: <MintXTCLink id={id} />,
     [NotificationType.Success]: transactionLink ? (
       <TransactionLink transactionLink={transactionLink} />
     ) : null,
+    [NotificationType.MintAuto]: <MintAutoLink id={id} />,
+    [NotificationType.MintManual]: <MintManualLink id={id} />,
+    [NotificationType.Pending]: <></>, // TODO: Add pending link
     [NotificationType.Error]: <></>, // TODO: Add error link
   };
 
@@ -51,7 +56,7 @@ export const NotificationContent: React.FC<NotificationContentProps> = ({
         {title}
       </Text>
 
-      {notificationComponents[type]}
+      {notificationNode[type]}
 
       {children}
     </Flex>

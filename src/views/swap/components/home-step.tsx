@@ -8,13 +8,20 @@ import {
   Menu,
   MenuButton,
   MenuList,
+  Popover,
+  PopoverArrow,
+  PopoverBody,
+  PopoverContent,
+  PopoverTrigger,
   Skeleton,
   Stack,
+  Text,
   Tooltip,
   useColorModeValue,
 } from '@chakra-ui/react';
 import { FaArrowDown } from '@react-icons/all-files/fa/FaArrowDown';
 import { FaCog } from '@react-icons/all-files/fa/FaCog';
+import { FaInfoCircle } from '@react-icons/all-files/fa/FaInfoCircle';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
@@ -207,7 +214,6 @@ export const SwapHomeStep = () => {
     }
   }, [addNotification]);
 
-  // TODO: calculate conversion rate and add more UI.
   const handleMintXTC = useCallback(() => {
     if (checkIsPlugProviderVersionCompatible()) {
       addNotification({
@@ -228,11 +234,11 @@ export const SwapHomeStep = () => {
     to.value,
   ]);
 
-  const handleWrapICP = useCallback(() => {
+  const handleMintWICP = useCallback(() => {
     if (checkIsPlugProviderVersionCompatible()) {
       addNotification({
         title: `Wrapping ${from.value} ${from.metadata?.symbol}`,
-        type: NotificationType.Wrap,
+        type: NotificationType.MintWICP,
         id: String(new Date().getTime()),
       });
       debounce(
@@ -248,10 +254,10 @@ export const SwapHomeStep = () => {
     from.value,
   ]);
 
-  const handleUnwrapICP = useCallback(() => {
+  const handleWithdrawWICP = useCallback(() => {
     addNotification({
       title: `Unwrapping ${from.value} ${from.metadata?.symbol}`,
-      type: NotificationType.Unwrap,
+      type: NotificationType.WithdrawWICP,
       id: String(new Date().getTime()),
     });
     debounce(
@@ -296,11 +302,11 @@ export const SwapHomeStep = () => {
     }
 
     if (isFromTokenIsICP && isToTokenIsWICP) {
-      return [false, 'Wrap', handleWrapICP];
+      return [false, 'Wrap', handleMintWICP];
     }
 
     if (isFromTokenIsWICP && isToTokenIsICP) {
-      return [false, 'Unwrap', handleUnwrapICP];
+      return [false, 'Unwrap', handleWithdrawWICP];
     }
 
     if (isFromTokenIsICP && isToTokenIsXTC) {
@@ -328,8 +334,8 @@ export const SwapHomeStep = () => {
     isFromTokenIsWICP,
     isToTokenIsICP,
     handleMintXTC,
-    handleWrapICP,
-    handleUnwrapICP,
+    handleMintWICP,
+    handleWithdrawWICP,
     dispatch,
   ]);
 
@@ -458,6 +464,7 @@ export const SwapHomeStep = () => {
   const swapPlacementButtonBg = useColorModeValue('gray.50', 'gray.800');
   const menuListShadow = useColorModeValue('lg', 'none');
   const menuListBg = useColorModeValue('gray.50', 'custom.3');
+  const linkColor = useColorModeValue('dark-blue.500', 'dark-blue.400');
 
   return (
     <Stack spacing={4}>
@@ -533,7 +540,6 @@ export const SwapHomeStep = () => {
             zIndex="overlay"
             bg={swapPlacementButtonBg}
             onClick={switchTokens}
-            // TODO: Replace hardcoding with a proper solution
             isDisabled={!to.metadata || (isFromTokenIsICP && isToTokenIsXTC)}
             pointerEvents={!to.metadata ? 'none' : 'all'}
             _hover={{
@@ -553,7 +559,6 @@ export const SwapHomeStep = () => {
             tokenListMetadata={toTokenOptions}
             tokenMetadata={to.metadata}
             isLoading={isLoading}
-            isDisabled={true}
             sources={toSources}
           >
             <TokenContent>
@@ -582,7 +587,36 @@ export const SwapHomeStep = () => {
               <TokenDataPrice
                 isUpdating={isPriceUpdating}
                 priceImpact={priceImpact}
-              />
+              >
+                {isToTokenIsXTC && isFromTokenIsICP && (
+                  <Popover trigger="hover">
+                    <PopoverTrigger>
+                      <Box tabIndex={0}>
+                        <FaInfoCircle />
+                      </Box>
+                    </PopoverTrigger>
+                    <PopoverContent>
+                      <PopoverArrow />
+                      <PopoverBody>
+                        <Text>
+                          This price & percentage shows the current difference
+                          between minting and swapping to XTC from ICP. If
+                          negative, it's better to mint; if positive, it's
+                          better to swap.{' '}
+                          <Link
+                            color={linkColor}
+                            rel="noopener noreferrer"
+                            target="_blank"
+                            href={`${ENV.URLs.sonicDocs}/developer-guides/front-end-integrations#icp-xtc`}
+                          >
+                            Learn More.
+                          </Link>
+                        </Text>
+                      </PopoverBody>
+                    </PopoverContent>
+                  </Popover>
+                )}
+              </TokenDataPrice>
             </TokenData>
           </Token>
         </Box>

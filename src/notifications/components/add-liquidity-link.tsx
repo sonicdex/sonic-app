@@ -46,7 +46,7 @@ export const AddLiquidityLink: React.FC<AddLiquidityLinkProps> = ({ id }) => {
   const allowance0 = useTokenAllowance(token0.metadata?.id);
   const allowance1 = useTokenAllowance(token1.metadata?.id);
 
-  const [batch, openAddLiquidityModal] = useAddLiquidityBatch({
+  const { batch, openBatchModal } = useAddLiquidityBatch({
     token0,
     token1,
     slippage: Number(slippage),
@@ -70,7 +70,8 @@ export const AddLiquidityLink: React.FC<AddLiquidityLinkProps> = ({ id }) => {
     if (typeof allowance0 === 'number' && typeof allowance1 === 'number') {
       dispatch(modalsSliceActions.closeAllowanceVerifyModal());
       handleStateChange();
-      openAddLiquidityModal();
+
+      openBatchModal();
     } else {
       dispatch(
         modalsSliceActions.setAllowanceVerifyModalData({
@@ -81,7 +82,7 @@ export const AddLiquidityLink: React.FC<AddLiquidityLinkProps> = ({ id }) => {
     }
   };
 
-  useEffect(handleStateChange, [batch.state]);
+  useEffect(handleStateChange, [batch.state, dispatch]);
 
   useEffect(() => {
     handleOpenModal();

@@ -4,13 +4,13 @@ import {
   WithdrawModalDataStep,
 } from '@/store';
 
-import { Batch, Withdraw } from '../..';
-import { useBatchHook,useWithdrawTransactionMemo } from '..';
+import { Withdraw } from '../..';
+import { useBatchHook, useWithdrawTransactionMemo } from '..';
 
 export const useWithdrawBatch = (withdraw: Withdraw) => {
   const dispatch = useAppDispatch();
 
-  const handleOpenWithdrawModal = () => {
+  const openBatchModal = () => {
     dispatch(
       modalsSliceActions.setWithdrawModalData({
         steps: ['withdraw'] as WithdrawModalDataStep[],
@@ -20,16 +20,18 @@ export const useWithdrawBatch = (withdraw: Withdraw) => {
     dispatch(modalsSliceActions.openWithdrawProgressModal());
   };
 
-  return [
-    useBatchHook({
+  return {
+    batch: useBatchHook({
       transactions: {
         withdraw: useWithdrawTransactionMemo(withdraw),
       },
       handleRetry: () => {
         dispatch(modalsSliceActions.closeWithdrawProgressModal());
+        dispatch(modalsSliceActions.openWithdrawFailModal());
+
         return Promise.resolve(false);
       },
     }),
-    handleOpenWithdrawModal,
-  ] as [Batch.Hook<WithdrawModalDataStep>, () => void];
+    openBatchModal,
+  };
 };

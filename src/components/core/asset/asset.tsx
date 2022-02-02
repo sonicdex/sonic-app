@@ -42,7 +42,7 @@ export const Asset = ({
   ...props
 }: AssetProps) => {
   const bg = useColorModeValue('gray.50', 'custom.2');
-  const shadow = useColorModeValue('sm', 'none');
+  const shadow = useColorModeValue('base', 'none');
 
   return (
     <AssetProvider value={{ isLoading, type, imageSources }}>

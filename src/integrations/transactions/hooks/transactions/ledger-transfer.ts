@@ -15,8 +15,9 @@ export const useLedgerTransferTransactionMemo: CreateTransaction<
   onFail
 ) =>
   useMemo(() => {
-    if (!toAccountId) throw new Error('Account ID is required');
-    if (!amount) throw new Error('Amount is required');
+    if (!toAccountId || !amount) {
+      return;
+    }
 
     return {
       canisterId: ENV.canistersPrincipalIDs.ledger,
@@ -31,7 +32,9 @@ export const useLedgerTransferTransactionMemo: CreateTransaction<
         {
           to: toAccountId,
           fee: { e8s: fee },
-          amount: { e8s: parseAmount(amount, ICP_METADATA.decimals) },
+          amount: {
+            e8s: parseAmount(amount, ICP_METADATA.decimals),
+          },
           memo,
           from_subaccount: [], // For now, using default subaccount to handle ICP
           created_at_time: [],

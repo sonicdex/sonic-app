@@ -7,7 +7,7 @@ import {
   useSwapCanisterStore,
 } from '@/store';
 
-import { Batch, RemoveLiquidity } from '../..';
+import { RemoveLiquidity } from '../..';
 import {
   useBatchHook,
   useRemoveLiquidityTransactionMemo,
@@ -75,7 +75,7 @@ export const useRemoveLiquidityBatch = ({
           callbacks: [
             // Retry callback
             () => {
-              openRemoveLiquidityModal();
+              openBatchModal();
               resolve(true);
             },
             // Not retry callback
@@ -91,7 +91,7 @@ export const useRemoveLiquidityBatch = ({
     });
   };
 
-  const openRemoveLiquidityModal = () => {
+  const openBatchModal = () => {
     dispatch(
       modalsSliceActions.setRemoveLiquidityModalData({
         steps: Object.keys(transactions) as RemoveLiquidityModalDataStep[],
@@ -103,8 +103,11 @@ export const useRemoveLiquidityBatch = ({
     dispatch(modalsSliceActions.openRemoveLiquidityProgressModal());
   };
 
-  return [
-    useBatchHook<RemoveLiquidityModalDataStep>({ transactions, handleRetry }),
-    openRemoveLiquidityModal,
-  ] as [Batch.Hook<RemoveLiquidityModalDataStep>, () => void];
+  return {
+    batch: useBatchHook<RemoveLiquidityModalDataStep>({
+      transactions,
+      handleRetry,
+    }),
+    openBatchModal,
+  };
 };

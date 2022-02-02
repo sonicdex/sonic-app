@@ -2,7 +2,7 @@ import { Link } from '@chakra-ui/react';
 import { useEffect, useMemo } from 'react';
 
 import { useBalances } from '@/hooks/use-balances';
-import { useMintXTCBatch } from '@/integrations/transactions/factories/batch/mint-xtc';
+import { useMintXTCBatch } from '@/integrations/transactions/hooks/batch/use-mint-xtc-batch';
 import {
   MintXTCModalDataStep,
   modalsSliceActions,
@@ -23,14 +23,15 @@ export const MintXTCLink: React.FC<MintXTCLinkProps> = ({ id }) => {
   const { addNotification, popNotification } = useNotificationStore();
   const { getBalances } = useBalances();
 
-  const { from, keepInSonic } = useMemo(() => {
-    const { from, keepInSonic } = swapViewStore;
+  const { from, to, keepInSonic } = useMemo(() => {
+    const { from, to, keepInSonic } = swapViewStore;
 
-    return deserialize(stringify({ from, keepInSonic }));
+    return deserialize(stringify({ from, to, keepInSonic }));
   }, []);
 
-  const [batch, openMintXTCProgressModal] = useMintXTCBatch({
-    amount: from.value,
+  const { batch, openBatchModal } = useMintXTCBatch({
+    amountIn: from.value,
+    amountOut: to.value,
     keepInSonic,
   });
 
@@ -50,7 +51,8 @@ export const MintXTCLink: React.FC<MintXTCLinkProps> = ({ id }) => {
 
   const handleOpenModal = () => {
     handleStateChange();
-    openMintXTCProgressModal();
+
+    openBatchModal();
   };
   useEffect(handleStateChange, [batch.state, dispatch]);
 
@@ -61,7 +63,7 @@ export const MintXTCLink: React.FC<MintXTCLinkProps> = ({ id }) => {
         dispatch(modalsSliceActions.closeMintXTCProgressModal());
 
         addNotification({
-          title: `Minted ${from.value} ${from.metadata.symbol}`,
+          title: `Minted ${to.value} ${to.metadata.symbol}`,
           type: NotificationType.Success,
           id: Date.now().toString(),
           transactionLink: '/activity',
@@ -72,7 +74,7 @@ export const MintXTCLink: React.FC<MintXTCLinkProps> = ({ id }) => {
         console.error('Mint Error', err);
 
         addNotification({
-          title: `Mint ${from.value} ${from.metadata.symbol} failed`,
+          title: `Mint ${to.value} ${to.metadata.symbol} failed`,
           type: NotificationType.Error,
           id: Date.now().toString(),
         });

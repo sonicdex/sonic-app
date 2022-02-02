@@ -21,6 +21,10 @@ export const ENV = {
       'cc659fe529756bae6f72db9937c6c60cf7ad57eb4ac5f930a75748927aab469a',
   },
   URLs: {
+    discord: process.env.DISCORD_URL || 'https://discord.com/invite/EkmnRd99h6',
+    twitter: process.env.TWITTER_URL || 'https://twitter.com/sonic_ooo',
+    medium: process.env.MEDIUM_URL || 'https://medium.com/@sonic-ooo',
+    github: process.env.GITHUB_URL || 'https://github.com/psychedelic/sonic',
     sonicDocs: process.env.SONIC_DOCS_URL || 'https://docs.sonic.ooo',
     termsAndConditions:
       process.env.TERMS_AND_CONDITIONS_URL ||

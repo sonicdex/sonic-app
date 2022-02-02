@@ -8,7 +8,7 @@ import {
   useSwapCanisterStore,
 } from '@/store';
 
-import { Batch, Swap } from '../..';
+import { Swap } from '../..';
 import {
   useApproveTransactionMemo,
   useBatchHook,
@@ -16,7 +16,10 @@ import {
   useSwapExactTokensTransactionMemo,
   useWithdrawTransactionMemo,
 } from '..';
-import { getAmountDependsOnBalance, getDepositTransactions } from './utils';
+import {
+  getAmountDependsOnBalance,
+  getDepositTransactions,
+} from './batch.utils';
 
 export interface ExtraDepositSwapBatchOptions {
   keepInSonic: boolean;
@@ -87,7 +90,7 @@ export const useSwapBatch = ({
           callbacks: [
             // Retry callback
             () => {
-              openSwapModal();
+              openBatchModal();
               resolve(true);
             },
             // Withdraw callback
@@ -111,7 +114,7 @@ export const useSwapBatch = ({
     });
   };
 
-  const openSwapModal = () => {
+  const openBatchModal = () => {
     dispatch(
       modalsSliceActions.setSwapModalData({
         steps: Object.keys(transactions) as SwapModalDataStep[],
@@ -123,8 +126,8 @@ export const useSwapBatch = ({
     dispatch(modalsSliceActions.openSwapProgressModal());
   };
 
-  return [
-    useBatchHook<SwapModalDataStep>({ transactions, handleRetry }),
-    openSwapModal,
-  ] as [Batch.Hook<SwapModalDataStep>, () => void];
+  return {
+    batch: useBatchHook<SwapModalDataStep>({ transactions, handleRetry }),
+    openBatchModal,
+  };
 };

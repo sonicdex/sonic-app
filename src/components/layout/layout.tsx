@@ -8,27 +8,30 @@ import {
   Link as ChakraLink,
   Menu,
   MenuButton,
+  MenuDivider,
   MenuItem,
   MenuList,
   Tab,
   TabList,
   Tabs,
   Text,
-  Tooltip,
   useColorMode,
   useColorModeValue,
 } from '@chakra-ui/react';
 import { FaBook } from '@react-icons/all-files/fa/FaBook';
+import { FaDiscord } from '@react-icons/all-files/fa/FaDiscord';
 import { FaEllipsisH } from '@react-icons/all-files/fa/FaEllipsisH';
+import { FaMedium } from '@react-icons/all-files/fa/FaMedium';
 import { FaMoon } from '@react-icons/all-files/fa/FaMoon';
 import { FaNetworkWired } from '@react-icons/all-files/fa/FaNetworkWired';
 import { FaRedo } from '@react-icons/all-files/fa/FaRedo';
 import { FaSun } from '@react-icons/all-files/fa/FaSun';
+import { FaTwitter } from '@react-icons/all-files/fa/FaTwitter';
 import React, { useMemo } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
 import { ENV } from '@/config';
-import { usePlugStore } from '@/store';
+import { modalsSliceActions, useAppDispatch, usePlugStore } from '@/store';
 import { theme } from '@/theme';
 
 import packageJSON from '../../../package.json';
@@ -43,6 +46,7 @@ import {
 
 export const Layout: React.FC = ({ children, ...props }) => {
   const { isConnected } = usePlugStore();
+  const dispatch = useAppDispatch();
   const location = useLocation();
 
   const currentTabIndex = useMemo(
@@ -56,7 +60,7 @@ export const Layout: React.FC = ({ children, ...props }) => {
   const { colorMode, toggleColorMode } = useColorMode();
 
   const menuBg = useColorModeValue('gray.50', 'custom.2');
-  const menuShadow = useColorModeValue('sm', 'none');
+  const menuShadow = useColorModeValue('base', 'none');
 
   return (
     <>
@@ -70,7 +74,7 @@ export const Layout: React.FC = ({ children, ...props }) => {
           gap="4"
           alignItems="center"
           backgroundColor={backgroundColor}
-          transition="background 200ms"
+          transition="background-color 200ms"
           _after={{
             content: "''",
             position: 'absolute',
@@ -117,17 +121,60 @@ export const Layout: React.FC = ({ children, ...props }) => {
             <HStack>
               {isConnected ? <PlugMenu /> : <PlugButton />}
               <Menu placement="bottom-end">
-                <Tooltip label="Menu">
-                  <MenuButton
-                    as={IconButton}
-                    aria-label="Menu"
-                    icon={<FaEllipsisH />}
-                    borderRadius="full"
-                    bg={menuBg}
-                    shadow={menuShadow}
-                  />
-                </Tooltip>
-                <MenuList bg={menuBg} shadow={menuShadow}>
+                <MenuButton
+                  as={IconButton}
+                  aria-label="Menu"
+                  icon={<FaEllipsisH />}
+                  borderRadius="full"
+                  bg={menuBg}
+                  shadow={menuShadow}
+                />
+
+                <MenuList bg={menuBg} shadow={menuShadow} borderRadius="xl">
+                  {ENV.isDarkModeEnabled && (
+                    <MenuItem
+                      onClick={toggleColorMode}
+                      icon={colorMode === 'dark' ? <FaMoon /> : <FaSun />}
+                    >
+                      {colorMode === 'dark' ? 'Light mode' : 'Dark mode'}
+                    </MenuItem>
+                  )}
+                  {isConnected && (
+                    <MenuItem
+                      onClick={() =>
+                        dispatch(modalsSliceActions.openMintManualModal())
+                      }
+                      icon={<FaRedo />}
+                    >
+                      Retry minting
+                    </MenuItem>
+                  )}
+
+                  <MenuDivider />
+                  <ChakraLink
+                    href={ENV.URLs.twitter}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    fontWeight="bold"
+                  >
+                    <MenuItem icon={<FaTwitter />}>Twitter</MenuItem>
+                  </ChakraLink>
+                  <ChakraLink
+                    href={ENV.URLs.discord}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    fontWeight="bold"
+                  >
+                    <MenuItem icon={<FaDiscord />}>Discord</MenuItem>
+                  </ChakraLink>
+                  <ChakraLink
+                    href={ENV.URLs.medium}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    fontWeight="bold"
+                  >
+                    <MenuItem icon={<FaMedium />}>Medium</MenuItem>
+                  </ChakraLink>
                   <ChakraLink
                     href={ENV.URLs.sonicDocs}
                     target="_blank"
@@ -144,15 +191,6 @@ export const Layout: React.FC = ({ children, ...props }) => {
                   >
                     <MenuItem icon={<FaNetworkWired />}>API</MenuItem>
                   </ChakraLink>
-                  {ENV.isDarkModeEnabled && (
-                    <MenuItem
-                      onClick={toggleColorMode}
-                      icon={colorMode === 'dark' ? <FaMoon /> : <FaSun />}
-                    >
-                      {colorMode === 'dark' ? 'Light mode' : 'Dark mode'}
-                    </MenuItem>
-                  )}
-                  <MenuItem icon={<FaRedo />}>Retry transaction</MenuItem>
                 </MenuList>
               </Menu>
             </HStack>

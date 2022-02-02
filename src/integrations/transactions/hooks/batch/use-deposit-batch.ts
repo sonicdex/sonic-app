@@ -6,7 +6,7 @@ import {
   useAppDispatch,
 } from '@/store';
 
-import { Batch, Deposit } from '../..';
+import { Deposit } from '../..';
 import {
   useApproveTransactionMemo,
   useBatchHook,
@@ -30,7 +30,7 @@ export const useDepositBatch = (deposit: Deposit) => {
     [approveTx, depositTx]
   );
 
-  const handleOpenDepositModal = () => {
+  const openBatchModal = () => {
     dispatch(
       modalsSliceActions.setDepositModalData({
         steps: Object.keys(transactions) as DepositModalDataStep[],
@@ -39,14 +39,16 @@ export const useDepositBatch = (deposit: Deposit) => {
     );
     dispatch(modalsSliceActions.openDepositProgressModal());
   };
-  return [
-    useBatchHook({
+  return {
+    batch: useBatchHook<DepositModalDataStep>({
       transactions,
       handleRetry: () => {
         dispatch(modalsSliceActions.closeDepositProgressModal());
+        dispatch(modalsSliceActions.openDepositFailModal());
+
         return Promise.resolve(false);
       },
     }),
-    handleOpenDepositModal,
-  ] as [Batch.Hook<DepositModalDataStep>, () => void];
+    openBatchModal,
+  };
 };

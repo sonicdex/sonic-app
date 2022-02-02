@@ -57,7 +57,7 @@ export const PlugMenu: FC<Omit<MenuProps, 'children'>> = (props) => {
   };
 
   const bg = useColorModeValue('gray.50', 'custom.2');
-  const shadow = useColorModeValue('sm', 'none');
+  const shadow = useColorModeValue('base', 'none');
 
   return (
     <Menu {...props}>
@@ -70,13 +70,7 @@ export const PlugMenu: FC<Omit<MenuProps, 'children'>> = (props) => {
           <Icon as={FaChevronDown} ml={3} />
         </Flex>
       </MenuButton>
-      <MenuList
-        bg={bg}
-        shadow={shadow}
-        border="none"
-        borderRadius="xl"
-        overflow="hidden"
-      >
+      <MenuList bg={bg} shadow={shadow} borderRadius="xl" overflow="hidden">
         <MenuItem fontWeight="bold" onClick={handleCopy}>
           <HStack direction="row">
             <Image alt="copy" src={copySrc} />

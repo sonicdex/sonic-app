@@ -4,13 +4,12 @@ import { ENV } from '@/config';
 import { ICP_METADATA } from '@/constants';
 import {
   modalsSliceActions,
-  UnwrapModalDataStep,
   useAppDispatch,
   useSwapCanisterStore,
   useSwapViewStore,
+  WithdrawWICPModalDataStep,
 } from '@/store';
 
-import { Batch } from '../..';
 import { useBatchHook } from '..';
 import {
   useWithdrawTransactionMemo,
@@ -18,15 +17,15 @@ import {
 } from '../transactions';
 import { getAmountDependsOnBalance } from '.';
 
-type UseUnwrapBatchOptions = {
+type UseWithdrawWICPBatchOptions = {
   amount: string;
   toAccountId?: string;
 };
 
-export const useUnwrapBatch = ({
+export const useWithdrawWICPBatch = ({
   amount,
   toAccountId,
-}: UseUnwrapBatchOptions) => {
+}: UseWithdrawWICPBatchOptions) => {
   const { tokenList } = useSwapViewStore();
   const { tokenBalances } = useSwapCanisterStore();
   const dispatch = useAppDispatch();
@@ -65,24 +64,26 @@ export const useUnwrapBatch = ({
     return _transactions;
   }, [withdrawWICP, withdraw]);
 
-  const handleOpenBatchModal = () => {
+  const openBatchModal = () => {
     dispatch(
-      modalsSliceActions.setUnwrapModalData({
-        steps: Object.keys(transactions) as UnwrapModalDataStep[],
+      modalsSliceActions.setWithdrawWICPModalData({
+        steps: Object.keys(transactions) as WithdrawWICPModalDataStep[],
       })
     );
 
-    dispatch(modalsSliceActions.openUnwrapProgressModal());
+    dispatch(modalsSliceActions.openWithdrawWICPProgressModal());
   };
 
-  return [
-    useBatchHook({
+  return {
+    batch: useBatchHook({
       transactions,
       handleRetry: () => {
-        dispatch(modalsSliceActions.closeUnwrapProgressModal());
+        dispatch(modalsSliceActions.closeWithdrawWICPProgressModal());
+        dispatch(modalsSliceActions.openWithdrawWICPFailModal());
+
         return Promise.resolve(false);
       },
     }),
-    handleOpenBatchModal,
-  ] as [Batch.Hook<UnwrapModalDataStep>, () => void];
+    openBatchModal,
+  };
 };

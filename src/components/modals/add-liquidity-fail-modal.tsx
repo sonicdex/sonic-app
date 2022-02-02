@@ -1,8 +1,8 @@
-import { Button, Modal, ModalOverlay } from '@chakra-ui/react';
+import { Button } from '@chakra-ui/react';
 
 import { modalsSliceActions, useAppDispatch, useModalsStore } from '@/store';
 
-import { TransactionFailedModalContent } from './components';
+import { TransactionFailedModal } from './components';
 
 export const AddLiquidityFailModal = () => {
   const {
@@ -20,31 +20,32 @@ export const AddLiquidityFailModal = () => {
   };
 
   return (
-    <Modal onClose={handleClose} isOpen={isAddLiquidityFailOpened} isCentered>
-      <ModalOverlay />
-      <TransactionFailedModalContent title="Add liquidity Failed">
-        <Button
-          variant="gradient"
-          colorScheme="dark-blue"
-          borderRadius={12}
-          fontWeight={700}
-          fontSize={18}
-          onClick={addLiquidityCallback}
-          isFullWidth
-          mb={4}
-        >
-          Retry adding the liquidity
-        </Button>
-        <Button
-          borderRadius={12}
-          fontWeight={700}
-          fontSize={18}
-          onClick={handleClose}
-          isFullWidth
-        >
-          Close
-        </Button>
-      </TransactionFailedModalContent>
-    </Modal>
+    <TransactionFailedModal
+      onClose={handleClose}
+      isOpen={isAddLiquidityFailOpened}
+      isCentered
+      title="Add Liquidity Failed"
+    >
+      <Button
+        variant="gradient"
+        colorScheme="dark-blue"
+        borderRadius={12}
+        fontWeight={700}
+        fontSize={18}
+        onClick={addLiquidityCallback}
+        isFullWidth
+      >
+        Retry
+      </Button>
+      <Button
+        borderRadius={12}
+        fontWeight={700}
+        fontSize={18}
+        onClick={handleClose}
+        isFullWidth
+      >
+        Close
+      </Button>
+    </TransactionFailedModal>
   );
 };

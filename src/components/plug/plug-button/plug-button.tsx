@@ -49,7 +49,7 @@ export const PlugButton = forwardRef<HTMLButtonElement, PlugButtonProps>(
     const bgLight = useColorModeValue('gray.50', 'gray.900');
     const bgHoverLight = useColorModeValue('gray.50', 'gray.800');
 
-    const shadow = useColorModeValue('sm', 'none');
+    const shadow = useColorModeValue('base', 'none');
 
     const { color, bg, bgHover, leftIcon, before, borderRadius } =
       useMemo(() => {

@@ -1,11 +1,11 @@
-import { Box, Flex, Modal, ModalOverlay } from '@chakra-ui/react';
+import { Box, Flex } from '@chakra-ui/react';
 import { useMemo } from 'react';
 
 import { checkPlainSrc } from '@/assets';
 import { modalsSliceActions, useAppDispatch, useModalsStore } from '@/store';
 
 import { StepStatus } from '.';
-import { TransactionProgressModalContent, TransactionStep } from './components';
+import { TransactionProgressModal, TransactionStep } from './components';
 
 export const AllowanceVerifyModal = () => {
   const dispatch = useAppDispatch();
@@ -29,27 +29,25 @@ export const AllowanceVerifyModal = () => {
   };
 
   return (
-    <Modal
+    <TransactionProgressModal
       onClose={handleClose}
       isOpen={isAllowanceVerifyModalOpened}
       isCentered
+      title="Verifying Allowance"
     >
-      <ModalOverlay />
-      <TransactionProgressModalContent title="Verifying Allowance">
-        <Flex alignItems="flex-start">
-          {_tokenSymbol.map((symbol) => (
-            <TransactionStep
-              status={StepStatus.Active}
-              iconSrc={checkPlainSrc}
-              key={symbol}
-            >
-              <Box mx={6}>
-                Verifying {symbol} <br /> allowance
-              </Box>
-            </TransactionStep>
-          ))}
-        </Flex>
-      </TransactionProgressModalContent>
-    </Modal>
+      <Flex alignItems="flex-start">
+        {_tokenSymbol.map((symbol) => (
+          <TransactionStep
+            status={StepStatus.Active}
+            iconSrc={checkPlainSrc}
+            key={symbol}
+          >
+            <Box mx={6}>
+              Verifying {symbol} <br /> allowance
+            </Box>
+          </TransactionStep>
+        ))}
+      </Flex>
+    </TransactionProgressModal>
   );
 };

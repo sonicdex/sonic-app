@@ -1,16 +1,14 @@
-import { Button, Modal, ModalOverlay } from '@chakra-ui/react';
+import { Button } from '@chakra-ui/react';
 
 import { modalsSliceActions, useAppDispatch, useModalsStore } from '@/store';
 
-import { TransactionFailedModalContent } from './components';
+import { TransactionFailedModal } from './components';
 
 export const RemoveLiquidityFailModal = () => {
-  const {
-    isRemoveLiquidityFailModalOpened: isRemoveLiquidityFailOpened,
-    removeLiquidityModalData: removeLiquidityData,
-  } = useModalsStore();
-  const { callbacks: [removeLiquidityCallback, closeCallback] = [] } =
-    removeLiquidityData;
+  const { isRemoveLiquidityFailModalOpened, removeLiquidityModalData } =
+    useModalsStore();
+  const { callbacks: [retryCallback, closeCallback] = [] } =
+    removeLiquidityModalData;
 
   const dispatch = useAppDispatch();
 
@@ -20,35 +18,32 @@ export const RemoveLiquidityFailModal = () => {
   };
 
   return (
-    <Modal
+    <TransactionFailedModal
       onClose={handleClose}
-      isOpen={isRemoveLiquidityFailOpened}
+      isOpen={isRemoveLiquidityFailModalOpened}
       isCentered
+      title="Remove Liquidity Failed"
     >
-      <ModalOverlay />
-      <TransactionFailedModalContent title="Swap Failed">
-        <Button
-          variant="gradient"
-          colorScheme="dark-blue"
-          borderRadius={12}
-          fontWeight={700}
-          fontSize={18}
-          onClick={removeLiquidityCallback}
-          isFullWidth
-          mb={4}
-        >
-          Retry removing the liquidity
-        </Button>
-        <Button
-          borderRadius={12}
-          fontWeight={700}
-          fontSize={18}
-          onClick={handleClose}
-          isFullWidth
-        >
-          Close
-        </Button>
-      </TransactionFailedModalContent>
-    </Modal>
+      <Button
+        variant="gradient"
+        colorScheme="dark-blue"
+        borderRadius={12}
+        fontWeight={700}
+        fontSize={18}
+        onClick={retryCallback}
+        isFullWidth
+      >
+        Retry
+      </Button>
+      <Button
+        borderRadius={12}
+        fontWeight={700}
+        fontSize={18}
+        onClick={handleClose}
+        isFullWidth
+      >
+        Close
+      </Button>
+    </TransactionFailedModal>
   );
 };

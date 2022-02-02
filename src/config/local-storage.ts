@@ -3,7 +3,14 @@ export enum LocalStorageKey {
   LiquidityBannerDisabled = 'liquidityBannerDisabled',
   AssetsBannerDisabled = 'assetsBannerDisabled',
   TermsAndConditionsAccepted = 'termsAndConditionsAccepted',
+
+  MintWICPUncompleteBlockHeights = 'mintWICPUncompleteBlockHeights',
+  MintXTCUncompleteBlockHeights = 'mintXTCUncompleteBlockHeights',
 }
+
+export type MintUncompleteBlockHeights = {
+  [principalId: string]: string[];
+};
 
 export function getFromStorage(key: LocalStorageKey | string): any | undefined {
   try {

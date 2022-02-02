@@ -8,7 +8,7 @@ import {
   useSwapCanisterStore,
 } from '@/store';
 
-import { AddLiquidity, Batch, Deposit } from '../..';
+import { AddLiquidity, Deposit } from '../..';
 import {
   useAddLiquidityTransactionMemo,
   useApproveTransactionMemo,
@@ -16,7 +16,10 @@ import {
   useDepositTransactionMemo,
 } from '..';
 import { useCreatePairTransactionMemo } from '../transactions/create-pair';
-import { getAmountDependsOnBalance, getDepositTransactions } from './utils';
+import {
+  getAmountDependsOnBalance,
+  getDepositTransactions,
+} from './batch.utils';
 
 interface Transactions {
   [transactionName: string]: any;
@@ -128,7 +131,7 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
           callbacks: [
             // Retry callback
             () => {
-              openAddLiquidityModal();
+              openBatchModal();
               resolve(true);
             },
             // Cancel callback
@@ -144,7 +147,7 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
     });
   };
 
-  const openAddLiquidityModal = () => {
+  const openBatchModal = () => {
     dispatch(
       modalsSliceActions.setAddLiquidityModalData({
         steps: Object.keys(transactions) as AddLiquidityModalDataStep[],
@@ -156,8 +159,11 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
     dispatch(modalsSliceActions.openAddLiquidityProgressModal());
   };
 
-  return [
-    useBatchHook<AddLiquidityModalDataStep>({ transactions, handleRetry }),
-    openAddLiquidityModal,
-  ] as [Batch.Hook<AddLiquidityModalDataStep>, () => void];
+  return {
+    batch: useBatchHook<AddLiquidityModalDataStep>({
+      transactions,
+      handleRetry,
+    }),
+    openBatchModal,
+  };
 };

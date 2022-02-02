@@ -222,11 +222,6 @@ export const ExchangeBox: React.FC = () => {
                   }
                 />
                 <StackLine title="Allowed Slippage" value={`${slippage}%`} />
-                {/* TODO: add liquidity fee */}
-                {/* <StackLine
-                  title="Liquidity Provider Fee"
-                  value={`${10} ${to.metadata.symbol}`}
-                /> */}
                 {depositFee && (
                   <StackLine
                     title="Deposit Fee"

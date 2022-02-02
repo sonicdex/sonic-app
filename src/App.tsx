@@ -18,6 +18,10 @@ import {
   AddLiquidityProgressModal,
   AllowanceVerifyModal,
   DepositProgressModal,
+  MintManualModal,
+  MintWICPFailModal,
+  MintWICPProgressModal,
+  MintXTCFailModal,
   MintXTCProgressModal,
   RemoveLiquidityFailModal,
   RemoveLiquidityModal,
@@ -26,11 +30,12 @@ import {
   SwapProgressModal,
   TermsAndConditionsModal,
   TokenSelectModal,
-  UnwrapProgressModal,
   WithdrawProgressModal,
-  WrapProgressModal,
+  WithdrawWICPFailModal,
+  WithdrawWICPProgressModal,
 } from './components/modals';
 import { useTokenLogos } from './hooks';
+import { useBlockHeightsEffect } from './hooks/use-block-heights-effect';
 import { usePlugInit } from './integrations/plug';
 import {
   useCyclesMintingCanisterInit,
@@ -49,6 +54,8 @@ export const App = () => {
   useLiquidityViewInit();
   useTokenLogos();
 
+  useBlockHeightsEffect();
+
   if (isAnyMobileDevice) {
     return <EmptyMobile />;
   }
@@ -58,21 +65,33 @@ export const App = () => {
       <Layout>
         <NotificationManager />
 
-        <RemoveLiquidityModal />
-        <SwapProgressModal />
-        <TokenSelectModal />
-        <WithdrawProgressModal />
-        <DepositProgressModal />
-        <AddLiquidityProgressModal />
-        <RemoveLiquidityProgressModal />
-        <UnwrapProgressModal />
-        <WrapProgressModal />
-        <MintXTCProgressModal />
-        <SwapFailModal />
-        <AddLiquidityFailModal />
-        <RemoveLiquidityFailModal />
-        <AllowanceVerifyModal />
         <TermsAndConditionsModal />
+        <RemoveLiquidityModal />
+        <TokenSelectModal />
+        <AllowanceVerifyModal />
+        <MintManualModal />
+
+        <SwapProgressModal />
+        <SwapFailModal />
+
+        <WithdrawProgressModal />
+
+        <DepositProgressModal />
+
+        <AddLiquidityProgressModal />
+        <AddLiquidityFailModal />
+
+        <RemoveLiquidityProgressModal />
+        <RemoveLiquidityFailModal />
+
+        <WithdrawWICPProgressModal />
+        <WithdrawWICPFailModal />
+
+        <MintXTCProgressModal />
+        <MintXTCFailModal />
+
+        <MintWICPProgressModal />
+        <MintWICPFailModal />
 
         <Routes>
           <Route path="/swap" element={<SwapView />} />

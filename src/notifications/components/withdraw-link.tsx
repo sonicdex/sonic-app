@@ -2,7 +2,7 @@ import { Link } from '@chakra-ui/react';
 import { useEffect, useMemo } from 'react';
 
 import { useBalances } from '@/hooks/use-balances';
-import { useWithdrawBatch } from '@/integrations/transactions/factories/batch/withdraw';
+import { useWithdrawBatch } from '@/integrations/transactions/hooks/batch/use-withdraw-batch';
 import {
   modalsSliceActions,
   NotificationType,
@@ -33,7 +33,7 @@ export const WithdrawLink: React.FC<WithdrawLinkProps> = ({ id }) => {
     return undefined;
   }, [supportedTokenList, tokenId]);
 
-  const [batch, openModal] = useWithdrawBatch({
+  const { batch, openBatchModal } = useWithdrawBatch({
     amount: value,
     token: selectedToken,
   });
@@ -54,7 +54,7 @@ export const WithdrawLink: React.FC<WithdrawLinkProps> = ({ id }) => {
 
   const handleOpenModal = () => {
     handleStateChange();
-    openModal();
+    openBatchModal();
   };
 
   useEffect(handleStateChange, [batch.state, dispatch]);

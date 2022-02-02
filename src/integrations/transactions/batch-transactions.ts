@@ -14,7 +14,10 @@ export class BatchTransactions implements Batch.Controller {
 
   constructor(
     private provider?: Provider,
-    private handleRetry?: (error: unknown) => Promise<boolean>
+    private handleRetry?: (
+      error: unknown,
+      prevResponses?: TransactionPrevResponse[]
+    ) => Promise<boolean | { nextTxArgs: any }>
   ) {}
 
   public push(transaction: Transaction): BatchTransactions {
@@ -71,9 +74,15 @@ export class BatchTransactions implements Batch.Controller {
     error: unknown,
     prevResponses?: TransactionPrevResponse[]
   ): Promise<void> {
-    const retry = this.handleRetry && (await this.handleRetry(error));
-    if (retry) {
-      this.start();
+    const retryResponse =
+      this.handleRetry && (await this.handleRetry(error, prevResponses));
+
+    if (retryResponse) {
+      if (typeof retryResponse !== 'boolean' && 'nextTxArgs' in retryResponse) {
+        this.start(retryResponse.nextTxArgs);
+      } else {
+        this.start();
+      }
     } else {
       await transaction.onFail(error, prevResponses);
       this.finishPromise(false, error);
@@ -99,8 +108,23 @@ export class BatchTransactions implements Batch.Controller {
     this.state = Batch.State.Idle;
   }
 
-  private start(): void {
-    this.provider?.batchTransactions(this.transactions).catch((error) => {
+  private start(nextTxArgs?: any): void {
+    const firstTransaction = this.transactions[0];
+    const otherTransactions = this.transactions.filter(
+      (txData, index) => index !== 0
+    );
+
+    const transactions = nextTxArgs
+      ? [
+          {
+            ...firstTransaction,
+            args: () => firstTransaction.args(nextTxArgs),
+          },
+          ...otherTransactions,
+        ]
+      : this.transactions;
+
+    this.provider?.batchTransactions(transactions).catch((error) => {
       if (this.handleRetry) {
         return this.handleRetry(error).then((response) => {
           if (response) {
