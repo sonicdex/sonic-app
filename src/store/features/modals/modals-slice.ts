@@ -137,6 +137,7 @@ interface ModalsState {
   mintWICPUncompleteBlockHeights?: string[];
 
   mintManualModalOpened: boolean;
+  mintManualModalErrorMessage: string;
   mintManualBlockHeight: string;
   mintManualTokenSymbol: MintTokenSymbol;
 
@@ -227,6 +228,7 @@ const initialTokenSelectData: TokenSelectData = {
 // Define the initial state using that type
 const initialState: ModalsState = {
   mintManualModalOpened: false,
+  mintManualModalErrorMessage: '',
   mintManualTokenSymbol: MintTokenSymbol.WICP,
   mintManualBlockHeight: '',
 
@@ -289,6 +291,9 @@ export const modalsSlice = createSlice({
     },
     setMintManualBlockHeight: (state, action: PayloadAction<string>) => {
       state.mintManualBlockHeight = action.payload;
+    },
+    setMintManualModalErrorMessage: (state, action: PayloadAction<string>) => {
+      state.mintManualModalErrorMessage = action.payload;
     },
     openMintManualModal: (state) => {
       state.mintManualModalOpened = true;

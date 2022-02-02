@@ -27,7 +27,6 @@ export const getMintWICPTransaction: CreateTransaction<MintWICP> = (
       return [
         subaccount,
         (blockHeight && BigInt(blockHeight)) ?? argBlockHeight,
-        123,
       ];
     },
   };

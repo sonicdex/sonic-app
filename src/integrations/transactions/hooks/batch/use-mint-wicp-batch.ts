@@ -1,12 +1,15 @@
 import { useCallback, useMemo, useState } from 'react';
 
 import { ENV, getFromStorage, LocalStorageKey, saveToStorage } from '@/config';
+import { BLOCK_HEIGHTS_TITLE } from '@/hooks/use-block-heights-effect';
 import {
   MintWICPModalData,
   MintWICPModalDataStep,
   modalsSliceActions,
+  NotificationType,
   useAppDispatch,
   useModalsStore,
+  useNotificationStore,
   useSwapViewStore,
 } from '@/store';
 
@@ -37,6 +40,7 @@ export const useMintWICPBatch = ({
     mintWICPUncompleteBlockHeights,
   } = useModalsStore();
   const dispatch = useAppDispatch();
+  const { addNotification } = useNotificationStore();
 
   const depositParams = {
     token: tokenList?.[ENV.canistersPrincipalIDs.WICP],
@@ -124,6 +128,11 @@ export const useMintWICPBatch = ({
                       String(failedBlockHeight),
                     ]
                   );
+                  addNotification({
+                    id: String(new Date().getTime()),
+                    title: BLOCK_HEIGHTS_TITLE,
+                    type: NotificationType.MintAuto,
+                  });
                 }
 
                 resolve(false);

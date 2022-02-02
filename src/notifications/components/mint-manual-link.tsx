@@ -1,8 +1,6 @@
-import { Text } from '@chakra-ui/react';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 import { useBalances } from '@/hooks/use-balances';
-import { Batch } from '@/integrations/transactions';
 import { useMintSingleBatch } from '@/integrations/transactions/hooks/batch/use-mint-single-batch';
 import {
   modalsSliceActions,
@@ -17,26 +15,16 @@ export interface MintManualLinkProps {
 }
 
 export const MintManualLink: React.FC<MintManualLinkProps> = ({ id }) => {
-  const [steps, setSteps] = useState<string[]>([]);
-  const [step, setStep] = useState<string | Batch.DefaultHookState>(
-    Batch.DefaultHookState.Idle
-  );
-
   const dispatch = useAppDispatch();
   const { addNotification, popNotification } = useNotificationStore();
   const { getBalances } = useBalances();
   const { mintManualTokenSymbol, mintManualBlockHeight } = useModalsStore();
 
   // FIXME: Rewrite to useEffect if needed
-  const { batch, getTransactionNames } = useMintSingleBatch({
+  const { batch } = useMintSingleBatch({
     tokenSymbol: mintManualTokenSymbol,
     blockHeight: mintManualBlockHeight,
   });
-
-  useEffect(
-    () => setSteps(getTransactionNames()),
-    [batch.state, dispatch, getTransactionNames]
-  );
 
   useEffect(() => {
     batch
@@ -57,39 +45,21 @@ export const MintManualLink: React.FC<MintManualLinkProps> = ({ id }) => {
         const isUnauthorizedError = err?.message?.includes('Unauthorized');
         const isOtherError = err?.message?.includes('Other');
 
-        addNotification({
-          title: isUnauthorizedError
-            ? `Transaction index doesn't belongs to your wallet address`
-            : isOtherError
-            ? `Wrap failed, check block height`
-            : `Wrap failed`,
-          type: NotificationType.Error,
-          id: Date.now().toString(),
-        });
+        const errorMessage = isUnauthorizedError
+          ? `Block Height entered does not match your address`
+          : isOtherError
+          ? `Wrap failed, check if the Block Height is correct`
+          : `Wrap failed, please try again later`;
+
+        dispatch(
+          modalsSliceActions.setMintManualModalErrorMessage(errorMessage)
+        );
+        dispatch(modalsSliceActions.openMintManualModal());
       })
       .finally(() => {
-        setStep(Batch.DefaultHookState.Idle);
         popNotification(id);
       });
-
-    const transactionNames = getTransactionNames();
-
-    setSteps(transactionNames);
   }, []);
 
-  return (
-    <>
-      {steps.map((stepName, index) => (
-        <Text
-          key={stepName}
-          color={step === stepName ? 'blue.500' : 'gray.500'}
-          fontSize="sm"
-          fontWeight={500}
-          mb={1}
-        >
-          {index + 1}. {stepName}
-        </Text>
-      ))}
-    </>
-  );
+  return null;
 };

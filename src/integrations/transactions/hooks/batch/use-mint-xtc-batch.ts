@@ -1,10 +1,11 @@
 import { useMemo } from 'react';
 
-import { ENV } from '@/config';
+import { ENV, getFromStorage, LocalStorageKey, saveToStorage } from '@/config';
 import {
   MintXTCModalDataStep,
   modalsSliceActions,
   useAppDispatch,
+  useModalsStore,
   useSwapViewStore,
 } from '@/store';
 
@@ -17,29 +18,32 @@ import {
 import { getMintXTCTransaction } from '../transactions/mint-xtc';
 
 export type UseMintXTCBatchOptions = {
-  amount: string;
+  amountIn: string;
+  amountOut: string;
   blockHeight?: string;
   keepInSonic?: boolean;
 };
 
 export const useMintXTCBatch = ({
-  amount,
+  amountIn,
+  amountOut,
   blockHeight,
   keepInSonic,
 }: UseMintXTCBatchOptions) => {
   const { tokenList } = useSwapViewStore();
   const dispatch = useAppDispatch();
+  const { mintXTCUncompleteBlockHeights } = useModalsStore();
 
   if (!tokenList) throw new Error('Token list is required');
 
   const depositParams = {
     token: tokenList[ENV.canistersPrincipalIDs.XTC],
-    amount: amount.toString(),
+    amount: amountOut,
   };
 
   const ledgerTransfer = useLedgerTransferTransactionMemo({
     toAccountId: ENV.accountIDs.XTC,
-    amount,
+    amount: amountIn,
   });
   const mintXTC = getMintXTCTransaction({ blockHeight });
   const approve = useApproveTransactionMemo(depositParams);
@@ -78,13 +82,62 @@ export const useMintXTCBatch = ({
   };
 
   return {
-    batch: useBatchHook({
+    batch: useBatchHook<MintXTCModalDataStep>({
       transactions,
-      handleRetry: () => {
-        dispatch(modalsSliceActions.closeMintXTCProgressModal());
-        dispatch(modalsSliceActions.openMintXTCFailModal());
+      handleRetry: async (error, prevResponses) => {
+        const failedBlockHeight = prevResponses?.[0]?.response as
+          | bigint
+          | undefined;
 
-        return Promise.resolve(false);
+        console.log(prevResponses);
+
+        if (failedBlockHeight) {
+          dispatch(
+            modalsSliceActions.setMintXTCUncompleteBlockHeights([
+              ...(mintXTCUncompleteBlockHeights
+                ? mintXTCUncompleteBlockHeights
+                : []),
+              String(failedBlockHeight),
+            ])
+          );
+        }
+
+        return new Promise<boolean>((resolve) => {
+          dispatch(
+            modalsSliceActions.setMintXTCModalData({
+              callbacks: [
+                // Retry callback
+                () => {
+                  openBatchModal();
+                  resolve(true);
+                },
+                // Close callback
+                () => {
+                  const prevMintXTCBlockHeight = getFromStorage(
+                    LocalStorageKey.MintXTCUncompleteBlockHeights
+                  );
+
+                  if (failedBlockHeight) {
+                    saveToStorage(
+                      LocalStorageKey.MintXTCUncompleteBlockHeights,
+                      [
+                        ...(typeof prevMintXTCBlockHeight !== 'undefined'
+                          ? prevMintXTCBlockHeight
+                          : []),
+                        String(failedBlockHeight),
+                      ]
+                    );
+                  }
+
+                  resolve(false);
+                },
+              ],
+            })
+          );
+
+          dispatch(modalsSliceActions.closeMintXTCProgressModal());
+          dispatch(modalsSliceActions.openMintXTCFailModal());
+        });
       },
     }),
     openBatchModal,

@@ -8,10 +8,8 @@ import {
   useNotificationStore,
 } from '@/store';
 
-const SINGULAR_BLOCK_HEIGHTS_LENGTH_TITLE =
-  'You have unfinished or failed mint, click retry mint below.';
-const PLURAL_BLOCK_HEIGHTS_LENGTH_TITLE =
-  'You have unfinished or failed mints, click retry mint below.';
+export const BLOCK_HEIGHTS_TITLE =
+  'You have unfinished or failed mint(s), click retry mint below.';
 
 export const useBlockHeightsEffect = () => {
   const { addNotification } = useNotificationStore();
@@ -27,7 +25,7 @@ export const useBlockHeightsEffect = () => {
 
     if (blockHeightsWICP || blockHeightsXTC) {
       const totalLength =
-        blockHeightsWICP?.length ?? 0 + blockHeightsXTC?.length ?? 0;
+        (blockHeightsWICP?.length ?? 0) + (blockHeightsXTC?.length ?? 0);
 
       if (blockHeightsWICP) {
         dispatch(
@@ -43,10 +41,7 @@ export const useBlockHeightsEffect = () => {
       if (totalLength >= 1) {
         addNotification({
           id: String(new Date().getTime()),
-          title:
-            totalLength % 2 === 0
-              ? PLURAL_BLOCK_HEIGHTS_LENGTH_TITLE
-              : SINGULAR_BLOCK_HEIGHTS_LENGTH_TITLE,
+          title: BLOCK_HEIGHTS_TITLE,
           type: NotificationType.MintAuto,
         });
       }

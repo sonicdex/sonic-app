@@ -12,8 +12,6 @@ export const useBatchHook = <Model>({
   const [state, setState] = useState(Batch.DefaultHookState.Idle);
   const [error, setError] = useState<unknown>();
 
-  console.log('tx', transactions);
-
   const handleError = (error: unknown): void => {
     setError(error);
     setState(Batch.DefaultHookState.Error);

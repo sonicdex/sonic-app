@@ -22,6 +22,8 @@ export const MintAutoLink: React.FC<MintAutoLinkProps> = ({ id }) => {
     Batch.DefaultHookState.Idle
   );
 
+  console.log('auto', step, steps);
+
   const dispatch = useAppDispatch();
   const { addNotification, popNotification } = useNotificationStore();
   const { getBalances } = useBalances();
@@ -88,8 +90,6 @@ export const MintAutoLink: React.FC<MintAutoLinkProps> = ({ id }) => {
       >
         Retry Mint
       </Button>
-      {JSON.stringify(steps, null, 2)}
-      {steps.some((_step) => _step === step)}
     </>
   );
 };

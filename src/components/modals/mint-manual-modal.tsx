@@ -61,8 +61,10 @@ export const MintManualModal = () => {
     mintManualModalOpened,
     mintManualBlockHeight,
     mintManualTokenSymbol,
+    mintManualModalErrorMessage,
   } = useModalsStore();
   const { addNotification } = useNotificationStore();
+
   const [blockHeightErrorMessage, setBlockHeightErrorMessage] = useState<
     string | undefined
   >(undefined);
@@ -153,6 +155,7 @@ export const MintManualModal = () => {
   };
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    dispatch(modalsSliceActions.setMintManualModalErrorMessage(''));
     setBlockHeightErrorMessage(undefined);
     setTokenErrorMessage(undefined);
     e.preventDefault();
@@ -191,7 +194,11 @@ export const MintManualModal = () => {
   };
 
   const handleTokenSymbolSelect = (e: ChangeEvent<HTMLSelectElement>) => {
-    dispatch(modalsSliceActions.setMintManualBlockHeight(e.target.value));
+    dispatch(
+      modalsSliceActions.setMintManualTokenSymbol(
+        e.target.value as MintTokenSymbol
+      )
+    );
   };
 
   const blockInvalidBlockHeightChar = (e: KeyboardEvent<HTMLInputElement>) =>
@@ -255,6 +262,11 @@ export const MintManualModal = () => {
               </Link>
             </FormHelperText>
           </FormControl>
+          {mintManualModalErrorMessage && (
+            <Text textAlign="center" fontSize="sm" color="red.500">
+              {mintManualModalErrorMessage}
+            </Text>
+          )}
         </ModalBody>
         <ModalFooter as={HStack}>
           <Button

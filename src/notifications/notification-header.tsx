@@ -16,6 +16,7 @@ const NotificationIcon = ({ type }: { type: NotificationType }) => {
         />
       );
     case NotificationType.MintAuto:
+
     case NotificationType.Error:
       return (
         <Box
@@ -26,6 +27,7 @@ const NotificationIcon = ({ type }: { type: NotificationType }) => {
           left={4}
         />
       );
+    case NotificationType.MintManual:
     case NotificationType.Pending:
     case NotificationType.MintWICP:
     case NotificationType.WithdrawWICP:

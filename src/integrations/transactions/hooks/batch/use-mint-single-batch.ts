@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useMemo } from 'react';
 
 import { MintTokenSymbol } from '@/store';
 
@@ -15,9 +15,7 @@ export const useMintSingleBatch = ({
   tokenSymbol,
   blockHeight,
 }: UseMintSingleBatchOptions) => {
-  const [transactions, setTransactions] = useState<Record<string, any>>({});
-
-  useEffect(() => {
+  const transactions = useMemo(() => {
     let transactions: Record<string, any> = {};
 
     if (tokenSymbol === MintTokenSymbol.WICP) {
@@ -38,7 +36,7 @@ export const useMintSingleBatch = ({
       };
     }
 
-    setTransactions(transactions);
+    return transactions;
   }, [blockHeight, tokenSymbol]);
 
   const getTransactionNames = () => Object.keys(transactions);

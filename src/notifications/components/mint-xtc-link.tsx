@@ -23,14 +23,15 @@ export const MintXTCLink: React.FC<MintXTCLinkProps> = ({ id }) => {
   const { addNotification, popNotification } = useNotificationStore();
   const { getBalances } = useBalances();
 
-  const { from, keepInSonic } = useMemo(() => {
-    const { from, keepInSonic } = swapViewStore;
+  const { from, to, keepInSonic } = useMemo(() => {
+    const { from, to, keepInSonic } = swapViewStore;
 
-    return deserialize(stringify({ from, keepInSonic }));
+    return deserialize(stringify({ from, to, keepInSonic }));
   }, []);
 
   const { batch, openBatchModal } = useMintXTCBatch({
-    amount: from.value,
+    amountIn: from.value,
+    amountOut: to.value,
     keepInSonic,
   });
 
@@ -62,7 +63,7 @@ export const MintXTCLink: React.FC<MintXTCLinkProps> = ({ id }) => {
         dispatch(modalsSliceActions.closeMintXTCProgressModal());
 
         addNotification({
-          title: `Minted ${from.value} ${from.metadata.symbol}`,
+          title: `Minted ${to.value} ${to.metadata.symbol}`,
           type: NotificationType.Success,
           id: Date.now().toString(),
           transactionLink: '/activity',
@@ -73,7 +74,7 @@ export const MintXTCLink: React.FC<MintXTCLinkProps> = ({ id }) => {
         console.error('Mint Error', err);
 
         addNotification({
-          title: `Mint ${from.value} ${from.metadata.symbol} failed`,
+          title: `Mint ${to.value} ${to.metadata.symbol} failed`,
           type: NotificationType.Error,
           id: Date.now().toString(),
         });
