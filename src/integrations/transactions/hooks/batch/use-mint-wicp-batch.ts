@@ -105,14 +105,14 @@ export const useMintWICPBatch = ({
         );
       }
 
-      return new Promise<boolean>((resolve) => {
+      return new Promise<boolean | { nextTxArgs: any }>((resolve) => {
         dispatch(
           modalsSliceActions.setMintWICPModalData({
             callbacks: [
               // Retry callback
               () => {
                 openBatchModal();
-                resolve(true);
+                resolve({ nextTxArgs: prevResponses });
               },
               // Close callback
               () => {

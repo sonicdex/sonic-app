@@ -25,7 +25,6 @@ export const getMintXTCTransaction: CreateTransaction<MintXTC> = (
       return [
         subaccount,
         (blockHeight && BigInt(blockHeight)) ?? argBlockHeight,
-        123,
       ];
     },
   };

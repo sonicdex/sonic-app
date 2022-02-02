@@ -112,14 +112,14 @@ export const useMintXTCBatch = ({
           );
         }
 
-        return new Promise<boolean>((resolve) => {
+        return new Promise<boolean | { nextTxArgs: any }>((resolve) => {
           dispatch(
             modalsSliceActions.setMintXTCModalData({
               callbacks: [
                 // Retry callback
                 () => {
                   openBatchModal();
-                  resolve(true);
+                  resolve({ nextTxArgs: prevResponses });
                 },
                 // Close callback
                 () => {
