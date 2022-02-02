@@ -9,15 +9,19 @@ export enum NotificationType {
   Error,
   Pending,
 
-  Swap,
   Deposit,
   Withdraw,
+
+  Swap,
+
   AddLiquidity,
   RemoveLiquidity,
-  WithdrawWICP,
-  MintWICP,
+
   MintXTC,
-  FinishMint,
+  MintWICP,
+  WithdrawWICP,
+  MintAuto,
+  MintManual,
 }
 
 export interface Notification {

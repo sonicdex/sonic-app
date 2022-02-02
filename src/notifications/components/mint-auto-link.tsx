@@ -1,24 +1,27 @@
 import { Button } from '@chakra-ui/react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import { LocalStorageKey, removeFromStorage } from '@/config';
 import { useBalances } from '@/hooks/use-balances';
+import { Batch } from '@/integrations/transactions';
 import { useMintMultipleBatch } from '@/integrations/transactions/hooks/batch/use-mint-multiple-batch';
 import {
-  modalsSliceActions,
   NotificationType,
   useAppDispatch,
   useModalsStore,
   useNotificationStore,
 } from '@/store';
 
-export interface MintAutoFinishLinkProps {
+export interface MintAutoLinkProps {
   id: string;
 }
 
-export const MintAutoFinishLink: React.FC<MintAutoFinishLinkProps> = ({
-  id,
-}) => {
+export const MintAutoLink: React.FC<MintAutoLinkProps> = ({ id }) => {
+  const [steps, setSteps] = useState<string[]>([]);
+  const [step, setStep] = useState<string | Batch.DefaultHookState>(
+    Batch.DefaultHookState.Idle
+  );
+
   const dispatch = useAppDispatch();
   const { addNotification, popNotification } = useNotificationStore();
   const { getBalances } = useBalances();
@@ -27,7 +30,7 @@ export const MintAutoFinishLink: React.FC<MintAutoFinishLinkProps> = ({
     useModalsStore();
 
   // FIXME: Rewrite to useEffect if needed
-  const { batch, startMinting } = useMintMultipleBatch({
+  const { batch, getTransactionNames } = useMintMultipleBatch({
     blockHeights: {
       WICP: mintWICPUncompleteBlockHeights,
       XTC: mintXTCUncompleteBlockHeights,
@@ -35,21 +38,17 @@ export const MintAutoFinishLink: React.FC<MintAutoFinishLinkProps> = ({
   });
 
   const handleStateChange = () => {
-    dispatch(
-      modalsSliceActions.setFinishMintData({
-        step: batch.state,
-      })
-    );
+    setStep(batch.state);
   };
 
   useEffect(handleStateChange, [batch.state, dispatch]);
 
-  const handleFinishMint = () => {
+  const handleAutoMint = () => {
     batch
       .execute()
       .then(() => {
-        dispatch(modalsSliceActions.setFinishMintData());
-        dispatch(modalsSliceActions.endFinishMinting());
+        setStep(Batch.DefaultHookState.Idle);
+
         addNotification({
           title: `Minting finished`,
           type: NotificationType.Success,
@@ -64,7 +63,7 @@ export const MintAutoFinishLink: React.FC<MintAutoFinishLinkProps> = ({
       })
       .catch((err) => {
         console.error('Minting Error', err);
-        dispatch(modalsSliceActions.setFinishMintData());
+        setStep(Batch.DefaultHookState.Idle);
         addNotification({
           title: `Minting failed`,
           type: NotificationType.Error,
@@ -73,18 +72,24 @@ export const MintAutoFinishLink: React.FC<MintAutoFinishLinkProps> = ({
       })
       .finally(() => popNotification(id));
 
-    startMinting();
+    const transactionNames = getTransactionNames();
+
+    setSteps(transactionNames);
   };
 
   return (
-    <Button
-      colorScheme="dark-blue"
-      variant="gradient"
-      isFullWidth
-      onClick={handleFinishMint}
-      mt={3}
-    >
-      Retry Mint
-    </Button>
+    <>
+      <Button
+        colorScheme="dark-blue"
+        variant="gradient"
+        isFullWidth
+        onClick={handleAutoMint}
+        mt={3}
+      >
+        Retry Mint
+      </Button>
+      {JSON.stringify(steps, null, 2)}
+      {steps.some((_step) => _step === step)}
+    </>
   );
 };

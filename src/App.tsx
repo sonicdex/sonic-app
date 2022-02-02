@@ -18,6 +18,7 @@ import {
   AddLiquidityProgressModal,
   AllowanceVerifyModal,
   DepositProgressModal,
+  MintManualModal,
   MintWICPFailModal,
   MintWICPProgressModal,
   MintXTCFailModal,
@@ -25,7 +26,6 @@ import {
   RemoveLiquidityFailModal,
   RemoveLiquidityModal,
   RemoveLiquidityProgressModal,
-  RetryMintingModal,
   SwapFailModal,
   SwapProgressModal,
   TermsAndConditionsModal,
@@ -69,7 +69,7 @@ export const App = () => {
         <RemoveLiquidityModal />
         <TokenSelectModal />
         <AllowanceVerifyModal />
-        <RetryMintingModal />
+        <MintManualModal />
 
         <SwapProgressModal />
         <SwapFailModal />

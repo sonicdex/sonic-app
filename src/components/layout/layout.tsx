@@ -142,7 +142,7 @@ export const Layout: React.FC = ({ children, ...props }) => {
                   {isConnected && (
                     <MenuItem
                       onClick={() =>
-                        dispatch(modalsSliceActions.openRetryMintingModal())
+                        dispatch(modalsSliceActions.openMintManualModal())
                       }
                       icon={<FaRedo />}
                     >

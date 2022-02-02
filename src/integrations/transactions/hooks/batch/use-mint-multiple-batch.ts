@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 
 import { getFromStorage, LocalStorageKey, saveToStorage } from '@/config';
-import { modalsSliceActions, useAppDispatch } from '@/store';
 
 import { getMintWICPTransaction, useBatchHook } from '..';
 import { getMintXTCTransaction } from '../transactions/mint-xtc';
@@ -52,8 +51,6 @@ export const useMintMultipleBatch = ({
 }: UseMintMultipleBatchOptions) => {
   const [transactions, setTransactions] = useState<Record<string, any>>({});
 
-  const dispatch = useAppDispatch();
-
   useEffect(() => {
     let transactions: Record<string, any> = {};
 
@@ -80,16 +77,10 @@ export const useMintMultipleBatch = ({
     setTransactions(transactions);
   }, [blockHeights.WICP, blockHeights.XTC]);
 
-  const startMinting = () => {
-    dispatch(
-      modalsSliceActions.startFinishMinting({
-        steps: Object.keys(transactions),
-      })
-    );
-  };
+  const getTransactionNames = () => Object.keys(transactions);
 
   return {
     batch: useBatchHook<string>({ transactions }),
-    startMinting,
+    getTransactionNames,
   };
 };

@@ -47,7 +47,7 @@ export const useBlockHeightsEffect = () => {
             totalLength % 2 === 0
               ? PLURAL_BLOCK_HEIGHTS_LENGTH_TITLE
               : SINGULAR_BLOCK_HEIGHTS_LENGTH_TITLE,
-          type: NotificationType.FinishMint,
+          type: NotificationType.MintAuto,
         });
       }
     }

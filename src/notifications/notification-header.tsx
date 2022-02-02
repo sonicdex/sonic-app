@@ -15,7 +15,7 @@ const NotificationIcon = ({ type }: { type: NotificationType }) => {
           left={4}
         />
       );
-    case NotificationType.FinishMint:
+    case NotificationType.MintAuto:
     case NotificationType.Error:
       return (
         <Box

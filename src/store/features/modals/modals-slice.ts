@@ -5,15 +5,10 @@ import type { RootState } from '@/store';
 
 export type ModalsCallback = (...args: unknown[]) => any;
 
-export enum RetryMintingToken {
+export enum MintTokenSymbol {
   XTC = 'XTC',
   WICP = 'WICP',
 }
-
-export type RetryMintingModalData = {
-  token?: RetryMintingToken;
-  blockHeight?: bigint;
-};
 
 export enum MintXTCModalDataStep {
   LedgerTransfer = 'ledgerTransfer',
@@ -106,11 +101,6 @@ export type AddLiquidityModalData = {
   callbacks?: [ModalsCallback, ModalsCallback];
 };
 
-export type FinishMintData = {
-  step?: string | Batch.DefaultHookState;
-  steps?: (string | Batch.DefaultHookState)[];
-};
-
 export enum RemoveLiquidityModalDataStep {
   RemoveLiquidity = 'removeLiquidity',
   Withdraw0 = 'withdraw0',
@@ -143,21 +133,20 @@ type TokenSelectData = {
 
 // Define a type for the slice state
 interface ModalsState {
-  finishMintStarted: boolean;
-  finishMintData: FinishMintData;
+  mintXTCUncompleteBlockHeights?: string[];
+  mintWICPUncompleteBlockHeights?: string[];
 
-  retryMintingModalOpened: boolean;
-  retryMintingModalData: RetryMintingModalData;
+  mintManualModalOpened: boolean;
+  mintManualBlockHeight: string;
+  mintManualTokenSymbol: MintTokenSymbol;
 
   isMintXTCProgressModalOpened: boolean;
   isMintXTCFailModalOpened: boolean;
   mintXTCModalData: MintXTCModalData;
-  mintXTCUncompleteBlockHeights?: string[];
 
   isMintWICPProgressModalOpened: boolean;
   isMintWICPFailModalOpened: boolean;
   mintWICPModalData: MintWICPModalData;
-  mintWICPUncompleteBlockHeights?: string[];
 
   isWithdrawWICPProgressModalOpened: boolean;
   isWithdrawWICPFailModalOpened: boolean;
@@ -195,10 +184,6 @@ interface ModalsState {
   termsAndConditionsModalData: TermsAndConditionsModalData;
 }
 
-const initialRetryTransactionModalData: RetryMintingModalData = {
-  token: RetryMintingToken.WICP,
-};
-
 const initialMintXTCModalData: MintXTCModalData = {
   step: undefined,
 };
@@ -231,10 +216,6 @@ const initialRemoveLiquidityModalData: RemoveLiquidityModalData = {
   step: undefined,
 };
 
-const initialFinishMintData: FinishMintData = {
-  step: undefined,
-};
-
 const initialTokenSelectData: TokenSelectData = {
   onSelect: () => null,
   tokens: '[]',
@@ -245,11 +226,9 @@ const initialTokenSelectData: TokenSelectData = {
 
 // Define the initial state using that type
 const initialState: ModalsState = {
-  finishMintStarted: false,
-  finishMintData: initialFinishMintData,
-
-  retryMintingModalOpened: false,
-  retryMintingModalData: initialRetryTransactionModalData,
+  mintManualModalOpened: false,
+  mintManualTokenSymbol: MintTokenSymbol.WICP,
+  mintManualBlockHeight: '',
 
   isMintXTCProgressModalOpened: false,
   isMintXTCFailModalOpened: false,
@@ -302,35 +281,20 @@ export const modalsSlice = createSlice({
   // `createSlice` will infer the state type from the `initialState` argument
   initialState,
   reducers: {
-    startFinishMinting: (
+    setMintManualTokenSymbol: (
       state,
-      action: PayloadAction<FinishMintData | undefined>
+      action: PayloadAction<MintTokenSymbol>
     ) => {
-      state.finishMintStarted = true;
-      state.finishMintData = action.payload ?? initialFinishMintData;
+      state.mintManualTokenSymbol = action.payload;
     },
-    endFinishMinting: (state) => {
-      state.finishMintStarted = false;
-      state.finishMintData = initialFinishMintData;
+    setMintManualBlockHeight: (state, action: PayloadAction<string>) => {
+      state.mintManualBlockHeight = action.payload;
     },
-    setFinishMintData: (
-      state,
-      action: PayloadAction<FinishMintData | undefined>
-    ) => {
-      state.finishMintData = action.payload ?? initialFinishMintData;
+    openMintManualModal: (state) => {
+      state.mintManualModalOpened = true;
     },
-
-    openRetryMintingModal: (
-      state,
-      action: PayloadAction<RetryMintingModalData | undefined>
-    ) => {
-      state.retryMintingModalOpened = true;
-      state.retryMintingModalData =
-        action.payload ?? initialRetryTransactionModalData;
-    },
-    closeRetryMintingModal: (state) => {
-      state.retryMintingModalOpened = false;
-      state.retryMintingModalData = initialRetryTransactionModalData;
+    closeMintManualModal: (state) => {
+      state.mintManualModalOpened = false;
     },
 
     openMintXTCProgressModal: (state) => {

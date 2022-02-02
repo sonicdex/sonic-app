@@ -1,3 +1,4 @@
+import { getFromStorage, LocalStorageKey, saveToStorage } from '@/config';
 import { getCurrency } from '@/utils/format';
 
 export const getAmountDependsOnBalance = (
@@ -40,4 +41,38 @@ export const getDepositTransactions = ({
   }
 
   return transactions;
+};
+
+export const removeWICPBlockHeight = (blockHeight: string) => {
+  const WICPBlockHeights = getFromStorage(
+    LocalStorageKey.MintWICPUncompleteBlockHeights
+  );
+
+  if (WICPBlockHeights && WICPBlockHeights.length > 0) {
+    const newWICPBlockHeights = WICPBlockHeights.filter(
+      (_blockHeight: string) => _blockHeight !== blockHeight
+    );
+
+    saveToStorage(
+      LocalStorageKey.MintWICPUncompleteBlockHeights,
+      newWICPBlockHeights
+    );
+  }
+};
+
+export const removeXTCBlockHeight = (blockHeight: string) => {
+  const XTCBlockHeights = getFromStorage(
+    LocalStorageKey.MintXTCUncompleteBlockHeights
+  );
+
+  if (XTCBlockHeights && XTCBlockHeights.length > 0) {
+    const newXTCBlockHeights = XTCBlockHeights.filter(
+      (_blockHeight: string) => _blockHeight !== blockHeight
+    );
+
+    saveToStorage(
+      LocalStorageKey.MintXTCUncompleteBlockHeights,
+      newXTCBlockHeights
+    );
+  }
 };

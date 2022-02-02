@@ -23,11 +23,11 @@ export const getMintWICPTransaction: CreateTransaction<MintWICP> = (
     },
     args: (prevResponses: any[]) => {
       const argBlockHeight = prevResponses?.[0]?.response;
-      console.log(argBlockHeight);
 
       return [
         subaccount,
         (blockHeight && BigInt(blockHeight)) ?? argBlockHeight,
+        123,
       ];
     },
   };

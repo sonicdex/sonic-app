@@ -25,19 +25,15 @@ import {
   FormEvent,
   KeyboardEvent,
   useCallback,
-  useEffect,
   useMemo,
   useState,
 } from 'react';
 
-import { useBalances } from '@/hooks';
 import { checkIfPlugProviderVersionCompatible } from '@/integrations/plug';
-import { useMintWICPBatch } from '@/integrations/transactions';
 import {
-  MintWICPModalDataStep,
+  MintTokenSymbol,
   modalsSliceActions,
   NotificationType,
-  RetryMintingToken,
   useAppDispatch,
   useModalsStore,
   useNotificationStore,
@@ -49,26 +45,24 @@ const PLUG_PROVIDER_CHAINED_BATCH_VERSION = 160;
 
 const TOKEN_OPTIONS = [
   {
-    label: 'WICP',
-    value: RetryMintingToken.WICP,
+    label: MintTokenSymbol.WICP,
+    value: MintTokenSymbol.WICP,
   },
   {
-    label: 'XTC',
-    value: RetryMintingToken.XTC,
+    label: MintTokenSymbol.XTC,
+    value: MintTokenSymbol.XTC,
   },
 ];
 
-export const RetryMintingModal = () => {
+export const MintManualModal = () => {
   const color = useColorModeValue('gray.600', 'gray.400');
 
   const {
-    retryMintingModalOpened,
-    retryMintingModalData: { token, blockHeight } = {},
+    mintManualModalOpened,
+    mintManualBlockHeight,
+    mintManualTokenSymbol,
   } = useModalsStore();
-  const { addNotification, popNotification } = useNotificationStore();
-  const { getBalances } = useBalances();
-  const [_blockHeight, setBlockHeight] = useState(String(blockHeight ?? ''));
-  const [_token, setToken] = useState(token);
+  const { addNotification } = useNotificationStore();
   const [blockHeightErrorMessage, setBlockHeightErrorMessage] = useState<
     string | undefined
   >(undefined);
@@ -77,26 +71,6 @@ export const RetryMintingModal = () => {
   >(undefined);
 
   const dispatch = useAppDispatch();
-
-  const { batch, openBatchModal } = useMintWICPBatch({
-    blockHeight: _blockHeight,
-  });
-
-  const handleStateChange = () => {
-    if (
-      Object.values(MintWICPModalDataStep).includes(
-        batch.state as MintWICPModalDataStep
-      )
-    ) {
-      dispatch(
-        modalsSliceActions.setMintWICPModalData({
-          step: batch.state,
-        })
-      );
-    }
-  };
-
-  useEffect(handleStateChange, [batch.state, dispatch]);
 
   const handleMintXTC = useCallback(() => {
     const isVersionCompatible = checkIfPlugProviderVersionCompatible(
@@ -128,7 +102,11 @@ export const RetryMintingModal = () => {
     }
 
     if (isVersionCompatible) {
-      setBlockHeight('');
+      addNotification({
+        title: `Minting XTC`,
+        type: NotificationType.MintManual,
+        id: String(new Date().getTime()),
+      });
     }
   }, [addNotification]);
 
@@ -161,68 +139,17 @@ export const RetryMintingModal = () => {
       return;
     }
 
-    const id = String(new Date().getTime());
-
-    const handleOpenModal = () => {
-      addNotification({
-        title: (
-          <>
-            Minting WICP <br />{' '}
-            <Link
-              target="_blank"
-              rel="noreferrer"
-              color="dark-blue.500"
-              onClick={openBatchModal}
-            >
-              View progress
-            </Link>
-          </>
-        ),
-        type: NotificationType.Pending,
-        id,
-      });
-
-      openBatchModal();
-    };
-
     if (isVersionCompatible) {
-      batch
-        .execute()
-        .then(() => {
-          dispatch(modalsSliceActions.closeMintWICPProgressModal());
-
-          popNotification(id);
-          addNotification({
-            title: `Wrapped ICP`,
-            type: NotificationType.Success,
-            id: Date.now().toString(),
-            transactionLink: '/activity',
-          });
-          getBalances();
-        })
-        .catch((err) => {
-          console.error('Wrap Error', err);
-          const isRestrictedBlockHeight =
-            err?.message?.includes('Unauthorized');
-
-          popNotification(id);
-          addNotification({
-            title: isRestrictedBlockHeight
-              ? `Transaction index doesn't belongs to your wallet address`
-              : `Wrap failed`,
-            type: NotificationType.Error,
-            id: Date.now().toString(),
-          });
-        });
-
-      handleOpenModal();
-
-      setBlockHeight('');
+      addNotification({
+        title: `Minting WICP`,
+        type: NotificationType.MintManual,
+        id: String(new Date().getTime()),
+      });
     }
   }, [addNotification]);
 
   const handleClose = () => {
-    dispatch(modalsSliceActions.closeRetryMintingModal());
+    dispatch(modalsSliceActions.closeMintManualModal());
   };
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -230,20 +157,20 @@ export const RetryMintingModal = () => {
     setTokenErrorMessage(undefined);
     e.preventDefault();
 
-    if (!_blockHeight || !_token) {
-      if (!_blockHeight) {
+    if (!mintManualBlockHeight || !mintManualTokenSymbol) {
+      if (!mintManualBlockHeight) {
         setBlockHeightErrorMessage('Block Height is required');
       }
-      if (!_token) {
+      if (!mintManualTokenSymbol) {
         setTokenErrorMessage('Token is required');
       }
       return;
     }
-    if (_token === RetryMintingToken.XTC) {
+    if (mintManualTokenSymbol === MintTokenSymbol.XTC) {
       handleMintXTC();
     }
 
-    if (_token === RetryMintingToken.WICP) {
+    if (mintManualTokenSymbol === MintTokenSymbol.WICP) {
       handleMintWICP();
     }
 
@@ -259,15 +186,19 @@ export const RetryMintingModal = () => {
     };
   }, []);
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setBlockHeight(e.target.value);
+  const handleBlockHeightChange = (e: ChangeEvent<HTMLInputElement>) => {
+    dispatch(modalsSliceActions.setMintManualBlockHeight(e.target.value));
+  };
+
+  const handleTokenSymbolSelect = (e: ChangeEvent<HTMLSelectElement>) => {
+    dispatch(modalsSliceActions.setMintManualBlockHeight(e.target.value));
   };
 
   const blockInvalidBlockHeightChar = (e: KeyboardEvent<HTMLInputElement>) =>
     ['e', 'E', '+', '-'].includes(e.key) && e.preventDefault();
 
   return (
-    <Modal isOpen={retryMintingModalOpened} onClose={handleClose} isCentered>
+    <Modal isOpen={mintManualModalOpened} onClose={handleClose} isCentered>
       <ModalOverlay />
       <ModalContent as="form" onSubmit={handleSubmit} noValidate>
         <ModalCloseButton />
@@ -285,8 +216,8 @@ export const RetryMintingModal = () => {
           >
             <FormLabel>Token</FormLabel>
             <Select
-              value={_token}
-              onChange={(e) => setToken(e.target.value as RetryMintingToken)}
+              value={mintManualTokenSymbol}
+              onChange={handleTokenSymbolSelect}
             >
               {TOKEN_OPTIONS.map((option) => (
                 <option key={option.value} value={option.value}>
@@ -305,9 +236,9 @@ export const RetryMintingModal = () => {
             <FormLabel>Transaction Block Height</FormLabel>
 
             <Input
-              value={_blockHeight}
+              value={mintManualBlockHeight}
               onKeyDown={blockInvalidBlockHeightChar}
-              onChange={handleChange}
+              onChange={handleBlockHeightChange}
               placeholder="2021024"
               type="number"
             />
