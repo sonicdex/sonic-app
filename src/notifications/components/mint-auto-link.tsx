@@ -73,7 +73,6 @@ export const MintAutoLink: React.FC<MintAutoLinkProps> = ({ id }) => {
         popNotification(id);
       })
       .catch((err) => {
-        console.log(step);
         console.error('Minting Error', err);
 
         const isBlockUsed = err?.message?.includes('BlockUsed');
@@ -130,8 +129,6 @@ export const MintAutoLink: React.FC<MintAutoLinkProps> = ({ id }) => {
 
     setSteps(transactionNames);
   };
-
-  console.log(step);
 
   const doneStepColor = useColorModeValue('green.600', 'green.400');
   const activeStepColor = useColorModeValue('gray.600', 'gray.400');
