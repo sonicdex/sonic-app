@@ -8,6 +8,10 @@ export enum LocalStorageKey {
   MintXTCUncompleteBlockHeights = 'mintXTCUncompleteBlockHeights',
 }
 
+export type MintUncompleteBlockHeights = {
+  [principalId: string]: string[];
+};
+
 export function getFromStorage(key: LocalStorageKey | string): any | undefined {
   try {
     const serializedValue = localStorage.getItem(key);

@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 
+import { MintTokenSymbol, usePlugStore } from '@/store';
+
 import { getMintWICPTransaction, useBatchHook } from '..';
 import { getMintXTCTransaction } from '../transactions/mint-xtc';
-import { removeWICPBlockHeight, removeXTCBlockHeight } from '.';
+import { removeBlockHeight } from '.';
 
 export type UseMintMultipleBatchOptions = {
   blockHeights: {
@@ -14,16 +16,25 @@ export type UseMintMultipleBatchOptions = {
 export const useMintMultipleBatch = ({
   blockHeights,
 }: UseMintMultipleBatchOptions) => {
+  const { principalId } = usePlugStore();
   const [transactions, setTransactions] = useState<Record<string, any>>({});
 
   useEffect(() => {
+    if (!principalId) {
+      return;
+    }
+
     let transactions: Record<string, any> = {};
 
     blockHeights.WICP?.forEach((blockHeight: string) => {
       transactions = {
         ...transactions,
         [`WICP-${blockHeight}`]: getMintWICPTransaction({ blockHeight }, () =>
-          removeWICPBlockHeight(blockHeight)
+          removeBlockHeight({
+            blockHeight,
+            tokenSymbol: MintTokenSymbol.WICP,
+            principalId,
+          })
         ),
       };
     });
@@ -32,13 +43,17 @@ export const useMintMultipleBatch = ({
       transactions = {
         ...transactions,
         [`XTC-${blockHeight}`]: getMintXTCTransaction({ blockHeight }, () =>
-          removeXTCBlockHeight(blockHeight)
+          removeBlockHeight({
+            blockHeight,
+            tokenSymbol: MintTokenSymbol.XTC,
+            principalId,
+          })
         ),
       };
     });
 
     setTransactions(transactions);
-  }, [blockHeights.WICP, blockHeights.XTC]);
+  }, [blockHeights.WICP, blockHeights.XTC, principalId]);
 
   const getTransactionNames = () => Object.keys(transactions);
 

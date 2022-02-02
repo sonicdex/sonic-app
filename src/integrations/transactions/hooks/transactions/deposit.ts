@@ -13,7 +13,7 @@ export const useDepositTransactionMemo: CreateTransaction<Deposit> = (
   onFail
 ) =>
   useMemo(() => {
-    if (!token?.id) {
+    if (!token?.id || !amount) {
       return;
     }
 
@@ -28,7 +28,7 @@ export const useDepositTransactionMemo: CreateTransaction<Deposit> = (
       onFail,
       args: [
         Principal.fromText(token?.id),
-        amount ? parseAmount(amount, token?.decimals) : BigInt(0),
+        parseAmount(amount, token?.decimals),
       ],
     };
   }, [amount, token]);

@@ -93,8 +93,6 @@ export const useMintXTCBatch = ({
           | bigint
           | undefined;
 
-        console.log(prevResponses);
-
         if (failedBlockHeight) {
           dispatch(
             modalsSliceActions.setMintXTCUncompleteBlockHeights([

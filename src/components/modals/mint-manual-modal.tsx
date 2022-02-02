@@ -74,81 +74,54 @@ export const MintManualModal = () => {
 
   const dispatch = useAppDispatch();
 
-  const handleMintXTC = useCallback(() => {
-    const isVersionCompatible = checkIfPlugProviderVersionCompatible(
-      PLUG_PROVIDER_CHAINED_BATCH_VERSION
-    );
+  const handleMint = useCallback(
+    (tokenSymbol: MintTokenSymbol) => {
+      const isVersionCompatible = checkIfPlugProviderVersionCompatible(
+        PLUG_PROVIDER_CHAINED_BATCH_VERSION
+      );
 
-    if (!isVersionCompatible) {
-      addNotification({
-        title: (
-          <>
-            You're using an outdated version of Plug, please update to the
-            latest one{' '}
-            <Link
-              color="blue.400"
-              href={PLUG_WALLET_WEBSITE_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              here
-            </Link>
-            .
-          </>
-        ),
-        type: NotificationType.Error,
-        id: String(new Date().getTime()),
-      });
+      if (!isVersionCompatible) {
+        addNotification({
+          title: (
+            <>
+              You're using an outdated version of Plug, please update to the
+              latest one{' '}
+              <Link
+                color="blue.400"
+                href={PLUG_WALLET_WEBSITE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                here
+              </Link>
+              .
+            </>
+          ),
+          type: NotificationType.Error,
+          id: String(new Date().getTime()),
+        });
 
-      return;
-    }
+        return;
+      }
 
-    if (isVersionCompatible) {
-      addNotification({
-        title: `Minting XTC`,
-        type: NotificationType.MintManual,
-        id: String(new Date().getTime()),
-      });
-    }
-  }, [addNotification]);
+      if (tokenSymbol === MintTokenSymbol.WICP) {
+        addNotification({
+          title: `Minting WICP`,
+          type: NotificationType.MintManual,
+          id: String(new Date().getTime()),
+        });
+      }
 
-  const handleMintWICP = useCallback(() => {
-    const isVersionCompatible = checkIfPlugProviderVersionCompatible(
-      PLUG_PROVIDER_CHAINED_BATCH_VERSION
-    );
-
-    if (!isVersionCompatible) {
-      addNotification({
-        title: (
-          <>
-            You're using an outdated version of Plug, please update to the
-            latest one{' '}
-            <Link
-              color="blue.400"
-              href={PLUG_WALLET_WEBSITE_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              here
-            </Link>
-            .
-          </>
-        ),
-        type: NotificationType.Error,
-        id: String(new Date().getTime()),
-      });
-
-      return;
-    }
-
-    if (isVersionCompatible) {
-      addNotification({
-        title: `Minting WICP`,
-        type: NotificationType.MintManual,
-        id: String(new Date().getTime()),
-      });
-    }
-  }, [addNotification]);
+      if (tokenSymbol === MintTokenSymbol.XTC) {
+        addNotification({
+          title: `Minting XTC`,
+          type: NotificationType.MintManual,
+          id: String(new Date().getTime()),
+        });
+      }
+    },
+    [addNotification]
+  );
 
   const handleClose = () => {
     dispatch(modalsSliceActions.closeMintManualModal());
@@ -169,13 +142,8 @@ export const MintManualModal = () => {
       }
       return;
     }
-    if (mintManualTokenSymbol === MintTokenSymbol.XTC) {
-      handleMintXTC();
-    }
 
-    if (mintManualTokenSymbol === MintTokenSymbol.WICP) {
-      handleMintWICP();
-    }
+    handleMint(MintTokenSymbol.WICP);
 
     handleClose();
   };

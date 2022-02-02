@@ -29,6 +29,7 @@ export const NotificationBox = ({
   };
 
   const bg = useColorModeValue('gray.50', 'custom.2');
+  const shadow = useColorModeValue('sm', 'none');
 
   return (
     <Collapse in={show} animateOpacity unmountOnExit>
@@ -36,6 +37,7 @@ export const NotificationBox = ({
         width={80}
         position="relative"
         borderRadius={5}
+        shadow={shadow}
         bg={bg}
         mb={8}
         pt={4}

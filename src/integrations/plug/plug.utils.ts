@@ -21,11 +21,7 @@ export const checkIfPlugProviderVersionCompatible = (version: number) => {
     plug?.versions.provider.split('.').join('')
   );
 
-  if (plugProviderVersionNumber >= version) {
-    return true;
-  }
-
-  return false;
+  return plugProviderVersionNumber >= version;
 };
 
 export const executeIfPlugProviderVersionCompatible = (

@@ -136,7 +136,7 @@ export const RemoveLiquidityLink: React.FC<RemoveLiquidityLinkProps> = ({
         console.error('Remove liqudity Error', err);
         dispatch(modalsSliceActions.clearRemoveLiquidityModalData());
         addNotification({
-          title: `Removing Liqudity Position of ${token0.value} ${token0.metadata.symbol} + ${token1.value} ${token1.metadata.symbol} failed`,
+          title: `Removing LP of ${token0.value} ${token0.metadata.symbol} + ${token1.value} ${token1.metadata.symbol} failed`,
           type: NotificationType.Error,
           id: Date.now().toString(),
         });

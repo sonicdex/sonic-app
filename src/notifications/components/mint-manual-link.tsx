@@ -20,7 +20,6 @@ export const MintManualLink: React.FC<MintManualLinkProps> = ({ id }) => {
   const { getBalances } = useBalances();
   const { mintManualTokenSymbol, mintManualBlockHeight } = useModalsStore();
 
-  // FIXME: Rewrite to useEffect if needed
   const { batch } = useMintSingleBatch({
     tokenSymbol: mintManualTokenSymbol,
     blockHeight: mintManualBlockHeight,
@@ -42,6 +41,8 @@ export const MintManualLink: React.FC<MintManualLinkProps> = ({ id }) => {
       })
       .catch((err) => {
         console.error('Minting Error', err);
+
+        const isBlockUsed = err?.message?.includes('BlockUsed');
         const isUnauthorizedError = err?.message?.includes('Unauthorized');
         const isOtherError = err?.message?.includes('Other');
 
@@ -49,6 +50,8 @@ export const MintManualLink: React.FC<MintManualLinkProps> = ({ id }) => {
           ? `Block Height entered does not match your address`
           : isOtherError
           ? `Wrap failed, check if the Block Height is correct`
+          : isBlockUsed
+          ? `Block Height entered is already used`
           : `Wrap failed, please try again later`;
 
         dispatch(

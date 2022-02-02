@@ -10,6 +10,7 @@ import {
   useAppDispatch,
   useModalsStore,
   useNotificationStore,
+  usePlugStore,
   useSwapViewStore,
 } from '@/store';
 
@@ -40,6 +41,7 @@ export const useMintWICPBatch = ({
     mintWICPUncompleteBlockHeights,
   } = useModalsStore();
   const dispatch = useAppDispatch();
+  const { principalId } = usePlugStore();
   const { addNotification } = useNotificationStore();
 
   const depositParams = {
@@ -114,19 +116,19 @@ export const useMintWICPBatch = ({
               },
               // Close callback
               () => {
-                const prevMintWICPBlockHeight = getFromStorage(
-                  LocalStorageKey.MintWICPUncompleteBlockHeights
-                );
+                if (failedBlockHeight && principalId) {
+                  const prevTotalMintWICPBlockHeight = getFromStorage(
+                    LocalStorageKey.MintWICPUncompleteBlockHeights
+                  );
+                  const prevUserMintWICPBlockHeight =
+                    prevTotalMintWICPBlockHeight?.[principalId];
 
-                if (failedBlockHeight) {
                   saveToStorage(
                     LocalStorageKey.MintWICPUncompleteBlockHeights,
-                    [
-                      ...(typeof prevMintWICPBlockHeight !== 'undefined'
-                        ? prevMintWICPBlockHeight
-                        : []),
+                    {
+                      ...(prevUserMintWICPBlockHeight? prevUserMintWICPBlockHeight: {}),
                       String(failedBlockHeight),
-                    ]
+                    }
                   );
                   addNotification({
                     id: String(new Date().getTime()),

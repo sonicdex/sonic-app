@@ -18,9 +18,7 @@ export const getMintWICPTransaction: CreateTransaction<MintWICP> = (
       if ('Err' in res) throw new Error(JSON.stringify(Object.keys(res.Err)));
       if (onSuccess) onSuccess(res);
     },
-    onFail: async (err: any, prevResponses: any[]) => {
-      if (onFail) onFail(err, prevResponses);
-    },
+    onFail,
     args: (prevResponses: any[]) => {
       const argBlockHeight = prevResponses?.[0]?.response;
 

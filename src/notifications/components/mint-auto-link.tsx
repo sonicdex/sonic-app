@@ -2,7 +2,12 @@ import { Button, Flex, Stack, Text, useColorModeValue } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 
 import { StepStatus, useStepStatus } from '@/components/modals';
-import { LocalStorageKey, removeFromStorage } from '@/config';
+import {
+  getFromStorage,
+  LocalStorageKey,
+  removeFromStorage,
+  saveToStorage,
+} from '@/config';
 import { useBalances } from '@/hooks/use-balances';
 import { Batch } from '@/integrations/transactions';
 import { useMintMultipleBatch } from '@/integrations/transactions/hooks/batch/use-mint-multiple-batch';
@@ -35,7 +40,6 @@ export const MintAutoLink: React.FC<MintAutoLinkProps> = ({ id }) => {
     steps,
   });
 
-  // FIXME: Rewrite to useEffect if needed
   const { batch, getTransactionNames } = useMintMultipleBatch({
     blockHeights: {
       WICP: mintWICPUncompleteBlockHeights,
@@ -43,18 +47,14 @@ export const MintAutoLink: React.FC<MintAutoLinkProps> = ({ id }) => {
     },
   });
 
-  const handleStateChange = () => {
+  useEffect(() => {
     setStep(batch.state);
-  };
-
-  useEffect(handleStateChange, [batch.state, dispatch]);
+  }, [batch.state, dispatch]);
 
   const handleAutoMint = () => {
     batch
       .execute()
       .then(() => {
-        setStep(Batch.DefaultHookState.Idle);
-
         addNotification({
           title: `Minting finished`,
           type: NotificationType.Success,
@@ -69,10 +69,51 @@ export const MintAutoLink: React.FC<MintAutoLinkProps> = ({ id }) => {
         popNotification(id);
       })
       .catch((err) => {
+        console.log(step);
         console.error('Minting Error', err);
-        setStep(Batch.DefaultHookState.Idle);
+
+        const isBlockUsed = err?.message?.includes('BlockUsed');
+        const isUnauthorizedError = err?.message?.includes('Unauthorized');
+        const isOtherError = err?.message?.includes('Other');
+
+        const errorMessage = isUnauthorizedError
+          ? `Block Height entered does not match your address`
+          : isOtherError
+          ? `Wrap failed, check if the Block Height is correct`
+          : isBlockUsed
+          ? `Block Height entered is already used`
+          : `Wrap failed, please try again later`;
+
+        if (isBlockUsed) {
+          // Remove the first (last processed) transaction from the local storage list
+          const prevMintWICPBlockHeight = getFromStorage(
+            LocalStorageKey.MintWICPUncompleteBlockHeights
+          );
+
+          saveToStorage(LocalStorageKey.MintWICPUncompleteBlockHeights, [
+            ...(typeof prevMintWICPBlockHeight !== 'undefined'
+              ? prevMintWICPBlockHeight.filter(
+                  (_: string, index: number) => index !== 0
+                )
+              : []),
+          ]);
+
+          const prevMintXTCBlockHeight = getFromStorage(
+            LocalStorageKey.MintXTCUncompleteBlockHeights
+          );
+
+          saveToStorage(LocalStorageKey.MintXTCUncompleteBlockHeights, [
+            ...(typeof prevMintXTCBlockHeight !== 'undefined'
+              ? prevMintXTCBlockHeight.filter(
+                  (_: string, index: number) => index !== 0
+                )
+              : []),
+          ]);
+          popNotification(id);
+        }
+
         addNotification({
-          title: `Minting failed`,
+          title: errorMessage,
           type: NotificationType.Error,
           id: Date.now().toString(),
         });
@@ -83,11 +124,14 @@ export const MintAutoLink: React.FC<MintAutoLinkProps> = ({ id }) => {
     setSteps(transactionNames);
   };
 
-  const doneStepColor = useColorModeValue('green.600', 'green.400');
-  const activeStepColor = useColorModeValue('blue.600', 'blue.400');
-  const disabledStepColor = useColorModeValue('gray.600', 'gray.400');
+  console.log(step);
 
-  return step === Batch.DefaultHookState.Idle ? (
+  const doneStepColor = useColorModeValue('green.600', 'green.400');
+  const activeStepColor = useColorModeValue('gray.600', 'gray.400');
+  const disabledStepColor = useColorModeValue('gray.400', 'gray.600');
+
+  return step === Batch.DefaultHookState.Idle ||
+    step === Batch.DefaultHookState.Error ? (
     <Button
       colorScheme="dark-blue"
       variant="gradient"
@@ -98,7 +142,7 @@ export const MintAutoLink: React.FC<MintAutoLinkProps> = ({ id }) => {
       Retry Mint
     </Button>
   ) : (
-    <Stack w="full">
+    <Stack w="full" pt={4}>
       {steps.map((_step) => {
         const stepStatus = getStepStatus(_step);
         const isDoneStep = stepStatus === StepStatus.Done;
@@ -124,7 +168,6 @@ export const MintAutoLink: React.FC<MintAutoLinkProps> = ({ id }) => {
         return (
           <Flex
             key={_step}
-            pt={4}
             w="full"
             justifyContent="space-between"
             alignItems="center"

@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
 
-import { MintTokenSymbol } from '@/store';
+import { MintTokenSymbol, usePlugStore } from '@/store';
 
 import { getMintWICPTransaction, useBatchHook } from '..';
 import { getMintXTCTransaction } from '../transactions/mint-xtc';
-import { removeWICPBlockHeight, removeXTCBlockHeight } from '.';
+import { removeBlockHeight } from '.';
 
 export type UseMintSingleBatchOptions = {
   tokenSymbol: MintTokenSymbol;
@@ -15,14 +15,24 @@ export const useMintSingleBatch = ({
   tokenSymbol,
   blockHeight,
 }: UseMintSingleBatchOptions) => {
+  const { principalId } = usePlugStore();
+
   const transactions = useMemo(() => {
     let transactions: Record<string, any> = {};
+
+    if (!principalId) {
+      return transactions;
+    }
 
     if (tokenSymbol === MintTokenSymbol.WICP) {
       transactions = {
         ...transactions,
         ['WICP']: getMintWICPTransaction({ blockHeight }, () =>
-          removeWICPBlockHeight(blockHeight)
+          removeBlockHeight({
+            blockHeight,
+            tokenSymbol: MintTokenSymbol.WICP,
+            principalId,
+          })
         ),
       };
     }
@@ -31,13 +41,17 @@ export const useMintSingleBatch = ({
       transactions = {
         ...transactions,
         ['XTC']: getMintXTCTransaction({ blockHeight }, () =>
-          removeXTCBlockHeight(blockHeight)
+          removeBlockHeight({
+            blockHeight,
+            tokenSymbol: MintTokenSymbol.XTC,
+            principalId,
+          })
         ),
       };
     }
 
     return transactions;
-  }, [blockHeight, tokenSymbol]);
+  }, [blockHeight, tokenSymbol, principalId]);
 
   const getTransactionNames = () => Object.keys(transactions);
 

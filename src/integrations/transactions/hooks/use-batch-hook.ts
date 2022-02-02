@@ -55,7 +55,10 @@ export const useBatchHook = <Model>({
   }, [transactions, handleRetry]);
 
   const execute = (): Promise<unknown> => {
-    if (state !== Batch.DefaultHookState.Idle) {
+    if (
+      state !== Batch.DefaultHookState.Idle &&
+      state !== Batch.DefaultHookState.Error
+    ) {
       return Promise.reject('Batch is not idle');
     }
     setState(states[0]);

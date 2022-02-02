@@ -1,4 +1,10 @@
-import { getFromStorage, LocalStorageKey, saveToStorage } from '@/config';
+import {
+  getFromStorage,
+  LocalStorageKey,
+  MintUncompleteBlockHeights,
+  saveToStorage,
+} from '@/config';
+import { MintTokenSymbol } from '@/store';
 import { getCurrency } from '@/utils/format';
 
 export const getAmountDependsOnBalance = (
@@ -43,36 +49,35 @@ export const getDepositTransactions = ({
   return transactions;
 };
 
-export const removeWICPBlockHeight = (blockHeight: string) => {
-  const WICPBlockHeights = getFromStorage(
-    LocalStorageKey.MintWICPUncompleteBlockHeights
-  );
-
-  if (WICPBlockHeights && WICPBlockHeights.length > 0) {
-    const newWICPBlockHeights = WICPBlockHeights.filter(
-      (_blockHeight: string) => _blockHeight !== blockHeight
-    );
-
-    saveToStorage(
-      LocalStorageKey.MintWICPUncompleteBlockHeights,
-      newWICPBlockHeights
-    );
-  }
+export type RemoveBlockHeightOptions = {
+  blockHeight: string;
+  principalId: string;
+  tokenSymbol: MintTokenSymbol;
 };
 
-export const removeXTCBlockHeight = (blockHeight: string) => {
-  const XTCBlockHeights = getFromStorage(
-    LocalStorageKey.MintXTCUncompleteBlockHeights
-  );
+export const removeBlockHeight = ({
+  blockHeight,
+  principalId,
+  tokenSymbol,
+}: RemoveBlockHeightOptions) => {
+  const localStorageKey =
+    tokenSymbol === MintTokenSymbol.XTC
+      ? LocalStorageKey.MintXTCUncompleteBlockHeights
+      : LocalStorageKey.MintWICPUncompleteBlockHeights;
 
-  if (XTCBlockHeights && XTCBlockHeights.length > 0) {
-    const newXTCBlockHeights = XTCBlockHeights.filter(
+  const totalBlockHeights = getFromStorage(
+    localStorageKey
+  ) as MintUncompleteBlockHeights;
+  const userBlockHeights = totalBlockHeights?.[principalId];
+
+  if (userBlockHeights && userBlockHeights.length > 0) {
+    const newBlockHeights = userBlockHeights.filter(
       (_blockHeight: string) => _blockHeight !== blockHeight
     );
 
-    saveToStorage(
-      LocalStorageKey.MintXTCUncompleteBlockHeights,
-      newXTCBlockHeights
-    );
+    saveToStorage(localStorageKey, {
+      ...totalBlockHeights,
+      [principalId]: newBlockHeights,
+    });
   }
 };

@@ -13,7 +13,9 @@ export const useWithdrawTransactionMemo: CreateTransaction<Withdraw> = (
   onFail
 ) =>
   useMemo(() => {
-    if (!token?.id) throw new Error('Token is required');
+    if (!token?.id || !amount) {
+      return;
+    }
 
     return {
       args: [Principal.fromText(token.id), parseAmount(amount, token.decimals)],
