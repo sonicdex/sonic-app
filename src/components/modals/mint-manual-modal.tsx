@@ -85,7 +85,7 @@ export const MintManualModal = () => {
           title: (
             <>
               You're using an outdated version of Plug, please update to the
-              latest one{' '}
+              latest one&nbsp;
               <Link
                 color="blue.400"
                 href={PLUG_WALLET_WEBSITE_URL}

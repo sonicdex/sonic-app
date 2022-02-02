@@ -1,6 +1,12 @@
 import { useMemo } from 'react';
 
-import { ENV, getFromStorage, LocalStorageKey, saveToStorage } from '@/config';
+import {
+  ENV,
+  getFromStorage,
+  LocalStorageKey,
+  MintUncompleteBlockHeights,
+  saveToStorage,
+} from '@/config';
 import { BLOCK_HEIGHTS_TITLE } from '@/hooks/use-block-heights-effect';
 import {
   MintXTCModalDataStep,
@@ -9,6 +15,7 @@ import {
   useAppDispatch,
   useModalsStore,
   useNotificationStore,
+  usePlugStore,
   useSwapViewStore,
 } from '@/store';
 
@@ -34,6 +41,7 @@ export const useMintXTCBatch = ({
   keepInSonic,
 }: UseMintXTCBatchOptions) => {
   const { tokenList } = useSwapViewStore();
+  const { principalId } = usePlugStore();
   const dispatch = useAppDispatch();
   const { addNotification } = useNotificationStore();
   const { mintXTCUncompleteBlockHeights } = useModalsStore();
@@ -117,17 +125,20 @@ export const useMintXTCBatch = ({
                 () => {
                   const prevMintXTCBlockHeight = getFromStorage(
                     LocalStorageKey.MintXTCUncompleteBlockHeights
-                  );
+                  ) as MintUncompleteBlockHeights | undefined;
 
-                  if (failedBlockHeight) {
+                  if (failedBlockHeight && principalId) {
+                    const newBlockHeights = {
+                      ...prevMintXTCBlockHeight,
+                      [principalId]: [
+                        ...(prevMintXTCBlockHeight?.[principalId] || []),
+                        String(failedBlockHeight),
+                      ],
+                    };
+
                     saveToStorage(
                       LocalStorageKey.MintXTCUncompleteBlockHeights,
-                      [
-                        ...(typeof prevMintXTCBlockHeight !== 'undefined'
-                          ? prevMintXTCBlockHeight
-                          : []),
-                        String(failedBlockHeight),
-                      ]
+                      newBlockHeights
                     );
                     addNotification({
                       id: String(new Date().getTime()),

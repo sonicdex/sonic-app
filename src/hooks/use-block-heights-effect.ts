@@ -58,11 +58,11 @@ export const useBlockHeightsEffect = () => {
             type: NotificationType.MintAuto,
           });
         }
-
-        if (!isConnected) {
-          popNotification(notificationId);
-        }
       }
+    }
+
+    if (!isConnected || !principalId) {
+      popNotification(notificationId);
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps

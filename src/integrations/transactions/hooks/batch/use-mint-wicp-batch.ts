@@ -117,18 +117,21 @@ export const useMintWICPBatch = ({
               // Close callback
               () => {
                 if (failedBlockHeight && principalId) {
-                  const prevTotalMintWICPBlockHeight = getFromStorage(
+                  const prevMintWICPBlockHeight = getFromStorage(
                     LocalStorageKey.MintWICPUncompleteBlockHeights
                   );
-                  const prevUserMintWICPBlockHeight =
-                    prevTotalMintWICPBlockHeight?.[principalId];
+
+                  const newBlockHeights = {
+                    ...prevMintWICPBlockHeight,
+                    [principalId]: [
+                      ...(prevMintWICPBlockHeight?.[principalId] || []),
+                      String(failedBlockHeight),
+                    ],
+                  };
 
                   saveToStorage(
                     LocalStorageKey.MintWICPUncompleteBlockHeights,
-                    {
-                      ...(prevUserMintWICPBlockHeight? prevUserMintWICPBlockHeight: {}),
-                      String(failedBlockHeight),
-                    }
+                    newBlockHeights
                   );
                   addNotification({
                     id: String(new Date().getTime()),

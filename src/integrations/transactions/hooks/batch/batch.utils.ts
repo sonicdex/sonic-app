@@ -65,9 +65,9 @@ export const removeBlockHeight = ({
       ? LocalStorageKey.MintXTCUncompleteBlockHeights
       : LocalStorageKey.MintWICPUncompleteBlockHeights;
 
-  const totalBlockHeights = getFromStorage(
-    localStorageKey
-  ) as MintUncompleteBlockHeights;
+  const totalBlockHeights = getFromStorage(localStorageKey) as
+    | MintUncompleteBlockHeights
+    | undefined;
   const userBlockHeights = totalBlockHeights?.[principalId];
 
   if (userBlockHeights && userBlockHeights.length > 0) {

@@ -5,6 +5,7 @@ import { StepStatus, useStepStatus } from '@/components/modals';
 import {
   getFromStorage,
   LocalStorageKey,
+  MintUncompleteBlockHeights,
   removeFromStorage,
   saveToStorage,
 } from '@/config';
@@ -12,11 +13,15 @@ import { useBalances } from '@/hooks/use-balances';
 import { Batch } from '@/integrations/transactions';
 import { useMintMultipleBatch } from '@/integrations/transactions/hooks/batch/use-mint-multiple-batch';
 import {
+  MintTokenSymbol,
   NotificationType,
   useAppDispatch,
   useModalsStore,
   useNotificationStore,
+  usePlugStore,
 } from '@/store';
+
+import { MintManualLinkProps } from '.';
 
 export interface MintAutoLinkProps {
   id: string;
@@ -31,6 +36,7 @@ export const MintAutoLink: React.FC<MintAutoLinkProps> = ({ id }) => {
   const dispatch = useAppDispatch();
   const { addNotification, popNotification } = useNotificationStore();
   const { getBalances } = useBalances();
+  const { principalId } = usePlugStore();
 
   const { mintWICPUncompleteBlockHeights, mintXTCUncompleteBlockHeights } =
     useModalsStore();
@@ -84,31 +90,34 @@ export const MintAutoLink: React.FC<MintAutoLinkProps> = ({ id }) => {
           ? `Block Height entered is already used`
           : `Wrap failed, please try again later`;
 
-        if (isBlockUsed) {
-          // Remove the first (last processed) transaction from the local storage list
-          const prevMintWICPBlockHeight = getFromStorage(
-            LocalStorageKey.MintWICPUncompleteBlockHeights
-          );
+        if (isBlockUsed && principalId) {
+          const removeLastProcessedTransaction = (
+            tokenSymbol: MintTokenSymbol
+          ) => {
+            const localStorageKey =
+              tokenSymbol === MintTokenSymbol.WICP
+                ? LocalStorageKey.MintWICPUncompleteBlockHeights
+                : LocalStorageKey.MintXTCUncompleteBlockHeights;
 
-          saveToStorage(LocalStorageKey.MintWICPUncompleteBlockHeights, [
-            ...(typeof prevMintWICPBlockHeight !== 'undefined'
-              ? prevMintWICPBlockHeight.filter(
-                  (_: string, index: number) => index !== 0
-                )
-              : []),
-          ]);
+            const prevMintBlockHeightData = getFromStorage(localStorageKey) as
+              | MintUncompleteBlockHeights
+              | undefined;
 
-          const prevMintXTCBlockHeight = getFromStorage(
-            LocalStorageKey.MintXTCUncompleteBlockHeights
-          );
+            const newBlockHeightData = {
+              ...prevMintBlockHeightData,
+              [principalId]: [
+                ...(prevMintBlockHeightData?.[principalId]?.filter(
+                  (_, index) => index !== 0
+                ) || []),
+              ],
+            };
 
-          saveToStorage(LocalStorageKey.MintXTCUncompleteBlockHeights, [
-            ...(typeof prevMintXTCBlockHeight !== 'undefined'
-              ? prevMintXTCBlockHeight.filter(
-                  (_: string, index: number) => index !== 0
-                )
-              : []),
-          ]);
+            saveToStorage(localStorageKey, newBlockHeightData);
+          };
+
+          removeLastProcessedTransaction(MintTokenSymbol.WICP);
+          removeLastProcessedTransaction(MintTokenSymbol.XTC);
+
           popNotification(id);
         }
 
