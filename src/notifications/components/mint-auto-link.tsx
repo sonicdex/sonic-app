@@ -21,8 +21,6 @@ import {
   usePlugStore,
 } from '@/store';
 
-import { MintManualLinkProps } from '.';
-
 export interface MintAutoLinkProps {
   id: string;
 }
