@@ -1,11 +1,14 @@
 import { useMemo } from 'react';
 
 import { ENV, getFromStorage, LocalStorageKey, saveToStorage } from '@/config';
+import { BLOCK_HEIGHTS_TITLE } from '@/hooks/use-block-heights-effect';
 import {
   MintXTCModalDataStep,
   modalsSliceActions,
+  NotificationType,
   useAppDispatch,
   useModalsStore,
+  useNotificationStore,
   useSwapViewStore,
 } from '@/store';
 
@@ -32,6 +35,7 @@ export const useMintXTCBatch = ({
 }: UseMintXTCBatchOptions) => {
   const { tokenList } = useSwapViewStore();
   const dispatch = useAppDispatch();
+  const { addNotification } = useNotificationStore();
   const { mintXTCUncompleteBlockHeights } = useModalsStore();
 
   if (!tokenList) throw new Error('Token list is required');
@@ -127,6 +131,11 @@ export const useMintXTCBatch = ({
                         String(failedBlockHeight),
                       ]
                     );
+                    addNotification({
+                      id: String(new Date().getTime()),
+                      title: BLOCK_HEIGHTS_TITLE,
+                      type: NotificationType.MintAuto,
+                    });
                   }
 
                   resolve(false);

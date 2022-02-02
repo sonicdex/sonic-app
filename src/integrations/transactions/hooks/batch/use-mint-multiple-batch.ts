@@ -19,19 +19,19 @@ export const useMintMultipleBatch = ({
   useEffect(() => {
     let transactions: Record<string, any> = {};
 
-    blockHeights.WICP?.forEach((blockHeight: string, index) => {
+    blockHeights.WICP?.forEach((blockHeight: string) => {
       transactions = {
         ...transactions,
-        [`WICP-${index}`]: getMintWICPTransaction({ blockHeight }, () =>
+        [`WICP-${blockHeight}`]: getMintWICPTransaction({ blockHeight }, () =>
           removeWICPBlockHeight(blockHeight)
         ),
       };
     });
 
-    blockHeights.XTC?.forEach((blockHeight: string, index) => {
+    blockHeights.XTC?.forEach((blockHeight: string) => {
       transactions = {
         ...transactions,
-        [`XTC-${index}`]: getMintXTCTransaction({ blockHeight }, () =>
+        [`XTC-${blockHeight}`]: getMintXTCTransaction({ blockHeight }, () =>
           removeXTCBlockHeight(blockHeight)
         ),
       };

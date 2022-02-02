@@ -1,6 +1,7 @@
-import { Button } from '@chakra-ui/react';
+import { Button, Flex, Stack, Text, useColorModeValue } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 
+import { StepStatus, useStepStatus } from '@/components/modals';
 import { LocalStorageKey, removeFromStorage } from '@/config';
 import { useBalances } from '@/hooks/use-balances';
 import { Batch } from '@/integrations/transactions';
@@ -22,14 +23,17 @@ export const MintAutoLink: React.FC<MintAutoLinkProps> = ({ id }) => {
     Batch.DefaultHookState.Idle
   );
 
-  console.log('auto', step, steps);
-
   const dispatch = useAppDispatch();
   const { addNotification, popNotification } = useNotificationStore();
   const { getBalances } = useBalances();
 
   const { mintWICPUncompleteBlockHeights, mintXTCUncompleteBlockHeights } =
     useModalsStore();
+
+  const getStepStatus = useStepStatus<string>({
+    activeStep: step,
+    steps,
+  });
 
   // FIXME: Rewrite to useEffect if needed
   const { batch, getTransactionNames } = useMintMultipleBatch({
@@ -62,6 +66,7 @@ export const MintAutoLink: React.FC<MintAutoLinkProps> = ({ id }) => {
         removeFromStorage(LocalStorageKey.MintXTCUncompleteBlockHeights);
 
         getBalances();
+        popNotification(id);
       })
       .catch((err) => {
         console.error('Minting Error', err);
@@ -71,25 +76,64 @@ export const MintAutoLink: React.FC<MintAutoLinkProps> = ({ id }) => {
           type: NotificationType.Error,
           id: Date.now().toString(),
         });
-      })
-      .finally(() => popNotification(id));
+      });
 
     const transactionNames = getTransactionNames();
 
     setSteps(transactionNames);
   };
 
-  return (
-    <>
-      <Button
-        colorScheme="dark-blue"
-        variant="gradient"
-        isFullWidth
-        onClick={handleAutoMint}
-        mt={3}
-      >
-        Retry Mint
-      </Button>
-    </>
+  const doneStepColor = useColorModeValue('green.600', 'green.400');
+  const activeStepColor = useColorModeValue('blue.600', 'blue.400');
+  const disabledStepColor = useColorModeValue('gray.600', 'gray.400');
+
+  return step === Batch.DefaultHookState.Idle ? (
+    <Button
+      colorScheme="dark-blue"
+      variant="gradient"
+      isFullWidth
+      onClick={handleAutoMint}
+      mt={3}
+    >
+      Retry Mint
+    </Button>
+  ) : (
+    <Stack w="full">
+      {steps.map((_step) => {
+        const stepStatus = getStepStatus(_step);
+        const isDoneStep = stepStatus === StepStatus.Done;
+        const isActiveStep = stepStatus === StepStatus.Active;
+        const isDisabledStep = stepStatus === StepStatus.Disabled;
+
+        const stepColor = isDoneStep
+          ? doneStepColor
+          : isActiveStep
+          ? activeStepColor
+          : isDisabledStep
+          ? disabledStepColor
+          : disabledStepColor;
+
+        const stepLabel = isDoneStep
+          ? 'Minted'
+          : isActiveStep
+          ? 'Minting...'
+          : 'Waiting';
+
+        const blockHeight = _step.split('-')[1];
+
+        return (
+          <Flex
+            key={_step}
+            pt={4}
+            w="full"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <Text>{blockHeight}</Text>
+            <Text color={stepColor}>{stepLabel}</Text>
+          </Flex>
+        );
+      })}
+    </Stack>
   );
 };
