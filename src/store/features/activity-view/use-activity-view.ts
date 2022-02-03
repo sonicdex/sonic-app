@@ -1,8 +1,11 @@
+import { Principal } from '@dfinity/principal';
 import { useCallback, useEffect } from 'react';
 
 import { getUserTransactions } from '@/integrations/cap';
+import { getUserLedgerTransactions } from '@/integrations/ledger';
 import { FeatureState, useAppDispatch } from '@/store';
 import { parseResponseTokenList } from '@/utils/canister';
+import { getAccountId } from '@/utils/icp';
 
 import { usePlugStore, useSwapCanisterStore } from '..';
 import { activityViewActions, useActivityViewStore } from '.';
@@ -24,16 +27,16 @@ export const useActivityView = () => {
 
   const getUserTransactionsPage = useCallback(
     (_principalId: string, page: number) => {
-      dispatch(activityViewActions.setState(FeatureState.Loading));
+      dispatch(activityViewActions.setCAPState(FeatureState.Loading));
       getUserTransactions(_principalId, page)
         .then((res) => {
           dispatch(activityViewActions.pushActivityList(res));
-          dispatch(activityViewActions.setState(FeatureState.Idle));
+          dispatch(activityViewActions.setCAPState(FeatureState.Idle));
           if (res.length === 0) dispatch(activityViewActions.setEndReached());
         })
         .catch((err) => {
           console.error('getUserTransactions', err);
-          dispatch(activityViewActions.setState(FeatureState.Error));
+          dispatch(activityViewActions.setCAPState(FeatureState.Error));
         });
     },
     [dispatch]
@@ -52,4 +55,21 @@ export const useActivityView = () => {
     if (principalId && Object.keys(activityList).length > 0)
       getUserTransactionsPage(principalId, 0);
   }, [principalId, getUserTransactionsPage]);
+
+  useEffect(() => {
+    if (principalId) {
+      dispatch(activityViewActions.setLedgerState(FeatureState.Loading));
+      getUserLedgerTransactions(
+        getAccountId(Principal.fromText(principalId), 0)
+      )
+        .then((transactions) => {
+          dispatch(activityViewActions.setLedgerState(FeatureState.Idle));
+          dispatch(activityViewActions.pushActivityList(transactions));
+        })
+        .catch((err) => {
+          console.error('getUserLedgerTransactions', err);
+          dispatch(activityViewActions.setLedgerState(FeatureState.Error));
+        });
+    }
+  }, [principalId, dispatch]);
 };
