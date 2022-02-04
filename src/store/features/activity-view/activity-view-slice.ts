@@ -1,20 +1,25 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { MappedCapHistoryLog } from '@/integrations/cap';
+import { LedgerTransaction } from '@/integrations/ledger';
 import { AppTokenMetadataListObject } from '@/models';
 import type { RootState } from '@/store';
 import { FeatureState } from '@/store';
 
+type ActivityEvent = MappedCapHistoryLog | LedgerTransaction;
+
 interface ActivityViewState {
-  state: FeatureState;
+  CAPstate: FeatureState;
+  LedgerState: FeatureState;
   tokenList?: AppTokenMetadataListObject;
-  activityList: { [date: string]: MappedCapHistoryLog[] };
+  activityList: { [date: string]: ActivityEvent[] };
   page: number;
   endReached: boolean;
 }
 
 const initialState: ActivityViewState = {
-  state: FeatureState?.Idle,
+  CAPstate: FeatureState?.Idle,
+  LedgerState: FeatureState?.Idle,
   activityList: {},
   page: 0,
   endReached: false,
@@ -25,8 +30,11 @@ export const activityViewSlice = createSlice({
   // `createSlice` will infer the state type from the `initialState` argument
   initialState,
   reducers: {
-    setState: (state, action: PayloadAction<FeatureState>) => {
-      state.state = action.payload;
+    setCAPState: (state, action: PayloadAction<FeatureState>) => {
+      state.CAPstate = action.payload;
+    },
+    setLedgerState: (state, action: PayloadAction<FeatureState>) => {
+      state.LedgerState = action.payload;
     },
     setTokenList: (
       state,
@@ -37,10 +45,13 @@ export const activityViewSlice = createSlice({
     setPage: (state, action: PayloadAction<number>) => {
       state.page = action.payload;
     },
-    pushActivityList: (state, action: PayloadAction<MappedCapHistoryLog[]>) => {
+    pushActivityList: (state, action: PayloadAction<ActivityEvent[]>) => {
       const aux = action.payload.reduce((acc, cur) => {
-        const date = new Date(cur.time).toDateString();
-        acc[date] = [...(acc[date] || []), cur];
+        const date =
+          'timestamp' in cur ? cur['timestamp'] : new Date(cur['time']);
+        const dateString = date.toDateString();
+
+        acc[dateString] = [...(acc[dateString] || []), cur];
         return acc;
       }, state.activityList);
 
@@ -48,13 +59,21 @@ export const activityViewSlice = createSlice({
         const alreadyAdded = new Set();
         aux[key] = aux[key]
           .filter((item) => {
-            if (alreadyAdded.has(item.time)) {
+            const time =
+              'timestamp' in item ? item['timestamp'].getTime() : item['time'];
+            if (alreadyAdded.has(time)) {
               return false;
             }
-            alreadyAdded.add(item.time);
+            alreadyAdded.add(time);
             return true;
           })
-          .sort((a, b) => b.time - a.time);
+          .sort((a, b) => {
+            const timeA =
+              'timestamp' in a ? a['timestamp'].getTime() : a['time'];
+            const timeB =
+              'timestamp' in b ? b['timestamp'].getTime() : b['time'];
+            return timeB - timeA;
+          });
       }
 
       state.activityList = aux;
