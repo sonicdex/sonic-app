@@ -26,34 +26,37 @@ export const useMintErrorHandler = ({
   const dispatch = useAppDispatch();
 
   const handleMintError = useCallback(
-    (errorMessage?: string) => {
+    (errorMessage?: string, callback?: (errorText: string) => unknown) => {
       if (!errorMessage) {
         return;
       }
 
       console.error('Minting Error', errorMessage);
 
-      const isBlockUsed = errorMessage.includes('BlockUsed');
+      const isBlockUsedError = errorMessage.includes('BlockUsed');
       const isUnauthorizedError = errorMessage.includes('Unauthorized');
       const isOtherError = errorMessage.includes('Other');
-      const isErrorOperationStyle = errorMessage.includes(
+      const isOperationStyleError = errorMessage.includes(
         'ErrorOperationStyle'
       );
-      const isErrorTo = errorMessage.includes('ErrorTo');
+      const isErrorToError = errorMessage.includes('ErrorTo');
+      const isAmountToSmallError = errorMessage.includes('AmountToSmall');
 
       const errorText = isUnauthorizedError
         ? `Block Height entered does not match your address`
         : isOtherError
         ? `Wrap failed, check if the Block Height correct`
-        : isBlockUsed
+        : isBlockUsedError
         ? `Block Height entered is already used`
-        : isErrorOperationStyle
+        : isOperationStyleError
         ? `Block Height is not related to mint transaction type`
-        : isErrorTo
+        : isErrorToError
         ? `Selected token symbol does not match the Block Height`
+        : isAmountToSmallError
+        ? `Amount to mint is too small`
         : `Wrap failed, please try again later`;
 
-      if (isBlockUsed && principalId) {
+      if (isBlockUsedError && principalId) {
         const removeLastProcessedTransaction = (
           tokenSymbol: MintTokenSymbol
         ) => {
@@ -84,8 +87,9 @@ export const useMintErrorHandler = ({
         dispatch(popNotification(notificationId));
       }
 
-      dispatch(modalsSliceActions.setMintManualModalErrorMessage(errorText));
-      dispatch(modalsSliceActions.openMintManualModal());
+      if (callback) {
+        callback(errorText);
+      }
     },
     [dispatch, notificationId, principalId]
   );

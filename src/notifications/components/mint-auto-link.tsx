@@ -8,6 +8,7 @@ import { Batch } from '@/integrations/transactions';
 import { useMintMultipleBatch } from '@/integrations/transactions/hooks/batch/use-mint-multiple-batch';
 import { useMintErrorHandler } from '@/integrations/transactions/hooks/use-mint-error-handler';
 import {
+  addNotification,
   NotificationType,
   useAppDispatch,
   useModalsStore,
@@ -25,7 +26,7 @@ export const MintAutoLink: React.FC<MintAutoLinkProps> = ({ id }) => {
   );
 
   const dispatch = useAppDispatch();
-  const { addNotification, popNotification } = useNotificationStore();
+  const { popNotification } = useNotificationStore();
   const { getBalances } = useBalances();
 
   const handleMintError = useMintErrorHandler({ notificationId: id });
@@ -53,11 +54,13 @@ export const MintAutoLink: React.FC<MintAutoLinkProps> = ({ id }) => {
     batch
       .execute()
       .then(() => {
-        addNotification({
-          title: `Minting finished`,
-          type: NotificationType.Success,
-          id: Date.now().toString(),
-        });
+        dispatch(
+          addNotification({
+            title: `Minting finished`,
+            type: NotificationType.Success,
+            id: Date.now().toString(),
+          })
+        );
 
         removeFromStorage(LocalStorageKey.MintWICPUncompleteBlockHeights);
         removeFromStorage(LocalStorageKey.MintXTCUncompleteBlockHeights);
@@ -65,7 +68,17 @@ export const MintAutoLink: React.FC<MintAutoLinkProps> = ({ id }) => {
         getBalances();
         popNotification(id);
       })
-      .catch((err) => handleMintError(err.message));
+      .catch((err) =>
+        handleMintError(err.message, (errorMessage) => {
+          dispatch(
+            addNotification({
+              title: errorMessage,
+              type: NotificationType.Error,
+              id: Date.now().toString(),
+            })
+          );
+        })
+      );
 
     const transactionNames = getTransactionNames();
 
