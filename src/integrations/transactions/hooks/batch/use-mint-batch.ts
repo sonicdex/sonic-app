@@ -2,13 +2,14 @@ import { TransactionPrevResponse } from '@psychedelic/plug-inpage-provider/dist/
 import { useMemo } from 'react';
 
 import { ENV } from '@/config';
-import { BLOCK_HEIGHTS_TITLE } from '@/hooks/use-block-heights-effect';
+import { MINT_AUTO_NOTIFICATION_TITLES } from '@/notifications';
 import {
   addNotification,
   MintModalData,
   MintModalDataStep,
   MintTokenSymbol,
   modalsSliceActions,
+  NotificationState,
   NotificationType,
   useAppDispatch,
   useModalsStore,
@@ -102,8 +103,9 @@ export const useMintBatch = ({
             dispatch(
               addNotification({
                 id: String(new Date().getTime()),
-                title: BLOCK_HEIGHTS_TITLE,
+                title: MINT_AUTO_NOTIFICATION_TITLES[NotificationState.Error],
                 type: NotificationType.MintAuto,
+                state: NotificationState.Error,
               })
             );
           }
@@ -163,8 +165,6 @@ export const useMintBatch = ({
     principalId,
     tokenSymbol,
   ]);
-
-  console.log(canisterAccountID);
 
   const depositParams = {
     token: tokenList[canisterPrincipalId],

@@ -1,13 +1,13 @@
 import { Link } from '@chakra-ui/react';
 import React from 'react';
 
-export interface TransactionLinkProps {
+export interface TransactionNotificationContentProps {
   transactionLink?: string;
 }
 
-export const TransactionLink: React.FC<TransactionLinkProps> = ({
-  transactionLink,
-}) => {
+export const TransactionNotificationContent: React.FC<
+  TransactionNotificationContentProps
+> = ({ transactionLink }) => {
   if (!transactionLink) return null;
 
   return (

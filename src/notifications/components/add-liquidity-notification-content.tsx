@@ -15,11 +15,13 @@ import {
 } from '@/store';
 import { deserialize, stringify } from '@/utils/format';
 
-export interface AddLiquidityLinkProps {
+export interface AddLiquidityNotificationContentProps {
   id: string;
 }
 
-export const AddLiquidityLink: React.FC<AddLiquidityLinkProps> = ({ id }) => {
+export const AddLiquidityNotificationContent: React.FC<
+  AddLiquidityNotificationContentProps
+> = ({ id }) => {
   const dispatch = useAppDispatch();
   const liquidityViewStore = useLiquidityViewStore();
   const { addNotification, popNotification } = useNotificationStore();

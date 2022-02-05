@@ -11,11 +11,13 @@ import {
   useNotificationStore,
 } from '@/store';
 
-export interface MintManualLinkProps {
+export interface MintManualNotificationContentProps {
   id: string;
 }
 
-export const MintManualLink: React.FC<MintManualLinkProps> = ({ id }) => {
+export const MintManualNotificationContent: React.FC<
+  MintManualNotificationContentProps
+> = ({ id }) => {
   const dispatch = useAppDispatch();
   const { addNotification, popNotification } = useNotificationStore();
   const { getBalances } = useBalances();

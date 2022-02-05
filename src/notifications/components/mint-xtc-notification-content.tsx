@@ -1,54 +1,53 @@
 import { Link } from '@chakra-ui/react';
-import { Principal } from '@dfinity/principal';
 import { useEffect, useMemo } from 'react';
 
 import { useBalances } from '@/hooks/use-balances';
-import { useWithdrawWICPBatch } from '@/integrations/transactions';
+import { useMintBatch } from '@/integrations/transactions/hooks/batch/use-mint-batch';
 import {
+  MintModalDataStep,
+  MintTokenSymbol,
   modalsSliceActions,
   NotificationType,
   useAppDispatch,
   useNotificationStore,
-  usePlugStore,
   useSwapViewStore,
-  WithdrawWICPModalDataStep,
 } from '@/store';
 import { deserialize, stringify } from '@/utils/format';
-import { getAccountId } from '@/utils/icp';
 
-export interface WithdrawWICPLinkProps {
+export interface MintXTCNotificationContentProps {
   id: string;
 }
 
-export const WithdrawWICPLink: React.FC<WithdrawWICPLinkProps> = ({ id }) => {
-  const { principalId } = usePlugStore();
+export const MintXTCNotificationContent: React.FC<
+  MintXTCNotificationContentProps
+> = ({ id }) => {
   const dispatch = useAppDispatch();
   const swapViewStore = useSwapViewStore();
   const { addNotification, popNotification } = useNotificationStore();
   const { getBalances } = useBalances();
 
-  const { from } = useMemo(() => {
-    const { from } = swapViewStore;
+  const { from, to, keepInSonic } = useMemo(() => {
+    const { from, to, keepInSonic } = swapViewStore;
 
-    return deserialize(stringify({ from }));
+    return deserialize(stringify({ from, to, keepInSonic }));
   }, []);
 
-  const { batch, openBatchModal } = useWithdrawWICPBatch({
-    amount: from.value,
-    toAccountId: principalId
-      ? getAccountId(Principal.fromText(principalId))
-      : undefined,
+  const { batch, openBatchModal } = useMintBatch({
+    amountIn: from.value,
+    amountOut: to.value,
+    tokenSymbol: MintTokenSymbol.XTC,
+    keepInSonic,
   });
 
   const handleStateChange = () => {
     if (
-      Object.values(WithdrawWICPModalDataStep).includes(
-        batch.state as WithdrawWICPModalDataStep
+      Object.values(MintModalDataStep).includes(
+        batch.state as MintModalDataStep
       )
     ) {
       dispatch(
-        modalsSliceActions.setWithdrawWICPModalData({
-          step: batch.state as WithdrawWICPModalDataStep,
+        modalsSliceActions.setMintXTCModalData({
+          step: batch.state,
         })
       );
     }
@@ -66,10 +65,10 @@ export const WithdrawWICPLink: React.FC<WithdrawWICPLinkProps> = ({ id }) => {
     batch
       .execute()
       .then(() => {
-        dispatch(modalsSliceActions.closeWithdrawWICPProgressModal());
+        dispatch(modalsSliceActions.closeMintXTCProgressModal());
 
         addNotification({
-          title: `Unwrapped ${from.value} ${from.metadata.symbol}`,
+          title: `Minted ${to.value} ${to.metadata.symbol}`,
           type: NotificationType.Success,
           id: Date.now().toString(),
           transactionLink: '/activity',
@@ -77,10 +76,10 @@ export const WithdrawWICPLink: React.FC<WithdrawWICPLinkProps> = ({ id }) => {
         getBalances();
       })
       .catch((err) => {
-        console.error('Unwrap Error', err);
+        console.error('Mint Error', err);
 
         addNotification({
-          title: `Unwrap ${from.value} ${from.metadata.symbol} failed`,
+          title: `Mint ${to.value} ${to.metadata.symbol} failed`,
           type: NotificationType.Error,
           id: Date.now().toString(),
         });

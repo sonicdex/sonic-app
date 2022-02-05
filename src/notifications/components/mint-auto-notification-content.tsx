@@ -1,5 +1,5 @@
 import { Button, Flex, Stack, Text, useColorModeValue } from '@chakra-ui/react';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { StepStatus, useStepStatus } from '@/components/modals';
 import { LocalStorageKey, removeFromStorage } from '@/config';
@@ -9,24 +9,35 @@ import { useMintMultipleBatch } from '@/integrations/transactions/hooks/batch/us
 import { useMintErrorHandler } from '@/integrations/transactions/hooks/use-mint-error-handler';
 import {
   addNotification,
+  NotificationState,
   NotificationType,
+  setNotificationData,
   useAppDispatch,
   useModalsStore,
-  useNotificationStore,
 } from '@/store';
 
-export interface MintAutoLinkProps {
+export type MintAutoNotificationContentProps = {
   id: string;
-}
+  state?: NotificationState;
+};
 
-export const MintAutoLink: React.FC<MintAutoLinkProps> = ({ id }) => {
+export const MINT_AUTO_NOTIFICATION_TITLES = {
+  [NotificationState.Pending]: 'Minting in progress',
+  [NotificationState.Success]: 'Mint was successful',
+  [NotificationState.Error]:
+    'You have unfinished or failed mint(s), click retry mint below.',
+};
+
+export const MintAutoNotificationContent: React.FC<
+  MintAutoNotificationContentProps
+> = ({ id, state }) => {
   const [steps, setSteps] = useState<string[]>([]);
   const [step, setStep] = useState<string | Batch.DefaultHookState>(
     Batch.DefaultHookState.Idle
   );
 
   const dispatch = useAppDispatch();
-  const { popNotification } = useNotificationStore();
+
   const { getBalances } = useBalances();
 
   const handleMintError = useMintErrorHandler({ notificationId: id });
@@ -51,6 +62,16 @@ export const MintAutoLink: React.FC<MintAutoLinkProps> = ({ id }) => {
   }, [batch.state, dispatch]);
 
   const handleAutoMint = () => {
+    dispatch(
+      setNotificationData({
+        data: {
+          state: NotificationState.Pending,
+          title: MINT_AUTO_NOTIFICATION_TITLES[NotificationState.Pending],
+        },
+        id,
+      })
+    );
+
     batch
       .execute()
       .then(() => {
@@ -66,10 +87,27 @@ export const MintAutoLink: React.FC<MintAutoLinkProps> = ({ id }) => {
         removeFromStorage(LocalStorageKey.MintXTCUncompleteBlockHeights);
 
         getBalances();
-        popNotification(id);
+        dispatch(
+          setNotificationData({
+            data: {
+              state: NotificationState.Success,
+              title: MINT_AUTO_NOTIFICATION_TITLES[NotificationState.Success],
+            },
+            id,
+          })
+        );
       })
       .catch((err) =>
         handleMintError(err.message, (errorMessage) => {
+          dispatch(
+            setNotificationData({
+              data: {
+                state: NotificationState.Error,
+                title: MINT_AUTO_NOTIFICATION_TITLES[NotificationState.Error],
+              },
+              id,
+            })
+          );
           dispatch(
             addNotification({
               title: errorMessage,
@@ -89,8 +127,15 @@ export const MintAutoLink: React.FC<MintAutoLinkProps> = ({ id }) => {
   const activeStepColor = useColorModeValue('gray.600', 'gray.400');
   const disabledStepColor = useColorModeValue('gray.400', 'gray.600');
 
-  return step === Batch.DefaultHookState.Idle ||
-    step === Batch.DefaultHookState.Error ? (
+  const shouldShowRetryButton = useMemo(() => {
+    return (
+      step === Batch.DefaultHookState.Idle ||
+      step === Batch.DefaultHookState.Error ||
+      state === NotificationState.Error
+    );
+  }, [step, state]);
+
+  return shouldShowRetryButton ? (
     <Button
       colorScheme="dark-blue"
       variant="gradient"
@@ -116,11 +161,11 @@ export const MintAutoLink: React.FC<MintAutoLinkProps> = ({ id }) => {
           ? disabledStepColor
           : disabledStepColor;
 
-        const stepLabel = isDoneStep
-          ? 'Minted'
+        const stepLabel = isDisabledStep
+          ? 'Waiting'
           : isActiveStep
           ? 'Minting...'
-          : 'Waiting';
+          : 'Done';
 
         const blockHeight = _step.split('-')[1];
 

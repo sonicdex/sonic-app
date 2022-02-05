@@ -13,11 +13,13 @@ import {
   WithdrawModalDataStep,
 } from '@/store';
 
-export interface WithdrawLinkProps {
+export interface WithdrawNotificationContentProps {
   id: string;
 }
 
-export const WithdrawLink: React.FC<WithdrawLinkProps> = ({ id }) => {
+export const WithdrawNotificationContent: React.FC<
+  WithdrawNotificationContentProps
+> = ({ id }) => {
   const dispatch = useAppDispatch();
   const { addNotification, popNotification } = useNotificationStore();
   const { getBalances } = useBalances();

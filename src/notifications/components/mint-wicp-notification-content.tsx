@@ -2,7 +2,7 @@ import { Link } from '@chakra-ui/react';
 import { useEffect, useMemo } from 'react';
 
 import { useBalances } from '@/hooks/use-balances';
-import { useMintBatch } from '@/integrations/transactions/hooks/batch/use-mint-batch';
+import { useMintBatch } from '@/integrations/transactions';
 import {
   MintModalDataStep,
   MintTokenSymbol,
@@ -14,11 +14,13 @@ import {
 } from '@/store';
 import { deserialize, stringify } from '@/utils/format';
 
-export interface MintXTCLinkProps {
+export interface MintWICPNotificationContentProps {
   id: string;
 }
 
-export const MintXTCLink: React.FC<MintXTCLinkProps> = ({ id }) => {
+export const MintWICPNotificationContent: React.FC<
+  MintWICPNotificationContentProps
+> = ({ id }) => {
   const dispatch = useAppDispatch();
   const swapViewStore = useSwapViewStore();
   const { addNotification, popNotification } = useNotificationStore();
@@ -33,7 +35,7 @@ export const MintXTCLink: React.FC<MintXTCLinkProps> = ({ id }) => {
   const { batch, openBatchModal } = useMintBatch({
     amountIn: from.value,
     amountOut: to.value,
-    tokenSymbol: MintTokenSymbol.XTC,
+    tokenSymbol: MintTokenSymbol.WICP,
     keepInSonic,
   });
 
@@ -44,7 +46,7 @@ export const MintXTCLink: React.FC<MintXTCLinkProps> = ({ id }) => {
       )
     ) {
       dispatch(
-        modalsSliceActions.setMintXTCModalData({
+        modalsSliceActions.setMintWICPModalData({
           step: batch.state,
         })
       );
@@ -63,10 +65,10 @@ export const MintXTCLink: React.FC<MintXTCLinkProps> = ({ id }) => {
     batch
       .execute()
       .then(() => {
-        dispatch(modalsSliceActions.closeMintXTCProgressModal());
+        dispatch(modalsSliceActions.closeMintWICPProgressModal());
 
         addNotification({
-          title: `Minted ${to.value} ${to.metadata.symbol}`,
+          title: `Wrapped ${from.value} ${from.metadata.symbol}`,
           type: NotificationType.Success,
           id: Date.now().toString(),
           transactionLink: '/activity',
@@ -74,10 +76,10 @@ export const MintXTCLink: React.FC<MintXTCLinkProps> = ({ id }) => {
         getBalances();
       })
       .catch((err) => {
-        console.error('Mint Error', err);
+        console.error('Wrap Error', err);
 
         addNotification({
-          title: `Mint ${to.value} ${to.metadata.symbol} failed`,
+          title: `Wrap ${from.value} ${from.metadata.symbol} failed`,
           type: NotificationType.Error,
           id: Date.now().toString(),
         });

@@ -23,6 +23,13 @@ export enum NotificationType {
   MintManual,
 }
 
+export enum NotificationState {
+  Idle,
+  Pending,
+  Success,
+  Error,
+}
+
 export interface Notification {
   id: string;
   title: React.ReactNode;
@@ -30,6 +37,8 @@ export interface Notification {
   type: NotificationType;
   transactionLink?: string;
   timeout?: string;
+  // TODO: Rewrite notifications to use this
+  state?: NotificationState;
 }
 
 export interface NotificationsState {
@@ -49,6 +58,34 @@ export const notificationSlice = createSlice({
     setState: (state, action: PayloadAction<FeatureState>) => {
       state.state = action.payload;
     },
+    setNotificationData: (
+      state,
+      action: PayloadAction<{
+        data: Omit<Partial<Notification>, 'id'>;
+        id: string;
+      }>
+    ) => {
+      const notificationIndex = state.notifications.findIndex(
+        (notification) => notification.id === action.payload.id
+      );
+
+      if (typeof notificationIndex !== 'undefined') {
+        const newNotifications = state.notifications.map(
+          (notification, index) => {
+            if (index === notificationIndex) {
+              return {
+                ...notification,
+                ...action.payload.data,
+              };
+            }
+
+            return notification;
+          }
+        );
+
+        state.notifications = newNotifications;
+      }
+    },
     addNotification: (state, action: PayloadAction<Notification>) => {
       state.notifications.push(action.payload);
     },
@@ -64,9 +101,10 @@ export const notificationSlice = createSlice({
 });
 
 export const {
-  setState: setNotificationState,
+  setState: setNotificationSliceState,
   addNotification,
   popNotification,
+  setNotificationData,
 } = notificationSlice.actions;
 
 export const selectNotificationState = (state: RootState) => state.notification;
