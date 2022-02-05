@@ -8,7 +8,6 @@ import {
 } from '@/config';
 import {
   MintTokenSymbol,
-  modalsSliceActions,
   popNotification,
   useAppDispatch,
   usePlugStore,
