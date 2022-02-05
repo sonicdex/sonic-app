@@ -44,7 +44,6 @@ export const NotificationContent: React.FC<NotificationContentProps> = ({
     ) : null,
     [NotificationType.MintAuto]: <MintAutoLink id={id} />,
     [NotificationType.MintManual]: <MintManualLink id={id} />,
-    [NotificationType.Pending]: <></>, // TODO: Add pending link
     [NotificationType.Error]: <></>, // TODO: Add error link
   };
 

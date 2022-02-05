@@ -28,7 +28,6 @@ const NotificationIcon = ({ type }: { type: NotificationType }) => {
         />
       );
     case NotificationType.MintManual:
-    case NotificationType.Pending:
     case NotificationType.MintWICP:
     case NotificationType.WithdrawWICP:
     case NotificationType.Swap:

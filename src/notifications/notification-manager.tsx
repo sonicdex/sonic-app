@@ -9,7 +9,7 @@ export const NotificationManager = () => {
   const { notifications, popNotification } = useNotificationStore();
 
   return (
-    <Flex position="absolute" right={12} direction="column" zIndex={1}>
+    <Flex position="absolute" right={12} direction="column" zIndex={2}>
       {notifications.map((notification) => {
         const { errorMessage } = notification;
         const errorBody =

@@ -63,7 +63,6 @@ export const MintAutoLink: React.FC<MintAutoLinkProps> = ({ id }) => {
           title: `Minting finished`,
           type: NotificationType.Success,
           id: Date.now().toString(),
-          transactionLink: '/activity',
         });
 
         removeFromStorage(LocalStorageKey.MintWICPUncompleteBlockHeights);

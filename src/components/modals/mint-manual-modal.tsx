@@ -6,7 +6,7 @@ import {
   FormLabel,
   HStack,
   Input,
-  Link,
+  Link as ChakraLink,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -28,6 +28,7 @@ import {
   useMemo,
   useState,
 } from 'react';
+import { Link } from 'react-router-dom';
 
 import { checkIfPlugProviderVersionCompatible } from '@/integrations/plug';
 import {
@@ -86,14 +87,14 @@ export const MintManualModal = () => {
             <>
               You're using an outdated version of Plug, please update to the
               latest one&nbsp;
-              <Link
+              <ChakraLink
                 color="blue.400"
                 href={PLUG_WALLET_WEBSITE_URL}
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 here
-              </Link>
+              </ChakraLink>
               .
             </>
           ),
@@ -104,21 +105,11 @@ export const MintManualModal = () => {
         return;
       }
 
-      if (tokenSymbol === MintTokenSymbol.WICP) {
-        addNotification({
-          title: `Minting WICP`,
-          type: NotificationType.MintManual,
-          id: String(new Date().getTime()),
-        });
-      }
-
-      if (tokenSymbol === MintTokenSymbol.XTC) {
-        addNotification({
-          title: `Minting XTC`,
-          type: NotificationType.MintManual,
-          id: String(new Date().getTime()),
-        });
-      }
+      addNotification({
+        title: `Minting ${tokenSymbol}`,
+        type: NotificationType.MintManual,
+        id: String(new Date().getTime()),
+      });
     },
     [addNotification]
   );
@@ -143,17 +134,17 @@ export const MintManualModal = () => {
       return;
     }
 
-    handleMint(MintTokenSymbol.WICP);
+    handleMint(mintManualTokenSymbol);
 
     handleClose();
   };
 
   const linkColor = useColorModeValue('dark-blue.500', 'dark-blue.400');
 
-  const { activityTabURL, transactionExplorerURL } = useMemo(() => {
+  const { activityTabURL, learnMoreURL } = useMemo(() => {
     return {
-      activityTabURL: '',
-      transactionExplorerURL: '',
+      activityTabURL: '/activity',
+      learnMoreURL: '',
     };
   }, []);
 
@@ -220,14 +211,21 @@ export const MintManualModal = () => {
 
             <FormErrorMessage>{blockHeightErrorMessage}</FormErrorMessage>
             <FormHelperText>
-              You can find block height in your{' '}
-              <Link color={linkColor} href={activityTabURL}>
+              Visit your&nbsp;
+              <ChakraLink
+                as={Link}
+                color={linkColor}
+                to={activityTabURL}
+                onClick={handleClose}
+              >
                 activity tab
-              </Link>{' '}
-              or{' '}
-              <Link color={linkColor} href={transactionExplorerURL}>
-                transaction explorer.
-              </Link>
+              </ChakraLink>
+              &nbsp;to find your failed transactions blockheight. Learn more
+              about failed mints&nbsp;
+              <ChakraLink color={linkColor} href={learnMoreURL}>
+                here
+              </ChakraLink>
+              .
             </FormHelperText>
           </FormControl>
           {mintManualModalErrorMessage && (

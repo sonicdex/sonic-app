@@ -8,6 +8,8 @@ export interface TransactionLinkProps {
 export const TransactionLink: React.FC<TransactionLinkProps> = ({
   transactionLink,
 }) => {
+  if (!transactionLink) return null;
+
   return (
     <Link href={transactionLink} rel="noreferrer" color="dark-blue.500">
       View in activity tab

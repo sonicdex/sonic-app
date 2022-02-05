@@ -33,7 +33,6 @@ export const MintManualLink: React.FC<MintManualLinkProps> = ({ id }) => {
           title: `Minting finished`,
           type: NotificationType.Success,
           id: Date.now().toString(),
-          transactionLink: '/activity',
         });
 
         dispatch(modalsSliceActions.setMintManualBlockHeight(''));

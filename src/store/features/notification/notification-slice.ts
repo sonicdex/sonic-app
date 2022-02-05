@@ -7,7 +7,6 @@ import { FeatureState } from '@/store';
 export enum NotificationType {
   Success,
   Error,
-  Pending,
 
   Deposit,
   Withdraw,
