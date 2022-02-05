@@ -39,9 +39,9 @@ export const MintManualLink: React.FC<MintManualLinkProps> = ({ id }) => {
 
         dispatch(modalsSliceActions.setMintManualBlockHeight(''));
         getBalances();
-        popNotification(id);
       })
-      .catch((err) => handleMintError(err.message));
+      .catch((err) => handleMintError(err.message))
+      .finally(() => popNotification(id));
   }, []);
 
   return null;

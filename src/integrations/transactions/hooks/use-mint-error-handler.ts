@@ -39,15 +39,18 @@ export const useMintErrorHandler = ({
       const isErrorOperationStyle = errorMessage.includes(
         'ErrorOperationStyle'
       );
+      const isErrorTo = errorMessage.includes('ErrorTo');
 
       const errorText = isUnauthorizedError
         ? `Block Height entered does not match your address`
         : isOtherError
-        ? `Wrap failed, check if the Block Height is correct or try again later`
+        ? `Wrap failed, check if the Block Height correct`
         : isBlockUsed
         ? `Block Height entered is already used`
         : isErrorOperationStyle
         ? `Block Height is not related to mint transaction type`
+        : isErrorTo
+        ? `Selected token symbol does not match the Block Height`
         : `Wrap failed, please try again later`;
 
       if (isBlockUsed && principalId) {
