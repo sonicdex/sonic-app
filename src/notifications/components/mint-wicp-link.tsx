@@ -2,9 +2,10 @@ import { Link } from '@chakra-ui/react';
 import { useEffect, useMemo } from 'react';
 
 import { useBalances } from '@/hooks/use-balances';
-import { useMintWICPBatch } from '@/integrations/transactions/hooks/batch/use-mint-wicp-batch';
+import { useMintBatch } from '@/integrations/transactions';
 import {
-  MintWICPModalDataStep,
+  MintModalDataStep,
+  MintTokenSymbol,
   modalsSliceActions,
   NotificationType,
   useAppDispatch,
@@ -23,21 +24,23 @@ export const MintWICPLink: React.FC<MintWICPProps> = ({ id }) => {
   const { addNotification, popNotification } = useNotificationStore();
   const { getBalances } = useBalances();
 
-  const { from, keepInSonic } = useMemo(() => {
-    const { from, keepInSonic } = swapViewStore;
+  const { from, to, keepInSonic } = useMemo(() => {
+    const { from, to, keepInSonic } = swapViewStore;
 
-    return deserialize(stringify({ from, keepInSonic }));
+    return deserialize(stringify({ from, to, keepInSonic }));
   }, []);
 
-  const { batch, openBatchModal } = useMintWICPBatch({
-    amount: from.value,
+  const { batch, openBatchModal } = useMintBatch({
+    amountIn: from.value,
+    amountOut: to.value,
+    tokenSymbol: MintTokenSymbol.WICP,
     keepInSonic,
   });
 
   const handleStateChange = () => {
     if (
-      Object.values(MintWICPModalDataStep).includes(
-        batch.state as MintWICPModalDataStep
+      Object.values(MintModalDataStep).includes(
+        batch.state as MintModalDataStep
       )
     ) {
       dispatch(

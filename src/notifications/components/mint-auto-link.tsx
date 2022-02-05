@@ -2,23 +2,16 @@ import { Button, Flex, Stack, Text, useColorModeValue } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 
 import { StepStatus, useStepStatus } from '@/components/modals';
-import {
-  getFromStorage,
-  LocalStorageKey,
-  MintUncompleteBlockHeights,
-  removeFromStorage,
-  saveToStorage,
-} from '@/config';
+import { LocalStorageKey, removeFromStorage } from '@/config';
 import { useBalances } from '@/hooks/use-balances';
 import { Batch } from '@/integrations/transactions';
 import { useMintMultipleBatch } from '@/integrations/transactions/hooks/batch/use-mint-multiple-batch';
+import { useMintErrorHandler } from '@/integrations/transactions/hooks/use-mint-error-handler';
 import {
-  MintTokenSymbol,
   NotificationType,
   useAppDispatch,
   useModalsStore,
   useNotificationStore,
-  usePlugStore,
 } from '@/store';
 
 export interface MintAutoLinkProps {
@@ -34,7 +27,8 @@ export const MintAutoLink: React.FC<MintAutoLinkProps> = ({ id }) => {
   const dispatch = useAppDispatch();
   const { addNotification, popNotification } = useNotificationStore();
   const { getBalances } = useBalances();
-  const { principalId } = usePlugStore();
+
+  const handleMintError = useMintErrorHandler({ notificationId: id });
 
   const { mintWICPUncompleteBlockHeights, mintXTCUncompleteBlockHeights } =
     useModalsStore();
@@ -71,58 +65,7 @@ export const MintAutoLink: React.FC<MintAutoLinkProps> = ({ id }) => {
         getBalances();
         popNotification(id);
       })
-      .catch((err) => {
-        console.error('Minting Error', err);
-
-        const isBlockUsed = err?.message?.includes('BlockUsed');
-        const isUnauthorizedError = err?.message?.includes('Unauthorized');
-        const isOtherError = err?.message?.includes('Other');
-
-        const errorMessage = isUnauthorizedError
-          ? `Block Height entered does not match your address`
-          : isOtherError
-          ? `Wrap failed, check if the Block Height is correct`
-          : isBlockUsed
-          ? `Block Height entered is already used`
-          : `Wrap failed, please try again later`;
-
-        if (isBlockUsed && principalId) {
-          const removeLastProcessedTransaction = (
-            tokenSymbol: MintTokenSymbol
-          ) => {
-            const localStorageKey =
-              tokenSymbol === MintTokenSymbol.WICP
-                ? LocalStorageKey.MintWICPUncompleteBlockHeights
-                : LocalStorageKey.MintXTCUncompleteBlockHeights;
-
-            const prevMintBlockHeightData = getFromStorage(localStorageKey) as
-              | MintUncompleteBlockHeights
-              | undefined;
-
-            const newBlockHeightData = {
-              ...prevMintBlockHeightData,
-              [principalId]: [
-                ...(prevMintBlockHeightData?.[principalId]?.filter(
-                  (_, index) => index !== 0
-                ) || []),
-              ],
-            };
-
-            saveToStorage(localStorageKey, newBlockHeightData);
-          };
-
-          removeLastProcessedTransaction(MintTokenSymbol.WICP);
-          removeLastProcessedTransaction(MintTokenSymbol.XTC);
-
-          popNotification(id);
-        }
-
-        addNotification({
-          title: errorMessage,
-          type: NotificationType.Error,
-          id: Date.now().toString(),
-        });
-      });
+      .catch((err) => handleMintError(err.message));
 
     const transactionNames = getTransactionNames();
 

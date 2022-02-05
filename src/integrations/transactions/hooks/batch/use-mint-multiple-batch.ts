@@ -2,14 +2,17 @@ import { useEffect, useState } from 'react';
 
 import { MintTokenSymbol, usePlugStore } from '@/store';
 
-import { getMintWICPTransaction, useBatchHook } from '..';
-import { getMintXTCTransaction } from '../transactions/mint-xtc';
-import { removeBlockHeight } from '.';
+import {
+  getMintWICPTransaction,
+  getMintXTCTransaction,
+  useBatchHook,
+} from '..';
+import { getTransactionName, removeBlockHeightFromStorage } from '.';
 
 export type UseMintMultipleBatchOptions = {
   blockHeights: {
-    XTC?: string[];
-    WICP?: string[];
+    [MintTokenSymbol.XTC]?: string[];
+    [MintTokenSymbol.WICP]?: string[];
   };
 };
 
@@ -17,39 +20,38 @@ export const useMintMultipleBatch = ({
   blockHeights,
 }: UseMintMultipleBatchOptions) => {
   const { principalId } = usePlugStore();
+
   const [transactions, setTransactions] = useState<Record<string, any>>({});
 
   useEffect(() => {
-    if (!principalId) {
-      return;
-    }
-
     let transactions: Record<string, any> = {};
 
-    blockHeights.WICP?.forEach((blockHeight: string) => {
+    const updateTransactions = (
+      tokenSymbol: MintTokenSymbol,
+      blockHeight: string
+    ) => {
+      const handler =
+        tokenSymbol === MintTokenSymbol.XTC
+          ? getMintXTCTransaction
+          : getMintWICPTransaction;
+
+      const transactionName = getTransactionName({ tokenSymbol, blockHeight });
+      const transaction = handler({ blockHeight }, () =>
+        removeBlockHeightFromStorage({ blockHeight, tokenSymbol, principalId })
+      );
+
       transactions = {
         ...transactions,
-        [`WICP-${blockHeight}`]: getMintWICPTransaction({ blockHeight }, () =>
-          removeBlockHeight({
-            blockHeight,
-            tokenSymbol: MintTokenSymbol.WICP,
-            principalId,
-          })
-        ),
+        [transactionName]: transaction,
       };
+    };
+
+    blockHeights.WICP?.forEach((blockHeight: string) => {
+      updateTransactions(MintTokenSymbol.WICP, blockHeight);
     });
 
     blockHeights.XTC?.forEach((blockHeight: string) => {
-      transactions = {
-        ...transactions,
-        [`XTC-${blockHeight}`]: getMintXTCTransaction({ blockHeight }, () =>
-          removeBlockHeight({
-            blockHeight,
-            tokenSymbol: MintTokenSymbol.XTC,
-            principalId,
-          })
-        ),
-      };
+      updateTransactions(MintTokenSymbol.XTC, blockHeight);
     });
 
     setTransactions(transactions);

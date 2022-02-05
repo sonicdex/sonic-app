@@ -2,8 +2,8 @@ import { Flex } from '@chakra-ui/react';
 
 import { checkPlainSrc, depositSrc, swapSrc, withdrawSrc } from '@/assets';
 import {
-  MintXTCModalData,
-  MintXTCModalDataStep,
+  MintModalData,
+  MintModalDataStep,
   modalsSliceActions,
   useAppDispatch,
   useModalsStore,
@@ -17,7 +17,7 @@ export const MintXTCProgressModal = () => {
   const { isMintXTCProgressModalOpened, mintXTCModalData } = useModalsStore();
   const { steps, step: activeStep } = mintXTCModalData;
 
-  const getStepStatus = useStepStatus<MintXTCModalData['step']>({
+  const getStepStatus = useStepStatus<MintModalData['step']>({
     activeStep,
     steps,
   });
@@ -35,34 +35,34 @@ export const MintXTCProgressModal = () => {
     >
       <Flex alignItems="flex-start">
         <TransactionStep
-          status={getStepStatus(MintXTCModalDataStep.LedgerTransfer)}
+          status={getStepStatus(MintModalDataStep.LedgerTransfer)}
           iconSrc={withdrawSrc}
           chevron
         >
           Ledger Transfer <br /> ICP
         </TransactionStep>
         <TransactionStep
-          status={getStepStatus(MintXTCModalDataStep.MintXTC)}
+          status={getStepStatus(MintModalDataStep.Mint)}
           iconSrc={swapSrc}
           chevron={
-            steps?.includes(MintXTCModalDataStep.Approve) ||
-            steps?.includes(MintXTCModalDataStep.Deposit)
+            steps?.includes(MintModalDataStep.Approve) ||
+            steps?.includes(MintModalDataStep.Deposit)
           }
         >
           Minting <br /> XTC
         </TransactionStep>
-        {steps?.includes(MintXTCModalDataStep.Approve) && (
+        {steps?.includes(MintModalDataStep.Approve) && (
           <TransactionStep
-            status={getStepStatus(MintXTCModalDataStep.Approve)}
+            status={getStepStatus(MintModalDataStep.Approve)}
             iconSrc={checkPlainSrc}
             chevron
           >
             Approving <br /> XTC
           </TransactionStep>
         )}
-        {steps?.includes(MintXTCModalDataStep.Deposit) && (
+        {steps?.includes(MintModalDataStep.Deposit) && (
           <TransactionStep
-            status={getStepStatus(MintXTCModalDataStep.Deposit)}
+            status={getStepStatus(MintModalDataStep.Deposit)}
             iconSrc={depositSrc}
           >
             Depositing <br /> XTC

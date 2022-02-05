@@ -10,34 +10,20 @@ export enum MintTokenSymbol {
   WICP = 'WICP',
 }
 
-export enum MintXTCModalDataStep {
+export enum MintModalDataStep {
   LedgerTransfer = 'ledgerTransfer',
-  MintXTC = 'mintXTC',
+  Mint = 'mint',
   Approve = 'approve',
   Deposit = 'deposit',
 }
 
-export type MintXTCModalData<
+export type MintModalData<
   RetryCallback = ModalsCallback,
   CancelCallback = ModalsCallback
 > = {
-  step?: MintXTCModalDataStep | Batch.DefaultHookState;
-  steps?: (MintXTCModalDataStep | Batch.DefaultHookState)[];
+  step?: MintModalDataStep | Batch.DefaultHookState;
+  steps?: (MintModalDataStep | Batch.DefaultHookState)[];
   callbacks?: [RetryCallback, CancelCallback];
-};
-
-export enum MintWICPModalDataStep {
-  LedgerTransfer = 'ledgerTransfer',
-  MintWIPC = 'mintWICP',
-  Approve = 'approve',
-  Deposit = 'deposit',
-}
-
-export type MintWICPModalData = {
-  step?: MintWICPModalDataStep | Batch.DefaultHookState;
-  steps?: (MintWICPModalDataStep | Batch.DefaultHookState)[];
-  callbacks?: [ModalsCallback, ModalsCallback];
-  blockHeight?: bigint;
 };
 
 export enum WithdrawWICPModalDataStep {
@@ -143,11 +129,11 @@ interface ModalsState {
 
   isMintXTCProgressModalOpened: boolean;
   isMintXTCFailModalOpened: boolean;
-  mintXTCModalData: MintXTCModalData;
+  mintXTCModalData: MintModalData;
 
   isMintWICPProgressModalOpened: boolean;
   isMintWICPFailModalOpened: boolean;
-  mintWICPModalData: MintWICPModalData;
+  mintWICPModalData: MintModalData;
 
   isWithdrawWICPProgressModalOpened: boolean;
   isWithdrawWICPFailModalOpened: boolean;
@@ -185,11 +171,11 @@ interface ModalsState {
   termsAndConditionsModalData: TermsAndConditionsModalData;
 }
 
-const initialMintXTCModalData: MintXTCModalData = {
+const initialMintXTCModalData: MintModalData = {
   step: undefined,
 };
 
-const initialMintWICPModalData: MintWICPModalData = {
+const initialMintWICPModalData: MintModalData = {
   step: undefined,
 };
 
@@ -317,7 +303,7 @@ export const modalsSlice = createSlice({
     clearMintXTCModalData: (state) => {
       state.mintXTCModalData = initialMintXTCModalData;
     },
-    setMintXTCModalData: (state, action: PayloadAction<MintXTCModalData>) => {
+    setMintXTCModalData: (state, action: PayloadAction<MintModalData>) => {
       state.mintXTCModalData = {
         ...state.mintXTCModalData,
         ...action.payload,
@@ -351,7 +337,7 @@ export const modalsSlice = createSlice({
     clearMintWICPModalData: (state) => {
       state.mintWICPModalData = initialMintWICPModalData;
     },
-    setMintWICPModalData: (state, action: PayloadAction<MintWICPModalData>) => {
+    setMintWICPModalData: (state, action: PayloadAction<MintModalData>) => {
       state.mintWICPModalData = {
         ...state.mintWICPModalData,
         ...action.payload,

@@ -4,7 +4,7 @@ import { MintTokenSymbol, usePlugStore } from '@/store';
 
 import { getMintWICPTransaction, useBatchHook } from '..';
 import { getMintXTCTransaction } from '../transactions/mint-xtc';
-import { removeBlockHeight } from '.';
+import { removeBlockHeightFromStorage } from '.';
 
 export type UseMintSingleBatchOptions = {
   tokenSymbol: MintTokenSymbol;
@@ -24,34 +24,24 @@ export const useMintSingleBatch = ({
       return transactions;
     }
 
-    if (tokenSymbol === MintTokenSymbol.WICP) {
-      transactions = {
-        ...transactions,
-        ['WICP']: getMintWICPTransaction({ blockHeight }, () =>
-          removeBlockHeight({
-            blockHeight,
-            tokenSymbol: MintTokenSymbol.WICP,
-            principalId,
-          })
-        ),
-      };
-    }
+    const handler =
+      tokenSymbol === MintTokenSymbol.XTC
+        ? getMintXTCTransaction
+        : getMintWICPTransaction;
 
-    if (tokenSymbol === MintTokenSymbol.XTC) {
-      transactions = {
-        ...transactions,
-        ['XTC']: getMintXTCTransaction({ blockHeight }, () =>
-          removeBlockHeight({
-            blockHeight,
-            tokenSymbol: MintTokenSymbol.XTC,
-            principalId,
-          })
-        ),
-      };
-    }
+    transactions = {
+      ...transactions,
+      [tokenSymbol]: handler({ blockHeight }, () =>
+        removeBlockHeightFromStorage({
+          blockHeight,
+          tokenSymbol: tokenSymbol,
+          principalId,
+        })
+      ),
+    };
 
     return transactions;
-  }, [blockHeight, tokenSymbol, principalId]);
+  }, [principalId, tokenSymbol, blockHeight]);
 
   const getTransactionNames = () => Object.keys(transactions);
 

@@ -2,9 +2,10 @@ import { Link } from '@chakra-ui/react';
 import { useEffect, useMemo } from 'react';
 
 import { useBalances } from '@/hooks/use-balances';
-import { useMintXTCBatch } from '@/integrations/transactions/hooks/batch/use-mint-xtc-batch';
+import { useMintBatch } from '@/integrations/transactions/hooks/batch/use-mint-batch';
 import {
-  MintXTCModalDataStep,
+  MintModalDataStep,
+  MintTokenSymbol,
   modalsSliceActions,
   NotificationType,
   useAppDispatch,
@@ -29,21 +30,22 @@ export const MintXTCLink: React.FC<MintXTCLinkProps> = ({ id }) => {
     return deserialize(stringify({ from, to, keepInSonic }));
   }, []);
 
-  const { batch, openBatchModal } = useMintXTCBatch({
+  const { batch, openBatchModal } = useMintBatch({
     amountIn: from.value,
     amountOut: to.value,
+    tokenSymbol: MintTokenSymbol.XTC,
     keepInSonic,
   });
 
   const handleStateChange = () => {
     if (
-      Object.values(MintXTCModalDataStep).includes(
-        batch.state as MintXTCModalDataStep
+      Object.values(MintModalDataStep).includes(
+        batch.state as MintModalDataStep
       )
     ) {
       dispatch(
         modalsSliceActions.setMintXTCModalData({
-          step: batch.state as MintXTCModalDataStep,
+          step: batch.state,
         })
       );
     }
@@ -54,6 +56,7 @@ export const MintXTCLink: React.FC<MintXTCLinkProps> = ({ id }) => {
 
     openBatchModal();
   };
+
   useEffect(handleStateChange, [batch.state, dispatch]);
 
   useEffect(() => {
