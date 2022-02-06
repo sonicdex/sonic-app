@@ -22,6 +22,7 @@ import {
 import { FaArrowDown } from '@react-icons/all-files/fa/FaArrowDown';
 import { FaCog } from '@react-icons/all-files/fa/FaCog';
 import { FaInfoCircle } from '@react-icons/all-files/fa/FaInfoCircle';
+import BigNumber from 'bignumber.js';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
@@ -57,6 +58,7 @@ import {
   SwapTokenDataKey,
   swapViewActions,
   useAppDispatch,
+  useCyclesMintingCanisterStore,
   useNotificationStore,
   usePlugStore,
   usePriceStore,
@@ -66,18 +68,30 @@ import {
 } from '@/store';
 import {
   calculatePriceImpact,
+  formatAmount,
   getCurrency,
   getDepositMaxValue,
+  getICPValueByXDRRate,
+  getSwapAmountOut,
+  getXTCValueByXDRRate,
 } from '@/utils/format';
 import { debounce } from '@/utils/function';
+import { getTokenPaths } from '@/utils/maximal-paths';
 
 import { ExchangeBox } from '.';
 import { KeepInSonicBox } from './keep-in-sonic-box';
 
 export const SwapHomeStep = () => {
   const { addNotification } = useNotificationStore();
-  const { fromTokenOptions, toTokenOptions, from, to, slippage } =
-    useSwapViewStore();
+  const {
+    fromTokenOptions,
+    toTokenOptions,
+    from,
+    to,
+    tokenList,
+    keepInSonic,
+    slippage,
+  } = useSwapViewStore();
   const query = useQuery();
   const dispatch = useAppDispatch();
   const {
@@ -86,8 +100,12 @@ export const SwapHomeStep = () => {
     icpBalance,
     balancesState,
     supportedTokenListState,
+    supportedTokenList,
     allPairsState,
+    allPairs,
   } = useSwapCanisterStore();
+
+  const { ICPXDRconversionRate } = useCyclesMintingCanisterStore();
   const { state: priceState } = usePriceStore();
   const { isConnected } = usePlugStore();
   const [autoSlippage, setAutoSlippage] = useState(true);
@@ -143,13 +161,18 @@ export const SwapHomeStep = () => {
     );
   };
 
-  const handleSelectToken = (key: SwapTokenDataKey) => {
-    const options = key === 'from' ? fromTokenOptions : toTokenOptions;
+  const handleSelectToken = (dataKey: SwapTokenDataKey) => {
+    const options = dataKey === 'from' ? fromTokenOptions : toTokenOptions;
+    const data = dataKey === 'from' ? from : to;
 
     openSelectTokenModal({
       metadata: options,
-      onSelect: (tokenId) =>
-        dispatch(swapViewActions.setToken({ data: key, tokenId })),
+      onSelect: (tokenId) => {
+        dispatch(swapViewActions.setToken({ data: dataKey, tokenId }));
+        setTimeout(() => {
+          handleChangeValue(data.value, dataKey);
+        }, 0);
+      },
       selectedTokenIds,
     });
   };
@@ -425,6 +448,144 @@ export const SwapHomeStep = () => {
     }
   }, [to.metadata, tokenBalances, sonicBalances, icpBalance]);
 
+  const { isTokenSelected: isWICPSelected } = useTokenSelectionChecker({
+    id0: from.metadata?.id,
+    id1: to.metadata?.id,
+    targetId: ENV.canistersPrincipalIDs.WICP,
+  });
+
+  const { isTokenSelected: isXTCSelected } = useTokenSelectionChecker({
+    id0: from.metadata?.id,
+    id1: to.metadata?.id,
+    targetId: ENV.canistersPrincipalIDs.XTC,
+  });
+
+  function handleICPToWICPChange(newValue: string, dataKey: SwapTokenDataKey) {
+    const oppositeDataKey = dataKey === 'from' ? 'to' : 'from';
+
+    const value = new BigNumber(newValue).minus(
+      formatAmount(ICP_METADATA.fee, ICP_METADATA.decimals)
+    );
+
+    dispatch(
+      swapViewActions.setValue({
+        data: oppositeDataKey,
+        value: value.toNumber() > 0 ? value.toString() : '',
+      })
+    );
+  }
+
+  function handleICPToXTCChange(newValue: string, dataKey: SwapTokenDataKey) {
+    const oppositeDataKey = dataKey === 'from' ? 'to' : 'from';
+
+    const xtcMetadata = tokenList?.[ENV.canistersPrincipalIDs.XTC];
+
+    if (ICPXDRconversionRate && xtcMetadata) {
+      const handler =
+        dataKey === 'from' ? getXTCValueByXDRRate : getICPValueByXDRRate;
+
+      const cyclesWithFees = handler({
+        amount: newValue,
+        conversionRate: ICPXDRconversionRate,
+        fee: xtcMetadata.fee,
+        decimals: xtcMetadata.decimals,
+      });
+
+      const icpFeesConvertedToXTC = handler({
+        amount: formatAmount(ICP_METADATA.fee, ICP_METADATA.decimals),
+        conversionRate: ICPXDRconversionRate,
+        fee: xtcMetadata.fee,
+        decimals: xtcMetadata.decimals,
+      }).multipliedBy(2);
+
+      const xtcFees = new BigNumber(
+        formatAmount(xtcMetadata.fee, xtcMetadata.decimals)
+      ).multipliedBy(keepInSonic ? 3 : 1);
+
+      const cycles = cyclesWithFees.minus(icpFeesConvertedToXTC).minus(xtcFees);
+
+      dispatch(
+        swapViewActions.setValue({
+          data: oppositeDataKey,
+          value: cycles.toNumber() > 0 ? cycles.toString() : '',
+        })
+      );
+    }
+  }
+
+  function handleICPToTokenChange(newValue: string, dataKey: SwapTokenDataKey) {
+    const oppositeDataKey = dataKey === 'from' ? 'to' : 'from';
+    const data = dataKey === 'from' ? from : to;
+    const oppositeData = dataKey === 'from' ? to : from;
+
+    const wrappedICPMetadata = supportedTokenList?.find(
+      (token) => token.id === ENV.canistersPrincipalIDs.WICP
+    );
+
+    if (wrappedICPMetadata && tokenList && allPairs) {
+      const paths = getTokenPaths(
+        allPairs,
+        tokenList,
+        wrappedICPMetadata.id,
+        newValue
+      );
+
+      const dataWICP = {
+        ...data,
+        metadata: wrappedICPMetadata,
+        paths,
+      };
+
+      dispatch(
+        swapViewActions.setValue({
+          data: oppositeDataKey,
+          value: getSwapAmountOut(dataWICP, oppositeData),
+        })
+      );
+    }
+  }
+
+  function handleSetOppositeValue(value: string, dataKey: SwapTokenDataKey) {
+    const data = dataKey === 'from' ? from : to;
+    const oppositeData = dataKey === 'from' ? to : from;
+    const oppositeDataKey = dataKey === 'from' ? 'to' : 'from';
+
+    dispatch(
+      swapViewActions.setValue({
+        data: oppositeDataKey,
+        value: getSwapAmountOut({ ...data, value }, oppositeData),
+      })
+    );
+  }
+
+  function handleSetValue(value: string, dataKey: SwapTokenDataKey) {
+    dispatch(swapViewActions.setValue({ data: dataKey, value }));
+  }
+
+  const handleChangeValue = (value: string, dataKey: SwapTokenDataKey) => {
+    if (!from.metadata || !to.metadata || !allPairs) return;
+    handleSetValue(value, dataKey);
+
+    if (isICPSelected && isWICPSelected) {
+      handleICPToWICPChange(value, dataKey);
+      return;
+    }
+
+    if (isICPSelected && isXTCSelected) {
+      handleICPToXTCChange(value, dataKey);
+      return;
+    }
+
+    if (isICPSelected) {
+      handleICPToTokenChange(value, dataKey);
+      return;
+    }
+
+    handleSetOppositeValue(value, dataKey);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  };
+
   useEffect(() => {
     if (!isLoading && fromTokenOptions && toTokenOptions) {
       const tokenFromId = query.get('from');
@@ -504,9 +665,7 @@ export const SwapHomeStep = () => {
         <Box width="100%">
           <Token
             value={from.value}
-            setValue={(value) =>
-              dispatch(swapViewActions.setValue({ data: 'from', value }))
-            }
+            setValue={(value) => handleChangeValue(value, 'from')}
             tokenListMetadata={fromTokenOptions}
             tokenMetadata={from.metadata}
             isLoading={isLoading}
@@ -553,9 +712,7 @@ export const SwapHomeStep = () => {
         <Box width="100%">
           <Token
             value={to.value}
-            setValue={(value) =>
-              dispatch(swapViewActions.setValue({ data: 'to', value }))
-            }
+            setValue={(value) => handleChangeValue(value, 'to')}
             tokenListMetadata={toTokenOptions}
             tokenMetadata={to.metadata}
             isLoading={isLoading}

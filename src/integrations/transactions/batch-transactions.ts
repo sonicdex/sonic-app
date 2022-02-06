@@ -120,7 +120,7 @@ export class BatchTransactions implements Batch.Controller {
             ...firstTransaction,
             args: () => firstTransaction.args(nextTxArgs),
           },
-          ...otherTransactions,
+          ...(otherTransactions?.length > 0 ? otherTransactions : []),
         ]
       : this.transactions;
 

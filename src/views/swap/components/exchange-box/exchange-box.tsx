@@ -27,7 +27,7 @@ import {
   getAmountOutMin,
   getCurrencyString,
   getSwapAmountOut,
-  getXTCValueFromICP,
+  getXTCValueByXDRRate,
 } from '@/utils/format';
 
 import { ChainPopover } from '.';
@@ -122,7 +122,7 @@ export const ExchangeBox: React.FC = () => {
 
     const icpFeeInXTC =
       xtcMetadata && ICPXDRconversionRate
-        ? getXTCValueFromICP({
+        ? getXTCValueByXDRRate({
             amount: formatAmount(ICP_METADATA.fee, ICP_METADATA.decimals),
             conversionRate: ICPXDRconversionRate,
             fee: xtcMetadata.fee,

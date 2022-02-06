@@ -114,14 +114,19 @@ export const MintManualModal = () => {
     [addNotification]
   );
 
+  const resetModalData = () => {
+    dispatch(modalsSliceActions.setMintManualModalErrorMessage(''));
+    setBlockHeightErrorMessage(undefined);
+    setTokenErrorMessage(undefined);
+  };
+
   const handleClose = () => {
+    resetModalData();
     dispatch(modalsSliceActions.closeMintManualModal());
   };
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    dispatch(modalsSliceActions.setMintManualModalErrorMessage(''));
-    setBlockHeightErrorMessage(undefined);
-    setTokenErrorMessage(undefined);
+    resetModalData();
     e.preventDefault();
 
     if (!mintManualBlockHeight || !mintManualTokenSymbol) {

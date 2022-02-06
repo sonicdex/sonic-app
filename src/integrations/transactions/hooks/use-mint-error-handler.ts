@@ -48,7 +48,7 @@ export const useMintErrorHandler = ({
         : isBlockUsedError
         ? `Block Height entered is already used`
         : isOperationStyleError
-        ? `Block Height is not related to mint transaction type`
+        ? `Provided Block Height can't be used for this operation`
         : isErrorToError
         ? `Selected token symbol does not match the Block Height`
         : isAmountToSmallError

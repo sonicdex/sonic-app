@@ -98,24 +98,44 @@ export const getAmountLP = ({
   return Math.min(Number(one), Number(two)).toString();
 };
 
-export type GetXTCValueFromICPOptions = {
+export type GetXTCValueByXDRRateOptions = {
   amount: string;
   conversionRate: string;
   fee: bigint;
   decimals: number;
 };
 
-export function getXTCValueFromICP({
+export function getXTCValueByXDRRate({
   amount,
   conversionRate,
   fee,
   decimals,
-}: GetXTCValueFromICPOptions) {
+}: GetXTCValueByXDRRateOptions) {
   return new BigNumber(amount)
     .multipliedBy(new BigNumber(conversionRate))
     .multipliedBy(new BigNumber(DEFAULT_CYCLES_PER_XDR))
     .dividedBy(new BigNumber(TOKEN_SUBDIVIDABLE_BY * 100_000_000))
     .minus(formatAmount(fee, decimals));
+}
+
+export type GetICPValueByXDRRateOptions = {
+  amount: string;
+  conversionRate: string;
+  fee: bigint;
+  decimals: number;
+};
+
+export function getICPValueByXDRRate({
+  amount,
+  conversionRate,
+  fee,
+  decimals,
+}: GetXTCValueByXDRRateOptions) {
+  return new BigNumber(amount)
+    .dividedBy(new BigNumber(conversionRate))
+    .dividedBy(new BigNumber(DEFAULT_CYCLES_PER_XDR))
+    .multipliedBy(new BigNumber(TOKEN_SUBDIVIDABLE_BY * 100_000_000))
+    .plus(formatAmount(fee, decimals));
 }
 
 export interface GetLPPercentageString extends GetAmountLPOptions {

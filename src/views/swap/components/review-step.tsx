@@ -144,7 +144,6 @@ export const SwapReviewStep = () => {
               },
             })}
             shouldGlow
-            isDisabled
           >
             <TokenContent>
               <TokenDetailsButton>

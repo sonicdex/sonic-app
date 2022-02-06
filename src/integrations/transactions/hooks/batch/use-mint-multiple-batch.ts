@@ -59,8 +59,6 @@ export const useMintMultipleBatch = ({
 
   const getTransactionNames = () => Object.keys(transactions);
 
-  console.log(transactions);
-
   return {
     batch: useBatchHook<string>({ transactions }),
     getTransactionNames,
