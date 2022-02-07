@@ -47,12 +47,14 @@ export enum SwapStep {
   Review,
 }
 
-export const useHomeStepData = () => {
+export const useSwapViewData = () => {
   const [step, setStep] = useState(SwapStep.Home);
+  const [isAutoSlippage, setIsAutoSlippage] = useState(true);
+
+  const query = useQuery();
   const { addNotification } = useNotificationStore();
   const { fromTokenOptions, toTokenOptions, from, to, tokenList, keepInSonic } =
     useSwapViewStore();
-  const query = useQuery();
   const dispatch = useAppDispatch();
   const {
     sonicBalances,
@@ -69,7 +71,6 @@ export const useHomeStepData = () => {
   const { ICPXDRconversionRate } = useCyclesMintingCanisterStore();
   const { state: priceState } = usePriceStore();
   const { isConnected } = usePlugStore();
-  const [isAutoSlippage, setIsAutoSlippage] = useState(true);
 
   const openSelectTokenModal = useTokenModalOpener();
 
@@ -187,10 +188,12 @@ export const useHomeStepData = () => {
     }
   }
 
-  function handleSetOppositeValue(value: string, dataKey: SwapTokenDataKey) {
+  function handleSwapChange(value: string, dataKey: SwapTokenDataKey) {
     const data = dataKey === 'from' ? from : to;
     const oppositeData = dataKey === 'from' ? to : from;
     const oppositeDataKey = dataKey === 'from' ? 'to' : 'from';
+
+    console.log(value, dataKey, { ...data, value }, oppositeData);
 
     dispatch(
       swapViewActions.setValue({
@@ -231,7 +234,7 @@ export const useHomeStepData = () => {
       return;
     }
 
-    handleSetOppositeValue(value, dataKey);
+    handleSwapChange(value, dataKey);
   };
 
   const handleSwitchTokens = () => {
@@ -271,30 +274,6 @@ export const useHomeStepData = () => {
       selectedTokenIds,
     });
   };
-
-  const isFetchingNotStarted = useMemo(
-    () =>
-      allPairsState === FeatureState.NotStarted ||
-      supportedTokenListState === FeatureState.NotStarted,
-    [supportedTokenListState, allPairsState]
-  );
-
-  const isLoading = useMemo(
-    () =>
-      balancesState === FeatureState.Loading ||
-      supportedTokenListState === FeatureState.Loading ||
-      allPairsState === FeatureState.Loading,
-    [balancesState, supportedTokenListState, allPairsState]
-  );
-
-  const isBalancesUpdating = useMemo(
-    () => balancesState === FeatureState.Updating,
-    [balancesState]
-  );
-  const isPriceUpdating = useMemo(
-    () => priceState === FeatureState.Updating,
-    [priceState]
-  );
 
   const checkIsPlugProviderVersionCompatible = useCallback(() => {
     const plugProviderVersionNumber = Number(
@@ -416,6 +395,30 @@ export const useHomeStepData = () => {
   const handleSetSlippage = (slippage: string) => {
     dispatch(swapViewActions.setSlippage(slippage));
   };
+
+  const isFetchingNotStarted = useMemo(
+    () =>
+      allPairsState === FeatureState.NotStarted ||
+      supportedTokenListState === FeatureState.NotStarted,
+    [supportedTokenListState, allPairsState]
+  );
+
+  const isLoading = useMemo(
+    () =>
+      balancesState === FeatureState.Loading ||
+      supportedTokenListState === FeatureState.Loading ||
+      allPairsState === FeatureState.Loading,
+    [balancesState, supportedTokenListState, allPairsState]
+  );
+
+  const isBalancesUpdating = useMemo(
+    () => balancesState === FeatureState.Updating,
+    [balancesState]
+  );
+  const isPriceUpdating = useMemo(
+    () => priceState === FeatureState.Updating,
+    [priceState]
+  );
 
   const [isButtonDisabled, buttonMessage, handleButtonClick] = useMemo<
     [boolean, string, (() => void)?]
@@ -583,7 +586,28 @@ export const useHomeStepData = () => {
     }
   }, [to.metadata, tokenBalances, sonicBalances, icpBalance]);
 
+  const isSwapPlacementButtonDisabled = useMemo(() => {
+    return !to.metadata || (isFromTokenIsICP && isToTokenIsXTC);
+  }, [isFromTokenIsICP, isToTokenIsXTC, to.metadata]);
+
+  const isExplanationTooltipVisible = useMemo(() => {
+    return isToTokenIsXTC && isFromTokenIsICP;
+  }, [isFromTokenIsICP, isToTokenIsXTC]);
+
+  const currentOperation = useMemo(
+    () =>
+      isFromTokenIsICP && isToTokenIsWICP
+        ? OperationType.Wrap
+        : isFromTokenIsICP && isToTokenIsXTC
+        ? OperationType.Mint
+        : OperationType.Swap,
+    [isFromTokenIsICP, isToTokenIsWICP, isToTokenIsXTC]
+  );
+
+  const canHeldInSonic = useMemo(() => !isToTokenIsICP, [isToTokenIsICP]);
+
   useEffect(() => {
+    // Get tokens from query params after loading
     if (!isLoading && fromTokenOptions && toTokenOptions) {
       const tokenFromId = query.get('from');
       const tokenToId = query.get('to');
@@ -608,26 +632,6 @@ export const useHomeStepData = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoading]);
-
-  const isSwapPlacementButtonDisabled = useMemo(() => {
-    return !to.metadata || (isFromTokenIsICP && isToTokenIsXTC);
-  }, [isFromTokenIsICP, isToTokenIsXTC, to.metadata]);
-
-  const isExplanationTooltipVisible = useMemo(() => {
-    return isToTokenIsXTC && isFromTokenIsICP;
-  }, [isFromTokenIsICP, isToTokenIsXTC]);
-
-  const currentOperation = useMemo(
-    () =>
-      isFromTokenIsICP && isToTokenIsWICP
-        ? OperationType.Wrap
-        : isFromTokenIsICP && isToTokenIsXTC
-        ? OperationType.Mint
-        : OperationType.Swap,
-    [isFromTokenIsICP, isToTokenIsWICP, isToTokenIsXTC]
-  );
-
-  const canHeldInSonic = useMemo(() => !isToTokenIsICP, [isToTokenIsICP]);
 
   return {
     step,

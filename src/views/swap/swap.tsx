@@ -42,7 +42,7 @@ import { useSwapView, useSwapViewStore } from '@/store';
 
 import { SwapStep } from './';
 import { ExchangeBox, KeepInSonicBox } from './components';
-import { useHomeStepData } from './hooks';
+import { useSwapViewData } from './hooks';
 
 export const SwapView = () => {
   useSwapView();
@@ -78,7 +78,7 @@ export const SwapView = () => {
     onMaxClick,
     onSelectToken,
     onSwitchTokens,
-  } = useHomeStepData();
+  } = useSwapViewData();
 
   const swapPlacementButtonBg = useColorModeValue('gray.50', 'gray.800');
   const menuListShadow = useColorModeValue('lg', 'none');
