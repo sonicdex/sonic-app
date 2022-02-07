@@ -33,8 +33,12 @@ import { debounce } from '@/utils/function';
 export const AssetsWithdrawView = () => {
   const query = useQuery();
   const { amount, tokenId } = useWithdrawViewStore();
-  const { supportedTokenList, sonicBalances, supportedTokenListState } =
-    useSwapCanisterStore();
+  const {
+    supportedTokenList,
+    sonicBalances,
+    balancesState,
+    supportedTokenListState,
+  } = useSwapCanisterStore();
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -136,11 +140,12 @@ export const AssetsWithdrawView = () => {
     );
   };
 
-  const isLoading =
-    supportedTokenListState === FeatureState.Loading &&
-    !supportedTokenList &&
-    !selectedTokenMetadata &&
-    !tokenId;
+  const isLoading = useMemo(
+    () =>
+      supportedTokenListState === FeatureState.Loading ||
+      balancesState === FeatureState.Loading,
+    [balancesState, supportedTokenListState]
+  );
 
   return (
     <>
