@@ -242,9 +242,9 @@ export const useSwapViewData = () => {
     dispatch(swapViewActions.switchTokens());
   };
 
-  const handleMaxClick = (key: SwapTokenDataKey) => {
-    const balance = key === 'from' ? fromBalance : toBalance;
-    const metadata = key === 'from' ? from.metadata : to.metadata;
+  const handleMaxClick = (dataKey: SwapTokenDataKey) => {
+    const balance = dataKey === 'from' ? fromBalance : toBalance;
+    const metadata = dataKey === 'from' ? from.metadata : to.metadata;
 
     if (!balance) {
       return;
@@ -252,7 +252,7 @@ export const useSwapViewData = () => {
 
     dispatch(
       swapViewActions.setValue({
-        data: key,
+        data: dataKey,
         value: getDepositMaxValue(metadata, balance),
       })
     );
