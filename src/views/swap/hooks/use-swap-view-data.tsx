@@ -261,14 +261,30 @@ export const useSwapViewData = () => {
     const options = dataKey === 'from' ? fromTokenOptions : toTokenOptions;
     const data = dataKey === 'from' ? from : to;
     const oppositeDataKey = dataKey === 'from' ? 'to' : 'from';
+    const oppositeTokenId =
+      dataKey === 'from' ? to.metadata?.id : from.metadata?.id;
 
     openSelectTokenModal({
       metadata: options,
       onSelect: (tokenId) => {
         batch(() => {
-          dispatch(swapViewActions.setToken({ data: dataKey, tokenId }));
+          if (oppositeTokenId === tokenId) {
+            dispatch(
+              swapViewActions.setToken({
+                data: oppositeDataKey,
+                tokenId: undefined,
+              })
+            );
+            dispatch(swapViewActions.setToken({ data: dataKey, tokenId }));
+            dispatch(
+              swapViewActions.setValue({ data: oppositeDataKey, value: '' })
+            );
+            dispatch(swapViewActions.setValue({ data: dataKey, value: '' }));
+          } else {
+            dispatch(swapViewActions.setToken({ data: dataKey, tokenId }));
 
-          handleChangeValue(data.value, oppositeDataKey);
+            handleChangeValue(data.value, oppositeDataKey);
+          }
         });
       },
       selectedTokenIds,
