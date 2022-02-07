@@ -70,6 +70,7 @@ export const SwapView = () => {
     isButtonDisabled,
     buttonMessage,
     setStep,
+    setLastChangedInputDataKey,
     onButtonClick,
     onChangeValue,
     onSetIsAutoSlippage,
@@ -138,7 +139,10 @@ export const SwapView = () => {
                 <TokenDetailsSymbol />
               </TokenDetailsButton>
 
-              <TokenInput autoFocus />
+              <TokenInput
+                autoFocus
+                onChange={() => setLastChangedInputDataKey('from')}
+              />
             </TokenContent>
             <TokenData>
               <TokenDataBalances
@@ -180,7 +184,7 @@ export const SwapView = () => {
                   </TokenDetailsButton>
                 )}
 
-                <TokenInput />
+                <TokenInput onChange={() => setLastChangedInputDataKey('to')} />
               </TokenContent>
               <TokenData>
                 <TokenDataBalances isUpdating={isBalancesUpdating} />

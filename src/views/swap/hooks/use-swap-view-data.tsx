@@ -48,6 +48,9 @@ export enum SwapStep {
 }
 
 export const useSwapViewData = () => {
+  const [lastChangedInputDataKey, setLastChangedInputDataKey] =
+    useState<SwapTokenDataKey>('from');
+
   const [step, setStep] = useState(SwapStep.Home);
   const [isAutoSlippage, setIsAutoSlippage] = useState(true);
 
@@ -234,7 +237,10 @@ export const useSwapViewData = () => {
 
   const handleSwitchTokens = () => {
     resetStepToHome();
-    dispatch(swapViewActions.switchTokens());
+    dispatch(swapViewActions.switchTokens(lastChangedInputDataKey));
+    setLastChangedInputDataKey(
+      lastChangedInputDataKey === 'from' ? 'to' : 'from'
+    );
   };
 
   const handleMaxClick = (dataKey: SwapTokenDataKey) => {
@@ -649,6 +655,7 @@ export const useSwapViewData = () => {
     isSelectTokenButtonDisabled,
     selectTokenButtonText,
     setStep,
+    setLastChangedInputDataKey,
     onButtonClick: handleButtonClick,
     onMenuClose: handleMenuClose,
     onSetSlippage: handleSetSlippage,

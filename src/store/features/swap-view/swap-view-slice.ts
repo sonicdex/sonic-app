@@ -79,6 +79,7 @@ export const swapViewSlice = createSlice({
           tokenList,
           tokenId: metadata.id,
           amount: value,
+          dataKey: data,
         });
         state[data].paths = paths;
       }
@@ -125,6 +126,7 @@ export const swapViewSlice = createSlice({
           pairList: allPairs as PairList,
           tokenList,
           tokenId,
+          dataKey: data,
         });
       } else {
         state[data].metadata = undefined;
@@ -134,50 +136,74 @@ export const swapViewSlice = createSlice({
         state.to.metadata = undefined;
       }
     },
-    switchTokens: (state) => {
+    switchTokens: (state, action: PayloadAction<SwapTokenDataKey>) => {
+      const dataKey = action.payload;
+      const oppositeDataKey = dataKey === 'from' ? 'to' : 'from';
+      const oppositeMetadata = state[oppositeDataKey].metadata;
       if (
         state.from.metadata &&
         state.to.metadata &&
+        oppositeMetadata &&
         state.tokenList &&
         state.allPairs
       ) {
+        const value = state[dataKey].value;
+
+        const oppositeTokenPaths = getTokenPaths({
+          pairList: state.allPairs as PairList,
+          tokenList: state.tokenList,
+          tokenId: state[dataKey].metadata!.id,
+          amount: value,
+          dataKey: oppositeDataKey,
+        });
+
+        console.log(oppositeTokenPaths);
+
+        const oppositeValue = getSwapAmountOut(
+          { ...state[dataKey], paths: oppositeTokenPaths },
+          state[oppositeDataKey]
+        );
+
+        const tokenPaths = getTokenPaths({
+          pairList: state.allPairs as PairList,
+          tokenList: state.tokenList,
+          tokenId: state[oppositeDataKey].metadata!.id,
+          amount: oppositeValue,
+          dataKey: dataKey,
+        });
+
         const tempMetadata = { ...state.from.metadata };
-        const tempValue = state.from.value;
-
-        const fromPaths = getTokenPaths({
-          pairList: state.allPairs as PairList,
-          tokenList: state.tokenList,
-          tokenId: state.to.metadata.id,
-          amount: state.to.value,
-        });
-
-        const toPaths = getTokenPaths({
-          pairList: state.allPairs as PairList,
-          tokenList: state.tokenList,
-          tokenId: state.from.metadata.id,
-          amount: state.from.value,
-        });
-
-        const baseFromTokenPaths = getTokenPaths({
-          pairList: state.allPairs as PairList,
-          tokenList: state.tokenList,
-          tokenId: state.to.metadata.id,
-        });
-        const baseToTokenPaths = getTokenPaths({
-          pairList: state.allPairs as PairList,
-          tokenList: state.tokenList,
-          tokenId: state.from.metadata.id,
-        });
-
         state.from.metadata = { ...state.to.metadata };
-        state.from.value = state.to.value;
-        state.from.paths = fromPaths;
-        state.baseFromTokenPaths = baseFromTokenPaths;
-
         state.to.metadata = tempMetadata;
-        state.to.value = tempValue;
-        state.to.paths = toPaths;
-        state.baseToTokenPaths = baseToTokenPaths;
+
+        state[oppositeDataKey].paths = tokenPaths;
+        state[dataKey].paths = oppositeTokenPaths;
+
+        state[oppositeDataKey].value = value;
+        state[dataKey].value = oppositeValue;
+
+        const baseFromPaths = getTokenPaths({
+          pairList: state.allPairs as PairList,
+          tokenList: state.tokenList,
+          tokenId: state.to.metadata.id,
+        });
+        const baseToPaths = getTokenPaths({
+          pairList: state.allPairs as PairList,
+          tokenList: state.tokenList,
+          tokenId: state.from.metadata.id,
+        });
+
+        state.baseFromTokenPaths = baseFromPaths;
+        state.baseToTokenPaths = baseToPaths;
+
+        console.log({
+          value,
+          oppositeValue,
+          tokenPaths,
+          oppositeTokenPaths,
+          baseFromPaths,
+          baseToPaths,
+        });
       }
     },
     setTokenList: (

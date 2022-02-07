@@ -12,11 +12,15 @@ export type NumberInputProps = InputProps & {
 };
 
 export const NumberInput = forwardRef<NumberInputProps, 'input'>(
-  ({ placeholder = '0.00', setValue, ...props }, ref) => {
+  ({ placeholder = '0.00', onChange, setValue, ...props }, ref) => {
     const handleValueChange = (event: ChangeEvent<HTMLInputElement>) => {
       const value = event.target.value;
 
       if (isNaN(Number(value))) return;
+
+      if (onChange) {
+        onChange(event);
+      }
 
       if (setValue) {
         setValue(value);
@@ -37,10 +41,10 @@ export const NumberInput = forwardRef<NumberInputProps, 'input'>(
         color={color}
         outline="none"
         transition="color 400ms"
-        onChange={handleValueChange}
         placeholder={placeholder}
         _placeholder={{ color: color }}
         {...props}
+        onChange={handleValueChange}
       />
     );
   }
