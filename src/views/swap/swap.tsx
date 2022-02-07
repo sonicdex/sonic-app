@@ -1,19 +1,269 @@
-import { SwapStep, useSwapView, useSwapViewStore } from '@/store';
+import {
+  Box,
+  Button,
+  Flex,
+  Icon,
+  IconButton,
+  Link,
+  Menu,
+  MenuButton,
+  MenuList,
+  Popover,
+  PopoverArrow,
+  PopoverBody,
+  PopoverContent,
+  PopoverTrigger,
+  Skeleton,
+  Stack,
+  Text,
+  Tooltip,
+  useColorModeValue,
+} from '@chakra-ui/react';
+import { FaArrowDown } from '@react-icons/all-files/fa/FaArrowDown';
+import { FaCog } from '@react-icons/all-files/fa/FaCog';
+import { FaInfoCircle } from '@react-icons/all-files/fa/FaInfoCircle';
 
-import { SwapHomeStep, SwapReviewStep } from './components';
+import {
+  PlugButton,
+  SlippageSettings,
+  Token,
+  TokenContent,
+  TokenData,
+  TokenDataBalances,
+  TokenDataPrice,
+  TokenDetailsButton,
+  TokenDetailsLogo,
+  TokenDetailsSymbol,
+  TokenInput,
+  ViewHeader,
+} from '@/components';
+import { ENV } from '@/config';
+import { useSwapView, useSwapViewStore } from '@/store';
+
+import { SwapStep } from './';
+import { ExchangeBox, KeepInSonicBox } from './components';
+import { useHomeStepData } from './hooks';
 
 export const SwapView = () => {
   useSwapView();
-  const { step } = useSwapViewStore();
+  const { fromTokenOptions, toTokenOptions, from, to, slippage } =
+    useSwapViewStore();
 
-  const steps = {
-    [SwapStep.Home]: <SwapHomeStep />,
-    [SwapStep.Review]: <SwapReviewStep />,
-  };
+  const {
+    step,
+    headerTitle,
+    isAutoSlippage,
+    isICPSelected,
+    isLoading,
+    isBalancesUpdating,
+    isPriceUpdating,
+    isSwapPlacementButtonDisabled,
+    isExplanationTooltipVisible,
+    isSelectTokenButtonDisabled,
+    selectTokenButtonText,
+    currentOperation,
+    priceImpact,
+    fromSources,
+    toSources,
+    canHeldInSonic,
+    isConnected,
+    isButtonDisabled,
+    buttonMessage,
+    setStep,
+    onButtonClick,
+    onChangeValue,
+    onSetIsAutoSlippage,
+    onSetSlippage,
+    onMenuClose,
+    onMaxClick,
+    onSelectToken,
+    onSwitchTokens,
+  } = useHomeStepData();
 
-  if (steps.hasOwnProperty(step)) {
-    return steps[step];
-  }
+  const swapPlacementButtonBg = useColorModeValue('gray.50', 'gray.800');
+  const menuListShadow = useColorModeValue('lg', 'none');
+  const menuListBg = useColorModeValue('gray.50', 'custom.3');
+  const linkColor = useColorModeValue('dark-blue.500', 'dark-blue.400');
 
-  return steps[SwapStep.Home];
+  return (
+    <Stack spacing={4}>
+      <ViewHeader
+        title={headerTitle}
+        onArrowBack={
+          step === SwapStep.Review ? () => setStep(SwapStep.Home) : undefined
+        }
+      >
+        <Menu onClose={onMenuClose}>
+          <Tooltip label="Adjust the slippage">
+            <MenuButton
+              as={IconButton}
+              isRound
+              size="sm"
+              aria-label="Adjust the slippage"
+              icon={<FaCog />}
+              ml="auto"
+              isDisabled={isICPSelected}
+            />
+          </Tooltip>
+          <MenuList
+            bg={menuListBg}
+            shadow={menuListShadow}
+            border="none"
+            borderRadius={20}
+            ml={-20}
+            py={0}
+          >
+            <SlippageSettings
+              slippage={slippage}
+              isAutoSlippage={isAutoSlippage}
+              setSlippage={onSetSlippage}
+              setIsAutoSlippage={onSetIsAutoSlippage}
+            />
+          </MenuList>
+        </Menu>
+      </ViewHeader>
+      <Flex direction="column" alignItems="center">
+        <Box width="full">
+          <Token
+            value={from.value}
+            setValue={(value) => onChangeValue(value, 'from')}
+            tokenListMetadata={fromTokenOptions}
+            tokenMetadata={from.metadata}
+            isLoading={isLoading}
+            sources={fromSources}
+          >
+            <TokenContent>
+              <TokenDetailsButton onClick={() => onSelectToken('from')}>
+                <TokenDetailsLogo />
+                <TokenDetailsSymbol />
+              </TokenDetailsButton>
+
+              <TokenInput autoFocus />
+            </TokenContent>
+            <TokenData>
+              <TokenDataBalances
+                isUpdating={isBalancesUpdating}
+                onMaxClick={() => onMaxClick('from')}
+              />
+              <TokenDataPrice isUpdating={isPriceUpdating} />
+            </TokenData>
+          </Token>
+        </Box>
+
+        <Tooltip label="Swap placement">
+          <IconButton
+            aria-label="Swap placement"
+            icon={<Icon as={FaArrowDown} transition="transform 250ms" />}
+            variant="outline"
+            mt={-2}
+            mb={-2}
+            zIndex="overlay"
+            bg={swapPlacementButtonBg}
+            onClick={onSwitchTokens}
+            isDisabled={isSwapPlacementButtonDisabled}
+            pointerEvents={!to.metadata ? 'none' : 'all'}
+            _hover={{
+              '& > svg': {
+                transform: 'rotate(180deg)',
+              },
+            }}
+          />
+        </Tooltip>
+
+        <Box width="full">
+          <Token
+            value={to.value}
+            setValue={(value) => onChangeValue(value, 'to')}
+            tokenListMetadata={toTokenOptions}
+            tokenMetadata={to.metadata}
+            isLoading={isLoading}
+            sources={toSources}
+            shouldGlow={step === SwapStep.Review}
+          >
+            <TokenContent>
+              {to.metadata ? (
+                <TokenDetailsButton onClick={() => onSelectToken('to')}>
+                  <TokenDetailsLogo />
+                  <TokenDetailsSymbol />
+                </TokenDetailsButton>
+              ) : (
+                <TokenDetailsButton
+                  onClick={() => onSelectToken('to')}
+                  isDisabled={isSelectTokenButtonDisabled}
+                  variant={isLoading ? 'solid' : 'gradient'}
+                  colorScheme={isLoading ? 'gray' : 'dark-blue'}
+                >
+                  <Skeleton isLoaded={!isLoading}>
+                    {selectTokenButtonText}
+                  </Skeleton>
+                </TokenDetailsButton>
+              )}
+
+              <TokenInput />
+            </TokenContent>
+            <TokenData>
+              <TokenDataBalances isUpdating={isBalancesUpdating} />
+              <TokenDataPrice
+                isUpdating={isPriceUpdating}
+                priceImpact={priceImpact}
+              >
+                {isExplanationTooltipVisible && (
+                  <Popover trigger="hover">
+                    <PopoverTrigger>
+                      <Box tabIndex={0}>
+                        <FaInfoCircle />
+                      </Box>
+                    </PopoverTrigger>
+                    <PopoverContent>
+                      <PopoverArrow />
+                      <PopoverBody>
+                        <Text>
+                          This price & percentage shows the current difference
+                          between minting and swapping to XTC from ICP. If
+                          negative, it's better to mint; if positive, it's
+                          better to swap.{' '}
+                          <Link
+                            color={linkColor}
+                            rel="noopener noreferrer"
+                            target="_blank"
+                            href={`${ENV.URLs.sonicDocs}/developer-guides/front-end-integrations#icp-xtc`}
+                          >
+                            Learn More.
+                          </Link>
+                        </Text>
+                      </PopoverBody>
+                    </PopoverContent>
+                  </Popover>
+                )}
+              </TokenDataPrice>
+            </TokenData>
+          </Token>
+        </Box>
+      </Flex>
+
+      <ExchangeBox />
+
+      <KeepInSonicBox
+        canHeldInSonic={canHeldInSonic}
+        symbol={to.metadata?.symbol}
+        operation={currentOperation}
+      />
+
+      {isConnected ? (
+        <Button
+          isFullWidth
+          variant="gradient"
+          colorScheme="dark-blue"
+          size="lg"
+          onClick={onButtonClick}
+          isLoading={isLoading}
+          isDisabled={isButtonDisabled}
+        >
+          {buttonMessage}
+        </Button>
+      ) : (
+        <PlugButton variant="dark" />
+      )}
+    </Stack>
+  );
 };

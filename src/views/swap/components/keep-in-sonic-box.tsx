@@ -18,7 +18,11 @@ import { useMemo } from 'react';
 
 import { swapViewActions, useAppDispatch, useSwapViewStore } from '@/store';
 
-type OperationType = 'swap' | 'wrap' | 'mint';
+export enum OperationType {
+  Swap = 'swap',
+  Wrap = 'wrap',
+  Mint = 'mint',
+}
 
 type KeepInSonicBoxProps = {
   symbol?: string;
@@ -141,7 +145,7 @@ export const KeepInSonicBox: React.FC<KeepInSonicBoxProps> = ({
         </>
       ) : (
         <Text fontWeight="bold" color="gray.400">
-          ICP can’t be held in the Sonic canister
+          {symbol} can’t be held in the Sonic canister
         </Text>
       )}
     </Flex>

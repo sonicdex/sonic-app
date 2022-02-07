@@ -15,13 +15,7 @@ export interface SwapTokenData<M = AppTokenMetadata> extends BaseTokenData<M> {
   paths: MaximalPathsList;
 }
 
-export enum SwapStep {
-  Home,
-  Review,
-}
-
 interface SwapViewState {
-  step: SwapStep;
   state: FeatureState;
   from: SwapTokenData;
   to: SwapTokenData;
@@ -35,7 +29,6 @@ interface SwapViewState {
 export const INITIAL_SWAP_SLIPPAGE = '0.5';
 
 const initialState: SwapViewState = {
-  step: SwapStep?.Home,
   state: FeatureState?.Idle,
   from: {
     paths: {},
@@ -59,9 +52,6 @@ export const swapViewSlice = createSlice({
   // `createSlice` will infer the state type from the `initialState` argument
   initialState,
   reducers: {
-    setStep: (state, action: PayloadAction<SwapStep>) => {
-      state.step = action.payload;
-    },
     setState: (state, action: PayloadAction<FeatureState>) => {
       state.state = action.payload;
     },
@@ -81,7 +71,6 @@ export const swapViewSlice = createSlice({
         state.from.paths = paths;
       }
       state[data].value = value;
-      state.step = SwapStep.Home;
     },
     setToken: (
       state,
@@ -118,7 +107,6 @@ export const swapViewSlice = createSlice({
         state.to.value = '';
         state.to.metadata = undefined;
       }
-      state.step = SwapStep.Home;
     },
     switchTokens: (state) => {
       if (
@@ -139,7 +127,6 @@ export const swapViewSlice = createSlice({
         );
         state.to.metadata = temp;
         state.from.value = state.to.value;
-        state.step = SwapStep.Home;
 
         const paths = getTokenPaths(
           state.allPairs as PairList,

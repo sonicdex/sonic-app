@@ -30,7 +30,7 @@ import {
   getXTCValueByXDRRate,
 } from '@/utils/format';
 
-import { ChainPopover } from '.';
+import { ChainPopover } from './chain-popover';
 
 export const ExchangeBox: React.FC = () => {
   const { from, to, slippage, baseTokenPaths, keepInSonic, allPairs } =
