@@ -105,6 +105,7 @@ export const swapViewSlice = createSlice({
     ) => {
       const { allPairs, tokenList } = state;
       const { data, tokenId } = action.payload;
+
       if (tokenId && tokenList && allPairs) {
         const paths = getTokenPaths({
           pairList: allPairs as PairList,
@@ -131,10 +132,9 @@ export const swapViewSlice = createSlice({
       } else {
         state[data].metadata = undefined;
       }
-      if (data === 'from') {
-        state.to.value = '';
-        state.to.metadata = undefined;
-      }
+
+      state.to.value = '';
+      state.from.value = '';
     },
     switchTokens: (state, action: PayloadAction<SwapTokenDataKey>) => {
       const dataKey = action.payload;

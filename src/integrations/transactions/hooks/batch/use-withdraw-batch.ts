@@ -10,6 +10,8 @@ import { useBatchHook, useWithdrawTransactionMemo } from '..';
 export const useWithdrawBatch = (withdraw: Withdraw) => {
   const dispatch = useAppDispatch();
 
+  console.log(withdraw);
+
   const openBatchModal = () => {
     dispatch(
       modalsSliceActions.setWithdrawModalData({
@@ -20,10 +22,12 @@ export const useWithdrawBatch = (withdraw: Withdraw) => {
     dispatch(modalsSliceActions.openWithdrawProgressModal());
   };
 
+  const withdrawMemo = useWithdrawTransactionMemo(withdraw);
+
   return {
     batch: useBatchHook({
       transactions: {
-        withdraw: useWithdrawTransactionMemo(withdraw),
+        withdraw: withdrawMemo,
       },
       handleRetry: () => {
         dispatch(modalsSliceActions.closeWithdrawProgressModal());

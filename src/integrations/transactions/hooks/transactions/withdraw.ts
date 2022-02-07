@@ -14,7 +14,7 @@ export const useWithdrawTransactionMemo: CreateTransaction<Withdraw> = (
 ) =>
   useMemo(() => {
     if (!token?.id || !amount) {
-      return;
+      return {};
     }
 
     return {

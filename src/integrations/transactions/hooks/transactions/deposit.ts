@@ -14,7 +14,7 @@ export const useDepositTransactionMemo: CreateTransaction<Deposit> = (
 ) =>
   useMemo(() => {
     if (!token?.id || !amount) {
-      return;
+      return {};
     }
 
     return {

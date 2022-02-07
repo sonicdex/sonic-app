@@ -15,8 +15,9 @@ export const useCreatePairTransactionMemo: CreateTransaction<CreatePair> = (
   onFail
 ) =>
   useMemo(() => {
-    if (!token0.metadata || !token1.metadata)
-      throw new Error('Tokens are required');
+    if (!token0.metadata || !token1.metadata) {
+      return {};
+    }
 
     return {
       canisterId: ENV.canistersPrincipalIDs.swap,

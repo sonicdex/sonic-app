@@ -82,8 +82,11 @@ export const TokenSelectModal = () => {
     setFilteredList(filteredItems);
   }, [search, parsedTokens]);
 
-  const handleSelect = (selected: boolean, tokenId?: string) => {
-    if (selected) return;
+  const handleSelect = (tokenId?: string) => {
+    if (selectedTokenIds && tokenId && selectedTokenIds?.includes(tokenId)) {
+      return;
+    }
+
     onSelect(tokenId);
     handleTokenSelectClose();
   };
@@ -174,16 +177,7 @@ export const TokenSelectModal = () => {
                     symbol={symbol}
                     decimals={decimals}
                     name={name}
-                    onSelect={() =>
-                      handleSelect(
-                        id
-                          ? selectedTokenIds
-                            ? selectedTokenIds.includes(id)
-                            : false
-                          : false,
-                        id
-                      )
-                    }
+                    onSelect={() => handleSelect(id)}
                     isLoading={isLoading}
                     isSelected={selectedTokenIds?.includes(id)}
                     logoSrc={logo}
@@ -290,7 +284,6 @@ const TokenSelectItem = ({
   decimals = 0,
   isSelected = false,
   isLoading = false,
-
   logoSrc = questionMarkSrc,
 }: TokenSelectItemProps) => {
   const { balancesState } = useBalances();
@@ -298,8 +291,6 @@ const TokenSelectItem = ({
   const isBalancesUpdating = useMemo(() => {
     return balancesState === FeatureState.Updating;
   }, [balancesState]);
-
-  const tokenOpacity = isSelected ? 0.3 : 1;
 
   const nameColor = useColorModeValue('gray.700', 'gray.300');
 
@@ -313,8 +304,7 @@ const TokenSelectItem = ({
       width="100%"
       transition="border 400ms"
       border="1px solid"
-      borderColor={isSelected ? 'custom.4' : 'transparent'}
-      opacity={tokenOpacity}
+      borderColor={isSelected ? 'gray.600' : 'transparent'}
       borderRadius="20px"
       onClick={onSelect}
       _hover={{
