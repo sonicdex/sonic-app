@@ -188,21 +188,6 @@ export const useSwapViewData = () => {
     }
   }
 
-  function handleSwapChange(value: string, dataKey: SwapTokenDataKey) {
-    const data = dataKey === 'from' ? from : to;
-    const oppositeData = dataKey === 'from' ? to : from;
-    const oppositeDataKey = dataKey === 'from' ? 'to' : 'from';
-
-    console.log(value, dataKey, { ...data, value }, oppositeData);
-
-    dispatch(
-      swapViewActions.setValue({
-        data: oppositeDataKey,
-        value: getSwapAmountOut({ ...data, value }, oppositeData),
-      })
-    );
-  }
-
   function handleSetValue(value: string, dataKey: SwapTokenDataKey) {
     dispatch(swapViewActions.setValue({ data: dataKey, value }));
   }
@@ -233,8 +218,6 @@ export const useSwapViewData = () => {
       handleICPToTokenChange(value, dataKey);
       return;
     }
-
-    handleSwapChange(value, dataKey);
   };
 
   const handleSwitchTokens = () => {

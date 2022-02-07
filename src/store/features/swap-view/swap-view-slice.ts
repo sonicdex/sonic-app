@@ -7,6 +7,7 @@ import {
   PairList,
 } from '@/models';
 import { FeatureState, RootState } from '@/store';
+import { getSwapAmountOut } from '@/utils/format';
 import { getTokenPaths, MaximalPathsList } from '@/utils/maximal-paths';
 
 export type SwapTokenDataKey = 'from' | 'to';
@@ -65,6 +66,8 @@ export const swapViewSlice = createSlice({
       const metadata =
         data === 'from' ? state.from.metadata : state.to.metadata;
 
+      const oppositeData = data === 'from' ? 'to' : 'from';
+
       if (allPairs && tokenList && metadata) {
         const paths = getTokenPaths(
           allPairs as PairList,
@@ -75,6 +78,10 @@ export const swapViewSlice = createSlice({
         state[data].paths = paths;
       }
       state[data].value = value;
+      state[oppositeData].value = getSwapAmountOut(
+        state[data],
+        state[oppositeData]
+      );
     },
     setToken: (
       state,
