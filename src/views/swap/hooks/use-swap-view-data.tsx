@@ -106,9 +106,11 @@ export const useSwapViewData = () => {
   function handleICPToWICPChange(newValue: string, dataKey: SwapTokenDataKey) {
     const oppositeDataKey = dataKey === 'from' ? 'to' : 'from';
 
-    const value = new BigNumber(newValue).minus(
-      formatAmount(ICP_METADATA.fee, ICP_METADATA.decimals)
-    );
+    const _newValue = new BigNumber(newValue);
+    const icpFee = formatAmount(ICP_METADATA.fee, ICP_METADATA.decimals);
+
+    const value =
+      dataKey === 'from' ? _newValue.minus(icpFee) : _newValue.plus(icpFee);
 
     dispatch(
       swapViewActions.setValue({
@@ -127,25 +129,36 @@ export const useSwapViewData = () => {
       const handler =
         dataKey === 'from' ? getXTCValueByXDRRate : getICPValueByXDRRate;
 
-      const cyclesWithFees = handler({
-        amount: newValue,
-        conversionRate: ICPXDRconversionRate,
-        fee: xtcMetadata.fee,
-        decimals: xtcMetadata.decimals,
-      });
+      const xtcFee = new BigNumber(
+        formatAmount(xtcMetadata.fee, xtcMetadata.decimals)
+      );
 
-      const icpFeesConvertedToXTC = handler({
+      const icpFeesConvertedToXTC = getXTCValueByXDRRate({
         amount: formatAmount(ICP_METADATA.fee, ICP_METADATA.decimals),
         conversionRate: ICPXDRconversionRate,
-        fee: xtcMetadata.fee,
-        decimals: xtcMetadata.decimals,
-      }).multipliedBy(2);
+      })
+        .minus(xtcFee)
+        .multipliedBy(2);
 
-      const xtcFees = new BigNumber(
-        formatAmount(xtcMetadata.fee, xtcMetadata.decimals)
-      ).multipliedBy(keepInSonic ? 3 : 1);
+      const xtcFees = xtcFee.multipliedBy(keepInSonic ? 4 : 2);
 
-      const cycles = cyclesWithFees.minus(icpFeesConvertedToXTC).minus(xtcFees);
+      const amount =
+        dataKey === 'from'
+          ? newValue
+          : new BigNumber(newValue)
+              .plus(xtcFees)
+              .plus(icpFeesConvertedToXTC)
+              .toString();
+
+      const cyclesWithFees = handler({
+        amount,
+        conversionRate: ICPXDRconversionRate,
+      });
+
+      const cycles =
+        dataKey === 'from'
+          ? cyclesWithFees.minus(icpFeesConvertedToXTC).minus(xtcFees)
+          : cyclesWithFees;
 
       dispatch(
         swapViewActions.setValue({
@@ -166,12 +179,12 @@ export const useSwapViewData = () => {
     );
 
     if (wrappedICPMetadata && tokenList && allPairs) {
-      const paths = getTokenPaths(
-        allPairs,
+      const paths = getTokenPaths({
+        pairList: allPairs,
         tokenList,
-        wrappedICPMetadata.id,
-        newValue
-      );
+        tokenId: wrappedICPMetadata.id,
+        amount: newValue,
+      });
 
       const dataWICP = {
         ...data,
@@ -201,7 +214,6 @@ export const useSwapViewData = () => {
   const handleChangeValue = (value: string, dataKey: SwapTokenDataKey) => {
     if (!from.metadata || !to.metadata || !allPairs) return;
     resetStepToHome();
-
     handleSetValue(value, dataKey);
 
     if (isICPSelected && isWICPSelected) {
@@ -352,10 +364,10 @@ export const useSwapViewData = () => {
       type: NotificationType.Swap,
       id: String(new Date().getTime()),
     });
-    debounce(
-      () => dispatch(swapViewActions.setValue({ data: 'from', value: '' })),
-      300
-    );
+    debounce(() => {
+      dispatch(swapViewActions.setValue({ data: 'from', value: '' }));
+      setStep(SwapStep.Home);
+    }, 300);
   }, [
     addNotification,
     dispatch,

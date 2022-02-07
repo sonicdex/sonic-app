@@ -514,6 +514,7 @@ export const LiquidityAddView = () => {
             </TokenData>
           </Token>
         </Box>
+
         <Center
           borderRadius={12}
           width={10}
@@ -527,6 +528,7 @@ export const LiquidityAddView = () => {
         >
           <Icon as={FaPlus} />
         </Center>
+
         <Box width="100%">
           <Token
             value={token1.value}

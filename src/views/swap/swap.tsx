@@ -150,98 +150,100 @@ export const SwapView = () => {
           </Token>
         </Box>
 
-        <Tooltip label="Swap placement">
-          <IconButton
-            aria-label="Swap placement"
-            icon={<Icon as={FaArrowDown} transition="transform 250ms" />}
-            variant="outline"
-            mt={-2}
-            mb={-2}
-            zIndex="overlay"
-            bg={swapPlacementButtonBg}
-            onClick={onSwitchTokens}
-            isDisabled={isSwapPlacementButtonDisabled}
-            pointerEvents={!to.metadata ? 'none' : 'all'}
-            _hover={{
-              '& > svg': {
-                transform: 'rotate(180deg)',
-              },
-            }}
-          />
-        </Tooltip>
-
-        <Box width="full">
-          <Token
-            value={to.value}
-            setValue={(value) => onChangeValue(value, 'to')}
-            tokenListMetadata={toTokenOptions}
-            tokenMetadata={to.metadata}
-            isLoading={isLoading}
-            sources={toSources}
-            shouldGlow={step === SwapStep.Review}
-          >
-            <TokenContent>
-              {to.metadata ? (
-                <TokenDetailsButton onClick={() => onSelectToken('to')}>
-                  <TokenDetailsLogo />
-                  <TokenDetailsSymbol />
-                </TokenDetailsButton>
-              ) : (
-                <TokenDetailsButton
-                  onClick={() => onSelectToken('to')}
-                  isDisabled={isSelectTokenButtonDisabled}
-                  variant={isLoading ? 'solid' : 'gradient'}
-                  colorScheme={isLoading ? 'gray' : 'dark-blue'}
-                >
-                  <Skeleton isLoaded={!isLoading}>
-                    {selectTokenButtonText}
-                  </Skeleton>
-                </TokenDetailsButton>
-              )}
-
-              <TokenInput />
-            </TokenContent>
-            <TokenData>
-              <TokenDataBalances isUpdating={isBalancesUpdating} />
-              <TokenDataPrice
-                isUpdating={isPriceUpdating}
-                priceImpact={priceImpact}
-              >
-                {isExplanationTooltipVisible && (
-                  <Popover trigger="hover">
-                    <PopoverTrigger>
-                      <Box tabIndex={0}>
-                        <FaInfoCircle />
-                      </Box>
-                    </PopoverTrigger>
-                    <PopoverContent>
-                      <PopoverArrow />
-                      <PopoverBody>
-                        <Text>
-                          This price & percentage shows the current difference
-                          between minting and swapping to XTC from ICP. If
-                          negative, it's better to mint; if positive, it's
-                          better to swap.{' '}
-                          <Link
-                            color={linkColor}
-                            rel="noopener noreferrer"
-                            target="_blank"
-                            href={`${ENV.URLs.sonicDocs}/developer-guides/front-end-integrations#icp-xtc`}
-                          >
-                            Learn More.
-                          </Link>
-                        </Text>
-                      </PopoverBody>
-                    </PopoverContent>
-                  </Popover>
+        <Flex direction="column-reverse" w="full">
+          <Box width="full">
+            <Token
+              value={to.value}
+              setValue={(value) => onChangeValue(value, 'to')}
+              tokenListMetadata={toTokenOptions}
+              tokenMetadata={to.metadata}
+              isLoading={isLoading}
+              sources={toSources}
+              shouldGlow={step === SwapStep.Review}
+            >
+              <TokenContent>
+                {to.metadata ? (
+                  <TokenDetailsButton onClick={() => onSelectToken('to')}>
+                    <TokenDetailsLogo />
+                    <TokenDetailsSymbol />
+                  </TokenDetailsButton>
+                ) : (
+                  <TokenDetailsButton
+                    onClick={() => onSelectToken('to')}
+                    isDisabled={isSelectTokenButtonDisabled}
+                    variant={isLoading ? 'solid' : 'gradient'}
+                    colorScheme={isLoading ? 'gray' : 'dark-blue'}
+                  >
+                    <Skeleton isLoaded={!isLoading}>
+                      {selectTokenButtonText}
+                    </Skeleton>
+                  </TokenDetailsButton>
                 )}
-              </TokenDataPrice>
-            </TokenData>
-          </Token>
-        </Box>
+
+                <TokenInput />
+              </TokenContent>
+              <TokenData>
+                <TokenDataBalances isUpdating={isBalancesUpdating} />
+                <TokenDataPrice
+                  isUpdating={isPriceUpdating}
+                  priceImpact={priceImpact}
+                >
+                  {isExplanationTooltipVisible && (
+                    <Popover trigger="hover">
+                      <PopoverTrigger>
+                        <Box tabIndex={0}>
+                          <FaInfoCircle />
+                        </Box>
+                      </PopoverTrigger>
+                      <PopoverContent>
+                        <PopoverArrow />
+                        <PopoverBody>
+                          <Text>
+                            This price & percentage shows the current difference
+                            between minting and swapping to XTC from ICP. If
+                            negative, it's better to mint; if positive, it's
+                            better to swap.{' '}
+                            <Link
+                              color={linkColor}
+                              rel="noopener noreferrer"
+                              target="_blank"
+                              href={`${ENV.URLs.sonicDocs}/developer-guides/front-end-integrations#icp-xtc`}
+                            >
+                              Learn More.
+                            </Link>
+                          </Text>
+                        </PopoverBody>
+                      </PopoverContent>
+                    </Popover>
+                  )}
+                </TokenDataPrice>
+              </TokenData>
+            </Token>
+          </Box>
+          <Tooltip label="Switch placement">
+            <IconButton
+              aria-label="Switch placement"
+              icon={<Icon as={FaArrowDown} transition="transform 250ms" />}
+              variant="outline"
+              mt={-2}
+              mb={-2}
+              w="fit-content"
+              mx="auto"
+              bg={swapPlacementButtonBg}
+              onClick={onSwitchTokens}
+              isDisabled={isSwapPlacementButtonDisabled}
+              pointerEvents={!to.metadata ? 'none' : 'all'}
+              _hover={{
+                '& > svg': {
+                  transform: 'rotate(180deg)',
+                },
+              }}
+            />
+          </Tooltip>
+        </Flex>
       </Flex>
 
-      <ExchangeBox />
+      <ExchangeBox priceImpact={priceImpact} />
 
       <KeepInSonicBox
         canHeldInSonic={canHeldInSonic}

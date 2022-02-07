@@ -22,7 +22,6 @@ import { ICP_METADATA } from '@/constants';
 import { useBalances, useTokenSelectionChecker } from '@/hooks';
 import { useCyclesMintingCanisterStore, useSwapViewStore } from '@/store';
 import {
-  calculatePriceImpact,
   formatAmount,
   getAmountOutMin,
   getCurrencyString,
@@ -32,8 +31,12 @@ import {
 
 import { ChainPopover } from './chain-popover';
 
-export const ExchangeBox: React.FC = () => {
-  const { from, to, slippage, baseTokenPaths, keepInSonic, allPairs } =
+export type ExchangeBoxProps = {
+  priceImpact?: string;
+};
+
+export const ExchangeBox: React.FC<ExchangeBoxProps> = ({ priceImpact }) => {
+  const { from, to, slippage, baseFromTokenPaths, keepInSonic, allPairs } =
     useSwapViewStore();
 
   const { sonicBalances } = useBalances();
@@ -65,19 +68,6 @@ export const ExchangeBox: React.FC = () => {
     id1: to.metadata?.id,
     targetId: ENV.canistersPrincipalIDs.XTC,
   });
-
-  const priceImpact = useMemo(() => {
-    if (from.metadata?.price && to.metadata?.price) {
-      return calculatePriceImpact({
-        amountIn: from.value,
-        amountOut: to.value,
-        priceIn: from.metadata.price,
-        priceOut: to.metadata.price,
-      });
-    }
-
-    return '';
-  }, [from, to]);
 
   const { depositFee, withdrawFee } = useMemo(() => {
     if (from.metadata?.id && to.metadata?.id && sonicBalances) {
@@ -125,12 +115,10 @@ export const ExchangeBox: React.FC = () => {
         ? getXTCValueByXDRRate({
             amount: formatAmount(ICP_METADATA.fee, ICP_METADATA.decimals),
             conversionRate: ICPXDRconversionRate,
-            fee: xtcMetadata.fee,
-            decimals: xtcMetadata.decimals,
-          })
+          }).minus(formatAmount(xtcMetadata.fee, xtcMetadata.decimals))
         : new BigNumber(0);
 
-    const xtcFee = icpMetadata
+    const xtcFees = icpMetadata
       ? new BigNumber(
           getCurrencyString(
             (to.metadata?.fee ?? BigInt(0)) *
@@ -146,7 +134,7 @@ export const ExchangeBox: React.FC = () => {
       ? getCurrencyString(icpMetadata.fee, icpMetadata.decimals)
       : '0';
 
-    const fee = isToTokenIsXTC ? xtcFee : wicpFee;
+    const fee = isToTokenIsXTC ? xtcFees : wicpFee;
     const feeSymbol = isToTokenIsXTC ? 'XTC' : 'ICP';
 
     return { icpMetadata, operation, fee, feeSymbol };
@@ -186,7 +174,7 @@ export const ExchangeBox: React.FC = () => {
       <Text flex={1} textAlign="right" mx={2}>
         1&nbsp;{from.metadata.symbol}&nbsp;=&nbsp;
         {getSwapAmountOut(
-          { metadata: from.metadata, paths: baseTokenPaths, value: '1' },
+          { metadata: from.metadata, paths: baseFromTokenPaths, value: '1' },
           to
         )}
         &nbsp;
