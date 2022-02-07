@@ -41,7 +41,7 @@ export const SlippageSettings = ({
 
   const yellowColor = useColorModeValue('yellow.600', 'yellow.500');
   const redColor = useColorModeValue('red.600', 'red.500');
-  const messageColor = Number(slippage) >= 50 ? redColor : yellowColor;
+  const messageColor = Number(slippage) > 50 ? redColor : yellowColor;
 
   const handleInputClick = () => {
     if (isAutoSlippage) setIsAutoSlippage(false);

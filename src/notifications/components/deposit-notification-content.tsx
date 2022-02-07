@@ -16,11 +16,13 @@ import {
 } from '@/store';
 import { deserialize, stringify } from '@/utils/format';
 
-export interface DepositLinkProps {
+export interface DepositNotificationContentProps {
   id: string;
 }
 
-export const DepositLink: React.FC<DepositLinkProps> = ({ id }) => {
+export const DepositNotificationContent: React.FC<
+  DepositNotificationContentProps
+> = ({ id }) => {
   const dispatch = useAppDispatch();
   const { addNotification, popNotification } = useNotificationStore();
   const { getBalances } = useBalances();

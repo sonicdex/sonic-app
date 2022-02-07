@@ -1,48 +1,56 @@
 import { Link } from '@chakra-ui/react';
+import { Principal } from '@dfinity/principal';
 import { useEffect, useMemo } from 'react';
 
 import { useBalances } from '@/hooks/use-balances';
-import { useMintWICPBatch } from '@/integrations/transactions/hooks/batch/use-mint-wicp-batch';
+import { useWithdrawWICPBatch } from '@/integrations/transactions';
 import {
-  MintWICPModalDataStep,
   modalsSliceActions,
   NotificationType,
   useAppDispatch,
   useNotificationStore,
+  usePlugStore,
   useSwapViewStore,
+  WithdrawWICPModalDataStep,
 } from '@/store';
 import { deserialize, stringify } from '@/utils/format';
+import { getAccountId } from '@/utils/icp';
 
-export interface MintWICPProps {
+export interface WithdrawWICPNotificationContentProps {
   id: string;
 }
 
-export const MintWICPLink: React.FC<MintWICPProps> = ({ id }) => {
+export const WithdrawWICPNotificationContent: React.FC<
+  WithdrawWICPNotificationContentProps
+> = ({ id }) => {
+  const { principalId } = usePlugStore();
   const dispatch = useAppDispatch();
   const swapViewStore = useSwapViewStore();
   const { addNotification, popNotification } = useNotificationStore();
   const { getBalances } = useBalances();
 
-  const { from, keepInSonic } = useMemo(() => {
-    const { from, keepInSonic } = swapViewStore;
+  const { from } = useMemo(() => {
+    const { from } = swapViewStore;
 
-    return deserialize(stringify({ from, keepInSonic }));
+    return deserialize(stringify({ from }));
   }, []);
 
-  const { batch, openBatchModal } = useMintWICPBatch({
+  const { batch, openBatchModal } = useWithdrawWICPBatch({
     amount: from.value,
-    keepInSonic,
+    toAccountId: principalId
+      ? getAccountId(Principal.fromText(principalId))
+      : undefined,
   });
 
   const handleStateChange = () => {
     if (
-      Object.values(MintWICPModalDataStep).includes(
-        batch.state as MintWICPModalDataStep
+      Object.values(WithdrawWICPModalDataStep).includes(
+        batch.state as WithdrawWICPModalDataStep
       )
     ) {
       dispatch(
-        modalsSliceActions.setMintWICPModalData({
-          step: batch.state,
+        modalsSliceActions.setWithdrawWICPModalData({
+          step: batch.state as WithdrawWICPModalDataStep,
         })
       );
     }
@@ -60,10 +68,10 @@ export const MintWICPLink: React.FC<MintWICPProps> = ({ id }) => {
     batch
       .execute()
       .then(() => {
-        dispatch(modalsSliceActions.closeMintWICPProgressModal());
+        dispatch(modalsSliceActions.closeWithdrawWICPProgressModal());
 
         addNotification({
-          title: `Wrapped ${from.value} ${from.metadata.symbol}`,
+          title: `Unwrapped ${from.value} ${from.metadata.symbol}`,
           type: NotificationType.Success,
           id: Date.now().toString(),
           transactionLink: '/activity',
@@ -71,10 +79,10 @@ export const MintWICPLink: React.FC<MintWICPProps> = ({ id }) => {
         getBalances();
       })
       .catch((err) => {
-        console.error('Wrap Error', err);
+        console.error('Unwrap Error', err);
 
         addNotification({
-          title: `Wrap ${from.value} ${from.metadata.symbol} failed`,
+          title: `Unwrap ${from.value} ${from.metadata.symbol} failed`,
           type: NotificationType.Error,
           id: Date.now().toString(),
         });

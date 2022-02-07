@@ -34,8 +34,8 @@ import {
   WithdrawWICPFailModal,
   WithdrawWICPProgressModal,
 } from './components/modals';
-import { useTokenLogos } from './hooks';
-import { useBlockHeightsEffect } from './hooks/use-block-heights-effect';
+import { useTokenLogosFetcherInit } from './hooks';
+import { useBlockHeightsInit } from './hooks/use-block-heights-init';
 import { usePlugInit } from './integrations/plug';
 import {
   useCyclesMintingCanisterInit,
@@ -52,9 +52,8 @@ export const App = () => {
   usePriceInit();
   useSwapCanisterInit();
   useLiquidityViewInit();
-  useTokenLogos();
-
-  useBlockHeightsEffect();
+  useBlockHeightsInit();
+  useTokenLogosFetcherInit();
 
   if (isAnyMobileDevice) {
     return <EmptyMobile />;

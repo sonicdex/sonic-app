@@ -24,7 +24,7 @@ export const ChainPopover: React.FC<ChainPopoverProps> = ({ from, to }) => {
   const [path, isChained] = useMemo(() => {
     if (to.metadata) {
       const path = from.paths[to.metadata.id];
-      return [path, path.path.length > 2];
+      return [path, path?.path?.length > 2];
     }
     return [];
   }, [from, to]);

@@ -1,3 +1,5 @@
+import { TransactionPrevResponse } from '@psychedelic/plug-inpage-provider/dist/src/Provider';
+
 import {
   getFromStorage,
   LocalStorageKey,
@@ -49,17 +51,41 @@ export const getDepositTransactions = ({
   return transactions;
 };
 
-export type RemoveBlockHeightOptions = {
+export type GetTransactionNameOptions = {
+  tokenSymbol: MintTokenSymbol;
   blockHeight: string;
-  principalId: string;
+};
+
+export function getTransactionName({
+  tokenSymbol,
+  blockHeight,
+}: GetTransactionNameOptions) {
+  return `${tokenSymbol}-${blockHeight}`;
+}
+
+export type SaveBlockHeightToStorageOptions = {
+  blockHeight?: bigint;
+  principalId?: string;
   tokenSymbol: MintTokenSymbol;
 };
 
-export const removeBlockHeight = ({
+// === Block Heights ===
+
+export type RemoveBlockHeightFromStorageOptions = {
+  blockHeight: string;
+  principalId?: string;
+  tokenSymbol: MintTokenSymbol;
+};
+
+export const removeBlockHeightFromStorage = ({
   blockHeight,
   principalId,
   tokenSymbol,
-}: RemoveBlockHeightOptions) => {
+}: RemoveBlockHeightFromStorageOptions) => {
+  if (!principalId) {
+    return null;
+  }
+
   const localStorageKey =
     tokenSymbol === MintTokenSymbol.XTC
       ? LocalStorageKey.MintXTCUncompleteBlockHeights
@@ -80,4 +106,42 @@ export const removeBlockHeight = ({
       [principalId]: newBlockHeights,
     });
   }
+};
+
+export const saveBlockHeightToStorage = ({
+  blockHeight,
+  principalId,
+  tokenSymbol,
+}: SaveBlockHeightToStorageOptions) => {
+  if (!principalId || !blockHeight) {
+    return null;
+  }
+
+  const localStorageKey =
+    tokenSymbol === MintTokenSymbol.XTC
+      ? LocalStorageKey.MintXTCUncompleteBlockHeights
+      : LocalStorageKey.MintWICPUncompleteBlockHeights;
+
+  const prevMintWICPBlockHeight = getFromStorage(localStorageKey);
+
+  const newBlockHeights = {
+    ...prevMintWICPBlockHeight,
+    [principalId]: [
+      ...(prevMintWICPBlockHeight?.[principalId] || []),
+      String(blockHeight),
+    ],
+  };
+
+  saveToStorage(localStorageKey, newBlockHeights);
+};
+
+export const updateFailedBlockHeight = ({
+  prevResponses,
+  ...props
+}: Omit<SaveBlockHeightToStorageOptions, 'blockHeight'> & {
+  prevResponses: TransactionPrevResponse[];
+}) => {
+  const failedBlockHeight = prevResponses?.[0]?.response as bigint | undefined;
+
+  saveBlockHeightToStorage({ blockHeight: failedBlockHeight, ...props });
 };

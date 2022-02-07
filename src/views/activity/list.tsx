@@ -110,7 +110,9 @@ export const ActivityListView = () => {
                 <Text>{new Date(date).toDateString()}</Text>
                 {transactions.map((transaction, index) => {
                   if ('timestamp' in transaction) {
-                    return <LedgerTransactionActivity {...transaction} />;
+                    return (
+                      <LedgerTransactionActivity key={index} {...transaction} />
+                    );
                   }
 
                   const renderActivity = (

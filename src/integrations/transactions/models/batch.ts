@@ -49,6 +49,6 @@ export namespace Batch {
     handleRetry?: (
       error: unknown,
       prevResponses?: TransactionPrevResponse[]
-    ) => Promise<boolean | { nextTxArgs: any }>;
+    ) => Promise<boolean | { nextTxArgs: unknown }>;
   }
 }
