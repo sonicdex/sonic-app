@@ -157,8 +157,6 @@ export const swapViewSlice = createSlice({
           dataKey: oppositeDataKey,
         });
 
-        console.log(oppositeTokenPaths);
-
         const oppositeValue = getSwapAmountOut(
           { ...state[dataKey], paths: oppositeTokenPaths },
           state[oppositeDataKey]
@@ -195,15 +193,6 @@ export const swapViewSlice = createSlice({
 
         state.baseFromTokenPaths = baseFromPaths;
         state.baseToTokenPaths = baseToPaths;
-
-        console.log({
-          value,
-          oppositeValue,
-          tokenPaths,
-          oppositeTokenPaths,
-          baseFromPaths,
-          baseToPaths,
-        });
       }
     },
     setTokenList: (
