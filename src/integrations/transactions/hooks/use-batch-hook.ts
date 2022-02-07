@@ -27,8 +27,6 @@ export const useBatchHook = <Model>({
 
     const transactionsList = Object.values(transactions);
 
-    console.log(transactions);
-
     Object.values(transactions).forEach((transaction, index) => {
       const onSuccess = transaction.onSuccess;
       transaction.onSuccess = async (res) => {
