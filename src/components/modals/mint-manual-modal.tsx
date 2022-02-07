@@ -30,6 +30,7 @@ import {
 } from 'react';
 import { Link } from 'react-router-dom';
 
+import { ENV } from '@/config';
 import { checkIfPlugProviderVersionCompatible } from '@/integrations/plug';
 import {
   MintTokenSymbol,
@@ -149,7 +150,7 @@ export const MintManualModal = () => {
   const { activityTabURL, learnMoreURL } = useMemo(() => {
     return {
       activityTabURL: '/activity',
-      learnMoreURL: '',
+      learnMoreURL: `${ENV.URLs.sonicDocs}/product/swap/failed-swaps#failed-mints`,
     };
   }, []);
 
@@ -227,7 +228,12 @@ export const MintManualModal = () => {
               </ChakraLink>
               &nbsp;to find your failed transactions blockheight. Learn more
               about failed mints&nbsp;
-              <ChakraLink color={linkColor} href={learnMoreURL}>
+              <ChakraLink
+                target="_blank"
+                rel="noopener noreferrer"
+                color={linkColor}
+                href={learnMoreURL}
+              >
                 here
               </ChakraLink>
               .

@@ -34,8 +34,12 @@ import { debounce } from '@/utils/function';
 export const AssetsDepositView = () => {
   const query = useQuery();
 
-  const { supportedTokenList, tokenBalances, supportedTokenListState } =
-    useSwapCanisterStore();
+  const {
+    supportedTokenList,
+    tokenBalances,
+    balancesState,
+    supportedTokenListState,
+  } = useSwapCanisterStore();
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -142,8 +146,10 @@ export const AssetsDepositView = () => {
   };
 
   const isLoading = useMemo(
-    () => supportedTokenListState === FeatureState.Loading,
-    [supportedTokenListState]
+    () =>
+      supportedTokenListState === FeatureState.Loading ||
+      balancesState === FeatureState.Loading,
+    [supportedTokenListState, balancesState]
   );
 
   return (
@@ -189,7 +195,7 @@ export const AssetsDepositView = () => {
         colorScheme="dark-blue"
         isDisabled={buttonDisabled}
         onClick={handleDeposit}
-        isLoading={supportedTokenListState === FeatureState.Loading}
+        isLoading={isLoading}
       >
         {buttonMessage}
       </Button>

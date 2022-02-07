@@ -1,6 +1,7 @@
 import { Link } from '@chakra-ui/react';
 import BigNumber from 'bignumber.js';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { batch } from 'react-redux';
 
 import { PLUG_WALLET_WEBSITE_URL } from '@/components';
 import { ENV } from '@/config';
@@ -204,9 +205,9 @@ export const useSwapViewData = () => {
     }
   }
 
-  function handleSetValue(value: string, dataKey: SwapTokenDataKey) {
+  const handleSetValue = (value: string, dataKey: SwapTokenDataKey) => {
     dispatch(swapViewActions.setValue({ data: dataKey, value }));
-  }
+  };
 
   const resetStepToHome = useCallback(() => {
     if (step === SwapStep.Review) {
@@ -251,12 +252,7 @@ export const useSwapViewData = () => {
       return;
     }
 
-    dispatch(
-      swapViewActions.setValue({
-        data: dataKey,
-        value: getDepositMaxValue(metadata, balance),
-      })
-    );
+    handleChangeValue(getDepositMaxValue(metadata, balance), dataKey);
   };
 
   const handleSelectToken = (dataKey: SwapTokenDataKey) => {
@@ -269,8 +265,11 @@ export const useSwapViewData = () => {
     openSelectTokenModal({
       metadata: options,
       onSelect: (tokenId) => {
-        dispatch(swapViewActions.setToken({ data: dataKey, tokenId }));
-        handleChangeValue(data.value, oppositeDataKey);
+        batch(() => {
+          dispatch(swapViewActions.setToken({ data: dataKey, tokenId }));
+
+          handleChangeValue(data.value, oppositeDataKey);
+        });
       },
       selectedTokenIds,
     });

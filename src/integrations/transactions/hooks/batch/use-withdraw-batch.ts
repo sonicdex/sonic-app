@@ -10,8 +10,6 @@ import { useBatchHook, useWithdrawTransactionMemo } from '..';
 export const useWithdrawBatch = (withdraw: Withdraw) => {
   const dispatch = useAppDispatch();
 
-  console.log(withdraw);
-
   const openBatchModal = () => {
     dispatch(
       modalsSliceActions.setWithdrawModalData({
