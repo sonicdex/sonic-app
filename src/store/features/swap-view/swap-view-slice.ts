@@ -183,12 +183,12 @@ export const swapViewSlice = createSlice({
         const baseFromPaths = getTokenPaths({
           pairList: state.allPairs as PairList,
           tokenList: state.tokenList,
-          tokenId: state.to.metadata.id,
+          tokenId: state.from.metadata.id,
         });
         const baseToPaths = getTokenPaths({
           pairList: state.allPairs as PairList,
           tokenList: state.tokenList,
-          tokenId: state.from.metadata.id,
+          tokenId: state.to.metadata.id,
         });
 
         state.baseFromTokenPaths = baseFromPaths;
