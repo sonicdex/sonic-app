@@ -1,5 +1,5 @@
 import { Skeleton, Stack, Text, useColorModeValue } from '@chakra-ui/react';
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect, useMemo } from 'react';
 
 import { Header, PlugNotConnected } from '@/components';
 import {
@@ -14,6 +14,7 @@ import {
 import {
   AddLiquidityActivity,
   DepositActivity,
+  LedgerTransactionActivity,
   LoadingActivity,
   RemoveLiquidityActivity,
   SwapActivity,
@@ -23,19 +24,33 @@ import {
 export const ActivityListView = () => {
   useActivityView();
   const { isConnected } = usePlugStore();
-  const { activityList, state, page, endReached } = useActivityViewStore();
+  const { activityList, CAPstate, LedgerState, page, lastPage } =
+    useActivityViewStore();
   const dispatch = useAppDispatch();
 
   const color = useColorModeValue('gray.600', 'custom.1');
 
-  const scrollHandler = (e: any): void => {
-    if (endReached || state === FeatureState.Loading) return;
-    const isBottom =
-      e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
-    if (isBottom) {
-      dispatch(activityViewActions.setPage(page + 1));
-    }
-  };
+  useEffect(() => {
+    const scrollHandler = (): void => {
+      if (lastPage === 0 || page === 0 || CAPstate === FeatureState.Loading)
+        return;
+      const isBottom =
+        window.scrollY + window.innerHeight >= document.body.offsetHeight;
+      if (isBottom && page) {
+        dispatch(activityViewActions.setPage(page - 1));
+      }
+    };
+
+    scrollHandler();
+    window.addEventListener('scroll', scrollHandler);
+    return () => window.removeEventListener('scroll', scrollHandler);
+  }, [page, lastPage, CAPstate, dispatch]);
+
+  const isUpdating = useMemo(() => {
+    return (
+      CAPstate === FeatureState.Loading || LedgerState === FeatureState.Loading
+    );
+  }, [CAPstate, LedgerState]);
 
   if (!isConnected) {
     return (
@@ -46,10 +61,7 @@ export const ActivityListView = () => {
     );
   }
 
-  if (
-    state === FeatureState.Loading &&
-    Object.keys(activityList).length === 0
-  ) {
+  if (isUpdating && Object.keys(activityList).length === 0) {
     return (
       <>
         <Header title="Your Activity" />
@@ -65,7 +77,7 @@ export const ActivityListView = () => {
       <>
         <Header
           title="Your Activity"
-          isRefreshing={state === FeatureState.Loading}
+          isUpdating={CAPstate === FeatureState.Loading}
         />
         <Text textAlign="center" color={color}>
           You have no activity
@@ -76,16 +88,12 @@ export const ActivityListView = () => {
 
   return (
     <>
-      <Header
-        title="Your Activity"
-        isRefreshing={state === FeatureState.Loading}
-      />
+      <Header title="Your Activity" isUpdating={isUpdating} />
       <Stack mt={-5} mb={-5} spacing={4} overflowX="hidden" position="relative">
         <Stack
           overflowX="auto"
           pb={20}
           pt={5}
-          onScroll={scrollHandler}
           css={{
             '&::-webkit-scrollbar': {
               display: 'none',
@@ -98,36 +106,47 @@ export const ActivityListView = () => {
             },
           }}
         >
-          {Object.entries(activityList).map(([date, transactions], index) => (
-            <Fragment key={index}>
-              <Text>{new Date(date).toDateString()}</Text>
-              {transactions.map((transaction, index) => {
-                const renderActivity = (
-                  Activity: React.FC<any>
-                ): JSX.Element => (
-                  <Activity
-                    key={index}
-                    {...transaction.details}
-                    time={transaction.time}
-                  />
-                );
-                switch (transaction.operation) {
-                  case 'swap':
-                    return renderActivity(SwapActivity);
-                  case 'addLiquidity':
-                    return renderActivity(AddLiquidityActivity);
-                  case 'removeLiquidity':
-                    return renderActivity(RemoveLiquidityActivity);
-                  case 'withdraw':
-                    return renderActivity(WithdrawActivity);
-                  case 'deposit':
-                    return renderActivity(DepositActivity);
-                  default:
-                    return null;
-                }
-              })}
-            </Fragment>
-          ))}
+          {Object.entries(activityList)
+            .sort(
+              ([dateA], [dateB]) =>
+                new Date(dateB).getTime() - new Date(dateA).getTime()
+            )
+            .map(([date, transactions], index) => (
+              <Fragment key={index}>
+                <Text>{new Date(date).toDateString()}</Text>
+                {transactions.map((transaction, index) => {
+                  if ('timestamp' in transaction) {
+                    return (
+                      <LedgerTransactionActivity key={index} {...transaction} />
+                    );
+                  }
+
+                  const renderActivity = (
+                    Activity: React.FC<any>
+                  ): JSX.Element => (
+                    <Activity
+                      key={index}
+                      {...transaction.details}
+                      time={transaction.time}
+                    />
+                  );
+                  switch (transaction.operation) {
+                    case 'swap':
+                      return renderActivity(SwapActivity);
+                    case 'addLiquidity':
+                      return renderActivity(AddLiquidityActivity);
+                    case 'removeLiquidity':
+                      return renderActivity(RemoveLiquidityActivity);
+                    case 'withdraw':
+                      return renderActivity(WithdrawActivity);
+                    case 'deposit':
+                      return renderActivity(DepositActivity);
+                    default:
+                      return null;
+                  }
+                })}
+              </Fragment>
+            ))}
         </Stack>
       </Stack>
     </>

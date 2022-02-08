@@ -1,4 +1,4 @@
 export type MintXTC = {
-  blockHeight?: bigint;
+  blockHeight?: string;
   subaccount?: string;
 };

@@ -1,10 +1,17 @@
-import { forwardRef, Text, TextProps, Tooltip } from '@chakra-ui/react';
+import {
+  forwardRef,
+  keyframes,
+  Text,
+  TextProps,
+  Tooltip,
+} from '@chakra-ui/react';
 import BigNumber from 'bignumber.js';
 import { useMemo } from 'react';
 
 import { formatValue, getCurrencyString } from '@/utils/format';
 
 export type DisplayValueProps = TextProps & {
+  isUpdating?: boolean;
   value?: number | string;
   decimals?: number;
   prefix?: string;
@@ -14,9 +21,23 @@ export type DisplayValueProps = TextProps & {
 
 export const DisplayValue = forwardRef<DisplayValueProps, 'p'>(
   (
-    { value = 0, decimals, prefix, suffix, disableTooltip, ...textProps },
+    {
+      value = 0,
+      decimals,
+      isUpdating,
+      prefix,
+      suffix,
+      disableTooltip,
+      ...textProps
+    },
     ref
   ) => {
+    const blinker = keyframes`
+      50% {
+        opacity: 0.35;
+      }
+    `;
+
     const [formattedValue, tooltipLabel, isDisabled] = useMemo(() => {
       const tooltip = decimals
         ? getCurrencyString(value, decimals)
@@ -28,7 +49,11 @@ export const DisplayValue = forwardRef<DisplayValueProps, 'p'>(
 
     return (
       <Tooltip label={tooltipLabel} isDisabled={isDisabled}>
-        <Text ref={ref} {...textProps}>
+        <Text
+          ref={ref}
+          {...textProps}
+          animation={isUpdating ? `${blinker} 1s linear infinite` : undefined}
+        >
           {prefix}
           {formattedValue}
           {suffix}

@@ -26,7 +26,12 @@ import { arrowBackSrc, questionMarkSrc } from '@/assets';
 import { ENV } from '@/config';
 import { useBalances } from '@/hooks/use-balances';
 import { AppTokenMetadata } from '@/models';
-import { modalsSliceActions, useAppDispatch, useModalsStore } from '@/store';
+import {
+  FeatureState,
+  modalsSliceActions,
+  useAppDispatch,
+  useModalsStore,
+} from '@/store';
 import { deserialize } from '@/utils/format';
 
 import { DisplayValue, SearchBar } from '..';
@@ -77,8 +82,7 @@ export const TokenSelectModal = () => {
     setFilteredList(filteredItems);
   }, [search, parsedTokens]);
 
-  const handleSelect = (selected: boolean, tokenId?: string) => {
-    if (selected) return;
+  const handleSelect = (tokenId?: string) => {
     onSelect(tokenId);
     handleTokenSelectClose();
   };
@@ -98,7 +102,7 @@ export const TokenSelectModal = () => {
     dispatch(modalsSliceActions.closeTokenSelectModal());
   };
 
-  const bg = useColorModeValue('gray.50', 'custom.2');
+  const bg = useColorModeValue('white', 'custom.2');
   const color = useColorModeValue('gray.600', 'custom.1');
   const emptyColor = useColorModeValue('gray.600', 'gray.300');
 
@@ -169,16 +173,7 @@ export const TokenSelectModal = () => {
                     symbol={symbol}
                     decimals={decimals}
                     name={name}
-                    onSelect={() =>
-                      handleSelect(
-                        id
-                          ? selectedTokenIds
-                            ? selectedTokenIds.includes(id)
-                            : false
-                          : false,
-                        id
-                      )
-                    }
+                    onSelect={() => handleSelect(id)}
                     isLoading={isLoading}
                     isSelected={selectedTokenIds?.includes(id)}
                     logoSrc={logo}
@@ -273,6 +268,7 @@ type TokenSelectItemProps = Partial<{
   decimals: number;
   isSelected: boolean;
   isLoading: boolean;
+
   logoSrc: string;
 }>;
 
@@ -286,7 +282,11 @@ const TokenSelectItem = ({
   isLoading = false,
   logoSrc = questionMarkSrc,
 }: TokenSelectItemProps) => {
-  const tokenOpacity = isSelected ? 0.3 : 1;
+  const { balancesState } = useBalances();
+
+  const isBalancesUpdating = useMemo(() => {
+    return balancesState === FeatureState.Updating;
+  }, [balancesState]);
 
   const nameColor = useColorModeValue('gray.700', 'gray.300');
 
@@ -299,12 +299,12 @@ const TokenSelectItem = ({
       cursor="pointer"
       width="100%"
       transition="border 400ms"
-      border="1px solid transparent"
-      opacity={tokenOpacity}
+      border="1px solid"
+      borderColor={isSelected ? 'gray.600' : 'transparent'}
       borderRadius="20px"
       onClick={onSelect}
       _hover={{
-        border: !isSelected && '1px solid #4F4F4F',
+        borderColor: 'custom.4',
       }}
     >
       <Stack direction="row" alignItems="center" spacing={4}>
@@ -328,6 +328,7 @@ const TokenSelectItem = ({
       </Stack>
       <Skeleton isLoaded={!isLoading} minWidth="fit-content" ml={3}>
         <DisplayValue
+          isUpdating={isBalancesUpdating}
           value={balance}
           decimals={decimals}
           as="p"

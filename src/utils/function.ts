@@ -15,3 +15,7 @@ export const debounce = (
 export const createCAPLink = (transaction: string): string => {
   return `https://explorer.cap.ooo/app-transactions/${ENV.canistersPrincipalIDs.swap}/${transaction}`;
 };
+
+export const createICRocksLink = (transaction: string): string => {
+  return `https://ic.rocks/transaction/${transaction}`;
+};

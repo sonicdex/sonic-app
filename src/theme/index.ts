@@ -3,6 +3,7 @@ import { mode } from '@chakra-ui/theme-tools';
 
 import Button from './components/button';
 import CloseButton from './components/close-button';
+import Menu from './components/menu';
 import Modal from './components/modal';
 import Popover from './components/popover';
 import Tabs from './components/tabs';
@@ -12,7 +13,7 @@ const appTheme = {
   styles: {
     global: (props: any) => ({
       body: {
-        bg: mode('white', 'black')(props),
+        bg: mode('custom.5', 'black')(props),
       },
     }),
   },
@@ -34,6 +35,7 @@ const appTheme = {
     CloseButton,
     Modal,
     Popover,
+    Menu,
   },
 };
 

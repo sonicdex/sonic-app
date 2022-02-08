@@ -5,23 +5,36 @@ import {
   GridItem,
   HStack,
   IconButton,
+  Link as ChakraLink,
+  Menu,
+  MenuButton,
+  MenuDivider,
+  MenuItem,
+  MenuList,
   Tab,
   TabList,
   Tabs,
   Text,
-  Tooltip,
   useColorMode,
   useColorModeValue,
 } from '@chakra-ui/react';
+import { FaBook } from '@react-icons/all-files/fa/FaBook';
+import { FaDiscord } from '@react-icons/all-files/fa/FaDiscord';
+import { FaEllipsisH } from '@react-icons/all-files/fa/FaEllipsisH';
+import { FaMedium } from '@react-icons/all-files/fa/FaMedium';
 import { FaMoon } from '@react-icons/all-files/fa/FaMoon';
+import { FaNetworkWired } from '@react-icons/all-files/fa/FaNetworkWired';
+import { FaRedo } from '@react-icons/all-files/fa/FaRedo';
 import { FaSun } from '@react-icons/all-files/fa/FaSun';
+import { FaTwitter } from '@react-icons/all-files/fa/FaTwitter';
 import React, { useMemo } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
 import { ENV } from '@/config';
-import { usePlugStore } from '@/store';
+import { modalsSliceActions, useAppDispatch, usePlugStore } from '@/store';
 import { theme } from '@/theme';
 
+import packageJSON from '../../../package.json';
 import { PlugButton } from '..';
 import { LogoBox } from '../core';
 import { PlugMenu } from '../plug/plug-menu';
@@ -33,6 +46,7 @@ import {
 
 export const Layout: React.FC = ({ children, ...props }) => {
   const { isConnected } = usePlugStore();
+  const dispatch = useAppDispatch();
   const location = useLocation();
 
   const currentTabIndex = useMemo(
@@ -41,9 +55,12 @@ export const Layout: React.FC = ({ children, ...props }) => {
     [location]
   );
 
-  const backgroundColor = useColorModeValue('white', 'black');
+  const backgroundColor = useColorModeValue('custom.5', 'black');
 
   const { colorMode, toggleColorMode } = useColorMode();
+
+  const menuBg = useColorModeValue('gray.50', 'custom.2');
+  const menuShadow = useColorModeValue('base', 'none');
 
   return (
     <>
@@ -57,7 +74,7 @@ export const Layout: React.FC = ({ children, ...props }) => {
           gap="4"
           alignItems="center"
           backgroundColor={backgroundColor}
-          transition="background 200ms"
+          transition="background-color 200ms"
           _after={{
             content: "''",
             position: 'absolute',
@@ -69,7 +86,13 @@ export const Layout: React.FC = ({ children, ...props }) => {
             background: `linear-gradient(to bottom, ${theme.colors.bg} 0%, transparent 100%)`,
           }}
         >
-          <GridItem colSpan={1} justifySelf="center" alignItems="center">
+          <GridItem
+            as={HStack}
+            spacing={4}
+            colSpan={1}
+            justifySelf="center"
+            alignItems="center"
+          >
             <LogoBox />
           </GridItem>
           <GridItem colSpan={3} justifySelf="center">
@@ -97,21 +120,79 @@ export const Layout: React.FC = ({ children, ...props }) => {
           <GridItem colSpan={1} justifySelf="center">
             <HStack>
               {isConnected ? <PlugMenu /> : <PlugButton />}
-              {ENV.isDarkModeEnabled && (
-                <Tooltip
-                  label={colorMode === 'dark' ? 'Light mode' : 'Dark mode'}
-                >
-                  <IconButton
-                    colorScheme={colorMode === 'dark' ? 'dark-blue' : 'yellow'}
-                    variant="outline"
-                    aria-label={
-                      colorMode === 'dark' ? 'Light mode' : 'Dark mode'
-                    }
-                    icon={colorMode === 'dark' ? <FaMoon /> : <FaSun />}
-                    onClick={toggleColorMode}
-                  />
-                </Tooltip>
-              )}
+              <Menu placement="bottom-end">
+                <MenuButton
+                  as={IconButton}
+                  aria-label="Menu"
+                  icon={<FaEllipsisH />}
+                  borderRadius="full"
+                  bg={menuBg}
+                  shadow={menuShadow}
+                />
+
+                <MenuList bg={menuBg} shadow={menuShadow} borderRadius="xl">
+                  {ENV.isDarkModeEnabled && (
+                    <MenuItem
+                      onClick={toggleColorMode}
+                      icon={colorMode === 'dark' ? <FaMoon /> : <FaSun />}
+                    >
+                      {colorMode === 'dark' ? 'Light mode' : 'Dark mode'}
+                    </MenuItem>
+                  )}
+                  {isConnected && (
+                    <MenuItem
+                      onClick={() =>
+                        dispatch(modalsSliceActions.openMintManualModal())
+                      }
+                      icon={<FaRedo />}
+                    >
+                      Retry minting
+                    </MenuItem>
+                  )}
+
+                  <MenuDivider />
+                  <ChakraLink
+                    href={ENV.URLs.twitter}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    fontWeight="bold"
+                  >
+                    <MenuItem icon={<FaTwitter />}>Twitter</MenuItem>
+                  </ChakraLink>
+                  <ChakraLink
+                    href={ENV.URLs.discord}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    fontWeight="bold"
+                  >
+                    <MenuItem icon={<FaDiscord />}>Discord</MenuItem>
+                  </ChakraLink>
+                  <ChakraLink
+                    href={ENV.URLs.medium}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    fontWeight="bold"
+                  >
+                    <MenuItem icon={<FaMedium />}>Medium</MenuItem>
+                  </ChakraLink>
+                  <ChakraLink
+                    href={ENV.URLs.sonicDocs}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    fontWeight="bold"
+                  >
+                    <MenuItem icon={<FaBook />}>Documentation</MenuItem>
+                  </ChakraLink>
+                  <ChakraLink
+                    href={`${ENV.URLs.sonicDocs}/dev/swaps-api`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    fontWeight="bold"
+                  >
+                    <MenuItem icon={<FaNetworkWired />}>API</MenuItem>
+                  </ChakraLink>
+                </MenuList>
+              </Menu>
             </HStack>
           </GridItem>
         </Grid>
@@ -139,7 +220,7 @@ export const Layout: React.FC = ({ children, ...props }) => {
         right={0}
         background={`linear-gradient(to bottom, transparent 0%, ${theme.colors.bg} 100%)`}
       >
-        <Text>Sonic v1</Text>
+        <Text>Sonic v{packageJSON.version}</Text>
       </chakra.footer>
     </>
   );

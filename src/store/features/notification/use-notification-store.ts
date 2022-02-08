@@ -4,7 +4,7 @@ import {
   Notification,
   popNotification,
   selectNotificationState,
-  setNotificationState,
+  setNotificationSliceState,
 } from '@/store';
 import { useAppDispatch, useAppSelector } from '@/store';
 
@@ -21,7 +21,7 @@ export const useNotificationStore = () => {
   };
 
   const _setNotificationState = (state: FeatureState) => {
-    dispatch(setNotificationState(state));
+    dispatch(setNotificationSliceState(state));
   };
 
   return {

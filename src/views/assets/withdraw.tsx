@@ -5,10 +5,10 @@ import { useNavigate } from 'react-router';
 import { sonicCircleSrc } from '@/assets';
 import {
   Token,
-  TokenBalances,
-  TokenBalancesDetails,
-  TokenBalancesPrice,
   TokenContent,
+  TokenData,
+  TokenDataBalances,
+  TokenDataPrice,
   TokenDetailsButton,
   TokenDetailsLogo,
   TokenDetailsSymbol,
@@ -33,8 +33,12 @@ import { debounce } from '@/utils/function';
 export const AssetsWithdrawView = () => {
   const query = useQuery();
   const { amount, tokenId } = useWithdrawViewStore();
-  const { supportedTokenList, sonicBalances, supportedTokenListState } =
-    useSwapCanisterStore();
+  const {
+    supportedTokenList,
+    sonicBalances,
+    balancesState,
+    supportedTokenListState,
+  } = useSwapCanisterStore();
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -136,11 +140,12 @@ export const AssetsWithdrawView = () => {
     );
   };
 
-  const isLoading =
-    supportedTokenListState === FeatureState.Loading &&
-    !supportedTokenList &&
-    !selectedTokenMetadata &&
-    !tokenId;
+  const isLoading = useMemo(
+    () =>
+      supportedTokenListState === FeatureState.Loading ||
+      balancesState === FeatureState.Loading,
+    [balancesState, supportedTokenListState]
+  );
 
   return (
     <>
@@ -171,10 +176,10 @@ export const AssetsWithdrawView = () => {
 
             <TokenInput autoFocus />
           </TokenContent>
-          <TokenBalances>
-            <TokenBalancesDetails onMaxClick={handleMaxClick} />
-            <TokenBalancesPrice />
-          </TokenBalances>
+          <TokenData>
+            <TokenDataBalances onMaxClick={handleMaxClick} />
+            <TokenDataPrice />
+          </TokenData>
         </Token>
       </Box>
       <FeeBox token={selectedTokenMetadata} />

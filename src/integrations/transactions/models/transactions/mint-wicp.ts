@@ -1,4 +1,5 @@
 export type MintWICP = {
-  blockHeight?: bigint;
+  blockHeight?: string;
   subaccount?: string;
+  principalId?: string;
 };

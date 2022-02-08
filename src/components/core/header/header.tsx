@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  Divider,
   Flex,
   Spinner,
   useColorModeValue,
@@ -11,22 +12,21 @@ type HeaderProps = {
   title: string;
   buttonText?: string;
   onButtonClick?: React.MouseEventHandler<HTMLButtonElement>;
-  isRefreshing?: boolean;
+  isUpdating?: boolean;
 };
 
 export const Header: React.FC<HeaderProps> = ({
   title,
   buttonText,
   onButtonClick,
-  isRefreshing,
+  isUpdating,
   children,
 }) => {
   const paddingToLine = buttonText && onButtonClick ? '17px' : '24px';
   const marginTop = buttonText && onButtonClick ? '-8px' : '0px';
 
   const color = useColorModeValue('gray.800', 'gray.50');
-  const borderColor = useColorModeValue('gray.100', 'custom.3');
-  const backgroundColor = useColorModeValue('white', 'black');
+  const backgroundColor = useColorModeValue('custom.5', 'black');
 
   return (
     <Flex
@@ -36,8 +36,8 @@ export const Header: React.FC<HeaderProps> = ({
       mt={-10}
       mb={5}
       backgroundColor={backgroundColor}
-      transition="background 200ms"
-      zIndex={10}
+      transition="background-color 200ms"
+      zIndex={1}
       flexDirection="column"
     >
       {children}
@@ -47,12 +47,10 @@ export const Header: React.FC<HeaderProps> = ({
         alignItems="center"
         pb={paddingToLine}
         mt={marginTop}
-        borderBottom="1px solid"
-        borderColor={borderColor}
       >
         <Box as="h3" fontWeight={700} color={color}>
           {title}
-          {isRefreshing && <Spinner width={3} height={3} mx={3} />}
+          {isUpdating && <Spinner width={3} height={3} mx={3} />}
         </Box>
         {buttonText && onButtonClick && (
           <Button
@@ -64,6 +62,7 @@ export const Header: React.FC<HeaderProps> = ({
           </Button>
         )}
       </Flex>
+      <Divider />
     </Flex>
   );
 };

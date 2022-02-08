@@ -1,43 +1,44 @@
 import {
-  Flex,
   Heading,
-  ModalCloseButton,
+  HStack,
+  Modal,
+  ModalBody,
   ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  ModalProps,
   Text,
   useColorModeValue,
 } from '@chakra-ui/react';
 import React from 'react';
 
-type TransactionFailedModalContentProps = {
+type TransactionFailedModalProps = ModalProps & {
   title: string;
 };
 
-export const TransactionFailedModalContent: React.FC<
-  TransactionFailedModalContentProps
-> = ({ title, children }) => {
+export const TransactionFailedModal: React.FC<TransactionFailedModalProps> = ({
+  title,
+  children,
+  ...modalProps
+}) => {
   const bg = useColorModeValue('gray.50', 'custom.2');
-  const color = useColorModeValue('gray.600', 'custom.1');
+  const color = useColorModeValue('gray.600', 'gray.400');
 
   return (
-    <ModalContent
-      as={Flex}
-      alignItems="center"
-      direction="column"
-      justifyContent="center"
-      borderRadius={20}
-      bg={bg}
-      pt={9}
-      px={5}
-      pb={9}
-    >
-      <ModalCloseButton position="absolute" top={3} right={4} />
-      <Heading as="h1" fontWeight={700} fontSize={22} pb={3}>
-        {title}
-      </Heading>
-      <Text as="p" pb={6} color={color}>
-        Please choose an option below
-      </Text>
-      {children}
-    </ModalContent>
+    <Modal {...modalProps}>
+      <ModalOverlay />
+      <ModalContent textAlign="center" borderRadius={20} bg={bg}>
+        <ModalHeader>
+          <Heading as="h2" fontWeight={700} fontSize={22}>
+            {title}
+          </Heading>
+        </ModalHeader>
+        <ModalBody>
+          <Text color={color}>Please choose an option below</Text>
+        </ModalBody>
+        <ModalFooter as={HStack}>{children}</ModalFooter>
+      </ModalContent>
+    </Modal>
   );
 };

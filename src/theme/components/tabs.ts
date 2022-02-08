@@ -178,6 +178,7 @@ const variantSoftRounded: PartsStyleFunction<typeof parts> = (props) => {
 
 const variantSolidRounded: PartsStyleFunction<typeof parts> = (props) => {
   const { colorScheme: c } = props;
+
   return {
     tab: {
       borderRadius: 'full',
@@ -192,7 +193,8 @@ const variantSolidRounded: PartsStyleFunction<typeof parts> = (props) => {
       },
     },
     tablist: {
-      backgroundColor: mode(`gray.100`, `gray.800`)(props),
+      shadow: mode('base', 'none')(props),
+      backgroundColor: mode(`gray.50`, `gray.800`)(props),
       borderRadius: 'full',
       p: '1.5',
     },

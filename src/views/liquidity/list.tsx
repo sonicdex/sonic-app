@@ -15,6 +15,7 @@ import {
   InformationBox,
   PlugNotConnected,
 } from '@/components';
+import { LPBreakdownPopover } from '@/components/core/lp-breakdown-popover';
 import { AppTokenMetadata } from '@/models';
 import {
   FeatureState,
@@ -58,6 +59,8 @@ const InformationDescription = () => {
 type PairedUserLPToken = {
   token0: AppTokenMetadata;
   token1: AppTokenMetadata;
+  balance0: string;
+  balance1: string;
   userShares: string;
   totalShares?: string;
 };
@@ -74,7 +77,7 @@ export const LiquidityListView = () => {
     supportedTokenList,
     supportedTokenListState,
   } = useSwapCanisterStore();
-  const { isBannerOpened } = useLiquidityViewStore();
+  const { isBannerOpened, removeAmountPercentage } = useLiquidityViewStore();
 
   const moveToAddLiquidityView = (token0?: string, token1?: string) => {
     const query =
@@ -108,13 +111,17 @@ export const LiquidityListView = () => {
     );
   }, [allPairsState, supportedTokenListState, userLPBalancesState]);
 
-  const isRefreshing = useMemo(() => {
+  const isUserLPBalancesUpdating = useMemo(() => {
+    return userLPBalancesState === FeatureState.Updating;
+  }, [userLPBalancesState]);
+
+  const isUpdating = useMemo(() => {
     return (
-      allPairsState === FeatureState.Refreshing ||
-      supportedTokenListState === FeatureState.Refreshing ||
-      userLPBalancesState === FeatureState.Refreshing
+      allPairsState === FeatureState.Updating ||
+      supportedTokenListState === FeatureState.Updating ||
+      isUserLPBalancesUpdating
     );
-  }, [allPairsState, supportedTokenListState, userLPBalancesState]);
+  }, [allPairsState, supportedTokenListState, isUserLPBalancesUpdating]);
 
   const pairedUserLPTokens = useMemo(() => {
     if (userLPBalances && supportedTokenList && allPairs) {
@@ -135,6 +142,47 @@ export const LiquidityListView = () => {
             (token) => token.id === tokenId1
           );
 
+          let balance0;
+          let balance1;
+
+          if (userLPBalances && allPairs && token0 && token1) {
+            const tokenBalance = userLPBalances[token0.id]?.[token1.id];
+
+            const pair = allPairs[token0.id]?.[token1.id];
+            if (pair?.reserve0 && pair?.reserve1 && tokenBalance) {
+              const normalizedReserve0 = getCurrency(
+                pair.reserve0.toString(),
+                token0.decimals
+              );
+              const normalizedReserve1 = getCurrency(
+                pair.reserve1.toString(),
+                token1.decimals
+              );
+
+              const normalizedTotalSupply = getCurrency(
+                pair.totalSupply.toString(),
+                Math.round((token0.decimals + token1.decimals) / 2)
+              );
+
+              const normalizedTokenBalance = getCurrency(
+                tokenBalance.toString(),
+                Math.round((token0.decimals + token1.decimals) / 2)
+              );
+
+              balance0 = new BigNumber(normalizedTokenBalance)
+                .dividedBy(normalizedTotalSupply)
+                .multipliedBy(normalizedReserve0)
+                .multipliedBy(removeAmountPercentage / 100)
+                .toString();
+
+              balance1 = new BigNumber(normalizedTokenBalance)
+                .dividedBy(normalizedTotalSupply)
+                .multipliedBy(normalizedReserve1)
+                .multipliedBy(removeAmountPercentage / 100)
+                .toString();
+            }
+          }
+
           const userShares = getCurrencyString(
             userLPBalances[tokenId0][tokenId1],
             Math.round(((token0?.decimals ?? 0) + (token1?.decimals ?? 0)) / 2)
@@ -148,6 +196,8 @@ export const LiquidityListView = () => {
           pairedList.push({
             token0,
             token1,
+            balance0,
+            balance1,
             userShares,
             totalShares,
           } as PairedUserLPToken);
@@ -198,7 +248,7 @@ export const LiquidityListView = () => {
         title="Your Liquidity Positions"
         buttonText="Create Position"
         onButtonClick={() => moveToAddLiquidityView()}
-        isRefreshing={isRefreshing}
+        isUpdating={isUpdating}
       >
         {isBannerOpened && (
           <InformationBox
@@ -253,11 +303,14 @@ export const LiquidityListView = () => {
             },
           }}
           spacing={4}
-          pb={8}
+          pb={40}
           overflow="auto"
         >
           {pairedUserLPTokens.map(
-            ({ token0, token1, userShares, totalShares }, index) => {
+            (
+              { token0, token1, userShares, totalShares, balance0, balance1 },
+              index
+            ) => {
               if (!token0.id || !token1.id) {
                 return null;
               }
@@ -274,12 +327,34 @@ export const LiquidityListView = () => {
                       title={`${token0.symbol}/${token1.symbol}`}
                     />
                   </HStack>
-                  <Box>
-                    <Text fontWeight="bold" color={headerColor}>
-                      LP Tokens
-                    </Text>
-                    <DisplayValue value={userShares} />
-                  </Box>
+
+                  <LPBreakdownPopover
+                    sources={[
+                      {
+                        src: token0.logo,
+                        symbol: token0.symbol,
+                        decimals: token0.decimals,
+                        balance: balance0,
+                      },
+                      {
+                        src: token1.logo,
+                        symbol: token1.symbol,
+                        decimals: token1.decimals,
+                        balance: balance1,
+                      },
+                    ]}
+                  >
+                    <Box>
+                      <Text fontWeight="bold" color={headerColor}>
+                        LP Tokens
+                      </Text>
+                      <DisplayValue
+                        value={userShares}
+                        isUpdating={isUserLPBalancesUpdating}
+                        disableTooltip
+                      />
+                    </Box>
+                  </LPBreakdownPopover>
 
                   <Box>
                     <Text fontWeight="bold" color={headerColor}>
@@ -287,6 +362,7 @@ export const LiquidityListView = () => {
                     </Text>
                     <DisplayValue
                       color={successColor}
+                      isUpdating={isUserLPBalancesUpdating}
                       prefix="~$"
                       value={getUserLPValue(
                         token0,

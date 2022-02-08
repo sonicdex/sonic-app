@@ -28,7 +28,7 @@ export const useCyclesMintingCanisterInit = () => {
           try {
             dispatch(
               cyclesMintingCanisterSliceActions.setICPXDRConversionRateState(
-                isRefreshing ? FeatureState.Refreshing : FeatureState.Loading
+                isRefreshing ? FeatureState.Updating : FeatureState.Loading
               )
             );
 

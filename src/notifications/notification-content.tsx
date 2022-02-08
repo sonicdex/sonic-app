@@ -1,57 +1,66 @@
 import { Flex, Text, useColorModeValue } from '@chakra-ui/react';
 
-import { NotificationType } from '@/store';
+import { Notification, NotificationType } from '@/store';
 
-import { NotificationBoxProps } from '.';
 import {
-  AddLiquidityLink,
-  DepositLink,
-  RemoveLiquidityLink,
-  SwapLink,
-  TransactionLink,
-  UnwrapLink,
-  WithdrawLink,
-  WrapLink,
+  AddLiquidityNotificationContent,
+  DepositNotificationContent,
+  MintAutoNotificationContent,
+  MintManualNotificationContent,
+  MintWICPNotificationContent,
+  MintXTCNotificationContent,
+  RemoveLiquidityNotificationContent,
+  SwapNotificationContent,
+  TransactionNotificationContent,
+  WithdrawNotificationContent,
+  WithdrawWICPNotificationContent,
 } from './components';
-import { MintXTCLink } from './components/mint-xtc-link';
 
-export type NotificationContentProps = Pick<
-  NotificationBoxProps,
-  'type' | 'children' | 'title' | 'transactionLink' | 'id'
->;
+export type NotificationContentProps = Notification;
 
 export const NotificationContent: React.FC<NotificationContentProps> = ({
-  type,
-  title,
   children,
-  transactionLink,
   id,
+  type,
+  state,
+  title,
+  transactionLink,
 }) => {
-  const notificationComponents = {
-    [NotificationType.Swap]: <SwapLink id={id} />,
-    [NotificationType.AddLiquidity]: <AddLiquidityLink id={id} />,
-    [NotificationType.RemoveLiquidity]: <RemoveLiquidityLink id={id} />,
-    [NotificationType.Withdraw]: <WithdrawLink id={id} />,
-    [NotificationType.Deposit]: <DepositLink id={id} />,
-    [NotificationType.Unwrap]: <UnwrapLink id={id} />,
-    [NotificationType.Wrap]: <WrapLink id={id} />,
-    [NotificationType.Deposit]: <DepositLink id={id} />,
-    [NotificationType.MintXTC]: <MintXTCLink id={id} />,
+  const notificationContent = {
+    [NotificationType.Swap]: <SwapNotificationContent id={id} />,
+    [NotificationType.AddLiquidity]: (
+      <AddLiquidityNotificationContent id={id} />
+    ),
+    [NotificationType.RemoveLiquidity]: (
+      <RemoveLiquidityNotificationContent id={id} />
+    ),
+    [NotificationType.Withdraw]: <WithdrawNotificationContent id={id} />,
+    [NotificationType.Deposit]: <DepositNotificationContent id={id} />,
+    [NotificationType.WithdrawWICP]: (
+      <WithdrawWICPNotificationContent id={id} />
+    ),
+    [NotificationType.MintWICP]: <MintWICPNotificationContent id={id} />,
+    [NotificationType.Deposit]: <DepositNotificationContent id={id} />,
+    [NotificationType.MintXTC]: <MintXTCNotificationContent id={id} />,
     [NotificationType.Success]: transactionLink ? (
-      <TransactionLink transactionLink={transactionLink} />
+      <TransactionNotificationContent transactionLink={transactionLink} />
     ) : null,
-    [NotificationType.Error]: <></>, // TODO: Add error link
+    [NotificationType.MintAuto]: (
+      <MintAutoNotificationContent id={id} state={state} />
+    ),
+    [NotificationType.MintManual]: <MintManualNotificationContent id={id} />,
+    [NotificationType.Error]: <></>, // TODO: Add content for error if necessary, for instance report an error?
   };
 
   const color = useColorModeValue('gray.800', 'gray.50');
 
   return (
     <Flex direction="column" alignItems="flex-start">
-      <Text color={color} fontSize="md" fontWeight={700} maxWidth={60}>
+      <Text color={color} fontWeight={700} maxWidth={60}>
         {title}
       </Text>
 
-      {notificationComponents[type]}
+      {notificationContent[type]}
 
       {children}
     </Flex>

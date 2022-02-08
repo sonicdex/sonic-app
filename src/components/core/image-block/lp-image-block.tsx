@@ -27,7 +27,12 @@ export const LPImageBlock: React.FC<LPImageBlockProps> = ({
   };
 
   return (
-    <Box width={boxSize[size]} height={boxSize[size]} position="relative">
+    <Box
+      width={boxSize[size]}
+      height={boxSize[size]}
+      position="relative"
+      minW="fit-content"
+    >
       <SkeletonCircle
         h={skeletonSize[size]}
         w={skeletonSize[size]}

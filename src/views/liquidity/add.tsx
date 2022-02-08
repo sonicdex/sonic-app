@@ -36,10 +36,10 @@ import {
   SlippageSettings,
   StackLine,
   Token,
-  TokenBalances,
-  TokenBalancesDetails,
-  TokenBalancesPrice,
   TokenContent,
+  TokenData,
+  TokenDataBalances,
+  TokenDataPrice,
   TokenDetailsButton,
   TokenDetailsLogo,
   TokenDetailsSymbol,
@@ -60,6 +60,7 @@ import {
   useLiquidityViewStore,
   useNotificationStore,
   usePlugStore,
+  usePriceStore,
   useSwapCanisterStore,
   useTokenModalOpener,
 } from '@/store';
@@ -84,6 +85,7 @@ export const LiquidityAddView = () => {
   const { tokenBalances, sonicBalances, totalBalances } = useBalances();
   const { supportedTokenList, supportedTokenListState, balancesState } =
     useSwapCanisterStore();
+  const { state: priceState } = usePriceStore();
   const openSelectTokenModal = useTokenModalOpener();
 
   const [isReviewing, setIsReviewing] = useState(false);
@@ -133,6 +135,13 @@ export const LiquidityAddView = () => {
         metadata: supportedTokenList,
         onSelect: (tokenId) => {
           if (tokenId && supportedTokenList) {
+            if (
+              token0.metadata?.id === tokenId ||
+              token1.metadata?.id === tokenId
+            ) {
+              return;
+            }
+
             const foundToken = supportedTokenList.find(
               ({ id }) => id === tokenId
             );
@@ -217,17 +226,21 @@ export const LiquidityAddView = () => {
   const token0Balance = useTokenBalanceMemo(token0.metadata?.id);
   const token1Balance = useTokenBalanceMemo(token1.metadata?.id);
 
-  const isBalancesLoading = useMemo(
-    () => balancesState === FeatureState.Loading,
-    [balancesState]
-  );
-
   const isLoading = useMemo(() => {
     return (
       supportedTokenListState === FeatureState.Loading ||
       pairState === FeatureState.Loading
     );
   }, [supportedTokenListState, pairState]);
+
+  const isBalancesUpdating = useMemo(
+    () => balancesState === FeatureState.Updating,
+    [balancesState]
+  );
+  const isPriceUpdating = useMemo(
+    () => priceState === FeatureState.Updating,
+    [priceState]
+  );
 
   const [buttonDisabled, buttonMessage] = useMemo<[boolean, string]>(() => {
     if (isLoading) return [true, 'Loading'];
@@ -433,22 +446,25 @@ export const LiquidityAddView = () => {
 
   const handleSetIsAutoSlippage = (isAutoSlippage: boolean) => {
     setAutoSlippage(isAutoSlippage);
-    dispatch(liquidityViewActions.setSlippage(INITIAL_LIQUIDITY_SLIPPAGE));
+  };
+
+  const handleMenuClose = () => {
+    if (autoSlippage) {
+      dispatch(liquidityViewActions.setSlippage(INITIAL_LIQUIDITY_SLIPPAGE));
+    }
   };
 
   const menuListShadow = useColorModeValue('lg', 'none');
-  const menuListBg = useColorModeValue('gray.50', 'custom.2');
+  const menuListBg = useColorModeValue('gray.50', 'custom.3');
   const color = useColorModeValue('gray.600', 'custom.1');
   const bg = useColorModeValue('gray.100', 'gray.800');
+  const iconBorderColor = useColorModeValue('gray.200', 'custom.4');
+  const textColor = useColorModeValue('gray.700', 'gray.300');
 
   return (
     <Stack spacing={4}>
       <ViewHeader onArrowBack={handlePreviousStep} title="Add Liquidity">
-        <Menu
-          onClose={() =>
-            Number(slippage) >= 50 && handleSetIsAutoSlippage(true)
-          }
-        >
+        <Menu onClose={handleMenuClose}>
           <Tooltip label="Adjust the slippage">
             <MenuButton
               as={IconButton}
@@ -496,26 +512,30 @@ export const LiquidityAddView = () => {
 
               <TokenInput autoFocus />
             </TokenContent>
-            <TokenBalances>
-              <TokenBalancesDetails
+            <TokenData>
+              <TokenDataBalances
+                isUpdating={isBalancesUpdating}
                 onMaxClick={() => handleTokenMaxClick('token0')}
               />
-              <TokenBalancesPrice />
-            </TokenBalances>
+              <TokenDataPrice isUpdating={isPriceUpdating} />
+            </TokenData>
           </Token>
         </Box>
+
         <Center
           borderRadius={12}
           width={10}
           height={10}
-          border="1px solid #373737"
+          border="1px solid"
+          borderColor={iconBorderColor}
           bg={menuListBg}
           mt={-2}
           mb={-2}
-          zIndex={1200}
+          zIndex="docked"
         >
           <Icon as={FaPlus} />
         </Center>
+
         <Box width="100%">
           <Token
             value={token1.value}
@@ -525,7 +545,6 @@ export const LiquidityAddView = () => {
             isDisabled={isReviewing}
             sources={token1Sources}
             isLoading={isLoading}
-            isBalancesLoading={isBalancesLoading}
           >
             <TokenContent>
               {token1.metadata ? (
@@ -545,12 +564,13 @@ export const LiquidityAddView = () => {
 
               <TokenInput />
             </TokenContent>
-            <TokenBalances>
-              <TokenBalancesDetails
+            <TokenData>
+              <TokenDataBalances
+                isUpdating={isBalancesUpdating}
                 onMaxClick={() => handleTokenMaxClick('token1')}
               />
-              <TokenBalancesPrice />
-            </TokenBalances>
+              <TokenDataPrice isUpdating={isPriceUpdating} />
+            </TokenData>
           </Token>
         </Box>
         {token0.metadata && token1.metadata && (
@@ -561,13 +581,14 @@ export const LiquidityAddView = () => {
                   borderRadius={12}
                   width={10}
                   height={10}
-                  border="1px solid #373737"
+                  border="1px solid"
+                  borderColor={iconBorderColor}
                   bg={menuListBg}
                   mt={-2}
                   mb={-2}
-                  zIndex={1200}
                   justifyContent="center"
                   alignItems="center"
+                  zIndex="docked"
                 >
                   <Icon as={FaEquals} />
                 </Center>
@@ -605,8 +626,8 @@ export const LiquidityAddView = () => {
                         <PopoverContent>
                           <PopoverArrow />
                           <PopoverBody>
-                            This is your share of the LP pool represented as
-                            tokens.
+                            This is your share of the liquidity pool represented
+                            as tokens
                           </PopoverBody>
                         </PopoverContent>
                       </Popover>
@@ -614,12 +635,12 @@ export const LiquidityAddView = () => {
 
                     <TokenInput />
                   </TokenContent>
-                  <TokenBalances color={color}>
+                  <TokenData color={color}>
                     Share of Pool:
                     <Text flex={1} textAlign="right">
                       {liquidityPercentage}
                     </Text>
-                  </TokenBalances>
+                  </TokenData>
                 </Token>
               </>
             )}
@@ -632,13 +653,13 @@ export const LiquidityAddView = () => {
                 mt={5}
                 px={5}
               >
-                <Text color="gray.300">
+                <Text color={textColor}>
                   {`1 ${token0.metadata?.symbol} = `}{' '}
                   <DisplayValue as="span" value={token1Price} />{' '}
                   {` ${token1.metadata?.symbol}`}
                 </Text>
                 <HStack>
-                  <Text color="gray.300">
+                  <Text color={textColor}>
                     {`1 ${token1.metadata?.symbol} = `}{' '}
                     <DisplayValue as="span" value={token0Price} />{' '}
                     {`${token0.metadata?.symbol}`}

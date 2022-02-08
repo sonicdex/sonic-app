@@ -12,6 +12,23 @@ export const checkIsConnected = () => window.ic?.plug?.isConnected();
 
 export const getPrincipal = () => window.ic?.plug?.getPrincipal();
 
-export const requestBalance = () => window.ic?.plug?.requestBalance();
+export const requestBalance = () => (window.ic?.plug as any)?.requestBalance();
 
 export const disconnect = () => window.ic?.plug?.disconnect();
+
+export const checkIfPlugProviderVersionCompatible = (version: number) => {
+  const plugProviderVersionNumber = Number(
+    plug?.versions.provider.split('.').join('')
+  );
+
+  return plugProviderVersionNumber >= version;
+};
+
+export const executeIfPlugProviderVersionCompatible = (
+  version: number,
+  callback: () => void
+) => {
+  if (checkIfPlugProviderVersionCompatible(version)) {
+    callback();
+  }
+};

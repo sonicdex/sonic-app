@@ -31,6 +31,7 @@ import { useMemo } from 'react';
 
 import { ENV } from '@/config';
 import {
+  FeatureState,
   liquidityViewActions,
   modalsSliceActions,
   NotificationType,
@@ -53,7 +54,8 @@ export const RemoveLiquidityModal = () => {
   const { addNotification } = useNotificationStore();
   const { token0, token1, removeAmountPercentage, keepInSonic } =
     useLiquidityViewStore();
-  const { allPairs, userLPBalances } = useSwapCanisterStore();
+  const { allPairs, userLPBalances, userLPBalancesState } =
+    useSwapCanisterStore();
 
   const handleModalClose = () => {
     dispatch(modalsSliceActions.closeRemoveLiquidityModal());
@@ -61,7 +63,7 @@ export const RemoveLiquidityModal = () => {
 
   const handleRemoveLiquidity = () => {
     addNotification({
-      title: `Remove LP of ${token0.metadata?.symbol} + ${token1.metadata?.symbol}`,
+      title: `Removing LP of ${token0.metadata?.symbol} + ${token1.metadata?.symbol}`,
       type: NotificationType.RemoveLiquidity,
       id: String(new Date().getTime()),
     });
@@ -74,6 +76,10 @@ export const RemoveLiquidityModal = () => {
   const handleSliderChange = (value: number) => {
     dispatch(liquidityViewActions.setRemoveAmountPercentage(value));
   };
+
+  const isBalancesUpdating = useMemo(() => {
+    return userLPBalancesState === FeatureState.Updating;
+  }, [userLPBalancesState]);
 
   const balances = useMemo(() => {
     if (userLPBalances && allPairs && token0.metadata && token1.metadata) {
@@ -101,18 +107,18 @@ export const RemoveLiquidityModal = () => {
           Math.round((token0.metadata.decimals + token1.metadata.decimals) / 2)
         );
 
-        normalizedTotalSupply;
-
         const balance0 = new BigNumber(normalizedTokenBalance)
           .dividedBy(normalizedTotalSupply)
           .multipliedBy(normalizedReserve0)
           .multipliedBy(removeAmountPercentage / 100)
+          .dp(token0.metadata.decimals)
           .toString();
 
         const balance1 = new BigNumber(normalizedTokenBalance)
           .dividedBy(normalizedTotalSupply)
           .multipliedBy(normalizedReserve1)
           .multipliedBy(removeAmountPercentage / 100)
+          .dp(token1.metadata.decimals)
           .toString();
 
         return {
@@ -233,10 +239,12 @@ export const RemoveLiquidityModal = () => {
             <RemoveLiquidityModalAsset
               {...token0.metadata}
               balance={balances.balance0}
+              isUpdating={isBalancesUpdating}
             />
             <RemoveLiquidityModalAsset
               {...token1.metadata}
               balance={balances.balance1}
+              isUpdating={isBalancesUpdating}
             />
           </Stack>
 

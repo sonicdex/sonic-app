@@ -18,7 +18,6 @@ export const useTokenModalOpener = () => {
     onSelect,
     selectedTokenIds,
   }: OpenSelectTokenModalOptions) => {
-    dispatch(modalsSliceActions.clearTokenSelectModalData());
     dispatch(
       modalsSliceActions.setTokenSelectModalData({
         tokens: stringify(metadata),

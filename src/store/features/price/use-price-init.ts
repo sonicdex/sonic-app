@@ -92,7 +92,7 @@ export const usePriceInit = () => {
           try {
             dispatch(
               priceActions.setState(
-                isRefreshing ? FeatureState.Refreshing : FeatureState.Loading
+                isRefreshing ? FeatureState.Updating : FeatureState.Loading
               )
             );
 

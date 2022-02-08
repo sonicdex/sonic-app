@@ -5,7 +5,7 @@ import { formatUnits, parseUnits } from 'ethers/lib/utils';
 
 import { ICP_METADATA } from '@/constants';
 import { AppTokenMetadata, PairList } from '@/models';
-import { SwapTokenData } from '@/store';
+import { SwapTokenData, SwapTokenDataKey } from '@/store';
 import {
   DEFAULT_CYCLES_PER_XDR,
   TOKEN_SUBDIVIDABLE_BY,
@@ -98,24 +98,51 @@ export const getAmountLP = ({
   return Math.min(Number(one), Number(two)).toString();
 };
 
-export type GetXTCValueFromICPOptions = {
+export type GetXTCValueByXDRRateOptions = {
   amount: string;
   conversionRate: string;
-  fee: bigint;
-  decimals: number;
 };
 
-export function getXTCValueFromICP({
+export function getXTCValueByXDRRate({
   amount,
   conversionRate,
-  fee,
-  decimals,
-}: GetXTCValueFromICPOptions) {
-  return new BigNumber(amount)
-    .multipliedBy(new BigNumber(conversionRate))
-    .multipliedBy(new BigNumber(DEFAULT_CYCLES_PER_XDR))
-    .dividedBy(new BigNumber(TOKEN_SUBDIVIDABLE_BY * 100_000_000))
-    .minus(formatAmount(fee, decimals));
+}: GetXTCValueByXDRRateOptions) {
+  const _amount = new BigNumber(amount);
+  const _conversionRate = new BigNumber(conversionRate);
+  const _defaultCyclesPerXDR = new BigNumber(DEFAULT_CYCLES_PER_XDR);
+  const _subdividableBy = new BigNumber(TOKEN_SUBDIVIDABLE_BY * 100_000_000);
+
+  // XTCValueByXDRRate = amount * conversionRate * defaultCyclesPerXDR / subdividableBy
+  const result = _amount
+    .multipliedBy(_conversionRate)
+    .multipliedBy(_defaultCyclesPerXDR)
+    .dividedBy(_subdividableBy);
+
+  return result;
+}
+
+export type GetICPValueByXDRRateOptions = {
+  amount: string;
+  conversionRate: string;
+};
+
+export function getICPValueByXDRRate({
+  amount,
+  conversionRate,
+}: GetXTCValueByXDRRateOptions) {
+  const _amount = new BigNumber(amount);
+  const _defaultCyclesPerXDR = new BigNumber(DEFAULT_CYCLES_PER_XDR);
+  const _subdividableBy = new BigNumber(TOKEN_SUBDIVIDABLE_BY * 100_000_000);
+
+  const _conversionRate = new BigNumber(conversionRate);
+
+  // ICPValueByXDRRate = amount / conversionRate / defaultCyclesPerXDR * subdividableBy
+  const result = _amount
+    .multipliedBy(_subdividableBy)
+    .dividedBy(_defaultCyclesPerXDR)
+    .dividedBy(_conversionRate);
+
+  return result;
 }
 
 export interface GetLPPercentageString extends GetAmountLPOptions {
@@ -194,38 +221,46 @@ export const getAmountEqualLPToken = ({
   return amountOut;
 };
 
-export type GetAmountOutOptions = {
+export type GetAmountOptions = {
   amountIn: string | number;
   decimalsIn: string | number;
   decimalsOut: string | number;
   reserveIn: string | number;
   reserveOut: string | number;
   fee?: number;
+  dataKey: SwapTokenDataKey;
 };
 
-export const getAmountOut = ({
+export const getAmount = ({
   amountIn,
   decimalsIn,
   decimalsOut,
   reserveIn,
   reserveOut,
   fee = 3,
-}: GetAmountOutOptions): string => {
+  dataKey = 'from',
+}: GetAmountOptions): string => {
   if (!amountIn || new BigNumber(amountIn).isZero()) return '';
 
-  const amountInWithFee = new BigNumber(amountIn) // amountIn * 997;
-    .multipliedBy(new BigNumber(10).pow(decimalsIn))
-    .multipliedBy(new BigNumber('1000').minus(fee));
+  const thousand = new BigNumber('1000');
+  const _amountIn = new BigNumber(amountIn);
+  const _decimalsIn = new BigNumber(10).pow(decimalsIn);
+  const _decimalsOut = new BigNumber(10).pow(decimalsOut);
+  const _reserveIn = new BigNumber(reserveIn).multipliedBy(thousand);
 
-  const numerator = amountInWithFee.multipliedBy(new BigNumber(reserveOut)); // amountInWithFee * reserveOut;
+  const _fee = dataKey === 'from' ? thousand.minus(fee) : thousand.plus(fee);
 
-  const denominator = new BigNumber(reserveIn) // reserveIn * 1000 + amountInWithFee;
-    .multipliedBy(new BigNumber('1000'))
-    .plus(amountInWithFee);
+  const _amountInWithFee = _amountIn
+    .multipliedBy(_decimalsIn)
+    .multipliedBy(_fee);
 
-  return numerator
-    .dividedBy(denominator)
-    .dividedBy(new BigNumber(10).pow(decimalsOut))
+  const _numerator = _amountInWithFee.multipliedBy(new BigNumber(reserveOut));
+
+  const _denominator = _reserveIn.plus(_amountInWithFee);
+
+  return _numerator
+    .dividedBy(_denominator)
+    .dividedBy(_decimalsOut)
     .toFixed(Number(decimalsOut));
 };
 
@@ -270,13 +305,13 @@ export const calculatePriceImpact = ({
   )
     return '0';
 
-  const _amountOut = new BigNumber(
+  const _priceOut = new BigNumber(
     calculatePriceBasedOnAmount({
       amount: amountOut,
       price: priceOut,
     })
   );
-  const _amountIn = new BigNumber(
+  const _priceIn = new BigNumber(
     calculatePriceBasedOnAmount({
       amount: amountIn,
       price: priceIn,
@@ -284,7 +319,7 @@ export const calculatePriceImpact = ({
   );
 
   const priceImpact = new BigNumber(1)
-    .minus(new BigNumber(_amountOut).dividedBy(_amountIn))
+    .minus(new BigNumber(_priceOut).dividedBy(_priceIn))
     .multipliedBy(100)
     .negated();
 
@@ -387,12 +422,13 @@ export const getAmountOutMin = (
     );
   }
 
-  const toValue = getAmountOut({
+  const toValue = getAmount({
     amountIn: fromValue.toString(),
     decimalsIn: from.metadata.decimals,
     decimalsOut: to.metadata.decimals,
     reserveIn: Number(pair.reserve0),
     reserveOut: Number(pair.reserve1),
+    dataKey: 'from',
   });
 
   let result = new BigNumber(toValue).multipliedBy(
@@ -444,4 +480,8 @@ export const getSwapAmountOut = (
   }
 
   return '';
+};
+
+export const capitalize = (str: string) => {
+  return str.charAt(0).toUpperCase() + str.slice(1);
 };

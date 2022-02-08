@@ -5,10 +5,10 @@ import { useNavigate } from 'react-router';
 import { plugCircleSrc } from '@/assets';
 import {
   Token,
-  TokenBalances,
-  TokenBalancesDetails,
-  TokenBalancesPrice,
   TokenContent,
+  TokenData,
+  TokenDataBalances,
+  TokenDataPrice,
   TokenDetailsButton,
   TokenDetailsLogo,
   TokenDetailsSymbol,
@@ -34,8 +34,12 @@ import { debounce } from '@/utils/function';
 export const AssetsDepositView = () => {
   const query = useQuery();
 
-  const { supportedTokenList, tokenBalances, supportedTokenListState } =
-    useSwapCanisterStore();
+  const {
+    supportedTokenList,
+    tokenBalances,
+    balancesState,
+    supportedTokenListState,
+  } = useSwapCanisterStore();
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -142,8 +146,10 @@ export const AssetsDepositView = () => {
   };
 
   const isLoading = useMemo(
-    () => supportedTokenListState === FeatureState.Loading,
-    [supportedTokenListState]
+    () =>
+      supportedTokenListState === FeatureState.Loading ||
+      balancesState === FeatureState.Loading,
+    [supportedTokenListState, balancesState]
   );
 
   return (
@@ -175,10 +181,10 @@ export const AssetsDepositView = () => {
 
             <TokenInput autoFocus />
           </TokenContent>
-          <TokenBalances>
-            <TokenBalancesDetails onMaxClick={handleMaxClick} />
-            <TokenBalancesPrice />
-          </TokenBalances>
+          <TokenData>
+            <TokenDataBalances onMaxClick={handleMaxClick} />
+            <TokenDataPrice />
+          </TokenData>
         </Token>
       </Box>
       <FeeBox token={selectedTokenMetadata} isDeposit />
@@ -189,7 +195,7 @@ export const AssetsDepositView = () => {
         colorScheme="dark-blue"
         isDisabled={buttonDisabled}
         onClick={handleDeposit}
-        isLoading={supportedTokenListState === FeatureState.Loading}
+        isLoading={isLoading}
       >
         {buttonMessage}
       </Button>
