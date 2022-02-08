@@ -30,6 +30,7 @@ export const useActivityView = () => {
       dispatch(activityViewActions.setCAPState(FeatureState.Loading));
       getUserTransactions(_principalId, page)
         .then((res) => {
+          console.log(res);
           dispatch(activityViewActions.pushActivityList(res));
           dispatch(activityViewActions.setCAPState(FeatureState.Idle));
           if (res.length === 0) dispatch(activityViewActions.setEndReached());
