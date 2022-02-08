@@ -49,6 +49,8 @@ export const SwapView = () => {
   const { fromTokenOptions, toTokenOptions, from, to, slippage } =
     useSwapViewStore();
 
+  console.log(from.paths);
+
   const {
     step,
     headerTitle,

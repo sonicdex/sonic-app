@@ -174,8 +174,8 @@ export const swapViewSlice = createSlice({
         state.from.metadata = { ...state.to.metadata };
         state.to.metadata = tempMetadata;
 
-        state[oppositeDataKey].paths = tokenPaths;
-        state[dataKey].paths = oppositeTokenPaths;
+        state[oppositeDataKey].paths = oppositeTokenPaths;
+        state[dataKey].paths = tokenPaths;
 
         state[oppositeDataKey].value = value;
         state[dataKey].value = oppositeValue;

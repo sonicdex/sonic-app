@@ -619,8 +619,8 @@ export const LiquidityAddView = () => {
                         <PopoverContent>
                           <PopoverArrow />
                           <PopoverBody>
-                            This is your share of the LP pool represented as
-                            tokens.
+                            This is your share of the liquidity pool represented
+                            as tokens
                           </PopoverBody>
                         </PopoverContent>
                       </Popover>

@@ -42,7 +42,7 @@ export const useSwapExactTokensTransactionMemo: CreateTransaction<Swap> = (
       args: [
         amountIn,
         amountOutMin,
-        from.paths[to.metadata.id].path,
+        from.paths[to.metadata.id]?.path,
         Principal.fromText(principalId),
         BigInt(currentTime),
       ],
