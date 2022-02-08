@@ -2,11 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { MintTokenSymbol, usePlugStore } from '@/store';
 
-import {
-  getMintWICPTransaction,
-  getMintXTCTransaction,
-  useBatchHook,
-} from '..';
+import { getMintWICPTransaction, getMintXTCTransaction, useBatch } from '..';
 import { getTransactionName, removeBlockHeightFromStorage } from '.';
 
 export type UseMintMultipleBatchOptions = {
@@ -60,7 +56,7 @@ export const useMintMultipleBatch = ({
   const getTransactionNames = () => Object.keys(transactions);
 
   return {
-    batch: useBatchHook<string>({ transactions }),
+    batch: useBatch<string>({ transactions }),
     getTransactionNames,
   };
 };

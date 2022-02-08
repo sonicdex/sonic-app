@@ -21,7 +21,7 @@ import {
   getMintWICPTransaction,
   getMintXTCTransaction,
   useApproveTransactionMemo,
-  useBatchHook,
+  useBatch,
   useDepositTransactionMemo,
   useLedgerTransferTransactionMemo,
 } from '..';
@@ -208,7 +208,7 @@ export const useMintBatch = ({
     keepInSonic,
   ]);
 
-  const batch = useBatchHook<MintModalDataStep>({
+  const batch = useBatch<MintModalDataStep>({
     transactions: _transactions,
     handleRetry: async (error, prevResponses) => {
       return new Promise((resolve) => {

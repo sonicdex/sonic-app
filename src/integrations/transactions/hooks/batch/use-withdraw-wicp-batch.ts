@@ -10,7 +10,7 @@ import {
   WithdrawWICPModalDataStep,
 } from '@/store';
 
-import { useBatchHook } from '..';
+import { useBatch } from '..';
 import {
   useWithdrawTransactionMemo,
   useWithdrawWICPTransactionMemo,
@@ -75,7 +75,7 @@ export const useWithdrawWICPBatch = ({
   };
 
   return {
-    batch: useBatchHook({
+    batch: useBatch({
       transactions,
       handleRetry: () => {
         return new Promise((resolve) => {

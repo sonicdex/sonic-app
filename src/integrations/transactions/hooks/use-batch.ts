@@ -5,7 +5,7 @@ import { plug } from '@/integrations/plug';
 import { BatchTransactions } from '..';
 import { Batch } from '../models';
 
-export const useBatchHook = <Model>({
+export const useBatch = <Model>({
   transactions,
   handleRetry,
 }: Batch.HookProps<Model>): Batch.Hook<Model> => {

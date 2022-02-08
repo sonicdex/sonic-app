@@ -9,7 +9,7 @@ import {
 import { Deposit } from '../..';
 import {
   useApproveTransactionMemo,
-  useBatchHook,
+  useBatch,
   useDepositTransactionMemo,
 } from '..';
 import { getDepositTransactions } from '.';
@@ -40,7 +40,7 @@ export const useDepositBatch = (deposit: Deposit) => {
     dispatch(modalsSliceActions.openDepositProgressModal());
   };
   return {
-    batch: useBatchHook<DepositModalDataStep>({
+    batch: useBatch<DepositModalDataStep>({
       transactions,
       handleRetry: () => {
         dispatch(modalsSliceActions.closeDepositProgressModal());

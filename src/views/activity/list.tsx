@@ -86,8 +86,6 @@ export const ActivityListView = () => {
     );
   }
 
-  console.log('Transactions List', activityList);
-
   return (
     <>
       <Header title="Your Activity" isUpdating={isUpdating} />

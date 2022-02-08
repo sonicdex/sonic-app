@@ -1,3 +1,3 @@
 export * from './transactions';
 export * from './batch';
-export * from './use-batch-hook';
+export * from './use-batch';
