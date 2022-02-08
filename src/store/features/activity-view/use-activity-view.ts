@@ -13,7 +13,7 @@ import { activityViewActions, useActivityViewStore } from '.';
 export const useActivityView = () => {
   const { principalId } = usePlugStore();
   const { supportedTokenList } = useSwapCanisterStore();
-  const { page, activityList } = useActivityViewStore();
+  const { page, lastPage, fetchedPages } = useActivityViewStore();
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -26,35 +26,41 @@ export const useActivityView = () => {
   }, [supportedTokenList, dispatch]);
 
   const getUserTransactionsPage = useCallback(
-    (_principalId: string, page: number) => {
+    (_principalId: string, _page?: number) => {
       dispatch(activityViewActions.setCAPState(FeatureState.Loading));
-      getUserTransactions(_principalId, page)
+      getUserTransactions(_principalId, _page)
         .then((res) => {
-          dispatch(activityViewActions.pushActivityList(res));
+          dispatch(activityViewActions.pushActivityList(res.data));
           dispatch(activityViewActions.setCAPState(FeatureState.Idle));
-          if (res.length === 0) dispatch(activityViewActions.setEndReached());
+          dispatch(activityViewActions.pushFetchedPages(res.page));
+
+          if (typeof lastPage === 'undefined' || res.page > lastPage) {
+            dispatch(activityViewActions.setLastPage(res.page));
+          }
         })
         .catch((err) => {
           console.error('getUserTransactions', err);
           dispatch(activityViewActions.setCAPState(FeatureState.Error));
         });
     },
-    [dispatch]
+    [dispatch, lastPage]
   );
 
   useEffect(() => {
     if (principalId) {
-      getUserTransactionsPage(principalId, page);
+      if (typeof page !== 'undefined' && !fetchedPages.includes(page)) {
+        getUserTransactionsPage(principalId, page);
+      }
     } else {
       dispatch(activityViewActions.clearActivityList());
     }
-  }, [page, principalId, dispatch, getUserTransactionsPage]);
+  }, [page, principalId, dispatch, getUserTransactionsPage, fetchedPages]);
 
   useEffect(() => {
-    // Updates page 0 activity tab is opened and already has activities
-    if (principalId && Object.keys(activityList).length > 0)
-      getUserTransactionsPage(principalId, 0);
-  }, [principalId, getUserTransactionsPage]);
+    if (principalId) {
+      getUserTransactionsPage(principalId, undefined);
+    }
+  }, [principalId]);
 
   useEffect(() => {
     if (principalId) {
@@ -64,7 +70,7 @@ export const useActivityView = () => {
       )
         .then((transactions) => {
           dispatch(activityViewActions.setLedgerState(FeatureState.Idle));
-          dispatch(activityViewActions.pushActivityList(transactions));
+          dispatch(activityViewActions.setLedgerTransactions(transactions));
         })
         .catch((err) => {
           console.error('getUserLedgerTransactions', err);
