@@ -275,7 +275,6 @@ export const useSwapViewData = () => {
     resetStepToHome();
 
     const options = dataKey === 'from' ? fromTokenOptions : toTokenOptions;
-    const data = dataKey === 'from' ? from : to;
     const oppositeDataKey = dataKey === 'from' ? 'to' : 'from';
     const oppositeTokenId =
       dataKey === 'from' ? to.metadata?.id : from.metadata?.id;
@@ -284,6 +283,13 @@ export const useSwapViewData = () => {
       metadata: options,
       onSelect: (tokenId) => {
         batch(() => {
+          if (
+            (dataKey === 'from' && from?.metadata?.id === tokenId) ||
+            (dataKey === 'to' && to?.metadata?.id === tokenId)
+          ) {
+            return;
+          }
+
           if (oppositeTokenId === tokenId) {
             dispatch(
               swapViewActions.setToken({
@@ -292,12 +298,10 @@ export const useSwapViewData = () => {
               })
             );
             dispatch(swapViewActions.setToken({ data: dataKey, tokenId }));
-            resetViewState();
           } else {
             dispatch(swapViewActions.setToken({ data: dataKey, tokenId }));
-
-            handleChangeValue(data.value, oppositeDataKey);
           }
+          resetViewState();
         });
       },
       selectedTokenIds,
@@ -554,7 +558,9 @@ export const useSwapViewData = () => {
 
   const selectedTokenIds = useMemo(() => {
     const selectedIds = [];
-    if (from?.metadata?.id) selectedIds.push(from.metadata.id);
+    if (from?.metadata?.id) {
+      selectedIds.push(from.metadata.id);
+    }
 
     return selectedIds;
   }, [from?.metadata?.id]);

@@ -83,10 +83,6 @@ export const TokenSelectModal = () => {
   }, [search, parsedTokens]);
 
   const handleSelect = (tokenId?: string) => {
-    if (selectedTokenIds && tokenId && selectedTokenIds?.includes(tokenId)) {
-      return;
-    }
-
     onSelect(tokenId);
     handleTokenSelectClose();
   };
