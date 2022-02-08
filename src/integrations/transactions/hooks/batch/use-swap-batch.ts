@@ -90,6 +90,7 @@ export const useSwapBatch = ({
           callbacks: [
             // Retry callback
             () => {
+              dispatch(modalsSliceActions.closeSwapFailModal());
               openBatchModal();
               resolve(true);
             },
