@@ -111,12 +111,14 @@ export const RemoveLiquidityModal = () => {
           .dividedBy(normalizedTotalSupply)
           .multipliedBy(normalizedReserve0)
           .multipliedBy(removeAmountPercentage / 100)
+          .dp(token0.metadata.decimals)
           .toString();
 
         const balance1 = new BigNumber(normalizedTokenBalance)
           .dividedBy(normalizedTotalSupply)
           .multipliedBy(normalizedReserve1)
           .multipliedBy(removeAmountPercentage / 100)
+          .dp(token1.metadata.decimals)
           .toString();
 
         return {
