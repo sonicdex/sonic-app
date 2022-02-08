@@ -78,10 +78,26 @@ export const useWithdrawWICPBatch = ({
     batch: useBatchHook({
       transactions,
       handleRetry: () => {
-        dispatch(modalsSliceActions.closeWithdrawWICPProgressModal());
-        dispatch(modalsSliceActions.openWithdrawWICPFailModal());
+        return new Promise((resolve) => {
+          dispatch(
+            modalsSliceActions.setWithdrawWICPModalData({
+              callbacks: [
+                // Retry callback
+                () => {
+                  openBatchModal();
+                  resolve(true);
+                },
+                // Close callback
+                () => {
+                  resolve(false);
+                },
+              ],
+            })
+          );
 
-        return Promise.resolve(false);
+          dispatch(modalsSliceActions.closeWithdrawWICPProgressModal());
+          dispatch(modalsSliceActions.openWithdrawWICPFailModal());
+        });
       },
     }),
     openBatchModal,

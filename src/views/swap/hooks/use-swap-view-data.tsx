@@ -209,6 +209,22 @@ export const useSwapViewData = () => {
     dispatch(swapViewActions.setValue({ data: dataKey, value }));
   };
 
+  const resetViewState = useCallback(() => {
+    setStep(SwapStep.Home);
+    dispatch(
+      swapViewActions.setValue({
+        data: 'from',
+        value: '',
+      })
+    );
+    dispatch(
+      swapViewActions.setValue({
+        data: 'to',
+        value: '',
+      })
+    );
+  }, [dispatch]);
+
   const resetStepToHome = useCallback(() => {
     if (step === SwapStep.Review) {
       setStep(SwapStep.Home);
@@ -276,10 +292,7 @@ export const useSwapViewData = () => {
               })
             );
             dispatch(swapViewActions.setToken({ data: dataKey, tokenId }));
-            dispatch(
-              swapViewActions.setValue({ data: oppositeDataKey, value: '' })
-            );
-            dispatch(swapViewActions.setValue({ data: dataKey, value: '' }));
+            resetViewState();
           } else {
             dispatch(swapViewActions.setToken({ data: dataKey, tokenId }));
 
@@ -334,15 +347,12 @@ export const useSwapViewData = () => {
         type: NotificationType.MintXTC,
         id: String(new Date().getTime()),
       });
-      debounce(
-        () => dispatch(swapViewActions.setValue({ data: 'from', value: '' })),
-        300
-      );
+      debounce(resetViewState, 300);
     }
   }, [
     addNotification,
     checkIsPlugProviderVersionCompatible,
-    dispatch,
+    resetViewState,
     to.metadata?.symbol,
     to.value,
   ]);
@@ -354,17 +364,14 @@ export const useSwapViewData = () => {
         type: NotificationType.MintWICP,
         id: String(new Date().getTime()),
       });
-      debounce(
-        () => dispatch(swapViewActions.setValue({ data: 'from', value: '' })),
-        300
-      );
+      debounce(resetViewState, 300);
     }
   }, [
     addNotification,
     checkIsPlugProviderVersionCompatible,
-    dispatch,
     from.metadata?.symbol,
     from.value,
+    resetViewState,
   ]);
 
   const handleWithdrawWICP = useCallback(() => {
@@ -373,11 +380,8 @@ export const useSwapViewData = () => {
       type: NotificationType.WithdrawWICP,
       id: String(new Date().getTime()),
     });
-    debounce(
-      () => dispatch(swapViewActions.setValue({ data: 'from', value: '' })),
-      300
-    );
-  }, [addNotification, dispatch, from.metadata?.symbol, from.value]);
+    debounce(resetViewState, 300);
+  }, [addNotification, from.metadata?.symbol, from.value, resetViewState]);
 
   const handleApproveSwap = useCallback(() => {
     addNotification({
@@ -385,15 +389,12 @@ export const useSwapViewData = () => {
       type: NotificationType.Swap,
       id: String(new Date().getTime()),
     });
-    debounce(() => {
-      dispatch(swapViewActions.setValue({ data: 'from', value: '' }));
-      setStep(SwapStep.Home);
-    }, 300);
+    debounce(resetViewState, 300);
   }, [
     addNotification,
-    dispatch,
     from.metadata?.symbol,
     from.value,
+    resetViewState,
     to.metadata?.symbol,
     to.value,
   ]);
