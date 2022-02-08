@@ -107,8 +107,6 @@ export const RemoveLiquidityModal = () => {
           Math.round((token0.metadata.decimals + token1.metadata.decimals) / 2)
         );
 
-        normalizedTotalSupply;
-
         const balance0 = new BigNumber(normalizedTokenBalance)
           .dividedBy(normalizedTotalSupply)
           .multipliedBy(normalizedReserve0)
