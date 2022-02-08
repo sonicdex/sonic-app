@@ -1,5 +1,5 @@
 import { Skeleton, Stack, Text, useColorModeValue } from '@chakra-ui/react';
-import React, { Fragment, useMemo } from 'react';
+import React, { Fragment, useEffect, useMemo } from 'react';
 
 import { Header, PlugNotConnected } from '@/components';
 import {
@@ -24,20 +24,27 @@ import {
 export const ActivityListView = () => {
   useActivityView();
   const { isConnected } = usePlugStore();
-  const { activityList, CAPstate, LedgerState, page, endReached } =
+  const { activityList, CAPstate, LedgerState, page, lastPage } =
     useActivityViewStore();
   const dispatch = useAppDispatch();
 
   const color = useColorModeValue('gray.600', 'custom.1');
 
-  const scrollHandler = (e: any): void => {
-    if (endReached || CAPstate === FeatureState.Loading) return;
-    const isBottom =
-      e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
-    if (isBottom) {
-      dispatch(activityViewActions.setPage(page + 1));
-    }
-  };
+  useEffect(() => {
+    const scrollHandler = (): void => {
+      if (lastPage === 0 || page === 0 || CAPstate === FeatureState.Loading)
+        return;
+      const isBottom =
+        window.scrollY + window.innerHeight >= document.body.offsetHeight;
+      if (isBottom && page) {
+        dispatch(activityViewActions.setPage(page - 1));
+      }
+    };
+
+    scrollHandler();
+    window.addEventListener('scroll', scrollHandler);
+    return () => window.removeEventListener('scroll', scrollHandler);
+  }, [page, lastPage, CAPstate, dispatch]);
 
   const isUpdating = useMemo(() => {
     return (
@@ -87,7 +94,6 @@ export const ActivityListView = () => {
           overflowX="auto"
           pb={20}
           pt={5}
-          onScroll={scrollHandler}
           css={{
             '&::-webkit-scrollbar': {
               display: 'none',

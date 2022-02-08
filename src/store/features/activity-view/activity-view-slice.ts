@@ -12,17 +12,21 @@ interface ActivityViewState {
   CAPstate: FeatureState;
   LedgerState: FeatureState;
   tokenList?: AppTokenMetadataListObject;
+  ledgerTransactions: LedgerTransaction[];
   activityList: { [date: string]: ActivityEvent[] };
-  page: number;
-  endReached: boolean;
+  page?: number;
+  lastPage?: number;
+  fetchedPages: number[];
 }
 
 const initialState: ActivityViewState = {
   CAPstate: FeatureState?.Idle,
   LedgerState: FeatureState?.Idle,
+  ledgerTransactions: [],
   activityList: {},
-  page: 0,
-  endReached: false,
+  page: undefined,
+  lastPage: undefined,
+  fetchedPages: [],
 };
 
 export const activityViewSlice = createSlice({
@@ -45,19 +49,35 @@ export const activityViewSlice = createSlice({
     setPage: (state, action: PayloadAction<number>) => {
       state.page = action.payload;
     },
-    pushActivityList: (state, action: PayloadAction<ActivityEvent[]>) => {
-      const aux = action.payload.reduce((acc, cur) => {
-        const date =
-          'timestamp' in cur ? cur['timestamp'] : new Date(cur['time']);
-        const dateString = date.toDateString();
+    setLedgerTransactions: (
+      state,
+      action: PayloadAction<LedgerTransaction[]>
+    ) => {
+      state.ledgerTransactions = action.payload;
+    },
+    pushActivityList: (state, action: PayloadAction<MappedCapHistoryLog[]>) => {
+      const mergedTransactions = [
+        ...action.payload,
+        ...state.ledgerTransactions,
+      ] as ActivityEvent[];
+      const toFilterTransactions = mergedTransactions.reduce((acc, cur) => {
+        if ('timestamp' in cur) {
+          const dateString = cur['timestamp'].toDateString();
+          if (acc[dateString] || state.page === 0) {
+            acc[dateString] = [...(acc[dateString] || []), cur];
+          }
+        } else {
+          const dateString = new Date(cur['time']).toDateString();
 
-        acc[dateString] = [...(acc[dateString] || []), cur];
+          acc[dateString] = [...(acc[dateString] || []), cur];
+        }
+
         return acc;
       }, state.activityList);
 
-      for (const key in aux) {
+      for (const key in toFilterTransactions) {
         const alreadyAdded = new Set();
-        aux[key] = aux[key]
+        toFilterTransactions[key] = toFilterTransactions[key]
           .filter((item) => {
             const time =
               'timestamp' in item ? item['timestamp'].getTime() : item['time'];
@@ -76,15 +96,25 @@ export const activityViewSlice = createSlice({
           });
       }
 
-      state.activityList = aux;
+      state.activityList = toFilterTransactions;
     },
-    setEndReached: (state) => {
-      state.endReached = true;
+    setLastPage: (state, action: PayloadAction<number>) => {
+      state.lastPage = action.payload;
+      if (typeof state.page === 'undefined') {
+        state.page = action.payload;
+      }
+    },
+    pushFetchedPages: (state, action: PayloadAction<number>) => {
+      state.fetchedPages = Array.from(
+        new Set([...state.fetchedPages, action.payload])
+      );
     },
     clearActivityList: (state) => {
       state.activityList = {};
-      state.page = 0;
-      state.endReached = false;
+      state.ledgerTransactions = [];
+      state.page = undefined;
+      state.lastPage = undefined;
+      state.fetchedPages = [];
     },
   },
 });
