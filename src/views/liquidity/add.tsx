@@ -135,6 +135,13 @@ export const LiquidityAddView = () => {
         metadata: supportedTokenList,
         onSelect: (tokenId) => {
           if (tokenId && supportedTokenList) {
+            if (
+              token0.metadata?.id === tokenId ||
+              token1.metadata?.id === tokenId
+            ) {
+              return;
+            }
+
             const foundToken = supportedTokenList.find(
               ({ id }) => id === tokenId
             );
