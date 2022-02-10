@@ -135,6 +135,13 @@ export const LiquidityAddView = () => {
         metadata: supportedTokenList,
         onSelect: (tokenId) => {
           if (tokenId && supportedTokenList) {
+            if (
+              token0.metadata?.id === tokenId ||
+              token1.metadata?.id === tokenId
+            ) {
+              return;
+            }
+
             const foundToken = supportedTokenList.find(
               ({ id }) => id === tokenId
             );
@@ -514,6 +521,7 @@ export const LiquidityAddView = () => {
             </TokenData>
           </Token>
         </Box>
+
         <Center
           borderRadius={12}
           width={10}
@@ -527,6 +535,7 @@ export const LiquidityAddView = () => {
         >
           <Icon as={FaPlus} />
         </Center>
+
         <Box width="100%">
           <Token
             value={token1.value}
@@ -617,8 +626,8 @@ export const LiquidityAddView = () => {
                         <PopoverContent>
                           <PopoverArrow />
                           <PopoverBody>
-                            This is your share of the LP pool represented as
-                            tokens.
+                            This is your share of the liquidity pool represented
+                            as tokens
                           </PopoverBody>
                         </PopoverContent>
                       </Popover>

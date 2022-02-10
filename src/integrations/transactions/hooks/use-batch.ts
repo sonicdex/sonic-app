@@ -5,7 +5,7 @@ import { plug } from '@/integrations/plug';
 import { BatchTransactions } from '..';
 import { Batch } from '../models';
 
-export const useBatchHook = <Model>({
+export const useBatch = <Model>({
   transactions,
   handleRetry,
 }: Batch.HookProps<Model>): Batch.Hook<Model> => {
@@ -30,9 +30,9 @@ export const useBatchHook = <Model>({
     Object.values(transactions).forEach((transaction, index) => {
       const onSuccess = transaction.onSuccess;
       transaction.onSuccess = async (res) => {
-        let txRes;
+        let txSuccessResponse;
         if (onSuccess) {
-          txRes = await onSuccess(res);
+          txSuccessResponse = await onSuccess(res);
         }
         if (index !== transactionsList.length - 1) {
           setState(states[index + 1]);
@@ -40,7 +40,7 @@ export const useBatchHook = <Model>({
           setState(Batch.DefaultHookState.Done);
         }
 
-        return txRes;
+        return txSuccessResponse;
       };
 
       const onFail = transaction.onFail;
@@ -54,7 +54,7 @@ export const useBatchHook = <Model>({
     return newBatch;
   }, [transactions, handleRetry]);
 
-  const execute = (): Promise<unknown> => {
+  const execute = async (): Promise<unknown> => {
     if (
       state !== Batch.DefaultHookState.Idle &&
       state !== Batch.DefaultHookState.Error
@@ -62,7 +62,15 @@ export const useBatchHook = <Model>({
       return Promise.reject('Batch is not idle');
     }
     setState(states[0]);
-    return batch.execute();
+    try {
+      return await batch.execute();
+    } catch (error: any) {
+      // TODO: Improve rejection flow to support other providers
+      if (error.message === 'The transactions was rejected.') {
+        setState(Batch.DefaultHookState.Error);
+      }
+      throw error;
+    }
   };
 
   return {

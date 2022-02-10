@@ -16,7 +16,7 @@ export const useLedgerTransferTransactionMemo: CreateTransaction<
 ) =>
   useMemo(() => {
     if (!toAccountId || !amount) {
-      return;
+      return {};
     }
 
     return {

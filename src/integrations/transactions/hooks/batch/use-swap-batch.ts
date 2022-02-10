@@ -11,7 +11,7 @@ import {
 import { Swap } from '../..';
 import {
   useApproveTransactionMemo,
-  useBatchHook,
+  useBatch,
   useDepositTransactionMemo,
   useSwapExactTokensTransactionMemo,
   useWithdrawTransactionMemo,
@@ -90,6 +90,7 @@ export const useSwapBatch = ({
           callbacks: [
             // Retry callback
             () => {
+              dispatch(modalsSliceActions.closeSwapFailModal());
               openBatchModal();
               resolve(true);
             },
@@ -127,7 +128,7 @@ export const useSwapBatch = ({
   };
 
   return {
-    batch: useBatchHook<SwapModalDataStep>({ transactions, handleRetry }),
+    batch: useBatch<SwapModalDataStep>({ transactions, handleRetry }),
     openBatchModal,
   };
 };

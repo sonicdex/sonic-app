@@ -8,7 +8,11 @@ describe('getTokenPaths', () => {
   const tokenList = mockTokenList();
 
   test('should return the correct path 0', () => {
-    const paths = getTokenPaths(allPairs, tokenList, Object.keys(tokenList)[0]);
+    const paths = getTokenPaths({
+      pairList: allPairs,
+      tokenList,
+      tokenId: Object.keys(tokenList)[0],
+    });
     expect(paths).toEqual({
       'oexpe-biaaa-aaaah-qcf6q-cai': {
         path: ['onuey-xaaaa-aaaah-qcf7a-cai', 'oexpe-biaaa-aaaah-qcf6q-cai'],
@@ -30,7 +34,11 @@ describe('getTokenPaths', () => {
   });
 
   test('should return the correct path 1', () => {
-    const paths = getTokenPaths(allPairs, tokenList, Object.keys(tokenList)[1]);
+    const paths = getTokenPaths({
+      pairList: allPairs,
+      tokenList,
+      tokenId: Object.keys(tokenList)[1],
+    });
     expect(paths).toEqual({
       'onuey-xaaaa-aaaah-qcf7a-cai': {
         path: ['oexpe-biaaa-aaaah-qcf6q-cai', 'onuey-xaaaa-aaaah-qcf7a-cai'],
@@ -52,8 +60,12 @@ describe('getTokenPaths', () => {
   });
 
   test('should return the correct path 2', () => {
-    const paths = getTokenPaths(allPairs, tokenList, Object.keys(tokenList)[2]);
-    console.log(paths);
+    const paths = getTokenPaths({
+      pairList: allPairs,
+      tokenList,
+      tokenId: Object.keys(tokenList)[2],
+    });
+
     expect(paths).toEqual({
       'wjsrf-myaaa-aaaam-qaayq-cai': {
         path: ['a7saq-3aaaa-aaaai-qbcdq-cai', 'wjsrf-myaaa-aaaam-qaayq-cai'],
@@ -67,7 +79,11 @@ describe('getTokenPaths', () => {
   });
 
   test('should return the correct path 3', () => {
-    const paths = getTokenPaths(allPairs, tokenList, Object.keys(tokenList)[3]);
+    const paths = getTokenPaths({
+      pairList: allPairs,
+      tokenList,
+      tokenId: Object.keys(tokenList)[3],
+    });
     expect(paths).toEqual({});
   });
 });

@@ -13,13 +13,9 @@ export type NotificationBoxProps = Notification & {
 };
 
 export const NotificationBox = ({
-  title,
-  onClose,
-  type,
   children,
-  transactionLink,
-  id,
-  timeout,
+  onClose,
+  ...notification
 }: NotificationBoxProps) => {
   const [show, setShow] = useState(true);
 
@@ -45,20 +41,9 @@ export const NotificationBox = ({
         pl={12}
         pb={4}
       >
-        <NotificationHeader handleClose={handleClose} type={type} />
-        <NotificationContent
-          title={title}
-          type={type}
-          transactionLink={transactionLink}
-          id={id}
-        >
-          {children}
-        </NotificationContent>
-        <NotificationTimer
-          handleClose={handleClose}
-          type={type}
-          timeout={timeout}
-        />
+        <NotificationHeader {...notification} handleClose={handleClose} />
+        <NotificationContent {...notification}>{children}</NotificationContent>
+        <NotificationTimer {...notification} handleClose={handleClose} />
       </Box>
     </Collapse>
   );

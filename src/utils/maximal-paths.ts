@@ -1,6 +1,7 @@
 import { AppTokenMetadataListObject, PairList } from '@/models';
+import { SwapTokenDataKey } from '@/store';
 
-import { getAmountOut } from './format';
+import { getAmount } from './format';
 
 export type WeightList = {
   [tokenId: string]: number;
@@ -29,7 +30,8 @@ export const findMaximalPaths = (
   pairList: PairList,
   tokenList: AppTokenMetadataListObject,
   source: string,
-  initialAmount: number
+  initialAmount: number,
+  dataKey: SwapTokenDataKey
 ) => {
   const nodes = Object.keys(pairList).reduce((_nodes, tokenId) => {
     return {
@@ -48,12 +50,13 @@ export const findMaximalPaths = (
   ): WeightList => {
     const neighborsIds = Object.keys(pairList[node.id]);
     return neighborsIds.reduce<WeightList>((weightItems, neighborId) => {
-      const weight = getAmountOut({
+      const weight = getAmount({
         amountIn: pathDistance,
         decimalsIn: tokenList[node.id].decimals,
         decimalsOut: tokenList[neighborId].decimals,
         reserveIn: Number(pairList[node.id][neighborId].reserve0),
         reserveOut: Number(pairList[node.id][neighborId].reserve1),
+        dataKey,
       });
       return {
         ...weightItems,
@@ -108,18 +111,28 @@ const parseMaximalPaths = (nodes: GraphNodeList): MaximalPathsList => {
   return result;
 };
 
-export const getTokenPaths = (
-  pairList: PairList,
-  tokenList: AppTokenMetadataListObject,
-  tokenId: string,
-  amount = '1'
-): MaximalPathsList => {
+export type GetTokenPathsOptions = {
+  pairList: PairList;
+  tokenList: AppTokenMetadataListObject;
+  tokenId: string;
+  amount?: string;
+  dataKey?: SwapTokenDataKey;
+};
+
+export const getTokenPaths = ({
+  pairList,
+  tokenList,
+  tokenId,
+  amount = '1',
+  dataKey = 'from',
+}: GetTokenPathsOptions): MaximalPathsList => {
   if (!pairList[tokenId]) return {};
   const graphNodes = findMaximalPaths(
     pairList,
     tokenList,
     tokenId,
-    Number(amount)
+    Number(amount),
+    dataKey
   );
   return parseMaximalPaths(graphNodes);
 };

@@ -5,7 +5,7 @@ import { TokenIDL } from '@/did';
 import { ActorAdapter } from '@/integrations/actor';
 import { useSwapCanisterStore } from '@/store';
 
-export const useTokenLogos = (): void => {
+export const useTokenLogosFetcherInit = (): void => {
   const { supportedTokenList } = useSwapCanisterStore();
 
   useEffect(() => {

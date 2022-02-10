@@ -184,7 +184,7 @@ export const Layout: React.FC = ({ children, ...props }) => {
                     <MenuItem icon={<FaBook />}>Documentation</MenuItem>
                   </ChakraLink>
                   <ChakraLink
-                    href={ENV.URLs.sonicDocs}
+                    href={`${ENV.URLs.sonicDocs}/dev/swaps-api`}
                     target="_blank"
                     rel="noopener noreferrer"
                     fontWeight="bold"

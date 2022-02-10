@@ -12,7 +12,7 @@ import { AddLiquidity, Deposit } from '../..';
 import {
   useAddLiquidityTransactionMemo,
   useApproveTransactionMemo,
-  useBatchHook,
+  useBatch,
   useDepositTransactionMemo,
 } from '..';
 import { useCreatePairTransactionMemo } from '../transactions/create-pair';
@@ -160,7 +160,7 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
   };
 
   return {
-    batch: useBatchHook<AddLiquidityModalDataStep>({
+    batch: useBatch<AddLiquidityModalDataStep>({
       transactions,
       handleRetry,
     }),

@@ -5,18 +5,17 @@ import {
   LocalStorageKey,
   MintUncompleteBlockHeights,
 } from '@/config';
+import { MINT_AUTO_NOTIFICATION_TITLES } from '@/notifications';
 import {
   modalsSliceActions,
+  NotificationState,
   NotificationType,
   useAppDispatch,
   useNotificationStore,
   usePlugStore,
 } from '@/store';
 
-export const BLOCK_HEIGHTS_TITLE =
-  'You have unfinished or failed mint(s), click retry mint below.';
-
-export const useBlockHeightsEffect = () => {
+export const useBlockHeightsInit = () => {
   const [notificationId] = useState(String(new Date().getTime()));
   const { isConnected, principalId } = usePlugStore();
   const { addNotification, popNotification } = useNotificationStore();
@@ -54,8 +53,9 @@ export const useBlockHeightsEffect = () => {
         if (totalLength >= 1 && isConnected) {
           addNotification({
             id: notificationId,
-            title: BLOCK_HEIGHTS_TITLE,
+            title: MINT_AUTO_NOTIFICATION_TITLES[NotificationState.Error],
             type: NotificationType.MintAuto,
+            state: NotificationState.Error,
           });
         }
       }

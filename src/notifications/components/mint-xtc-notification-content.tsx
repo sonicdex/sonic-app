@@ -2,51 +2,52 @@ import { Link } from '@chakra-ui/react';
 import { useEffect, useMemo } from 'react';
 
 import { useBalances } from '@/hooks/use-balances';
-import { useWithdrawBatch } from '@/integrations/transactions/hooks/batch/use-withdraw-batch';
+import { useMintBatch } from '@/integrations/transactions/hooks/batch/use-mint-batch';
 import {
+  MintModalDataStep,
+  MintTokenSymbol,
   modalsSliceActions,
   NotificationType,
   useAppDispatch,
   useNotificationStore,
-  useSwapCanisterStore,
-  useWithdrawViewStore,
-  WithdrawModalDataStep,
+  useSwapViewStore,
 } from '@/store';
+import { deserialize, stringify } from '@/utils/format';
 
-export interface WithdrawLinkProps {
+export interface MintXTCNotificationContentProps {
   id: string;
 }
 
-export const WithdrawLink: React.FC<WithdrawLinkProps> = ({ id }) => {
+export const MintXTCNotificationContent: React.FC<
+  MintXTCNotificationContentProps
+> = ({ id }) => {
   const dispatch = useAppDispatch();
+  const swapViewStore = useSwapViewStore();
   const { addNotification, popNotification } = useNotificationStore();
   const { getBalances } = useBalances();
 
-  const { amount: value, tokenId } = useWithdrawViewStore();
-  const { supportedTokenList } = useSwapCanisterStore();
+  const { from, to, keepInSonic } = useMemo(() => {
+    const { from, to, keepInSonic } = swapViewStore;
 
-  const selectedToken = useMemo(() => {
-    if (tokenId && supportedTokenList) {
-      return supportedTokenList.find(({ id }) => id === tokenId);
-    }
+    return deserialize(stringify({ from, to, keepInSonic }));
+  }, []);
 
-    return undefined;
-  }, [supportedTokenList, tokenId]);
-
-  const { batch, openBatchModal } = useWithdrawBatch({
-    amount: value,
-    token: selectedToken,
+  const { batch, openBatchModal } = useMintBatch({
+    amountIn: from.value,
+    amountOut: to.value,
+    tokenSymbol: MintTokenSymbol.XTC,
+    keepInSonic,
   });
 
   const handleStateChange = () => {
     if (
-      Object.values(WithdrawModalDataStep).includes(
-        batch.state as WithdrawModalDataStep
+      Object.values(MintModalDataStep).includes(
+        batch.state as MintModalDataStep
       )
     ) {
       dispatch(
-        modalsSliceActions.setWithdrawModalData({
-          step: batch.state as WithdrawModalDataStep,
+        modalsSliceActions.setMintXTCModalData({
+          step: batch.state,
         })
       );
     }
@@ -54,6 +55,7 @@ export const WithdrawLink: React.FC<WithdrawLinkProps> = ({ id }) => {
 
   const handleOpenModal = () => {
     handleStateChange();
+
     openBatchModal();
   };
 
@@ -63,10 +65,10 @@ export const WithdrawLink: React.FC<WithdrawLinkProps> = ({ id }) => {
     batch
       .execute()
       .then(() => {
-        dispatch(modalsSliceActions.clearWithdrawModalData());
-        dispatch(modalsSliceActions.closeWithdrawProgressModal());
+        dispatch(modalsSliceActions.closeMintXTCProgressModal());
+
         addNotification({
-          title: `Withdrawn ${value} ${selectedToken?.symbol}`,
+          title: `Minted ${to.value} ${to.metadata.symbol}`,
           type: NotificationType.Success,
           id: Date.now().toString(),
           transactionLink: '/activity',
@@ -74,10 +76,10 @@ export const WithdrawLink: React.FC<WithdrawLinkProps> = ({ id }) => {
         getBalances();
       })
       .catch((err) => {
-        console.error('Withdraw Error', err);
-        dispatch(modalsSliceActions.clearWithdrawModalData());
+        console.error('Mint Error', err);
+
         addNotification({
-          title: `Withdraw ${value} ${selectedToken?.symbol} failed`,
+          title: `Mint ${to.value} ${to.metadata.symbol} failed`,
           type: NotificationType.Error,
           id: Date.now().toString(),
         });

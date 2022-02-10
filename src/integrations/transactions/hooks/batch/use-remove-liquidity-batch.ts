@@ -9,7 +9,7 @@ import {
 
 import { RemoveLiquidity } from '../..';
 import {
-  useBatchHook,
+  useBatch,
   useRemoveLiquidityTransactionMemo,
   useWithdrawTransactionMemo,
 } from '..';
@@ -104,7 +104,7 @@ export const useRemoveLiquidityBatch = ({
   };
 
   return {
-    batch: useBatchHook<RemoveLiquidityModalDataStep>({
+    batch: useBatch<RemoveLiquidityModalDataStep>({
       transactions,
       handleRetry,
     }),

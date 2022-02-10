@@ -16,13 +16,13 @@ import {
 } from '@/store';
 import { deserialize, getCurrency, stringify } from '@/utils/format';
 
-export interface RemoveLiquidityLinkProps {
+export interface RemoveLiquidityNotificationContentProps {
   id: string;
 }
 
-export const RemoveLiquidityLink: React.FC<RemoveLiquidityLinkProps> = ({
-  id,
-}) => {
+export const RemoveLiquidityNotificationContent: React.FC<
+  RemoveLiquidityNotificationContentProps
+> = ({ id }) => {
   const dispatch = useAppDispatch();
   const liquidityViewStore = useLiquidityViewStore();
   const { userLPBalances } = useSwapCanisterStore();

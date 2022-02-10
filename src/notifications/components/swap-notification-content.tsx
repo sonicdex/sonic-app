@@ -16,11 +16,13 @@ import {
 } from '@/store';
 import { deserialize, stringify } from '@/utils/format';
 
-export interface SwapLinkProps {
+export interface SwapNotificationContentProps {
   id: string;
 }
 
-export const SwapLink: React.FC<SwapLinkProps> = ({ id }) => {
+export const SwapNotificationContent: React.FC<
+  SwapNotificationContentProps
+> = ({ id }) => {
   const dispatch = useAppDispatch();
   const swapViewStore = useSwapViewStore();
   const { addNotification, popNotification } = useNotificationStore();

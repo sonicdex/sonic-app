@@ -2,8 +2,8 @@ import { Flex } from '@chakra-ui/react';
 
 import { checkPlainSrc, depositSrc, swapSrc, withdrawSrc } from '@/assets';
 import {
-  MintWICPModalData,
-  MintWICPModalDataStep,
+  MintModalData,
+  MintModalDataStep,
   modalsSliceActions,
   useAppDispatch,
   useModalsStore,
@@ -16,7 +16,7 @@ export const MintWICPProgressModal = () => {
   const dispatch = useAppDispatch();
   const { isMintWICPProgressModalOpened, mintWICPModalData } = useModalsStore();
   const { steps, step: activeStep } = mintWICPModalData;
-  const getStepStatus = useStepStatus<MintWICPModalData['step']>({
+  const getStepStatus = useStepStatus<MintModalData['step']>({
     activeStep,
     steps,
   });
@@ -33,9 +33,9 @@ export const MintWICPProgressModal = () => {
       title="ICP wrapping in progress"
     >
       <Flex alignItems="flex-start">
-        {steps?.includes(MintWICPModalDataStep.LedgerTransfer) && (
+        {steps?.includes(MintModalDataStep.LedgerTransfer) && (
           <TransactionStep
-            status={getStepStatus(MintWICPModalDataStep.LedgerTransfer)}
+            status={getStepStatus(MintModalDataStep.LedgerTransfer)}
             iconSrc={withdrawSrc}
             chevron
           >
@@ -44,27 +44,27 @@ export const MintWICPProgressModal = () => {
           </TransactionStep>
         )}
         <TransactionStep
-          status={getStepStatus(MintWICPModalDataStep.MintWIPC)}
+          status={getStepStatus(MintModalDataStep.Mint)}
           iconSrc={swapSrc}
           chevron={
-            steps?.includes(MintWICPModalDataStep.Approve) ||
-            steps?.includes(MintWICPModalDataStep.Deposit)
+            steps?.includes(MintModalDataStep.Approve) ||
+            steps?.includes(MintModalDataStep.Deposit)
           }
         >
           Minting <br /> WICP
         </TransactionStep>
-        {steps?.includes(MintWICPModalDataStep.Approve) && (
+        {steps?.includes(MintModalDataStep.Approve) && (
           <TransactionStep
-            status={getStepStatus(MintWICPModalDataStep.Approve)}
+            status={getStepStatus(MintModalDataStep.Approve)}
             iconSrc={checkPlainSrc}
             chevron
           >
             Approving <br /> WICP
           </TransactionStep>
         )}
-        {steps?.includes(MintWICPModalDataStep.Deposit) && (
+        {steps?.includes(MintModalDataStep.Deposit) && (
           <TransactionStep
-            status={getStepStatus(MintWICPModalDataStep.Deposit)}
+            status={getStepStatus(MintModalDataStep.Deposit)}
             iconSrc={depositSrc}
           >
             Depositing <br /> WICP

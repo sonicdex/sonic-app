@@ -10,7 +10,7 @@ import {
   WithdrawWICPModalDataStep,
 } from '@/store';
 
-import { useBatchHook } from '..';
+import { useBatch } from '..';
 import {
   useWithdrawTransactionMemo,
   useWithdrawWICPTransactionMemo,
@@ -75,13 +75,29 @@ export const useWithdrawWICPBatch = ({
   };
 
   return {
-    batch: useBatchHook({
+    batch: useBatch({
       transactions,
       handleRetry: () => {
-        dispatch(modalsSliceActions.closeWithdrawWICPProgressModal());
-        dispatch(modalsSliceActions.openWithdrawWICPFailModal());
+        return new Promise((resolve) => {
+          dispatch(
+            modalsSliceActions.setWithdrawWICPModalData({
+              callbacks: [
+                // Retry callback
+                () => {
+                  openBatchModal();
+                  resolve(true);
+                },
+                // Close callback
+                () => {
+                  resolve(false);
+                },
+              ],
+            })
+          );
 
-        return Promise.resolve(false);
+          dispatch(modalsSliceActions.closeWithdrawWICPProgressModal());
+          dispatch(modalsSliceActions.openWithdrawWICPFailModal());
+        });
       },
     }),
     openBatchModal,
