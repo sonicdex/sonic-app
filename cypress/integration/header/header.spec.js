@@ -4,7 +4,6 @@
 describe('UI validations for header items/Dark Mode', () => {
     before(() => {
         cy.visit('https://2aoj2-aaaaa-aaaad-qa4qq-cai.ic.fleek.co/')
-        // cy.get('[href="/liquidity"]').click();
     })
 
     it('Validates Sonic logo', () => {
