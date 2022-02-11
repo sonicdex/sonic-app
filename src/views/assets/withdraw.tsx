@@ -27,7 +27,7 @@ import {
   useWithdrawViewStore,
   withdrawViewActions,
 } from '@/store';
-import { formatAmount, getCurrency, getCurrencyString } from '@/utils/format';
+import { formatValue, getCurrency, getCurrencyString } from '@/utils/format';
 import { debounce } from '@/utils/function';
 
 export const AssetsWithdrawView = () => {
@@ -83,7 +83,7 @@ export const AssetsWithdrawView = () => {
 
     if (sonicBalances && selectedTokenMetadata) {
       const parsedBalance = parseFloat(
-        formatAmount(
+        formatValue(
           sonicBalances[selectedTokenMetadata.id],
           selectedTokenMetadata.decimals
         )

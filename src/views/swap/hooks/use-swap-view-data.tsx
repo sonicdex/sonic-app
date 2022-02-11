@@ -1,4 +1,5 @@
 import { Link } from '@chakra-ui/react';
+import { Swap } from '@psychedelic/sonic-js';
 import BigNumber from 'bignumber.js';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { batch } from 'react-redux';
@@ -30,16 +31,14 @@ import {
   useTokenModalOpener,
 } from '@/store';
 import {
-  calculatePriceImpact,
-  formatAmount,
+  formatValue,
   getCurrency,
   getDepositMaxValue,
   getICPValueByXDRRate,
-  getSwapAmountOut,
+  getPathAmountOut,
   getXTCValueByXDRRate,
 } from '@/utils/format';
 import { debounce } from '@/utils/function';
-import { getTokenPaths } from '@/utils/maximal-paths';
 
 import { OperationType } from '../components';
 
@@ -111,7 +110,7 @@ export const useSwapViewData = () => {
     const oppositeDataKey = dataKey === 'from' ? 'to' : 'from';
 
     const _newValue = new BigNumber(newValue);
-    const icpFee = formatAmount(ICP_METADATA.fee, ICP_METADATA.decimals);
+    const icpFee = formatValue(ICP_METADATA.fee, ICP_METADATA.decimals);
 
     const value =
       dataKey === 'from' ? _newValue.minus(icpFee) : _newValue.plus(icpFee);
@@ -134,11 +133,11 @@ export const useSwapViewData = () => {
         dataKey === 'from' ? getXTCValueByXDRRate : getICPValueByXDRRate;
 
       const xtcFee = new BigNumber(
-        formatAmount(xtcMetadata.fee, xtcMetadata.decimals)
+        formatValue(xtcMetadata.fee, xtcMetadata.decimals)
       );
 
       const icpFeesConvertedToXTC = getXTCValueByXDRRate({
-        amount: formatAmount(ICP_METADATA.fee, ICP_METADATA.decimals),
+        amount: formatValue(ICP_METADATA.fee, ICP_METADATA.decimals),
         conversionRate: ICPXDRconversionRate,
       })
         .minus(xtcFee)
@@ -183,7 +182,7 @@ export const useSwapViewData = () => {
     );
 
     if (wrappedICPMetadata && tokenList && allPairs) {
-      const paths = getTokenPaths({
+      const paths = Swap.getTokenPaths({
         pairList: allPairs,
         tokenList,
         tokenId: wrappedICPMetadata.id,
@@ -199,7 +198,7 @@ export const useSwapViewData = () => {
       dispatch(
         swapViewActions.setValue({
           data: oppositeDataKey,
-          value: getSwapAmountOut(dataWICP, oppositeData),
+          value: getPathAmountOut(dataWICP, oppositeData),
         })
       );
     }
@@ -547,12 +546,12 @@ export const useSwapViewData = () => {
 
   const priceImpact = useMemo(
     () =>
-      calculatePriceImpact({
+      Swap.getPriceImpact({
         amountIn: from.value,
         amountOut: to.value,
-        priceIn: from.metadata?.price,
-        priceOut: to.metadata?.price,
-      }),
+        priceIn: from.metadata?.price ?? 0,
+        priceOut: to.metadata?.price ?? 0,
+      }).toString(),
     [from, to]
   );
 

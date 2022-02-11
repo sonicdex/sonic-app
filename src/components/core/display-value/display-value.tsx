@@ -5,10 +5,11 @@ import {
   TextProps,
   Tooltip,
 } from '@chakra-ui/react';
+import { formatAmount } from '@psychedelic/sonic-js';
 import BigNumber from 'bignumber.js';
 import { useMemo } from 'react';
 
-import { formatValue, getCurrencyString } from '@/utils/format';
+import { getCurrencyString } from '@/utils/format';
 
 export type DisplayValueProps = TextProps & {
   isUpdating?: boolean;
@@ -39,12 +40,16 @@ export const DisplayValue = forwardRef<DisplayValueProps, 'p'>(
     `;
 
     const [formattedValue, tooltipLabel, isDisabled] = useMemo(() => {
-      const tooltip = decimals
+      const tooltipAmount = decimals
         ? getCurrencyString(value, decimals)
         : new BigNumber(value).toString();
-      const display = formatValue(tooltip);
+      const display = formatAmount(tooltipAmount);
 
-      return [display, tooltip, disableTooltip || String(tooltip).length <= 4];
+      return [
+        display,
+        tooltipAmount,
+        disableTooltip || String(tooltipAmount).length <= 4,
+      ];
     }, [value, decimals, disableTooltip]);
 
     return (

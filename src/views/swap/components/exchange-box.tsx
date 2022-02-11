@@ -22,10 +22,10 @@ import { ICP_METADATA } from '@/constants';
 import { useBalances, useTokenSelectionChecker } from '@/hooks';
 import { useCyclesMintingCanisterStore, useSwapViewStore } from '@/store';
 import {
-  formatAmount,
+  formatValue,
   getAmountOutMin,
   getCurrencyString,
-  getSwapAmountOut,
+  getPathAmountOut,
   getXTCValueByXDRRate,
 } from '@/utils/format';
 
@@ -113,9 +113,9 @@ export const ExchangeBox: React.FC<ExchangeBoxProps> = ({ priceImpact }) => {
     const icpFeeInXTC =
       xtcMetadata && ICPXDRconversionRate
         ? getXTCValueByXDRRate({
-            amount: formatAmount(ICP_METADATA.fee, ICP_METADATA.decimals),
+            amount: formatValue(ICP_METADATA.fee, ICP_METADATA.decimals),
             conversionRate: ICPXDRconversionRate,
-          }).minus(formatAmount(xtcMetadata.fee, xtcMetadata.decimals))
+          }).minus(formatValue(xtcMetadata.fee, xtcMetadata.decimals))
         : new BigNumber(0);
 
     const xtcFees = icpMetadata
@@ -173,7 +173,7 @@ export const ExchangeBox: React.FC<ExchangeBoxProps> = ({ priceImpact }) => {
       <ChainPopover from={from} to={to} />
       <Text flex={1} textAlign="right" mx={2}>
         1&nbsp;{from.metadata.symbol}&nbsp;=&nbsp;
-        {getSwapAmountOut(
+        {getPathAmountOut(
           { metadata: from.metadata, paths: baseFromTokenPaths, value: '1' },
           to
         )}

@@ -1,11 +1,12 @@
 import { Bytes } from '@ethersproject/bytes';
+import { Swap } from '@psychedelic/sonic-js';
 import BigNumber from 'bignumber.js';
 import { ethers } from 'ethers';
 import { formatUnits, parseUnits } from 'ethers/lib/utils';
 
 import { ICP_METADATA } from '@/constants';
 import { AppTokenMetadata, PairList } from '@/models';
-import { SwapTokenData, SwapTokenDataKey } from '@/store';
+import { SwapTokenData } from '@/store';
 import {
   DEFAULT_CYCLES_PER_XDR,
   TOKEN_SUBDIVIDABLE_BY,
@@ -14,29 +15,6 @@ import {
 export type BigNumberish = BigNumber | Bytes | bigint | string | number;
 
 BigNumber.config({ EXPONENTIAL_AT: 99 });
-
-export const deserialize = (json: string) => {
-  try {
-    return JSON.parse(json, (key, value) => {
-      if (typeof value === 'string' && /^\d+n$/.test(value)) {
-        return BigInt(value.substr(0, value.length - 1));
-      }
-      return value;
-    });
-  } catch {
-    return undefined;
-  }
-};
-
-export const stringify = (data: any) => {
-  try {
-    return JSON.stringify(data, (key, value) =>
-      typeof value === 'bigint' ? value.toString() + 'n' : value
-    );
-  } catch {
-    return '';
-  }
-};
 
 export const parseAmount = (val: string, decimals: string | number): bigint => {
   try {
@@ -221,123 +199,15 @@ export const getAmountEqualLPToken = ({
   return amountOut;
 };
 
-export type GetAmountOptions = {
-  amountIn: string | number;
-  decimalsIn: string | number;
-  decimalsOut: string | number;
-  reserveIn: string | number;
-  reserveOut: string | number;
-  fee?: number;
-  dataKey: SwapTokenDataKey;
-};
-
-export const getAmount = ({
-  amountIn,
-  decimalsIn,
-  decimalsOut,
-  reserveIn,
-  reserveOut,
-  fee = 3,
-  dataKey = 'from',
-}: GetAmountOptions): string => {
-  if (!amountIn || new BigNumber(amountIn).isZero()) return '';
-
-  const thousand = new BigNumber('1000');
-  const _amountIn = new BigNumber(amountIn);
-  const _decimalsIn = new BigNumber(10).pow(decimalsIn);
-  const _decimalsOut = new BigNumber(10).pow(decimalsOut);
-  const _reserveIn = new BigNumber(reserveIn).multipliedBy(thousand);
-
-  const _fee = dataKey === 'from' ? thousand.minus(fee) : thousand.plus(fee);
-
-  const _amountInWithFee = _amountIn
-    .multipliedBy(_decimalsIn)
-    .multipliedBy(_fee);
-
-  const _numerator = _amountInWithFee.multipliedBy(new BigNumber(reserveOut));
-
-  const _denominator = _reserveIn.plus(_amountInWithFee);
-
-  return _numerator
-    .dividedBy(_denominator)
-    .dividedBy(_decimalsOut)
-    .toFixed(Number(decimalsOut));
-};
-
-export const getAmountMin = (
-  value: number | string,
-  tolerance: number | string, // Percentage
-  decimals: number | string
-) => {
-  return new BigNumber('1')
-    .minus(new BigNumber(tolerance).dividedBy(100))
-    .multipliedBy(new BigNumber(value))
-    .dp(Number(decimals))
-    .toString();
-};
-
-export type CalculatePriceImpactOptions = {
-  priceIn?: string | number;
-  priceOut?: string | number;
-  amountIn?: string | number;
-  amountOut?: string | number;
-};
-
-export const calculatePriceImpact = ({
-  amountIn,
-  amountOut,
-  priceIn,
-  priceOut,
-}: CalculatePriceImpactOptions): string => {
-  if (
-    !amountIn ||
-    new BigNumber(amountIn).isZero() ||
-    new BigNumber(amountIn).isNaN() ||
-    !amountOut ||
-    new BigNumber(amountOut).isZero() ||
-    new BigNumber(amountOut).isNaN() ||
-    !priceIn ||
-    new BigNumber(priceIn).isZero() ||
-    new BigNumber(priceIn).isNaN() ||
-    !priceOut ||
-    new BigNumber(priceOut).isZero() ||
-    new BigNumber(priceOut).isNaN()
-  )
-    return '0';
-
-  const _priceOut = new BigNumber(
-    calculatePriceBasedOnAmount({
-      amount: amountOut,
-      price: priceOut,
-    })
-  );
-  const _priceIn = new BigNumber(
-    calculatePriceBasedOnAmount({
-      amount: amountIn,
-      price: priceIn,
-    })
-  );
-
-  const priceImpact = new BigNumber(1)
-    .minus(new BigNumber(_priceOut).dividedBy(_priceIn))
-    .multipliedBy(100)
-    .negated();
-
-  // Price impact formulas:
-  // ((1 - (priceOut/priceIn)) * 100) * -1
-
-  return priceImpact.toString();
-};
-
-export type CalculatePriceBasedOnAmountOptions = {
+export type GetPriceBasedOnAmountOptions = {
   amount?: string | number;
   price?: string | number;
 };
 
-export const calculatePriceBasedOnAmount = ({
+export const getPriceBasedOnAmount = ({
   amount,
   price,
-}: CalculatePriceBasedOnAmountOptions) => {
+}: GetPriceBasedOnAmountOptions) => {
   if (
     !amount ||
     new BigNumber(amount).isZero() ||
@@ -352,7 +222,7 @@ export const calculatePriceBasedOnAmount = ({
   return new BigNumber(price).multipliedBy(amount).toString();
 };
 
-export const formatAmount = (
+export const formatValue = (
   val: BigInt | number | string,
   decimals: number
 ): string => {
@@ -360,33 +230,6 @@ export const formatAmount = (
     return formatUnits(ethers.BigNumber.from(val.toString()), decimals);
   } catch (err) {
     return '0';
-  }
-};
-
-const fixStringEnding = (str: string) => {
-  return str.replace(/0+$/, '').replace(/\.$/, '');
-};
-
-export const formatValue = (value: string): string => {
-  const [nat = '0', decimals = '0'] = value.replace(/^0+/, '').split('.');
-
-  if (Math.sign(Number(value)) === -1) {
-    return fixStringEnding(`${nat || 0}.${decimals.slice(0, 2)}`);
-  }
-
-  const thousands = Math.floor(Math.log10(Number(nat)));
-
-  if (thousands < 3) {
-    if (!nat && /^00/.test(decimals)) {
-      return `< 0.01`;
-    }
-    return fixStringEnding(`${nat || 0}.${decimals.slice(0, 2)}`);
-  } else if (thousands < 6) {
-    return fixStringEnding(`${nat.slice(0, -3)}.${nat.slice(-3, -1)}`) + 'k';
-  } else if (thousands < 9) {
-    return fixStringEnding(`${nat.slice(0, -6)}.${nat.slice(-6, -4)}`) + 'M';
-  } else {
-    return `> 999M`;
   }
 };
 
@@ -422,7 +265,7 @@ export const getAmountOutMin = (
     );
   }
 
-  const toValue = getAmount({
+  const toValue = Swap.getAmount({
     amountIn: fromValue.toString(),
     decimalsIn: from.metadata.decimals,
     decimalsOut: to.metadata.decimals,
@@ -465,7 +308,7 @@ export const getDepositMaxValue = (
   return '';
 };
 
-export const getSwapAmountOut = (
+export const getPathAmountOut = (
   tokenIn: SwapTokenData,
   tokenOut: SwapTokenData
 ): string => {

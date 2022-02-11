@@ -22,10 +22,7 @@ import React, { useCallback, useMemo } from 'react';
 import { questionMarkSrc } from '@/assets';
 import { NumberInput } from '@/components';
 import { AppTokenMetadata } from '@/models';
-import {
-  calculatePriceBasedOnAmount,
-  getDepositMaxValue,
-} from '@/utils/format';
+import { getDepositMaxValue, getPriceBasedOnAmount } from '@/utils/format';
 
 import { DisplayValue, NumberInputProps } from '..';
 import { TokenBalancesPopover } from '../token-balances-popover';
@@ -215,7 +212,7 @@ export const TokenDataPrice: React.FC<TokenDataPriceProps> = ({
   }, [isLoading, value]);
 
   const price = useMemo(() => {
-    return calculatePriceBasedOnAmount({
+    return getPriceBasedOnAmount({
       amount: value,
       price: tokenMetadata?.price,
     });
