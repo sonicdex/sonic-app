@@ -24,7 +24,13 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
-Cypress.Commands.add('openTokensPopup', () => { 
-    cy.contains('ICP')
+Cypress.Commands.add('openTokensPopup', (token="ICP") => { 
+    cy.contains(token)
+    .click()
+ })
+
+
+ Cypress.Commands.add('closeTokensPopup', () => {
+    cy.get('[class="chakra-icon css-onkibi"]')
     .click()
  })
