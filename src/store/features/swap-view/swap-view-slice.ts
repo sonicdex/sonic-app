@@ -91,8 +91,8 @@ export const swapViewSlice = createSlice({
         !(oppositeMetadata?.id === ICP_METADATA.id)
       ) {
         state[oppositeDataKey].value = getPathAmountOut(
-          state[data],
-          state[oppositeDataKey]
+          state[data] as SwapTokenData,
+          state[oppositeDataKey] as SwapTokenData
         );
       }
     },
@@ -159,7 +159,7 @@ export const swapViewSlice = createSlice({
 
         const oppositeValue = getPathAmountOut(
           { ...state[dataKey], paths: oppositeTokenPaths },
-          state[oppositeDataKey]
+          state[oppositeDataKey] as SwapTokenData
         );
 
         const tokenPaths = Swap.getTokenPaths({

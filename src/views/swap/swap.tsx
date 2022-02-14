@@ -205,8 +205,8 @@ export const SwapView = () => {
                           <Text>
                             This price & percentage shows the current difference
                             between minting and swapping to XTC from ICP. If
-                            negative, it's better to mint; if positive, it's
-                            better to swap.{' '}
+                            negative, it's better to swap; if positive, it's
+                            better to mint.{' '}
                             <Link
                               color={linkColor}
                               rel="noopener noreferrer"
