@@ -33,8 +33,8 @@ import {
 import {
   formatValue,
   getCurrency,
-  getDepositMaxValue,
   getICPValueByXDRRate,
+  getMaxValue,
   getPathAmountOut,
   getXTCValueByXDRRate,
 } from '@/utils/format';
@@ -253,10 +253,16 @@ export const useSwapViewData = () => {
 
   const handleSwitchTokens = () => {
     resetStepToHome();
-    dispatch(swapViewActions.switchTokens(lastChangedInputDataKey));
-    setLastChangedInputDataKey(
-      lastChangedInputDataKey === 'from' ? 'to' : 'from'
-    );
+
+    if (!to.metadata || (isFromTokenIsICP && isToTokenIsXTC)) {
+      dispatch(swapViewActions.switchTokens(lastChangedInputDataKey));
+      dispatch(swapViewActions.setToken({ data: 'to', tokenId: '' }));
+    } else {
+      dispatch(swapViewActions.switchTokens(lastChangedInputDataKey));
+      setLastChangedInputDataKey(
+        lastChangedInputDataKey === 'from' ? 'to' : 'from'
+      );
+    }
   };
 
   const handleMaxClick = (dataKey: SwapTokenDataKey) => {
@@ -267,7 +273,7 @@ export const useSwapViewData = () => {
       return;
     }
 
-    handleChangeValue(getDepositMaxValue(metadata, balance), dataKey);
+    handleChangeValue(getMaxValue(metadata, balance), dataKey);
   };
 
   const handleSelectToken = (dataKey: SwapTokenDataKey) => {
@@ -476,9 +482,7 @@ export const useSwapViewData = () => {
     }
 
     if (totalBalances && typeof fromBalance === 'number') {
-      if (
-        parsedFromValue > Number(getDepositMaxValue(from.metadata, fromBalance))
-      ) {
+      if (parsedFromValue > Number(getMaxValue(from.metadata, fromBalance))) {
         return [true, `Insufficient ${from.metadata.symbol} Balance`];
       }
     }
@@ -616,10 +620,6 @@ export const useSwapViewData = () => {
     }
   }, [to.metadata, tokenBalances, sonicBalances, icpBalance]);
 
-  const isSwapPlacementButtonDisabled = useMemo(() => {
-    return !to.metadata || (isFromTokenIsICP && isToTokenIsXTC);
-  }, [isFromTokenIsICP, isToTokenIsXTC, to.metadata]);
-
   const isExplanationTooltipVisible = useMemo(() => {
     return isToTokenIsXTC && isFromTokenIsICP;
   }, [isFromTokenIsICP, isToTokenIsXTC]);
@@ -679,7 +679,7 @@ export const useSwapViewData = () => {
     toSources,
     currentOperation,
     isICPSelected,
-    isSwapPlacementButtonDisabled,
+
     isExplanationTooltipVisible,
     isSelectTokenButtonDisabled,
     selectTokenButtonText,

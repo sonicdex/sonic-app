@@ -151,6 +151,24 @@ export const ExchangeBox: React.FC<ExchangeBoxProps> = ({ priceImpact }) => {
     keepInSonic,
   ]);
 
+  const pathAmountOut = useMemo(() => {
+    return getPathAmountOut(
+      { metadata: from.metadata, paths: baseFromTokenPaths, value: '1' },
+      to
+    );
+  }, [baseFromTokenPaths, from.metadata, to]);
+
+  const amountOutMin = useMemo(() => {
+    return getAmountOutMin(
+      from,
+      to,
+      slippage,
+      allPairs,
+      Boolean(depositFee),
+      keepInSonic
+    );
+  }, [allPairs, depositFee, from, keepInSonic, slippage, to]);
+
   if (!from.metadata || !to.metadata) return null;
 
   if (icpMetadata) {
@@ -173,10 +191,7 @@ export const ExchangeBox: React.FC<ExchangeBoxProps> = ({ priceImpact }) => {
       <ChainPopover from={from} to={to} />
       <Text flex={1} textAlign="right" mx={2}>
         1&nbsp;{from.metadata.symbol}&nbsp;=&nbsp;
-        {getPathAmountOut(
-          { metadata: from.metadata, paths: baseFromTokenPaths, value: '1' },
-          to
-        )}
+        {pathAmountOut}
         &nbsp;
         {to.metadata.symbol}
       </Text>
@@ -194,14 +209,7 @@ export const ExchangeBox: React.FC<ExchangeBoxProps> = ({ priceImpact }) => {
               <Stack>
                 <StackLine
                   title="Minimum Received"
-                  value={`${getAmountOutMin(
-                    from,
-                    to,
-                    slippage,
-                    allPairs,
-                    Boolean(depositFee),
-                    keepInSonic
-                  )} ${to.metadata.symbol}`}
+                  value={`${amountOutMin} ${to.metadata.symbol}`}
                 />
                 <StackLine
                   title="Price Impact"

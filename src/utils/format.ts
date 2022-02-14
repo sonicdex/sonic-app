@@ -289,7 +289,7 @@ export const getAmountOutMin = (
   return result.dp(Number(to.metadata.decimals)).toString();
 };
 
-export const getDepositMaxValue = (
+export const getMaxValue = (
   token?: AppTokenMetadata,
   balance?: number | bigint
 ) => {

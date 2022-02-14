@@ -68,8 +68,8 @@ import {
   getAmountEqualLPToken,
   getAmountLP,
   getCurrencyString,
-  getDepositMaxValue,
   getLPPercentageString,
+  getMaxValue,
 } from '@/utils/format';
 import { debounce } from '@/utils/function';
 
@@ -124,7 +124,7 @@ export const LiquidityAddView = () => {
 
     if (!token || !tokenBalance) return;
 
-    const value = getDepositMaxValue(token.metadata, tokenBalance);
+    const value = getMaxValue(token.metadata, tokenBalance);
 
     setInAndOutTokenValues(dataKey, value);
   };
@@ -261,15 +261,13 @@ export const LiquidityAddView = () => {
       typeof token1Balance === 'number'
     ) {
       if (
-        parsedToken0Value >
-        Number(getDepositMaxValue(token0.metadata, token0Balance))
+        parsedToken0Value > Number(getMaxValue(token0.metadata, token0Balance))
       ) {
         return [true, `Insufficient ${token0.metadata.symbol} Balance`];
       }
 
       if (
-        parsedToken1Value >
-        Number(getDepositMaxValue(token1.metadata, token1Balance))
+        parsedToken1Value > Number(getMaxValue(token1.metadata, token1Balance))
       ) {
         return [true, `Insufficient ${token1.metadata.symbol} Balance`];
       }

@@ -28,7 +28,7 @@ import {
   useSwapCanisterStore,
   useTokenModalOpener,
 } from '@/store';
-import { getCurrency, getDepositMaxValue } from '@/utils/format';
+import { getCurrency, getMaxValue } from '@/utils/format';
 import { debounce } from '@/utils/function';
 
 export const AssetsDepositView = () => {
@@ -98,7 +98,7 @@ export const AssetsDepositView = () => {
       if (
         parsedFromValue >
         Number(
-          getDepositMaxValue(
+          getMaxValue(
             selectedTokenMetadata,
             tokenBalances[selectedTokenMetadata.id]
           )
@@ -140,7 +140,7 @@ export const AssetsDepositView = () => {
     if (tokenBalance && selectedTokenMetadata)
       dispatch(
         depositViewActions.setAmount(
-          getDepositMaxValue(selectedTokenMetadata, tokenBalance)
+          getMaxValue(selectedTokenMetadata, tokenBalance)
         )
       );
   };
