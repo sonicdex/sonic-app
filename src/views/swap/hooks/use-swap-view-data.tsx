@@ -297,6 +297,14 @@ export const useSwapViewData = () => {
               })
             );
             dispatch(swapViewActions.setToken({ data: dataKey, tokenId }));
+          } else if (
+            tokenId === ENV.canistersPrincipalIDs.XTC &&
+            to.metadata?.id === ICP_METADATA.id
+          ) {
+            dispatch(swapViewActions.setToken({ data: dataKey, tokenId }));
+            dispatch(
+              swapViewActions.setToken({ data: oppositeDataKey, tokenId: '' })
+            );
           } else {
             dispatch(swapViewActions.setToken({ data: dataKey, tokenId }));
           }
