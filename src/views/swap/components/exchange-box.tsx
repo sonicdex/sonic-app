@@ -117,14 +117,11 @@ export const ExchangeBox: React.FC<ExchangeBoxProps> = ({ priceImpact }) => {
         : new BigNumber(0);
 
     const xtcFees = icpMetadata
-      ? new BigNumber(
-          toBigNumber(
-            (to.metadata?.fee ?? BigInt(0)) *
-              (keepInSonic ? BigInt(3) : BigInt(1))
-          )
-            .applyDecimals(to.metadata?.decimals ?? 0)
-            .toString()
+      ? toBigNumber(
+          (to.metadata?.fee ?? BigInt(0)) *
+            (keepInSonic ? BigInt(3) : BigInt(1))
         )
+          .applyDecimals(to.metadata?.decimals ?? 0)
           .plus(icpFeeInXTC.multipliedBy(2))
           .toString()
       : '0';
