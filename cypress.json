@@ -1,1 +1,6 @@
-{}
+{ 
+    "chromeWebSecurity": false,
+    
+    "projectId": "z5frnt"
+      
+}

@@ -24,5 +24,13 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
-const addExtensionCommands = require('cypress-browser-extension-plugin/commands');
-addExtensionCommands(Cypress);
+Cypress.Commands.add('openTokensPopup', (token="ICP") => { 
+    cy.contains(token)
+    .click()
+ })
+
+
+ Cypress.Commands.add('closeTokensPopup', () => {
+    cy.get('[class="chakra-icon css-onkibi"]')
+    .click()
+ })
