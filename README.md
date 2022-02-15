@@ -23,7 +23,10 @@ The Sonic Interface supports swapping, adding liquidity, removing liquidity, dep
 
 ## Minting
 
-Besides swapping functionality, Sonic also supports minting of assets. This is done by sending a transaction to the [XTC](https://dank.ooo/xtc/) and [WICP](https://dank.ooo/wicp/).
+Outside of swap functionality the swap page of Sonic Application also supports minting of assets. This is done by sending a mint transactions to the ICP Ledger, [XTC](https://dank.ooo/xtc/) and [WICP](https://dank.ooo/wicp/) canisters. You can read details about these integrations [here](https://docs.sonic.ooo/developer-guides/front-end-integrations).
+
+- [Mint XTC](https://app.sonic.ooo/swap?from=ICP&to=aanaa-xaaaa-aaaah-aaeiq-cai)
+- [Mint WICP (Wrap ICP)](https://app.sonic.ooo/swap?from=ICP&to=utozz-siaaa-aaaam-qaaxq-cai)
 
 ## Sonic-js
 
