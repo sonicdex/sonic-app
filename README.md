@@ -1,43 +1,30 @@
-# Sonic Application
+![](https://storageapi.fleek.co/fleek-team-bucket/logos/sonic-log.png)
 
-An open source application for Sonic -- a protocol for decentralized exchange of Ethereum tokens.
+<h1 align="center">Sonic Application</h1>
 
-- Website: [sonic.org](https://sonic.ooo/)
-- Interface: [app.sonic.ooo](https://app.sonic.ooo)
+<h3 align="center">An open source application for Sonic Open Internet Service (OIS)</h3>
+
+- Website: [sonic.ooo](https://sonic.ooo/)
+- Application: [app.sonic.ooo](https://app.sonic.ooo)
+- Medium: [sonic-ooo.medium.com](https://sonic-ooo.medium.com/)
 - Docs: [docs.sonic.ooo](https://docs.sonic.ooo/)
 - Twitter: [@sonic_ooo](https://twitter.com/sonic_ooo)
-- Discord: [Uniswap](https://discord.gg/FCfyBSbCU5)
-- Whitepapers:
-  - [V1](https://hackmd.io/C-DvwDSfSxuh-Gd4WKE_ig)
-  - [V2](https://uniswap.org/whitepaper.pdf)
-  - [V3](https://uniswap.org/whitepaper-v3.pdf)
+- Discord: [Sonic](https://discord.gg/ZxX44xyu)
 
-## Accessing the Uniswap Interface
+## Accessing Sonic
 
-To access the Uniswap Interface, use an IPFS gateway link from the
-[latest release](https://github.com/Uniswap/uniswap-interface/releases/latest),
-or visit [app.uniswap.org](https://app.uniswap.org).
+The Sonic Interface supports swapping, adding liquidity, removing liquidity, depositing and withdrawing assets to and from the Sonic canister.
 
-## Unsupported tokens
+- [Swap on Sonic](https://app.sonic.ooo/swap)
+- [Add Liqudity](https://app.sonic.ooo/liquidity/add)
+- [View Liquidity](https://app.sonic.ooo/liquidity)
+- [Withdraw Assets](https://app.sonic.ooo/assets/withdraw)
+- [Deposit Assets](https://app.sonic.ooo/assets/deposit)
 
-Check out `useUnsupportedTokenList()` in [src/state/lists/hooks.ts](./src/state/lists/hooks.ts) for blocking tokens in your instance of the interface.
+## Minting
 
-You can block an entire list of tokens by passing in a tokenlist like [here](./src/constants/lists.ts) or you can block specific tokens by adding them to [unsupported.tokenlist.json](./src/constants/tokenLists/unsupported.tokenlist.json).
+Besides swapping functionality, Sonic also supports minting of assets. This is done by sending a transaction to the [XTC](https://dank.ooo/xtc/) and [WICP](https://dank.ooo/wicp/).
 
-## Contributions
+## Sonic-js
 
-For steps on local deployment, development, and code contribution, please see [CONTRIBUTING](./CONTRIBUTING.md).
-
-## Accessing Uniswap V2
-
-The Uniswap Interface supports swapping, adding liquidity, removing liquidity and migrating liquidity for Uniswap protocol V2.
-
-- Swap on Uniswap V2: https://app.uniswap.org/#/swap?use=v2
-- View V2 liquidity: https://app.uniswap.org/#/pool/v2
-- Add V2 liquidity: https://app.uniswap.org/#/add/v2
-- Migrate V2 liquidity to V3: https://app.uniswap.org/#/migrate/v2
-
-## Accessing Uniswap V1
-
-The Uniswap V1 interface for mainnet and testnets is accessible via IPFS gateways
-linked from the [v1.0.0 release](https://github.com/Uniswap/uniswap-interface/releases/tag/v1.0.0).
+This application is using [Sonic JavaScript SDK](https://github.com/Psychedelic/sonic-js) for calculations. You can find examples about how to integrate Sonic into your own application using sonic-js [here]().
