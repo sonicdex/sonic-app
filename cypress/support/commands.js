@@ -34,3 +34,16 @@ Cypress.Commands.add('openTokensPopup', (token="ICP") => {
     cy.get('[class="chakra-icon css-onkibi"]')
     .click()
  })
+
+ Cypress.Commands.add('checkCSSAttrs', (Index,NavItem) => {
+   cy.get('#tabs-1--tab-'+[Index])
+   .should('be.visible')
+   .should('have.text', NavItem)
+   .should('have.css','color','rgba(255, 255, 255, 0.92)')
+   .click()
+   .should('have.css', 'color', 'rgb(214, 216, 218)')
+   .should('have.css', 'font-family', '"Nunito Sans"')
+   .should('have.css', 'font-weight', '600')
+   .should('have.css', 'background', 'rgba(0, 0, 0, 0) linear-gradient(to right, rgb(61, 82, 244), rgb(49, 66, 195)) repeat scroll 0% 0% / auto padding-box border-box')
+
+})
