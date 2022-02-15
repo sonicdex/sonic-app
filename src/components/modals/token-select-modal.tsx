@@ -331,10 +331,10 @@ const TokenSelectItem = ({
           isUpdating={isBalancesUpdating}
           value={balance}
           decimals={decimals}
-          as="p"
           fontSize="18px"
           fontWeight={700}
           textAlign="right"
+          shouldDivideByDecimals
         />
       </Skeleton>
     </Flex>

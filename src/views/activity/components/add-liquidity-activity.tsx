@@ -52,6 +52,7 @@ export const AddLiquidityActivity: React.FC<AddLiquidityActivityProps> = ({
             value={amount0}
             decimals={token0.decimals}
             suffix={' ' + token0.symbol}
+            shouldDivideByDecimals
           />
           &nbsp;
           <FaPlus />
@@ -60,6 +61,7 @@ export const AddLiquidityActivity: React.FC<AddLiquidityActivityProps> = ({
             value={amount1}
             decimals={token1.decimals}
             suffix={' ' + token1.symbol}
+            shouldDivideByDecimals
           />
         </Heading>
       </Stack>

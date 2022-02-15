@@ -9,7 +9,8 @@ import {
   PairList,
 } from '@/models';
 import { FeatureState, RootState } from '@/store';
-import { capitalize, getPathAmountOut } from '@/utils/format';
+import { capitalize } from '@/utils/format';
+import { getAmountOutFromPath } from '@/views';
 
 export type SwapTokenDataKey = 'from' | 'to';
 
@@ -90,7 +91,7 @@ export const swapViewSlice = createSlice({
         !(metadata?.id === ICP_METADATA.id) &&
         !(oppositeMetadata?.id === ICP_METADATA.id)
       ) {
-        state[oppositeDataKey].value = getPathAmountOut(
+        state[oppositeDataKey].value = getAmountOutFromPath(
           state[data] as SwapTokenData,
           state[oppositeDataKey] as SwapTokenData
         );
@@ -157,7 +158,7 @@ export const swapViewSlice = createSlice({
           dataKey: oppositeDataKey,
         });
 
-        const oppositeValue = getPathAmountOut(
+        const oppositeValue = getAmountOutFromPath(
           { ...state[dataKey], paths: oppositeTokenPaths },
           state[oppositeDataKey] as SwapTokenData
         );

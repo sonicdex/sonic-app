@@ -24,7 +24,6 @@ import {
   MintXTCFailModal,
   MintXTCProgressModal,
   RemoveLiquidityFailModal,
-  RemoveLiquidityModal,
   RemoveLiquidityProgressModal,
   SwapFailModal,
   SwapProgressModal,
@@ -65,7 +64,6 @@ export const App = () => {
         <NotificationManager />
 
         <TermsAndConditionsModal />
-        <RemoveLiquidityModal />
         <TokenSelectModal />
         <AllowanceVerifyModal />
         <MintManualModal />

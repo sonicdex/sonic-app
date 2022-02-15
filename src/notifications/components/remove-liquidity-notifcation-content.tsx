@@ -15,7 +15,7 @@ import {
   usePlugStore,
   useSwapCanisterStore,
 } from '@/store';
-import { getCurrency } from '@/utils/format';
+import { getAmountDividedByDecimals } from '@/utils/format';
 
 export interface RemoveLiquidityNotificationContentProps {
   id: string;
@@ -59,14 +59,14 @@ export const RemoveLiquidityNotificationContent: React.FC<
           .multipliedBy(removeAmountPercentage / 100)
           .multipliedBy(Number(slippage));
 
-        const amount0Min = getCurrency(
+        const amount0Min = getAmountDividedByDecimals(
           amount0Desired
             .minus(amount0Desired.multipliedBy(Number(slippage)))
             .toString(),
           token0.metadata.decimals
         );
 
-        const amount1Min = getCurrency(
+        const amount1Min = getAmountDividedByDecimals(
           amount1Desired
             .minus(amount1Desired.multipliedBy(Number(slippage)))
             .toString(),

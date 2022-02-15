@@ -3,7 +3,7 @@ import { FaArrowRight } from '@react-icons/all-files/fa/FaArrowRight';
 import React, { useMemo } from 'react';
 
 import { AppTokenMetadata } from '@/models';
-import { getCurrencyString } from '@/utils/format';
+import { getAmountDividedByDecimals } from '@/utils/format';
 
 export type FeeBoxProps = {
   token?: AppTokenMetadata;
@@ -14,9 +14,12 @@ export const FeeBox: React.FC<FeeBoxProps> = ({ isDeposit = false, token }) => {
   const fee = useMemo(() => {
     if (token) {
       if (isDeposit) {
-        return getCurrencyString(BigInt(2) * token.fee, token.decimals);
+        return getAmountDividedByDecimals(
+          BigInt(2) * token.fee,
+          token.decimals
+        ).toString();
       } else {
-        return getCurrencyString(token.fee, token.decimals);
+        return getAmountDividedByDecimals(token.fee, token.decimals).toString();
       }
     }
   }, [isDeposit, token]);

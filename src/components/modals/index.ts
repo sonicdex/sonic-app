@@ -10,8 +10,6 @@ export * from './mint-wicp-progress-modal';
 export * from './mint-xtc-fail-modal';
 export * from './mint-xtc-progress-modal';
 export * from './remove-liquidity-fail-modal';
-export * from './remove-liquidity-modal-asset';
-export * from './remove-liquidity-modal';
 export * from './remove-liquidity-progress-modal';
 export * from './swap-fail-modal';
 export * from './swap-progress-modal';

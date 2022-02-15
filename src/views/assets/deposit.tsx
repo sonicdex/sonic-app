@@ -28,7 +28,7 @@ import {
   useSwapCanisterStore,
   useTokenModalOpener,
 } from '@/store';
-import { getCurrency, getMaxValue } from '@/utils/format';
+import { getAmountDividedByDecimals, getMaxValue } from '@/utils/format';
 import { debounce } from '@/utils/function';
 
 export const AssetsDepositView = () => {
@@ -89,7 +89,10 @@ export const AssetsDepositView = () => {
 
     if (
       parsedFromValue <=
-      getCurrency(selectedTokenMetadata.fee, selectedTokenMetadata.decimals)
+      getAmountDividedByDecimals(
+        selectedTokenMetadata.fee,
+        selectedTokenMetadata.decimals
+      ).toNumber()
     ) {
       return [true, `Amount must be greater than fee`];
     }

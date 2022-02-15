@@ -1,8 +1,8 @@
 import { Flex, HStack, Image, Text } from '@chakra-ui/react';
-import { FC } from 'react';
+import { FC, useMemo } from 'react';
 
 import { questionMarkSrc } from '@/assets';
-import { getCurrencyString } from '@/utils/format';
+import { getAmountDividedByDecimals } from '@/utils/format';
 
 type TokenBalancesPopoverItemProps = {
   src?: string;
@@ -19,6 +19,11 @@ export const TokenBalancesPopoverItem: FC<TokenBalancesPopoverItemProps> = ({
   decimals,
   name,
 }) => {
+  const _balance = useMemo(
+    () => getAmountDividedByDecimals(balance ?? 0, decimals).toString(),
+    [balance, decimals]
+  );
+
   return (
     <Flex justify="space-between" pb={3} _last={{ pb: 0 }}>
       <HStack flex={0} minWidth="fit-content">
@@ -26,7 +31,7 @@ export const TokenBalancesPopoverItem: FC<TokenBalancesPopoverItemProps> = ({
         <Text>{name}</Text>
       </HStack>
       <Text textAlign="right" flex={1}>
-        {getCurrencyString(balance, decimals)} {symbol}
+        {_balance} {symbol}
       </Text>
     </Flex>
   );

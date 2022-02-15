@@ -7,7 +7,7 @@ import {
   saveToStorage,
 } from '@/config';
 import { MintTokenSymbol } from '@/store';
-import { getCurrency } from '@/utils/format';
+import { getAmountDividedByDecimals } from '@/utils/format';
 
 export const getAmountDependsOnBalance = (
   tokenBalance: number,
@@ -15,7 +15,9 @@ export const getAmountDependsOnBalance = (
   fromValue: string
 ): string => {
   const parsedFromValue = parseFloat(fromValue);
-  const parsedTokenBalance = Number(getCurrency(tokenBalance, tokenDecimals));
+  const parsedTokenBalance = Number(
+    getAmountDividedByDecimals(tokenBalance, tokenDecimals)
+  );
   return (parsedFromValue - parsedTokenBalance).toString();
 };
 

@@ -3,8 +3,8 @@ import { useCallback, useEffect } from 'react';
 
 import { ENV } from '@/config';
 import { FeatureState, useAppDispatch } from '@/store';
-import { getCurrency } from '@/utils/format';
-import { getICPPrice } from '@/utils/icp';
+import { getAmountDividedByDecimals } from '@/utils/format';
+import { fetchICPPrice } from '@/utils/icp';
 
 import { swapCanisterActions, useSwapCanisterStore } from '..';
 import { useKeepSync } from '../keep-sync';
@@ -63,8 +63,18 @@ export const usePriceInit = () => {
 
             if (wicpReserve && tokenReserve) {
               tokenPrice = new BigNumber(icpPrice)
-                .multipliedBy(getCurrency(wicpReserve.toString(), wicpDecimals))
-                .div(getCurrency(tokenReserve.toString(), tokenDecimals))
+                .multipliedBy(
+                  getAmountDividedByDecimals(
+                    wicpReserve.toString(),
+                    wicpDecimals
+                  )
+                )
+                .div(
+                  getAmountDividedByDecimals(
+                    tokenReserve.toString(),
+                    tokenDecimals
+                  )
+                )
                 .toString();
             }
           } else {
@@ -96,7 +106,7 @@ export const usePriceInit = () => {
               )
             );
 
-            const price = await getICPPrice();
+            const price = await fetchICPPrice();
 
             if (price) {
               dispatch(priceActions.setPrice(price));

@@ -9,7 +9,7 @@ import { BINANCE_V3_API_URL } from '@/integrations/binance/constants';
 
 export const ACCOUNT_DOMAIN_SEPERATOR = '\x0Aaccount-id';
 
-export const getICPBalance = async (principalId: string) => {
+export const fetchICPBalance = async (principalId: string) => {
   const accountId = getAccountId(Principal.fromText(principalId || ''), 0);
 
   if (accountId) {
@@ -27,7 +27,7 @@ export const getICPBalance = async (principalId: string) => {
   }
 };
 
-export const getICPPrice = async () => {
+export const fetchICPPrice = async () => {
   try {
     const response = await axios.get(
       `${BINANCE_V3_API_URL}/avgPrice?symbol=ICPUSDT`

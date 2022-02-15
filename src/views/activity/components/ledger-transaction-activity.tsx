@@ -78,6 +78,7 @@ export const LedgerTransactionActivity = ({
             value={amount.toString()}
             decimals={token.decimals}
             suffix={' ICP'}
+            shouldDivideByDecimals
           />
         </Heading>
         <Link

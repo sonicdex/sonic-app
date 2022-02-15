@@ -9,7 +9,7 @@ import { formatAmount } from '@psychedelic/sonic-js';
 import BigNumber from 'bignumber.js';
 import { useMemo } from 'react';
 
-import { getCurrencyString } from '@/utils/format';
+import { getAmountDividedByDecimals } from '@/utils/format';
 
 export type DisplayValueProps = TextProps & {
   isUpdating?: boolean;
@@ -18,17 +18,19 @@ export type DisplayValueProps = TextProps & {
   prefix?: string;
   suffix?: string;
   disableTooltip?: boolean;
+  shouldDivideByDecimals?: boolean;
 };
 
 export const DisplayValue = forwardRef<DisplayValueProps, 'p'>(
   (
     {
       value = 0,
-      decimals,
+      decimals = 4,
       isUpdating,
       prefix,
       suffix,
       disableTooltip,
+      shouldDivideByDecimals,
       ...textProps
     },
     ref
@@ -39,21 +41,22 @@ export const DisplayValue = forwardRef<DisplayValueProps, 'p'>(
       }
     `;
 
-    const [formattedValue, tooltipLabel, isDisabled] = useMemo(() => {
-      const tooltipAmount = decimals
-        ? getCurrencyString(value, decimals)
-        : new BigNumber(value).toString();
-      const display = formatAmount(tooltipAmount);
+    const [formattedValue, tooltipAmount, isDisabled] = useMemo(() => {
+      const tooltipAmount = shouldDivideByDecimals
+        ? getAmountDividedByDecimals(value, decimals).toString()
+        : new BigNumber(value).dp(decimals).toString();
+
+      const formattedValue = formatAmount(tooltipAmount);
 
       return [
-        display,
+        formattedValue,
         tooltipAmount,
         disableTooltip || String(tooltipAmount).length <= 4,
       ];
-    }, [value, decimals, disableTooltip]);
+    }, [value, decimals, disableTooltip, shouldDivideByDecimals]);
 
     return (
-      <Tooltip label={tooltipLabel} isDisabled={isDisabled}>
+      <Tooltip label={tooltipAmount} isDisabled={isDisabled}>
         <Text
           ref={ref}
           {...textProps}

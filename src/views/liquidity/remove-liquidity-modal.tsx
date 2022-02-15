@@ -25,6 +25,7 @@ import {
   Tooltip,
   useColorModeValue,
 } from '@chakra-ui/react';
+import { Liquidity } from '@psychedelic/sonic-js';
 import { FaArrowDown } from '@react-icons/all-files/fa/FaArrowDown';
 import BigNumber from 'bignumber.js';
 import { useMemo } from 'react';
@@ -41,7 +42,7 @@ import {
   useNotificationStore,
   useSwapCanisterStore,
 } from '@/store';
-import { getCurrency } from '@/utils/format';
+import { getAmountDividedByDecimals } from '@/utils/format';
 import { debounce } from '@/utils/function';
 
 import { RemoveLiquidityModalAsset } from './remove-liquidity-modal-asset';
@@ -88,37 +89,40 @@ export const RemoveLiquidityModal = () => {
 
       const pair = allPairs[token0.metadata.id]?.[token1.metadata.id];
       if (pair?.reserve0 && pair?.reserve1 && tokenBalance) {
-        const normalizedReserve0 = getCurrency(
+        const normalizedReserve0 = getAmountDividedByDecimals(
           pair.reserve0.toString(),
           token0.metadata.decimals
         );
-        const normalizedReserve1 = getCurrency(
+        const normalizedReserve1 = getAmountDividedByDecimals(
           pair.reserve1.toString(),
           token1.metadata.decimals
         );
 
-        const normalizedTotalSupply = getCurrency(
-          pair.totalSupply.toString(),
-          Math.round((token0.metadata.decimals + token1.metadata.decimals) / 2)
+        const pairDecimals = Liquidity.getPairDecimals(
+          token0.metadata.decimals,
+          token1.metadata.decimals
         );
 
-        const normalizedTokenBalance = getCurrency(
+        const normalizedTotalSupply = getAmountDividedByDecimals(
+          pair.totalSupply.toString(),
+          pairDecimals
+        );
+
+        const normalizedTokenBalance = getAmountDividedByDecimals(
           tokenBalance.toString(),
-          Math.round((token0.metadata.decimals + token1.metadata.decimals) / 2)
+          pairDecimals
         );
 
         const balance0 = new BigNumber(normalizedTokenBalance)
           .dividedBy(normalizedTotalSupply)
           .multipliedBy(normalizedReserve0)
           .multipliedBy(removeAmountPercentage / 100)
-          .dp(token0.metadata.decimals)
           .toString();
 
         const balance1 = new BigNumber(normalizedTokenBalance)
           .dividedBy(normalizedTotalSupply)
           .multipliedBy(normalizedReserve1)
           .multipliedBy(removeAmountPercentage / 100)
-          .dp(token1.metadata.decimals)
           .toString();
 
         return {

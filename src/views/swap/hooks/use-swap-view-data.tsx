@@ -32,15 +32,17 @@ import {
 } from '@/store';
 import {
   formatValue,
-  getCurrency,
-  getICPValueByXDRRate,
+  getAmountDividedByDecimals,
   getMaxValue,
-  getPathAmountOut,
-  getXTCValueByXDRRate,
 } from '@/utils/format';
 import { debounce } from '@/utils/function';
 
 import { OperationType } from '../components';
+import {
+  getAmountOutFromPath,
+  getICPValueByXDRRate,
+  getXTCValueByXDRRate,
+} from '../swap.utils';
 
 export enum SwapStep {
   Home,
@@ -118,7 +120,10 @@ export const useSwapViewData = () => {
     dispatch(
       swapViewActions.setValue({
         data: oppositeDataKey,
-        value: value.toNumber() > 0 ? value.toString() : '',
+        value:
+          value.toNumber() > 0
+            ? value.dp(ICP_METADATA.decimals).toString()
+            : '',
       })
     );
   }
@@ -153,20 +158,20 @@ export const useSwapViewData = () => {
               .plus(icpFeesConvertedToXTC)
               .toString();
 
-      const cyclesWithFees = handler({
+      const rateBasedAmount = handler({
         amount,
         conversionRate: ICPXDRconversionRate,
       });
 
-      const cycles =
+      const resultAmount =
         dataKey === 'from'
-          ? cyclesWithFees.minus(icpFeesConvertedToXTC).minus(xtcFees)
-          : cyclesWithFees;
+          ? rateBasedAmount.minus(icpFeesConvertedToXTC).minus(xtcFees)
+          : rateBasedAmount.dp(ICP_METADATA.decimals);
 
       dispatch(
         swapViewActions.setValue({
           data: oppositeDataKey,
-          value: cycles.toNumber() > 0 ? cycles.toString() : '',
+          value: resultAmount.toNumber() > 0 ? resultAmount.toString() : '',
         })
       );
     }
@@ -198,7 +203,7 @@ export const useSwapViewData = () => {
       dispatch(
         swapViewActions.setValue({
           data: oppositeDataKey,
-          value: getPathAmountOut(dataWICP, oppositeData),
+          value: getAmountOutFromPath(dataWICP, oppositeData),
         })
       );
     }
@@ -470,14 +475,24 @@ export const useSwapViewData = () => {
       return [true, `Enter ${from.metadata.symbol} Amount`];
 
     if (
-      parsedFromValue <= getCurrency(from.metadata.fee, from.metadata.decimals)
+      parsedFromValue <=
+      getAmountDividedByDecimals(
+        from.metadata.fee,
+        from.metadata.decimals
+      ).toNumber()
     ) {
       return [true, `${from.metadata.symbol} amount must be greater than fee`];
     }
 
     const parsedToValue = (to.value && parseFloat(to.value)) || 0;
 
-    if (parsedToValue <= getCurrency(to.metadata.fee, to.metadata.decimals)) {
+    if (
+      parsedToValue <=
+      getAmountDividedByDecimals(
+        to.metadata.fee,
+        to.metadata.decimals
+      ).toNumber()
+    ) {
       return [true, `${to.metadata.symbol} amount must be greater than fee`];
     }
 

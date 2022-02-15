@@ -27,7 +27,7 @@ import {
   useWithdrawViewStore,
   withdrawViewActions,
 } from '@/store';
-import { formatValue, getCurrency, getCurrencyString } from '@/utils/format';
+import { formatValue, getAmountDividedByDecimals } from '@/utils/format';
 import { debounce } from '@/utils/function';
 
 export const AssetsWithdrawView = () => {
@@ -76,7 +76,10 @@ export const AssetsWithdrawView = () => {
 
     if (
       parsedFromValue <=
-      getCurrency(selectedTokenMetadata.fee, selectedTokenMetadata.decimals)
+      getAmountDividedByDecimals(
+        selectedTokenMetadata.fee,
+        selectedTokenMetadata.decimals
+      ).toNumber()
     ) {
       return [true, `Amount must be greater than fee`];
     }
@@ -135,7 +138,10 @@ export const AssetsWithdrawView = () => {
   const handleMaxClick = () => {
     dispatch(
       withdrawViewActions.setAmount(
-        getCurrencyString(tokenBalance, selectedTokenMetadata?.decimals)
+        getAmountDividedByDecimals(
+          tokenBalance,
+          selectedTokenMetadata?.decimals
+        ).toString()
       )
     );
   };

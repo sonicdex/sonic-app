@@ -21,6 +21,7 @@ import {
   Tooltip,
   useColorModeValue,
 } from '@chakra-ui/react';
+import { Liquidity } from '@psychedelic/sonic-js';
 import { FaCog } from '@react-icons/all-files/fa/FaCog';
 import { FaEquals } from '@react-icons/all-files/fa/FaEquals';
 import { FaInfoCircle } from '@react-icons/all-files/fa/FaInfoCircle';
@@ -64,14 +65,10 @@ import {
   useSwapCanisterStore,
   useTokenModalOpener,
 } from '@/store';
-import {
-  getAmountEqualLPToken,
-  getAmountLP,
-  getCurrencyString,
-  getLPPercentageString,
-  getMaxValue,
-} from '@/utils/format';
+import { getAmountDividedByDecimals, getMaxValue } from '@/utils/format';
 import { debounce } from '@/utils/function';
+
+import { getOppositeLPValue, getShareOfPoolString } from './liquidity.utils';
 
 export const LiquidityAddView = () => {
   const query = useQuery();
@@ -189,14 +186,15 @@ export const LiquidityAddView = () => {
       dispatch(
         liquidityViewActions.setValue({ data: dataKey, value: amountIn })
       );
+
       if (token0.metadata && token1.metadata) {
-        const lpValue = getAmountEqualLPToken({
+        const lpValue = getOppositeLPValue({
           amountIn,
           reserveIn,
           reserveOut,
           decimalsIn,
           decimalsOut,
-        });
+        }).toString();
 
         const reversedDataKey = dataKey === 'token0' ? 'token1' : 'token0';
 
@@ -293,48 +291,42 @@ export const LiquidityAddView = () => {
     return selectedIds;
   }, [token0?.metadata?.id, token1?.metadata?.id]);
 
-  const { token0Price, token1Price, liquidityPercentage, liquidityValue } =
+  const { token0Price, token1Price, shareOfPool, liquidityValue } =
     useMemo(() => {
       if (token0.metadata && token1.metadata) {
         if (pair && pair.reserve0 && pair.reserve1) {
-          const token0Price = getAmountEqualLPToken({
+          const token0Price = getOppositeLPValue({
             amountIn: '1',
             reserveIn: String(pair.reserve1),
             reserveOut: String(pair.reserve0),
             decimalsIn: Number(token1.metadata.decimals),
             decimalsOut: Number(token0.metadata.decimals),
-          });
+          }).toString();
 
-          const token1Price = getAmountEqualLPToken({
+          const token1Price = getOppositeLPValue({
             amountIn: '1',
             reserveIn: String(pair.reserve0),
             reserveOut: String(pair.reserve1),
             decimalsIn: Number(token0.metadata.decimals),
             decimalsOut: Number(token1.metadata.decimals),
-          });
+          }).toString();
 
-          const getAmountLPOptions = {
+          const options = {
             token0Amount: token0.value,
             token1Amount: token1.value,
             reserve0: String(pair.reserve0),
             reserve1: String(pair.reserve1),
             totalSupply: String(pair.totalSupply),
-          };
-
-          const getPercentageLPOptions = {
-            ...getAmountLPOptions,
             token0Decimals: token0.metadata?.decimals,
             token1Decimals: token1.metadata?.decimals,
           };
 
-          const liquidityValue = getAmountLP(getAmountLPOptions);
-          const liquidityPercentage = getLPPercentageString(
-            getPercentageLPOptions
-          );
+          const liquidityValue = Liquidity.getAddPosition(options).toString();
+          const shareOfPool = getShareOfPoolString(options);
 
           return {
             liquidityValue,
-            liquidityPercentage,
+            shareOfPool,
             token0Price,
             token1Price,
           };
@@ -361,7 +353,7 @@ export const LiquidityAddView = () => {
           return {
             token0Price: isToken0Price ? '0' : token0Value,
             token1Price: isToken1Price ? '0' : token1Value,
-            liquidityPercentage: '100%',
+            shareOfPool: '100%',
             liquidityValue: new BigNumber(token0.value)
               .multipliedBy(new BigNumber(token1.value))
               .sqrt()
@@ -400,14 +392,14 @@ export const LiquidityAddView = () => {
 
   const { fee0, fee1 } = useMemo(() => {
     if (token0.metadata && token1.metadata) {
-      const fee0 = getCurrencyString(
+      const fee0 = getAmountDividedByDecimals(
         token0.metadata.fee + token0.metadata.fee,
         token0.metadata.decimals
-      );
-      const fee1 = getCurrencyString(
+      ).toString();
+      const fee1 = getAmountDividedByDecimals(
         token1.metadata.fee + token1.metadata.fee,
         token1.metadata.decimals
-      );
+      ).toString();
 
       return { fee0, fee1 };
     }
@@ -636,7 +628,7 @@ export const LiquidityAddView = () => {
                   <TokenData color={color}>
                     Share of Pool:
                     <Text flex={1} textAlign="right">
-                      {liquidityPercentage}
+                      {shareOfPool}
                     </Text>
                   </TokenData>
                 </Token>

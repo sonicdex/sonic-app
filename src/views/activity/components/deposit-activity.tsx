@@ -48,6 +48,7 @@ export const DepositActivity = ({
             value={amount}
             decimals={token.decimals}
             suffix={' ' + token.symbol}
+            shouldDivideByDecimals
           />
         </Heading>
       </Stack>

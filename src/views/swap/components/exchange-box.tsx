@@ -21,14 +21,10 @@ import { ENV } from '@/config';
 import { ICP_METADATA } from '@/constants';
 import { useBalances, useTokenSelectionChecker } from '@/hooks';
 import { useCyclesMintingCanisterStore, useSwapViewStore } from '@/store';
-import {
-  formatValue,
-  getAmountOutMin,
-  getCurrencyString,
-  getPathAmountOut,
-  getXTCValueByXDRRate,
-} from '@/utils/format';
+import { formatValue, getAmountDividedByDecimals } from '@/utils/format';
 
+import { getSwapAmountOutMin } from '..';
+import { getAmountOutFromPath, getXTCValueByXDRRate } from '../swap.utils';
 import { ChainPopover } from './chain-popover';
 
 export type ExchangeBoxProps = {
@@ -74,15 +70,18 @@ export const ExchangeBox: React.FC<ExchangeBoxProps> = ({ priceImpact }) => {
       const hasDeposit = sonicBalances[from.metadata.id] < Number(from.value);
       const depositFee =
         hasDeposit && Number(from.metadata.fee) > 0
-          ? getCurrencyString(
+          ? getAmountDividedByDecimals(
               BigInt(2) * from.metadata.fee,
               from.metadata.decimals
-            )
+            ).toString()
           : undefined;
 
       const withdrawFee =
         !keepInSonic && Number(to.metadata.fee) > 0
-          ? getCurrencyString(to.metadata.fee, to.metadata.decimals)
+          ? getAmountDividedByDecimals(
+              to.metadata.fee,
+              to.metadata.decimals
+            ).toString()
           : undefined;
 
       return { depositFee, withdrawFee };
@@ -120,18 +119,21 @@ export const ExchangeBox: React.FC<ExchangeBoxProps> = ({ priceImpact }) => {
 
     const xtcFees = icpMetadata
       ? new BigNumber(
-          getCurrencyString(
+          getAmountDividedByDecimals(
             (to.metadata?.fee ?? BigInt(0)) *
               (keepInSonic ? BigInt(3) : BigInt(1)),
             to.metadata?.decimals
-          )
+          ).toString()
         )
           .plus(icpFeeInXTC.multipliedBy(2))
           .toString()
       : '0';
 
     const wicpFee = icpMetadata
-      ? getCurrencyString(icpMetadata.fee, icpMetadata.decimals)
+      ? getAmountDividedByDecimals(
+          icpMetadata.fee,
+          icpMetadata.decimals
+        ).toString()
       : '0';
 
     const fee = isToTokenIsXTC ? xtcFees : wicpFee;
@@ -151,23 +153,27 @@ export const ExchangeBox: React.FC<ExchangeBoxProps> = ({ priceImpact }) => {
     keepInSonic,
   ]);
 
-  const pathAmountOut = useMemo(() => {
-    return getPathAmountOut(
-      { metadata: from.metadata, paths: baseFromTokenPaths, value: '1' },
-      to
-    );
-  }, [baseFromTokenPaths, from.metadata, to]);
+  const pathAmountOut = useMemo(
+    () =>
+      getAmountOutFromPath(
+        { metadata: from.metadata, paths: baseFromTokenPaths, value: '1' },
+        to
+      ),
+    [baseFromTokenPaths, from.metadata, to]
+  );
 
-  const amountOutMin = useMemo(() => {
-    return getAmountOutMin(
-      from,
-      to,
-      slippage,
-      allPairs,
-      Boolean(depositFee),
-      keepInSonic
-    );
-  }, [allPairs, depositFee, from, keepInSonic, slippage, to]);
+  const amountOutMin = useMemo(
+    () =>
+      getSwapAmountOutMin({
+        from,
+        to,
+        slippage,
+        allPairs,
+        hasDeposit: Boolean(depositFee),
+        hasWithdraw: keepInSonic,
+      }),
+    [allPairs, depositFee, from, keepInSonic, slippage, to]
+  );
 
   if (!from.metadata || !to.metadata) return null;
 
