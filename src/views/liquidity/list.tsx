@@ -1,5 +1,5 @@
 import { Box, HStack, Stack, Text, useColorModeValue } from '@chakra-ui/react';
-import { Liquidity } from '@psychedelic/sonic-js';
+import { Liquidity, toBigNumber } from '@psychedelic/sonic-js';
 import { FaMinus } from '@react-icons/all-files/fa/FaMinus';
 import { FaPlus } from '@react-icons/all-files/fa/FaPlus';
 import BigNumber from 'bignumber.js';
@@ -27,7 +27,6 @@ import {
   usePlugStore,
   useSwapCanisterStore,
 } from '@/store';
-import { getAmountDividedByDecimals } from '@/utils/format';
 
 import { getUserLPValue } from './liquidity.utils';
 import { RemoveLiquidityModal } from './remove-liquidity-modal';
@@ -154,29 +153,25 @@ export const LiquidityListView = () => {
 
             const pair = allPairs[token0.id]?.[token1.id];
             if (pair?.reserve0 && pair?.reserve1 && tokenBalance) {
-              const normalizedReserve0 = getAmountDividedByDecimals(
-                pair.reserve0.toString(),
-                token0.decimals
-              );
-              const normalizedReserve1 = getAmountDividedByDecimals(
-                pair.reserve1.toString(),
-                token1.decimals
-              );
+              const normalizedReserve0 = toBigNumber(
+                pair.reserve0.toString()
+              ).applyDecimals(token0.decimals);
+              const normalizedReserve1 = toBigNumber(
+                pair.reserve1.toString()
+              ).applyDecimals(token1.decimals);
 
               const pairDecimals = Liquidity.getPairDecimals(
                 token0.decimals,
                 token1.decimals
               );
 
-              const normalizedTotalSupply = getAmountDividedByDecimals(
-                pair.totalSupply.toString(),
-                pairDecimals
-              );
+              const normalizedTotalSupply = toBigNumber(
+                pair.totalSupply.toString()
+              ).applyDecimals(pairDecimals);
 
-              const normalizedTokenBalance = getAmountDividedByDecimals(
-                tokenBalance.toString(),
-                pairDecimals
-              );
+              const normalizedTokenBalance = toBigNumber(
+                tokenBalance.toString()
+              ).applyDecimals(pairDecimals);
 
               balance0 = new BigNumber(normalizedTokenBalance)
                 .dividedBy(normalizedTotalSupply)
@@ -197,15 +192,15 @@ export const LiquidityListView = () => {
             token1?.decimals ?? 0
           );
 
-          const userShares = getAmountDividedByDecimals(
-            userLPBalances[tokenId0][tokenId1],
-            pairDecimals
-          ).toString();
+          const userShares = toBigNumber(userLPBalances[tokenId0][tokenId1])
+            .applyDecimals(pairDecimals)
+            .toString();
 
-          const totalShares = getAmountDividedByDecimals(
-            allPairs?.[tokenId0]?.[tokenId1]?.totalSupply,
-            pairDecimals
-          ).toString();
+          const totalShares = toBigNumber(
+            allPairs?.[tokenId0]?.[tokenId1]?.totalSupply
+          )
+            .applyDecimals(pairDecimals)
+            .toString();
 
           pairedList.push({
             token0,

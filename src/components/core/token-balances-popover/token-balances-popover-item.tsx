@@ -1,8 +1,8 @@
 import { Flex, HStack, Image, Text } from '@chakra-ui/react';
+import { toBigNumber } from '@psychedelic/sonic-js';
 import { FC, useMemo } from 'react';
 
 import { questionMarkSrc } from '@/assets';
-import { getAmountDividedByDecimals } from '@/utils/format';
 
 type TokenBalancesPopoverItemProps = {
   src?: string;
@@ -20,7 +20,10 @@ export const TokenBalancesPopoverItem: FC<TokenBalancesPopoverItemProps> = ({
   name,
 }) => {
   const _balance = useMemo(
-    () => getAmountDividedByDecimals(balance ?? 0, decimals).toString(),
+    () =>
+      toBigNumber(balance ?? 0)
+        .applyDecimals(decimals ?? 0)
+        .toString(),
     [balance, decimals]
   );
 

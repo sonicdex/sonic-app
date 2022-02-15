@@ -21,7 +21,7 @@ import {
   Tooltip,
   useColorModeValue,
 } from '@chakra-ui/react';
-import { Liquidity } from '@psychedelic/sonic-js';
+import { Liquidity, toBigNumber } from '@psychedelic/sonic-js';
 import { FaCog } from '@react-icons/all-files/fa/FaCog';
 import { FaEquals } from '@react-icons/all-files/fa/FaEquals';
 import { FaInfoCircle } from '@react-icons/all-files/fa/FaInfoCircle';
@@ -65,7 +65,7 @@ import {
   useSwapCanisterStore,
   useTokenModalOpener,
 } from '@/store';
-import { getAmountDividedByDecimals, getMaxValue } from '@/utils/format';
+import { getMaxValue } from '@/utils/format';
 import { debounce } from '@/utils/function';
 
 import { getOppositeLPValue, getShareOfPoolString } from './liquidity.utils';
@@ -321,13 +321,16 @@ export const LiquidityAddView = () => {
             token1Decimals: token1.metadata?.decimals,
           };
 
-          const liquidityAmount = getAmountDividedByDecimals(
-            Liquidity.getAddPosition(getShareOfPoolOptions).toString(),
-            Liquidity.getPairDecimals(
-              token0.metadata.decimals,
-              token1.metadata.decimals
+          const liquidityAmount = toBigNumber(
+            Liquidity.getAddPosition(getShareOfPoolOptions).toString()
+          )
+            .applyDecimals(
+              Liquidity.getPairDecimals(
+                token0.metadata.decimals,
+                token1.metadata.decimals
+              )
             )
-          ).toString();
+            .toString();
 
           const shareOfPool = getShareOfPoolString(getShareOfPoolOptions);
 
@@ -399,14 +402,12 @@ export const LiquidityAddView = () => {
 
   const { fee0, fee1 } = useMemo(() => {
     if (token0.metadata && token1.metadata) {
-      const fee0 = getAmountDividedByDecimals(
-        token0.metadata.fee + token0.metadata.fee,
-        token0.metadata.decimals
-      ).toString();
-      const fee1 = getAmountDividedByDecimals(
-        token1.metadata.fee + token1.metadata.fee,
-        token1.metadata.decimals
-      ).toString();
+      const fee0 = toBigNumber(token0.metadata.fee + token0.metadata.fee)
+        .applyDecimals(token0.metadata.decimals)
+        .toString();
+      const fee1 = toBigNumber(token1.metadata.fee + token1.metadata.fee)
+        .applyDecimals(token1.metadata.decimals)
+        .toString();
 
       return { fee0, fee1 };
     }

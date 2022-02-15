@@ -1,9 +1,9 @@
 import { Flex, Text } from '@chakra-ui/react';
+import { toBigNumber } from '@psychedelic/sonic-js';
 import { FaArrowRight } from '@react-icons/all-files/fa/FaArrowRight';
 import React, { useMemo } from 'react';
 
 import { AppTokenMetadata } from '@/models';
-import { getAmountDividedByDecimals } from '@/utils/format';
 
 export type FeeBoxProps = {
   token?: AppTokenMetadata;
@@ -13,14 +13,9 @@ export type FeeBoxProps = {
 export const FeeBox: React.FC<FeeBoxProps> = ({ isDeposit = false, token }) => {
   const fee = useMemo(() => {
     if (token) {
-      if (isDeposit) {
-        return getAmountDividedByDecimals(
-          BigInt(2) * token.fee,
-          token.decimals
-        ).toString();
-      } else {
-        return getAmountDividedByDecimals(token.fee, token.decimals).toString();
-      }
+      return toBigNumber(BigInt(isDeposit ? 2 : 1) * token.fee)
+        .applyDecimals(token.decimals)
+        .toString();
     }
   }, [isDeposit, token]);
 

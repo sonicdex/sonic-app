@@ -1,5 +1,5 @@
 import { Link } from '@chakra-ui/react';
-import { deserialize, serialize } from '@psychedelic/sonic-js';
+import { deserialize, serialize, toBigNumber } from '@psychedelic/sonic-js';
 import BigNumber from 'bignumber.js';
 import { useEffect, useMemo } from 'react';
 
@@ -15,7 +15,6 @@ import {
   usePlugStore,
   useSwapCanisterStore,
 } from '@/store';
-import { getAmountDividedByDecimals } from '@/utils/format';
 
 export interface RemoveLiquidityNotificationContentProps {
   id: string;
@@ -59,19 +58,17 @@ export const RemoveLiquidityNotificationContent: React.FC<
           .multipliedBy(removeAmountPercentage / 100)
           .multipliedBy(Number(slippage));
 
-        const amount0Min = getAmountDividedByDecimals(
+        const amount0Min = toBigNumber(
           amount0Desired
             .minus(amount0Desired.multipliedBy(Number(slippage)))
-            .toString(),
-          token0.metadata.decimals
-        );
+            .toString()
+        ).applyDecimals(token0.metadata.decimals);
 
-        const amount1Min = getAmountDividedByDecimals(
+        const amount1Min = toBigNumber(
           amount1Desired
             .minus(amount1Desired.multipliedBy(Number(slippage)))
-            .toString(),
-          token1.metadata.decimals
-        );
+            .toString()
+        ).applyDecimals(token1.metadata.decimals);
 
         return deserialize(
           serialize({

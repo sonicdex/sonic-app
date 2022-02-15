@@ -25,7 +25,7 @@ import {
   Tooltip,
   useColorModeValue,
 } from '@chakra-ui/react';
-import { Liquidity } from '@psychedelic/sonic-js';
+import { Liquidity, toBigNumber } from '@psychedelic/sonic-js';
 import { FaArrowDown } from '@react-icons/all-files/fa/FaArrowDown';
 import BigNumber from 'bignumber.js';
 import { useMemo } from 'react';
@@ -42,7 +42,6 @@ import {
   useNotificationStore,
   useSwapCanisterStore,
 } from '@/store';
-import { getAmountDividedByDecimals } from '@/utils/format';
 import { debounce } from '@/utils/function';
 
 import { RemoveLiquidityModalAsset } from './remove-liquidity-modal-asset';
@@ -89,29 +88,25 @@ export const RemoveLiquidityModal = () => {
 
       const pair = allPairs[token0.metadata.id]?.[token1.metadata.id];
       if (pair?.reserve0 && pair?.reserve1 && tokenBalance) {
-        const normalizedReserve0 = getAmountDividedByDecimals(
-          pair.reserve0.toString(),
-          token0.metadata.decimals
-        );
-        const normalizedReserve1 = getAmountDividedByDecimals(
-          pair.reserve1.toString(),
-          token1.metadata.decimals
-        );
+        const normalizedReserve0 = toBigNumber(
+          pair.reserve0.toString()
+        ).applyDecimals(token0.metadata.decimals);
+        const normalizedReserve1 = toBigNumber(
+          pair.reserve1.toString()
+        ).applyDecimals(token1.metadata.decimals);
 
         const pairDecimals = Liquidity.getPairDecimals(
           token0.metadata.decimals,
           token1.metadata.decimals
         );
 
-        const normalizedTotalSupply = getAmountDividedByDecimals(
-          pair.totalSupply.toString(),
-          pairDecimals
-        );
+        const normalizedTotalSupply = toBigNumber(
+          pair.totalSupply.toString()
+        ).applyDecimals(pairDecimals);
 
-        const normalizedTokenBalance = getAmountDividedByDecimals(
-          tokenBalance.toString(),
-          pairDecimals
-        );
+        const normalizedTokenBalance = toBigNumber(
+          tokenBalance.toString()
+        ).applyDecimals(pairDecimals);
 
         const balance0 = new BigNumber(normalizedTokenBalance)
           .dividedBy(normalizedTotalSupply)

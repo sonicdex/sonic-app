@@ -1,9 +1,9 @@
+import { toBigNumber } from '@psychedelic/sonic-js';
 import BigNumber from 'bignumber.js';
 import { useCallback, useEffect } from 'react';
 
 import { ENV } from '@/config';
 import { FeatureState, useAppDispatch } from '@/store';
-import { getAmountDividedByDecimals } from '@/utils/format';
 import { fetchICPPrice } from '@/utils/icp';
 
 import { swapCanisterActions, useSwapCanisterStore } from '..';
@@ -64,14 +64,12 @@ export const usePriceInit = () => {
             if (wicpReserve && tokenReserve) {
               tokenPrice = new BigNumber(icpPrice)
                 .multipliedBy(
-                  getAmountDividedByDecimals(
-                    wicpReserve.toString(),
+                  toBigNumber(wicpReserve.toString()).applyDecimals(
                     wicpDecimals
                   )
                 )
                 .div(
-                  getAmountDividedByDecimals(
-                    tokenReserve.toString(),
+                  toBigNumber(tokenReserve.toString()).applyDecimals(
                     tokenDecimals
                   )
                 )

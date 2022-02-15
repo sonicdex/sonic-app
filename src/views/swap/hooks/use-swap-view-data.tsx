@@ -1,5 +1,5 @@
 import { Link } from '@chakra-ui/react';
-import { Swap } from '@psychedelic/sonic-js';
+import { Swap, toBigNumber } from '@psychedelic/sonic-js';
 import BigNumber from 'bignumber.js';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { batch } from 'react-redux';
@@ -30,11 +30,7 @@ import {
   useSwapViewStore,
   useTokenModalOpener,
 } from '@/store';
-import {
-  formatValue,
-  getAmountDividedByDecimals,
-  getMaxValue,
-} from '@/utils/format';
+import { formatValue, getMaxValue } from '@/utils/format';
 import { debounce } from '@/utils/function';
 
 import { OperationType } from '../components';
@@ -476,10 +472,9 @@ export const useSwapViewData = () => {
 
     if (
       parsedFromValue <=
-      getAmountDividedByDecimals(
-        from.metadata.fee,
-        from.metadata.decimals
-      ).toNumber()
+      toBigNumber(from.metadata.fee)
+        .applyDecimals(from.metadata.decimals)
+        .toNumber()
     ) {
       return [true, `${from.metadata.symbol} amount must be greater than fee`];
     }
@@ -488,10 +483,9 @@ export const useSwapViewData = () => {
 
     if (
       parsedToValue <=
-      getAmountDividedByDecimals(
-        to.metadata.fee,
-        to.metadata.decimals
-      ).toNumber()
+      toBigNumber(to.metadata.fee)
+        .applyDecimals(to.metadata.decimals)
+        .toNumber()
     ) {
       return [true, `${to.metadata.symbol} amount must be greater than fee`];
     }

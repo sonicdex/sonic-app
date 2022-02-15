@@ -1,7 +1,5 @@
-import { Liquidity } from '@psychedelic/sonic-js';
+import { Liquidity, toBigNumber } from '@psychedelic/sonic-js';
 import { BigNumber } from 'bignumber.js';
-
-import { getAmountDividedByDecimals } from '@/utils/format';
 
 export interface GetOppositeLPValue {
   amountIn: string;
@@ -59,10 +57,10 @@ export const getUserLPValue = ({
   userShares,
 }: GetUserLPValue) => {
   const token0Price = new BigNumber(price0).multipliedBy(
-    getAmountDividedByDecimals(reserve0, decimals0)
+    toBigNumber(reserve0).applyDecimals(decimals0)
   );
   const token1Price = new BigNumber(price1).multipliedBy(
-    getAmountDividedByDecimals(reserve1, decimals1)
+    toBigNumber(reserve1).applyDecimals(decimals1)
   );
   const priceByLP = token0Price.plus(token1Price).dividedBy(totalShares);
 

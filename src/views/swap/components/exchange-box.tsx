@@ -11,6 +11,7 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react';
+import { toBigNumber } from '@psychedelic/sonic-js';
 import { FaArrowRight } from '@react-icons/all-files/fa/FaArrowRight';
 import { FaInfoCircle } from '@react-icons/all-files/fa/FaInfoCircle';
 import BigNumber from 'bignumber.js';
@@ -21,7 +22,7 @@ import { ENV } from '@/config';
 import { ICP_METADATA } from '@/constants';
 import { useBalances, useTokenSelectionChecker } from '@/hooks';
 import { useCyclesMintingCanisterStore, useSwapViewStore } from '@/store';
-import { formatValue, getAmountDividedByDecimals } from '@/utils/format';
+import { formatValue } from '@/utils/format';
 
 import { getSwapAmountOutMin } from '..';
 import { getAmountOutFromPath, getXTCValueByXDRRate } from '../swap.utils';
@@ -70,18 +71,16 @@ export const ExchangeBox: React.FC<ExchangeBoxProps> = ({ priceImpact }) => {
       const hasDeposit = sonicBalances[from.metadata.id] < Number(from.value);
       const depositFee =
         hasDeposit && Number(from.metadata.fee) > 0
-          ? getAmountDividedByDecimals(
-              BigInt(2) * from.metadata.fee,
-              from.metadata.decimals
-            ).toString()
+          ? toBigNumber(BigInt(2) * from.metadata.fee)
+              .applyDecimals(from.metadata.decimals)
+              .toString()
           : undefined;
 
       const withdrawFee =
         !keepInSonic && Number(to.metadata.fee) > 0
-          ? getAmountDividedByDecimals(
-              to.metadata.fee,
-              to.metadata.decimals
-            ).toString()
+          ? toBigNumber(to.metadata.fee)
+              .applyDecimals(to.metadata.decimals)
+              .toString()
           : undefined;
 
       return { depositFee, withdrawFee };
@@ -119,21 +118,21 @@ export const ExchangeBox: React.FC<ExchangeBoxProps> = ({ priceImpact }) => {
 
     const xtcFees = icpMetadata
       ? new BigNumber(
-          getAmountDividedByDecimals(
+          toBigNumber(
             (to.metadata?.fee ?? BigInt(0)) *
-              (keepInSonic ? BigInt(3) : BigInt(1)),
-            to.metadata?.decimals
-          ).toString()
+              (keepInSonic ? BigInt(3) : BigInt(1))
+          )
+            .applyDecimals(to.metadata?.decimals ?? 0)
+            .toString()
         )
           .plus(icpFeeInXTC.multipliedBy(2))
           .toString()
       : '0';
 
     const wicpFee = icpMetadata
-      ? getAmountDividedByDecimals(
-          icpMetadata.fee,
-          icpMetadata.decimals
-        ).toString()
+      ? toBigNumber(icpMetadata.fee)
+          .applyDecimals(icpMetadata.decimals)
+          .toString()
       : '0';
 
     const fee = isToTokenIsXTC ? xtcFees : wicpFee;

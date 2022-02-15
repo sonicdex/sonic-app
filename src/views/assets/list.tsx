@@ -7,6 +7,7 @@ import {
   Text,
   useColorModeValue,
 } from '@chakra-ui/react';
+import { toBigNumber } from '@psychedelic/sonic-js';
 import { FaInfoCircle } from '@react-icons/all-files/fa/FaInfoCircle';
 import { FaMinus } from '@react-icons/all-files/fa/FaMinus';
 import { FaPlus } from '@react-icons/all-files/fa/FaPlus';
@@ -37,7 +38,6 @@ import {
   usePriceStore,
   useSwapCanisterStore,
 } from '@/store';
-import { getAmountDividedByDecimals } from '@/utils/format';
 
 const getAssetPriceByBalance = (
   price?: string,
@@ -47,7 +47,7 @@ const getAssetPriceByBalance = (
   if (price && balance && decimals) {
     return (
       Number(price) *
-      Number(getAmountDividedByDecimals(balance, decimals).toString())
+      Number(toBigNumber(balance).applyDecimals(decimals).toString())
     );
   }
 

@@ -1,4 +1,5 @@
 import { Bytes } from '@ethersproject/bytes';
+import { toBigNumber } from '@psychedelic/sonic-js';
 import BigNumber from 'bignumber.js';
 import { ethers } from 'ethers';
 import { formatUnits, parseUnits } from 'ethers/lib/utils';
@@ -38,24 +39,6 @@ export const getAmountMultipliedByDecimals = (
   return _amount.multipliedBy(new BigNumber(10).pow(_decimals));
 };
 
-export const getAmountDividedByDecimals = (
-  amount: bigint | undefined | string | number,
-  decimals: bigint | undefined | number
-) => {
-  const _amount = new BigNumber(String(amount));
-  const _decimals = new BigNumber(String(decimals));
-
-  if (
-    _amount.isZero() ||
-    _amount.isNaN() ||
-    _decimals.isZero() ||
-    _decimals.isNaN()
-  )
-    return new BigNumber(0);
-
-  return _amount.dividedBy(new BigNumber(10).pow(_decimals));
-};
-
 export const formatValue = (
   val: BigInt | number | string,
   decimals: number
@@ -81,8 +64,7 @@ export const getValueWithoutFees = ({
   numberOfFees = 1,
 }: GetValueWithoutFeesOptions) => {
   const _value = new BigNumber(value);
-  const _feesAmount = getAmountDividedByDecimals(
-    numberOfFees * Number(fee),
+  const _feesAmount = toBigNumber(numberOfFees * Number(fee)).applyDecimals(
     decimals
   );
 
@@ -102,7 +84,7 @@ export const getMaxValue = (
     .toNumber();
 
   if (value > 0) {
-    return getAmountDividedByDecimals(value, token.decimals).toString();
+    return toBigNumber(value).applyDecimals(token.decimals).toString();
   }
 
   return '';

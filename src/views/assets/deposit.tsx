@@ -1,4 +1,5 @@
 import { Box, Button } from '@chakra-ui/react';
+import { toBigNumber } from '@psychedelic/sonic-js';
 import { useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router';
 
@@ -28,7 +29,7 @@ import {
   useSwapCanisterStore,
   useTokenModalOpener,
 } from '@/store';
-import { getAmountDividedByDecimals, getMaxValue } from '@/utils/format';
+import { getMaxValue } from '@/utils/format';
 import { debounce } from '@/utils/function';
 
 export const AssetsDepositView = () => {
@@ -89,10 +90,9 @@ export const AssetsDepositView = () => {
 
     if (
       parsedFromValue <=
-      getAmountDividedByDecimals(
-        selectedTokenMetadata.fee,
-        selectedTokenMetadata.decimals
-      ).toNumber()
+      toBigNumber(selectedTokenMetadata.fee)
+        .applyDecimals(selectedTokenMetadata.decimals)
+        .toNumber()
     ) {
       return [true, `Amount must be greater than fee`];
     }

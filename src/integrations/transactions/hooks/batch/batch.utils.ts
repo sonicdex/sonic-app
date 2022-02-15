@@ -1,4 +1,5 @@
 import { TransactionPrevResponse } from '@psychedelic/plug-inpage-provider/dist/src/Provider';
+import { toBigNumber } from '@psychedelic/sonic-js';
 
 import {
   getFromStorage,
@@ -7,7 +8,6 @@ import {
   saveToStorage,
 } from '@/config';
 import { MintTokenSymbol } from '@/store';
-import { getAmountDividedByDecimals } from '@/utils/format';
 
 export const getAmountDependsOnBalance = (
   tokenBalance: number,
@@ -16,7 +16,7 @@ export const getAmountDependsOnBalance = (
 ): string => {
   const parsedFromValue = parseFloat(fromValue);
   const parsedTokenBalance = Number(
-    getAmountDividedByDecimals(tokenBalance, tokenDecimals)
+    toBigNumber(tokenBalance).applyDecimals(tokenDecimals)
   );
   return (parsedFromValue - parsedTokenBalance).toString();
 };
