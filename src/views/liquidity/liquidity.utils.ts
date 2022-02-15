@@ -74,8 +74,6 @@ export const getUserLPValue = ({
 export const getShareOfPoolString = (params: Liquidity.GetShareOfPool) => {
   const percentage = Liquidity.getShareOfPool(params).multipliedBy(100);
 
-  console.log(params, percentage.toString());
-
   if (percentage.isEqualTo(0)) return '0%';
 
   if (percentage.isLessThanOrEqualTo(0.01)) {

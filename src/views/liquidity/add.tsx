@@ -291,7 +291,7 @@ export const LiquidityAddView = () => {
     return selectedIds;
   }, [token0?.metadata?.id, token1?.metadata?.id]);
 
-  const { token0Price, token1Price, shareOfPool, liquidityValue } =
+  const { token0Price, token1Price, shareOfPool, liquidityAmount } =
     useMemo(() => {
       if (token0.metadata && token1.metadata) {
         if (pair && pair.reserve0 && pair.reserve1) {
@@ -311,7 +311,7 @@ export const LiquidityAddView = () => {
             decimalsOut: Number(token1.metadata.decimals),
           }).toString();
 
-          const options = {
+          const getShareOfPoolOptions = {
             token0Amount: token0.value,
             token1Amount: token1.value,
             reserve0: String(pair.reserve0),
@@ -321,11 +321,18 @@ export const LiquidityAddView = () => {
             token1Decimals: token1.metadata?.decimals,
           };
 
-          const liquidityValue = Liquidity.getAddPosition(options).toString();
-          const shareOfPool = getShareOfPoolString(options);
+          const liquidityAmount = getAmountDividedByDecimals(
+            Liquidity.getAddPosition(getShareOfPoolOptions).toString(),
+            Liquidity.getPairDecimals(
+              token0.metadata.decimals,
+              token1.metadata.decimals
+            )
+          ).toString();
+
+          const shareOfPool = getShareOfPoolString(getShareOfPoolOptions);
 
           return {
-            liquidityValue,
+            liquidityAmount,
             shareOfPool,
             token0Price,
             token1Price,
@@ -354,7 +361,7 @@ export const LiquidityAddView = () => {
             token0Price: isToken0Price ? '0' : token0Value,
             token1Price: isToken1Price ? '0' : token1Value,
             shareOfPool: '100%',
-            liquidityValue: new BigNumber(token0.value)
+            liquidityAmount: new BigNumber(token0.value)
               .multipliedBy(new BigNumber(token1.value))
               .sqrt()
               .toString(),
@@ -583,7 +590,7 @@ export const LiquidityAddView = () => {
                   <Icon as={FaEquals} />
                 </Center>
 
-                <Token value={liquidityValue} isDisabled shouldGlow>
+                <Token value={liquidityAmount} isDisabled shouldGlow>
                   <TokenContent>
                     <Flex
                       borderRadius="full"
@@ -635,7 +642,7 @@ export const LiquidityAddView = () => {
               </>
             )}
 
-            {liquidityValue && (
+            {liquidityAmount && (
               <Flex
                 alignItems="center"
                 justifyContent="space-between"
