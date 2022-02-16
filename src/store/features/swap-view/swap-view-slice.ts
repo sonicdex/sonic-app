@@ -1,6 +1,7 @@
-import { MaximalPaths, Pair, Swap } from '@psychedelic/sonic-js';
+import { MaximalPaths, Pair, Swap, toBigNumber } from '@psychedelic/sonic-js';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
+import { ENV } from '@/config';
 import { ICP_METADATA } from '@/constants';
 import {
   AppTokenMetadata,
@@ -8,7 +9,7 @@ import {
   BaseTokenData,
 } from '@/models';
 import { FeatureState, RootState } from '@/store';
-import { capitalize } from '@/utils/format';
+import { capitalize, formatValue } from '@/utils/format';
 import { getAmountOutFromPath } from '@/views';
 
 export type SwapTokenDataKey = 'from' | 'to';
@@ -140,6 +141,7 @@ export const swapViewSlice = createSlice({
       const dataKey = action.payload;
       const oppositeDataKey = dataKey === 'from' ? 'to' : 'from';
       const oppositeMetadata = state[oppositeDataKey].metadata;
+
       if (
         state.from.metadata &&
         state.to.metadata &&
@@ -157,10 +159,23 @@ export const swapViewSlice = createSlice({
           dataKey: oppositeDataKey,
         });
 
-        const oppositeValue = getAmountOutFromPath(
-          { ...state[dataKey], paths: oppositeTokenPaths },
-          state[oppositeDataKey] as SwapTokenData
-        );
+        const isICPToWICPPair =
+          (state.from.metadata.id === ICP_METADATA.id &&
+            oppositeMetadata.id === ENV.canistersPrincipalIDs.WICP) ||
+          (state.to.metadata.id === ICP_METADATA.id &&
+            oppositeMetadata.id === ENV.canistersPrincipalIDs.WICP);
+
+        // FIXME: Handle WICP/ICP specific case better/in other place
+        const _oppositeValue = toBigNumber(state[oppositeDataKey].value);
+        const icpFee = formatValue(ICP_METADATA.fee, ICP_METADATA.decimals);
+        const oppositeValue = isICPToWICPPair
+          ? dataKey === 'from'
+            ? _oppositeValue.plus(icpFee).toString()
+            : _oppositeValue.minus(icpFee).toString()
+          : getAmountOutFromPath(
+              { ...state[dataKey], paths: oppositeTokenPaths },
+              state[oppositeDataKey] as SwapTokenData
+            );
 
         const tokenPaths = Swap.getTokenPaths({
           pairList: state.allPairs as Pair.List,
