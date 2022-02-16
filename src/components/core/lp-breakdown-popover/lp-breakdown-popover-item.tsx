@@ -25,7 +25,7 @@ export const LPBreakdownPopoverItem: FC<LPBreakdownPopoverItemProps> = ({
         flex={1}
         value={balance}
         decimals={decimals}
-        shouldGetRealAmount={false}
+        shouldDivideByDecimals={false}
         suffix={` ${symbol}`}
       />
     </Flex>

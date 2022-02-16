@@ -1,5 +1,5 @@
 import { Link } from '@chakra-ui/react';
-import { Swap, toBigNumber } from '@psychedelic/sonic-js';
+import { Pair, Swap, toBigNumber } from '@psychedelic/sonic-js';
 import BigNumber from 'bignumber.js';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { batch } from 'react-redux';
@@ -184,7 +184,7 @@ export const useSwapViewData = () => {
 
     if (wrappedICPMetadata && tokenList && allPairs) {
       const paths = Swap.getTokenPaths({
-        pairList: allPairs,
+        pairList: allPairs as unknown as Pair.List,
         tokenList,
         tokenId: wrappedICPMetadata.id,
         amount: newValue,

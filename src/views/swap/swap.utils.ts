@@ -1,7 +1,6 @@
-import { Swap } from '@psychedelic/sonic-js';
+import { Pair, Swap } from '@psychedelic/sonic-js';
 import BigNumber from 'bignumber.js';
 
-import { PairList } from '@/models';
 import {
   DEFAULT_CYCLES_PER_XDR,
   SwapTokenData,
@@ -77,7 +76,7 @@ export type GetSwapAmountOutMinOptions = {
   from: SwapTokenData;
   to: SwapTokenData;
   slippage: string;
-  allPairs?: PairList;
+  allPairs?: Pair.List;
   hasDeposit?: boolean;
   hasWithdraw?: boolean;
 };

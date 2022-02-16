@@ -6,7 +6,6 @@ import {
   AppTokenMetadata,
   AppTokenMetadataListObject,
   BaseTokenData,
-  PairList,
 } from '@/models';
 import { FeatureState, RootState } from '@/store';
 import { capitalize } from '@/utils/format';
@@ -23,7 +22,7 @@ interface SwapViewState {
   from: SwapTokenData;
   to: SwapTokenData;
   tokenList?: AppTokenMetadataListObject;
-  allPairs?: PairList;
+  allPairs?: Pair.List;
   slippage: string;
   keepInSonic: boolean;
   baseFromTokenPaths: MaximalPaths.PathList;
@@ -209,7 +208,7 @@ export const swapViewSlice = createSlice({
         state.to.value = '';
       }
     },
-    setAllPairs: (state, action: PayloadAction<PairList | undefined>) => {
+    setAllPairs: (state, action: PayloadAction<Pair.List | undefined>) => {
       state.allPairs = action.payload;
     },
     setSlippage: (state, action: PayloadAction<string>) => {

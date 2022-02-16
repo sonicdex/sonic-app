@@ -1,6 +1,7 @@
+import { Pair } from '@psychedelic/sonic-js';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { AppTokenMetadata, Balances, PairBalances, PairList } from '@/models';
+import { AppTokenMetadata, Balances, PairBalances } from '@/models';
 import { FeatureState, RootState } from '@/store';
 
 export interface SwapCanisterState {
@@ -13,7 +14,7 @@ export interface SwapCanisterState {
   sonicBalances?: Balances;
   tokenBalances?: Balances;
   icpBalance?: number;
-  allPairs?: PairList;
+  allPairs?: Pair.List;
   userLPBalances?: PairBalances;
 }
 
@@ -81,7 +82,7 @@ export const swapCanisterSlice = createSlice({
     setAllPairsState: (state, action: PayloadAction<FeatureState>) => {
       state.allPairsState = action.payload;
     },
-    setAllPairs: (state, action: PayloadAction<PairList>) => {
+    setAllPairs: (state, action: PayloadAction<Pair.List>) => {
       state.allPairs = action.payload;
     },
     setUserLPBalancesState: (state, action: PayloadAction<FeatureState>) => {
