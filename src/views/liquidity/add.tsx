@@ -107,6 +107,7 @@ export const LiquidityAddView = () => {
       type: NotificationType.AddLiquidity,
       id: String(new Date().getTime()),
     });
+
     debounce(() => {
       dispatch(liquidityViewActions.setValue({ data: 'token0', value: '' }));
       dispatch(liquidityViewActions.setValue({ data: 'token1', value: '' }));
@@ -224,12 +225,12 @@ export const LiquidityAddView = () => {
   const token0Balance = useTokenBalanceMemo(token0.metadata?.id);
   const token1Balance = useTokenBalanceMemo(token1.metadata?.id);
 
-  const isLoading = useMemo(() => {
-    return (
+  const isLoading = useMemo(
+    () =>
       supportedTokenListState === FeatureState.Loading ||
-      pairState === FeatureState.Loading
-    );
-  }, [supportedTokenListState, pairState]);
+      pairState === FeatureState.Loading,
+    [supportedTokenListState, pairState]
+  );
 
   const isBalancesUpdating = useMemo(
     () => balancesState === FeatureState.Updating,
@@ -291,11 +292,21 @@ export const LiquidityAddView = () => {
     return selectedIds;
   }, [token0?.metadata?.id, token1?.metadata?.id]);
 
-  const { token0Price, token1Price, shareOfPool, liquidityAmount } =
+  const { fee0, fee1, price0, price1, shareOfPool, liquidityAmount } =
     useMemo(() => {
       if (token0.metadata && token1.metadata) {
+        const fee0 = toBigNumber(token0.metadata.fee)
+          .multipliedBy(2)
+          .applyDecimals(token0.metadata.decimals)
+          .toString();
+
+        const fee1 = toBigNumber(token1.metadata.fee)
+          .multipliedBy(2)
+          .applyDecimals(token1.metadata.decimals)
+          .toString();
+
         if (pair?.reserve0 && pair?.reserve1) {
-          const token0Price = Liquidity.getOppositeAmount({
+          const price0 = Liquidity.getOppositeAmount({
             amountIn: '1',
             reserveIn: pair.reserve1,
             reserveOut: pair.reserve0,
@@ -303,7 +314,7 @@ export const LiquidityAddView = () => {
             decimalsOut: token0.metadata.decimals,
           }).toString();
 
-          const token1Price = Liquidity.getOppositeAmount({
+          const price1 = Liquidity.getOppositeAmount({
             amountIn: '1',
             reserveIn: pair.reserve0,
             reserveOut: pair.reserve1,
@@ -335,10 +346,12 @@ export const LiquidityAddView = () => {
           const shareOfPool = getShareOfPoolString(options);
 
           return {
+            fee0,
+            fee1,
+            price0,
+            price1,
             liquidityAmount,
             shareOfPool,
-            token0Price,
-            token1Price,
           };
         } else {
           const token0Value = new BigNumber(token1.value)
@@ -349,12 +362,12 @@ export const LiquidityAddView = () => {
             .div(new BigNumber(token1.value))
             .dp(token1.metadata?.decimals);
 
-          const token0Price =
+          const price0 =
             token0Value.isNaN() || token0Value.isZero()
               ? 0
               : token0Value.toString();
 
-          const token1Price =
+          const price1 =
             token1Value.isNaN() || token1Value.isZero()
               ? 0
               : token1Value.toString();
@@ -381,8 +394,10 @@ export const LiquidityAddView = () => {
             .toString();
 
           return {
-            token0Price,
-            token1Price,
+            fee0,
+            fee1,
+            price0,
+            price1,
             shareOfPool: '100%',
             liquidityAmount,
           };
@@ -390,8 +405,10 @@ export const LiquidityAddView = () => {
       }
 
       return {
-        token0Price: '0',
-        token1Price: '0',
+        fee0: '0',
+        fee1: '0',
+        price0: '0',
+        price1: '0',
       };
     }, [token0, token1, pair]);
 
@@ -416,21 +433,6 @@ export const LiquidityAddView = () => {
       });
     }
   }, [token1.metadata, tokenBalances, sonicBalances]);
-
-  const { fee0, fee1 } = useMemo(() => {
-    if (token0.metadata && token1.metadata) {
-      const fee0 = toBigNumber(token0.metadata.fee + token0.metadata.fee)
-        .applyDecimals(token0.metadata.decimals)
-        .toString();
-      const fee1 = toBigNumber(token1.metadata.fee + token1.metadata.fee)
-        .applyDecimals(token1.metadata.decimals)
-        .toString();
-
-      return { fee0, fee1 };
-    }
-
-    return { fee0: '0', fee1: '0' };
-  }, [token0.metadata, token1.metadata]);
 
   useEffect(() => {
     if (!isLoading && supportedTokenList) {
@@ -670,13 +672,13 @@ export const LiquidityAddView = () => {
               >
                 <Text color={textColor}>
                   {`1 ${token0.metadata?.symbol} = `}{' '}
-                  <DisplayValue as="span" value={token1Price} />{' '}
+                  <DisplayValue as="span" value={price1} />{' '}
                   {` ${token1.metadata?.symbol}`}
                 </Text>
                 <HStack>
                   <Text color={textColor}>
                     {`1 ${token1.metadata?.symbol} = `}{' '}
-                    <DisplayValue as="span" value={token0Price} />{' '}
+                    <DisplayValue as="span" value={price0} />{' '}
                     {`${token0.metadata?.symbol}`}
                   </Text>
                   <Popover trigger="hover">

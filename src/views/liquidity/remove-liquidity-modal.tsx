@@ -25,9 +25,8 @@ import {
   Tooltip,
   useColorModeValue,
 } from '@chakra-ui/react';
-import { Liquidity, toBigNumber } from '@psychedelic/sonic-js';
+import { Liquidity } from '@psychedelic/sonic-js';
 import { FaArrowDown } from '@react-icons/all-files/fa/FaArrowDown';
-import BigNumber from 'bignumber.js';
 import { useMemo } from 'react';
 
 import { ENV } from '@/config';
@@ -77,58 +76,47 @@ export const RemoveLiquidityModal = () => {
     dispatch(liquidityViewActions.setRemoveAmountPercentage(value));
   };
 
-  const isBalancesUpdating = useMemo(() => {
-    return userLPBalancesState === FeatureState.Updating;
-  }, [userLPBalancesState]);
+  const isBalancesUpdating = useMemo(
+    () => userLPBalancesState === FeatureState.Updating,
+    [userLPBalancesState]
+  );
 
-  const balances = useMemo(() => {
+  const { balance0, balance1 } = useMemo(() => {
     if (userLPBalances && allPairs && token0.metadata && token1.metadata) {
-      const tokenBalance =
+      const lpBalance =
         userLPBalances[token0.metadata.id]?.[token1.metadata.id];
-
       const pair = allPairs[token0.metadata.id]?.[token1.metadata.id];
-      if (pair?.reserve0 && pair?.reserve1 && tokenBalance) {
-        const normalizedReserve0 = toBigNumber(
-          pair.reserve0.toString()
-        ).applyDecimals(token0.metadata.decimals);
-        const normalizedReserve1 = toBigNumber(
-          pair.reserve1.toString()
-        ).applyDecimals(token1.metadata.decimals);
 
-        const pairDecimals = Liquidity.getPairDecimals(
-          token0.metadata.decimals,
-          token1.metadata.decimals
-        );
+      const { balance0, balance1 } = Liquidity.getTokenBalances({
+        decimals0: token0.metadata.decimals,
+        decimals1: token1.metadata.decimals,
+        reserve0: pair.reserve0,
+        reserve1: pair.reserve1,
+        totalSupply: pair.totalSupply,
+        lpBalance,
+      });
 
-        const normalizedTotalSupply = toBigNumber(
-          pair.totalSupply.toString()
-        ).applyDecimals(pairDecimals);
-
-        const normalizedTokenBalance = toBigNumber(
-          tokenBalance.toString()
-        ).applyDecimals(pairDecimals);
-
-        const balance0 = new BigNumber(normalizedTokenBalance)
-          .dividedBy(normalizedTotalSupply)
-          .multipliedBy(normalizedReserve0)
+      return {
+        balance0: balance0
           .multipliedBy(removeAmountPercentage / 100)
-          .toString();
-
-        const balance1 = new BigNumber(normalizedTokenBalance)
-          .dividedBy(normalizedTotalSupply)
-          .multipliedBy(normalizedReserve1)
+          .toString(),
+        balance1: balance1
           .multipliedBy(removeAmountPercentage / 100)
-          .toString();
-
-        return {
-          balance0,
-          balance1,
-        };
-      }
+          .toString(),
+      };
     }
 
-    return { balance0: '', balance1: '' };
-  }, [userLPBalances, allPairs, token0, token1, removeAmountPercentage]);
+    return {
+      balance0: '0',
+      balance1: '0',
+    };
+  }, [
+    userLPBalances,
+    allPairs,
+    token0.metadata,
+    token1.metadata,
+    removeAmountPercentage,
+  ]);
 
   const { buttonMessage, isAmountIsLow } = useMemo(() => {
     const AMOUNT_TOO_LOW_LABEL = 'Amount is too low';
@@ -237,12 +225,12 @@ export const RemoveLiquidityModal = () => {
           <Stack mt={6} mb={4}>
             <RemoveLiquidityModalAsset
               {...token0.metadata}
-              balance={balances.balance0}
+              balance={balance0}
               isUpdating={isBalancesUpdating}
             />
             <RemoveLiquidityModalAsset
               {...token1.metadata}
-              balance={balances.balance1}
+              balance={balance1}
               isUpdating={isBalancesUpdating}
             />
           </Stack>

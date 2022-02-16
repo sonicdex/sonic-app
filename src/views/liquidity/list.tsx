@@ -2,7 +2,6 @@ import { Box, HStack, Stack, Text, useColorModeValue } from '@chakra-ui/react';
 import { Liquidity, toBigNumber } from '@psychedelic/sonic-js';
 import { FaMinus } from '@react-icons/all-files/fa/FaMinus';
 import { FaPlus } from '@react-icons/all-files/fa/FaPlus';
-import BigNumber from 'bignumber.js';
 import { useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router';
 
@@ -79,7 +78,7 @@ export const LiquidityListView = () => {
     supportedTokenList,
     supportedTokenListState,
   } = useSwapCanisterStore();
-  const { isBannerOpened, removeAmountPercentage } = useLiquidityViewStore();
+  const { isBannerOpened } = useLiquidityViewStore();
 
   const moveToAddLiquidityView = (token0?: string, token1?: string) => {
     const query =
@@ -148,42 +147,20 @@ export const LiquidityListView = () => {
           let balance1;
 
           if (userLPBalances && allPairs && token0 && token1) {
-            const tokenBalance = userLPBalances[token0.id]?.[token1.id];
-
+            const lpBalance = userLPBalances[token0.id]?.[token1.id];
             const pair = allPairs[token0.id]?.[token1.id];
-            if (pair?.reserve0 && pair?.reserve1 && tokenBalance) {
-              const normalizedReserve0 = toBigNumber(
-                pair.reserve0.toString()
-              ).applyDecimals(token0.decimals);
-              const normalizedReserve1 = toBigNumber(
-                pair.reserve1.toString()
-              ).applyDecimals(token1.decimals);
 
-              const pairDecimals = Liquidity.getPairDecimals(
-                token0.decimals,
-                token1.decimals
-              );
+            const balances = Liquidity.getTokenBalances({
+              decimals0: token0.decimals,
+              decimals1: token1.decimals,
+              reserve0: pair.reserve0,
+              reserve1: pair.reserve1,
+              totalSupply: pair.totalSupply,
+              lpBalance,
+            });
 
-              const normalizedTotalSupply = toBigNumber(
-                pair.totalSupply.toString()
-              ).applyDecimals(pairDecimals);
-
-              const normalizedTokenBalance = toBigNumber(
-                tokenBalance.toString()
-              ).applyDecimals(pairDecimals);
-
-              balance0 = new BigNumber(normalizedTokenBalance)
-                .dividedBy(normalizedTotalSupply)
-                .multipliedBy(normalizedReserve0)
-                .multipliedBy(removeAmountPercentage / 100)
-                .toString();
-
-              balance1 = new BigNumber(normalizedTokenBalance)
-                .dividedBy(normalizedTotalSupply)
-                .multipliedBy(normalizedReserve1)
-                .multipliedBy(removeAmountPercentage / 100)
-                .toString();
-            }
+            balance0 = balances.balance0.toString();
+            balance1 = balances.balance1.toString();
           }
 
           const pairDecimals = Liquidity.getPairDecimals(
