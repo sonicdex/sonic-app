@@ -48,6 +48,7 @@ export const WithdrawActivity = ({
             value={amount}
             decimals={token.decimals}
             suffix={' ' + token.symbol}
+            shouldDivideByDecimals
           />
         </Heading>
       </Stack>

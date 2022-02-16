@@ -1,4 +1,5 @@
 import { Link } from '@chakra-ui/react';
+import { Swap, toBigNumber } from '@psychedelic/sonic-js';
 import BigNumber from 'bignumber.js';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { batch } from 'react-redux';
@@ -29,19 +30,15 @@ import {
   useSwapViewStore,
   useTokenModalOpener,
 } from '@/store';
-import {
-  calculatePriceImpact,
-  formatAmount,
-  getCurrency,
-  getDepositMaxValue,
-  getICPValueByXDRRate,
-  getSwapAmountOut,
-  getXTCValueByXDRRate,
-} from '@/utils/format';
+import { formatValue, getMaxValue } from '@/utils/format';
 import { debounce } from '@/utils/function';
-import { getTokenPaths } from '@/utils/maximal-paths';
 
 import { OperationType } from '../components';
+import {
+  getAmountOutFromPath,
+  getICPValueByXDRRate,
+  getXTCValueByXDRRate,
+} from '../swap.utils';
 
 export enum SwapStep {
   Home,
@@ -111,7 +108,7 @@ export const useSwapViewData = () => {
     const oppositeDataKey = dataKey === 'from' ? 'to' : 'from';
 
     const _newValue = new BigNumber(newValue);
-    const icpFee = formatAmount(ICP_METADATA.fee, ICP_METADATA.decimals);
+    const icpFee = formatValue(ICP_METADATA.fee, ICP_METADATA.decimals);
 
     const value =
       dataKey === 'from' ? _newValue.minus(icpFee) : _newValue.plus(icpFee);
@@ -119,7 +116,10 @@ export const useSwapViewData = () => {
     dispatch(
       swapViewActions.setValue({
         data: oppositeDataKey,
-        value: value.toNumber() > 0 ? value.toString() : '',
+        value:
+          value.toNumber() > 0
+            ? value.dp(ICP_METADATA.decimals).toString()
+            : '',
       })
     );
   }
@@ -134,11 +134,11 @@ export const useSwapViewData = () => {
         dataKey === 'from' ? getXTCValueByXDRRate : getICPValueByXDRRate;
 
       const xtcFee = new BigNumber(
-        formatAmount(xtcMetadata.fee, xtcMetadata.decimals)
+        formatValue(xtcMetadata.fee, xtcMetadata.decimals)
       );
 
       const icpFeesConvertedToXTC = getXTCValueByXDRRate({
-        amount: formatAmount(ICP_METADATA.fee, ICP_METADATA.decimals),
+        amount: formatValue(ICP_METADATA.fee, ICP_METADATA.decimals),
         conversionRate: ICPXDRconversionRate,
       })
         .minus(xtcFee)
@@ -154,20 +154,20 @@ export const useSwapViewData = () => {
               .plus(icpFeesConvertedToXTC)
               .toString();
 
-      const cyclesWithFees = handler({
+      const rateBasedAmount = handler({
         amount,
         conversionRate: ICPXDRconversionRate,
       });
 
-      const cycles =
+      const resultAmount =
         dataKey === 'from'
-          ? cyclesWithFees.minus(icpFeesConvertedToXTC).minus(xtcFees)
-          : cyclesWithFees;
+          ? rateBasedAmount.minus(icpFeesConvertedToXTC).minus(xtcFees)
+          : rateBasedAmount.dp(ICP_METADATA.decimals);
 
       dispatch(
         swapViewActions.setValue({
           data: oppositeDataKey,
-          value: cycles.toNumber() > 0 ? cycles.toString() : '',
+          value: resultAmount.toNumber() > 0 ? resultAmount.toString() : '',
         })
       );
     }
@@ -183,7 +183,7 @@ export const useSwapViewData = () => {
     );
 
     if (wrappedICPMetadata && tokenList && allPairs) {
-      const paths = getTokenPaths({
+      const paths = Swap.getTokenPaths({
         pairList: allPairs,
         tokenList,
         tokenId: wrappedICPMetadata.id,
@@ -199,7 +199,7 @@ export const useSwapViewData = () => {
       dispatch(
         swapViewActions.setValue({
           data: oppositeDataKey,
-          value: getSwapAmountOut(dataWICP, oppositeData),
+          value: getAmountOutFromPath(dataWICP, oppositeData),
         })
       );
     }
@@ -254,10 +254,16 @@ export const useSwapViewData = () => {
 
   const handleSwitchTokens = () => {
     resetStepToHome();
-    dispatch(swapViewActions.switchTokens(lastChangedInputDataKey));
-    setLastChangedInputDataKey(
-      lastChangedInputDataKey === 'from' ? 'to' : 'from'
-    );
+
+    if (!to.metadata || (isFromTokenIsICP && isToTokenIsXTC)) {
+      dispatch(swapViewActions.switchTokens(lastChangedInputDataKey));
+      dispatch(swapViewActions.setToken({ data: 'to', tokenId: '' }));
+    } else {
+      dispatch(swapViewActions.switchTokens(lastChangedInputDataKey));
+      setLastChangedInputDataKey(
+        lastChangedInputDataKey === 'from' ? 'to' : 'from'
+      );
+    }
   };
 
   const handleMaxClick = (dataKey: SwapTokenDataKey) => {
@@ -268,7 +274,9 @@ export const useSwapViewData = () => {
       return;
     }
 
-    handleChangeValue(getDepositMaxValue(metadata, balance), dataKey);
+    const maxValue = getMaxValue(metadata, balance).toString();
+
+    handleChangeValue(maxValue, dataKey);
   };
 
   const handleSelectToken = (dataKey: SwapTokenDataKey) => {
@@ -298,6 +306,14 @@ export const useSwapViewData = () => {
               })
             );
             dispatch(swapViewActions.setToken({ data: dataKey, tokenId }));
+          } else if (
+            tokenId === ENV.canistersPrincipalIDs.XTC &&
+            to.metadata?.id === ICP_METADATA.id
+          ) {
+            dispatch(swapViewActions.setToken({ data: dataKey, tokenId }));
+            dispatch(
+              swapViewActions.setToken({ data: oppositeDataKey, tokenId: '' })
+            );
           } else {
             dispatch(swapViewActions.setToken({ data: dataKey, tokenId }));
           }
@@ -457,21 +473,27 @@ export const useSwapViewData = () => {
       return [true, `Enter ${from.metadata.symbol} Amount`];
 
     if (
-      parsedFromValue <= getCurrency(from.metadata.fee, from.metadata.decimals)
+      parsedFromValue <=
+      toBigNumber(from.metadata.fee)
+        .applyDecimals(from.metadata.decimals)
+        .toNumber()
     ) {
       return [true, `${from.metadata.symbol} amount must be greater than fee`];
     }
 
     const parsedToValue = (to.value && parseFloat(to.value)) || 0;
 
-    if (parsedToValue <= getCurrency(to.metadata.fee, to.metadata.decimals)) {
+    if (
+      parsedToValue <=
+      toBigNumber(to.metadata.fee)
+        .applyDecimals(to.metadata.decimals)
+        .toNumber()
+    ) {
       return [true, `${to.metadata.symbol} amount must be greater than fee`];
     }
 
     if (totalBalances && typeof fromBalance === 'number') {
-      if (
-        parsedFromValue > Number(getDepositMaxValue(from.metadata, fromBalance))
-      ) {
+      if (parsedFromValue > Number(getMaxValue(from.metadata, fromBalance))) {
         return [true, `Insufficient ${from.metadata.symbol} Balance`];
       }
     }
@@ -547,12 +569,12 @@ export const useSwapViewData = () => {
 
   const priceImpact = useMemo(
     () =>
-      calculatePriceImpact({
+      Swap.getPriceImpact({
         amountIn: from.value,
         amountOut: to.value,
-        priceIn: from.metadata?.price,
-        priceOut: to.metadata?.price,
-      }),
+        priceIn: from.metadata?.price ?? 0,
+        priceOut: to.metadata?.price ?? 0,
+      }).toString(),
     [from, to]
   );
 
@@ -608,10 +630,6 @@ export const useSwapViewData = () => {
       });
     }
   }, [to.metadata, tokenBalances, sonicBalances, icpBalance]);
-
-  const isSwapPlacementButtonDisabled = useMemo(() => {
-    return !to.metadata || (isFromTokenIsICP && isToTokenIsXTC);
-  }, [isFromTokenIsICP, isToTokenIsXTC, to.metadata]);
 
   const isExplanationTooltipVisible = useMemo(() => {
     return isToTokenIsXTC && isFromTokenIsICP;
@@ -672,7 +690,7 @@ export const useSwapViewData = () => {
     toSources,
     currentOperation,
     isICPSelected,
-    isSwapPlacementButtonDisabled,
+
     isExplanationTooltipVisible,
     isSelectTokenButtonDisabled,
     selectTokenButtonText,

@@ -1,4 +1,5 @@
 import { Link } from '@chakra-ui/react';
+import { deserialize, serialize, toBigNumber } from '@psychedelic/sonic-js';
 import BigNumber from 'bignumber.js';
 import { useEffect, useMemo } from 'react';
 
@@ -14,7 +15,6 @@ import {
   usePlugStore,
   useSwapCanisterStore,
 } from '@/store';
-import { deserialize, getCurrency, stringify } from '@/utils/format';
 
 export interface RemoveLiquidityNotificationContentProps {
   id: string;
@@ -30,70 +30,66 @@ export const RemoveLiquidityNotificationContent: React.FC<
   const { principalId } = usePlugStore();
   const { getBalances, getUserPositiveLPBalances } = useBalances();
 
-  const { token0, token1, ...removeLiquidityBatchParams } = useMemo(() => {
-    const {
-      token0,
-      token1,
-      slippage,
-      keepInSonic,
-      removeAmountPercentage,
-      pair,
-    } = liquidityViewStore;
+  const { token0, token1, ...removeLiquidityBatchParams } =
+    useMemo(() => {
+      const {
+        token0,
+        token1,
+        slippage,
+        keepInSonic,
+        removeAmountPercentage,
+        pair,
+      } = liquidityViewStore;
 
-    if (userLPBalances && token0.metadata && token1.metadata && pair) {
-      const tokensLPBalance =
-        userLPBalances[token0.metadata.id]?.[token1.metadata.id];
-      const lpAmount = (removeAmountPercentage / 100) * tokensLPBalance;
+      if (userLPBalances && token0.metadata && token1.metadata && pair) {
+        const tokensLPBalance =
+          userLPBalances[token0.metadata.id]?.[token1.metadata.id];
+        const lpAmount = (removeAmountPercentage / 100) * tokensLPBalance;
 
-      const amount0Desired = new BigNumber(lpAmount)
-        .multipliedBy(pair.reserve0.toString())
-        .dividedBy(pair.totalSupply.toString())
-        .multipliedBy(removeAmountPercentage / 100)
-        .multipliedBy(Number(slippage));
+        const amount0Desired = new BigNumber(lpAmount)
+          .multipliedBy(pair.reserve0.toString())
+          .dividedBy(pair.totalSupply.toString())
+          .multipliedBy(removeAmountPercentage / 100)
+          .multipliedBy(Number(slippage));
 
-      const amount1Desired = new BigNumber(lpAmount)
-        .multipliedBy(pair.reserve1.toString())
-        .dividedBy(pair.totalSupply.toString())
-        .multipliedBy(removeAmountPercentage / 100)
-        .multipliedBy(Number(slippage));
+        const amount1Desired = new BigNumber(lpAmount)
+          .multipliedBy(pair.reserve1.toString())
+          .dividedBy(pair.totalSupply.toString())
+          .multipliedBy(removeAmountPercentage / 100)
+          .multipliedBy(Number(slippage));
 
-      const amount0Min = getCurrency(
-        amount0Desired
-          .minus(amount0Desired.multipliedBy(Number(slippage)))
-          .toString(),
-        token0.metadata.decimals
-      );
+        const amount0Min = toBigNumber(
+          amount0Desired
+            .minus(amount0Desired.multipliedBy(Number(slippage)))
+            .toString()
+        ).applyDecimals(token0.metadata.decimals);
 
-      const amount1Min = getCurrency(
-        amount1Desired
-          .minus(amount1Desired.multipliedBy(Number(slippage)))
-          .toString(),
-        token1.metadata.decimals
-      );
+        const amount1Min = toBigNumber(
+          amount1Desired
+            .minus(amount1Desired.multipliedBy(Number(slippage)))
+            .toString()
+        ).applyDecimals(token1.metadata.decimals);
 
-      return deserialize(
-        stringify({
-          token0,
-          token1,
-          keepInSonic,
-          lpAmount,
-          amount0Min,
-          amount1Min,
-        })
-      );
-    }
-
-    return {};
-    // Note: Should be called one time
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+        return deserialize(
+          serialize({
+            token0,
+            token1,
+            keepInSonic,
+            lpAmount,
+            amount0Min,
+            amount1Min,
+          })
+        );
+      }
+    }, []) ?? {};
 
   const { batch, openBatchModal } = useRemoveLiquidityBatch({
     token0,
     token1,
     principalId,
     ...removeLiquidityBatchParams,
-  });
+    // TODO: Improve safety
+  } as any);
 
   const handleStateChange = () => {
     if (

@@ -1,6 +1,7 @@
+import { serialize } from '@psychedelic/sonic-js';
+
 import { AppTokenMetadata } from '@/models';
 import { useAppDispatch } from '@/store';
-import { stringify } from '@/utils/format';
 
 import { modalsSliceActions } from '.';
 
@@ -20,7 +21,7 @@ export const useTokenModalOpener = () => {
   }: OpenSelectTokenModalOptions) => {
     dispatch(
       modalsSliceActions.setTokenSelectModalData({
-        tokens: stringify(metadata),
+        tokens: serialize(metadata),
         onSelect,
         selectedTokenIds,
         // Add when we have a custom token selector

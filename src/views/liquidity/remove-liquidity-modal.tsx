@@ -25,8 +25,8 @@ import {
   Tooltip,
   useColorModeValue,
 } from '@chakra-ui/react';
+import { Liquidity } from '@psychedelic/sonic-js';
 import { FaArrowDown } from '@react-icons/all-files/fa/FaArrowDown';
-import BigNumber from 'bignumber.js';
 import { useMemo } from 'react';
 
 import { ENV } from '@/config';
@@ -41,7 +41,6 @@ import {
   useNotificationStore,
   useSwapCanisterStore,
 } from '@/store';
-import { getCurrency } from '@/utils/format';
 import { debounce } from '@/utils/function';
 
 import { RemoveLiquidityModalAsset } from './remove-liquidity-modal-asset';
@@ -77,59 +76,47 @@ export const RemoveLiquidityModal = () => {
     dispatch(liquidityViewActions.setRemoveAmountPercentage(value));
   };
 
-  const isBalancesUpdating = useMemo(() => {
-    return userLPBalancesState === FeatureState.Updating;
-  }, [userLPBalancesState]);
+  const isBalancesUpdating = useMemo(
+    () => userLPBalancesState === FeatureState.Updating,
+    [userLPBalancesState]
+  );
 
-  const balances = useMemo(() => {
+  const { balance0, balance1 } = useMemo(() => {
     if (userLPBalances && allPairs && token0.metadata && token1.metadata) {
-      const tokenBalance =
+      const lpBalance =
         userLPBalances[token0.metadata.id]?.[token1.metadata.id];
-
       const pair = allPairs[token0.metadata.id]?.[token1.metadata.id];
-      if (pair?.reserve0 && pair?.reserve1 && tokenBalance) {
-        const normalizedReserve0 = getCurrency(
-          pair.reserve0.toString(),
-          token0.metadata.decimals
-        );
-        const normalizedReserve1 = getCurrency(
-          pair.reserve1.toString(),
-          token1.metadata.decimals
-        );
 
-        const normalizedTotalSupply = getCurrency(
-          pair.totalSupply.toString(),
-          Math.round((token0.metadata.decimals + token1.metadata.decimals) / 2)
-        );
+      const { balance0, balance1 } = Liquidity.getTokenBalances({
+        decimals0: token0.metadata.decimals,
+        decimals1: token1.metadata.decimals,
+        reserve0: pair.reserve0,
+        reserve1: pair.reserve1,
+        totalSupply: pair.totalSupply,
+        lpBalance,
+      });
 
-        const normalizedTokenBalance = getCurrency(
-          tokenBalance.toString(),
-          Math.round((token0.metadata.decimals + token1.metadata.decimals) / 2)
-        );
-
-        const balance0 = new BigNumber(normalizedTokenBalance)
-          .dividedBy(normalizedTotalSupply)
-          .multipliedBy(normalizedReserve0)
+      return {
+        balance0: balance0
           .multipliedBy(removeAmountPercentage / 100)
-          .dp(token0.metadata.decimals)
-          .toString();
-
-        const balance1 = new BigNumber(normalizedTokenBalance)
-          .dividedBy(normalizedTotalSupply)
-          .multipliedBy(normalizedReserve1)
+          .toString(),
+        balance1: balance1
           .multipliedBy(removeAmountPercentage / 100)
-          .dp(token1.metadata.decimals)
-          .toString();
-
-        return {
-          balance0,
-          balance1,
-        };
-      }
+          .toString(),
+      };
     }
 
-    return { balance0: '', balance1: '' };
-  }, [userLPBalances, allPairs, token0, token1, removeAmountPercentage]);
+    return {
+      balance0: '0',
+      balance1: '0',
+    };
+  }, [
+    userLPBalances,
+    allPairs,
+    token0.metadata,
+    token1.metadata,
+    removeAmountPercentage,
+  ]);
 
   const { buttonMessage, isAmountIsLow } = useMemo(() => {
     const AMOUNT_TOO_LOW_LABEL = 'Amount is too low';
@@ -238,12 +225,12 @@ export const RemoveLiquidityModal = () => {
           <Stack mt={6} mb={4}>
             <RemoveLiquidityModalAsset
               {...token0.metadata}
-              balance={balances.balance0}
+              balance={balance0}
               isUpdating={isBalancesUpdating}
             />
             <RemoveLiquidityModalAsset
               {...token1.metadata}
-              balance={balances.balance1}
+              balance={balance1}
               isUpdating={isBalancesUpdating}
             />
           </Stack>

@@ -1,6 +1,6 @@
 import { SwapTokenData } from '@/store';
 
-export type Swap = {
+export type SwapModel = {
   from: SwapTokenData;
   to: SwapTokenData;
   slippage: number;

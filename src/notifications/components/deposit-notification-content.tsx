@@ -1,4 +1,5 @@
 import { Link } from '@chakra-ui/react';
+import { deserialize, serialize } from '@psychedelic/sonic-js';
 import { useEffect, useMemo } from 'react';
 
 import { useBalances } from '@/hooks/use-balances';
@@ -14,7 +15,6 @@ import {
   useNotificationStore,
   useSwapCanisterStore,
 } from '@/store';
-import { deserialize, stringify } from '@/utils/format';
 
 export interface DepositNotificationContentProps {
   id: string;
@@ -30,13 +30,14 @@ export const DepositNotificationContent: React.FC<
   const depositViewStore = useDepositViewStore();
   const swapCanisterStore = useSwapCanisterStore();
 
-  const { supportedTokenList, value, tokenId } = useMemo(() => {
-    // Clone current state just for this batch
-    const { amount: value, tokenId } = depositViewStore;
-    const { supportedTokenList } = swapCanisterStore;
+  const { supportedTokenList, value, tokenId } =
+    useMemo(() => {
+      // Clone current state just for this batch
+      const { amount: value, tokenId } = depositViewStore;
+      const { supportedTokenList } = swapCanisterStore;
 
-    return deserialize(stringify({ supportedTokenList, value, tokenId }));
-  }, []);
+      return deserialize(serialize({ supportedTokenList, value, tokenId }));
+    }, []) ?? {};
 
   const selectedToken = useMemo(() => {
     if (tokenId && supportedTokenList) {

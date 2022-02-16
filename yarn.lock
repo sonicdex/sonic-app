@@ -1859,6 +1859,17 @@
     "@fleekhq/browser-rpc" "^2.0.3"
     json-bigint "^1.0.0"
 
+"@psychedelic/sonic-js@^0.0.2":
+  version "0.0.2"
+  resolved "https://npm.pkg.github.com/download/@psychedelic/sonic-js/0.0.2/0ba83e6c92c6bc5f542468b2cb7b11c02d32d5fa1ce2ae4ddd02cac2b76f6576#9b4486cdb43aa138408b4ef17271c06831b66bab"
+  integrity sha512-GKWiVs1L9u/4/ZWyJUd00VDLeBXlFqgxTRwXa/nxv0oXhfsHmlaKMcL/cZZB+wAX/X+/6DIp2xDLQzC4dDMkfQ==
+  dependencies:
+    "@dfinity/agent" "^0.10.2"
+    "@dfinity/candid" "^0.10.2"
+    "@dfinity/principal" "^0.10.2"
+    bignumber.js "^9.0.2"
+    cross-fetch "^3.1.5"
+
 "@reach/alert@0.13.2":
   version "0.13.2"
   resolved "https://registry.yarnpkg.com/@reach/alert/-/alert-0.13.2.tgz#71c4a848d51341f1d6d9eaae060975391c224870"
@@ -3559,7 +3570,7 @@ create-require@^1.1.0:
   resolved "https://registry.yarnpkg.com/create-require/-/create-require-1.1.1.tgz#c1d7e8f1e5f6cfc9ff65f9cd352d37348756c333"
   integrity sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ==
 
-cross-fetch@^3.1.4:
+cross-fetch@^3.1.4, cross-fetch@^3.1.5:
   version "3.1.5"
   resolved "https://registry.yarnpkg.com/cross-fetch/-/cross-fetch-3.1.5.tgz#e1389f44d9e7ba767907f7af8454787952ab534f"
   integrity sha512-lvb1SBsI0Z7GDwmuid+mU3kWVBwTVUbe7S0H52yaaAdQOXq2YktTCZdlAcNKFzE6QtRz0snpw9bNiPeOIkkQvw==

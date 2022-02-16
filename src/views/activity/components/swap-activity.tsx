@@ -52,6 +52,7 @@ export const SwapActivity = ({
             value={amountIn}
             decimals={fromToken.decimals}
             suffix={' ' + fromToken.symbol}
+            shouldDivideByDecimals
           />
           &nbsp;
           <FaArrowRight />
@@ -60,6 +61,7 @@ export const SwapActivity = ({
             value={amountOut}
             decimals={toToken.decimals}
             suffix={' ' + toToken.symbol}
+            shouldDivideByDecimals
           />
         </Heading>
       </Stack>

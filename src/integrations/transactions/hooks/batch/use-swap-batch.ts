@@ -8,7 +8,7 @@ import {
   useSwapCanisterStore,
 } from '@/store';
 
-import { Swap } from '../..';
+import { SwapModel } from '../..';
 import {
   useApproveTransactionMemo,
   useBatch,
@@ -28,7 +28,7 @@ export interface ExtraDepositSwapBatchOptions {
 export const useSwapBatch = ({
   keepInSonic,
   ...swapParams
-}: Swap & ExtraDepositSwapBatchOptions) => {
+}: SwapModel & ExtraDepositSwapBatchOptions) => {
   const dispatch = useAppDispatch();
   const { sonicBalances } = useSwapCanisterStore();
 

@@ -11,6 +11,7 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react';
+import { toBigNumber } from '@psychedelic/sonic-js';
 import { FaArrowRight } from '@react-icons/all-files/fa/FaArrowRight';
 import { FaInfoCircle } from '@react-icons/all-files/fa/FaInfoCircle';
 import BigNumber from 'bignumber.js';
@@ -21,14 +22,10 @@ import { ENV } from '@/config';
 import { ICP_METADATA } from '@/constants';
 import { useBalances, useTokenSelectionChecker } from '@/hooks';
 import { useCyclesMintingCanisterStore, useSwapViewStore } from '@/store';
-import {
-  formatAmount,
-  getAmountOutMin,
-  getCurrencyString,
-  getSwapAmountOut,
-  getXTCValueByXDRRate,
-} from '@/utils/format';
+import { formatValue } from '@/utils/format';
 
+import { getSwapAmountOutMin } from '..';
+import { getAmountOutFromPath, getXTCValueByXDRRate } from '../swap.utils';
 import { ChainPopover } from './chain-popover';
 
 export type ExchangeBoxProps = {
@@ -74,15 +71,16 @@ export const ExchangeBox: React.FC<ExchangeBoxProps> = ({ priceImpact }) => {
       const hasDeposit = sonicBalances[from.metadata.id] < Number(from.value);
       const depositFee =
         hasDeposit && Number(from.metadata.fee) > 0
-          ? getCurrencyString(
-              BigInt(2) * from.metadata.fee,
-              from.metadata.decimals
-            )
+          ? toBigNumber(BigInt(2) * from.metadata.fee)
+              .applyDecimals(from.metadata.decimals)
+              .toString()
           : undefined;
 
       const withdrawFee =
         !keepInSonic && Number(to.metadata.fee) > 0
-          ? getCurrencyString(to.metadata.fee, to.metadata.decimals)
+          ? toBigNumber(to.metadata.fee)
+              .applyDecimals(to.metadata.decimals)
+              .toString()
           : undefined;
 
       return { depositFee, withdrawFee };
@@ -113,25 +111,25 @@ export const ExchangeBox: React.FC<ExchangeBoxProps> = ({ priceImpact }) => {
     const icpFeeInXTC =
       xtcMetadata && ICPXDRconversionRate
         ? getXTCValueByXDRRate({
-            amount: formatAmount(ICP_METADATA.fee, ICP_METADATA.decimals),
+            amount: formatValue(ICP_METADATA.fee, ICP_METADATA.decimals),
             conversionRate: ICPXDRconversionRate,
-          }).minus(formatAmount(xtcMetadata.fee, xtcMetadata.decimals))
+          }).minus(formatValue(xtcMetadata.fee, xtcMetadata.decimals))
         : new BigNumber(0);
 
     const xtcFees = icpMetadata
-      ? new BigNumber(
-          getCurrencyString(
-            (to.metadata?.fee ?? BigInt(0)) *
-              (keepInSonic ? BigInt(3) : BigInt(1)),
-            to.metadata?.decimals
-          )
+      ? toBigNumber(
+          (to.metadata?.fee ?? BigInt(0)) *
+            (keepInSonic ? BigInt(3) : BigInt(1))
         )
+          .applyDecimals(to.metadata?.decimals ?? 0)
           .plus(icpFeeInXTC.multipliedBy(2))
           .toString()
       : '0';
 
     const wicpFee = icpMetadata
-      ? getCurrencyString(icpMetadata.fee, icpMetadata.decimals)
+      ? toBigNumber(icpMetadata.fee)
+          .applyDecimals(icpMetadata.decimals)
+          .toString()
       : '0';
 
     const fee = isToTokenIsXTC ? xtcFees : wicpFee;
@@ -150,6 +148,28 @@ export const ExchangeBox: React.FC<ExchangeBoxProps> = ({ priceImpact }) => {
     ICPXDRconversionRate,
     keepInSonic,
   ]);
+
+  const pathAmountOut = useMemo(
+    () =>
+      getAmountOutFromPath(
+        { metadata: from.metadata, paths: baseFromTokenPaths, value: '1' },
+        to
+      ),
+    [baseFromTokenPaths, from.metadata, to]
+  );
+
+  const amountOutMin = useMemo(
+    () =>
+      getSwapAmountOutMin({
+        from,
+        to,
+        slippage,
+        allPairs,
+        hasDeposit: Boolean(depositFee),
+        hasWithdraw: keepInSonic,
+      }),
+    [allPairs, depositFee, from, keepInSonic, slippage, to]
+  );
 
   if (!from.metadata || !to.metadata) return null;
 
@@ -173,10 +193,7 @@ export const ExchangeBox: React.FC<ExchangeBoxProps> = ({ priceImpact }) => {
       <ChainPopover from={from} to={to} />
       <Text flex={1} textAlign="right" mx={2}>
         1&nbsp;{from.metadata.symbol}&nbsp;=&nbsp;
-        {getSwapAmountOut(
-          { metadata: from.metadata, paths: baseFromTokenPaths, value: '1' },
-          to
-        )}
+        {pathAmountOut}
         &nbsp;
         {to.metadata.symbol}
       </Text>
@@ -194,14 +211,7 @@ export const ExchangeBox: React.FC<ExchangeBoxProps> = ({ priceImpact }) => {
               <Stack>
                 <StackLine
                   title="Minimum Received"
-                  value={`${getAmountOutMin(
-                    from,
-                    to,
-                    slippage,
-                    allPairs,
-                    Boolean(depositFee),
-                    keepInSonic
-                  )} ${to.metadata.symbol}`}
+                  value={`${amountOutMin} ${to.metadata.symbol}`}
                 />
                 <StackLine
                   title="Price Impact"

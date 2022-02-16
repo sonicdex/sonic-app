@@ -18,6 +18,7 @@ import {
   Stack,
   Text,
   useColorModeValue,
+  useConst,
 } from '@chakra-ui/react';
 import { FaRedoAlt } from '@react-icons/all-files/fa/FaRedoAlt';
 import {
@@ -45,18 +46,17 @@ import { PLUG_WALLET_WEBSITE_URL } from '..';
 
 const PLUG_PROVIDER_CHAINED_BATCH_VERSION = 160;
 
-const TOKEN_OPTIONS = [
-  {
-    label: MintTokenSymbol.WICP,
-    value: MintTokenSymbol.WICP,
-  },
-  {
-    label: MintTokenSymbol.XTC,
-    value: MintTokenSymbol.XTC,
-  },
-];
-
 export const MintManualModal = () => {
+  const TOKEN_OPTIONS = useConst([
+    {
+      label: MintTokenSymbol.WICP,
+      value: MintTokenSymbol.WICP,
+    },
+    {
+      label: MintTokenSymbol.XTC,
+      value: MintTokenSymbol.XTC,
+    },
+  ]);
   const color = useColorModeValue('gray.600', 'gray.400');
 
   const {

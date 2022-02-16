@@ -1,4 +1,5 @@
 import { Box, Button } from '@chakra-ui/react';
+import { toBigNumber } from '@psychedelic/sonic-js';
 import { useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router';
 
@@ -28,7 +29,7 @@ import {
   useSwapCanisterStore,
   useTokenModalOpener,
 } from '@/store';
-import { getCurrency, getDepositMaxValue } from '@/utils/format';
+import { getMaxValue } from '@/utils/format';
 import { debounce } from '@/utils/function';
 
 export const AssetsDepositView = () => {
@@ -79,6 +80,15 @@ export const AssetsDepositView = () => {
     debounce(() => dispatch(depositViewActions.setAmount('')), 300);
   };
 
+  const handleMaxClick = () => {
+    if (tokenBalance && selectedTokenMetadata)
+      dispatch(
+        depositViewActions.setAmount(
+          getMaxValue(selectedTokenMetadata, tokenBalance).toString()
+        )
+      );
+  };
+
   const [buttonDisabled, buttonMessage] = useMemo<[boolean, string]>(() => {
     if (!selectedTokenMetadata?.id) return [true, 'Select a Token'];
 
@@ -89,7 +99,9 @@ export const AssetsDepositView = () => {
 
     if (
       parsedFromValue <=
-      getCurrency(selectedTokenMetadata.fee, selectedTokenMetadata.decimals)
+      toBigNumber(selectedTokenMetadata.fee)
+        .applyDecimals(selectedTokenMetadata.decimals)
+        .toNumber()
     ) {
       return [true, `Amount must be greater than fee`];
     }
@@ -97,12 +109,10 @@ export const AssetsDepositView = () => {
     if (tokenBalances && selectedTokenMetadata) {
       if (
         parsedFromValue >
-        Number(
-          getDepositMaxValue(
-            selectedTokenMetadata,
-            tokenBalances[selectedTokenMetadata.id]
-          )
-        )
+        getMaxValue(
+          selectedTokenMetadata,
+          tokenBalances[selectedTokenMetadata.id]
+        ).toNumber()
       ) {
         return [true, `Insufficient ${selectedTokenMetadata.symbol} Balance`];
       }
@@ -118,6 +128,13 @@ export const AssetsDepositView = () => {
 
     return 0;
   }, [tokenBalances, tokenId]);
+
+  const isLoading = useMemo(
+    () =>
+      supportedTokenListState === FeatureState.Loading ||
+      balancesState === FeatureState.Loading,
+    [supportedTokenListState, balancesState]
+  );
 
   useEffect(() => {
     const tokenId = query.get('tokenId');
@@ -135,22 +152,6 @@ export const AssetsDepositView = () => {
       dispatch(depositViewActions.setAmount(''));
     };
   }, []);
-
-  const handleMaxClick = () => {
-    if (tokenBalance && selectedTokenMetadata)
-      dispatch(
-        depositViewActions.setAmount(
-          getDepositMaxValue(selectedTokenMetadata, tokenBalance)
-        )
-      );
-  };
-
-  const isLoading = useMemo(
-    () =>
-      supportedTokenListState === FeatureState.Loading ||
-      balancesState === FeatureState.Loading,
-    [supportedTokenListState, balancesState]
-  );
 
   return (
     <>

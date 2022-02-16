@@ -68,6 +68,7 @@
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
     "@psychedelic/cap-js": "^0.0.7",
+    "@psychedelic/sonic-js": "^0.0.2",
     "@react-icons/all-files": "^4.1.0",
     "@reduxjs/toolkit": "^1.7.1",
     "axios": "^0.25.0",

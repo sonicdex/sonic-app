@@ -1,7 +1,7 @@
 import { Box, HStack, Stack, Text, useColorModeValue } from '@chakra-ui/react';
+import { Liquidity, toBigNumber } from '@psychedelic/sonic-js';
 import { FaMinus } from '@react-icons/all-files/fa/FaMinus';
 import { FaPlus } from '@react-icons/all-files/fa/FaPlus';
-import BigNumber from 'bignumber.js';
 import { useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router';
 
@@ -26,7 +26,8 @@ import {
   usePlugStore,
   useSwapCanisterStore,
 } from '@/store';
-import { getCurrency, getCurrencyString } from '@/utils/format';
+
+import { RemoveLiquidityModal } from './remove-liquidity-modal';
 
 const INFORMATION_TITLE = 'Liquidity Provider Rewards';
 const INFORMATION_DESCRIPTION =
@@ -77,7 +78,7 @@ export const LiquidityListView = () => {
     supportedTokenList,
     supportedTokenListState,
   } = useSwapCanisterStore();
-  const { isBannerOpened, removeAmountPercentage } = useLiquidityViewStore();
+  const { isBannerOpened } = useLiquidityViewStore();
 
   const moveToAddLiquidityView = (token0?: string, token1?: string) => {
     const query =
@@ -146,52 +147,36 @@ export const LiquidityListView = () => {
           let balance1;
 
           if (userLPBalances && allPairs && token0 && token1) {
-            const tokenBalance = userLPBalances[token0.id]?.[token1.id];
-
+            const lpBalance = userLPBalances[token0.id]?.[token1.id];
             const pair = allPairs[token0.id]?.[token1.id];
-            if (pair?.reserve0 && pair?.reserve1 && tokenBalance) {
-              const normalizedReserve0 = getCurrency(
-                pair.reserve0.toString(),
-                token0.decimals
-              );
-              const normalizedReserve1 = getCurrency(
-                pair.reserve1.toString(),
-                token1.decimals
-              );
 
-              const normalizedTotalSupply = getCurrency(
-                pair.totalSupply.toString(),
-                Math.round((token0.decimals + token1.decimals) / 2)
-              );
+            const balances = Liquidity.getTokenBalances({
+              decimals0: token0.decimals,
+              decimals1: token1.decimals,
+              reserve0: pair.reserve0,
+              reserve1: pair.reserve1,
+              totalSupply: pair.totalSupply,
+              lpBalance,
+            });
 
-              const normalizedTokenBalance = getCurrency(
-                tokenBalance.toString(),
-                Math.round((token0.decimals + token1.decimals) / 2)
-              );
-
-              balance0 = new BigNumber(normalizedTokenBalance)
-                .dividedBy(normalizedTotalSupply)
-                .multipliedBy(normalizedReserve0)
-                .multipliedBy(removeAmountPercentage / 100)
-                .toString();
-
-              balance1 = new BigNumber(normalizedTokenBalance)
-                .dividedBy(normalizedTotalSupply)
-                .multipliedBy(normalizedReserve1)
-                .multipliedBy(removeAmountPercentage / 100)
-                .toString();
-            }
+            balance0 = balances.balance0.toString();
+            balance1 = balances.balance1.toString();
           }
 
-          const userShares = getCurrencyString(
-            userLPBalances[tokenId0][tokenId1],
-            Math.round(((token0?.decimals ?? 0) + (token1?.decimals ?? 0)) / 2)
+          const pairDecimals = Liquidity.getPairDecimals(
+            token0?.decimals ?? 0,
+            token1?.decimals ?? 0
           );
 
-          const totalShares = getCurrencyString(
-            allPairs?.[tokenId0]?.[tokenId1]?.totalSupply,
-            Math.round(((token0?.decimals ?? 0) + (token1?.decimals ?? 0)) / 2)
-          );
+          const userShares = toBigNumber(userLPBalances[tokenId0][tokenId1])
+            .applyDecimals(pairDecimals)
+            .toString();
+
+          const totalShares = toBigNumber(
+            allPairs?.[tokenId0]?.[tokenId1]?.totalSupply
+          )
+            .applyDecimals(pairDecimals)
+            .toString();
 
           pairedList.push({
             token0,
@@ -208,30 +193,26 @@ export const LiquidityListView = () => {
     }
   }, [userLPBalances, supportedTokenList, allPairs]);
 
-  const getUserLPValue = useCallback(
+  const _getUserLPValue = useCallback(
     (
       token0: AppTokenMetadata,
       token1: AppTokenMetadata,
       totalShares?: string,
       userShares?: string
     ) => {
-      // How many LP tokens I have divided by total LP tokens in the pool = percentage of a pool
-      // Multiply poap by amount of tokens of each reserves
-      // Multiply by a price
       const pair = allPairs?.[token0.id]?.[token1.id];
 
       if (pair && token0.price && token1.price && totalShares && userShares) {
-        const token0Price = new BigNumber(token0.price).multipliedBy(
-          getCurrency(pair.reserve0, token0.decimals)
-        );
-        const token1Price = new BigNumber(token1.price).multipliedBy(
-          getCurrency(pair.reserve1, token1.decimals)
-        );
-        const priceByLP = token0Price.plus(token1Price).dividedBy(totalShares);
-
-        const userLPValue = new BigNumber(userShares).multipliedBy(priceByLP);
-
-        return userLPValue.toString();
+        return Liquidity.getUserPositionValue({
+          price0: token0.price,
+          price1: token1.price,
+          reserve0: pair.reserve0,
+          reserve1: pair.reserve1,
+          decimals0: token0.decimals,
+          decimals1: token1.decimals,
+          totalShares,
+          userShares,
+        }).toString();
       }
 
       return '0';
@@ -260,6 +241,8 @@ export const LiquidityListView = () => {
           </InformationBox>
         )}
       </Header>
+
+      <RemoveLiquidityModal />
 
       {!isConnected ? (
         <PlugNotConnected message="Your liquidity positions will appear here." />
@@ -306,94 +289,98 @@ export const LiquidityListView = () => {
           pb={40}
           overflow="auto"
         >
-          {pairedUserLPTokens.map(
-            (
-              { token0, token1, userShares, totalShares, balance0, balance1 },
-              index
-            ) => {
-              if (!token0.id || !token1.id) {
-                return null;
-              }
+          {pairedUserLPTokens.map((userLPToken, index) => {
+            const {
+              token0,
+              token1,
+              userShares,
+              totalShares,
+              balance0,
+              balance1,
+            } = userLPToken;
 
-              return (
-                <Asset
-                  key={index}
-                  type="lp"
-                  imageSources={[token0.logo, token1.logo]}
+            if (!token0.id || !token1.id) {
+              return null;
+            }
+
+            const userLPValue = _getUserLPValue(
+              token0,
+              token1,
+              totalShares,
+              userShares
+            );
+
+            return (
+              <Asset
+                key={index}
+                type="lp"
+                imageSources={[token0.logo, token1.logo]}
+              >
+                <HStack spacing={4}>
+                  <AssetImageBlock />
+                  <AssetTitleBlock
+                    title={`${token0.symbol}/${token1.symbol}`}
+                  />
+                </HStack>
+
+                <LPBreakdownPopover
+                  sources={[
+                    {
+                      src: token0.logo,
+                      symbol: token0.symbol,
+                      decimals: token0.decimals,
+                      balance: balance0,
+                    },
+                    {
+                      src: token1.logo,
+                      symbol: token1.symbol,
+                      decimals: token1.decimals,
+                      balance: balance1,
+                    },
+                  ]}
                 >
-                  <HStack spacing={4}>
-                    <AssetImageBlock />
-                    <AssetTitleBlock
-                      title={`${token0.symbol}/${token1.symbol}`}
-                    />
-                  </HStack>
-
-                  <LPBreakdownPopover
-                    sources={[
-                      {
-                        src: token0.logo,
-                        symbol: token0.symbol,
-                        decimals: token0.decimals,
-                        balance: balance0,
-                      },
-                      {
-                        src: token1.logo,
-                        symbol: token1.symbol,
-                        decimals: token1.decimals,
-                        balance: balance1,
-                      },
-                    ]}
-                  >
-                    <Box>
-                      <Text fontWeight="bold" color={headerColor}>
-                        LP Tokens
-                      </Text>
-                      <DisplayValue
-                        value={userShares}
-                        isUpdating={isUserLPBalancesUpdating}
-                        disableTooltip
-                      />
-                    </Box>
-                  </LPBreakdownPopover>
-
                   <Box>
                     <Text fontWeight="bold" color={headerColor}>
-                      LP Value
+                      LP Tokens
                     </Text>
                     <DisplayValue
-                      color={successColor}
+                      value={userShares}
                       isUpdating={isUserLPBalancesUpdating}
-                      prefix="~$"
-                      value={getUserLPValue(
-                        token0,
-                        token1,
-                        totalShares,
-                        userShares
-                      )}
+                      disableTooltip
                     />
                   </Box>
+                </LPBreakdownPopover>
 
-                  <HStack>
-                    <AssetIconButton
-                      aria-label="Remove Liquidity"
-                      icon={<FaMinus />}
-                      onClick={() =>
-                        handleOpenRemoveLiquidityModal(token0, token1)
-                      }
-                    />
-                    <AssetIconButton
-                      aria-label="Add Liquidity"
-                      colorScheme="dark-blue"
-                      icon={<FaPlus />}
-                      onClick={() =>
-                        moveToAddLiquidityView(token0.id, token1.id)
-                      }
-                    />
-                  </HStack>
-                </Asset>
-              );
-            }
-          )}
+                <Box>
+                  <Text fontWeight="bold" color={headerColor}>
+                    LP Value
+                  </Text>
+                  <DisplayValue
+                    color={successColor}
+                    isUpdating={isUserLPBalancesUpdating}
+                    prefix="~$"
+                    value={userLPValue}
+                  />
+                </Box>
+
+                <HStack>
+                  <AssetIconButton
+                    aria-label="Remove Liquidity"
+                    icon={<FaMinus />}
+                    onClick={() =>
+                      handleOpenRemoveLiquidityModal(token0, token1)
+                    }
+                  />
+                  <AssetIconButton
+                    aria-label="Add Liquidity"
+                    colorScheme="dark-blue"
+                    icon={<FaPlus />}
+                    onClick={() => moveToAddLiquidityView(token0.id, token1.id)}
+                  />
+                </HStack>
+              </Asset>
+            );
+          })}
         </Stack>
       )}
     </>
