@@ -1,4 +1,4 @@
-import { MaximalPaths, Pair, Swap, toBigNumber } from '@psychedelic/sonic-js';
+import { MaximalPaths, Pair, Swap } from '@psychedelic/sonic-js';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { ENV } from '@/config';
@@ -9,7 +9,7 @@ import {
   BaseTokenData,
 } from '@/models';
 import { FeatureState, RootState } from '@/store';
-import { capitalize, formatValue } from '@/utils/format';
+import { capitalize } from '@/utils/format';
 import { getAmountOutFromPath } from '@/views';
 
 export type SwapTokenDataKey = 'from' | 'to';
@@ -149,6 +149,17 @@ export const swapViewSlice = createSlice({
         state.tokenList &&
         state.allPairs
       ) {
+        // FIXME: Handle WICP/ICP specific case better/in other place
+
+        const isICPToWICPPair =
+          state.from.metadata.id === ICP_METADATA.id &&
+          state.to.metadata.id === ENV.canistersPrincipalIDs.WICP;
+        const isWICPToICPPair =
+          state.to.metadata.id === ICP_METADATA.id &&
+          state.from.metadata.id === ENV.canistersPrincipalIDs.WICP;
+
+        const isWICPAndICPPair = isICPToWICPPair || isWICPToICPPair;
+
         const value = state[dataKey].value;
 
         const oppositeTokenPaths = Swap.getTokenPaths({
@@ -159,23 +170,10 @@ export const swapViewSlice = createSlice({
           dataKey: oppositeDataKey,
         });
 
-        const isICPToWICPPair =
-          (state.from.metadata.id === ICP_METADATA.id &&
-            oppositeMetadata.id === ENV.canistersPrincipalIDs.WICP) ||
-          (state.to.metadata.id === ICP_METADATA.id &&
-            oppositeMetadata.id === ENV.canistersPrincipalIDs.WICP);
-
-        // FIXME: Handle WICP/ICP specific case better/in other place
-        const _oppositeValue = toBigNumber(state[oppositeDataKey].value);
-        const icpFee = formatValue(ICP_METADATA.fee, ICP_METADATA.decimals);
-        const oppositeValue = isICPToWICPPair
-          ? dataKey === 'from'
-            ? _oppositeValue.plus(icpFee).toString()
-            : _oppositeValue.minus(icpFee).toString()
-          : getAmountOutFromPath(
-              { ...state[dataKey], paths: oppositeTokenPaths },
-              state[oppositeDataKey] as SwapTokenData
-            );
+        const oppositeValue = getAmountOutFromPath(
+          { ...state[dataKey], paths: oppositeTokenPaths },
+          state[oppositeDataKey] as SwapTokenData
+        );
 
         const tokenPaths = Swap.getTokenPaths({
           pairList: state.allPairs as Pair.List,
@@ -189,25 +187,28 @@ export const swapViewSlice = createSlice({
         state.from.metadata = { ...state.to.metadata };
         state.to.metadata = tempMetadata;
 
-        state[oppositeDataKey].paths = oppositeTokenPaths;
-        state[dataKey].paths = tokenPaths;
+        // In case of WICP/ICP or ICP/WICP switch -- leave values as they are
+        if (!isWICPAndICPPair) {
+          state[oppositeDataKey].paths = oppositeTokenPaths;
+          state[dataKey].paths = tokenPaths;
 
-        state[oppositeDataKey].value = value;
-        state[dataKey].value = oppositeValue;
+          state[oppositeDataKey].value = value;
+          state[dataKey].value = oppositeValue;
 
-        const baseFromPaths = Swap.getTokenPaths({
-          pairList: state.allPairs as Pair.List,
-          tokenList: state.tokenList,
-          tokenId: state.from.metadata.id,
-        });
-        const baseToPaths = Swap.getTokenPaths({
-          pairList: state.allPairs as Pair.List,
-          tokenList: state.tokenList,
-          tokenId: state.to.metadata.id,
-        });
+          const baseFromPaths = Swap.getTokenPaths({
+            pairList: state.allPairs as Pair.List,
+            tokenList: state.tokenList,
+            tokenId: state.from.metadata.id,
+          });
+          const baseToPaths = Swap.getTokenPaths({
+            pairList: state.allPairs as Pair.List,
+            tokenList: state.tokenList,
+            tokenId: state.to.metadata.id,
+          });
 
-        state.baseFromTokenPaths = baseFromPaths;
-        state.baseToTokenPaths = baseToPaths;
+          state.baseFromTokenPaths = baseFromPaths;
+          state.baseToTokenPaths = baseToPaths;
+        }
       }
     },
     setTokenList: (
