@@ -28,7 +28,6 @@ import {
   useSwapCanisterStore,
 } from '@/store';
 
-import { getUserLPValue } from './liquidity.utils';
 import { RemoveLiquidityModal } from './remove-liquidity-modal';
 
 const INFORMATION_TITLE = 'Liquidity Provider Rewards';
@@ -227,7 +226,7 @@ export const LiquidityListView = () => {
       const pair = allPairs?.[token0.id]?.[token1.id];
 
       if (pair && token0.price && token1.price && totalShares && userShares) {
-        return getUserLPValue({
+        return Liquidity.getUserPositionValue({
           price0: token0.price,
           price1: token1.price,
           reserve0: pair.reserve0,

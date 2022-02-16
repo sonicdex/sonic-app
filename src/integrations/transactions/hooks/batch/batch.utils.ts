@@ -15,9 +15,9 @@ export const getAmountDependsOnBalance = (
   fromValue: string
 ): string => {
   const parsedFromValue = parseFloat(fromValue);
-  const parsedTokenBalance = Number(
-    toBigNumber(tokenBalance).applyDecimals(tokenDecimals)
-  );
+  const parsedTokenBalance = toBigNumber(tokenBalance)
+    .applyDecimals(tokenDecimals)
+    .toNumber();
   return (parsedFromValue - parsedTokenBalance).toString();
 };
 

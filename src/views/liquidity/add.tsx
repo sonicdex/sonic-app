@@ -68,7 +68,7 @@ import {
 import { getMaxValue } from '@/utils/format';
 import { debounce } from '@/utils/function';
 
-import { getOppositeLPValue, getShareOfPoolString } from './liquidity.utils';
+import { getShareOfPoolString } from './liquidity.utils';
 
 export const LiquidityAddView = () => {
   const query = useQuery();
@@ -188,7 +188,7 @@ export const LiquidityAddView = () => {
       );
 
       if (token0.metadata && token1.metadata) {
-        const lpValue = getOppositeLPValue({
+        const lpValue = Liquidity.getOppositeAmount({
           amountIn,
           reserveIn,
           reserveOut,
@@ -294,35 +294,35 @@ export const LiquidityAddView = () => {
   const { token0Price, token1Price, shareOfPool, liquidityAmount } =
     useMemo(() => {
       if (token0.metadata && token1.metadata) {
-        if (pair && pair.reserve0 && pair.reserve1) {
-          const token0Price = getOppositeLPValue({
+        if (pair?.reserve0 && pair?.reserve1) {
+          const token0Price = Liquidity.getOppositeAmount({
             amountIn: '1',
-            reserveIn: String(pair.reserve1),
-            reserveOut: String(pair.reserve0),
-            decimalsIn: Number(token1.metadata.decimals),
-            decimalsOut: Number(token0.metadata.decimals),
+            reserveIn: pair.reserve1,
+            reserveOut: pair.reserve0,
+            decimalsIn: token1.metadata.decimals,
+            decimalsOut: token0.metadata.decimals,
           }).toString();
 
-          const token1Price = getOppositeLPValue({
+          const token1Price = Liquidity.getOppositeAmount({
             amountIn: '1',
-            reserveIn: String(pair.reserve0),
-            reserveOut: String(pair.reserve1),
-            decimalsIn: Number(token0.metadata.decimals),
-            decimalsOut: Number(token1.metadata.decimals),
+            reserveIn: pair.reserve0,
+            reserveOut: pair.reserve1,
+            decimalsIn: token0.metadata.decimals,
+            decimalsOut: token1.metadata.decimals,
           }).toString();
 
-          const getShareOfPoolOptions = {
-            token0Amount: token0.value,
-            token1Amount: token1.value,
-            reserve0: String(pair.reserve0),
-            reserve1: String(pair.reserve1),
-            totalSupply: String(pair.totalSupply),
-            token0Decimals: token0.metadata?.decimals,
-            token1Decimals: token1.metadata?.decimals,
+          const options = {
+            amount0: token0.value,
+            amount1: token1.value,
+            decimals0: token0.metadata?.decimals,
+            decimals1: token1.metadata?.decimals,
+            reserve0: pair.reserve0,
+            reserve1: pair.reserve1,
+            totalSupply: pair.totalSupply,
           };
 
           const liquidityAmount = toBigNumber(
-            Liquidity.getAddPosition(getShareOfPoolOptions).toString()
+            Liquidity.getPosition(options).toString()
           )
             .applyDecimals(
               Liquidity.getPairDecimals(
@@ -332,7 +332,7 @@ export const LiquidityAddView = () => {
             )
             .toString();
 
-          const shareOfPool = getShareOfPoolString(getShareOfPoolOptions);
+          const shareOfPool = getShareOfPoolString(options);
 
           return {
             liquidityAmount,
@@ -343,31 +343,48 @@ export const LiquidityAddView = () => {
         } else {
           const token0Value = new BigNumber(token1.value)
             .div(new BigNumber(token0.value))
-            .dp(token0.metadata?.decimals)
-            .toString();
+            .dp(token0.metadata?.decimals);
+
           const token1Value = new BigNumber(token0.value)
             .div(new BigNumber(token1.value))
-            .dp(token1.metadata?.decimals)
+            .dp(token1.metadata?.decimals);
+
+          const token0Price =
+            token0Value.isNaN() || token0Value.isZero()
+              ? 0
+              : token0Value.toString();
+
+          const token1Price =
+            token1Value.isNaN() || token1Value.isZero()
+              ? 0
+              : token1Value.toString();
+
+          const getPositionOptions = {
+            amount0: token0.value,
+            amount1: token1.value,
+            decimals0: token0.metadata.decimals,
+            decimals1: token1.metadata.decimals,
+            reserve0: 0,
+            reserve1: 0,
+            totalSupply: 0,
+          };
+
+          const liquidityAmount = toBigNumber(
+            Liquidity.getPosition(getPositionOptions)
+          )
+            .applyDecimals(
+              Liquidity.getPairDecimals(
+                token0.metadata.decimals,
+                token1.metadata.decimals
+              )
+            )
             .toString();
 
-          const isToken0Price =
-            !token0Value ||
-            new BigNumber(token0Value).isNaN() ||
-            !new BigNumber(token0Value).isFinite();
-
-          const isToken1Price =
-            !token1Value ||
-            new BigNumber(token1Value).isNaN() ||
-            !new BigNumber(token1Value).isFinite();
-
           return {
-            token0Price: isToken0Price ? '0' : token0Value,
-            token1Price: isToken1Price ? '0' : token1Value,
+            token0Price,
+            token1Price,
             shareOfPool: '100%',
-            liquidityAmount: new BigNumber(token0.value)
-              .multipliedBy(new BigNumber(token1.value))
-              .sqrt()
-              .toString(),
+            liquidityAmount,
           };
         }
       }

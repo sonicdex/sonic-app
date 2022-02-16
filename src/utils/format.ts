@@ -21,24 +21,6 @@ export const parseAmount = (val: string, decimals: string | number): bigint => {
   }
 };
 
-export const getAmountMultipliedByDecimals = (
-  amount: bigint | undefined | string | number,
-  decimals: bigint | undefined | number
-) => {
-  const _amount = new BigNumber(String(amount));
-  const _decimals = new BigNumber(String(decimals));
-
-  if (
-    _amount.isZero() ||
-    _amount.isNaN() ||
-    _decimals.isZero() ||
-    _decimals.isNaN()
-  )
-    return new BigNumber(0);
-
-  return _amount.multipliedBy(new BigNumber(10).pow(_decimals));
-};
-
 export const formatValue = (
   val: BigInt | number | string,
   decimals: number

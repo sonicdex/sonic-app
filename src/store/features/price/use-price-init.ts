@@ -64,15 +64,9 @@ export const usePriceInit = () => {
             if (wicpReserve && tokenReserve) {
               tokenPrice = new BigNumber(icpPrice)
                 .multipliedBy(
-                  toBigNumber(wicpReserve.toString()).applyDecimals(
-                    wicpDecimals
-                  )
+                  toBigNumber(wicpReserve).applyDecimals(wicpDecimals)
                 )
-                .div(
-                  toBigNumber(tokenReserve.toString()).applyDecimals(
-                    tokenDecimals
-                  )
-                )
+                .div(toBigNumber(tokenReserve).applyDecimals(tokenDecimals))
                 .toString();
             }
           } else {
