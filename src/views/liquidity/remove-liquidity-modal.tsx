@@ -236,7 +236,7 @@ export const RemoveLiquidityModal = () => {
           </Stack>
 
           <Flex direction="row" alignItems="center" borderRadius={5} pt={4}>
-            <FormControl direction="row" alignItems="center">
+            <FormControl dir="row" alignItems="center">
               <Checkbox
                 isChecked={keepInSonic}
                 onChange={(e) =>

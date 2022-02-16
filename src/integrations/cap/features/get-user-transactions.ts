@@ -21,7 +21,7 @@ export const getUserTransactions = async (
   });
 
   const result = (await capRoot.get_user_transactions({
-    user: Principal.fromText(principalId),
+    user: Principal.fromText(principalId) as any,
     page,
   })) as { data: CapHistoryLog[]; page: number };
 

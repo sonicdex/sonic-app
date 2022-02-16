@@ -1,4 +1,4 @@
-import { MaximalPaths, Swap } from '@psychedelic/sonic-js';
+import { MaximalPaths, Pair, Swap } from '@psychedelic/sonic-js';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { ICP_METADATA } from '@/constants';
@@ -76,7 +76,7 @@ export const swapViewSlice = createSlice({
 
       if (allPairs && tokenList && metadata) {
         const paths = Swap.getTokenPaths({
-          pairList: allPairs as PairList,
+          pairList: allPairs as Pair.List,
           tokenList,
           tokenId: metadata.id,
           amount: value,
@@ -109,7 +109,7 @@ export const swapViewSlice = createSlice({
 
       if (tokenId && tokenList && allPairs) {
         const paths = Swap.getTokenPaths({
-          pairList: allPairs as PairList,
+          pairList: allPairs as Pair.List,
           tokenList,
           tokenId,
           amount: state[data].value,
@@ -125,7 +125,7 @@ export const swapViewSlice = createSlice({
           | 'baseFromTokenPaths';
 
         state[tokenPathsDataKey] = Swap.getTokenPaths({
-          pairList: allPairs as PairList,
+          pairList: allPairs as Pair.List,
           tokenList,
           tokenId,
           dataKey: data,
@@ -151,7 +151,7 @@ export const swapViewSlice = createSlice({
         const value = state[dataKey].value;
 
         const oppositeTokenPaths = Swap.getTokenPaths({
-          pairList: state.allPairs as PairList,
+          pairList: state.allPairs as Pair.List,
           tokenList: state.tokenList,
           tokenId: state[dataKey].metadata!.id,
           amount: value,
@@ -164,7 +164,7 @@ export const swapViewSlice = createSlice({
         );
 
         const tokenPaths = Swap.getTokenPaths({
-          pairList: state.allPairs as PairList,
+          pairList: state.allPairs as Pair.List,
           tokenList: state.tokenList,
           tokenId: state[oppositeDataKey].metadata!.id,
           amount: oppositeValue,
@@ -182,12 +182,12 @@ export const swapViewSlice = createSlice({
         state[dataKey].value = oppositeValue;
 
         const baseFromPaths = Swap.getTokenPaths({
-          pairList: state.allPairs as PairList,
+          pairList: state.allPairs as Pair.List,
           tokenList: state.tokenList,
           tokenId: state.from.metadata.id,
         });
         const baseToPaths = Swap.getTokenPaths({
-          pairList: state.allPairs as PairList,
+          pairList: state.allPairs as Pair.List,
           tokenList: state.tokenList,
           tokenId: state.to.metadata.id,
         });

@@ -52,7 +52,6 @@ export const GradientBox: FC<GradientBoxProps> = ({
       background={bg}
       pt={-1}
       {...boxProps[size]}
-      size={size}
     >
       <Box
         position="absolute"

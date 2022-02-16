@@ -181,13 +181,10 @@ export const MintManualModal = () => {
           </Text>
         </ModalHeader>
         <ModalBody as={Stack} spacing={4}>
-          <FormControl
-            name="token"
-            isRequired
-            isInvalid={Boolean(tokenErrorMessage)}
-          >
+          <FormControl isRequired isInvalid={Boolean(tokenErrorMessage)}>
             <FormLabel>Token</FormLabel>
             <Select
+              name="token"
               value={mintManualTokenSymbol}
               onChange={handleTokenSymbolSelect}
             >
@@ -200,14 +197,11 @@ export const MintManualModal = () => {
             <FormErrorMessage>{tokenErrorMessage}</FormErrorMessage>
           </FormControl>
 
-          <FormControl
-            name="blockHeight"
-            isRequired
-            isInvalid={Boolean(blockHeightErrorMessage)}
-          >
+          <FormControl isRequired isInvalid={Boolean(blockHeightErrorMessage)}>
             <FormLabel>Transaction Block Height</FormLabel>
 
             <Input
+              name="blockHeight"
               value={mintManualBlockHeight}
               onKeyDown={blockInvalidBlockHeightChar}
               onChange={handleBlockHeightChange}
