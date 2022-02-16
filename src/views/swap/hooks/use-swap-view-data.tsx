@@ -274,7 +274,9 @@ export const useSwapViewData = () => {
       return;
     }
 
-    handleChangeValue(getMaxValue(metadata, balance), dataKey);
+    const maxValue = getMaxValue(metadata, balance).toString();
+
+    handleChangeValue(maxValue, dataKey);
   };
 
   const handleSelectToken = (dataKey: SwapTokenDataKey) => {

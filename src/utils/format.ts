@@ -56,20 +56,18 @@ export const getValueWithoutFees = ({
 export const getMaxValue = (
   token?: AppTokenMetadata,
   balance?: number | bigint
-) => {
-  if (!token || !balance) return '';
+): BigNumber => {
+  if (!token || !balance) return new BigNumber(0);
 
   const times = token.id === ICP_METADATA.id ? 1 : 2;
 
-  const value = new BigNumber(Number(balance))
-    .minus(Number(token.fee) * times)
-    .toNumber();
+  const value = toBigNumber(Number(balance)).minus(Number(token.fee) * times);
 
-  if (value > 0) {
-    return toBigNumber(value).applyDecimals(token.decimals).toString();
+  if (value.isNegative() || value.isZero()) {
+    return new BigNumber(0);
   }
 
-  return '';
+  return value.applyDecimals(token.decimals);
 };
 
 export const capitalize = (str: string) => {

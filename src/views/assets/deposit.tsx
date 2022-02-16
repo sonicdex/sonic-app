@@ -100,12 +100,10 @@ export const AssetsDepositView = () => {
     if (tokenBalances && selectedTokenMetadata) {
       if (
         parsedFromValue >
-        Number(
-          getMaxValue(
-            selectedTokenMetadata,
-            tokenBalances[selectedTokenMetadata.id]
-          )
-        )
+        getMaxValue(
+          selectedTokenMetadata,
+          tokenBalances[selectedTokenMetadata.id]
+        ).toNumber()
       ) {
         return [true, `Insufficient ${selectedTokenMetadata.symbol} Balance`];
       }
@@ -143,7 +141,7 @@ export const AssetsDepositView = () => {
     if (tokenBalance && selectedTokenMetadata)
       dispatch(
         depositViewActions.setAmount(
-          getMaxValue(selectedTokenMetadata, tokenBalance)
+          getMaxValue(selectedTokenMetadata, tokenBalance).toString()
         )
       );
   };

@@ -295,7 +295,7 @@ export const TokenDataBalances: React.FC<TokeDataBalancesProps> = ({
       onMaxClick &&
       totalTokenBalance &&
       totalTokenBalance > 0 &&
-      Number(getMaxValue(tokenMetadata, totalTokenBalance)) !== Number(value)
+      getMaxValue(tokenMetadata, totalTokenBalance).toNumber() !== Number(value)
     ) {
       return true;
     }

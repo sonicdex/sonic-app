@@ -122,9 +122,9 @@ export const LiquidityAddView = () => {
 
     if (!token || !tokenBalance) return;
 
-    const value = getMaxValue(token.metadata, tokenBalance);
+    const maxValue = getMaxValue(token.metadata, tokenBalance).toString();
 
-    setInAndOutTokenValues(dataKey, value);
+    setInAndOutTokenValues(dataKey, maxValue);
   };
 
   const handleSelectToken = (dataKey: LiquidityTokenDataKey) => {
@@ -260,13 +260,15 @@ export const LiquidityAddView = () => {
       typeof token1Balance === 'number'
     ) {
       if (
-        parsedToken0Value > Number(getMaxValue(token0.metadata, token0Balance))
+        parsedToken0Value >
+        getMaxValue(token0.metadata, token0Balance).toNumber()
       ) {
         return [true, `Insufficient ${token0.metadata.symbol} Balance`];
       }
 
       if (
-        parsedToken1Value > Number(getMaxValue(token1.metadata, token1Balance))
+        parsedToken1Value >
+        getMaxValue(token1.metadata, token1Balance).toNumber()
       ) {
         return [true, `Insufficient ${token1.metadata.symbol} Balance`];
       }
