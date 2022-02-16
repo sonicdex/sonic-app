@@ -80,6 +80,15 @@ export const AssetsDepositView = () => {
     debounce(() => dispatch(depositViewActions.setAmount('')), 300);
   };
 
+  const handleMaxClick = () => {
+    if (tokenBalance && selectedTokenMetadata)
+      dispatch(
+        depositViewActions.setAmount(
+          getMaxValue(selectedTokenMetadata, tokenBalance).toString()
+        )
+      );
+  };
+
   const [buttonDisabled, buttonMessage] = useMemo<[boolean, string]>(() => {
     if (!selectedTokenMetadata?.id) return [true, 'Select a Token'];
 
@@ -120,6 +129,13 @@ export const AssetsDepositView = () => {
     return 0;
   }, [tokenBalances, tokenId]);
 
+  const isLoading = useMemo(
+    () =>
+      supportedTokenListState === FeatureState.Loading ||
+      balancesState === FeatureState.Loading,
+    [supportedTokenListState, balancesState]
+  );
+
   useEffect(() => {
     const tokenId = query.get('tokenId');
     const fromQueryValue = query.get('amount');
@@ -136,22 +152,6 @@ export const AssetsDepositView = () => {
       dispatch(depositViewActions.setAmount(''));
     };
   }, []);
-
-  const handleMaxClick = () => {
-    if (tokenBalance && selectedTokenMetadata)
-      dispatch(
-        depositViewActions.setAmount(
-          getMaxValue(selectedTokenMetadata, tokenBalance).toString()
-        )
-      );
-  };
-
-  const isLoading = useMemo(
-    () =>
-      supportedTokenListState === FeatureState.Loading ||
-      balancesState === FeatureState.Loading,
-    [supportedTokenListState, balancesState]
-  );
 
   return (
     <>
