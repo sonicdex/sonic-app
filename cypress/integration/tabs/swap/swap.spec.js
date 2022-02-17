@@ -12,7 +12,7 @@ describe('Swap screen', () => {
             .should('have.css', 'font-family', '"Nunito Sans"')
             .should('have.css', 'color', 'rgb(240, 242, 244)')
         //Slippage Tolerance    
-        cy.get('[id="menu-button-32"]')
+        cy.get('[id="menu-button-31"]')
             .should('be.visible')
         //Tokens Balance
         cy.contains('Balance: 0 ICP')
