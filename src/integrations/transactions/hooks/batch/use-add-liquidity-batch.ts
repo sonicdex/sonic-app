@@ -131,11 +131,13 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
           callbacks: [
             // Retry callback
             () => {
+              dispatch(modalsSliceActions.closeAddLiquidityFailModal());
               openBatchModal();
               resolve(true);
             },
             // Cancel callback
             () => {
+              dispatch(modalsSliceActions.closeAddLiquidityFailModal());
               resolve(false);
             },
           ],
