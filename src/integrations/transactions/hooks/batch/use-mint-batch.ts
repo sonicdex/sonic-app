@@ -222,11 +222,15 @@ export const useMintBatch = ({
             callbacks: [
               // Retry callback
               () => {
+                dispatch(modalsSliceActions.closeMintWICPFailModal());
+                dispatch(modalsSliceActions.closeMintXTCFailModal());
                 openBatchModal();
                 resolve({ nextTxArgs: prevResponses });
               },
               // Close callback
               () => {
+                dispatch(modalsSliceActions.closeMintWICPFailModal());
+                dispatch(modalsSliceActions.closeMintXTCFailModal());
                 resolve(false);
               },
             ],
