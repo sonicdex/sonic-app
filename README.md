@@ -2,7 +2,7 @@
 
 <h1 align="center">Sonic Application</h1>
 
-<h3 align="center">An open source application for Sonic Open Internet Service (OIS)</h3>
+<h3 align="center">An open source interface of Sonic Open Internet Service (OIS)</h3>
 
 📖 We recommend you to read an [overview](https://docs.sonic.ooo/#overview) before you start. 📖
 
