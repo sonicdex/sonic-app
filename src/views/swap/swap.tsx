@@ -37,7 +37,6 @@ import {
   TokenInput,
   ViewHeader,
 } from '@/components';
-import { ENV } from '@/config';
 import { useSwapView, useSwapViewStore } from '@/store';
 
 import { SwapStep } from './';
@@ -211,7 +210,7 @@ export const SwapView = () => {
                               color={linkColor}
                               rel="noopener noreferrer"
                               target="_blank"
-                              href={`${ENV.URLs.sonicDocs}/developer-guides/front-end-integrations#icp-xtc`}
+                              href="https://sonic-ooo.medium.com/xtc-in-sonic-minting-vs-swapping-and-price-differences-67965228e52e"
                             >
                               Learn More.
                             </Link>
