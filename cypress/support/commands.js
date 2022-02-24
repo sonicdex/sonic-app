@@ -47,3 +47,12 @@ Cypress.Commands.add('openTokensPopup', (token="ICP") => {
    .should('have.css', 'background', 'rgba(0, 0, 0, 0) linear-gradient(to right, rgb(61, 82, 244), rgb(49, 66, 195)) repeat scroll 0% 0% / auto padding-box border-box')
 
 })
+
+Cypress.Commands.add('checkTextStyling', (selector) => {
+   cy.contains(selector)
+   .should('be.visible')
+   .should('have.css', 'color', 'rgb(240, 242, 244)')
+   .should('have.css', 'background-color', 'rgba(0, 0, 0, 0)')
+   .should('have.css', 'font-family', '"Nunito Sans"')
+   .should('have.css', 'color', 'rgb(240, 242, 244)')
+})
