@@ -48,11 +48,10 @@ Cypress.Commands.add('openTokensPopup', (token="ICP") => {
 
 })
 
-Cypress.Commands.add('checkTextStyling', (selector) => {
+Cypress.Commands.add('checkTextStyling', (selector,color='rgb(240, 242, 244)') => {
    cy.contains(selector)
    .should('be.visible')
-   .should('have.css', 'color', 'rgb(240, 242, 244)')
+   .should('have.css', 'color', color)
    .should('have.css', 'background-color', 'rgba(0, 0, 0, 0)')
    .should('have.css', 'font-family', '"Nunito Sans"')
-   .should('have.css', 'color', 'rgb(240, 242, 244)')
 })
