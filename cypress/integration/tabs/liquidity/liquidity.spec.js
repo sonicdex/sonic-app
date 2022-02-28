@@ -2,7 +2,7 @@
 
 describe('Liquidity Tab', () => {
     before(() => {
-        cy.visit('https://2aoj2-aaaaa-aaaad-qa4qq-cai.ic.fleek.co/')
+        cy.visit('/')
         cy.get('[href="/liquidity"]').click();
     })
     it('Validates info message', () => {
@@ -37,7 +37,7 @@ describe('Liquidity Tab', () => {
 
 describe('Liquidity-redirection', () => {
     before(() => {
-        cy.visit('https://2aoj2-aaaaa-aaaad-qa4qq-cai.ic.fleek.co/')
+        cy.visit('/')
         cy.get('[href="/liquidity"]').click();
     })
 
