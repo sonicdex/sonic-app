@@ -163,19 +163,14 @@ export const LiquidityListView = () => {
             balance1 = balances.balance1.toString();
           }
 
-          const pairDecimals = Liquidity.getPairDecimals(
-            token0?.decimals ?? 0,
-            token1?.decimals ?? 0
-          );
-
           const userShares = toBigNumber(userLPBalances[tokenId0][tokenId1])
-            .applyDecimals(pairDecimals)
+            .applyDecimals(Liquidity.PAIR_DECIMALS)
             .toString();
 
           const totalShares = toBigNumber(
             allPairs?.[tokenId0]?.[tokenId1]?.totalSupply
           )
-            .applyDecimals(pairDecimals)
+            .applyDecimals(Liquidity.PAIR_DECIMALS)
             .toString();
 
           pairedList.push({

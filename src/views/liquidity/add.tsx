@@ -26,7 +26,6 @@ import { FaCog } from '@react-icons/all-files/fa/FaCog';
 import { FaEquals } from '@react-icons/all-files/fa/FaEquals';
 import { FaInfoCircle } from '@react-icons/all-files/fa/FaInfoCircle';
 import { FaPlus } from '@react-icons/all-files/fa/FaPlus';
-import BigNumber from 'bignumber.js';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 
@@ -334,15 +333,8 @@ export const LiquidityAddView = () => {
             totalSupply: pair.totalSupply,
           };
 
-          const liquidityAmount = toBigNumber(
-            Liquidity.getPosition(options).toString()
-          )
-            .applyDecimals(
-              Liquidity.getPairDecimals(
-                token0.metadata.decimals,
-                token1.metadata.decimals
-              )
-            )
+          const liquidityAmount = Liquidity.getPosition(options)
+            .applyDecimals(Liquidity.PAIR_DECIMALS)
             .toString();
 
           const shareOfPool = getShareOfPoolString(options);
@@ -356,13 +348,13 @@ export const LiquidityAddView = () => {
             shareOfPool,
           };
         } else {
-          const token0Value = new BigNumber(token1.value)
-            .div(new BigNumber(token0.value))
-            .dp(token0.metadata?.decimals);
+          const token0Value = toBigNumber(token1.value)
+            .div(token0.value)
+            .dp(token0.metadata.decimals);
 
-          const token1Value = new BigNumber(token0.value)
-            .div(new BigNumber(token1.value))
-            .dp(token1.metadata?.decimals);
+          const token1Value = toBigNumber(token0.value)
+            .div(token1.value)
+            .dp(token1.metadata.decimals);
 
           const price0 =
             token0Value.isNaN() || token0Value.isZero()
@@ -374,25 +366,18 @@ export const LiquidityAddView = () => {
               ? 0
               : token1Value.toString();
 
-          const getPositionOptions = {
-            amount0: token0.value,
-            amount1: token1.value,
-            decimals0: token0.metadata.decimals,
-            decimals1: token1.metadata.decimals,
-            reserve0: 0,
-            reserve1: 0,
-            totalSupply: 0,
-          };
-
           const liquidityAmount = toBigNumber(
-            Liquidity.getPosition(getPositionOptions)
+            Liquidity.getPosition({
+              amount0: token0.value,
+              amount1: token1.value,
+              decimals0: token0.metadata.decimals,
+              decimals1: token1.metadata.decimals,
+              reserve0: 0,
+              reserve1: 0,
+              totalSupply: 0,
+            })
           )
-            .applyDecimals(
-              Liquidity.getPairDecimals(
-                token0.metadata.decimals,
-                token1.metadata.decimals
-              )
-            )
+            .applyDecimals(Liquidity.PAIR_DECIMALS)
             .toString();
 
           return {

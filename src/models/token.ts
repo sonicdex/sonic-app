@@ -1,6 +1,6 @@
-import { SwapIDL } from '@/did';
+import { Token } from '@psychedelic/sonic-js';
 
-export type AppTokenMetadata = SwapIDL.TokenInfoExt & {
+export type AppTokenMetadata = Token.Metadata & {
   logo: string;
   price?: string;
 };

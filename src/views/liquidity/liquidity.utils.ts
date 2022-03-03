@@ -1,6 +1,8 @@
 import { Liquidity } from '@psychedelic/sonic-js';
 
-export const getShareOfPoolString = (params: Liquidity.GetShareOfPool) => {
+export const getShareOfPoolString = (
+  params: Liquidity.GetShareOfPoolParams
+) => {
   const percentage = Liquidity.getShareOfPool(params).multipliedBy(100);
 
   if (percentage.isEqualTo(0)) return '0%';
