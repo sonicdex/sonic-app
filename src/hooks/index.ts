@@ -5,3 +5,4 @@ export * from './use-token-allowance';
 export * from './use-token-balance';
 export * from './use-token-logos-fetcher-init';
 export * from './use-token-selection-detector';
+export * from './use-user-metrics';

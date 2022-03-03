@@ -2,7 +2,7 @@ import { Box, HStack, Stack, Text, useColorModeValue } from '@chakra-ui/react';
 import { Liquidity, toBigNumber } from '@psychedelic/sonic-js';
 import { FaMinus } from '@react-icons/all-files/fa/FaMinus';
 import { FaPlus } from '@react-icons/all-files/fa/FaPlus';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router';
 
 import {
@@ -28,6 +28,7 @@ import {
 } from '@/store';
 
 import { RemoveLiquidityModal } from './remove-liquidity-modal';
+import { useUserMetrics } from '@/hooks';
 
 const INFORMATION_TITLE = 'Liquidity Provider Rewards';
 const INFORMATION_DESCRIPTION =
@@ -79,6 +80,12 @@ export const LiquidityListView = () => {
     supportedTokenListState,
   } = useSwapCanisterStore();
   const { isBannerOpened } = useLiquidityViewStore();
+  const { isLoading: isMetricsLoading, userMetrics } = useUserMetrics();
+
+  useEffect(() => {
+    console.log('isLoading', isMetricsLoading);
+    console.log(userMetrics);
+  }, [isMetricsLoading]);
 
   const moveToAddLiquidityView = (token0?: string, token1?: string) => {
     const query =
@@ -217,6 +224,7 @@ export const LiquidityListView = () => {
 
   const headerColor = useColorModeValue('gray.600', 'gray.400');
   const successColor = useColorModeValue('green.500', 'green.400');
+  const failColor = useColorModeValue('red.500', 'red.400');
 
   return (
     <>
@@ -355,6 +363,20 @@ export const LiquidityListView = () => {
                     isUpdating={isUserLPBalancesUpdating}
                     prefix="~$"
                     value={userLPValue}
+                  />
+                </Box>
+
+                <Box>
+                  <Text fontWeight="bold" color={headerColor}>
+                    Fees Earned
+                  </Text>
+                  <DisplayValue
+                    color={
+                      Number(userMetrics?.fees) > 0 ? successColor : failColor
+                    }
+                    isUpdating={isMetricsLoading}
+                    prefix="~$"
+                    value={userMetrics?.fees ?? 0}
                   />
                 </Box>
 

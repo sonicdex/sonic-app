@@ -1,5 +1,7 @@
 export const ENV = {
   host: process.env.HOST || 'https://boundary.ic0.app/',
+  analyticsHost:
+    process.env.ANALYTICS_HOST || 'http://165.22.249.225:8080/graphql',
   swapCanisterFee: Number(process.env.SWAP_CANISTER_FEE) || 10000,
   isDarkModeEnabled: process.env.IS_DARK_MODE_ENABLED === 'true',
   canistersPrincipalIDs: {
