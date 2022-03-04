@@ -572,8 +572,8 @@ export const useSwapViewData = () => {
       Swap.getPriceImpact({
         amountIn: from.value,
         amountOut: to.value,
-        priceIn: from.metadata?.price ?? 0,
-        priceOut: to.metadata?.price ?? 0,
+        priceIn: from.metadata?.price ?? '0',
+        priceOut: to.metadata?.price ?? '0',
       }).toString(),
     [from, to]
   );
