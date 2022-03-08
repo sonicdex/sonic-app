@@ -1,0 +1,9 @@
+{ 
+    "chromeWebSecurity": false,
+    "projectId": "z5frnt",
+    "baseUrl": "https://2aoj2-aaaaa-aaaad-qa4qq-cai.ic.fleek.co/", 
+    "experimentalInteractiveRunEvents": true,
+    "pluginsFile": "cypress/plugins/plug.js",
+    "testFiles": "**/*.plug.spec.js"
+
+}

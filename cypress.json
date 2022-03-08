@@ -1,6 +1,6 @@
 { 
     "chromeWebSecurity": false,
     "projectId": "z5frnt",
-    "baseUrl": "https://2aoj2-aaaaa-aaaad-qa4qq-cai.ic.fleek.co/"
-      
+    "baseUrl": "https://2aoj2-aaaaa-aaaad-qa4qq-cai.ic.fleek.co/",
+    "ignoreTestFiles":"**/*.plug.spec.js"
 }

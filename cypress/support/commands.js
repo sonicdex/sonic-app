@@ -24,34 +24,43 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
-Cypress.Commands.add('openTokensPopup', (token="ICP") => { 
-    cy.contains(token)
-    .click()
- })
-
-
- Cypress.Commands.add('closeTokensPopup', () => {
-    cy.get('[class="chakra-icon css-onkibi"]')
-    .click()
- })
-
- Cypress.Commands.add('checkCSSAttrs', (Index,NavItem) => {
-   cy.get('#tabs-1--tab-'+[Index])
-   .should('be.visible')
-   .should('have.text', NavItem)
-   .should('have.css','color','rgba(255, 255, 255, 0.92)')
-   .click()
-   .should('have.css', 'color', 'rgb(214, 216, 218)')
-   .should('have.css', 'font-family', '"Nunito Sans"')
-   .should('have.css', 'font-weight', '600')
-   .should('have.css', 'background', 'rgba(0, 0, 0, 0) linear-gradient(to right, rgb(61, 82, 244), rgb(49, 66, 195)) repeat scroll 0% 0% / auto padding-box border-box')
-
+Cypress.Commands.add('openTokensPopup', (token = "ICP") => {
+   cy.contains(token)
+      .click()
 })
 
-Cypress.Commands.add('checkTextStyling', (selector,color='rgb(240, 242, 244)') => {
+
+Cypress.Commands.add('closeTokensPopup', () => {
+   cy.get('[class="chakra-icon css-onkibi"]')
+      .click()
+})
+
+Cypress.Commands.add('checkCSSAttrs', (Index, NavItem, fontColor = 'rgb(214, 216, 218)') => {
+   cy.get('#tabs-1--tab-' + [Index])
+      .should('be.visible')
+      .should('have.text', NavItem)
+      .should('have.css', 'color', 'rgba(255, 255, 255, 0.92)')
+      .click()
+      .should('have.css', 'color', fontColor)
+      .should('have.css', 'font-family', '"Nunito Sans"')
+      .should('have.css', 'font-weight', '600')
+      .should('have.css', 'background', 'rgba(0, 0, 0, 0) linear-gradient(to right, rgb(61, 82, 244), rgb(49, 66, 195)) repeat scroll 0% 0% / auto padding-box border-box')
+})
+
+Cypress.Commands.add('checkCSSAttrsWithPlug', (Index, NavItem) => {
+   cy.get('#tabs-1--tab-' + [Index])
+      .should('have.text', NavItem)
+      .should('have.css', 'color', 'rgba(255, 255, 255, 0.92)')
+      .should('have.css', 'font-family', '"Nunito Sans"')
+      .should('have.css', 'font-weight', '600')
+      .should('have.css', 'background', 'rgba(0, 0, 0, 0) none repeat scroll 0% 0% / auto padding-box border-box')
+})
+
+Cypress.Commands.add('checkTextStyling', (selector, color = 'rgb(240, 242, 244)') => {
    cy.contains(selector)
-   .should('be.visible')
-   .should('have.css', 'color', color)
-   .should('have.css', 'background-color', 'rgba(0, 0, 0, 0)')
-   .should('have.css', 'font-family', '"Nunito Sans"')
+      .should('be.visible')
+      .should('have.css', 'color', color)
+      .should('have.css', 'background-color', 'rgba(0, 0, 0, 0)')
+      .should('have.css', 'font-family', '"Nunito Sans"')
 })
+

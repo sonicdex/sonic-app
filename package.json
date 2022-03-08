@@ -9,7 +9,8 @@
     "build": "webpack --config webpack.prod.js",
     "format": "prettier --write ./src",
     "test": "jest --watch",
-    "test:ci": "jest --silent"
+    "test:ci": "jest --silent",
+    "cypress:plug": "cypress open --config-file cypress.plug.json"
   },
   "author": {
     "name": "Psychedelic",
@@ -34,7 +35,7 @@
     "commitlint": "15.0.0",
     "copy-webpack-plugin": "^10.2.4",
     "css-loader": "^6.6.0",
-    "cypress": "^9.5.0",
+    "cypress": "^9.5.1",
     "dotenv": "^10.0.0",
     "eslint": "8.9.0",
     "eslint-config-prettier": "^8.3.0",
@@ -82,8 +83,7 @@
     "json-bigint": "^1.0.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-redux": "^7.2.6",
-    "react-router-dom": "6.2.1"
+    "react-redux": "^7.2.6"
   },
   "lint-staged": {
     "*.{js,jss,ts,tsx,css,md}": "prettier --write"
