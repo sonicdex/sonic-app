@@ -81,7 +81,7 @@ export const LiquidityListView = () => {
     supportedTokenListState,
   } = useSwapCanisterStore();
   const { isBannerOpened } = useLiquidityViewStore();
-  const { isLoading: isMetricsLoading, userMetrics } = useUserMetrics();
+  const { isLoading: isMetricsLoading, userPairMetrics } = useUserMetrics();
 
   const moveToAddLiquidityView = (token0?: string, token1?: string) => {
     const query =
@@ -221,7 +221,6 @@ export const LiquidityListView = () => {
 
   const headerColor = useColorModeValue('gray.600', 'gray.400');
   const successColor = useColorModeValue('green.500', 'green.400');
-  const failColor = useColorModeValue('red.500', 'red.400');
 
   return (
     <>
@@ -369,14 +368,10 @@ export const LiquidityListView = () => {
                     Fees Earned
                   </Text>
                   <DisplayValue
-                    color={
-                      Number(userMetrics?.[pairId].fees) > 0
-                        ? successColor
-                        : failColor
-                    }
+                    color={successColor}
                     isUpdating={isMetricsLoading}
                     prefix="~$"
-                    value={userMetrics?.[pairId].fees ?? 0}
+                    value={userPairMetrics?.[pairId].fees ?? 0}
                   />
                 </Box>
 

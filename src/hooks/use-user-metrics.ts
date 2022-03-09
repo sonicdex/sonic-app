@@ -12,13 +12,13 @@ export const useUserMetrics = () => {
   const { principalId } = usePlugStore();
   const { allPairs } = useSwapCanisterStore();
   const [isLoading, setIsLoading] = useState(false);
-  const [userMetrics, setUserMetrics] = useState<UserPairMetrics>();
+  const [userPairMetrics, setUserPairMetrics] = useState<UserPairMetrics>();
 
   const getUserMetrics = useKeepSync(
     'getUserMetrics',
     useCallback(async () => {
       if (!principalId || !allPairs) {
-        setUserMetrics(undefined);
+        setUserPairMetrics(undefined);
         return;
       }
 
@@ -32,28 +32,28 @@ export const useUserMetrics = () => {
         );
         const responses = await Promise.all(promises);
 
-        const userPairMetrics = responses.reduce((acc, response, index) => {
+        const _userPairMetrics = responses.reduce((acc, response, index) => {
           acc[pairIds[index]] = response;
           return acc;
         }, {} as UserPairMetrics);
 
-        setUserMetrics(userPairMetrics);
+        setUserPairMetrics(_userPairMetrics);
       } catch (error) {
         console.error(`User metrics fetch error`, error);
       }
       setIsLoading(false);
-    }, [setIsLoading, setUserMetrics, principalId, allPairs])
+    }, [setIsLoading, setUserPairMetrics, principalId, allPairs])
   );
 
   useEffect(() => {
-    if (!userMetrics) {
+    if (!userPairMetrics) {
       getUserMetrics();
     }
   }, [principalId, getUserMetrics]);
 
   return {
     isLoading,
-    userMetrics,
+    userPairMetrics,
     getUserMetrics,
   };
 };
