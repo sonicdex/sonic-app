@@ -1,6 +1,7 @@
-import { ENV } from '@/config';
 import { deserialize, serialize } from '@psychedelic/sonic-js';
 import axios from 'axios';
+
+import { ENV } from '@/config';
 
 export class AnalyticsApi {
   public axios;
@@ -19,14 +20,15 @@ export class AnalyticsApi {
   }
 
   async queryUserMetrics(
-    principalId: string
+    principalId: string,
+    pairId?: string
   ): Promise<AnalyticsApi.ReturnMetrics> {
     const response = await this.request<AnalyticsApi.UserQuery>({
       operationName: null,
       query: `
             query {
                 user(id: "${principalId}") {
-                    returnMetrics {
+                    returnMetrics${pairId ? `(pairId: "${pairId}")` : ''} {
                         hodlReturn,
                         hodlReturn,
                         netReturn,

@@ -2,7 +2,7 @@ import { Box, HStack, Stack, Text, useColorModeValue } from '@chakra-ui/react';
 import { Liquidity, toBigNumber } from '@psychedelic/sonic-js';
 import { FaMinus } from '@react-icons/all-files/fa/FaMinus';
 import { FaPlus } from '@react-icons/all-files/fa/FaPlus';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router';
 
 import {
@@ -16,6 +16,7 @@ import {
   PlugNotConnected,
 } from '@/components';
 import { LPBreakdownPopover } from '@/components/core/lp-breakdown-popover';
+import { useUserMetrics } from '@/hooks';
 import { AppTokenMetadata } from '@/models';
 import {
   FeatureState,
@@ -28,7 +29,6 @@ import {
 } from '@/store';
 
 import { RemoveLiquidityModal } from './remove-liquidity-modal';
-import { useUserMetrics } from '@/hooks';
 
 const INFORMATION_TITLE = 'Liquidity Provider Rewards';
 const INFORMATION_DESCRIPTION =
@@ -59,6 +59,7 @@ const InformationDescription = () => {
 };
 
 type PairedUserLPToken = {
+  pairId: string;
   token0: AppTokenMetadata;
   token1: AppTokenMetadata;
   balance0: string;
@@ -81,11 +82,6 @@ export const LiquidityListView = () => {
   } = useSwapCanisterStore();
   const { isBannerOpened } = useLiquidityViewStore();
   const { isLoading: isMetricsLoading, userMetrics } = useUserMetrics();
-
-  useEffect(() => {
-    console.log('isLoading', isMetricsLoading);
-    console.log(userMetrics);
-  }, [isMetricsLoading]);
 
   const moveToAddLiquidityView = (token0?: string, token1?: string) => {
     const query =
@@ -181,6 +177,7 @@ export const LiquidityListView = () => {
             .toString();
 
           pairedList.push({
+            pairId: allPairs?.[tokenId0]?.[tokenId1]?.id,
             token0,
             token1,
             balance0,
@@ -294,6 +291,7 @@ export const LiquidityListView = () => {
         >
           {pairedUserLPTokens.map((userLPToken, index) => {
             const {
+              pairId,
               token0,
               token1,
               userShares,
@@ -372,11 +370,13 @@ export const LiquidityListView = () => {
                   </Text>
                   <DisplayValue
                     color={
-                      Number(userMetrics?.fees) > 0 ? successColor : failColor
+                      Number(userMetrics?.[pairId].fees) > 0
+                        ? successColor
+                        : failColor
                     }
                     isUpdating={isMetricsLoading}
                     prefix="~$"
-                    value={userMetrics?.fees ?? 0}
+                    value={userMetrics?.[pairId].fees ?? 0}
                   />
                 </Box>
 
