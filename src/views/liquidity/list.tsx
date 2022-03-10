@@ -16,6 +16,7 @@ import {
   PlugNotConnected,
 } from '@/components';
 import { LPBreakdownPopover } from '@/components/core/lp-breakdown-popover';
+import { useUserMetrics } from '@/hooks';
 import { AppTokenMetadata } from '@/models';
 import {
   FeatureState,
@@ -58,6 +59,7 @@ const InformationDescription = () => {
 };
 
 type PairedUserLPToken = {
+  pairId: string;
   token0: AppTokenMetadata;
   token1: AppTokenMetadata;
   balance0: string;
@@ -79,6 +81,7 @@ export const LiquidityListView = () => {
     supportedTokenListState,
   } = useSwapCanisterStore();
   const { isBannerOpened } = useLiquidityViewStore();
+  const { isLoading: isMetricsLoading, userPairMetrics } = useUserMetrics();
 
   const moveToAddLiquidityView = (token0?: string, token1?: string) => {
     const query =
@@ -174,6 +177,7 @@ export const LiquidityListView = () => {
             .toString();
 
           pairedList.push({
+            pairId: allPairs?.[tokenId0]?.[tokenId1]?.id,
             token0,
             token1,
             balance0,
@@ -286,6 +290,7 @@ export const LiquidityListView = () => {
         >
           {pairedUserLPTokens.map((userLPToken, index) => {
             const {
+              pairId,
               token0,
               token1,
               userShares,
@@ -355,6 +360,18 @@ export const LiquidityListView = () => {
                     isUpdating={isUserLPBalancesUpdating}
                     prefix="~$"
                     value={userLPValue}
+                  />
+                </Box>
+
+                <Box>
+                  <Text fontWeight="bold" color={headerColor}>
+                    Fees Earned
+                  </Text>
+                  <DisplayValue
+                    color={successColor}
+                    isUpdating={isMetricsLoading}
+                    prefix="~$"
+                    value={userPairMetrics?.[pairId].fees ?? 0}
                   />
                 </Box>
 

@@ -1,5 +1,5 @@
 import { Bytes } from '@ethersproject/bytes';
-import { toBigNumber } from '@psychedelic/sonic-js';
+import { Pair, toBigNumber } from '@psychedelic/sonic-js';
 import BigNumber from 'bignumber.js';
 import { ethers } from 'ethers';
 import { formatUnits, parseUnits } from 'ethers/lib/utils';
@@ -72,4 +72,16 @@ export const getMaxValue = (
 
 export const capitalize = (str: string) => {
   return str.charAt(0).toUpperCase() + str.slice(1);
+};
+
+export const getPairIdsFromPairList = (pairList: Pair.List): string[] => {
+  const idsSet = new Set<string>();
+
+  Object.values(pairList).forEach((paired) => {
+    Object.values(paired).forEach((pair) => {
+      idsSet.add(pair.id);
+    });
+  });
+
+  return Array.from(idsSet);
 };
