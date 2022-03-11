@@ -19,7 +19,7 @@ export const useLiquidityViewInit = () => {
   const getPair = useCallback(async () => {
     if (swapActor && token0.metadata?.id && token1.metadata?.id) {
       if (allPairs) {
-        const pair = allPairs[token0.metadata.id][
+        const pair = allPairs[token0.metadata.id]?.[
           token1.metadata.id
         ] as unknown as Pair;
         if (pair) return dispatch(liquidityViewActions.setPair(pair));

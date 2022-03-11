@@ -156,9 +156,9 @@ export const LiquidityListView = () => {
             const balances = Liquidity.getTokenBalances({
               decimals0: token0.decimals,
               decimals1: token1.decimals,
-              reserve0: pair.reserve0,
-              reserve1: pair.reserve1,
-              totalSupply: pair.totalSupply,
+              reserve0: pair?.reserve0 ?? 0,
+              reserve1: pair?.reserve1 ?? 0,
+              totalSupply: pair?.totalSupply ?? 0,
               lpBalance,
             });
 
@@ -371,7 +371,7 @@ export const LiquidityListView = () => {
                     color={successColor}
                     isUpdating={isMetricsLoading}
                     prefix="~$"
-                    value={userPairMetrics?.[pairId].fees ?? 0}
+                    value={userPairMetrics?.[pairId]?.fees ?? 0}
                   />
                 </Box>
 

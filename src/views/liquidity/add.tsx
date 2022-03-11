@@ -295,9 +295,6 @@ export const LiquidityAddView = () => {
 
   const { fee0, fee1, price0, price1, shareOfPool, liquidityAmount } =
     useMemo(() => {
-      console.log('token0.value', token0.value);
-      console.log('token1.value', token1.value);
-      console.log('---');
       if (token0.metadata && token1.metadata && token0.value && token1.value) {
         const fee0 = toBigNumber(token0.metadata.fee)
           .multipliedBy(2)
