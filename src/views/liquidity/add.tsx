@@ -194,15 +194,15 @@ export const LiquidityAddView = () => {
           reserveOut,
           decimalsIn,
           decimalsOut,
-        }).toString();
+        });
 
         const reversedDataKey = dataKey === 'token0' ? 'token1' : 'token0';
 
-        if (lpValue) {
+        if (lpValue.gt(0)) {
           dispatch(
             liquidityViewActions.setValue({
               data: reversedDataKey,
-              value: lpValue,
+              value: lpValue.toString(),
             })
           );
         }

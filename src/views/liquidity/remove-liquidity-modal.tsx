@@ -90,9 +90,9 @@ export const RemoveLiquidityModal = () => {
       const { balance0, balance1 } = Liquidity.getTokenBalances({
         decimals0: token0.metadata.decimals,
         decimals1: token1.metadata.decimals,
-        reserve0: pair.reserve0,
-        reserve1: pair.reserve1,
-        totalSupply: pair.totalSupply,
+        reserve0: pair?.reserve0 ?? 0,
+        reserve1: pair?.reserve1 ?? 0,
+        totalSupply: pair?.totalSupply ?? 0,
         lpBalance,
       });
 
