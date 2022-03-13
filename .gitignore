@@ -24,7 +24,6 @@ public/js
 # Cypress
 cypress/videos
 cypress/screenshots
-cypress/plug*
 cypress/integration/1*
 cypress/integration/2*
 
