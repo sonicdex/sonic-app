@@ -7,7 +7,6 @@ import {
   PopoverArrow,
   PopoverBody,
   PopoverContent,
-  PopoverHeader,
   PopoverTrigger,
   Text,
   useColorModeValue,
@@ -94,15 +93,16 @@ export const PairedUserLPToken: React.FC<PairedUserLPTokenProps> = ({
         <Button
           variant="outline"
           borderColor="dark-blue.500"
-          w={100}
           onClick={() => handleAdd(token0.id, token1.id)}
+          fontWeight="normal"
+          width="85px"
         >
           Add
         </Button>
         <Button
           variant="ghost"
-          w={100}
           onClick={() => handleRemove(token0, token1)}
+          fontWeight="normal"
         >
           Remove
         </Button>
@@ -149,47 +149,49 @@ export const PairedUserLPToken: React.FC<PairedUserLPTokenProps> = ({
           />
         </Box>
 
-        <Popover trigger="hover">
-          <PopoverTrigger>
-            <Box
-              flex={1}
-              backgroundColor="#8888882f"
-              mx={-3}
-              my={-1}
-              px={3}
-              py={1}
-              borderRadius="xl"
-            >
-              <Text
-                color={headerColor}
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-              >
-                Fees Earned <FaInfoCircle />
-              </Text>
-              <DisplayValue
-                color={successColor}
-                isUpdating={isMetricsLoading}
-                prefix="$"
-                value={pairMetrics?.fees ?? 0}
-                fontWeight="bold"
-                disableTooltip
-              />
-            </Box>
-          </PopoverTrigger>
+        <Box
+          flex={1}
+          backgroundColor="#8888882f"
+          mx={-3}
+          my={-1}
+          px={3}
+          py={1}
+          borderRadius="xl"
+        >
+          <Text
+            color={headerColor}
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            Fees Earned
+            <Popover trigger="hover">
+              <PopoverTrigger>
+                <Box>
+                  <FaInfoCircle />
+                </Box>
+              </PopoverTrigger>
 
-          <PopoverContent>
-            <PopoverArrow />
-            <PopoverHeader>Estimated Fees Earned</PopoverHeader>
-            <PopoverBody>
-              This amount is estimation calculated through snapshots of your
-              positions and can variate with price floating. It also represents
-              your fees earned for all liquidity positions you have or already
-              had on Sonic.
-            </PopoverBody>
-          </PopoverContent>
-        </Popover>
+              <PopoverContent color={useColorModeValue('black', 'white')}>
+                <PopoverArrow />
+                <PopoverBody>
+                  This amount is estimation calculated through snapshots of your
+                  positions and can variate with price floating. It also
+                  represents your fees earned for all liquidity positions you
+                  have or already had on Sonic.
+                </PopoverBody>
+              </PopoverContent>
+            </Popover>
+          </Text>
+          <DisplayValue
+            color={successColor}
+            isUpdating={isMetricsLoading}
+            prefix="$"
+            value={pairMetrics?.fees ?? 0}
+            fontWeight="bold"
+            disableTooltip
+          />
+        </Box>
       </Flex>
     </Flex>
   );
