@@ -17,6 +17,10 @@ export const useUserMetrics = () => {
   const getUserMetrics = useKeepSync(
     'getUserMetrics',
     useCallback(async () => {
+      if (isLoading) {
+        return;
+      }
+
       if (!principalId || !allPairs) {
         setUserPairMetrics(undefined);
         return;
@@ -42,7 +46,7 @@ export const useUserMetrics = () => {
         console.error(`User metrics fetch error`, error);
       }
       setIsLoading(false);
-    }, [setIsLoading, setUserPairMetrics, principalId, allPairs])
+    }, [setUserPairMetrics, principalId, allPairs, isLoading])
   );
 
   useEffect(() => {
