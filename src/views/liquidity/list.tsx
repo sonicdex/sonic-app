@@ -22,8 +22,11 @@ import {
   useSwapCanisterStore,
 } from '@/store';
 
-import { PairedUserLPToken, PairedUserLPTokenProps } from './components';
-import { RemoveLiquidityModal } from './remove-liquidity-modal';
+import {
+  PairedUserLPToken,
+  PairedUserLPTokenProps,
+  RemoveLiquidityModal,
+} from './components';
 
 const INFORMATION_TITLE = 'Liquidity Provider Rewards';
 const INFORMATION_DESCRIPTION =
