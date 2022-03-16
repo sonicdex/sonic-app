@@ -348,23 +348,15 @@ export const LiquidityAddView = () => {
             shareOfPool,
           };
         } else {
-          const token0Value = toBigNumber(token1.value)
+          const price0 = toBigNumber(token1.value)
             .div(token0.value)
-            .dp(token0.metadata.decimals);
+            .dp(token0.metadata.decimals)
+            .toString();
 
-          const token1Value = toBigNumber(token0.value)
+          const price1 = toBigNumber(token0.value)
             .div(token1.value)
-            .dp(token1.metadata.decimals);
-
-          const price0 =
-            token0Value.isNaN() || token0Value.isZero()
-              ? 0
-              : token0Value.toString();
-
-          const price1 =
-            token1Value.isNaN() || token1Value.isZero()
-              ? 0
-              : token1Value.toString();
+            .dp(token1.metadata.decimals)
+            .toString();
 
           const liquidityAmount = toBigNumber(
             Liquidity.getPosition({
