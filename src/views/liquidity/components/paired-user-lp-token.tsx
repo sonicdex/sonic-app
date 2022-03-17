@@ -17,7 +17,7 @@ import { useMemo } from 'react';
 
 import { DisplayValue, TokenImageBlock } from '@/components';
 import { LPBreakdownPopover } from '@/components/core/lp-breakdown-popover';
-import { UserPairMetrics } from '@/hooks';
+import { UserLPMetrics } from '@/hooks';
 import { AppTokenMetadata } from '@/models';
 
 export interface PairedUserLPTokenProps {
@@ -29,7 +29,7 @@ export interface PairedUserLPTokenProps {
   userShares: string;
   totalShares?: string;
   allPairs?: Pair.List;
-  pairMetrics?: UserPairMetrics[keyof UserPairMetrics];
+  pairMetrics?: UserLPMetrics[keyof UserLPMetrics];
   handleRemove: (token0: AppTokenMetadata, token1: AppTokenMetadata) => void;
   handleAdd: (token0?: string, token1?: string) => void;
   isMetricsLoading?: boolean;
