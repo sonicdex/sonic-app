@@ -19,30 +19,26 @@ export class AnalyticsApi {
     return (await this.axios.request({ data: data })).data.data;
   }
 
-  async queryUserMetrics(
+  async queryUserLPMetrics(
     principalId: string,
     pairId?: string
-  ): Promise<AnalyticsApi.ReturnMetrics> {
-    const response = await this.request<AnalyticsApi.UserQuery>({
+  ): Promise<AnalyticsApi.PositionMetrics> {
+    const response = await this.request<AnalyticsApi.UserLPMetricsQuery>({
       operationName: null,
       query: `
             query {
-                user(id: "${principalId}") {
-                    returnMetrics${pairId ? `(pairId: "${pairId}")` : ''} {
-                        hodlReturn,
-                        hodlReturn,
-                        netReturn,
-                        sonicReturn,
-                        impLoss,
-                        fees
-                    }
+              user(id: "${principalId}") {
+                positionMetrics${pairId ? `(pairId: "${pairId}")` : ''} {
+                  impLoss,
+                  fees
                 }
+              }
             }
             `,
       variables: {},
     });
 
-    return response.user.returnMetrics;
+    return response.user.positionMetrics;
   }
 }
 
@@ -53,17 +49,14 @@ export namespace AnalyticsApi {
     variables: any;
   }
 
-  export interface ReturnMetrics {
-    hodlReturn: string;
-    netReturn: string;
-    sonicReturn: string;
+  export interface PositionMetrics {
     impLoss: string;
     fees: string;
   }
 
-  export interface UserQuery {
+  export interface UserLPMetricsQuery {
     user: {
-      returnMetrics: ReturnMetrics;
+      positionMetrics: PositionMetrics;
     };
   }
 }
