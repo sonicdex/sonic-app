@@ -111,32 +111,33 @@ export const PairedUserLPToken: React.FC<PairedUserLPTokenProps> = ({
       <Divider />
 
       <Flex direction="row" px={6} py={4}>
-        <LPBreakdownPopover
-          sources={[
-            {
-              src: token0.logo,
-              symbol: token0.symbol,
-              decimals: token0.decimals,
-              balance: balance0,
-            },
-            {
-              src: token1.logo,
-              symbol: token1.symbol,
-              decimals: token1.decimals,
-              balance: balance1,
-            },
-          ]}
-        >
-          <Box flex={1}>
-            <Text color={headerColor}>LP Tokens</Text>
+        <Box flex={1}>
+          <Text color={headerColor}>LP Tokens</Text>
+          <LPBreakdownPopover
+            sources={[
+              {
+                src: token0.logo,
+                symbol: token0.symbol,
+                decimals: token0.decimals,
+                balance: balance0,
+              },
+              {
+                src: token1.logo,
+                symbol: token1.symbol,
+                decimals: token1.decimals,
+                balance: balance1,
+              },
+            ]}
+          >
             <DisplayValue
               value={userShares}
               isUpdating={isLPBalanceLoading}
-              disableTooltip
               fontWeight="bold"
+              disableTooltip
+              width="fit-content"
             />
-          </Box>
-        </LPBreakdownPopover>
+          </LPBreakdownPopover>
+        </Box>
 
         <Box flex={1}>
           <Text color={headerColor}>USD Value</Text>
@@ -145,7 +146,8 @@ export const PairedUserLPToken: React.FC<PairedUserLPTokenProps> = ({
             prefix="$"
             value={userLPValue}
             fontWeight="bold"
-            disableTooltip
+            decimals={8}
+            width="fit-content"
           />
         </Box>
 
@@ -189,7 +191,8 @@ export const PairedUserLPToken: React.FC<PairedUserLPTokenProps> = ({
             prefix="$"
             value={pairMetrics?.fees ?? 0}
             fontWeight="bold"
-            disableTooltip
+            decimals={8}
+            width="fit-content"
           />
         </Box>
       </Flex>

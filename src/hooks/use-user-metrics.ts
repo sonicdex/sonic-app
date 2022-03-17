@@ -5,7 +5,7 @@ import { useKeepSync, usePlugStore, useSwapCanisterStore } from '@/store';
 import { getPairIdsFromPairList } from '@/utils/format';
 
 export type UserPairMetrics = {
-  [canisterId: string]: AnalyticsApi.ReturnMetrics;
+  [canisterId: string]: AnalyticsApi.PositionMetrics;
 };
 
 export const useUserMetrics = () => {
