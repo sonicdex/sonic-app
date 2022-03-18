@@ -21,7 +21,7 @@ import {
   Tooltip,
   useColorModeValue,
 } from '@chakra-ui/react';
-import { Liquidity, toBigNumber } from '@psychedelic/sonic-js';
+import { Liquidity } from '@psychedelic/sonic-js';
 import { FaCog } from '@react-icons/all-files/fa/FaCog';
 import { FaEquals } from '@react-icons/all-files/fa/FaEquals';
 import { FaInfoCircle } from '@react-icons/all-files/fa/FaInfoCircle';
@@ -46,7 +46,6 @@ import {
   TokenInput,
   ViewHeader,
 } from '@/components';
-import { getAppAssetsSources } from '@/config/utils';
 import { useTokenBalanceMemo } from '@/hooks';
 import { useBalances } from '@/hooks/use-balances';
 import { useQuery } from '@/hooks/use-query';
@@ -67,7 +66,7 @@ import {
 import { getMaxValue } from '@/utils/format';
 import { debounce } from '@/utils/function';
 
-import { getShareOfPoolString } from './liquidity.utils';
+import { useAddLiquidityMemo, useTokenSourceMemo } from './liquidity.utils';
 
 export const LiquidityAddView = () => {
   const query = useQuery();
@@ -163,7 +162,6 @@ export const LiquidityAddView = () => {
   };
 
   // Utils
-
   const setInAndOutTokenValues = useCallback(
     (dataKey: LiquidityTokenDataKey, value?: string) => {
       const [amountIn, reserveIn, reserveOut, decimalsIn, decimalsOut] =
@@ -220,7 +218,6 @@ export const LiquidityAddView = () => {
   );
 
   // Memorized values
-
   const token0Balance = useTokenBalanceMemo(token0.metadata?.id);
   const token1Balance = useTokenBalanceMemo(token1.metadata?.id);
 
@@ -294,124 +291,19 @@ export const LiquidityAddView = () => {
   }, [token0?.metadata?.id, token1?.metadata?.id]);
 
   const { fee0, fee1, price0, price1, shareOfPool, liquidityAmount } =
-    useMemo(() => {
-      if (token0.metadata && token1.metadata && token0.value && token1.value) {
-        const fee0 = toBigNumber(token0.metadata.fee)
-          .multipliedBy(2)
-          .applyDecimals(token0.metadata.decimals)
-          .toString();
+    useAddLiquidityMemo({ pair, token0, token1 });
 
-        const fee1 = toBigNumber(token1.metadata.fee)
-          .multipliedBy(2)
-          .applyDecimals(token1.metadata.decimals)
-          .toString();
+  const token0Sources = useTokenSourceMemo({
+    token: token0,
+    tokenBalances,
+    sonicBalances,
+  });
 
-        if (pair?.reserve0 && pair?.reserve1) {
-          const price0 = Liquidity.getOppositeAmount({
-            amountIn: '1',
-            reserveIn: pair.reserve1,
-            reserveOut: pair.reserve0,
-            decimalsIn: token1.metadata.decimals,
-            decimalsOut: token0.metadata.decimals,
-          }).toString();
-
-          const price1 = Liquidity.getOppositeAmount({
-            amountIn: '1',
-            reserveIn: pair.reserve0,
-            reserveOut: pair.reserve1,
-            decimalsIn: token0.metadata.decimals,
-            decimalsOut: token1.metadata.decimals,
-          }).toString();
-
-          const options = {
-            amount0: token0.value,
-            amount1: token1.value,
-            decimals0: token0.metadata?.decimals,
-            decimals1: token1.metadata?.decimals,
-            reserve0: pair.reserve0,
-            reserve1: pair.reserve1,
-            totalSupply: pair.totalSupply,
-          };
-
-          const liquidityAmount = Liquidity.getPosition(options)
-            .applyDecimals(Liquidity.PAIR_DECIMALS)
-            .toString();
-
-          const shareOfPool = getShareOfPoolString(options);
-
-          return {
-            fee0,
-            fee1,
-            price0,
-            price1,
-            liquidityAmount,
-            shareOfPool,
-          };
-        } else {
-          const price0 = toBigNumber(token1.value)
-            .div(token0.value)
-            .dp(token0.metadata.decimals)
-            .toString();
-
-          const price1 = toBigNumber(token0.value)
-            .div(token1.value)
-            .dp(token1.metadata.decimals)
-            .toString();
-
-          const liquidityAmount = toBigNumber(
-            Liquidity.getPosition({
-              amount0: token0.value,
-              amount1: token1.value,
-              decimals0: token0.metadata.decimals,
-              decimals1: token1.metadata.decimals,
-              reserve0: 0,
-              reserve1: 0,
-              totalSupply: 0,
-            })
-          )
-            .applyDecimals(Liquidity.PAIR_DECIMALS)
-            .toString();
-
-          return {
-            fee0,
-            fee1,
-            price0,
-            price1,
-            shareOfPool: '100%',
-            liquidityAmount,
-          };
-        }
-      }
-
-      return {
-        fee0: '0',
-        fee1: '0',
-        price0: '0',
-        price1: '0',
-      };
-    }, [token0, token1, pair]);
-
-  const token0Sources = useMemo(() => {
-    if (token0.metadata) {
-      return getAppAssetsSources({
-        balances: {
-          plug: tokenBalances ? tokenBalances[token0.metadata.id] : 0,
-          sonic: sonicBalances ? sonicBalances[token0.metadata.id] : 0,
-        },
-      });
-    }
-  }, [token0.metadata, tokenBalances, sonicBalances]);
-
-  const token1Sources = useMemo(() => {
-    if (token1.metadata) {
-      return getAppAssetsSources({
-        balances: {
-          plug: tokenBalances ? tokenBalances[token1.metadata.id] : 0,
-          sonic: sonicBalances ? sonicBalances[token1.metadata.id] : 0,
-        },
-      });
-    }
-  }, [token1.metadata, tokenBalances, sonicBalances]);
+  const token1Sources = useTokenSourceMemo({
+    token: token1,
+    tokenBalances,
+    sonicBalances,
+  });
 
   useEffect(() => {
     if (!isLoading && supportedTokenList) {
