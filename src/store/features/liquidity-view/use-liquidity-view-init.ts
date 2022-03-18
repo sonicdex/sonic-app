@@ -23,6 +23,7 @@ export const useLiquidityViewInit = () => {
         if (localPair) return dispatch(liquidityViewActions.setPair(localPair));
       }
     }
+    return dispatch(liquidityViewActions.setPair(undefined));
   }, [dispatch, swapActor, token0.metadata?.id, token1.metadata?.id, allPairs]);
 
   useEffect(() => {

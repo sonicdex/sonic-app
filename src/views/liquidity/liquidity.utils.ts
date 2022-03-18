@@ -96,13 +96,13 @@ export const useAddLiquidityMemo = ({
           };
         } else {
           // If pair doesn't exist or doesn't have reserves
-          const price0 = toBigNumber(token1.value)
-            .div(token0.value)
+          const price0 = toBigNumber(token0.value)
+            .div(token1.value)
             .dp(token0.metadata.decimals)
             .toString();
 
-          const price1 = toBigNumber(token0.value)
-            .div(token1.value)
+          const price1 = toBigNumber(token1.value)
+            .div(token0.value)
             .dp(token1.metadata.decimals)
             .toString();
 

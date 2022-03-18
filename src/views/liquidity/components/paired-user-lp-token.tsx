@@ -177,10 +177,10 @@ export const PairedUserLPToken: React.FC<PairedUserLPTokenProps> = ({
               <PopoverContent color={useColorModeValue('black', 'white')}>
                 <PopoverArrow />
                 <PopoverBody>
-                  This amount is estimation calculated through snapshots of your
-                  positions and can variate with price floating. It also
-                  represents your fees earned for all liquidity positions you
-                  have or already had on Sonic.
+                  Your fees earned are based on periodic snapshots of the
+                  estimated prices of the assets your fees accrued in. Both the
+                  prices & assets that make up your fees earned are subject to
+                  change.
                 </PopoverBody>
               </PopoverContent>
             </Popover>
