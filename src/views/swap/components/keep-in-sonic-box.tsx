@@ -111,7 +111,7 @@ export const KeepInSonicBox: React.FC<KeepInSonicBoxProps> = ({
     >
       {canHeldInSonic ? (
         <>
-          <FormControl direction="row" alignItems="center">
+          <FormControl dir="row" alignItems="center">
             <Checkbox
               isChecked={keepInSonic}
               onChange={(e) =>

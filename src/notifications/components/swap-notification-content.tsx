@@ -1,4 +1,5 @@
 import { Link } from '@chakra-ui/react';
+import { deserialize, serialize } from '@psychedelic/sonic-js';
 import { useEffect, useMemo } from 'react';
 
 import { useAllPairs } from '@/hooks';
@@ -14,7 +15,6 @@ import {
   usePlugStore,
   useSwapViewStore,
 } from '@/store';
-import { deserialize, stringify } from '@/utils/format';
 
 export interface SwapNotificationContentProps {
   id: string;
@@ -30,12 +30,13 @@ export const SwapNotificationContent: React.FC<
   const { getBalances } = useBalances();
   const { getAllPairs } = useAllPairs();
 
-  const { from, to, slippage, keepInSonic } = useMemo(() => {
-    // Clone current state just for this batch
-    const { from, to, slippage, keepInSonic } = swapViewStore;
+  const { from, to, slippage, keepInSonic } =
+    useMemo(() => {
+      // Clone current state just for this batch
+      const { from, to, slippage, keepInSonic } = swapViewStore;
 
-    return deserialize(stringify({ from, to, slippage, keepInSonic }));
-  }, []);
+      return deserialize(serialize({ from, to, slippage, keepInSonic }));
+    }, []) ?? {};
 
   const allowance = useTokenAllowance(from.metadata?.id);
 

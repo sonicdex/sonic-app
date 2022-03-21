@@ -1,3 +1,5 @@
+import { Pair } from '@psychedelic/sonic-js';
+
 import { questionMarkSrc } from '@/assets';
 import { getFromStorage } from '@/config';
 import { SwapIDL } from '@/did';
@@ -5,7 +7,6 @@ import {
   AppTokenMetadata,
   AppTokenMetadataListObject,
   PairBalances,
-  PairList,
 } from '@/models';
 
 export const desensitizationPrincipalId = (
@@ -60,13 +61,9 @@ export const parseResponsePair = (
 
 export const parseResponseAllPairs = (
   response: SwapIDL.PairInfoExt[]
-): PairList => {
+): Pair.List => {
   return response.reduce((list, pair) => {
     const { token0, token1, reserve0, reserve1 } = pair;
-
-    if (Number(reserve0) === 0 && Number(reserve1) === 0) {
-      return list;
-    }
 
     return {
       ...list,
@@ -84,8 +81,8 @@ export const parseResponseAllPairs = (
           reserve1: reserve0,
         },
       },
-    };
-  }, {} as PairList);
+    } as Pair.List;
+  }, {} as Pair.List);
 };
 
 export const parseResponseUserLPBalances = (

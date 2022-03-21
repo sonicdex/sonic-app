@@ -51,7 +51,7 @@ export const LPBreakdownPopover: FC<LPBreakdownPopoverProps> = ({
         </PopoverHeader>
         <PopoverBody>
           {filteredSources.map((source) => (
-            <LPBreakdownPopoverItem {...source} />
+            <LPBreakdownPopoverItem key={source.symbol} {...source} />
           ))}
         </PopoverBody>
       </PopoverContent>

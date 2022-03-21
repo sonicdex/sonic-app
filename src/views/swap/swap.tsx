@@ -56,7 +56,6 @@ export const SwapView = () => {
     isLoading,
     isBalancesUpdating,
     isPriceUpdating,
-    isSwapPlacementButtonDisabled,
     isExplanationTooltipVisible,
     isSelectTokenButtonDisabled,
     selectTokenButtonText,
@@ -234,7 +233,6 @@ export const SwapView = () => {
               mx="auto"
               bg={swapPlacementButtonBg}
               onClick={onSwitchTokens}
-              isDisabled={isSwapPlacementButtonDisabled}
               pointerEvents={!to.metadata ? 'none' : 'all'}
               _hover={{
                 '& > svg': {

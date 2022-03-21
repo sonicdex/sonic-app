@@ -16,16 +16,14 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react';
 import { createContext } from '@chakra-ui/react-utils';
+import { Price } from '@psychedelic/sonic-js';
 import { FaChevronDown } from '@react-icons/all-files/fa/FaChevronDown';
 import React, { useCallback, useMemo } from 'react';
 
 import { questionMarkSrc } from '@/assets';
 import { NumberInput } from '@/components';
 import { AppTokenMetadata } from '@/models';
-import {
-  calculatePriceBasedOnAmount,
-  getDepositMaxValue,
-} from '@/utils/format';
+import { getMaxValue } from '@/utils/format';
 
 import { DisplayValue, NumberInputProps } from '..';
 import { TokenBalancesPopover } from '../token-balances-popover';
@@ -214,12 +212,14 @@ export const TokenDataPrice: React.FC<TokenDataPriceProps> = ({
     return true;
   }, [isLoading, value]);
 
-  const price = useMemo(() => {
-    return calculatePriceBasedOnAmount({
-      amount: value,
-      price: tokenMetadata?.price,
-    });
-  }, [tokenMetadata?.price, value]);
+  const price = useMemo(
+    () =>
+      Price.getByAmount({
+        amount: value,
+        price: tokenMetadata?.price,
+      }).toString(),
+    [tokenMetadata?.price, value]
+  );
 
   const defaultColorActive = useColorModeValue('gray.800', 'gray.50');
   const defaultColorInactive = useColorModeValue('gray.600', 'gray.300');
@@ -295,8 +295,7 @@ export const TokenDataBalances: React.FC<TokeDataBalancesProps> = ({
       onMaxClick &&
       totalTokenBalance &&
       totalTokenBalance > 0 &&
-      Number(getDepositMaxValue(tokenMetadata, totalTokenBalance)) !==
-        Number(value)
+      getMaxValue(tokenMetadata, totalTokenBalance).toNumber() !== Number(value)
     ) {
       return true;
     }
@@ -323,6 +322,7 @@ export const TokenDataBalances: React.FC<TokeDataBalancesProps> = ({
               decimals={tokenMetadata?.decimals || 0}
               prefix="Balance: "
               suffix={tokenMetadata?.symbol && ` ${tokenMetadata?.symbol}`}
+              shouldDivideByDecimals
             />
           )}
 

@@ -17,7 +17,7 @@ import {
 import { useKeepSync } from '@/store/features/keep-sync';
 import { parseResponseUserLPBalances } from '@/utils/canister';
 import { parseAmount } from '@/utils/format';
-import { getICPBalance } from '@/utils/icp';
+import { fetchICPBalance } from '@/utils/icp';
 
 export const useBalances = () => {
   const { principalId } = usePlugStore();
@@ -141,7 +141,7 @@ export const useBalances = () => {
               )
             : undefined;
 
-          const icpBalance = await getICPBalance(principalId);
+          const icpBalance = await fetchICPBalance(principalId);
 
           dispatch(
             swapCanisterActions.setICPBalance(

@@ -21,43 +21,46 @@ export type RemoveLiquidityActivityProps = {
   time: number;
 };
 
-export const RemoveLiquidityActivity: React.FC<RemoveLiquidityActivityProps> =
-  ({ token0: _token0, token1: _token1, amount0, amount1, time }) => {
-    const { tokenList } = useActivityViewStore();
+export const RemoveLiquidityActivity: React.FC<
+  RemoveLiquidityActivityProps
+> = ({ token0: _token0, token1: _token1, amount0, amount1, time }) => {
+  const { tokenList } = useActivityViewStore();
 
-    if (!tokenList) return null;
+  if (!tokenList) return null;
 
-    const token0 = tokenList[_token0];
-    const token1 = tokenList[_token1];
+  const token0 = tokenList[_token0];
+  const token1 = tokenList[_token1];
 
-    if (!token0 || !token1) return null;
+  if (!token0 || !token1) return null;
 
-    return (
-      <Asset type="lp" imageSources={[token0.logo, token1.logo]}>
-        <HStack spacing={4}>
-          <AssetImageBlock />
-          <AssetTitleBlock
-            title="Remove Liquidity"
-            subtitle={new Date(time).toLocaleTimeString('en-US')}
+  return (
+    <Asset type="lp" imageSources={[token0.logo, token1.logo]}>
+      <HStack spacing={4}>
+        <AssetImageBlock />
+        <AssetTitleBlock
+          title="Remove Liquidity"
+          subtitle={new Date(time).toLocaleTimeString('en-US')}
+        />
+      </HStack>
+      <Stack textAlign="end">
+        <Heading as="h6" size="sm" display="flex" alignItems="center">
+          <DisplayValue
+            value={amount0}
+            decimals={token0.decimals}
+            suffix={' ' + token0.symbol}
+            shouldDivideByDecimals
           />
-        </HStack>
-        <Stack textAlign="end">
-          <Heading as="h6" size="sm" display="flex" alignItems="center">
-            <DisplayValue
-              value={amount0}
-              decimals={token0.decimals}
-              suffix={' ' + token0.symbol}
-            />
-            &nbsp;
-            <FaPlus />
-            &nbsp;
-            <DisplayValue
-              value={amount1}
-              decimals={token1.decimals}
-              suffix={' ' + token1.symbol}
-            />
-          </Heading>
-        </Stack>
-      </Asset>
-    );
-  };
+          &nbsp;
+          <FaPlus />
+          &nbsp;
+          <DisplayValue
+            value={amount1}
+            decimals={token1.decimals}
+            suffix={' ' + token1.symbol}
+            shouldDivideByDecimals
+          />
+        </Heading>
+      </Stack>
+    </Asset>
+  );
+};

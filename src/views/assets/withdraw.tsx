@@ -1,4 +1,5 @@
 import { Box, Button } from '@chakra-ui/react';
+import { toBigNumber } from '@psychedelic/sonic-js';
 import { useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router';
 
@@ -27,7 +28,7 @@ import {
   useWithdrawViewStore,
   withdrawViewActions,
 } from '@/store';
-import { formatAmount, getCurrency, getCurrencyString } from '@/utils/format';
+import { formatValue } from '@/utils/format';
 import { debounce } from '@/utils/function';
 
 export const AssetsWithdrawView = () => {
@@ -76,14 +77,16 @@ export const AssetsWithdrawView = () => {
 
     if (
       parsedFromValue <=
-      getCurrency(selectedTokenMetadata.fee, selectedTokenMetadata.decimals)
+      toBigNumber(selectedTokenMetadata.fee)
+        .applyDecimals(selectedTokenMetadata.decimals)
+        .toNumber()
     ) {
       return [true, `Amount must be greater than fee`];
     }
 
     if (sonicBalances && selectedTokenMetadata) {
       const parsedBalance = parseFloat(
-        formatAmount(
+        formatValue(
           sonicBalances[selectedTokenMetadata.id],
           selectedTokenMetadata.decimals
         )
@@ -135,7 +138,9 @@ export const AssetsWithdrawView = () => {
   const handleMaxClick = () => {
     dispatch(
       withdrawViewActions.setAmount(
-        getCurrencyString(tokenBalance, selectedTokenMetadata?.decimals)
+        toBigNumber(tokenBalance)
+          .applyDecimals(selectedTokenMetadata?.decimals ?? 0)
+          .toString()
       )
     );
   };

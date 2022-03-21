@@ -20,3 +20,12 @@ public/js
 # Env
 .env*
 !.env.example
+
+# Cypress
+cypress/videos
+cypress/screenshots
+cypress/integration/1*
+cypress/integration/2*
+
+#Users
+Users*

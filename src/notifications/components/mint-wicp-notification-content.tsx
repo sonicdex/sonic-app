@@ -1,4 +1,5 @@
 import { Link } from '@chakra-ui/react';
+import { deserialize, serialize } from '@psychedelic/sonic-js';
 import { useEffect, useMemo } from 'react';
 
 import { useBalances } from '@/hooks/use-balances';
@@ -12,7 +13,6 @@ import {
   useNotificationStore,
   useSwapViewStore,
 } from '@/store';
-import { deserialize, stringify } from '@/utils/format';
 
 export interface MintWICPNotificationContentProps {
   id: string;
@@ -26,11 +26,12 @@ export const MintWICPNotificationContent: React.FC<
   const { addNotification, popNotification } = useNotificationStore();
   const { getBalances } = useBalances();
 
-  const { from, to, keepInSonic } = useMemo(() => {
-    const { from, to, keepInSonic } = swapViewStore;
+  const { from, to, keepInSonic } =
+    useMemo(() => {
+      const { from, to, keepInSonic } = swapViewStore;
 
-    return deserialize(stringify({ from, to, keepInSonic }));
-  }, []);
+      return deserialize(serialize({ from, to, keepInSonic }));
+    }, []) ?? {};
 
   const { batch, openBatchModal } = useMintBatch({
     amountIn: from.value,

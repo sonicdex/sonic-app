@@ -1,5 +1,6 @@
 import { Link } from '@chakra-ui/react';
 import { Principal } from '@dfinity/principal';
+import { deserialize, serialize } from '@psychedelic/sonic-js';
 import { useEffect, useMemo } from 'react';
 
 import { useBalances } from '@/hooks/use-balances';
@@ -13,7 +14,6 @@ import {
   useSwapViewStore,
   WithdrawWICPModalDataStep,
 } from '@/store';
-import { deserialize, stringify } from '@/utils/format';
 import { getAccountId } from '@/utils/icp';
 
 export interface WithdrawWICPNotificationContentProps {
@@ -29,11 +29,12 @@ export const WithdrawWICPNotificationContent: React.FC<
   const { addNotification, popNotification } = useNotificationStore();
   const { getBalances } = useBalances();
 
-  const { from } = useMemo(() => {
-    const { from } = swapViewStore;
+  const { from } =
+    useMemo(() => {
+      const { from } = swapViewStore;
 
-    return deserialize(stringify({ from }));
-  }, []);
+      return deserialize(serialize({ from }));
+    }, []) ?? {};
 
   const { batch, openBatchModal } = useWithdrawWICPBatch({
     amount: from.value,

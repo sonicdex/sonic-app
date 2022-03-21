@@ -1,26 +1,33 @@
 ## Pull Request overview:
 
-- Change 1
-- Change 2
-- Change 3
+- Change #1
+- Change #2
+- Change #3
 
-### Type of changes included:
+### Types of changes included:
 
-- [ ] Components
+- [ ] New Features
 - [ ] Business Logic
-- [ ] Bug fixes
-- [ ] Styling
+- [ ] CSS Changes
+- [ ] JSS Changes
 - [ ] Code Refactor
+- [ ] Bug Fixes
+- [ ] Documentation Changes
+- [ ] Other
 
-### Shortcut Tickets Related:
+### Shortcut/Notion Tickets Related:
 
-- Ticket 1
-- Ticket 2
-- Ticket 3
+- Ticket-1
+- Ticket-2
+- Ticket-3
 
-### Screenshots/Gifs:
+### Screenshots/Gifs/Videos:
 
 _Place you changes screenshots here_
+
+### Help needed:
+
+_Place you help needed here_
 
 ### Other notes:
 

@@ -1,10 +1,9 @@
-import { Principal } from '@dfinity/principal';
 import { useCallback, useEffect } from 'react';
 
 import { ENV } from '@/config';
 import { useSwapActor } from '@/integrations/actor';
-import { FeatureState, useAppDispatch } from '@/store';
-import { parseResponsePair } from '@/utils/canister';
+import { Pair } from '@/models';
+import { useAppDispatch } from '@/store';
 
 import { useSwapCanisterStore } from '..';
 import { liquidityViewActions, useLiquidityViewStore } from '.';
@@ -18,27 +17,13 @@ export const useLiquidityViewInit = () => {
   const getPair = useCallback(async () => {
     if (swapActor && token0.metadata?.id && token1.metadata?.id) {
       if (allPairs) {
-        const pair = allPairs[token0.metadata.id][token1.metadata.id];
-        if (pair) return dispatch(liquidityViewActions.setPair(pair));
-      }
-
-      try {
-        dispatch(liquidityViewActions.setPairState(FeatureState.Loading));
-
-        const response = await swapActor.getPair(
-          Principal.fromText(token0.metadata.id),
-          Principal.fromText(token1.metadata.id)
-        );
-
-        dispatch(liquidityViewActions.setPair(parseResponsePair(response)));
-        dispatch(liquidityViewActions.setPairState(FeatureState.Idle));
-
-        return response;
-      } catch (error) {
-        console.error('getPair: ', error);
-        dispatch(liquidityViewActions.setPairState(FeatureState.Error));
+        const localPair = allPairs[token0.metadata.id]?.[
+          token1.metadata.id
+        ] as unknown as Pair;
+        if (localPair) return dispatch(liquidityViewActions.setPair(localPair));
       }
     }
+    return dispatch(liquidityViewActions.setPair(undefined));
   }, [dispatch, swapActor, token0.metadata?.id, token1.metadata?.id, allPairs]);
 
   useEffect(() => {

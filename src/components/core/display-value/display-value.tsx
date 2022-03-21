@@ -5,10 +5,8 @@ import {
   TextProps,
   Tooltip,
 } from '@chakra-ui/react';
-import BigNumber from 'bignumber.js';
+import { formatAmount, toBigNumber } from '@psychedelic/sonic-js';
 import { useMemo } from 'react';
-
-import { formatValue, getCurrencyString } from '@/utils/format';
 
 export type DisplayValueProps = TextProps & {
   isUpdating?: boolean;
@@ -17,17 +15,19 @@ export type DisplayValueProps = TextProps & {
   prefix?: string;
   suffix?: string;
   disableTooltip?: boolean;
+  shouldDivideByDecimals?: boolean;
 };
 
 export const DisplayValue = forwardRef<DisplayValueProps, 'p'>(
   (
     {
       value = 0,
-      decimals,
+      decimals = 4,
       isUpdating,
       prefix,
       suffix,
       disableTooltip,
+      shouldDivideByDecimals,
       ...textProps
     },
     ref
@@ -38,17 +38,22 @@ export const DisplayValue = forwardRef<DisplayValueProps, 'p'>(
       }
     `;
 
-    const [formattedValue, tooltipLabel, isDisabled] = useMemo(() => {
-      const tooltip = decimals
-        ? getCurrencyString(value, decimals)
-        : new BigNumber(value).toString();
-      const display = formatValue(tooltip);
+    const [formattedValue, tooltipAmount, isDisabled] = useMemo(() => {
+      const tooltipAmount = shouldDivideByDecimals
+        ? toBigNumber(value).applyDecimals(decimals).toString()
+        : toBigNumber(value).dp(decimals).toString();
 
-      return [display, tooltip, disableTooltip || String(tooltip).length <= 4];
-    }, [value, decimals, disableTooltip]);
+      const formattedValue = formatAmount(tooltipAmount);
+
+      return [
+        formattedValue,
+        tooltipAmount,
+        disableTooltip || String(tooltipAmount).length <= 4,
+      ];
+    }, [value, decimals, disableTooltip, shouldDivideByDecimals]);
 
     return (
-      <Tooltip label={tooltipLabel} isDisabled={isDisabled}>
+      <Tooltip label={tooltipAmount} isDisabled={isDisabled}>
         <Text
           ref={ref}
           {...textProps}

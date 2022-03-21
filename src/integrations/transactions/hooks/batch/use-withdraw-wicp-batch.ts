@@ -84,11 +84,13 @@ export const useWithdrawWICPBatch = ({
               callbacks: [
                 // Retry callback
                 () => {
+                  dispatch(modalsSliceActions.closeWithdrawWICPFailModal());
                   openBatchModal();
                   resolve(true);
                 },
                 // Close callback
                 () => {
+                  dispatch(modalsSliceActions.closeWithdrawWICPFailModal());
                   resolve(false);
                 },
               ],

@@ -7,6 +7,7 @@ import {
   Text,
   useColorModeValue,
 } from '@chakra-ui/react';
+import { toBigNumber } from '@psychedelic/sonic-js';
 import { FaInfoCircle } from '@react-icons/all-files/fa/FaInfoCircle';
 import { FaMinus } from '@react-icons/all-files/fa/FaMinus';
 import { FaPlus } from '@react-icons/all-files/fa/FaPlus';
@@ -37,15 +38,17 @@ import {
   usePriceStore,
   useSwapCanisterStore,
 } from '@/store';
-import { getCurrencyString } from '@/utils/format';
 
-const getAssetPriceByBalanceAmount = (
+const getAssetPriceByBalance = (
   price?: string,
-  balanceAmount?: number,
+  balance?: number,
   decimals?: number
 ) => {
-  if (price && balanceAmount && decimals) {
-    return Number(price) * Number(getCurrencyString(balanceAmount, decimals));
+  if (price && balance && decimals) {
+    return (
+      Number(price) *
+      Number(toBigNumber(balance).applyDecimals(decimals).toString())
+    );
   }
 
   return price;
@@ -231,6 +234,7 @@ export const AssetsListView = () => {
                         decimals={decimals}
                         fontWeight="bold"
                         disableTooltip
+                        shouldDivideByDecimals
                       />
                     </Flex>
                   </TokenBalancesPopover>
@@ -243,7 +247,7 @@ export const AssetsListView = () => {
                       fontWeight="bold"
                       prefix="~$"
                       value={
-                        getAssetPriceByBalanceAmount(
+                        getAssetPriceByBalance(
                           price,
                           totalBalances?.[id],
                           decimals

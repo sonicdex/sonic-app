@@ -1,4 +1,5 @@
 import { Link } from '@chakra-ui/react';
+import { deserialize, serialize } from '@psychedelic/sonic-js';
 import { useEffect, useMemo } from 'react';
 
 import { useAllPairs } from '@/hooks';
@@ -13,7 +14,6 @@ import {
   useLiquidityViewStore,
   useNotificationStore,
 } from '@/store';
-import { deserialize, stringify } from '@/utils/format';
 
 export interface AddLiquidityNotificationContentProps {
   id: string;
@@ -28,22 +28,23 @@ export const AddLiquidityNotificationContent: React.FC<
   const { getBalances, getUserPositiveLPBalances } = useBalances();
   const { getAllPairs } = useAllPairs();
 
-  const { token0, token1, slippage } = useMemo(() => {
-    // Clone current state just for this batch
-    const { token0, token1, slippage, pair } = liquidityViewStore;
+  const { token0, token1, slippage } =
+    useMemo(() => {
+      // Clone current state just for this batch
+      const { token0, token1, slippage, pair } = liquidityViewStore;
 
-    // Is needed to send to canister the values in the pair id order
-    if (pair) {
-      const token0Id = pair.id.split(':')[0];
-      if (token0Id !== token0.metadata?.id) {
-        return deserialize(
-          stringify({ token0: token1, token1: token0, slippage })
-        );
+      // Is needed to send to canister the values in the pair id order
+      if (pair) {
+        const token0Id = pair.id.split(':')[0];
+        if (token0Id !== token0.metadata?.id) {
+          return deserialize(
+            serialize({ token0: token1, token1: token0, slippage })
+          );
+        }
       }
-    }
 
-    return deserialize(stringify({ token0, token1, slippage }));
-  }, []);
+      return deserialize(serialize({ token0, token1, slippage }));
+    }, []) ?? {};
 
   const allowance0 = useTokenAllowance(token0.metadata?.id);
   const allowance1 = useTokenAllowance(token1.metadata?.id);

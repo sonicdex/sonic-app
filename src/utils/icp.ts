@@ -3,15 +3,13 @@ import axios from 'axios';
 import BigNumber from 'bignumber.js';
 import crc32 from 'buffer-crc32';
 import CryptoJS from 'crypto-js';
-import { useEffect, useState } from 'react';
 
 import RosettaApi from '@/apis/rosetta';
 import { BINANCE_V3_API_URL } from '@/integrations/binance/constants';
-import { usePlugStore } from '@/store';
 
 export const ACCOUNT_DOMAIN_SEPERATOR = '\x0Aaccount-id';
 
-export const getICPBalance = async (principalId: string) => {
+export const fetchICPBalance = async (principalId: string) => {
   const accountId = getAccountId(Principal.fromText(principalId || ''), 0);
 
   if (accountId) {
@@ -19,40 +17,17 @@ export const getICPBalance = async (principalId: string) => {
 
     const balance = await rosettaAPI.getAccountBalance(accountId);
 
-    return new BigNumber(balance.toString())
+    const icpBalanceNoDecimals = new BigNumber(balance.toString())
       .div(new BigNumber('100000000'))
       .toString();
+
+    return icpBalanceNoDecimals;
   } else {
     throw new Error('Account ID is required');
   }
 };
 
-export const useICPBalance = () => {
-  const { principalId } = usePlugStore();
-  const [balance, setBalance] = useState(BigInt(0));
-
-  const getBalance = async () => {
-    if (principalId) {
-      const result = await getICPBalance(principalId);
-
-      if (result) {
-        setBalance(balance);
-        return balance;
-      }
-    }
-  };
-
-  useEffect(() => {
-    getBalance();
-  }, [principalId]);
-
-  return {
-    balance,
-    getBalance,
-  };
-};
-
-export const getICPPrice = async () => {
+export const fetchICPPrice = async () => {
   try {
     const response = await axios.get(
       `${BINANCE_V3_API_URL}/avgPrice?symbol=ICPUSDT`

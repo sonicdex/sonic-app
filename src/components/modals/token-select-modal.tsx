@@ -19,6 +19,7 @@ import {
   Tooltip,
   useColorModeValue,
 } from '@chakra-ui/react';
+import { deserialize } from '@psychedelic/sonic-js';
 import { FaHdd } from '@react-icons/all-files/fa/FaHdd';
 import { useEffect, useMemo, useState } from 'react';
 
@@ -32,7 +33,6 @@ import {
   useAppDispatch,
   useModalsStore,
 } from '@/store';
-import { deserialize } from '@/utils/format';
 
 import { DisplayValue, SearchBar } from '..';
 import { ImportToken } from './components';
@@ -331,10 +331,10 @@ const TokenSelectItem = ({
           isUpdating={isBalancesUpdating}
           value={balance}
           decimals={decimals}
-          as="p"
           fontSize="18px"
           fontWeight={700}
           textAlign="right"
+          shouldDivideByDecimals
         />
       </Skeleton>
     </Flex>

@@ -75,11 +75,13 @@ export const useRemoveLiquidityBatch = ({
           callbacks: [
             // Retry callback
             () => {
+              dispatch(modalsSliceActions.closeRemoveLiquidityFailModal());
               openBatchModal();
               resolve(true);
             },
             // Not retry callback
             () => {
+              dispatch(modalsSliceActions.closeRemoveLiquidityFailModal());
               resolve(false);
             },
           ],

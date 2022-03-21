@@ -21,11 +21,11 @@ import {
   Tooltip,
   useColorModeValue,
 } from '@chakra-ui/react';
+import { Liquidity } from '@psychedelic/sonic-js';
 import { FaCog } from '@react-icons/all-files/fa/FaCog';
 import { FaEquals } from '@react-icons/all-files/fa/FaEquals';
 import { FaInfoCircle } from '@react-icons/all-files/fa/FaInfoCircle';
 import { FaPlus } from '@react-icons/all-files/fa/FaPlus';
-import BigNumber from 'bignumber.js';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 
@@ -46,7 +46,6 @@ import {
   TokenInput,
   ViewHeader,
 } from '@/components';
-import { getAppAssetsSources } from '@/config/utils';
 import { useTokenBalanceMemo } from '@/hooks';
 import { useBalances } from '@/hooks/use-balances';
 import { useQuery } from '@/hooks/use-query';
@@ -64,14 +63,10 @@ import {
   useSwapCanisterStore,
   useTokenModalOpener,
 } from '@/store';
-import {
-  getAmountEqualLPToken,
-  getAmountLP,
-  getCurrencyString,
-  getDepositMaxValue,
-  getLPPercentageString,
-} from '@/utils/format';
+import { getMaxValue } from '@/utils/format';
 import { debounce } from '@/utils/function';
+
+import { useAddLiquidityMemo, useTokenSourceMemo } from './liquidity.utils';
 
 export const LiquidityAddView = () => {
   const query = useQuery();
@@ -110,6 +105,7 @@ export const LiquidityAddView = () => {
       type: NotificationType.AddLiquidity,
       id: String(new Date().getTime()),
     });
+
     debounce(() => {
       dispatch(liquidityViewActions.setValue({ data: 'token0', value: '' }));
       dispatch(liquidityViewActions.setValue({ data: 'token1', value: '' }));
@@ -124,9 +120,9 @@ export const LiquidityAddView = () => {
 
     if (!token || !tokenBalance) return;
 
-    const value = getDepositMaxValue(token.metadata, tokenBalance);
+    const maxValue = getMaxValue(token.metadata, tokenBalance).toString();
 
-    setInAndOutTokenValues(dataKey, value);
+    setInAndOutTokenValues(dataKey, maxValue);
   };
 
   const handleSelectToken = (dataKey: LiquidityTokenDataKey) => {
@@ -166,7 +162,6 @@ export const LiquidityAddView = () => {
   };
 
   // Utils
-
   const setInAndOutTokenValues = useCallback(
     (dataKey: LiquidityTokenDataKey, value?: string) => {
       const [amountIn, reserveIn, reserveOut, decimalsIn, decimalsOut] =
@@ -189,8 +184,9 @@ export const LiquidityAddView = () => {
       dispatch(
         liquidityViewActions.setValue({ data: dataKey, value: amountIn })
       );
+
       if (token0.metadata && token1.metadata) {
-        const lpValue = getAmountEqualLPToken({
+        const lpValue = Liquidity.getOppositeAmount({
           amountIn,
           reserveIn,
           reserveOut,
@@ -200,11 +196,11 @@ export const LiquidityAddView = () => {
 
         const reversedDataKey = dataKey === 'token0' ? 'token1' : 'token0';
 
-        if (lpValue) {
+        if (lpValue.gt(0)) {
           dispatch(
             liquidityViewActions.setValue({
               data: reversedDataKey,
-              value: lpValue,
+              value: lpValue.toString(),
             })
           );
         }
@@ -222,16 +218,15 @@ export const LiquidityAddView = () => {
   );
 
   // Memorized values
-
   const token0Balance = useTokenBalanceMemo(token0.metadata?.id);
   const token1Balance = useTokenBalanceMemo(token1.metadata?.id);
 
-  const isLoading = useMemo(() => {
-    return (
+  const isLoading = useMemo(
+    () =>
       supportedTokenListState === FeatureState.Loading ||
-      pairState === FeatureState.Loading
-    );
-  }, [supportedTokenListState, pairState]);
+      pairState === FeatureState.Loading,
+    [supportedTokenListState, pairState]
+  );
 
   const isBalancesUpdating = useMemo(
     () => balancesState === FeatureState.Updating,
@@ -262,14 +257,14 @@ export const LiquidityAddView = () => {
     ) {
       if (
         parsedToken0Value >
-        Number(getDepositMaxValue(token0.metadata, token0Balance))
+        getMaxValue(token0.metadata, token0Balance).toNumber()
       ) {
         return [true, `Insufficient ${token0.metadata.symbol} Balance`];
       }
 
       if (
         parsedToken1Value >
-        Number(getDepositMaxValue(token1.metadata, token1Balance))
+        getMaxValue(token1.metadata, token1Balance).toNumber()
       ) {
         return [true, `Insufficient ${token1.metadata.symbol} Balance`];
       }
@@ -295,127 +290,20 @@ export const LiquidityAddView = () => {
     return selectedIds;
   }, [token0?.metadata?.id, token1?.metadata?.id]);
 
-  const { token0Price, token1Price, liquidityPercentage, liquidityValue } =
-    useMemo(() => {
-      if (token0.metadata && token1.metadata) {
-        if (pair && pair.reserve0 && pair.reserve1) {
-          const token0Price = getAmountEqualLPToken({
-            amountIn: '1',
-            reserveIn: String(pair.reserve1),
-            reserveOut: String(pair.reserve0),
-            decimalsIn: Number(token1.metadata.decimals),
-            decimalsOut: Number(token0.metadata.decimals),
-          });
+  const { fee0, fee1, price0, price1, shareOfPool, liquidityAmount } =
+    useAddLiquidityMemo({ pair, token0, token1 });
 
-          const token1Price = getAmountEqualLPToken({
-            amountIn: '1',
-            reserveIn: String(pair.reserve0),
-            reserveOut: String(pair.reserve1),
-            decimalsIn: Number(token0.metadata.decimals),
-            decimalsOut: Number(token1.metadata.decimals),
-          });
+  const token0Sources = useTokenSourceMemo({
+    token: token0,
+    tokenBalances,
+    sonicBalances,
+  });
 
-          const getAmountLPOptions = {
-            token0Amount: token0.value,
-            token1Amount: token1.value,
-            reserve0: String(pair.reserve0),
-            reserve1: String(pair.reserve1),
-            totalSupply: String(pair.totalSupply),
-          };
-
-          const getPercentageLPOptions = {
-            ...getAmountLPOptions,
-            token0Decimals: token0.metadata?.decimals,
-            token1Decimals: token1.metadata?.decimals,
-          };
-
-          const liquidityValue = getAmountLP(getAmountLPOptions);
-          const liquidityPercentage = getLPPercentageString(
-            getPercentageLPOptions
-          );
-
-          return {
-            liquidityValue,
-            liquidityPercentage,
-            token0Price,
-            token1Price,
-          };
-        } else {
-          const token0Value = new BigNumber(token1.value)
-            .div(new BigNumber(token0.value))
-            .dp(token0.metadata?.decimals)
-            .toString();
-          const token1Value = new BigNumber(token0.value)
-            .div(new BigNumber(token1.value))
-            .dp(token1.metadata?.decimals)
-            .toString();
-
-          const isToken0Price =
-            !token0Value ||
-            new BigNumber(token0Value).isNaN() ||
-            !new BigNumber(token0Value).isFinite();
-
-          const isToken1Price =
-            !token1Value ||
-            new BigNumber(token1Value).isNaN() ||
-            !new BigNumber(token1Value).isFinite();
-
-          return {
-            token0Price: isToken0Price ? '0' : token0Value,
-            token1Price: isToken1Price ? '0' : token1Value,
-            liquidityPercentage: '100%',
-            liquidityValue: new BigNumber(token0.value)
-              .multipliedBy(new BigNumber(token1.value))
-              .sqrt()
-              .toString(),
-          };
-        }
-      }
-
-      return {
-        token0Price: '0',
-        token1Price: '0',
-      };
-    }, [token0, token1, pair]);
-
-  const token0Sources = useMemo(() => {
-    if (token0.metadata) {
-      return getAppAssetsSources({
-        balances: {
-          plug: tokenBalances ? tokenBalances[token0.metadata.id] : 0,
-          sonic: sonicBalances ? sonicBalances[token0.metadata.id] : 0,
-        },
-      });
-    }
-  }, [token0.metadata, tokenBalances, sonicBalances]);
-
-  const token1Sources = useMemo(() => {
-    if (token1.metadata) {
-      return getAppAssetsSources({
-        balances: {
-          plug: tokenBalances ? tokenBalances[token1.metadata.id] : 0,
-          sonic: sonicBalances ? sonicBalances[token1.metadata.id] : 0,
-        },
-      });
-    }
-  }, [token1.metadata, tokenBalances, sonicBalances]);
-
-  const { fee0, fee1 } = useMemo(() => {
-    if (token0.metadata && token1.metadata) {
-      const fee0 = getCurrencyString(
-        token0.metadata.fee + token0.metadata.fee,
-        token0.metadata.decimals
-      );
-      const fee1 = getCurrencyString(
-        token1.metadata.fee + token1.metadata.fee,
-        token1.metadata.decimals
-      );
-
-      return { fee0, fee1 };
-    }
-
-    return { fee0: '0', fee1: '0' };
-  }, [token0.metadata, token1.metadata]);
+  const token1Sources = useTokenSourceMemo({
+    token: token1,
+    tokenBalances,
+    sonicBalances,
+  });
 
   useEffect(() => {
     if (!isLoading && supportedTokenList) {
@@ -593,7 +481,7 @@ export const LiquidityAddView = () => {
                   <Icon as={FaEquals} />
                 </Center>
 
-                <Token value={liquidityValue} isDisabled shouldGlow>
+                <Token value={liquidityAmount} isDisabled shouldGlow>
                   <TokenContent>
                     <Flex
                       borderRadius="full"
@@ -638,14 +526,14 @@ export const LiquidityAddView = () => {
                   <TokenData color={color}>
                     Share of Pool:
                     <Text flex={1} textAlign="right">
-                      {liquidityPercentage}
+                      {shareOfPool}
                     </Text>
                   </TokenData>
                 </Token>
               </>
             )}
 
-            {liquidityValue && (
+            {liquidityAmount && (
               <Flex
                 alignItems="center"
                 justifyContent="space-between"
@@ -655,13 +543,13 @@ export const LiquidityAddView = () => {
               >
                 <Text color={textColor}>
                   {`1 ${token0.metadata?.symbol} = `}{' '}
-                  <DisplayValue as="span" value={token1Price} />{' '}
+                  <DisplayValue as="span" value={price1} />{' '}
                   {` ${token1.metadata?.symbol}`}
                 </Text>
                 <HStack>
                   <Text color={textColor}>
                     {`1 ${token1.metadata?.symbol} = `}{' '}
-                    <DisplayValue as="span" value={token0Price} />{' '}
+                    <DisplayValue as="span" value={price0} />{' '}
                     {`${token0.metadata?.symbol}`}
                   </Text>
                   <Popover trigger="hover">

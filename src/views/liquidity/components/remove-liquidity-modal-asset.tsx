@@ -1,13 +1,11 @@
 import { Image } from '@chakra-ui/image';
-import { Box, Flex, HStack, Text } from '@chakra-ui/layout';
-import { useColorModeValue } from '@chakra-ui/react';
-import BigNumber from 'bignumber.js';
+import { Box, Flex, HStack, Text, useColorModeValue } from '@chakra-ui/react';
+import { Price } from '@psychedelic/sonic-js';
 import { FC, useMemo } from 'react';
 
 import { questionMarkSrc } from '@/assets';
+import { DisplayValue } from '@/components';
 import { AppTokenMetadata } from '@/models';
-
-import { DisplayValue } from '..';
 
 type RemoveLiquidityModalAssetProps = Partial<AppTokenMetadata> & {
   balance: string;
@@ -16,13 +14,14 @@ type RemoveLiquidityModalAssetProps = Partial<AppTokenMetadata> & {
 
 export const RemoveLiquidityModalAsset: FC<RemoveLiquidityModalAssetProps> = ({
   symbol,
+  decimals,
   logo = questionMarkSrc,
   balance = 0,
   price = 0,
   isUpdating,
 }) => {
   const balancePrice = useMemo(
-    () => new BigNumber(price ?? 0).multipliedBy(balance ?? 0).toNumber(),
+    () => Price.getByAmount({ amount: String(balance), price }).toString(),
     [balance, price]
   );
 
@@ -43,7 +42,11 @@ export const RemoveLiquidityModalAsset: FC<RemoveLiquidityModalAssetProps> = ({
       </HStack>
       <Box textAlign="end">
         <Text fontSize="xl" fontWeight="bold">
-          <DisplayValue value={balance} isUpdating={isUpdating} />
+          <DisplayValue
+            value={balance}
+            isUpdating={isUpdating}
+            decimals={decimals}
+          />
         </Text>
         <Text fontSize="xs">
           <DisplayValue

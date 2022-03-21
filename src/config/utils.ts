@@ -1,15 +1,21 @@
 import { plugCircleSrc, sonicCircleSrc } from '@/assets';
 
-type GetAppAssetsSourcesOptions = {
+export type GetAppAssetsSourcesParams = {
   balances: {
     plug?: number;
     sonic?: number;
   };
 };
 
+export type AppAssetSource = {
+  name: string;
+  src: string;
+  balance?: number;
+};
+
 export const getAppAssetsSources = ({
   balances,
-}: GetAppAssetsSourcesOptions) => {
+}: GetAppAssetsSourcesParams): AppAssetSource[] => {
   return [
     {
       name: 'Plug Wallet',
