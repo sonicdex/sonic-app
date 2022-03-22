@@ -35,7 +35,7 @@ const initialState: LiquidityViewState = {
     value: '',
   },
   slippage: INITIAL_LIQUIDITY_SLIPPAGE,
-  keepInSonic: true,
+  keepInSonic: false,
 };
 
 export const liquidityViewSlice = createSlice({
