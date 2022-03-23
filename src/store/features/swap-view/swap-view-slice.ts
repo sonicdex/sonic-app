@@ -74,7 +74,15 @@ export const swapViewSlice = createSlice({
 
       const oppositeDataKey = data === 'from' ? 'to' : 'from';
 
-      if (allPairs && tokenList && metadata) {
+      state[data].value = value;
+
+      if (
+        tokenList &&
+        metadata &&
+        oppositeMetadata &&
+        !(metadata.id === ICP_METADATA.id) &&
+        !(oppositeMetadata.id === ICP_METADATA.id)
+      ) {
         const paths = Swap.getTokenPaths({
           pairList: allPairs as Pair.List,
           tokenList,
@@ -83,18 +91,18 @@ export const swapViewSlice = createSlice({
           dataKey: data,
         });
         state[data].paths = paths;
-      }
 
-      state[data].value = value;
-
-      if (
-        !(metadata?.id === ICP_METADATA.id) &&
-        !(oppositeMetadata?.id === ICP_METADATA.id)
-      ) {
         state[oppositeDataKey].value = getAmountOutFromPath(
           state[data] as SwapTokenData,
           state[oppositeDataKey] as SwapTokenData
         );
+
+        if (data === 'to' && paths[oppositeMetadata.id]) {
+          state.from.paths[metadata.id] = {
+            amountOut: paths[oppositeMetadata.id].amountOut,
+            path: [...paths[oppositeMetadata.id].path].reverse(),
+          };
+        }
       }
     },
     setToken: (
@@ -136,6 +144,10 @@ export const swapViewSlice = createSlice({
 
       state.to.value = '';
       state.from.value = '';
+
+      if (data === 'from') {
+        state.to.metadata = undefined;
+      }
     },
     switchTokens: (state, action: PayloadAction<SwapTokenDataKey>) => {
       const dataKey = action.payload;

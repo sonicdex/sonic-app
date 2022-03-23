@@ -114,13 +114,12 @@ export const getSwapAmountOutMin = ({
     });
   }
 
-  const toValue = Swap.getAmount({
+  const toValue = Swap.getAmountOut({
     amountIn: fromValue.toString(),
     decimalsIn: from.metadata.decimals,
     decimalsOut: to.metadata.decimals,
     reserveIn: Number(pair.reserve0),
     reserveOut: Number(pair.reserve1),
-    dataKey: 'from',
   }).toString();
 
   let result = Swap.getAmountMin({
