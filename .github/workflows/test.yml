@@ -35,7 +35,7 @@ jobs:
         run: yarn
 
       - name: Audit
-        run: yarn audit
+        run: yarn audit --groups dependencies
 
       - name: Run Prettier
         run: yarn format

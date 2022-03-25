@@ -249,7 +249,7 @@ export const RemoveLiquidityModal = () => {
                 color={checkboxColor}
                 fontWeight={600}
               >
-                Keep tokens in Sonic after removing liqudity
+                Keep tokens in Sonic after removing liquidity
               </Checkbox>
             </FormControl>
           </Flex>

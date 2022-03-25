@@ -1046,10 +1046,21 @@
     js-sha256 "0.9.0"
     simple-cbor "^0.4.1"
 
-"@dfinity/agent@^0.10.1", "@dfinity/agent@^0.10.2":
+"@dfinity/agent@^0.10.1":
   version "0.10.2"
   resolved "https://registry.yarnpkg.com/@dfinity/agent/-/agent-0.10.2.tgz#1c591e9f5d0b3acaeea767d402f53c8732f754ac"
   integrity sha512-ipzw+UYSUJWgwq5IM8PwHLXlfViFJWX+ZPvMD4vclDjwxiLf/nDZNk2sgLfYAi/2o2MpG6wUTUYriX/gmYrbkg==
+  dependencies:
+    base64-arraybuffer "^0.2.0"
+    bignumber.js "^9.0.0"
+    borc "^2.1.1"
+    js-sha256 "0.9.0"
+    simple-cbor "^0.4.1"
+
+"@dfinity/agent@^0.10.2":
+  version "0.10.4"
+  resolved "https://registry.yarnpkg.com/@dfinity/agent/-/agent-0.10.4.tgz#269406f1cb5524276c52ddf37e933abd75529063"
+  integrity sha512-/O1443GWkQ6GngrXos/ShAbnF9IgUlWclzaQn/qEsGJIey6S7tty+iOa5yZqOS1BtOTnDe+TYh8GeERZZn7vvg==
   dependencies:
     base64-arraybuffer "^0.2.0"
     bignumber.js "^9.0.0"
@@ -1076,10 +1087,15 @@
     buffer "^6.0.3"
     buffer-pipe "^0.0.4"
 
-"@dfinity/candid@^0.10.1", "@dfinity/candid@^0.10.2":
+"@dfinity/candid@^0.10.1":
   version "0.10.2"
   resolved "https://registry.yarnpkg.com/@dfinity/candid/-/candid-0.10.2.tgz#545692c4f9a954b2133436049a707434d5c6c7c9"
   integrity sha512-vHRw6G5N6Nj8PlGl+Dx8pRGNCA/OQJ5v5ktj+t4ZL/4UIaebDZYzRZyrtBC0Vs1iG9BA5l48b7ByMH26UKLC6w==
+
+"@dfinity/candid@^0.10.2":
+  version "0.10.4"
+  resolved "https://registry.yarnpkg.com/@dfinity/candid/-/candid-0.10.4.tgz#32f666f6a069d87b6f7007d7ad3c50ab307d8b76"
+  integrity sha512-Rd8uoo3jd4FLmGY9aBgTRdBCYVuG/Y7QmpDJB3eQvsU3WHhVZJWLMHcodnMIoy2bzqzCKeTdLkL565K7qx5H3Q==
 
 "@dfinity/candid@^0.10.3":
   version "0.10.3"
@@ -1101,10 +1117,15 @@
   resolved "https://registry.yarnpkg.com/@dfinity/principal/-/principal-0.9.3.tgz#52e4980bac8dd35e7a6bb2564bea89df97383e06"
   integrity sha512-DSL3b/gGm+f57+3XkFjlK4DigtKXe9MVO8UYXDQWkVIhy0UF1KYjRNGs6awc1GTQoOTxeQ8UTFwXuvnEvJ1hpQ==
 
-"@dfinity/principal@^0.10.1", "@dfinity/principal@^0.10.2":
+"@dfinity/principal@^0.10.1":
   version "0.10.2"
   resolved "https://registry.yarnpkg.com/@dfinity/principal/-/principal-0.10.2.tgz#26123490bac2de6987d20715eda5efb8812a68d5"
   integrity sha512-CueU9ByIG2ifGDN8YnTPKbLJ6+ZDkoOLVmelaIcueTwqvHMIIvWNme76GwjbcbZ6/XgFd+I7cIKPMX0qQgbGCw==
+
+"@dfinity/principal@^0.10.2":
+  version "0.10.4"
+  resolved "https://registry.yarnpkg.com/@dfinity/principal/-/principal-0.10.4.tgz#8f28f631929cc420a4238f75930090aba84d74b8"
+  integrity sha512-qwzpmq5wfyeKMBspRZmuYvTxu1dqN+IY0ThACHTRh6D58QjnVQNCD3Hq9d5eEDu0qyNcY22cJEWwzrzZaaoVmw==
 
 "@dfinity/principal@^0.10.3":
   version "0.10.3"
@@ -1880,10 +1901,10 @@
     "@fleekhq/browser-rpc" "^2.0.3"
     json-bigint "^1.0.0"
 
-"@psychedelic/sonic-js@^0.2.1":
-  version "0.2.1"
-  resolved "https://npm.pkg.github.com/download/@psychedelic/sonic-js/0.2.1/48f0f8bef4338bc3098bc46e04a94a02402d4d5b0968fbeee974108dab606037#8d32305ab0933b16a30819e21385cf8e10532ed7"
-  integrity sha512-MRdC4GK27QYGDgVO5Tj3+NluQprmfjewXmAg+aexHFJ441qgPmg95QcwacqpXfNxKkyaEfcouCuzh9quNx/oNQ==
+"@psychedelic/sonic-js@0.3.0":
+  version "0.3.0"
+  resolved "https://npm.pkg.github.com/download/@psychedelic/sonic-js/0.3.0/d070fe03d2e5b24680838da207e5a48dc98f7f0759ed136cfe6f8bd68b1efdeb#06f3596a2f6b5cfa3740099220fbd6f037c259e0"
+  integrity sha512-jmYyALzP1/k0cBKOc7ARjFpbAFSnRp6a0si8bvuJBIzYKOKbjek7/y28jdy7Reo6GeeqFnMNOTTcR6BRTjBTaA==
   dependencies:
     "@dfinity/agent" "^0.10.2"
     "@dfinity/candid" "^0.10.2"
