@@ -148,7 +148,7 @@ export const Layout: React.FC = ({ children, ...props }) => {
                   {ENV.isDarkModeEnabled && (
                     <MenuItem
                       onClick={toggleColorMode}
-                      icon={colorMode === 'dark' ? <FaMoon /> : <FaSun />}
+                      icon={colorMode === 'dark' ? <FaSun /> : <FaMoon />}
                     >
                       {colorMode === 'dark' ? 'Light mode' : 'Dark mode'}
                     </MenuItem>
