@@ -101,7 +101,7 @@ export namespace TokenIDL {
     return IDL.Service({
       allowance: IDL.Func([IDL.Principal, IDL.Principal], [IDL.Nat], ['query']),
       approve: IDL.Func([IDL.Principal, IDL.Nat], [Result], []),
-      balanceOf: IDL.Func([IDL.Principal], [IDL.Nat], ['query']),
+      balanceOf: IDL.Func([IDL.Principal], [IDL.Nat], []),
       decimals: IDL.Func([], [IDL.Nat8], ['query']),
       getAllowanceSize: IDL.Func([], [IDL.Nat64], ['query']),
       getBlockUsed: IDL.Func([], [IDL.Vec(IDL.Nat64)], ['query']),
