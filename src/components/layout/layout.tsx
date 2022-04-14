@@ -103,7 +103,7 @@ export const Layout: React.FC = ({ children, ...props }) => {
                 variant="solid-rounded"
                 colorScheme="dark-blue"
               >
-                <TabList>
+                <TabList bg={menuBg}>
                   {NAVIGATION_TABS.map(({ label, url }) => (
                     <Tab
                       as={Link}
