@@ -21,6 +21,7 @@ import {
 import { FaBook } from '@react-icons/all-files/fa/FaBook';
 import { FaDiscord } from '@react-icons/all-files/fa/FaDiscord';
 import { FaEllipsisH } from '@react-icons/all-files/fa/FaEllipsisH';
+import { FaExternalLinkAlt } from '@react-icons/all-files/fa/FaExternalLinkAlt';
 import { FaMedium } from '@react-icons/all-files/fa/FaMedium';
 import { FaMoon } from '@react-icons/all-files/fa/FaMoon';
 import { FaNetworkWired } from '@react-icons/all-files/fa/FaNetworkWired';
@@ -102,7 +103,7 @@ export const Layout: React.FC = ({ children, ...props }) => {
                 variant="solid-rounded"
                 colorScheme="dark-blue"
               >
-                <TabList>
+                <TabList bg={menuBg}>
                   {NAVIGATION_TABS.map(({ label, url }) => (
                     <Tab
                       as={Link}
@@ -131,6 +132,19 @@ export const Layout: React.FC = ({ children, ...props }) => {
                 />
 
                 <MenuList bg={menuBg} shadow={menuShadow} borderRadius="xl">
+                  <ChakraLink
+                    href={ENV.URLs.analyticsApp}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    fontWeight="bold"
+                  >
+                    <MenuItem icon={<FaExternalLinkAlt />}>
+                      Go to analytics
+                    </MenuItem>
+                  </ChakraLink>
+
+                  <MenuDivider />
+
                   {ENV.isDarkModeEnabled && (
                     <MenuItem
                       onClick={toggleColorMode}

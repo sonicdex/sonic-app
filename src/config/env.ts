@@ -34,5 +34,6 @@ export const ENV = {
     tokenRequestForm:
       process.env.TOKEN_REQUEST_FORM_URL ||
       'https://form.typeform.com/to/YnSyAUn0',
+    analyticsApp: process.env.ANALYTICS_APP_URL || 'https://data.sonic.ooo',
   },
 };

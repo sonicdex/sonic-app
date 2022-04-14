@@ -66,6 +66,7 @@ module.exports = (env) => {
         ROSETTA_BASE_API: 'https://rosetta-api.internetcomputer.org/',
         IS_DARK_MODE_ENABLED: 'false',
         ANALYTICS_HOST: 'https://165.22.249.225:8080/graphql',
+        ANALYTICS_APP_URL: 'https://data.sonic.ooo',
       }),
       new InlineChunkHtmlPlugin(HtmlWebpackPlugin, [/runtime-.+[.]js/]),
       new HtmlWebpackPlugin({
@@ -87,3 +88,4 @@ module.exports = (env) => {
     ],
   });
 };
+
