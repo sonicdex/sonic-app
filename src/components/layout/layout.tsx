@@ -21,13 +21,13 @@ import {
 import { FaBook } from '@react-icons/all-files/fa/FaBook';
 import { FaDiscord } from '@react-icons/all-files/fa/FaDiscord';
 import { FaEllipsisH } from '@react-icons/all-files/fa/FaEllipsisH';
-import { FaExternalLinkAlt } from '@react-icons/all-files/fa/FaExternalLinkAlt';
 import { FaMedium } from '@react-icons/all-files/fa/FaMedium';
 import { FaMoon } from '@react-icons/all-files/fa/FaMoon';
 import { FaNetworkWired } from '@react-icons/all-files/fa/FaNetworkWired';
 import { FaRedo } from '@react-icons/all-files/fa/FaRedo';
 import { FaSun } from '@react-icons/all-files/fa/FaSun';
 import { FaTwitter } from '@react-icons/all-files/fa/FaTwitter';
+import { FiArrowUpRight } from '@react-icons/all-files/fi/FiArrowUpRight';
 import React, { useMemo } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
@@ -114,9 +114,9 @@ export const Layout: React.FC = ({ children, ...props }) => {
                       {label}
                     </Tab>
                   ))}
-                  <Tab as="a" href={ENV.URLs.analyticsApp} target="_blank">
-                    Analytics&nbsp;
-                    <FaExternalLinkAlt />
+                  <Tab as="a" href={ENV.URLs.analyticsApp} target="_analytics">
+                    Analytics
+                    <FiArrowUpRight />
                   </Tab>
                 </TabList>
               </Tabs>
