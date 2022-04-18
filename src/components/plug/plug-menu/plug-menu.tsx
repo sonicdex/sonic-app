@@ -1,9 +1,7 @@
 import {
   Box,
   Flex,
-  HStack,
   Icon,
-  Image,
   Menu,
   MenuButton,
   MenuItem,
@@ -13,10 +11,11 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react';
 import { Spinner } from '@chakra-ui/spinner';
+import { BiExit } from '@react-icons/all-files/bi/BiExit';
 import { FaChevronDown } from '@react-icons/all-files/fa/FaChevronDown';
+import { FiCopy } from '@react-icons/all-files/fi/FiCopy';
 import { FC, useMemo } from 'react';
 
-import { copySrc, exitSrc } from '@/assets';
 import { disconnect } from '@/integrations/plug';
 import {
   FeatureState,
@@ -71,17 +70,11 @@ export const PlugMenu: FC<Omit<MenuProps, 'children'>> = (props) => {
         </Flex>
       </MenuButton>
       <MenuList bg={bg} shadow={shadow} borderRadius="xl" overflow="hidden">
-        <MenuItem fontWeight="bold" onClick={handleCopy}>
-          <HStack direction="row">
-            <Image alt="copy" src={copySrc} />
-            <Text>Copy ID</Text>
-          </HStack>
+        <MenuItem onClick={handleCopy} icon={<FiCopy />}>
+          <Text>Copy ID</Text>
         </MenuItem>
-        <MenuItem fontWeight="bold" onClick={handleDisconnect}>
-          <HStack direction="row">
-            <Image alt="exit" src={exitSrc} />
-            <Text>Disconnect</Text>
-          </HStack>
+        <MenuItem onClick={handleDisconnect} icon={<BiExit />}>
+          <Text>Disconnect</Text>
         </MenuItem>
       </MenuList>
     </Menu>
