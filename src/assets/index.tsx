@@ -1,14 +1,12 @@
 export { default as arrowBackSrc } from './arrow-back.svg';
 export { default as arrowDownSrc } from './arrow-down.svg';
 export { default as closeSrc } from './close.svg';
-export { default as copySrc } from './copy.svg';
 export { default as checkSrc } from './check.svg';
 export { default as checkPlainSrc } from './check-plain.svg';
 export { default as depositSrc } from './deposit.svg';
 export { default as dropSrc } from './drop.svg';
 export { default as doubleRightChevronSrc } from './double-right-chevron.svg';
 export { default as equalSrc } from './equal.svg';
-export { default as exitSrc } from './exit.svg';
 export { default as icpSrc } from './icp.svg';
 export { default as greenCheckSrc } from './green-check.svg';
 export { default as logoSrc } from './logo.png';
