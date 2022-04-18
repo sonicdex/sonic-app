@@ -114,6 +114,10 @@ export const Layout: React.FC = ({ children, ...props }) => {
                       {label}
                     </Tab>
                   ))}
+                  <Tab as="a" href={ENV.URLs.analyticsApp} target="_blank">
+                    Analytics&nbsp;
+                    <FaExternalLinkAlt />
+                  </Tab>
                 </TabList>
               </Tabs>
             </chakra.nav>
@@ -132,19 +136,6 @@ export const Layout: React.FC = ({ children, ...props }) => {
                 />
 
                 <MenuList bg={menuBg} shadow={menuShadow} borderRadius="xl">
-                  <ChakraLink
-                    href={ENV.URLs.analyticsApp}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    fontWeight="bold"
-                  >
-                    <MenuItem icon={<FaExternalLinkAlt />}>
-                      Go to analytics
-                    </MenuItem>
-                  </ChakraLink>
-
-                  <MenuDivider />
-
                   {ENV.isDarkModeEnabled && (
                     <MenuItem
                       onClick={toggleColorMode}
