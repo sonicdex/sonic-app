@@ -42,11 +42,11 @@ export const PlugButton = forwardRef<HTMLButtonElement, PlugButtonProps>(
     }, [state]);
 
     const colorDark = useColorModeValue('gray.800', 'gray.500');
-    const bgDark = useColorModeValue('gray.50', 'gray.800');
+    const bgDark = useColorModeValue('gray.50', 'custom.2');
     const bgHoverDark = useColorModeValue('gray.50', 'gray.700');
 
     const colorLight = useColorModeValue('gray.800', 'white');
-    const bgLight = useColorModeValue('gray.50', 'gray.900');
+    const bgLight = useColorModeValue('gray.50', 'custom.2');
     const bgHoverLight = useColorModeValue('gray.50', 'gray.800');
 
     const shadow = useColorModeValue('base', 'none');
@@ -176,7 +176,7 @@ export const PlugButton = forwardRef<HTMLButtonElement, PlugButtonProps>(
         {isLoading
           ? 'Loading...'
           : isPlugPAPIExists
-          ? 'Connect to Plug'
+          ? 'Connect'
           : 'Install Plug'}
       </Button>
     );

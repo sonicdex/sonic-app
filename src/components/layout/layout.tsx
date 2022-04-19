@@ -27,6 +27,7 @@ import { FaNetworkWired } from '@react-icons/all-files/fa/FaNetworkWired';
 import { FaRedo } from '@react-icons/all-files/fa/FaRedo';
 import { FaSun } from '@react-icons/all-files/fa/FaSun';
 import { FaTwitter } from '@react-icons/all-files/fa/FaTwitter';
+import { FiArrowUpRight } from '@react-icons/all-files/fi/FiArrowUpRight';
 import React, { useMemo } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
@@ -102,7 +103,7 @@ export const Layout: React.FC = ({ children, ...props }) => {
                 variant="solid-rounded"
                 colorScheme="dark-blue"
               >
-                <TabList>
+                <TabList bg={menuBg}>
                   {NAVIGATION_TABS.map(({ label, url }) => (
                     <Tab
                       as={Link}
@@ -113,6 +114,10 @@ export const Layout: React.FC = ({ children, ...props }) => {
                       {label}
                     </Tab>
                   ))}
+                  <Tab as="a" href={ENV.URLs.analyticsApp} target="_analytics">
+                    Analytics
+                    <FiArrowUpRight />
+                  </Tab>
                 </TabList>
               </Tabs>
             </chakra.nav>
@@ -134,7 +139,7 @@ export const Layout: React.FC = ({ children, ...props }) => {
                   {ENV.isDarkModeEnabled && (
                     <MenuItem
                       onClick={toggleColorMode}
-                      icon={colorMode === 'dark' ? <FaMoon /> : <FaSun />}
+                      icon={colorMode === 'dark' ? <FaSun /> : <FaMoon />}
                     >
                       {colorMode === 'dark' ? 'Light mode' : 'Dark mode'}
                     </MenuItem>
