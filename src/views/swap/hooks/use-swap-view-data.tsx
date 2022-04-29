@@ -232,7 +232,7 @@ export const useSwapViewData = () => {
   }, [step]);
 
   const handleChangeValue = (value: string, dataKey: SwapTokenDataKey) => {
-    if (!from.metadata || !to.metadata || !allPairs) return;
+    if (!from.metadata || !allPairs) return;
     resetStepToHome();
     handleSetValue(value, dataKey);
 
@@ -317,7 +317,6 @@ export const useSwapViewData = () => {
           } else {
             dispatch(swapViewActions.setToken({ data: dataKey, tokenId }));
           }
-          resetViewState();
         });
       },
       selectedTokenIds,
@@ -674,6 +673,11 @@ export const useSwapViewData = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoading]);
 
+  useEffect(() => {
+    handleChangeValue(from.value, 'from');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [to.metadata]);
+
   return {
     step,
     isButtonDisabled,
@@ -706,3 +710,4 @@ export const useSwapViewData = () => {
     onSwitchTokens: handleSwitchTokens,
   };
 };
+

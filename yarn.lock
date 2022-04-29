@@ -1901,10 +1901,10 @@
     "@fleekhq/browser-rpc" "^2.0.3"
     json-bigint "^1.0.0"
 
-"@psychedelic/sonic-js@0.3.0":
-  version "0.3.0"
-  resolved "https://npm.pkg.github.com/download/@psychedelic/sonic-js/0.3.0/d070fe03d2e5b24680838da207e5a48dc98f7f0759ed136cfe6f8bd68b1efdeb#06f3596a2f6b5cfa3740099220fbd6f037c259e0"
-  integrity sha512-jmYyALzP1/k0cBKOc7ARjFpbAFSnRp6a0si8bvuJBIzYKOKbjek7/y28jdy7Reo6GeeqFnMNOTTcR6BRTjBTaA==
+"@psychedelic/sonic-js@0.3.1":
+  version "0.3.1"
+  resolved "https://npm.pkg.github.com/download/@psychedelic/sonic-js/0.3.1/1857551c55c1ba5680a03a81e65b2737adec280d104d7af80528c95b18bdbad7#d1964b30c53d81c02f58563925911e3a2b1a7133"
+  integrity sha512-k4Ss59A0eG/kz9Lw1RG6VlCLyKRgQQsVqZ1w8qztrLxwXRbrF4pmglc7Zau46sYMh9oM00vzmFVxXNsCF7VChQ==
   dependencies:
     "@dfinity/agent" "^0.10.2"
     "@dfinity/candid" "^0.10.2"

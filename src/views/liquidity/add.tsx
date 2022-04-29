@@ -181,11 +181,7 @@ export const LiquidityAddView = () => {
               Number(token0.metadata?.decimals),
             ];
 
-      dispatch(
-        liquidityViewActions.setValue({ data: dataKey, value: amountIn })
-      );
-
-      if (token0.metadata && token1.metadata) {
+      try {
         const lpValue = Liquidity.getOppositeAmount({
           amountIn,
           reserveIn,
@@ -194,6 +190,9 @@ export const LiquidityAddView = () => {
           decimalsOut,
         });
 
+        dispatch(
+          liquidityViewActions.setValue({ data: dataKey, value: amountIn })
+        );
         const reversedDataKey = dataKey === 'token0' ? 'token1' : 'token0';
 
         if (lpValue.gt(0)) {
@@ -203,6 +202,13 @@ export const LiquidityAddView = () => {
               value: lpValue.toString(),
             })
           );
+        }
+      } catch (e) {
+        if (e instanceof Error && e.message.startsWith('Minimal amountIn')) {
+          const minimalAmount = e.message.split(': ')[1];
+          setInAndOutTokenValues(dataKey, minimalAmount);
+        } else {
+          console.error('Failed to set token amount', e);
         }
       }
     },

@@ -1,6 +1,5 @@
 import { Link } from '@chakra-ui/react';
 import { deserialize, serialize, toBigNumber } from '@psychedelic/sonic-js';
-import BigNumber from 'bignumber.js';
 import { useEffect, useMemo } from 'react';
 
 import { useBalances } from '@/hooks/use-balances';
@@ -32,43 +31,23 @@ export const RemoveLiquidityNotificationContent: React.FC<
 
   const { token0, token1, ...removeLiquidityBatchParams } =
     useMemo(() => {
-      const {
-        token0,
-        token1,
-        slippage,
-        keepInSonic,
-        removeAmountPercentage,
-        pair,
-      } = liquidityViewStore;
+      const { token0, token1, keepInSonic, removeAmountPercentage, pair } =
+        liquidityViewStore;
 
       if (userLPBalances && token0.metadata && token1.metadata && pair) {
         const tokensLPBalance =
           userLPBalances[token0.metadata.id]?.[token1.metadata.id];
         const lpAmount = (removeAmountPercentage / 100) * tokensLPBalance;
 
-        const amount0Desired = new BigNumber(lpAmount)
+        const amount0Min = toBigNumber(lpAmount)
           .multipliedBy(pair.reserve0.toString())
           .dividedBy(pair.totalSupply.toString())
-          .multipliedBy(removeAmountPercentage / 100)
-          .multipliedBy(Number(slippage));
+          .applyDecimals(token0.metadata.decimals);
 
-        const amount1Desired = new BigNumber(lpAmount)
+        const amount1Min = toBigNumber(lpAmount)
           .multipliedBy(pair.reserve1.toString())
           .dividedBy(pair.totalSupply.toString())
-          .multipliedBy(removeAmountPercentage / 100)
-          .multipliedBy(Number(slippage));
-
-        const amount0Min = toBigNumber(
-          amount0Desired
-            .minus(amount0Desired.multipliedBy(Number(slippage)))
-            .toString()
-        ).applyDecimals(token0.metadata.decimals);
-
-        const amount1Min = toBigNumber(
-          amount1Desired
-            .minus(amount1Desired.multipliedBy(Number(slippage)))
-            .toString()
-        ).applyDecimals(token1.metadata.decimals);
+          .applyDecimals(token1.metadata.decimals);
 
         return deserialize(
           serialize({

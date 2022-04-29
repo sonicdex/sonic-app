@@ -142,11 +142,9 @@ export const swapViewSlice = createSlice({
         state[data].metadata = undefined;
       }
 
-      state.to.value = '';
-      state.from.value = '';
-
       if (data === 'from') {
         state.to.metadata = undefined;
+        state.to.value = '';
       }
     },
     switchTokens: (state, action: PayloadAction<SwapTokenDataKey>) => {
