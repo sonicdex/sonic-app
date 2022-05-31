@@ -123,7 +123,7 @@ export const getSwapAmountOutMin = ({
   }).toString();
 
   let result = Swap.getAmountMin({
-    amount: toValue,
+    amount: Math.max(Number(toValue), 0).toString(),
     slippage,
     decimals: to.metadata.decimals,
   });
@@ -139,3 +139,4 @@ export const getSwapAmountOutMin = ({
 
   return result.dp(Number(to.metadata.decimals)).toString();
 };
+
