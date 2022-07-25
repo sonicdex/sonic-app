@@ -50,6 +50,7 @@ module.exports = (env) => {
         CYCLES_MINTING_CANISTER_ID: 'rkp4c-7iaaa-aaaaa-aaaca-cai',
         ROSETTA_BASE_API: 'https://rosetta-api.internetcomputer.org/',
         IS_DARK_MODE_ENABLED: 'false',
+        HIDDEN_TOKENS: '',
       }),
       new HtmlWebpackPlugin({
         template: path.resolve(__dirname, 'public/index.html'),
