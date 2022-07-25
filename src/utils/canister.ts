@@ -1,7 +1,7 @@
 import { Pair } from '@psychedelic/sonic-js';
 
 import { questionMarkSrc } from '@/assets';
-import { getFromStorage } from '@/config';
+import { ENV, getFromStorage } from '@/config';
 import { SwapIDL } from '@/did';
 import {
   AppTokenMetadata,
@@ -29,21 +29,24 @@ export const parseResponseSupportedTokenList = (
   response: SwapIDL.TokenInfoExt[],
   price?: string
 ): AppTokenMetadata[] => {
-  return response.map((token) => {
-    const logo = getFromStorage(`${token.id}-logo`) || questionMarkSrc;
+  return response
+    .filter((token) => !ENV.hiddenTokens.includes(token.id))
+    .map((token) => {
+      const logo = getFromStorage(`${token.id}-logo`) || questionMarkSrc;
 
-    return {
-      ...token,
-      ...(price ? { price } : {}),
-      logo,
-    };
-  });
+      return {
+        ...token,
+        ...(price ? { price } : {}),
+        logo,
+      };
+    });
 };
 
 export const parseResponseTokenList = (
   response: AppTokenMetadata[]
 ): AppTokenMetadataListObject => {
   return response.reduce((list, token) => {
+    if (ENV.hiddenTokens.includes(token.id)) return list;
     list[token.id] = token;
     return list;
   }, {} as AppTokenMetadataListObject);
@@ -56,6 +59,12 @@ export const parseResponsePair = (
     return undefined;
   }
 
+  const resultPair = pair[0];
+
+  for (const token of [resultPair.token0, resultPair.token1]) {
+    if (ENV.hiddenTokens.includes(token)) return undefined;
+  }
+
   return pair[0];
 };
 
@@ -64,6 +73,10 @@ export const parseResponseAllPairs = (
 ): Pair.List => {
   return response.reduce((list, pair) => {
     const { token0, token1, reserve0, reserve1 } = pair;
+
+    for (const token of [token0, token1]) {
+      if (ENV.hiddenTokens.includes(token)) return list;
+    }
 
     return {
       ...list,
@@ -89,7 +102,13 @@ export const parseResponseUserLPBalances = (
   response: [tokenId: string, amount: bigint][]
 ): PairBalances => {
   return response.reduce((balances, [tokenId, amount]) => {
-    const [token0Id, token1Id] = tokenId.split(':');
+    const tokenIds = tokenId.split(':');
+
+    for (const token of tokenIds) {
+      if (ENV.hiddenTokens.includes(token)) return balances;
+    }
+
+    const [token0Id, token1Id] = tokenIds;
 
     return {
       ...balances,
