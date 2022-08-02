@@ -1,4 +1,3 @@
-import isMobile from 'ismobilejs';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 
 import { NotificationManager } from '@/notifications';
@@ -12,7 +11,7 @@ import {
   SwapView,
 } from '@/views';
 
-import { EmptyMobile, Layout } from './components';
+import { Layout } from './components';
 import {
   AddLiquidityFailModal,
   AddLiquidityProgressModal,
@@ -44,8 +43,6 @@ import {
 } from './store';
 
 export const App = () => {
-  const isAnyMobileDevice = isMobile(window.navigator).any;
-
   useCyclesMintingCanisterInit();
   usePlugInit();
   usePriceInit();
@@ -53,10 +50,6 @@ export const App = () => {
   useLiquidityViewInit();
   useBlockHeightsInit();
   useTokenLogosFetcherInit();
-
-  if (isAnyMobileDevice) {
-    return <EmptyMobile />;
-  }
 
   return (
     <BrowserRouter>

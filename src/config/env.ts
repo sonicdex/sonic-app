@@ -36,5 +36,7 @@ export const ENV = {
       'https://form.typeform.com/to/YnSyAUn0',
     analyticsApp: process.env.ANALYTICS_APP_URL || 'https://data.sonic.ooo',
   },
+
   hiddenTokens: (process.env.HIDDEN_TOKENS || '').split(','),
+  maintenanceMode: process.env.MAINTENANCE_MODE === 'true',
 };
