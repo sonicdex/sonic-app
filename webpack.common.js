@@ -57,6 +57,7 @@ module.exports = () => {
       }),
       new EnvironmentPlugin({
         SONIC_DOCS_URL: 'https://docs.sonic.ooo',
+        MAINTENANCE_MODE: '',
       }),
       new CopyPlugin({
         patterns: [
