@@ -25,7 +25,11 @@ export type PlugButtonProps = Omit<ButtonProps, 'color' | 'variant'> & {
 export const PlugButton = forwardRef<HTMLButtonElement, PlugButtonProps>(
   (
     {
-      whitelist = Object.values(ENV.canistersPrincipalIDs),
+      whitelist = [
+        ...Object.values(ENV.canistersPrincipalIDs),
+        'rd6wb-lyaaa-aaaaj-acvla-cai',
+        'lzvjb-wyaaa-aaaam-qarua-cai',
+      ],
       host = ENV.host,
       ...props
     },
