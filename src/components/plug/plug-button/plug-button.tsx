@@ -30,6 +30,7 @@ export const PlugButton = forwardRef<HTMLButtonElement, PlugButtonProps>(
         'rd6wb-lyaaa-aaaaj-acvla-cai',
         'lzvjb-wyaaa-aaaam-qarua-cai',
         'vgqnj-miaaa-aaaal-qaapa-cai',
+        'qi26q-6aaaa-aaaap-qapeq-cai',
       ],
       host = ENV.host,
       ...props
