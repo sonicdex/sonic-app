@@ -12,7 +12,7 @@ import { ENV } from '@/config';
 import { LedgerTransaction } from '@/integrations/ledger';
 import { AppTokenMetadata } from '@/models';
 import { useSwapCanisterStore } from '@/store';
-import { createICRocksLink } from '@/utils/function';
+import { ExternalLink } from '@/utils';
 
 export type LedgerTransactionActivityProps = LedgerTransaction;
 
@@ -86,7 +86,7 @@ export const LedgerTransactionActivity = ({
           justifyContent="center"
           alignItems="center"
           fontSize="sm"
-          href={createICRocksLink(hash)}
+          href={ExternalLink.ledgerTransaction(hash)}
           target="_blank"
           color="gray.400"
         >

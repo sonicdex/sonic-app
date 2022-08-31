@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 
 import { getFromStorage, saveToStorage } from '@/config';
-import { TokenIDL } from '@/did';
-import { ActorAdapter } from '@/integrations/actor';
+import { createAnonTokenActor } from '@/integrations/actor';
 import { useSwapCanisterStore } from '@/store';
+import { AppLog } from '@/utils';
 
 export const useTokenLogosFetcherInit = (): void => {
   const { supportedTokenList } = useSwapCanisterStore();
@@ -16,16 +16,16 @@ export const useTokenLogosFetcherInit = (): void => {
         const logo = getFromStorage(storageKey);
 
         if (!logo) {
-          const tokenActor: TokenIDL.Factory =
-            await new ActorAdapter().createActor(token.id, TokenIDL.factory);
+          const tokenActor = await createAnonTokenActor(token.id);
           try {
             const tokenLogo = await tokenActor.logo();
             saveToStorage(storageKey, tokenLogo);
           } catch (e) {
-            console.error('Token Logo not found', e);
+            AppLog.error(`Token logo fetch error: token=${token.id}`, e);
           }
         }
       })
     );
   }, [supportedTokenList]);
 };
+

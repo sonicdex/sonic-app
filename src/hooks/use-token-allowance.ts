@@ -2,35 +2,35 @@ import { Principal } from '@dfinity/principal';
 import { useEffect, useState } from 'react';
 
 import { ENV } from '@/config';
-import { TokenIDL } from '@/did';
-import { useActor } from '@/integrations/actor';
+import { createAnonTokenActor } from '@/integrations/actor';
 import { usePlugStore } from '@/store';
+import { AppLog } from '@/utils';
 
 export const useTokenAllowance = (tokenId?: string): number | undefined => {
   const { principalId } = usePlugStore();
   const [allowance, setAllowance] = useState<number | undefined>(undefined);
 
-  const actor = useActor<TokenIDL.Factory>({
-    canisterId: tokenId,
-    interfaceFactory: TokenIDL.factory,
-  });
-
   useEffect(() => {
-    if (actor && principalId) {
-      actor
-        .allowance(
-          Principal.fromText(principalId),
-          Principal.fromText(ENV.canistersPrincipalIDs.swap)
-        )
-        .then((res) => {
-          setAllowance(Number(res));
-        })
-        .catch((e) => {
-          console.error('getAllowance error', e);
+    if (tokenId && principalId) {
+      (async () => {
+        try {
+          const actor = await createAnonTokenActor(tokenId);
+          const allowance = await actor.allowance(
+            Principal.fromText(principalId),
+            Principal.fromText(ENV.canistersPrincipalIDs.swap)
+          );
+          setAllowance(Number(allowance));
+        } catch (error) {
+          AppLog.error(
+            `Allowance fetch error: token=${tokenId} principal=${principalId}`,
+            error
+          );
           setAllowance(undefined);
-        });
+        }
+      })();
     }
-  }, [actor, principalId]);
+  }, [tokenId, principalId]);
 
   return allowance;
 };
+

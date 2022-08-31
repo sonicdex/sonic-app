@@ -11,8 +11,8 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react';
 
-import { ENV } from '@/config';
 import { modalsSliceActions, useAppDispatch, useModalsStore } from '@/store';
+import { ExternalLink } from '@/utils';
 
 export const TermsAndConditionsModal = () => {
   const dispatch = useAppDispatch();
@@ -43,7 +43,7 @@ export const TermsAndConditionsModal = () => {
         <ModalHeader borderBottom="none">Terms and Conditions</ModalHeader>
         <Text as="p" color={color} maxW={370}>
           Please read &nbsp;
-          <Link color="dark-blue.600" href={ENV.URLs.termsAndConditions}>
+          <Link color="dark-blue.600" href={ExternalLink.termsAndConditions}>
             Sonic's terms & conditions
           </Link>
           &nbsp;carefully.
@@ -65,3 +65,4 @@ export const TermsAndConditionsModal = () => {
     </Modal>
   );
 };
+

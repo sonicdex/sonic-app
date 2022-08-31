@@ -1,5 +1,3 @@
-import { ENV } from '@/config';
-
 let timer: NodeJS.Timer | null = null;
 
 export const debounce = (
@@ -10,12 +8,4 @@ export const debounce = (
   timer = setTimeout(() => {
     fn();
   }, awaitTime || 0);
-};
-
-export const createCAPLink = (transaction: string): string => {
-  return `https://explorer.cap.ooo/app-transactions/${ENV.canistersPrincipalIDs.swap}/${transaction}`;
-};
-
-export const createICRocksLink = (transaction: string): string => {
-  return `https://ic.rocks/transaction/${transaction}`;
 };

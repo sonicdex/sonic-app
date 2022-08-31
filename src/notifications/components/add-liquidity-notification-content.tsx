@@ -14,6 +14,7 @@ import {
   useLiquidityViewStore,
   useNotificationStore,
 } from '@/store';
+import { AppLog } from '@/utils';
 
 export interface AddLiquidityNotificationContentProps {
   id: string;
@@ -107,7 +108,7 @@ export const AddLiquidityNotificationContent: React.FC<
         getUserPositiveLPBalances();
       })
       .catch((err) => {
-        console.error('Add Liquidity Error', err);
+        AppLog.error('Add Liquidity Error', err);
         dispatch(modalsSliceActions.clearAddLiquidityModalData());
         addNotification({
           title: `Add LP of ${token0.value} ${token0.metadata.symbol} + ${token1.value} ${token1.metadata.symbol} failed`,
@@ -129,3 +130,4 @@ export const AddLiquidityNotificationContent: React.FC<
     </Link>
   );
 };
+

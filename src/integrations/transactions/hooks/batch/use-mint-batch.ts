@@ -1,4 +1,4 @@
-import { TransactionPrevResponse } from '@psychedelic/plug-inpage-provider/dist/src/Provider';
+import { TransactionPrevResponse } from '@psychedelic/plug-inpage-provider/dist/src/Provider/interfaces';
 import { useMemo } from 'react';
 
 import { ENV } from '@/config';
@@ -244,3 +244,4 @@ export const useMintBatch = ({
 
   return { batch, openBatchModal };
 };
+

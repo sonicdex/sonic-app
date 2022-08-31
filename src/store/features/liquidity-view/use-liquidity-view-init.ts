@@ -1,7 +1,6 @@
 import { useCallback, useEffect } from 'react';
 
 import { ENV } from '@/config';
-import { useSwapActor } from '@/integrations/actor';
 import { Pair } from '@/models';
 import { useAppDispatch } from '@/store';
 
@@ -12,10 +11,9 @@ export const useLiquidityViewInit = () => {
   const dispatch = useAppDispatch();
   const { token0, token1 } = useLiquidityViewStore();
   const { supportedTokenList, allPairs } = useSwapCanisterStore();
-  const swapActor = useSwapActor();
 
   const getPair = useCallback(async () => {
-    if (swapActor && token0.metadata?.id && token1.metadata?.id) {
+    if (token0.metadata?.id && token1.metadata?.id) {
       if (allPairs) {
         const localPair = allPairs[token0.metadata.id]?.[
           token1.metadata.id
@@ -24,7 +22,7 @@ export const useLiquidityViewInit = () => {
       }
     }
     return dispatch(liquidityViewActions.setPair(undefined));
-  }, [dispatch, swapActor, token0.metadata?.id, token1.metadata?.id, allPairs]);
+  }, [dispatch, token0.metadata?.id, token1.metadata?.id, allPairs]);
 
   useEffect(() => {
     if (supportedTokenList && !token0.metadata?.id) {
@@ -43,3 +41,4 @@ export const useLiquidityViewInit = () => {
     }
   }, [token0.metadata?.id, token1.metadata?.id, getPair]);
 };
+

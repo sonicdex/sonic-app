@@ -25,7 +25,7 @@ import { useCyclesMintingCanisterStore, useSwapViewStore } from '@/store';
 import { formatValue } from '@/utils/format';
 
 import { getSwapAmountOutMin } from '..';
-import { getAmountOutFromPath, getXTCValueByXDRRate } from '../swap.utils';
+import { getAmountOutRatio, getXTCValueByXDRRate } from '../swap.utils';
 import { ChainPopover } from './chain-popover';
 
 export type ExchangeBoxProps = {
@@ -33,8 +33,7 @@ export type ExchangeBoxProps = {
 };
 
 export const ExchangeBox: React.FC<ExchangeBoxProps> = ({ priceImpact }) => {
-  const { from, to, slippage, baseFromTokenPaths, keepInSonic, allPairs } =
-    useSwapViewStore();
+  const { from, to, slippage, keepInSonic, allPairs } = useSwapViewStore();
 
   const { sonicBalances } = useBalances();
 
@@ -150,12 +149,8 @@ export const ExchangeBox: React.FC<ExchangeBoxProps> = ({ priceImpact }) => {
   ]);
 
   const pathAmountOut = useMemo(
-    () =>
-      getAmountOutFromPath(
-        { metadata: from.metadata, paths: baseFromTokenPaths, value: '1' },
-        to
-      ),
-    [baseFromTokenPaths, from.metadata, to]
+    () => getAmountOutRatio(from, to, allPairs),
+    [from, to, allPairs]
   );
 
   const amountOutMin = useMemo(
@@ -240,3 +235,4 @@ export const ExchangeBox: React.FC<ExchangeBoxProps> = ({ priceImpact }) => {
     </Flex>
   );
 };
+

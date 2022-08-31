@@ -15,6 +15,7 @@ import {
   useNotificationStore,
   useSwapCanisterStore,
 } from '@/store';
+import { AppLog } from '@/utils';
 
 export interface DepositNotificationContentProps {
   id: string;
@@ -106,7 +107,7 @@ export const DepositNotificationContent: React.FC<
         });
       })
       .catch((err) => {
-        console.error('Deposit Error', err);
+        AppLog.error(`Deposit Error`, err);
         dispatch(modalsSliceActions.clearDepositModalData());
         addNotification({
           title: `Deposit ${value} ${selectedToken?.symbol} failed`,
@@ -128,3 +129,4 @@ export const DepositNotificationContent: React.FC<
     </Link>
   );
 };
+

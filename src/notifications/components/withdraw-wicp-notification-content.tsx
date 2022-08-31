@@ -14,6 +14,7 @@ import {
   useSwapViewStore,
   WithdrawWICPModalDataStep,
 } from '@/store';
+import { AppLog } from '@/utils';
 import { getAccountId } from '@/utils/icp';
 
 export interface WithdrawWICPNotificationContentProps {
@@ -80,7 +81,7 @@ export const WithdrawWICPNotificationContent: React.FC<
         getBalances();
       })
       .catch((err) => {
-        console.error('Unwrap Error', err);
+        AppLog.error('Unwrap Error', err);
 
         addNotification({
           title: `Unwrap ${from.value} ${from.metadata.symbol} failed`,
@@ -104,3 +105,4 @@ export const WithdrawWICPNotificationContent: React.FC<
     </Link>
   );
 };
+

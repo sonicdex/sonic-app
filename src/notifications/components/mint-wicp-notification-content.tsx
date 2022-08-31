@@ -13,6 +13,7 @@ import {
   useNotificationStore,
   useSwapViewStore,
 } from '@/store';
+import { AppLog } from '@/utils';
 
 export interface MintWICPNotificationContentProps {
   id: string;
@@ -77,7 +78,7 @@ export const MintWICPNotificationContent: React.FC<
         getBalances();
       })
       .catch((err) => {
-        console.error('Wrap Error', err);
+        AppLog.error('Mint WICP Error', err);
 
         addNotification({
           title: `Wrap ${from.value} ${from.metadata.symbol} failed`,
@@ -101,3 +102,4 @@ export const MintWICPNotificationContent: React.FC<
     </Link>
   );
 };
+

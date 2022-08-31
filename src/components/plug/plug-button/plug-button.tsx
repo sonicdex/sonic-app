@@ -12,6 +12,7 @@ import {
   useAppDispatch,
   usePlugStore,
 } from '@/store';
+import { AppLog } from '@/utils';
 
 import { PlugLogo } from '../plug-logo/plug-logo';
 import { PLUG_WALLET_WEBSITE_URL } from './constants';
@@ -117,10 +118,10 @@ export const PlugButton = forwardRef<HTMLButtonElement, PlugButtonProps>(
         });
 
         if (isConnected) {
-          handleConnect(isConnected);
+          handleConnect(Boolean(isConnected));
         }
       } catch (err) {
-        console.error(err);
+        AppLog.error('Error while connecting to plug', err);
       } finally {
         dispatch(plugActions.setState(FeatureState.Idle));
       }

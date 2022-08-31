@@ -1,11 +1,9 @@
 import { Principal } from '@dfinity/principal';
 import { useCallback, useMemo } from 'react';
 
-import { ENV } from '@/config';
 import { ICP_METADATA } from '@/constants';
-import { SwapIDL, TokenIDL } from '@/did';
-import { XTCIDL } from '@/did/sonic/xtc.did';
-import { ActorAdapter, appActors, useSwapActor } from '@/integrations/actor';
+import { createAnonTokenActor } from '@/integrations/actor';
+import { createAnonSwapActor } from '@/integrations/actor/create-swap-actor';
 import { Balances } from '@/models';
 import {
   FeatureState,
@@ -15,6 +13,7 @@ import {
   useSwapCanisterStore,
 } from '@/store';
 import { useKeepSync } from '@/store/features/keep-sync';
+import { AppLog } from '@/utils';
 import { parseResponseUserLPBalances } from '@/utils/canister';
 import { parseAmount } from '@/utils/format';
 import { fetchICPBalance } from '@/utils/icp';
@@ -28,7 +27,6 @@ export const useBalances = () => {
     balancesState,
     userLPBalancesState,
   } = useSwapCanisterStore();
-  const _swapActor = useSwapActor();
 
   const dispatch = useAppDispatch();
 
@@ -38,18 +36,14 @@ export const useBalances = () => {
       async (isRefreshing?: boolean) => {
         try {
           if (userLPBalancesState === FeatureState.Loading) return;
-          const swapActor =
-            _swapActor ??
-            (appActors[ENV.canistersPrincipalIDs.swap] as SwapIDL.Factory);
-
-          if (!swapActor) throw new Error('Swap actor not found');
-          if (!principalId) throw new Error('Principal ID not found');
-
           dispatch(
             swapCanisterActions.setUserLPBalancesState(
               isRefreshing ? FeatureState.Updating : FeatureState.Loading
             )
           );
+          if (!principalId) throw new Error('Principal ID not found');
+
+          const swapActor = await createAnonSwapActor();
           const response = await swapActor.getUserLPBalancesAbove(
             Principal.fromText(principalId),
             BigInt(0)
@@ -69,13 +63,13 @@ export const useBalances = () => {
             swapCanisterActions.setUserLPBalancesState(FeatureState.Idle)
           );
         } catch (error) {
-          console.error('getUserLPBalancesAbove: ', error);
+          AppLog.error(`User LP balances fetch error`, error);
           dispatch(
             swapCanisterActions.setUserLPBalancesState(FeatureState.Error)
           );
         }
       },
-      [_swapActor, userLPBalancesState, principalId, dispatch]
+      [userLPBalancesState, principalId, dispatch]
     )
   );
 
@@ -85,19 +79,14 @@ export const useBalances = () => {
       async (isRefreshing?: boolean) => {
         try {
           if (balancesState === FeatureState.Loading) return;
-
-          const swapActor =
-            _swapActor ??
-            (appActors[ENV.canistersPrincipalIDs.swap] as SwapIDL.Factory);
-
-          if (!swapActor) throw new Error('Swap actor not found');
-          if (!principalId) throw new Error('Principal ID not found');
+          if (!principalId) return;
           dispatch(
             swapCanisterActions.setBalancesState(
               isRefreshing ? FeatureState.Updating : FeatureState.Loading
             )
           );
 
+          const swapActor = await createAnonSwapActor();
           const sonicBalances = await swapActor.getUserBalances(
             Principal.fromText(principalId)
           );
@@ -105,21 +94,11 @@ export const useBalances = () => {
           const tokenBalances = sonicBalances
             ? await Promise.all(
                 sonicBalances.map(async (balance) => {
+                  const tokenCanisterId = balance[0];
                   try {
-                    const tokenCanisterId = balance[0];
-
-                    // FIXME: When XTC will be more compatible with DIP20
-                    // we can remove XTCIDL factory
-                    const _interfaceFactory =
-                      tokenCanisterId === ENV.canistersPrincipalIDs.XTC
-                        ? XTCIDL.factory
-                        : TokenIDL.factory;
-
-                    const tokenActor: TokenIDL.Factory =
-                      await new ActorAdapter().createActor(
-                        tokenCanisterId,
-                        _interfaceFactory
-                      );
+                    const tokenActor = await createAnonTokenActor(
+                      tokenCanisterId
+                    );
 
                     const tokenBalance = await tokenActor.balanceOf(
                       Principal.fromText(principalId)
@@ -129,7 +108,10 @@ export const useBalances = () => {
 
                     return result;
                   } catch (error) {
-                    console.error(error);
+                    AppLog.error(
+                      `Token balance fetch error: token="${tokenCanisterId}"`,
+                      error
+                    );
                     const errorResult: [string, bigint] = [
                       balance[0],
                       BigInt(0),
@@ -152,18 +134,11 @@ export const useBalances = () => {
           dispatch(swapCanisterActions.setTokenBalances(tokenBalances));
           dispatch(swapCanisterActions.setBalancesState(FeatureState.Idle));
         } catch (error) {
-          console.error(error);
+          AppLog.error(`Balances fetch error`, error);
           dispatch(swapCanisterActions.setBalancesState(FeatureState.Error));
         }
       },
-      [
-        _swapActor,
-        sonicBalances,
-        tokenBalances,
-        principalId,
-        dispatch,
-        balancesState,
-      ]
+      [principalId, dispatch, balancesState]
     )
   );
 

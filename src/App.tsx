@@ -1,3 +1,4 @@
+import { ActorAdapter, Default } from '@psychedelic/sonic-js';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 
 import { NotificationManager } from '@/notifications';
@@ -32,7 +33,11 @@ import {
   WithdrawWICPFailModal,
   WithdrawWICPProgressModal,
 } from './components/modals';
-import { useTokenLogosFetcherInit } from './hooks';
+import { ENV } from './config';
+import {
+  useNetworkErrorNotifications,
+  useTokenLogosFetcherInit,
+} from './hooks';
 import { useBlockHeightsInit } from './hooks/use-block-heights-init';
 import { usePlugInit } from './integrations/plug';
 import {
@@ -42,6 +47,10 @@ import {
   useSwapCanisterInit,
 } from './store';
 
+ActorAdapter.DEFAULT_HOST = ENV.host;
+Default.ENV = process.env.NODE_ENV || 'production';
+Default.IC_HOST = ENV.host;
+
 export const App = () => {
   useCyclesMintingCanisterInit();
   usePlugInit();
@@ -50,6 +59,7 @@ export const App = () => {
   useLiquidityViewInit();
   useBlockHeightsInit();
   useTokenLogosFetcherInit();
+  useNetworkErrorNotifications();
 
   return (
     <BrowserRouter>

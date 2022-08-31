@@ -1,4 +1,4 @@
-import { Pair, Swap } from '@psychedelic/sonic-js';
+import { Pair, Swap, toBigNumber } from '@psychedelic/sonic-js';
 import BigNumber from 'bignumber.js';
 
 import {
@@ -138,5 +138,38 @@ export const getSwapAmountOutMin = ({
   }
 
   return result.dp(Number(to.metadata.decimals)).toString();
+};
+
+export const getAmountOutRatio = (
+  from: SwapTokenData,
+  to: SwapTokenData,
+  allPairs?: Pair.List
+): string => {
+  if (!from.metadata || !to.metadata) return '0';
+
+  if (from.value && to.value) {
+    const ratio = toBigNumber(to.value)
+      .div(from.value)
+      .dp(to.metadata.decimals);
+    if (ratio.isZero())
+      return `less than ${toBigNumber(1)
+        .applyDecimals(to.metadata.decimals)
+        .toString()}`;
+    return ratio.toString();
+  }
+
+  if (!allPairs) return '0';
+
+  const pair = allPairs[from.metadata.id]?.[to.metadata.id];
+
+  if (!pair) return '0';
+
+  return Swap.getAmountOut({
+    amountIn: '1',
+    decimalsIn: from.metadata.decimals,
+    decimalsOut: to.metadata.decimals,
+    reserveIn: Number(pair.reserve0),
+    reserveOut: Number(pair.reserve1),
+  }).toString();
 };
 

@@ -1,21 +1,25 @@
 import { Principal } from '@dfinity/principal';
+import { ActorAdapter } from '@psychedelic/sonic-js';
 import axios from 'axios';
 import BigNumber from 'bignumber.js';
 import crc32 from 'buffer-crc32';
 import CryptoJS from 'crypto-js';
 
-import RosettaApi from '@/apis/rosetta';
-import { BINANCE_V3_API_URL } from '@/integrations/binance/constants';
+import { CyclesMintingIDL } from '@/did/sonic/cycles-minting.did';
+import { createAnonLedgerActor } from '@/integrations/actor';
+
+import { ExternalLink } from './external-link';
 
 export const ACCOUNT_DOMAIN_SEPERATOR = '\x0Aaccount-id';
 
 export const fetchICPBalance = async (principalId: string) => {
+  const ledgerActor = await createAnonLedgerActor();
   const accountId = getAccountId(Principal.fromText(principalId || ''), 0);
 
   if (accountId) {
-    const rosettaAPI = new RosettaApi();
-
-    const balance = await rosettaAPI.getAccountBalance(accountId);
+    const balance = (
+      await ledgerActor.account_balance_dfx({ account: accountId })
+    ).e8s;
 
     const icpBalanceNoDecimals = new BigNumber(balance.toString())
       .div(new BigNumber('100000000'))
@@ -27,11 +31,20 @@ export const fetchICPBalance = async (principalId: string) => {
   }
 };
 
+export const fetchICP2XDRConversionRate = async () => {
+  const cmActor =
+    await ActorAdapter.createAnonymousActor<CyclesMintingIDL.Factory>(
+      'rkp4c-7iaaa-aaaaa-aaaca-cai',
+      CyclesMintingIDL.factory,
+      'https://ic0.app/'
+    );
+
+  return cmActor.get_icp_xdr_conversion_rate();
+};
+
 export const fetchICPPrice = async () => {
   try {
-    const response = await axios.get(
-      `${BINANCE_V3_API_URL}/avgPrice?symbol=ICPUSDT`
-    );
+    const response = await axios.get(ExternalLink.icpPrice);
 
     if (response.status === 200) {
       return response.data.price;

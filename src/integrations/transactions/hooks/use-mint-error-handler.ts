@@ -12,6 +12,7 @@ import {
   useAppDispatch,
   usePlugStore,
 } from '@/store';
+import { AppLog } from '@/utils';
 
 export type UseMintErrorHandlerOptions = {
   notificationId: string;
@@ -30,7 +31,7 @@ export const useMintErrorHandler = ({
         return;
       }
 
-      console.error('Minting Error', errorMessage);
+      AppLog.error('Minting Error', errorMessage);
 
       const isBlockUsedError = errorMessage.includes('BlockUsed');
       const isUnauthorizedError = errorMessage.includes('Unauthorized');
@@ -95,3 +96,4 @@ export const useMintErrorHandler = ({
 
   return handleMintError;
 };
+

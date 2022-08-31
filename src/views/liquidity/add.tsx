@@ -63,6 +63,7 @@ import {
   useSwapCanisterStore,
   useTokenModalOpener,
 } from '@/store';
+import { AppLog } from '@/utils';
 import { getMaxValue } from '@/utils/format';
 import { debounce } from '@/utils/function';
 
@@ -208,7 +209,7 @@ export const LiquidityAddView = () => {
           const minimalAmount = e.message.split(': ')[1];
           setInAndOutTokenValues(dataKey, minimalAmount);
         } else {
-          console.error('Failed to set token amount', e);
+          AppLog.warn('Failed to set token amount', e);
         }
       }
     },

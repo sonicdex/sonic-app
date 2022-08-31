@@ -13,6 +13,7 @@ import {
   useNotificationStore,
   useSwapViewStore,
 } from '@/store';
+import { AppLog } from '@/utils';
 
 export interface MintXTCNotificationContentProps {
   id: string;
@@ -77,7 +78,7 @@ export const MintXTCNotificationContent: React.FC<
         getBalances();
       })
       .catch((err) => {
-        console.error('Mint Error', err);
+        AppLog.error('Mint XTC Error', err);
 
         addNotification({
           title: `Mint ${to.value} ${to.metadata.symbol} failed`,
@@ -101,3 +102,4 @@ export const MintXTCNotificationContent: React.FC<
     </Link>
   );
 };
+

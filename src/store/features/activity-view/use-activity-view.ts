@@ -4,6 +4,7 @@ import { useCallback, useEffect } from 'react';
 import { getUserTransactions } from '@/integrations/cap';
 import { getUserLedgerTransactions } from '@/integrations/ledger';
 import { FeatureState, useAppDispatch } from '@/store';
+import { AppLog } from '@/utils';
 import { parseResponseTokenList } from '@/utils/canister';
 import { getAccountId } from '@/utils/icp';
 
@@ -39,7 +40,7 @@ export const useActivityView = () => {
           }
         })
         .catch((err) => {
-          console.error('getUserTransactions', err);
+          AppLog.error(`Failed to get user transactions: page=${_page}`, err);
           dispatch(activityViewActions.setCAPState(FeatureState.Error));
         });
     },
@@ -51,14 +52,14 @@ export const useActivityView = () => {
       if (typeof page !== 'undefined' && !fetchedPages.includes(page)) {
         getUserTransactionsPage(principalId, page);
       }
-    } else {
-      dispatch(activityViewActions.clearActivityList());
     }
   }, [page, principalId, dispatch, getUserTransactionsPage, fetchedPages]);
 
   useEffect(() => {
     if (principalId) {
-      getUserTransactionsPage(principalId, undefined);
+      getUserTransactionsPage(principalId);
+    } else {
+      dispatch(activityViewActions.clearActivityList());
     }
   }, [principalId]);
 
@@ -71,9 +72,13 @@ export const useActivityView = () => {
         .then((transactions) => {
           dispatch(activityViewActions.setLedgerState(FeatureState.Idle));
           dispatch(activityViewActions.setLedgerTransactions(transactions));
+          dispatch(activityViewActions.pushActivityList([]));
         })
         .catch((err) => {
-          console.error('getUserLedgerTransactions', err);
+          AppLog.error(
+            `Failed to get user ledger transactions: principal=${principalId}`,
+            err
+          );
           dispatch(activityViewActions.setLedgerState(FeatureState.Error));
         });
     }

@@ -24,7 +24,6 @@ import { FaHdd } from '@react-icons/all-files/fa/FaHdd';
 import { useEffect, useMemo, useState } from 'react';
 
 import { arrowBackSrc, questionMarkSrc } from '@/assets';
-import { ENV } from '@/config';
 import { useBalances } from '@/hooks/use-balances';
 import { AppTokenMetadata } from '@/models';
 import {
@@ -33,6 +32,7 @@ import {
   useAppDispatch,
   useModalsStore,
 } from '@/store';
+import { ExternalLink } from '@/utils';
 
 import { DisplayValue, SearchBar } from '..';
 import { ImportToken } from './components';
@@ -245,7 +245,7 @@ export const TokenSelectModal = () => {
         <ModalFooter>
           <Button
             as={Link}
-            href={ENV.URLs.tokenRequestForm}
+            href={ExternalLink.tokenRequestForm}
             isFullWidth
             variant="gradient"
             colorScheme="dark-blue"
@@ -363,3 +363,4 @@ const TokenSelectItemSkeleton = () => (
     <Skeleton isLoaded={false} minWidth={18} height={6} ml={2} />
   </Flex>
 );
+

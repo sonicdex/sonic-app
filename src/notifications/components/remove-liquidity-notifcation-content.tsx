@@ -14,6 +14,7 @@ import {
   usePlugStore,
   useSwapCanisterStore,
 } from '@/store';
+import { AppLog } from '@/utils';
 
 export interface RemoveLiquidityNotificationContentProps {
   id: string;
@@ -108,7 +109,7 @@ export const RemoveLiquidityNotificationContent: React.FC<
         getUserPositiveLPBalances();
       })
       .catch((err) => {
-        console.error('Remove liqudity Error', err);
+        AppLog.error('Remove Liquidity Error', err);
         dispatch(modalsSliceActions.clearRemoveLiquidityModalData());
         addNotification({
           title: `Remove LP of ${token0.value} ${token0.metadata.symbol} + ${token1.value} ${token1.metadata.symbol} failed`,
@@ -132,3 +133,4 @@ export const RemoveLiquidityNotificationContent: React.FC<
     </Link>
   );
 };
+

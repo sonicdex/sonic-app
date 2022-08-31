@@ -1,4 +1,4 @@
-import type { Transaction } from '@psychedelic/plug-inpage-provider/dist/src/Provider';
+import type { Transaction } from '@psychedelic/plug-inpage-provider/dist/src/Provider/interfaces';
 
 export const mockTransaction = ({
   args,
@@ -15,3 +15,4 @@ export const mockTransaction = ({
   onFail: onFail || ((res) => Promise.resolve(res)),
   onSuccess: onSuccess || ((res) => Promise.resolve(res)),
 });
+

@@ -1,5 +1,5 @@
 import type { default as Provider } from '@psychedelic/plug-inpage-provider';
-import type { Transaction } from '@psychedelic/plug-inpage-provider/dist/src/Provider';
+import type { Transaction } from '@psychedelic/plug-inpage-provider/dist/src/Provider/interfaces';
 
 export const batchTransactionFailMock = async (transactions: Transaction[]) => {
   await transactions[0].onFail(false);
@@ -17,3 +17,4 @@ export const mockPlugProvider = (): Provider => {
     batchTransactions: batchTransactionsMock,
   } as any as Provider;
 };
+

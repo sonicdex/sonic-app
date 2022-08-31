@@ -34,6 +34,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { ENV } from '@/config';
 import { modalsSliceActions, useAppDispatch, usePlugStore } from '@/store';
 import { theme } from '@/theme';
+import { ExternalLink } from '@/utils';
 
 import packageJSON from '../../../package.json';
 import { PlugButton } from '..';
@@ -114,7 +115,11 @@ export const Layout: React.FC = ({ children, ...props }) => {
                       {label}
                     </Tab>
                   ))}
-                  <Tab as="a" href={ENV.URLs.analyticsApp} target="_analytics">
+                  <Tab
+                    as="a"
+                    href={ExternalLink.analyticsApp}
+                    target={ExternalLink.analyticsApp}
+                  >
                     Analytics
                     <FiArrowUpRight />
                   </Tab>
@@ -157,40 +162,40 @@ export const Layout: React.FC = ({ children, ...props }) => {
 
                   <MenuDivider />
                   <ChakraLink
-                    href={ENV.URLs.twitter}
-                    target="_blank"
+                    href={ExternalLink.twitter}
+                    target={ExternalLink.twitter}
                     rel="noopener noreferrer"
                     fontWeight="bold"
                   >
                     <MenuItem icon={<FaTwitter />}>Twitter</MenuItem>
                   </ChakraLink>
                   <ChakraLink
-                    href={ENV.URLs.discord}
-                    target="_blank"
+                    href={ExternalLink.discord}
+                    target={ExternalLink.discord}
                     rel="noopener noreferrer"
                     fontWeight="bold"
                   >
                     <MenuItem icon={<FaDiscord />}>Discord</MenuItem>
                   </ChakraLink>
                   <ChakraLink
-                    href={ENV.URLs.medium}
-                    target="_blank"
+                    href={ExternalLink.medium}
+                    target={ExternalLink.medium}
                     rel="noopener noreferrer"
                     fontWeight="bold"
                   >
                     <MenuItem icon={<FaMedium />}>Medium</MenuItem>
                   </ChakraLink>
                   <ChakraLink
-                    href={ENV.URLs.sonicDocs}
-                    target="_blank"
+                    href={ExternalLink.sonicDocs}
+                    target={ExternalLink.sonicDocs}
                     rel="noopener noreferrer"
                     fontWeight="bold"
                   >
                     <MenuItem icon={<FaBook />}>Documentation</MenuItem>
                   </ChakraLink>
                   <ChakraLink
-                    href={`${ENV.URLs.sonicDocs}/dev/swaps-api`}
-                    target="_blank"
+                    href={ExternalLink.swapApiDocs}
+                    target={ExternalLink.swapApiDocs}
                     rel="noopener noreferrer"
                     fontWeight="bold"
                   >

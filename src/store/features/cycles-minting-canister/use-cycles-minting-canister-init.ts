@@ -1,7 +1,8 @@
 import { useCallback, useEffect } from 'react';
 
-import { useCyclesMintingActor } from '@/integrations/actor';
 import { FeatureState, useAppDispatch } from '@/store';
+import { AppLog } from '@/utils';
+import { fetchICP2XDRConversionRate } from '@/utils/icp';
 
 import { useKeepSync } from '../keep-sync';
 import {
@@ -12,8 +13,6 @@ import {
 export const useCyclesMintingCanisterInit = () => {
   const { ICPXDRconversionRateState } = useCyclesMintingCanisterStore();
 
-  const cyclesMintingActor = useCyclesMintingActor();
-
   const dispatch = useAppDispatch();
 
   const getICPXDRConversionRate = useKeepSync(
@@ -21,10 +20,7 @@ export const useCyclesMintingCanisterInit = () => {
 
     useCallback(
       async (isRefreshing?: boolean) => {
-        if (
-          cyclesMintingActor &&
-          ICPXDRconversionRateState !== FeatureState.Loading
-        ) {
+        if (ICPXDRconversionRateState !== FeatureState.Loading) {
           try {
             dispatch(
               cyclesMintingCanisterSliceActions.setICPXDRConversionRateState(
@@ -32,11 +28,10 @@ export const useCyclesMintingCanisterInit = () => {
               )
             );
 
-            const response =
-              await cyclesMintingActor.get_icp_xdr_conversion_rate();
+            const response = await fetchICP2XDRConversionRate();
 
             const conversionRate =
-              response?.data?.xdr_permyriad_per_icp?.toString();
+              response.data.xdr_permyriad_per_icp.toString();
 
             if (response) {
               dispatch(
@@ -56,7 +51,7 @@ export const useCyclesMintingCanisterInit = () => {
 
             return response;
           } catch (error) {
-            console.error('getICPXDRConversionRate: ', error);
+            AppLog.error(`ICP XDR conversion rate fetch error`, error);
             dispatch(
               cyclesMintingCanisterSliceActions.setICPXDRConversionRateState(
                 FeatureState.Error
@@ -65,16 +60,15 @@ export const useCyclesMintingCanisterInit = () => {
           }
         }
       },
-      [ICPXDRconversionRateState, cyclesMintingActor, dispatch]
+      [ICPXDRconversionRateState, dispatch]
     )
   );
 
   useEffect(() => {
-    if (cyclesMintingActor) {
-      getICPXDRConversionRate();
-    }
+    getICPXDRConversionRate();
     // getICPXDRConversionRate cannot be added to the dependencies array
     // because it is causing an infinite loop
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cyclesMintingActor]);
+  }, []);
 };
+

@@ -4,7 +4,7 @@ import { FaDiscord } from '@react-icons/all-files/fa/FaDiscord';
 import { FaTwitter } from '@react-icons/all-files/fa/FaTwitter';
 
 import { logoSrc } from '@/assets';
-import { ENV } from '@/config';
+import { ExternalLink } from '@/utils';
 
 export const Maintenance = () => {
   const color = useColorModeValue('gray.600', 'gray.300');
@@ -36,7 +36,7 @@ export const Maintenance = () => {
           Sonic App is under maintenance. We'll be back shortly.
         </Text>
         <Text color="dark-blue.500">
-          <Link href={ENV.URLs.twitter} target={ENV.URLs.twitter}>
+          <Link href={ExternalLink.twitter} target={ExternalLink.twitter}>
             Checkout out more information
           </Link>
         </Text>
@@ -50,13 +50,13 @@ export const Maintenance = () => {
         width={200}
         color={color}
       >
-        <Link href={ENV.URLs.discord} target={ENV.URLs.discord}>
+        <Link href={ExternalLink.discord} target={ExternalLink.discord}>
           <FaDiscord size={40} />
         </Link>
-        <Link href={ENV.URLs.twitter} target={ENV.URLs.twitter}>
+        <Link href={ExternalLink.twitter} target={ExternalLink.twitter}>
           <FaTwitter size={40} />
         </Link>
-        <Link href={ENV.URLs.sonicDocs} target={ENV.URLs.sonicDocs}>
+        <Link href={ExternalLink.sonicDocs} target={ExternalLink.sonicDocs}>
           <FaBook size={40} />
         </Link>
       </Flex>

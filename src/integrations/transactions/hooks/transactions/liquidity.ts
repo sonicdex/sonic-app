@@ -1,10 +1,11 @@
 import { Principal } from '@dfinity/principal';
-import { Transaction } from '@psychedelic/plug-inpage-provider/dist/src/Provider';
+import { Transaction } from '@psychedelic/plug-inpage-provider/dist/src/Provider/interfaces';
 import { Swap } from '@psychedelic/sonic-js';
 import { useMemo } from 'react';
 
 import { ENV } from '@/config';
 import { SwapIDL } from '@/did';
+import { AppLog } from '@/utils';
 import { parseAmount } from '@/utils/format';
 
 import { AddLiquidity, CreateTransaction, RemoveLiquidity } from '../../models';
@@ -95,7 +96,10 @@ export const useRemoveLiquidityTransactionMemo: CreateTransaction<
       idl: SwapIDL.factory,
       methodName: 'removeLiquidity',
       onFail: async (res: SwapIDL.Result) => {
-        console.error(res);
+        AppLog.error(
+          `Remove liquidity transaction failed: token0=${token0.metadata.id} token1=${token1.metadata.id} principal=${principalId}`,
+          res
+        );
         if ('err' in res) throw new Error(res.err);
         if (onFail) onFail(res);
       },
@@ -114,3 +118,4 @@ export const useRemoveLiquidityTransactionMemo: CreateTransaction<
       ],
     };
   }, [token0, token1]);
+

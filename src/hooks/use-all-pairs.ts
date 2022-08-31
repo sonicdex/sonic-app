@@ -1,40 +1,33 @@
 import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { ENV } from '@/config';
-import { SwapIDL } from '@/did';
-import { appActors, useSwapActor } from '@/integrations/actor';
+import { createAnonSwapActor } from '@/integrations/actor';
 import {
   FeatureState,
   swapCanisterActions,
   useKeepSync,
   useSwapCanisterStore,
 } from '@/store';
+import { AppLog } from '@/utils';
 import { parseResponseAllPairs } from '@/utils/canister';
 
 export const useAllPairs = () => {
   const dispatch = useDispatch();
   const { allPairsState, allPairs } = useSwapCanisterStore();
 
-  const _swapActor = useSwapActor();
-
   const getAllPairs = useKeepSync(
     'getAllPairs',
     useCallback(
       async (isRefreshing?: boolean) => {
         try {
-          const swapActor =
-            _swapActor ??
-            (appActors[ENV.canistersPrincipalIDs.swap] as SwapIDL.Factory);
-
-          if (!swapActor) throw new Error('Swap actor not found');
-
           if (allPairsState !== FeatureState.Loading) {
             dispatch(
               swapCanisterActions.setAllPairsState(
                 isRefreshing ? FeatureState.Updating : FeatureState.Loading
               )
             );
+
+            const swapActor = await createAnonSwapActor();
             const response = await swapActor.getAllPairs();
 
             if (response) {
@@ -48,13 +41,14 @@ export const useAllPairs = () => {
             dispatch(swapCanisterActions.setAllPairsState(FeatureState.Idle));
           }
         } catch (error) {
-          console.error('getAllPairs: ', error);
+          AppLog.error(`All pairs fetch error`, error);
           dispatch(swapCanisterActions.setAllPairsState(FeatureState.Error));
         }
       },
-      [_swapActor, dispatch, allPairsState]
+      [dispatch, allPairsState]
     )
   );
 
   return { allPairs, allPairsState, getAllPairs };
 };
+

@@ -6,6 +6,7 @@ import {
   useAppDispatch,
   usePlugStore,
 } from '@/store';
+import { AppLog } from '@/utils';
 
 import { checkIsConnected, getPrincipal } from '.';
 
@@ -29,7 +30,7 @@ export const usePlugInit = () => {
           return dispatch(plugActions.setIsConnected(false));
         })
         .catch((err) => {
-          console.error(err);
+          AppLog.error('Plug init error 1', err);
           dispatch(plugActions.setIsConnected(false));
         });
     }
@@ -52,7 +53,7 @@ export const usePlugInit = () => {
           }
           dispatch(plugActions.setState(FeatureState.Idle));
         } catch (err) {
-          console.error(err);
+          AppLog.error('Plug init error 2', err);
           dispatch(plugActions.setState(FeatureState.Error));
         }
       };

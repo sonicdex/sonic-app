@@ -1,0 +1,4 @@
+[submodule "sonic-testnet"]
+	path = sonic-testnet
+	url = git@github.com:Psychedelic/sonic-testnet.git
+	branch = main

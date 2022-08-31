@@ -35,6 +35,8 @@ export const ENV = {
       process.env.TOKEN_REQUEST_FORM_URL ||
       'https://form.typeform.com/to/YnSyAUn0',
     analyticsApp: process.env.ANALYTICS_APP_URL || 'https://data.sonic.ooo',
+    ledgerTransactions:
+      process.env.LEDGER_TRANSACTIONS_URL || 'https://icscan.io/transaction',
   },
 
   hiddenTokens: (process.env.HIDDEN_TOKENS || '').split(','),

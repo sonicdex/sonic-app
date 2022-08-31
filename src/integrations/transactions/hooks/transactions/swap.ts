@@ -1,5 +1,5 @@
 import { Principal } from '@dfinity/principal';
-import { Transaction } from '@psychedelic/plug-inpage-provider/dist/src/Provider';
+import { Transaction } from '@psychedelic/plug-inpage-provider/dist/src/Provider/interfaces';
 import { Swap } from '@psychedelic/sonic-js';
 import { useMemo } from 'react';
 

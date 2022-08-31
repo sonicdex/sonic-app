@@ -40,6 +40,7 @@ export const NotificationBox = ({
         pr={10}
         pl={12}
         pb={4}
+        overflow="hidden"
       >
         <NotificationHeader {...notification} handleClose={handleClose} />
         <NotificationContent {...notification}>{children}</NotificationContent>

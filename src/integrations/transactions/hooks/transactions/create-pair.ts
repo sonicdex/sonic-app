@@ -1,9 +1,10 @@
 import { Principal } from '@dfinity/principal';
-import { Transaction } from '@psychedelic/plug-inpage-provider/dist/src/Provider';
+import { Transaction } from '@psychedelic/plug-inpage-provider/dist/src/Provider/interfaces';
 import { useMemo } from 'react';
 
 import { ENV } from '@/config';
 import { SwapIDL } from '@/did';
+import { AppLog } from '@/utils';
 
 import { CreatePair, CreateTransaction } from '../../models';
 
@@ -24,7 +25,7 @@ export const useCreatePairTransactionMemo: CreateTransaction<CreatePair> = (
       idl: SwapIDL.factory,
       methodName: 'createPair',
       onFail: async (res: SwapIDL.Result) => {
-        console.error(res);
+        AppLog.error('Create pair transaction failed', res);
         if ('err' in res) throw new Error(res.err);
         if (onFail) onFail(res);
       },
@@ -38,3 +39,4 @@ export const useCreatePairTransactionMemo: CreateTransaction<CreatePair> = (
       ],
     };
   }, [token0, token1]);
+

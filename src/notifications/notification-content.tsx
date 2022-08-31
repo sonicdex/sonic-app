@@ -25,7 +25,12 @@ export const NotificationContent: React.FC<NotificationContentProps> = ({
   state,
   title,
   transactionLink,
+  errorMessage,
 }) => {
+  const messageColor = useColorModeValue('gray.400', 'gray.600');
+
+  const color = useColorModeValue('gray.800', 'gray.50');
+
   const notificationContent = {
     [NotificationType.Swap]: <SwapNotificationContent id={id} />,
     [NotificationType.AddLiquidity]: (
@@ -49,10 +54,12 @@ export const NotificationContent: React.FC<NotificationContentProps> = ({
       <MintAutoNotificationContent id={id} state={state} />
     ),
     [NotificationType.MintManual]: <MintManualNotificationContent id={id} />,
-    [NotificationType.Error]: <></>, // TODO: Add content for error if necessary, for instance report an error?
+    [NotificationType.Error]: errorMessage && (
+      <Text fontSize="sm" color={messageColor}>
+        {errorMessage}
+      </Text>
+    ),
   };
-
-  const color = useColorModeValue('gray.800', 'gray.50');
 
   return (
     <Flex direction="column" alignItems="flex-start">
@@ -66,3 +73,4 @@ export const NotificationContent: React.FC<NotificationContentProps> = ({
     </Flex>
   );
 };
+

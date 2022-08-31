@@ -16,6 +16,7 @@ import {
   Flex,
   FormControl,
   Heading,
+  Input,
   SimpleGrid,
   Slider,
   SliderFilledTrack,
@@ -76,6 +77,14 @@ export const RemoveLiquidityModal = () => {
     dispatch(liquidityViewActions.setRemoveAmountPercentage(value));
   };
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    if (value === '')
+      return dispatch(liquidityViewActions.setRemoveAmountPercentage(NaN));
+    const newValue = Math.max(1, Math.min(100, Number(value)));
+    dispatch(liquidityViewActions.setRemoveAmountPercentage(newValue));
+  };
+
   const isBalancesUpdating = useMemo(
     () => userLPBalancesState === FeatureState.Updating,
     [userLPBalancesState]
@@ -126,7 +135,8 @@ export const RemoveLiquidityModal = () => {
         userLPBalances[token0.metadata.id]?.[token1.metadata.id];
       const lpAmount = (removeAmountPercentage / 100) * tokensLPBalance;
 
-      const isAmountIsLow = lpAmount <= ENV.swapCanisterFee;
+      const isAmountIsLow =
+        lpAmount <= ENV.swapCanisterFee || !removeAmountPercentage;
 
       return {
         buttonMessage: isAmountIsLow ? AMOUNT_TOO_LOW_LABEL : 'Remove',
@@ -172,14 +182,37 @@ export const RemoveLiquidityModal = () => {
           <Heading as="h4" size="xs" color="gray.500" mt={2}>
             Amount
           </Heading>
-          <Heading as="h6" size="xl" fontWeight="bold" mt={2} mb={4}>
-            {removeAmountPercentage}%
+          <Heading
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            as="h6"
+            size="xl"
+            fontWeight="bold"
+            mt={2}
+            mb={4}
+          >
+            <Input
+              w={`${String(removeAmountPercentage || 1).length * 23 + 5}px`}
+              variant="unstyled"
+              value={String(removeAmountPercentage || '')}
+              onChange={handleInputChange}
+              size="xl"
+              fontWeight="bold"
+              textAlign="right"
+              type="number"
+              step={1}
+            />
+            %
           </Heading>
           <Box px={6}>
             <Slider
-              value={Number(removeAmountPercentage)}
+              value={removeAmountPercentage || 1}
               onChange={handleSliderChange}
               colorScheme="dark-blue"
+              focusThumbOnChange={false}
+              min={1}
+              max={100}
             >
               <SliderTrack>
                 <SliderFilledTrack />
@@ -272,3 +305,4 @@ export const RemoveLiquidityModal = () => {
     </Modal>
   );
 };
+

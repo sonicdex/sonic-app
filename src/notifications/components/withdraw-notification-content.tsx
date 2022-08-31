@@ -12,6 +12,7 @@ import {
   useWithdrawViewStore,
   WithdrawModalDataStep,
 } from '@/store';
+import { AppLog } from '@/utils';
 
 export interface WithdrawNotificationContentProps {
   id: string;
@@ -76,7 +77,7 @@ export const WithdrawNotificationContent: React.FC<
         getBalances();
       })
       .catch((err) => {
-        console.error('Withdraw Error', err);
+        AppLog.error('Withdraw Error', err);
         dispatch(modalsSliceActions.clearWithdrawModalData());
         addNotification({
           title: `Withdraw ${value} ${selectedToken?.symbol} failed`,
@@ -100,3 +101,4 @@ export const WithdrawNotificationContent: React.FC<
     </Link>
   );
 };
+

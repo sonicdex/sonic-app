@@ -31,7 +31,6 @@ import {
 } from 'react';
 import { Link } from 'react-router-dom';
 
-import { ENV } from '@/config';
 import { checkIfPlugProviderVersionCompatible } from '@/integrations/plug';
 import {
   MintTokenSymbol,
@@ -41,6 +40,7 @@ import {
   useModalsStore,
   useNotificationStore,
 } from '@/store';
+import { ExternalLink } from '@/utils';
 
 import { PLUG_WALLET_WEBSITE_URL } from '..';
 
@@ -150,7 +150,7 @@ export const MintManualModal = () => {
   const { activityTabURL, learnMoreURL } = useMemo(() => {
     return {
       activityTabURL: '/activity',
-      learnMoreURL: `${ENV.URLs.sonicDocs}/product/swap/failed-swaps#failed-mints`,
+      learnMoreURL: ExternalLink.failedMintDocs,
     };
   }, []);
 
@@ -254,3 +254,4 @@ export const MintManualModal = () => {
     </Modal>
   );
 };
+

@@ -4,6 +4,7 @@ import { useCallback, useEffect } from 'react';
 
 import { ENV } from '@/config';
 import { FeatureState, useAppDispatch } from '@/store';
+import { AppLog } from '@/utils';
 import { fetchICPPrice } from '@/utils/icp';
 
 import { swapCanisterActions, useSwapCanisterStore } from '..';
@@ -110,7 +111,7 @@ export const usePriceInit = () => {
 
             return price;
           } catch (error) {
-            console.error('getICPPrice: ', error);
+            AppLog.error('ICP price fetch error', error);
             dispatch(priceActions.setState(FeatureState.Error));
           }
         }
@@ -119,3 +120,4 @@ export const usePriceInit = () => {
     )
   );
 };
+

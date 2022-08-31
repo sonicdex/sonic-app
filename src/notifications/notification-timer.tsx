@@ -5,7 +5,7 @@ import { useMemo } from 'react';
 import { Notification, NotificationState, NotificationType } from '@/store';
 
 const reduceWidth = keyframes`
-    from { width: calc(100% - 30px);}
+    from { width: 100%;}
     to { width: 0px; };
 `;
 
@@ -48,12 +48,12 @@ export const NotificationTimer: React.FC<NotificationTimerProps> = ({
       width="full"
       height={0.5}
       bg={color}
-      bottom={0.5}
+      bottom={0}
       left={0}
       right={0}
-      borderRadius={5}
       animation={collapseAnimation}
       onAnimationEnd={handleClose}
     />
   );
 };
+

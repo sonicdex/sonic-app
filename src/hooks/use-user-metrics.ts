@@ -1,8 +1,15 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import { AnalyticsApi } from '@/apis';
-import { useKeepSync, usePlugStore, useSwapCanisterStore } from '@/store';
+import {
+  KEEP_SYNC_DEFAULT_INTERVAL,
+  useKeepSync,
+  usePlugStore,
+  useSwapCanisterStore,
+} from '@/store';
+import { AppLog } from '@/utils';
 import { getPairIdsFromPairList } from '@/utils/format';
+import { debounce } from '@/utils/function';
 
 export type UserLPMetrics = {
   [pairId: string]: AnalyticsApi.PositionMetrics;
@@ -17,19 +24,19 @@ export const useUserMetrics = () => {
   const getUserLPMetrics = useKeepSync(
     'getUserMetrics',
     useCallback(async () => {
-      if (isLoading) {
-        return;
-      }
-
-      if (!principalId || !allPairs) {
-        setUserLPMetrics(undefined);
-        return;
-      }
-
-      const pairIds = getPairIdsFromPairList(allPairs);
-
-      setIsLoading(true);
       try {
+        if (isLoading) {
+          return;
+        }
+
+        if (!principalId || !allPairs) {
+          setUserLPMetrics(undefined);
+          return;
+        }
+
+        const pairIds = getPairIdsFromPairList(allPairs);
+
+        setIsLoading(true);
         const analyticsApi = new AnalyticsApi();
         const promises = pairIds.map((pairId) =>
           analyticsApi.queryUserLPMetrics(principalId, pairId)
@@ -43,7 +50,10 @@ export const useUserMetrics = () => {
 
         setUserLPMetrics(_userPairMetrics);
       } catch (error) {
-        console.error(`User metrics fetch error`, error);
+        AppLog.error(`User metrics fetch error`, error);
+        await new Promise((resolve) =>
+          debounce(resolve, KEEP_SYNC_DEFAULT_INTERVAL)
+        );
       }
       setIsLoading(false);
     }, [setUserLPMetrics, principalId, allPairs, isLoading])
@@ -53,7 +63,8 @@ export const useUserMetrics = () => {
     if (!userLPMetrics) {
       getUserLPMetrics();
     }
-  }, [principalId, getUserLPMetrics]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [principalId]);
 
   return {
     isLoading,

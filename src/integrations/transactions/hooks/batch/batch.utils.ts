@@ -1,4 +1,4 @@
-import { TransactionPrevResponse } from '@psychedelic/plug-inpage-provider/dist/src/Provider';
+import { TransactionPrevResponse } from '@psychedelic/plug-inpage-provider/dist/src/Provider/interfaces';
 import { toBigNumber } from '@psychedelic/sonic-js';
 
 import {
@@ -147,3 +147,4 @@ export const updateFailedBlockHeight = ({
 
   saveBlockHeightToStorage({ blockHeight: failedBlockHeight, ...props });
 };
+

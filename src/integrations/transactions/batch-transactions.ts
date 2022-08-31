@@ -2,7 +2,9 @@ import Provider from '@psychedelic/plug-inpage-provider';
 import type {
   Transaction,
   TransactionPrevResponse,
-} from '@psychedelic/plug-inpage-provider/dist/src/Provider';
+} from '@psychedelic/plug-inpage-provider/dist/src/Provider/interfaces';
+
+import { AppLog } from '@/utils';
 
 import { Batch } from './models/batch';
 
@@ -25,8 +27,10 @@ export class BatchTransactions implements Batch.Controller {
       ...transaction,
       onSuccess: (response) =>
         this.handleTransactionSuccess(transaction, response),
-      onFail: (error, prevResponses) =>
-        this.handleTransactionFail(transaction, error, prevResponses),
+      onFail: (error, prevResponses) => {
+        AppLog.error(`Batch Transaction`, transaction, error, prevResponses);
+        return this.handleTransactionFail(transaction, error, prevResponses);
+      },
     });
     return this;
   }

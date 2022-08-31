@@ -2,6 +2,7 @@ import { useCallback, useEffect } from 'react';
 
 import { useAllPairs } from '@/hooks';
 import { useBalances } from '@/hooks/use-balances';
+import { createAnonSwapActor } from '@/integrations/actor';
 import {
   FeatureState,
   swapCanisterActions,
@@ -9,9 +10,9 @@ import {
   usePlugStore,
   useSwapCanisterStore,
 } from '@/store';
+import { AppLog } from '@/utils';
 import { parseResponseSupportedTokenList } from '@/utils/canister';
 
-import { useSwapActor } from '../../../integrations/actor/use-swap-actor';
 import { useKeepSync } from '../keep-sync';
 
 export const useSwapCanisterInit = () => {
@@ -19,8 +20,6 @@ export const useSwapCanisterInit = () => {
   const { principalId, isConnected, state: plugState } = usePlugStore();
   const { supportedTokenListState } = useSwapCanisterStore();
   const { getAllPairs } = useAllPairs();
-
-  const swapActor = useSwapActor();
 
   const dispatch = useAppDispatch();
 
@@ -34,24 +33,22 @@ export const useSwapCanisterInit = () => {
   }, [isConnected, plugState]);
 
   useEffect(() => {
-    if (swapActor && principalId) {
+    if (principalId) {
       getBalances({ isRefreshing: false });
       getUserPositiveLPBalances({ isRefreshing: false });
     }
-  }, [swapActor, principalId]);
+  }, [principalId]);
 
   useEffect(() => {
-    if (swapActor) {
-      getSupportedTokenList({ isRefreshing: false });
-      getAllPairs({ isRefreshing: false });
-    }
-  }, [swapActor]);
+    getSupportedTokenList({ isRefreshing: false });
+    getAllPairs({ isRefreshing: false });
+  }, []);
 
   const getSupportedTokenList = useKeepSync(
     'getSupportedTokenList',
     useCallback(
       async (isRefreshing?: boolean) => {
-        if (swapActor && supportedTokenListState !== FeatureState.Loading) {
+        if (supportedTokenListState !== FeatureState.Loading) {
           try {
             dispatch(
               swapCanisterActions.setSupportedTokensListState(
@@ -59,6 +56,7 @@ export const useSwapCanisterInit = () => {
               )
             );
 
+            const swapActor = await createAnonSwapActor();
             const response = await swapActor.getSupportedTokenList();
 
             if (response) {
@@ -77,7 +75,7 @@ export const useSwapCanisterInit = () => {
 
             return response;
           } catch (error) {
-            console.error('getSupportedTokenList: ', error);
+            AppLog.error('Failed to fetch supported token list', error);
             dispatch(
               swapCanisterActions.setSupportedTokensListState(
                 FeatureState.Error
@@ -86,7 +84,8 @@ export const useSwapCanisterInit = () => {
           }
         }
       },
-      [swapActor, supportedTokenListState]
+      [supportedTokenListState]
     )
   );
 };
+
