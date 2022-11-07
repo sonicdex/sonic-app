@@ -105,4 +105,3 @@ export const WithdrawWICPNotificationContent: React.FC<
     </Link>
   );
 };
-

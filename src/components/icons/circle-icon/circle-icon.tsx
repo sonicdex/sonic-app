@@ -30,11 +30,17 @@ export const CircleIcon = ({ status, iconSrc }: CircleIconProps) => {
   const checkOpacity = status === StepStatus.Done ? 1 : 0;
 
   return (
-    <Box w="45px" h="45px" borderRadius="45px" position="relative" bg={bg}>
+    <Box
+      w="2.8125rem"
+      h="2.8125rem"
+      borderRadius="2.8125rem"
+      position="relative"
+      bg={bg}
+    >
       {status === 'active' && (
         <Box
-          w="45px"
-          h="45px"
+          w="2.8125rem"
+          h="2.8125rem"
           borderRadius={45}
           bg="dark-blue.500"
           filter="blur(10px)"
@@ -45,7 +51,7 @@ export const CircleIcon = ({ status, iconSrc }: CircleIconProps) => {
         <Box
           w="100%"
           h="100%"
-          borderRadius="45px"
+          borderRadius="2.8125rem"
           zIndex={200}
           border="2px solid #A8B2FF"
           borderTop="2px solid #FFFFFF"
@@ -68,7 +74,7 @@ export const CircleIcon = ({ status, iconSrc }: CircleIconProps) => {
       <Flex
         w="100%"
         h="100%"
-        borderRadius="45px"
+        borderRadius="2.8125rem"
         zIndex={200}
         alignItems="center"
         justifyContent="center"
@@ -76,7 +82,7 @@ export const CircleIcon = ({ status, iconSrc }: CircleIconProps) => {
         opacity={opacity}
         transition="opacity 400ms"
       >
-        <Image w="18px" src={iconSrc} alt={'icon'} />
+        <Image w="1.125rem" src={iconSrc} alt={'icon'} />
       </Flex>
     </Box>
   );

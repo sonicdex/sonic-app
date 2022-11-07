@@ -1,7 +1,6 @@
 export const ENV = {
   host: process.env.HOST || 'https://boundary.ic0.app/',
-  analyticsHost:
-    process.env.ANALYTICS_HOST || 'https://sonicapi.xyz/beta/graphql',
+  analyticsHost: process.env.ANALYTICS_HOST || 'https://api.sonic.ooo/graphql',
   swapCanisterFee: Number(process.env.SWAP_CANISTER_FEE) || 10000,
   isDarkModeEnabled: process.env.IS_DARK_MODE_ENABLED === 'true',
   canistersPrincipalIDs: {

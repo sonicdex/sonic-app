@@ -12,6 +12,9 @@ import { colors } from './foundations';
 const appTheme = {
   styles: {
     global: (props: any) => ({
+      html: {
+        fontSize: ['12px', '14px', '16px'],
+      },
       body: {
         bg: mode('custom.5', 'black')(props),
       },

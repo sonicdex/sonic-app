@@ -145,7 +145,7 @@ export const TokenSelectModal = () => {
               <Heading as="h1" fontWeight={700} fontSize="lg">
                 Select Token
               </Heading>
-              <Box fontSize="md" px="10px" w="100%" mt={4}>
+              <Box fontSize="md" px="0.625rem" w="100%" mt={4}>
                 <SearchBar search={search} setSearch={setSearch} />
               </Box>
             </Flex>
@@ -214,7 +214,7 @@ export const TokenSelectModal = () => {
                       />
                     </Skeleton>
                     <Skeleton isLoaded={!isLoading} minWidth={4} ml={3}>
-                      <Text fontWeight={700} fontSize="18px" pl={3}>
+                      <Text fontWeight={700} fontSize="1.125rem" pl={3}>
                         {importTokenData.symbol}
                       </Text>
                     </Skeleton>
@@ -331,7 +331,7 @@ const TokenSelectItem = ({
           isUpdating={isBalancesUpdating}
           value={balance}
           decimals={decimals}
-          fontSize="18px"
+          fontSize="1.125rem"
           fontWeight={700}
           textAlign="right"
           shouldDivideByDecimals
@@ -363,4 +363,3 @@ const TokenSelectItemSkeleton = () => (
     <Skeleton isLoaded={false} minWidth={18} height={6} ml={2} />
   </Flex>
 );
-

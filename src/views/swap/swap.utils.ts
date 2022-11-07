@@ -172,4 +172,3 @@ export const getAmountOutRatio = (
     reserveOut: Number(pair.reserve1),
   }).toString();
 };
-

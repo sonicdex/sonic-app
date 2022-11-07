@@ -1,13 +1,13 @@
 import { TransactionPrevResponse } from '@psychedelic/plug-inpage-provider/dist/src/Provider/interfaces';
 import { toBigNumber } from '@psychedelic/sonic-js';
 
+import { MintTokenSymbol } from '@/store';
 import {
   getFromStorage,
   LocalStorageKey,
   MintUncompleteBlockHeights,
   saveToStorage,
-} from '@/config';
-import { MintTokenSymbol } from '@/store';
+} from '@/utils';
 
 export const getAmountDependsOnBalance = (
   tokenBalance: number,
@@ -147,4 +147,3 @@ export const updateFailedBlockHeight = ({
 
   saveBlockHeightToStorage({ blockHeight: failedBlockHeight, ...props });
 };
-

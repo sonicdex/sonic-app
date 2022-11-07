@@ -32,6 +32,7 @@ const baseStyleDialog: SystemStyleFunction = (props) => {
     bg: mode('white', 'custom.2')(props),
     color: 'inherit',
     my: '3.75rem',
+    mx: '1rem',
     zIndex: 'modal',
     maxH: scrollBehavior === 'inside' ? 'calc(100% - 7.5rem)' : undefined,
     boxShadow: mode('lg', 'dark-lg')(props),

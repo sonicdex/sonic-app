@@ -102,4 +102,3 @@ export const MintXTCNotificationContent: React.FC<
     </Link>
   );
 };
-

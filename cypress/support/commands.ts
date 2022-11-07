@@ -1,14 +1,3 @@
-// ***********************************************
-// This example commands.js shows you how to
-// create various custom commands and overwrite
-// existing commands.
-//
-// For more comprehensive examples of custom
-// commands please read more here:
-// https://on.cypress.io/custom-commands
-// ***********************************************
-//
-//
 // -- This is a parent command --
 // Cypress.Commands.add('login', (email, password) => { ... })
 //
@@ -24,7 +13,7 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
-Cypress.Commands.add('openTokensPopup', (token = "ICP") => {
+Cypress.Commands.add('openTokensPopup', (token) => {
    cy.contains(token)
       .click()
 })
@@ -56,7 +45,7 @@ Cypress.Commands.add('checkCSSAttrsWithPlug', (Index, NavItem) => {
       .should('have.css', 'background', 'rgba(0, 0, 0, 0) none repeat scroll 0% 0% / auto padding-box border-box')
 })
 
-Cypress.Commands.add('checkTextStyling', (selector, color = 'rgb(240, 242, 244)') => {
+Cypress.Commands.add('checkTextStyling', (selector, color) => {
    cy.contains(selector)
       .should('be.visible')
       .should('have.css', 'color', color)

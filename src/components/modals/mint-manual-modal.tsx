@@ -44,8 +44,6 @@ import { ExternalLink } from '@/utils';
 
 import { PLUG_WALLET_WEBSITE_URL } from '..';
 
-const PLUG_PROVIDER_CHAINED_BATCH_VERSION = 160;
-
 export const MintManualModal = () => {
   const TOKEN_OPTIONS = useConst([
     {
@@ -78,9 +76,7 @@ export const MintManualModal = () => {
 
   const handleMint = useCallback(
     (tokenSymbol: MintTokenSymbol) => {
-      const isVersionCompatible = checkIfPlugProviderVersionCompatible(
-        PLUG_PROVIDER_CHAINED_BATCH_VERSION
-      );
+      const isVersionCompatible = checkIfPlugProviderVersionCompatible();
 
       if (!isVersionCompatible) {
         addNotification({
@@ -254,4 +250,3 @@ export const MintManualModal = () => {
     </Modal>
   );
 };
-

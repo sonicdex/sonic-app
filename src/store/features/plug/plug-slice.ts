@@ -1,45 +1,56 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import type { RootState } from '@/store';
-import { FeatureState } from '@/store';
+import { useAppSelector } from '@/store/hooks';
 
-// Define a type for the slice state
-interface PlugState {
-  isConnected: boolean;
-  principalId?: string;
-  state: FeatureState;
+import { connect, disconnect } from './async-thunk';
+
+export enum PlugState {
+  NotInstalled,
+  Disconnected,
+  Loading,
+  Connected,
 }
 
-// Define the initial state using that type
-const initialState: PlugState = {
-  isConnected: false,
+interface PlugStoreState {
+  state: PlugState;
+  principalId?: string;
+  isConnected: boolean;
+}
+
+const initialState: PlugStoreState = {
   principalId: undefined,
-  state: 'not-started' as FeatureState,
+  state: PlugState.Disconnected,
+  isConnected: false,
 };
 
 export const plugSlice = createSlice({
   name: 'plug',
-  // `createSlice` will infer the state type from the `initialState` argument
   initialState,
   reducers: {
-    setIsConnected: (state, action: PayloadAction<boolean>) => {
-      state.isConnected = action.payload;
-      if (!action.payload) {
-        state.principalId = undefined;
-      }
-    },
     setPrincipalId: (state, action: PayloadAction<string>) => {
+      state.state = PlugState.Connected;
       state.principalId = action.payload;
+      state.isConnected = true;
     },
-    setState: (state, action: PayloadAction<FeatureState>) => {
+    setState: (
+      state,
+      action: PayloadAction<
+        PlugState.Disconnected | PlugState.Loading | PlugState.NotInstalled
+      >
+    ) => {
       state.state = action.payload;
+      state.principalId = undefined;
+      state.isConnected = false;
     },
   },
 });
 
-export const plugActions = plugSlice.actions;
+export const plugActions = { ...plugSlice.actions, connect, disconnect };
 
-// Other code such as selectors can use the imported `RootState` type
-export const selectPlugState = (state: RootState) => state.plug;
+const selectPlugState = (state: RootState): PlugStoreState => state.plug;
+
+export const usePlugStore = (): PlugStoreState =>
+  useAppSelector(selectPlugState);
 
 export default plugSlice.reducer;

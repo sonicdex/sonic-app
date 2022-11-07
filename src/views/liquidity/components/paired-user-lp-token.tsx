@@ -87,7 +87,7 @@ export const PairedUserLPToken: React.FC<PairedUserLPTokenProps> = ({
       >
         <TokenImageBlock src={token0.logo} size={7} />
         <TokenImageBlock src={token1.logo} size={7} />
-        <Text flex={1} fontWeight="bold" fontSize={18}>
+        <Text flex={1} fontWeight="bold" fontSize="1.125rem">
           {token0.symbol}/{token1.symbol}
         </Text>
         <Button
@@ -95,7 +95,7 @@ export const PairedUserLPToken: React.FC<PairedUserLPTokenProps> = ({
           borderColor="dark-blue.500"
           onClick={() => handleAdd(token0.id, token1.id)}
           fontWeight="normal"
-          width="85px"
+          width="4.5rem"
         >
           Add
         </Button>

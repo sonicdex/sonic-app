@@ -27,7 +27,7 @@ export const MintWICPFailModal = () => {
         colorScheme="dark-blue"
         borderRadius={12}
         fontWeight={700}
-        fontSize={18}
+        fontSize="1.125rem"
         onClick={retryCallback}
         isFullWidth
       >
@@ -36,7 +36,7 @@ export const MintWICPFailModal = () => {
       <Button
         borderRadius={12}
         fontWeight={700}
-        fontSize={18}
+        fontSize="1.125rem"
         onClick={handleClose}
         isFullWidth
       >

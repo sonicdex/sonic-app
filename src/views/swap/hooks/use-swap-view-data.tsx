@@ -11,10 +11,11 @@ import { ICP_METADATA } from '@/constants';
 import {
   useBalances,
   useQuery,
+  useTokenAllowance,
   useTokenBalanceMemo,
   useTokenSelectionChecker,
 } from '@/hooks';
-import { plug } from '@/integrations/plug';
+import { checkIfPlugProviderVersionCompatible } from '@/integrations/plug';
 import {
   FeatureState,
   INITIAL_SWAP_SLIPPAGE,
@@ -324,39 +325,30 @@ export const useSwapViewData = () => {
   };
 
   const checkIsPlugProviderVersionCompatible = useCallback(() => {
-    const plugProviderVersionNumber = Number(
-      plug?.versions.provider.split('.').join('')
-    );
-
-    const plugInpageProviderVersionWithChainedBatchTranscations = 160;
-
-    if (
-      plugProviderVersionNumber >=
-      plugInpageProviderVersionWithChainedBatchTranscations
-    ) {
+    if (checkIfPlugProviderVersionCompatible()) {
       return true;
-    } else {
-      addNotification({
-        title: (
-          <>
-            You're using an outdated version of Plug, please update to the
-            latest one{' '}
-            <Link
-              color="blue.400"
-              href={PLUG_WALLET_WEBSITE_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              here
-            </Link>
-            .
-          </>
-        ),
-        type: NotificationType.Error,
-        id: String(new Date().getTime()),
-      });
-      return false;
     }
+
+    addNotification({
+      title: (
+        <>
+          You're using an outdated version of Plug, please update to the latest
+          one{' '}
+          <Link
+            color="blue.400"
+            href={PLUG_WALLET_WEBSITE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            here
+          </Link>
+          .
+        </>
+      ),
+      type: NotificationType.Error,
+      id: String(new Date().getTime()),
+    });
+    return false;
   }, [addNotification]);
 
   const handleMintXTC = useCallback(() => {
@@ -402,6 +394,11 @@ export const useSwapViewData = () => {
     debounce(resetViewState, 300);
   }, [addNotification, from.metadata?.symbol, from.value, resetViewState]);
 
+  useEffect(() => {
+    handleChangeValue(from.value, 'from');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [to.metadata]);
+
   const handleApproveSwap = useCallback(() => {
     addNotification({
       title: `Swap ${from.value} ${from.metadata?.symbol} for ${to.value} ${to.metadata?.symbol}`,
@@ -417,6 +414,8 @@ export const useSwapViewData = () => {
     to.metadata?.symbol,
     to.value,
   ]);
+
+  const allowance = useTokenAllowance(from.metadata?.id);
 
   const handleSetIsAutoSlippage = (isAutoSlippage: boolean) => {
     setIsAutoSlippage(isAutoSlippage);
@@ -518,10 +517,11 @@ export const useSwapViewData = () => {
         handleApproveSwap();
       }
     };
-
     const buttonText = step === SwapStep.Review ? 'Swap' : 'Review Swap';
+    const waitingForAllowance =
+      step === SwapStep.Review && typeof allowance === 'undefined';
 
-    return [false, buttonText, handleButtonClick];
+    return [waitingForAllowance, buttonText, handleButtonClick];
   }, [
     isLoading,
     isFetchingNotStarted,
@@ -537,10 +537,11 @@ export const useSwapViewData = () => {
     isFromTokenIsWICP,
     isToTokenIsICP,
     isToTokenIsXTC,
+    step,
+    allowance,
     handleMintWICP,
     handleWithdrawWICP,
     handleMintXTC,
-    step,
     handleApproveSwap,
   ]);
 
@@ -673,13 +674,9 @@ export const useSwapViewData = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoading]);
 
-  useEffect(() => {
-    handleChangeValue(from.value, 'from');
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [to.metadata]);
-
   return {
     step,
+    allowance,
     isButtonDisabled,
     buttonMessage,
     canHeldInSonic,
@@ -710,4 +707,3 @@ export const useSwapViewData = () => {
     onSwitchTokens: handleSwitchTokens,
   };
 };
-

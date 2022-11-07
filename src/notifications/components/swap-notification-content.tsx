@@ -2,9 +2,8 @@ import { Link } from '@chakra-ui/react';
 import { deserialize, serialize } from '@psychedelic/sonic-js';
 import { useEffect, useMemo } from 'react';
 
-import { useAllPairs } from '@/hooks';
+import { useAllPairs, useTokenAllowance } from '@/hooks';
 import { useBalances } from '@/hooks/use-balances';
-import { useTokenAllowance } from '@/hooks/use-token-allowance';
 import { useSwapBatch } from '@/integrations/transactions';
 import {
   modalsSliceActions,

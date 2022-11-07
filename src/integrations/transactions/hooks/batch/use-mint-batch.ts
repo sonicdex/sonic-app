@@ -244,4 +244,3 @@ export const useMintBatch = ({
 
   return { batch, openBatchModal };
 };
-

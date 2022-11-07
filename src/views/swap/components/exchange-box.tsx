@@ -199,7 +199,7 @@ export const ExchangeBox: React.FC<ExchangeBoxProps> = ({ priceImpact }) => {
           </Flex>
         </PopoverTrigger>
         <Portal>
-          <PopoverContent minWidth="400px">
+          <PopoverContent minWidth="25rem">
             <PopoverHeader>Transaction Details</PopoverHeader>
             <PopoverArrow />
             <PopoverBody display="inline-block">
@@ -235,4 +235,3 @@ export const ExchangeBox: React.FC<ExchangeBoxProps> = ({ priceImpact }) => {
     </Flex>
   );
 };
-

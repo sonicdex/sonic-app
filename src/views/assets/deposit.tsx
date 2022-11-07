@@ -55,7 +55,7 @@ export const AssetsDepositView = () => {
     return undefined;
   }, [supportedTokenList, tokenId]);
 
-  useTokenAllowance(selectedTokenMetadata?.id);
+  const allowance = useTokenAllowance(selectedTokenMetadata?.id);
 
   const handleSelectTokenId = (tokenId?: string) => {
     if (tokenId) {
@@ -92,6 +92,8 @@ export const AssetsDepositView = () => {
   const [buttonDisabled, buttonMessage] = useMemo<[boolean, string]>(() => {
     if (!selectedTokenMetadata?.id) return [true, 'Select a Token'];
 
+    if (typeof allowance !== 'number') return [true, 'Getting allowance...'];
+
     const parsedFromValue = (amount && parseFloat(amount)) || 0;
 
     if (parsedFromValue <= 0)
@@ -119,7 +121,7 @@ export const AssetsDepositView = () => {
     }
 
     return [false, 'Deposit'];
-  }, [amount, tokenBalances, selectedTokenMetadata]);
+  }, [amount, tokenBalances, selectedTokenMetadata, allowance]);
 
   const tokenBalance = useMemo(() => {
     if (tokenBalances && tokenId) {

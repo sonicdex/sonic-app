@@ -39,4 +39,3 @@ export const useCreatePairTransactionMemo: CreateTransaction<CreatePair> = (
       ],
     };
   }, [token0, token1]);
-

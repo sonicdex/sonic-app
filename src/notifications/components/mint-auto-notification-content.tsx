@@ -2,7 +2,6 @@ import { Button, Flex, Stack, Text, useColorModeValue } from '@chakra-ui/react';
 import { useEffect, useMemo, useState } from 'react';
 
 import { StepStatus, useStepStatus } from '@/components/modals';
-import { LocalStorageKey, removeFromStorage } from '@/config';
 import { useBalances } from '@/hooks/use-balances';
 import { Batch } from '@/integrations/transactions';
 import { useMintMultipleBatch } from '@/integrations/transactions/hooks/batch/use-mint-multiple-batch';
@@ -15,6 +14,7 @@ import {
   useAppDispatch,
   useModalsStore,
 } from '@/store';
+import { LocalStorageKey, removeFromStorage } from '@/utils';
 
 export type MintAutoNotificationContentProps = {
   id: string;

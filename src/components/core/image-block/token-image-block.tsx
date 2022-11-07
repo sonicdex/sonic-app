@@ -15,7 +15,7 @@ export const TokenImageBlock: React.FC<TokenImageBlockProps> = ({
   size = 10,
 }) => {
   return (
-    <SkeletonCircle h={size} w={size} isLoaded={!isLoading} minW="fit-content">
+    <SkeletonCircle h={size} w={size} minW={size} isLoaded={!isLoading}>
       <Image
         width={size}
         height={size}

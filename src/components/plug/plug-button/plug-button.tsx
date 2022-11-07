@@ -3,35 +3,16 @@ import { useColorModeValue } from '@chakra-ui/color-mode';
 import type { Provider } from '@psychedelic/plug-inpage-provider';
 import { forwardRef, useMemo } from 'react';
 
-import { ENV, getFromStorage, LocalStorageKey, saveToStorage } from '@/config';
-import { requestConnect } from '@/integrations/plug';
-import {
-  FeatureState,
-  modalsSliceActions,
-  plugActions,
-  useAppDispatch,
-  usePlugStore,
-} from '@/store';
-import { AppLog } from '@/utils';
+import { plugActions, PlugState, useAppDispatch, usePlugStore } from '@/store';
 
 import { PlugLogo } from '../plug-logo/plug-logo';
-import { PLUG_WALLET_WEBSITE_URL } from './constants';
 
 export type PlugButtonProps = Omit<ButtonProps, 'color' | 'variant'> & {
-  whitelist?: string[];
-  host?: string;
   variant?: 'default' | 'dark';
 };
 
 export const PlugButton = forwardRef<HTMLButtonElement, PlugButtonProps>(
-  (
-    {
-      whitelist = Object.values(ENV.canistersPrincipalIDs),
-      host = ENV.host,
-      ...props
-    },
-    ref
-  ) => {
+  ({ ...props }, ref) => {
     const { variant = 'default' } = props;
     const { state } = usePlugStore();
     const dispatch = useAppDispatch();
@@ -39,7 +20,7 @@ export const PlugButton = forwardRef<HTMLButtonElement, PlugButtonProps>(
     const isPlugPAPIExists = Boolean(window.ic?.plug);
 
     const isLoading = useMemo(() => {
-      return state === FeatureState.Loading;
+      return state === PlugState.Loading;
     }, [state]);
 
     const colorDark = useColorModeValue('gray.800', 'gray.500');
@@ -93,64 +74,18 @@ export const PlugButton = forwardRef<HTMLButtonElement, PlugButtonProps>(
         variant,
       ]);
 
-    const handleConnect = (isConnected: boolean) => {
-      dispatch(plugActions.setIsConnected(isConnected));
-    };
-
-    const handleConnectAttempt = async () => {
-      if (!isPlugPAPIExists) {
-        window.open(PLUG_WALLET_WEBSITE_URL, '_blank');
-        return;
-      }
-
-      try {
-        dispatch(plugActions.setState(FeatureState.Loading));
-
-        const isConnected = await requestConnect({
-          whitelist,
-          host,
-        });
-
-        if (isConnected) {
-          handleConnect(Boolean(isConnected));
-        }
-      } catch (err) {
-        AppLog.error('Error while connecting to plug', err);
-      } finally {
-        dispatch(plugActions.setState(FeatureState.Idle));
-      }
-    };
-
-    const handleClick = () => {
-      const successCallback = () => {
-        dispatch(modalsSliceActions.closeTermsAndConditionsModal());
-        handleConnectAttempt();
-      };
-      const closeCallback = () => handleConnect(false);
-
-      const isTermsAccepted = getFromStorage(
-        LocalStorageKey.TermsAndConditionsAccepted
-      );
-
-      if (isTermsAccepted === 'true') {
-        successCallback();
-      } else {
-        dispatch(
-          modalsSliceActions.setTermsAndConditionsModalData({
-            callbacks: [
-              () => {
-                saveToStorage(
-                  LocalStorageKey.TermsAndConditionsAccepted,
-                  'true'
-                );
-                successCallback();
-              },
-              closeCallback,
-            ],
-          })
-        );
-
-        dispatch(modalsSliceActions.openTermsAndConditionsModal());
+    const handleClick = (): void => {
+      switch (state) {
+        case PlugState.Disconnected:
+          dispatch(plugActions.connect());
+          break;
+        case PlugState.NotInstalled:
+          window.open('https://plugwallet.ooo/', '_plug');
+          break;
+        case PlugState.Connected:
+        case PlugState.Loading:
+        default:
+          break;
       }
     };
 
@@ -159,7 +94,7 @@ export const PlugButton = forwardRef<HTMLButtonElement, PlugButtonProps>(
         ref={ref}
         size="lg"
         leftIcon={leftIcon}
-        onClick={isLoading ? undefined : handleClick}
+        onClick={handleClick}
         isDisabled={isLoading}
         borderRadius={borderRadius}
         backgroundColor={bg}

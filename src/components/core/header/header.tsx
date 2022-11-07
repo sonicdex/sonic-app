@@ -6,7 +6,9 @@ import {
   Spinner,
   useColorModeValue,
 } from '@chakra-ui/react';
-import React from 'react';
+import React, { useState } from 'react';
+
+import { useHeaderResizeEffect } from '@/hooks';
 
 type HeaderProps = {
   title: string;
@@ -22,16 +24,21 @@ export const Header: React.FC<HeaderProps> = ({
   isUpdating,
   children,
 }) => {
+  const [top, setTop] = useState('116px');
   const paddingToLine = buttonText && onButtonClick ? '17px' : '24px';
   const marginTop = buttonText && onButtonClick ? '-8px' : '0px';
 
   const color = useColorModeValue('gray.800', 'gray.50');
   const backgroundColor = useColorModeValue('custom.5', 'black');
 
+  useHeaderResizeEffect((element) => {
+    setTop(`${element.clientHeight - 1}px`);
+  });
+
   return (
     <Flex
       position="sticky"
-      top="116px"
+      top={top}
       pt={5}
       mt={-10}
       mb={5}

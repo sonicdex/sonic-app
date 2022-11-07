@@ -36,11 +36,11 @@ export const ImportToken = ({
 
   return (
     <Flex direction="column" width="100%" alignItems="center">
-      <Heading as="h1" fontWeight={700} fontSize={18} mb={6}>
+      <Heading as="h1" fontWeight={700} fontSize="1.125rem" mb={6}>
         Import Token
       </Heading>
       <ImportTokenImage logo={logo} />
-      <Text mt={2} fontSize={18} fontWeight={700} color="gray.50">
+      <Text mt={2} fontSize="1.125rem" fontWeight={700} color="gray.50">
         {symbol}
       </Text>
       <Text color={color}>{name}</Text>
@@ -74,7 +74,7 @@ export const ImportToken = ({
           top={4}
           right={5}
         />
-        <Text fontSize={18} color="#E58279" fontWeight={700} mb={2}>
+        <Text fontSize="1.125rem" color="#E58279" fontWeight={700} mb={2}>
           Trade at your own risk!
         </Text>
         <Text color="gray.50">
@@ -99,7 +99,7 @@ export const ImportToken = ({
         colorScheme="dark-blue"
         w="100%"
         borderRadius={12}
-        fontSize={18}
+        fontSize="1.125rem"
         fontWeight={700}
         onClick={handleImport}
         disabled={!understandRisk}

@@ -56,6 +56,8 @@ export const Asset = ({
         shadow={shadow}
         px={5}
         py={4}
+        flexWrap="wrap"
+        gap={2}
         {...props}
       />
     </AssetProvider>

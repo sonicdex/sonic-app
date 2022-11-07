@@ -1,17 +1,17 @@
 import { useCallback } from 'react';
 
 import {
-  getFromStorage,
-  LocalStorageKey,
-  MintUncompleteBlockHeights,
-  saveToStorage,
-} from '@/config';
-import {
   MintTokenSymbol,
   popNotification,
   useAppDispatch,
   usePlugStore,
 } from '@/store';
+import {
+  getFromStorage,
+  LocalStorageKey,
+  MintUncompleteBlockHeights,
+  saveToStorage,
+} from '@/utils';
 import { AppLog } from '@/utils';
 
 export type UseMintErrorHandlerOptions = {
@@ -96,4 +96,3 @@ export const useMintErrorHandler = ({
 
   return handleMintError;
 };
-

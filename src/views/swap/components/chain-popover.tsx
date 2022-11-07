@@ -65,7 +65,7 @@ export const ChainPopover: React.FC<ChainPopoverProps> = ({ from, to }) => {
                   py={1}
                   borderRadius={4}
                   backgroundColor={bg}
-                  fontSize={12}
+                  fontSize="0.75rem"
                   justifyContent="center"
                   alignItems="center"
                 >

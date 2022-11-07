@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 
-import { getFromStorage, saveToStorage } from '@/config';
 import { createAnonTokenActor } from '@/integrations/actor';
 import { useSwapCanisterStore } from '@/store';
+import { getFromStorage, saveToStorage } from '@/utils';
 import { AppLog } from '@/utils';
 
 export const useTokenLogosFetcherInit = (): void => {
@@ -28,4 +28,3 @@ export const useTokenLogosFetcherInit = (): void => {
     );
   }, [supportedTokenList]);
 };
-

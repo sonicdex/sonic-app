@@ -17,6 +17,7 @@ const baseStylePopper: SystemStyleObject = {
 
 const baseStyleContent: SystemStyleFunction = (props) => {
   const bg = mode('white', 'gray.800')(props);
+  const borderColor = mode('gray.100', 'custom.4')(props);
 
   return {
     [$popperBg.variable]: `colors.${bg}`,
@@ -24,10 +25,10 @@ const baseStyleContent: SystemStyleFunction = (props) => {
     [$arrowBg.variable]: $popperBg.reference,
     [$arrowShadowColor.variable]: 'transparent',
     width: 'xs',
-    border: 'none',
-    borderColor: 'inherit',
     borderRadius: 'xl',
-    boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.35)',
+    shadow: 'md',
+    border: '1px solid',
+    borderColor,
     zIndex: 'inherit',
     _focus: {
       outline: 0,

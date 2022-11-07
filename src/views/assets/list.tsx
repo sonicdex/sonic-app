@@ -187,7 +187,7 @@ export const AssetsListView = () => {
                   <HStack
                     spacing={4}
                     flex={2}
-                    maxW="180px"
+                    minW={['100%', '200px', '200px']}
                     overflow="hidden"
                     mr={4}
                   >
@@ -195,7 +195,7 @@ export const AssetsListView = () => {
                     <AssetTitleBlock
                       title={symbol}
                       subtitle={name}
-                      overflow="hidden"
+                      maxW={['100%', '140px', '140px']}
                     />
                   </HStack>
 

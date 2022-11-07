@@ -5,7 +5,7 @@ import { ENV } from '@/config';
 import { plug } from '../plug';
 
 export const createSwapActor = async (): Promise<SwapIDL.Factory> => {
-  const actorAdapter = new ActorAdapter(plug);
+  const actorAdapter = new ActorAdapter(plug as any);
   return actorAdapter.createActor(
     ENV.canistersPrincipalIDs.swap,
     SwapIDL.factory

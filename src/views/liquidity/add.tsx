@@ -46,7 +46,7 @@ import {
   TokenInput,
   ViewHeader,
 } from '@/components';
-import { useTokenBalanceMemo } from '@/hooks';
+import { useTokenAllowance, useTokenBalanceMemo } from '@/hooks';
 import { useBalances } from '@/hooks/use-balances';
 import { useQuery } from '@/hooks/use-query';
 import {
@@ -228,6 +228,9 @@ export const LiquidityAddView = () => {
   const token0Balance = useTokenBalanceMemo(token0.metadata?.id);
   const token1Balance = useTokenBalanceMemo(token1.metadata?.id);
 
+  const token0Allowance = useTokenAllowance(token0.metadata?.id);
+  const token1Allowance = useTokenAllowance(token1.metadata?.id);
+
   const isLoading = useMemo(
     () =>
       supportedTokenListState === FeatureState.Loading ||
@@ -250,6 +253,13 @@ export const LiquidityAddView = () => {
 
     const parsedToken0Value = (token0.value && parseFloat(token0.value)) || 0;
     const parsedToken1Value = (token1.value && parseFloat(token1.value)) || 0;
+
+    if (
+      typeof token0Allowance !== 'number' ||
+      typeof token1Allowance !== 'number'
+    ) {
+      return [true, 'Getting allowance'];
+    }
 
     if (parsedToken0Value <= 0)
       return [true, `Enter ${token0.metadata.symbol} Amount`];
@@ -287,6 +297,8 @@ export const LiquidityAddView = () => {
     token0Balance,
     token1Balance,
     isReviewing,
+    token0Allowance,
+    token1Allowance,
   ]);
 
   const selectedTokenIds = useMemo(() => {
@@ -570,7 +582,7 @@ export const LiquidityAddView = () => {
                         />
                       </Flex>
                     </PopoverTrigger>
-                    <PopoverContent minWidth="400px">
+                    <PopoverContent minWidth="25rem">
                       <PopoverHeader>Transaction Details</PopoverHeader>
                       <PopoverArrow />
                       <PopoverBody display="inline-block">
@@ -602,8 +614,16 @@ export const LiquidityAddView = () => {
           variant="gradient"
           colorScheme="dark-blue"
           onClick={handleAddLiquidity}
-          isDisabled={buttonDisabled}
-          isLoading={isLoading}
+          isDisabled={
+            buttonDisabled ||
+            typeof token0Allowance !== 'number' ||
+            typeof token1Allowance !== 'number'
+          }
+          isLoading={
+            isLoading ||
+            typeof token0Allowance !== 'number' ||
+            typeof token1Allowance !== 'number'
+          }
         >
           {buttonMessage}
         </Button>

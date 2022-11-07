@@ -278,7 +278,7 @@ export const RemoveLiquidityModal = () => {
                   )
                 }
                 colorScheme="dark-blue"
-                size="lg"
+                size="md"
                 color={checkboxColor}
                 fontWeight={600}
               >
@@ -305,4 +305,3 @@ export const RemoveLiquidityModal = () => {
     </Modal>
   );
 };
-

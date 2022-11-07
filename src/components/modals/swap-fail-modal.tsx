@@ -27,7 +27,7 @@ export const SwapFailModal = () => {
         colorScheme="dark-blue"
         borderRadius={12}
         fontWeight={700}
-        fontSize={18}
+        fontSize="1.125rem"
         onClick={retryCallback}
         isFullWidth
       >
@@ -36,7 +36,7 @@ export const SwapFailModal = () => {
       <Button
         borderRadius={12}
         fontWeight={700}
-        fontSize={18}
+        fontSize="1.125rem"
         onClick={withdrawCallback}
         isFullWidth
       >

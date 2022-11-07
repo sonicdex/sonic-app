@@ -49,6 +49,7 @@ export const SwapView = () => {
     useSwapViewStore();
 
   const {
+    allowance,
     step,
     headerTitle,
     isAutoSlippage,
@@ -107,7 +108,6 @@ export const SwapView = () => {
           <MenuList
             bg={menuListBg}
             shadow={menuListShadow}
-            border="none"
             borderRadius={20}
             ml={-20}
             py={0}
@@ -259,7 +259,10 @@ export const SwapView = () => {
           colorScheme="dark-blue"
           size="lg"
           onClick={onButtonClick}
-          isLoading={isLoading}
+          isLoading={
+            isLoading ||
+            (step === SwapStep.Review && typeof allowance !== 'number')
+          }
           isDisabled={isButtonDisabled}
         >
           {buttonMessage}

@@ -31,7 +31,7 @@ export const AddLiquidityFailModal = () => {
         colorScheme="dark-blue"
         borderRadius={12}
         fontWeight={700}
-        fontSize={18}
+        fontSize="1.125rem"
         onClick={addLiquidityCallback}
         isFullWidth
       >
@@ -40,7 +40,7 @@ export const AddLiquidityFailModal = () => {
       <Button
         borderRadius={12}
         fontWeight={700}
-        fontSize={18}
+        fontSize="1.125rem"
         onClick={handleClose}
         isFullWidth
       >

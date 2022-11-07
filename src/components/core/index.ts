@@ -2,7 +2,6 @@ export * from './asset';
 export * from './check-box';
 export * from './display-value';
 export * from './emoji';
-export * from './empty-mobile';
 export * from './gradient-box';
 export * from './header';
 export * from './image-block';

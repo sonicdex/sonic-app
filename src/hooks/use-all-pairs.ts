@@ -51,4 +51,3 @@ export const useAllPairs = () => {
 
   return { allPairs, allPairsState, getAllPairs };
 };
-

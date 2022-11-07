@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 
 import activityViewReducer from '@/store/features/activity-view/activity-view-slice';
+import allowanceReducer from '@/store/features/allowance/allowance-slice';
 import assetsViewReducer from '@/store/features/assets-view/assets-view-slice';
 import cyclesMintingCanisterReducer from '@/store/features/cycles-minting-canister/cycles-minting-canister-slice';
 import depositViewReducer from '@/store/features/deposit-view/deposit-view-slice';
@@ -30,6 +31,7 @@ export const store = configureStore({
     liquidityView: liquidityViewReducer,
     swapView: swapViewReducer,
     withdrawView: withdrawViewReducer,
+    allowance: allowanceReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

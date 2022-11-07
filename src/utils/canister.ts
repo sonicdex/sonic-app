@@ -1,13 +1,16 @@
+import { Principal } from '@dfinity/principal';
 import { Pair } from '@psychedelic/sonic-js';
 
 import { questionMarkSrc } from '@/assets';
-import { ENV, getFromStorage } from '@/config';
+import { ENV } from '@/config';
 import { SwapIDL } from '@/did';
 import {
   AppTokenMetadata,
   AppTokenMetadataListObject,
   PairBalances,
 } from '@/models';
+
+import { getFromStorage } from './local-storage';
 
 export const desensitizationPrincipalId = (
   principalId?: string,
@@ -122,4 +125,12 @@ export const parseResponseUserLPBalances = (
       },
     };
   }, {} as PairBalances);
+};
+
+export const validPrincipalId = (principalId: string) => {
+  try {
+    return Boolean(Principal.fromText(principalId));
+  } catch {
+    return false;
+  }
 };

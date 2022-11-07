@@ -1,0 +1,8 @@
+{
+    "baseUrl": "https://app.sonic.ooo/swap",
+    "env": {
+      "baseUrl": "https://app.sonic.ooo/swap",
+      "sonicAnalytics": "https://data.sonic.ooo/",
+      "plugTextButton": "Install Plug"
+    }
+  }

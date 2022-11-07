@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { getFromStorage, LocalStorageKey, saveToStorage } from '@/config';
 import { AppTokenMetadata, BaseTokenData, Pair } from '@/models';
 import { FeatureState, RootState } from '@/store';
+import { getFromStorage, LocalStorageKey, saveToStorage } from '@/utils';
 
 export type LiquidityTokenDataKey = 'token0' | 'token1';
 

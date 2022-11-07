@@ -1,7 +1,18 @@
-/// <reference types="cypress" />
 
 
-describe('Liquidity Tab', () => {
+
+describe('Liquidity: Create Liquidity Screen', () => {
+
+    const color = 'rgb(240, 242, 244)'
+
+    const buttonsValidations = [
+        'Add Liquidity',
+        'Select a Token',
+        'Transaction Settings',
+        'Slippage tolerance',
+        'Auto'
+    ]
+
     beforeEach(() => {
         cy.viewport('macbook-16')
         cy.visit('/')
@@ -9,7 +20,12 @@ describe('Liquidity Tab', () => {
         cy.contains('Create Position')
             .click()
     })
-    it('Validates default valeus for Create Position screen', () => {
+
+    it('Validates default values for Create Position screen', () => {
+
+        for (let i = 0; i <= 1; i++) {
+            cy.checkTextStyling(buttonsValidations[i], color)
+        }
 
         //Click on back button
         cy.get('[class="chakra-button css-1mn89nx"]')
@@ -17,9 +33,6 @@ describe('Liquidity Tab', () => {
             .trigger('mouseover')
         cy.contains('Back')
             .should('be.visible')
-
-        //Check text for Add Liquidity text    
-        cy.checkTextStyling('Add Liquidity')
 
         //Check slippage tooltip
         cy.get('[class="chakra-button chakra-menu__menu-button css-amln7a"]').trigger('mouseover')
@@ -35,8 +48,6 @@ describe('Liquidity Tab', () => {
             expect(list[0]).to.have.property('placeholder').eq('0.00')
             expect(list[1]).to.have.property('placeholder').eq('0.00')
         })
-        //Check text for Select a Token    
-        cy.checkTextStyling('Select a Token')
 
         //Check slippage tooltip
         cy.get('[class="chakra-button chakra-menu__menu-button css-amln7a"]').trigger('mouseover')
@@ -50,17 +61,16 @@ describe('Liquidity Tab', () => {
         cy.url().should('include', '/liquidity')
     })
 
-    it('Validates Slippage Tolerance Popup', () => {
-        //Check Slippage popup
+    it('Validates Slippage Tolerance Popup and error and warning messages', () => {
+
+        //Click on Slippage popup
         cy.get('[class="chakra-button chakra-menu__menu-button css-amln7a"]')
             .click()
-        cy.get('[class="chakra-stack css-477b2e"]')
-            .should('be.visible')
 
-        cy.checkTextStyling('Transaction Settings')
-        cy.checkTextStyling('Slippage tolerance')
+        for (let i = 2; i <= 4; i++) {
+            cy.checkTextStyling(buttonsValidations[i], color)
+        }
 
-        cy.checkTextStyling('Auto')
         cy.get('[class="chakra-input css-ew4oif"]')
             .should('have.attr', 'value', '0.50')
             .type('{BACKSPACE}')
@@ -89,34 +99,18 @@ describe('Liquidity Tab', () => {
             .contains('Your slippage tolerance')
             .should('not.exist')
     })
-    it('Validates Tokens fields', () => {
+
+    it('Validates Tokens selection', () => {
         //Click on the WICP token
         cy.contains('Select a Token')
             .click()
         cy.contains('XTC')
             .click()
-        cy.contains('1 WICP =')
-            .should('be.visible')
-        cy.contains('1 XTC = 0.06 WICP')
-            .should('be.visible')
-        cy.get('[class="chakra-input css-t3mzb7"]').eq('0')
+        cy.get('[placeholder="0.00"]').eq(1)
             .type('1')
-        cy.wait(500)
-        cy.get('[class="chakra-text css-0"]').eq('2').as('1WICP=XTC')
-            .should('not.eq', '0.00')
-            .should('be.visible')
-        cy.get('[class="chakra-text css-0"]').eq('3').as('1XTC=WICP')
-            .should('be.visible')
-            .should('not.eq', '0.00')
-        cy.get('[class="css-k008qs"]').first()
-            .should('be.visible')
-            .trigger('mouseover')
-
-        cy.checkTextStyling('Transaction Details', 'rgba(255, 255, 255, 0.92)')
-        cy.checkTextStyling('WICP Deposit Fee', 'rgba(255, 255, 255, 0.92)')
-        cy.checkTextStyling('0 WICP', 'rgb(136, 142, 143)')
-        cy.checkTextStyling('Cycles Deposit Fee', 'rgba(255, 255, 255, 0.92)')
-        cy.checkTextStyling('0.004 XTC', 'rgba(255, 255, 255, 0.92)')
-
+            .type('{BACKSPACE}')
+            .type('2')
+        cy.get('[placeholder="0.00"]').eq(2)
+            .should('not.have.value', '0.00')
     })
 })

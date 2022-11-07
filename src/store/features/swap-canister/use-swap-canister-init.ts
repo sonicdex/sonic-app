@@ -24,10 +24,7 @@ export const useSwapCanisterInit = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (
-      !isConnected &&
-      (plugState === FeatureState.Error || plugState === FeatureState.Idle)
-    ) {
+    if (!isConnected) {
       dispatch(swapCanisterActions.setBalancesState(FeatureState.Idle));
     }
   }, [isConnected, plugState]);
@@ -88,4 +85,3 @@ export const useSwapCanisterInit = () => {
     )
   );
 };
-

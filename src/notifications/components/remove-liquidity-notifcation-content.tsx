@@ -133,4 +133,3 @@ export const RemoveLiquidityNotificationContent: React.FC<
     </Link>
   );
 };
-

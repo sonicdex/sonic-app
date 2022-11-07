@@ -1,15 +1,19 @@
-import { useColorModeValue } from '@chakra-ui/react';
+import {
+  forwardRef,
+  Icon,
+  IconProps,
+  useColorModeValue,
+} from '@chakra-ui/react';
 
-export const PlugLogo = () => {
+export const PlugLogo = forwardRef<IconProps, 'svg'>((props, ref) => {
   const socketColor = useColorModeValue('black', 'white');
-
   return (
-    <svg
-      width="18"
-      height="27"
+    <Icon
       viewBox="0 0 18 27"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      ref={ref}
+      {...props}
     >
       <g clipPath="url(#clip0_88:618)">
         <path
@@ -122,6 +126,6 @@ export const PlugLogo = () => {
           <rect width="18" height="27" fill="white" />
         </clipPath>
       </defs>
-    </svg>
+    </Icon>
   );
-};
+});

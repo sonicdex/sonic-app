@@ -73,4 +73,3 @@ export const NotificationContent: React.FC<NotificationContentProps> = ({
     </Flex>
   );
 };
-

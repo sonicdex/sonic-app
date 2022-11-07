@@ -28,6 +28,7 @@ interface SwapViewState {
   keepInSonic: boolean;
   baseFromTokenPaths: MaximalPaths.PathList;
   baseToTokenPaths: MaximalPaths.PathList;
+  allowance?: number;
 }
 
 export const INITIAL_SWAP_SLIPPAGE = '0.5';
@@ -50,6 +51,7 @@ const initialState: SwapViewState = {
   keepInSonic: false,
   baseFromTokenPaths: {},
   baseToTokenPaths: {},
+  allowance: undefined,
 };
 
 export const swapViewSlice = createSlice({
@@ -242,6 +244,9 @@ export const swapViewSlice = createSlice({
     },
     setKeepInSonic: (state, action: PayloadAction<boolean>) => {
       state.keepInSonic = action.payload;
+    },
+    setAllowance: (state, action: PayloadAction<number | undefined>) => {
+      state.allowance = action.payload;
     },
   },
 });

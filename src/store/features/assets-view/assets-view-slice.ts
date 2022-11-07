@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { getFromStorage, LocalStorageKey, saveToStorage } from '@/config';
 import type { RootState } from '@/store';
 import { FeatureState } from '@/store';
+import { getFromStorage, LocalStorageKey, saveToStorage } from '@/utils';
 
 interface AssetsViewState {
   isBannerOpened: boolean;

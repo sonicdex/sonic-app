@@ -11,3 +11,4 @@ export * from './price';
 export * from './swap-canister';
 export * from './swap-view';
 export * from './withdraw-view';
+export * from './allowance';

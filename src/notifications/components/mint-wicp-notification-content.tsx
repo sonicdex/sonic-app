@@ -102,4 +102,3 @@ export const MintWICPNotificationContent: React.FC<
     </Link>
   );
 };
-

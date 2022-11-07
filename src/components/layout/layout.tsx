@@ -1,8 +1,7 @@
 import {
   chakra,
   Container,
-  Grid,
-  GridItem,
+  Flex,
   HStack,
   IconButton,
   Link as ChakraLink,
@@ -17,6 +16,7 @@ import {
   Text,
   useColorMode,
   useColorModeValue,
+  useToken,
 } from '@chakra-ui/react';
 import { FaBook } from '@react-icons/all-files/fa/FaBook';
 import { FaDiscord } from '@react-icons/all-files/fa/FaDiscord';
@@ -28,28 +28,25 @@ import { FaRedo } from '@react-icons/all-files/fa/FaRedo';
 import { FaSun } from '@react-icons/all-files/fa/FaSun';
 import { FaTwitter } from '@react-icons/all-files/fa/FaTwitter';
 import { FiArrowUpRight } from '@react-icons/all-files/fi/FiArrowUpRight';
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
 import { ENV } from '@/config';
+import { useHeaderResizeEffect } from '@/hooks';
 import { modalsSliceActions, useAppDispatch, usePlugStore } from '@/store';
-import { theme } from '@/theme';
 import { ExternalLink } from '@/utils';
 
 import packageJSON from '../../../package.json';
 import { PlugButton } from '..';
 import { LogoBox } from '../core';
 import { PlugMenu } from '../plug/plug-menu';
-import {
-  FOOTER_HEIGHT,
-  NAVBAR_HEIGHT,
-  NAVIGATION_TABS,
-} from './layout.constants';
+import { FOOTER_HEIGHT, NAVIGATION_TABS } from './layout.constants';
 
 export const Layout: React.FC = ({ children, ...props }) => {
   const { isConnected } = usePlugStore();
   const dispatch = useAppDispatch();
   const location = useLocation();
+  const [headerHeight, setHeaderHeight] = useState('116px');
 
   const currentTabIndex = useMemo(
     () =>
@@ -58,76 +55,92 @@ export const Layout: React.FC = ({ children, ...props }) => {
   );
 
   const backgroundColor = useColorModeValue('custom.5', 'black');
+  const backgroundColorValue = useToken('colors', backgroundColor);
 
   const { colorMode, toggleColorMode } = useColorMode();
 
   const menuBg = useColorModeValue('gray.50', 'custom.2');
   const menuShadow = useColorModeValue('base', 'none');
 
+  useHeaderResizeEffect((element) => {
+    setHeaderHeight(`${element.clientHeight}px`);
+  });
+
   return (
     <>
-      <Container maxW="container.xl" position="sticky" top={0} zIndex={10}>
-        <Grid
-          position="relative"
-          zIndex={-2}
+      <Container
+        maxW={['100%', 'container.xl', 'container.xl']}
+        position="sticky"
+        top={0}
+        zIndex={10}
+        id="header"
+      >
+        <Flex
+          zIndex="1000"
           as="header"
-          py="8"
-          templateColumns="repeat(5, 1fr)"
-          gap="4"
+          width="full"
+          maxWidth="container.xl"
+          margin="auto"
+          direction="row"
+          justifyContent="center"
           alignItems="center"
-          backgroundColor={backgroundColor}
-          transition="background-color 200ms"
-          _after={{
-            content: "''",
-            position: 'absolute',
-            pointerEvents: 'none',
-            height: 10,
-            left: 0,
-            right: 0,
-            bottom: -10,
-            background: `linear-gradient(to bottom, ${theme.colors.bg} 0%, transparent 100%)`,
-          }}
+          flexWrap="wrap"
+          gap="4"
+          p={['4', '4', '8']}
+          position="sticky"
+          top="0"
+          bg={backgroundColor}
         >
-          <GridItem
-            as={HStack}
-            spacing={4}
-            colSpan={1}
-            justifySelf="center"
+          <Flex
+            display={['none', 'none', 'none', 'flex']}
+            width={['0', '24%']}
             alignItems="center"
+            justifyContent="center"
           >
             <LogoBox />
-          </GridItem>
-          <GridItem colSpan={3} justifySelf="center">
-            <chakra.nav>
-              <Tabs
-                index={currentTabIndex}
-                variant="solid-rounded"
-                colorScheme="dark-blue"
-              >
-                <TabList bg={menuBg}>
-                  {NAVIGATION_TABS.map(({ label, url }) => (
-                    <Tab
-                      as={Link}
-                      key={label}
-                      isSelected={location.pathname === url}
-                      to={url}
-                    >
-                      {label}
-                    </Tab>
-                  ))}
+          </Flex>
+          <chakra.nav
+            flex="1"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+          >
+            <Tabs
+              index={currentTabIndex}
+              variant="solid-rounded"
+              colorScheme="dark-blue"
+            >
+              <TabList bg={menuBg}>
+                {NAVIGATION_TABS.map(({ label, url }) => (
                   <Tab
-                    as="a"
-                    href={ExternalLink.analyticsApp}
-                    target={ExternalLink.analyticsApp}
+                    as={Link}
+                    key={label}
+                    isSelected={location.pathname === url}
+                    to={url}
                   >
-                    Analytics
-                    <FiArrowUpRight />
+                    {label}
                   </Tab>
-                </TabList>
-              </Tabs>
-            </chakra.nav>
-          </GridItem>
-          <GridItem colSpan={1} justifySelf="center">
+                ))}
+                <Tab
+                  display={['none', 'none', 'flex', 'flex']}
+                  as="a"
+                  href={ExternalLink.analyticsApp}
+                  target={ExternalLink.analyticsApp}
+                >
+                  Analytics
+                  <FiArrowUpRight />
+                </Tab>
+              </TabList>
+            </Tabs>
+          </chakra.nav>
+          <Flex
+            direction="row"
+            width={['fit-content', 'fit-content', '24%']}
+            gap="4"
+            mr="-2"
+            alignItems="center"
+            justifyContent="flex-end"
+          >
             <HStack>
               {isConnected ? <PlugMenu /> : <PlugButton />}
               <Menu placement="bottom-end">
@@ -204,15 +217,14 @@ export const Layout: React.FC = ({ children, ...props }) => {
                 </MenuList>
               </Menu>
             </HStack>
-          </GridItem>
-        </Grid>
+          </Flex>
+        </Flex>
       </Container>
 
       <Container
         as="main"
         maxW="xl"
-        minH={`calc(100vh - ${NAVBAR_HEIGHT} - ${FOOTER_HEIGHT})`}
-        // maxH={`calc(100vh - ${NAVBAR_HEIGHT} - ${FOOTER_HEIGHT})`}
+        minH={`calc(100vh - ${headerHeight} - ${FOOTER_HEIGHT})`}
         py="10"
         display="flex"
         flexDirection="column"
@@ -228,7 +240,8 @@ export const Layout: React.FC = ({ children, ...props }) => {
         bottom={0}
         left={0}
         right={0}
-        background={`linear-gradient(to bottom, transparent 0%, ${theme.colors.bg} 100%)`}
+        background={`linear-gradient(to bottom, transparent 0%, ${backgroundColorValue} 50%)`}
+        pointerEvents="none"
       >
         <Text>Sonic v{packageJSON.version}</Text>
       </chakra.footer>

@@ -7,3 +7,4 @@ export * from './use-token-logos-fetcher-init';
 export * from './use-token-selection-detector';
 export * from './use-user-metrics';
 export * from './use-network-error-notifications';
+export * from './use-header-resize-effect';

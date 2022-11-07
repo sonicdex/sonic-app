@@ -30,7 +30,7 @@ export const TransactionFailedModal: React.FC<TransactionFailedModalProps> = ({
       <ModalOverlay />
       <ModalContent textAlign="center" borderRadius={20} bg={bg}>
         <ModalHeader>
-          <Heading as="h2" fontWeight={700} fontSize={22}>
+          <Heading as="h2" fontWeight={700} fontSize="1.375rem">
             {title}
           </Heading>
         </ModalHeader>

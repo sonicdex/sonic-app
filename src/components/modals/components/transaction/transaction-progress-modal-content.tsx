@@ -35,22 +35,22 @@ export const TransactionProgressModal: React.FC<
         px="37px"
         pb="43px"
         borderRadius={20}
-        minWidth="fit-content"
+        minWidth={['unset', 'fit-content', 'fit-content']}
       >
         <ModalCloseButton />
         <Heading
           as="h1"
           color={titleColor}
           fontWeight={700}
-          fontSize={22}
+          fontSize="1.375rem"
           mb={3}
         >
           {title}
         </Heading>
-        <Text as="p" color={color} mb="33px">
+        <Text as="p" color={color} mb="2.06rem">
           Please wait some time for transactions to finish
         </Text>
-        <Flex direction="row" justifyContent="center">
+        <Flex direction="row" justifyContent="center" flexWrap="wrap">
           {children}
         </Flex>
       </ModalContent>

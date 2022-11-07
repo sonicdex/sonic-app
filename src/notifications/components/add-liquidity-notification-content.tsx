@@ -130,4 +130,3 @@ export const AddLiquidityNotificationContent: React.FC<
     </Link>
   );
 };
-

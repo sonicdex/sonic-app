@@ -71,4 +71,3 @@ export const useCyclesMintingCanisterInit = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 };
-

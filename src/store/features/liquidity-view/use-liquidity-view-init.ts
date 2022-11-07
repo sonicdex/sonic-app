@@ -41,4 +41,3 @@ export const useLiquidityViewInit = () => {
     }
   }, [token0.metadata?.id, token1.metadata?.id, getPair]);
 };
-

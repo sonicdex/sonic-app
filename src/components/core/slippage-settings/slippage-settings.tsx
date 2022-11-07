@@ -82,11 +82,11 @@ export const SlippageSettings = ({
 
   return (
     <Stack zIndex="popover" px={5} pt={3} pb={3}>
-      <Box as="h1" textAlign="left" fontSize="16px" w="100%">
+      <Box as="h1" textAlign="left" fontSize="1rem" w="100%">
         Transaction Settings
       </Box>
       <Divider />
-      <Box as="p" fontSize="14px" textAlign="left" fontWeight={400}>
+      <Box as="p" fontSize="0.875rem" textAlign="left" fontWeight={400}>
         Slippage tolerance
       </Box>
       <Flex direction="row" alignItems="center">

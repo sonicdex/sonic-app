@@ -16,28 +16,18 @@ import { FaChevronDown } from '@react-icons/all-files/fa/FaChevronDown';
 import { FiCopy } from '@react-icons/all-files/fi/FiCopy';
 import { FC, useMemo } from 'react';
 
-import { disconnect } from '@/integrations/plug';
-import {
-  FeatureState,
-  NotificationType,
-  plugActions,
-  useAppDispatch,
-  useNotificationStore,
-  usePlugStore,
-} from '@/store';
+import { plugActions, PlugState, useAppDispatch, usePlugStore } from '@/store';
+import { copyToClipboard } from '@/utils';
 import { desensitizationPrincipalId } from '@/utils/canister';
 
 import { PlugLogo } from '..';
 
 export const PlugMenu: FC<Omit<MenuProps, 'children'>> = (props) => {
   const { principalId, state } = usePlugStore();
-  const { addNotification } = useNotificationStore();
   const dispatch = useAppDispatch();
 
   const handleDisconnect = async () => {
-    dispatch(plugActions.setIsConnected(false));
-
-    await disconnect();
+    dispatch(plugActions.disconnect());
   };
 
   const shortPrincipalId = useMemo(() => {
@@ -46,12 +36,7 @@ export const PlugMenu: FC<Omit<MenuProps, 'children'>> = (props) => {
 
   const handleCopy = () => {
     if (principalId) {
-      navigator.clipboard.writeText(principalId);
-      addNotification({
-        id: String(new Date().getTime()),
-        title: 'Principal ID copied to clipboard',
-        type: NotificationType.Success,
-      });
+      copyToClipboard(principalId, 'Principal ID copied to clipboard');
     }
   };
 
@@ -62,7 +47,7 @@ export const PlugMenu: FC<Omit<MenuProps, 'children'>> = (props) => {
     <Menu {...props}>
       <MenuButton borderRadius="full" px="4" h="12" bg={bg} shadow={shadow}>
         <Flex direction="row" alignItems="center">
-          {state === FeatureState.Loading ? <Spinner /> : <PlugLogo />}
+          {state === PlugState.Loading ? <Spinner /> : <PlugLogo />}
           <Box ml="2" fontWeight={600}>
             {shortPrincipalId}
           </Box>

@@ -129,4 +129,3 @@ export const DepositNotificationContent: React.FC<
     </Link>
   );
 };
-

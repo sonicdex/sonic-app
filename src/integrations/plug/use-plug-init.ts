@@ -1,69 +1,40 @@
 import { useEffect } from 'react';
 
-import {
-  FeatureState,
-  plugActions,
-  useAppDispatch,
-  usePlugStore,
-} from '@/store';
-import { AppLog } from '@/utils';
+import { plugActions, PlugState, useAppDispatch } from '@/store';
 
-import { checkIsConnected, getPrincipal } from '.';
+import { plug } from './plug.utils';
 
-export const usePlugInit = () => {
-  const { isConnected } = usePlugStore();
+export const usePlugInit = (): void => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(plugActions.setState(FeatureState.Loading));
+    if (plug) {
+      dispatch(plugActions.setState(PlugState.Loading));
 
-    const connectionPromise = checkIsConnected();
-
-    if (connectionPromise) {
-      connectionPromise
-        .then(async (isConnected) => {
-          if (isConnected) {
-            const hasPrincipal = await getPrincipal();
-            if (hasPrincipal)
-              return dispatch(plugActions.setIsConnected(isConnected));
-          }
-          return dispatch(plugActions.setIsConnected(false));
-        })
-        .catch((err) => {
-          AppLog.error('Plug init error 1', err);
-          dispatch(plugActions.setIsConnected(false));
-        });
-    }
-  }, []);
-
-  useEffect(() => {
-    if (isConnected) {
-      const getPrincipalId = async () => {
-        try {
-          const principal = await getPrincipal();
-
-          if (principal) {
-            if (typeof principal === 'string') {
-              dispatch(
-                plugActions.setPrincipalId(principal as unknown as string)
-              );
-            } else {
-              dispatch(plugActions.setPrincipalId(principal.toText()));
+      new Promise<string>((resolve, reject) => {
+        const timeout = setTimeout(reject, 3000);
+        plug
+          ?.isConnected()
+          .then((isConnected) => {
+            if (isConnected && plug) {
+              return plug.getPrincipal();
             }
-          }
-          dispatch(plugActions.setState(FeatureState.Idle));
-        } catch (err) {
-          AppLog.error('Plug init error 2', err);
-          dispatch(plugActions.setState(FeatureState.Error));
-        }
-      };
-
-      const isPlug = Boolean(window?.ic?.plug);
-      if (isPlug) {
-        getPrincipalId();
-      }
+            throw new Error('Plug is not connected');
+          })
+          .then((principal) => {
+            const principalId =
+              typeof principal === 'string' ? principal : principal.toText();
+            clearTimeout(timeout);
+            resolve(principalId);
+          })
+          .catch(reject);
+      })
+        .then((principalId) =>
+          dispatch(plugActions.setPrincipalId(principalId))
+        )
+        .catch(() => dispatch(plugActions.setState(PlugState.Disconnected)));
+    } else {
+      dispatch(plugActions.setState(PlugState.NotInstalled));
     }
-
-    dispatch(plugActions.setState(FeatureState.Idle));
-  }, [isConnected]);
+  }, [dispatch]);
 };

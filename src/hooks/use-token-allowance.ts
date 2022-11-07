@@ -1,36 +1,29 @@
-import { Principal } from '@dfinity/principal';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
-import { ENV } from '@/config';
-import { createAnonTokenActor } from '@/integrations/actor';
-import { usePlugStore } from '@/store';
-import { AppLog } from '@/utils';
+import {
+  allowanceActions,
+  useAllowanceStore,
+  useAppDispatch,
+  usePlugStore,
+} from '@/store';
+import { validPrincipalId } from '@/utils';
 
-export const useTokenAllowance = (tokenId?: string): number | undefined => {
+export const useTokenAllowance = (tokenId = ''): number | undefined => {
+  const dispatch = useAppDispatch();
   const { principalId } = usePlugStore();
-  const [allowance, setAllowance] = useState<number | undefined>(undefined);
+  const { tokensAllowance } = useAllowanceStore();
 
   useEffect(() => {
-    if (tokenId && principalId) {
-      (async () => {
-        try {
-          const actor = await createAnonTokenActor(tokenId);
-          const allowance = await actor.allowance(
-            Principal.fromText(principalId),
-            Principal.fromText(ENV.canistersPrincipalIDs.swap)
-          );
-          setAllowance(Number(allowance));
-        } catch (error) {
-          AppLog.error(
-            `Allowance fetch error: token=${tokenId} principal=${principalId}`,
-            error
-          );
-          setAllowance(undefined);
+    if (validPrincipalId(tokenId) && principalId) {
+      if (tokensAllowance[tokenId]) {
+        if (Date.now() > tokensAllowance[tokenId].expiration) {
+          dispatch(allowanceActions.fetchAllowance({ tokenId }));
         }
-      })();
+      } else {
+        dispatch(allowanceActions.fetchAllowance({ tokenId }));
+      }
     }
-  }, [tokenId, principalId]);
+  }, [tokenId, principalId, dispatch, tokensAllowance]);
 
-  return allowance;
+  return tokensAllowance[tokenId]?.allowance;
 };
-

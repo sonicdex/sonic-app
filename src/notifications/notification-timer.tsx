@@ -46,7 +46,7 @@ export const NotificationTimer: React.FC<NotificationTimerProps> = ({
     <Box
       position="absolute"
       width="full"
-      height={0.5}
+      height={1}
       bg={color}
       bottom={0}
       left={0}
@@ -56,4 +56,3 @@ export const NotificationTimer: React.FC<NotificationTimerProps> = ({
     />
   );
 };
-

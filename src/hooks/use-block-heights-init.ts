@@ -1,10 +1,5 @@
 import { useEffect, useState } from 'react';
 
-import {
-  getFromStorage,
-  LocalStorageKey,
-  MintUncompleteBlockHeights,
-} from '@/config';
 import { MINT_AUTO_NOTIFICATION_TITLES } from '@/notifications';
 import {
   modalsSliceActions,
@@ -14,6 +9,11 @@ import {
   useNotificationStore,
   usePlugStore,
 } from '@/store';
+import {
+  getFromStorage,
+  LocalStorageKey,
+  MintUncompleteBlockHeights,
+} from '@/utils';
 
 export const useBlockHeightsInit = () => {
   const [notificationId] = useState(String(new Date().getTime()));

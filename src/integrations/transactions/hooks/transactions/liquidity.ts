@@ -118,4 +118,3 @@ export const useRemoveLiquidityTransactionMemo: CreateTransaction<
       ],
     };
   }, [token0, token1]);
-
