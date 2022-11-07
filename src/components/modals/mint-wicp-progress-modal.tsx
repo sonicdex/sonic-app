@@ -1,5 +1,3 @@
-import { Flex } from '@chakra-ui/react';
-
 import { checkPlainSrc, depositSrc, swapSrc, withdrawSrc } from '@/assets';
 import {
   MintModalData,
@@ -32,45 +30,43 @@ export const MintWICPProgressModal = () => {
       isCentered
       title="ICP wrapping in progress"
     >
-      <Flex alignItems="flex-start">
-        {steps?.includes(MintModalDataStep.LedgerTransfer) && (
-          <TransactionStep
-            status={getStepStatus(MintModalDataStep.LedgerTransfer)}
-            iconSrc={withdrawSrc}
-            chevron
-          >
-            Ledger Transfer <br />
-            ICP
-          </TransactionStep>
-        )}
+      {steps?.includes(MintModalDataStep.LedgerTransfer) && (
         <TransactionStep
-          status={getStepStatus(MintModalDataStep.Mint)}
-          iconSrc={swapSrc}
-          chevron={
-            steps?.includes(MintModalDataStep.Approve) ||
-            steps?.includes(MintModalDataStep.Deposit)
-          }
+          status={getStepStatus(MintModalDataStep.LedgerTransfer)}
+          iconSrc={withdrawSrc}
+          chevron
         >
-          Minting <br /> WICP
+          Ledger Transfer <br />
+          ICP
         </TransactionStep>
-        {steps?.includes(MintModalDataStep.Approve) && (
-          <TransactionStep
-            status={getStepStatus(MintModalDataStep.Approve)}
-            iconSrc={checkPlainSrc}
-            chevron
-          >
-            Approving <br /> WICP
-          </TransactionStep>
-        )}
-        {steps?.includes(MintModalDataStep.Deposit) && (
-          <TransactionStep
-            status={getStepStatus(MintModalDataStep.Deposit)}
-            iconSrc={depositSrc}
-          >
-            Depositing <br /> WICP
-          </TransactionStep>
-        )}
-      </Flex>
+      )}
+      <TransactionStep
+        status={getStepStatus(MintModalDataStep.Mint)}
+        iconSrc={swapSrc}
+        chevron={
+          steps?.includes(MintModalDataStep.Approve) ||
+          steps?.includes(MintModalDataStep.Deposit)
+        }
+      >
+        Minting <br /> WICP
+      </TransactionStep>
+      {steps?.includes(MintModalDataStep.Approve) && (
+        <TransactionStep
+          status={getStepStatus(MintModalDataStep.Approve)}
+          iconSrc={checkPlainSrc}
+          chevron
+        >
+          Approving <br /> WICP
+        </TransactionStep>
+      )}
+      {steps?.includes(MintModalDataStep.Deposit) && (
+        <TransactionStep
+          status={getStepStatus(MintModalDataStep.Deposit)}
+          iconSrc={depositSrc}
+        >
+          Depositing <br /> WICP
+        </TransactionStep>
+      )}
     </TransactionProgressModal>
   );
 };

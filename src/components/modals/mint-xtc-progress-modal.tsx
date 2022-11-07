@@ -1,5 +1,3 @@
-import { Flex } from '@chakra-ui/react';
-
 import { checkPlainSrc, depositSrc, swapSrc, withdrawSrc } from '@/assets';
 import {
   MintModalData,
@@ -33,42 +31,40 @@ export const MintXTCProgressModal = () => {
       isCentered
       title="Mint XTC in progress"
     >
-      <Flex alignItems="flex-start">
+      <TransactionStep
+        status={getStepStatus(MintModalDataStep.LedgerTransfer)}
+        iconSrc={withdrawSrc}
+        chevron
+      >
+        Ledger Transfer <br /> ICP
+      </TransactionStep>
+      <TransactionStep
+        status={getStepStatus(MintModalDataStep.Mint)}
+        iconSrc={swapSrc}
+        chevron={
+          steps?.includes(MintModalDataStep.Approve) ||
+          steps?.includes(MintModalDataStep.Deposit)
+        }
+      >
+        Minting <br /> XTC
+      </TransactionStep>
+      {steps?.includes(MintModalDataStep.Approve) && (
         <TransactionStep
-          status={getStepStatus(MintModalDataStep.LedgerTransfer)}
-          iconSrc={withdrawSrc}
+          status={getStepStatus(MintModalDataStep.Approve)}
+          iconSrc={checkPlainSrc}
           chevron
         >
-          Ledger Transfer <br /> ICP
+          Approving <br /> XTC
         </TransactionStep>
+      )}
+      {steps?.includes(MintModalDataStep.Deposit) && (
         <TransactionStep
-          status={getStepStatus(MintModalDataStep.Mint)}
-          iconSrc={swapSrc}
-          chevron={
-            steps?.includes(MintModalDataStep.Approve) ||
-            steps?.includes(MintModalDataStep.Deposit)
-          }
+          status={getStepStatus(MintModalDataStep.Deposit)}
+          iconSrc={depositSrc}
         >
-          Minting <br /> XTC
+          Depositing <br /> XTC
         </TransactionStep>
-        {steps?.includes(MintModalDataStep.Approve) && (
-          <TransactionStep
-            status={getStepStatus(MintModalDataStep.Approve)}
-            iconSrc={checkPlainSrc}
-            chevron
-          >
-            Approving <br /> XTC
-          </TransactionStep>
-        )}
-        {steps?.includes(MintModalDataStep.Deposit) && (
-          <TransactionStep
-            status={getStepStatus(MintModalDataStep.Deposit)}
-            iconSrc={depositSrc}
-          >
-            Depositing <br /> XTC
-          </TransactionStep>
-        )}
-      </Flex>
+      )}
     </TransactionProgressModal>
   );
 };

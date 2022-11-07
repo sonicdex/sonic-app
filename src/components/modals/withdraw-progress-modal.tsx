@@ -1,5 +1,3 @@
-import { Flex } from '@chakra-ui/react';
-
 import { withdrawSrc } from '@/assets';
 import {
   modalsSliceActions,
@@ -33,14 +31,12 @@ export const WithdrawProgressModal = () => {
       isOpen={isWithdrawProgressModalOpened}
       isCentered
     >
-      <Flex alignItems="flex-start">
-        <TransactionStep
-          status={getStepStatus(WithdrawModalDataStep.Withdraw)}
-          iconSrc={withdrawSrc}
-        >
-          Withdrawing <br /> {tokenSymbol}
-        </TransactionStep>
-      </Flex>
+      <TransactionStep
+        status={getStepStatus(WithdrawModalDataStep.Withdraw)}
+        iconSrc={withdrawSrc}
+      >
+        Withdrawing <br /> {tokenSymbol}
+      </TransactionStep>
     </TransactionProgressModal>
   );
 };

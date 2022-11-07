@@ -1,5 +1,3 @@
-import { Flex } from '@chakra-ui/react';
-
 import { checkPlainSrc, depositSrc } from '@/assets';
 import {
   DepositModalData,
@@ -33,23 +31,21 @@ export const DepositProgressModal = () => {
       isCentered
       title="Deposit in progress"
     >
-      <Flex alignItems="flex-start">
-        {steps?.includes(DepositModalDataStep.Approve) && (
-          <TransactionStep
-            status={getStepStatus(DepositModalDataStep.Approve)}
-            iconSrc={checkPlainSrc}
-            chevron
-          >
-            Approving <br /> {tokenSymbol}
-          </TransactionStep>
-        )}
+      {steps?.includes(DepositModalDataStep.Approve) && (
         <TransactionStep
-          status={getStepStatus(DepositModalDataStep.Deposit)}
-          iconSrc={depositSrc}
+          status={getStepStatus(DepositModalDataStep.Approve)}
+          iconSrc={checkPlainSrc}
+          chevron
         >
-          Depositing <br /> {tokenSymbol}
+          Approving <br /> {tokenSymbol}
         </TransactionStep>
-      </Flex>
+      )}
+      <TransactionStep
+        status={getStepStatus(DepositModalDataStep.Deposit)}
+        iconSrc={depositSrc}
+      >
+        Depositing <br /> {tokenSymbol}
+      </TransactionStep>
     </TransactionProgressModal>
   );
 };

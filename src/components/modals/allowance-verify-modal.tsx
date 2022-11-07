@@ -1,4 +1,4 @@
-import { Box, Flex } from '@chakra-ui/react';
+import { Box } from '@chakra-ui/react';
 import { useMemo } from 'react';
 
 import { checkPlainSrc } from '@/assets';
@@ -35,19 +35,17 @@ export const AllowanceVerifyModal = () => {
       isCentered
       title="Verifying Allowance"
     >
-      <Flex alignItems="flex-start">
-        {_tokenSymbol.map((symbol) => (
-          <TransactionStep
-            status={StepStatus.Active}
-            iconSrc={checkPlainSrc}
-            key={symbol}
-          >
-            <Box mx={6}>
-              Verifying {symbol} <br /> allowance
-            </Box>
-          </TransactionStep>
-        ))}
-      </Flex>
+      {_tokenSymbol.map((symbol) => (
+        <TransactionStep
+          status={StepStatus.Active}
+          iconSrc={checkPlainSrc}
+          key={symbol}
+        >
+          <Box mx={6}>
+            Verifying {symbol} <br /> allowance
+          </Box>
+        </TransactionStep>
+      ))}
     </TransactionProgressModal>
   );
 };

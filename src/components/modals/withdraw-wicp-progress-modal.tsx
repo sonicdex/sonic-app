@@ -1,5 +1,3 @@
-import { Flex } from '@chakra-ui/react';
-
 import { swapSrc, withdrawSrc } from '@/assets';
 import {
   modalsSliceActions,
@@ -34,23 +32,21 @@ export const WithdrawWICPProgressModal = () => {
       isCentered
       title="WICP unwrapping in progress"
     >
-      <Flex alignItems="flex-start">
-        {steps?.includes(WithdrawWICPModalDataStep.Withdraw) && (
-          <TransactionStep
-            status={getStepStatus(WithdrawWICPModalDataStep.Withdraw)}
-            iconSrc={withdrawSrc}
-            chevron
-          >
-            Withdrawing <br /> WICP
-          </TransactionStep>
-        )}
+      {steps?.includes(WithdrawWICPModalDataStep.Withdraw) && (
         <TransactionStep
-          status={getStepStatus(WithdrawWICPModalDataStep.WithdrawWICP)}
-          iconSrc={swapSrc}
+          status={getStepStatus(WithdrawWICPModalDataStep.Withdraw)}
+          iconSrc={withdrawSrc}
+          chevron
         >
-          Unwrapping <br /> WICP
+          Withdrawing <br /> WICP
         </TransactionStep>
-      </Flex>
+      )}
+      <TransactionStep
+        status={getStepStatus(WithdrawWICPModalDataStep.WithdrawWICP)}
+        iconSrc={swapSrc}
+      >
+        Unwrapping <br /> WICP
+      </TransactionStep>
     </TransactionProgressModal>
   );
 };
