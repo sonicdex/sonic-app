@@ -50,7 +50,13 @@ export const TransactionProgressModal: React.FC<
         <Text as="p" color={color} mb="2.06rem">
           Please wait some time for transactions to finish
         </Text>
-        <Flex direction="row" justifyContent="center" alignItems="flex-start" flexWrap="wrap">
+        <Flex
+          direction="row"
+          justifyContent="center"
+          alignItems="flex-start"
+          flexWrap="wrap"
+          rowGap={4}
+        >
           {children}
         </Flex>
       </ModalContent>
