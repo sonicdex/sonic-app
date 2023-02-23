@@ -1,4 +1,4 @@
-import { ActorAdapter, SwapIDL } from '@psychedelic/sonic-js';
+import { ActorAdapter, SwapIDL } from '@memecake/sonic-js';
 
 import { ENV } from '@/config';
 

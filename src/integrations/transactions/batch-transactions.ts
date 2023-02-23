@@ -1,8 +1,8 @@
-import Provider from '@psychedelic/plug-inpage-provider';
+import Provider from '@memecake/plug-inpage-provider';
 import type {
   Transaction,
   TransactionPrevResponse,
-} from '@psychedelic/plug-inpage-provider/dist/src/Provider/interfaces';
+} from '@memecake/plug-inpage-provider/dist/src/Provider/interfaces';
 
 import { AppLog } from '@/utils';
 

@@ -1,4 +1,4 @@
-import { MaximalPaths, Pair, Swap } from '@psychedelic/sonic-js';
+import { MaximalPaths, Pair, Swap } from '@memecake/sonic-js';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { ENV } from '@/config';

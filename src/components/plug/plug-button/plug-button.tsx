@@ -1,6 +1,6 @@
 import { Button, ButtonProps } from '@chakra-ui/button';
 import { useColorModeValue } from '@chakra-ui/color-mode';
-import type { Provider } from '@psychedelic/plug-inpage-provider';
+import type { Provider } from '@memecake/plug-inpage-provider';
 import { forwardRef, useMemo } from 'react';
 
 import { plugActions, PlugState, useAppDispatch, usePlugStore } from '@/store';

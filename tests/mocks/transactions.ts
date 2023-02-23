@@ -1,4 +1,4 @@
-import type { Transaction } from '@psychedelic/plug-inpage-provider/dist/src/Provider/interfaces';
+import type { Transaction } from '@memecake/plug-inpage-provider/dist/src/Provider/interfaces';
 
 export const mockTransaction = ({
   args,

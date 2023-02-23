@@ -21,7 +21,7 @@ import {
   Tooltip,
   useColorModeValue,
 } from '@chakra-ui/react';
-import { Liquidity } from '@psychedelic/sonic-js';
+import { Liquidity } from '@memecake/sonic-js';
 import { FaCog } from '@react-icons/all-files/fa/FaCog';
 import { FaEquals } from '@react-icons/all-files/fa/FaEquals';
 import { FaInfoCircle } from '@react-icons/all-files/fa/FaInfoCircle';

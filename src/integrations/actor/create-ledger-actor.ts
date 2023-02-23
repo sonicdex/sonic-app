@@ -1,4 +1,4 @@
-import { ActorAdapter } from '@psychedelic/sonic-js';
+import { ActorAdapter } from '@memecake/sonic-js';
 
 import { ENV } from '@/config';
 import { LedgerIDL } from '@/did';

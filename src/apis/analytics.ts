@@ -1,4 +1,4 @@
-import { deserialize, serialize } from '@psychedelic/sonic-js';
+import { deserialize, serialize } from '@memecake/sonic-js';
 import axios from 'axios';
 
 import { ENV } from '@/config';

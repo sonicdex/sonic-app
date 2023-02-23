@@ -1,4 +1,4 @@
-import { Pair, Swap, toBigNumber } from '@psychedelic/sonic-js';
+import { Pair, Swap, toBigNumber } from '@memecake/sonic-js';
 import BigNumber from 'bignumber.js';
 
 import {

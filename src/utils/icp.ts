@@ -1,5 +1,5 @@
 import { Principal } from '@dfinity/principal';
-import { ActorAdapter } from '@psychedelic/sonic-js';
+import { ActorAdapter } from '@memecake/sonic-js';
 import axios from 'axios';
 import BigNumber from 'bignumber.js';
 import crc32 from 'buffer-crc32';

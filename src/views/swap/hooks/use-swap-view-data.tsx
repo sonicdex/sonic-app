@@ -1,5 +1,5 @@
 import { Link } from '@chakra-ui/react';
-import { Pair, Swap, toBigNumber } from '@psychedelic/sonic-js';
+import { Pair, Swap, toBigNumber } from '@memecake/sonic-js';
 import BigNumber from 'bignumber.js';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { batch } from 'react-redux';

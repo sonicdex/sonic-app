@@ -1,4 +1,4 @@
-import { TransactionPrevResponse } from '@psychedelic/plug-inpage-provider/dist/src/Provider/interfaces';
+import { TransactionPrevResponse } from '@memecake/plug-inpage-provider/dist/src/Provider/interfaces';
 import { useMemo } from 'react';
 
 import { ENV } from '@/config';

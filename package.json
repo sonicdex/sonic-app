@@ -72,9 +72,9 @@
     "@dfinity/principal": "^0.12.2",
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
-    "@psychedelic/cap-js": "^0.0.7",
-    "@psychedelic/plug-inpage-provider": "2.4.0",
-    "@psychedelic/sonic-js": "^0.4.0",
+    "@memecake/cap-js": "^0.0.8",
+    "@memecake/plug-inpage-provider": "^2.5.2",
+    "@memecake/sonic-js": "^0.4.0",
     "@react-icons/all-files": "^4.1.0",
     "@reduxjs/toolkit": "^1.7.2",
     "axios": "^0.26.0",
@@ -107,4 +107,3 @@
     ]
   }
 }
-

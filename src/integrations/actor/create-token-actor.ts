@@ -2,7 +2,7 @@ import {
   ActorAdapter,
   createTokenActor as cta,
   TokenIDL,
-} from '@psychedelic/sonic-js';
+} from '@memecake/sonic-js';
 
 export const createTokenActor = cta;
 

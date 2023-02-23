@@ -1,4 +1,4 @@
-import Provider from '@psychedelic/plug-inpage-provider';
+import Provider from '@memecake/plug-inpage-provider';
 
 type RequestConnectArgs = {
   whitelist?: string[];

@@ -1,5 +1,5 @@
 import { Flex, HStack, Image, Text } from '@chakra-ui/react';
-import { toBigNumber } from '@psychedelic/sonic-js';
+import { toBigNumber } from '@memecake/sonic-js';
 import { FC, useMemo } from 'react';
 
 import { questionMarkSrc } from '@/assets';

@@ -5,7 +5,7 @@ import {
   TextProps,
   Tooltip,
 } from '@chakra-ui/react';
-import { formatAmount, toBigNumber } from '@psychedelic/sonic-js';
+import { formatAmount, toBigNumber } from '@memecake/sonic-js';
 import { useMemo } from 'react';
 
 export type DisplayValueProps = TextProps & {

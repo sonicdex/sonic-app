@@ -1,4 +1,4 @@
-import { Token } from '@psychedelic/sonic-js';
+import { Token } from '@memecake/sonic-js';
 
 export type AppTokenMetadata = Token.Metadata & {
   logo: string;

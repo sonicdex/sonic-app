@@ -11,7 +11,7 @@ import {
   Text,
   useColorModeValue,
 } from '@chakra-ui/react';
-import { Liquidity, Pair } from '@psychedelic/sonic-js';
+import { Liquidity, Pair } from '@memecake/sonic-js';
 import { FaInfoCircle } from '@react-icons/all-files/fa/FaInfoCircle';
 import { useMemo } from 'react';
 

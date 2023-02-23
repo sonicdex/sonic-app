@@ -1,5 +1,5 @@
 import { Bytes } from '@ethersproject/bytes';
-import { Pair, toBigNumber } from '@psychedelic/sonic-js';
+import { Pair, toBigNumber } from '@memecake/sonic-js';
 import BigNumber from 'bignumber.js';
 import { ethers } from 'ethers';
 import { formatUnits, parseUnits } from 'ethers/lib/utils';

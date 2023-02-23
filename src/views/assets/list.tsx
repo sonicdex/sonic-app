@@ -7,7 +7,7 @@ import {
   Text,
   useColorModeValue,
 } from '@chakra-ui/react';
-import { toBigNumber } from '@psychedelic/sonic-js';
+import { toBigNumber } from '@memecake/sonic-js';
 import { FaInfoCircle } from '@react-icons/all-files/fa/FaInfoCircle';
 import { FaMinus } from '@react-icons/all-files/fa/FaMinus';
 import { FaPlus } from '@react-icons/all-files/fa/FaPlus';

@@ -1,5 +1,5 @@
 import { Principal } from '@dfinity/principal';
-import { Transaction } from '@psychedelic/plug-inpage-provider/dist/src/Provider/interfaces';
+import { Transaction } from '@memecake/plug-inpage-provider/dist/src/Provider/interfaces';
 import { useMemo } from 'react';
 
 import { ENV } from '@/config';

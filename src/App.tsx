@@ -1,4 +1,4 @@
-import { ActorAdapter, Default } from '@psychedelic/sonic-js';
+import { ActorAdapter, Default } from '@memecake/sonic-js';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 
 import { NotificationManager } from '@/notifications';

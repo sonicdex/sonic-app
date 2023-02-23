@@ -16,7 +16,7 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react';
 import { createContext } from '@chakra-ui/react-utils';
-import { Price } from '@psychedelic/sonic-js';
+import { Price } from '@memecake/sonic-js';
 import { FaChevronDown } from '@react-icons/all-files/fa/FaChevronDown';
 import React, { useCallback, useMemo } from 'react';
 

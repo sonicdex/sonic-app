@@ -26,7 +26,7 @@ import {
   Tooltip,
   useColorModeValue,
 } from '@chakra-ui/react';
-import { Liquidity } from '@psychedelic/sonic-js';
+import { Liquidity } from '@memecake/sonic-js';
 import { FaArrowDown } from '@react-icons/all-files/fa/FaArrowDown';
 import { useMemo } from 'react';
 

@@ -1,7 +1,7 @@
 import type {
   Transaction,
   TransactionPrevResponse,
-} from '@psychedelic/plug-inpage-provider/dist/src/Provider/interfaces';
+} from '@memecake/plug-inpage-provider/dist/src/Provider/interfaces';
 
 import { CreateTransaction } from '.';
 

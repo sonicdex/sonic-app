@@ -1,5 +1,5 @@
-import { TransactionPrevResponse } from '@psychedelic/plug-inpage-provider/dist/src/Provider/interfaces';
-import { toBigNumber } from '@psychedelic/sonic-js';
+import { TransactionPrevResponse } from '@memecake/plug-inpage-provider/dist/src/Provider/interfaces';
+import { toBigNumber } from '@memecake/sonic-js';
 
 import { MintTokenSymbol } from '@/store';
 import {
