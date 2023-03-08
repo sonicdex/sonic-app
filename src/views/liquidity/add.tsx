@@ -43,6 +43,7 @@ import {
   TokenDetailsButton,
   TokenDetailsLogo,
   TokenDetailsSymbol,
+  TokenDataMetaInfo,
   TokenInput,
   ViewHeader,
 } from '@/components';
@@ -426,6 +427,10 @@ export const LiquidityAddView = () => {
                 onMaxClick={() => handleTokenMaxClick('token0')}
               />
               <TokenDataPrice isUpdating={isPriceUpdating} />
+              <TokenDataMetaInfo 
+                  tokenSymbol={token0.metadata?token0.metadata.symbol:''}
+                  tokenValue={token0.value}></TokenDataMetaInfo>
+
             </TokenData>
           </Token>
         </Box>

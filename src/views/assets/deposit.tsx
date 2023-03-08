@@ -13,6 +13,7 @@ import {
   TokenDetailsButton,
   TokenDetailsLogo,
   TokenDetailsSymbol,
+  TokenDataMetaInfo,
   TokenInput,
   ViewHeader,
 } from '@/components';
@@ -191,6 +192,9 @@ export const AssetsDepositView = () => {
         </Token>
       </Box>
       <FeeBox token={selectedTokenMetadata} isDeposit />
+      <TokenDataMetaInfo 
+                tokenSymbol={selectedTokenMetadata?selectedTokenMetadata.symbol:''}
+                tokenValue={selectedTokenMetadata?.price}></TokenDataMetaInfo>
       <Button
         isFullWidth
         size="lg"
