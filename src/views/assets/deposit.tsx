@@ -189,12 +189,13 @@ export const AssetsDepositView = () => {
             <TokenDataBalances onMaxClick={handleMaxClick} />
             <TokenDataPrice />
           </TokenData>
+          <TokenDataMetaInfo 
+                tokenSymbol={selectedTokenMetadata?selectedTokenMetadata.symbol:''}
+                tokenValue={amount}></TokenDataMetaInfo>
         </Token>
       </Box>
       <FeeBox token={selectedTokenMetadata} isDeposit />
-      <TokenDataMetaInfo 
-                tokenSymbol={selectedTokenMetadata?selectedTokenMetadata.symbol:''}
-                tokenValue={selectedTokenMetadata?.price}></TokenDataMetaInfo>
+      
       <Button
         isFullWidth
         size="lg"

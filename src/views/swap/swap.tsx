@@ -149,10 +149,10 @@ export const SwapView = () => {
                 onMaxClick={() => onMaxClick('from')}
               />
               <TokenDataPrice isUpdating={isPriceUpdating} />
-              <TokenDataMetaInfo 
+            </TokenData>
+            <TokenDataMetaInfo 
                 tokenSymbol={from.metadata?from.metadata.symbol:''}
                 tokenValue={from.value}></TokenDataMetaInfo>
-            </TokenData>
           </Token>
         </Box>
 

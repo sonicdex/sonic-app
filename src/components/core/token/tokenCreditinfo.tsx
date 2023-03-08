@@ -1,4 +1,4 @@
-import { Flex } from '@chakra-ui/react';
+import { Flex,Text  } from '@chakra-ui/react';
 
 export type TokenMetaProps = {
     tokenSymbol?: string;
@@ -12,14 +12,18 @@ export const TokenDataMetaInfo: React.FC<TokenMetaProps> = ({
 
     let isPrice = (): number => {
         var temp: number = tokenValue ? parseFloat(tokenValue) : 0;
-        temp = temp * (89/100);
+        temp = parseFloat((temp * (89/100)).toFixed(3));
         return temp;
     };
     let calcPrice: number = isPrice()
     return (
-        <Flex mt={2} className="sdsd">
+        <Flex mt={2} className="">
             {calcPrice&&tokenSymbol=='YC' ? (
-                <p>credited after 11% <a style={{ color: 'blue' }} href="https://blog.cigdao.com/cigdao-decentralization-sale-6856ad618f8c">YC tax</a>: {calcPrice}</p>
+                <Text color="var(--chakra-colors-gray-200)" >
+                    Credited after 11% 
+                    <a style={{ color: 'var(--chakra-colors-blue-300)' }} target="_blank" 
+                    href="https://blog.cigdao.com/cigdao-decentralization-sale-6856ad618f8c"> YC tax </a> : {calcPrice}
+                </Text>
             ) : (
                 ''
             )}

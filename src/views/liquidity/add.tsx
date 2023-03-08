@@ -427,11 +427,10 @@ export const LiquidityAddView = () => {
                 onMaxClick={() => handleTokenMaxClick('token0')}
               />
               <TokenDataPrice isUpdating={isPriceUpdating} />
-              <TokenDataMetaInfo 
+            </TokenData>
+            <TokenDataMetaInfo 
                   tokenSymbol={token0.metadata?token0.metadata.symbol:''}
                   tokenValue={token0.value}></TokenDataMetaInfo>
-
-            </TokenData>
           </Token>
         </Box>
 
@@ -484,6 +483,9 @@ export const LiquidityAddView = () => {
               />
               <TokenDataPrice isUpdating={isPriceUpdating} />
             </TokenData>
+            <TokenDataMetaInfo 
+                  tokenSymbol={token1.metadata?token1.metadata.symbol:''}
+                  tokenValue={token1.value}></TokenDataMetaInfo>
           </Token>
         </Box>
         {token0.metadata && token1.metadata && (
