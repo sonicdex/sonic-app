@@ -65,7 +65,7 @@ module.exports = (env) => {
         CYCLES_MINTING_CANISTER_ID: 'rkp4c-7iaaa-aaaaa-aaaca-cai',
         ROSETTA_BASE_API: 'https://rosetta-api.internetcomputer.org/',
         IS_DARK_MODE_ENABLED: 'false',
-        ANALYTICS_HOST: 'https://165.22.249.225:8080/graphql',
+        ANALYTICS_HOST: 'https://api.sonic.ooo/graphql',
         ANALYTICS_APP_URL: 'https://data.sonic.ooo',
         HIDDEN_TOKENS: '',
       }),

@@ -401,6 +401,7 @@ export const LiquidityAddView = () => {
         </Menu>
       </ViewHeader>
       <Flex direction="column" alignItems="center">
+  
         <Box width="100%">
           <Token
             value={token0.value}

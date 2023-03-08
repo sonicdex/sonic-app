@@ -31,6 +31,7 @@ import {
   TokenData,
   TokenDataBalances,
   TokenDataPrice,
+  TokenDataMetaInfo,
   TokenDetailsButton,
   TokenDetailsLogo,
   TokenDetailsSymbol,
@@ -149,10 +150,14 @@ export const SwapView = () => {
               />
               <TokenDataPrice isUpdating={isPriceUpdating} />
             </TokenData>
+            <TokenDataMetaInfo 
+            tokenSymbol={from.metadata?from.metadata.symbol:''}
+            tokenValue={from.value}></TokenDataMetaInfo>
           </Token>
         </Box>
 
         <Flex direction="column-reverse" w="full">
+          
           <Box width="full">
             <Token
               value={to.value}
