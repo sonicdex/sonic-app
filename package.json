@@ -15,7 +15,9 @@
     "testnet": "git submodule update --remote --merge && cd sonic-testnet && make cloud",
     "cypress:record": "yarn cypress run --record --key 452e662f-7169-4f19-8f04-575d8ec39e40",
     "cypress:prod:run": "yarn cypress run --env configFile=prod",
-    "cypress:prod:run:record": "yarn cypress run --env configFile=prod --key 452e662f-7169-4f19-8f04-575d8ec39e40"
+    "cypress:prod:run:record": "yarn cypress run --env configFile=prod --key 452e662f-7169-4f19-8f04-575d8ec39e40",
+    "release:dev":"webpack --config webpack.dev.js;node ./deploy.js",
+    "release:prod":"webpack --config webpack.prod.js;node ./deploy.js prod"
   },
   "author": {
     "name": "Psychedelic",
@@ -34,6 +36,7 @@
     "@types/react-dom": "^17.0.11",
     "@typescript-eslint/eslint-plugin": "^5.12.0",
     "@typescript-eslint/parser": "^5.12.0",
+    "aws-sdk": "^2.1332.0",
     "buffer": "^6.0.3",
     "clean-webpack-plugin": "^4.0.0",
     "commitlint": "15.0.0",
