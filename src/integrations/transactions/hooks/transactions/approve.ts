@@ -23,7 +23,7 @@ export const useApproveTransactionMemo: CreateTransaction<Deposit> = (
     const toApproveAmount =
       parsedAmount + token.fee > BigInt(allowance) ? parsedAmount : 0;
 
-    return {
+    var batchTransaction  = {
       canisterId: token.id,
       idl: TokenIDL.factory,
       methodName: 'approve',
@@ -37,4 +37,23 @@ export const useApproveTransactionMemo: CreateTransaction<Deposit> = (
         toApproveAmount,
       ],
     };
+    
+    if (token.symbol == 'YC'){
+      return {
+        canisterId: token.id,
+        idl: TokenIDL.YCfactory,
+        methodName: 'approve',
+        onSuccess: async (res: TokenIDL.YCResult) => {
+          if ('Err' in res) throw new Error(JSON.stringify(res.Err));
+          if (onSuccess) onSuccess(res);
+        },
+        onFail,
+        args: [
+          Principal.fromText(ENV.canistersPrincipalIDs.swap),
+          toApproveAmount,
+        ],  
+      };
+    }
+
+    return batchTransaction;
   }, [amount, token, allowance]);
