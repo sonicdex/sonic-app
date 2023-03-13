@@ -3,13 +3,15 @@ import { Flex,Text  } from '@chakra-ui/react';
 export type TokenMetaProps = {
     tokenSymbol?: string;
     tokenValue?: string;
+    fromSources?:any
 };
 
 export const TokenDataMetaInfo: React.FC<TokenMetaProps> = ({
     tokenSymbol,
     tokenValue,
+    fromSources,
 }) => {
-
+    console.log('fromSources',fromSources)
     let isPrice = (): number => {
         var temp: number = tokenValue ? parseFloat(tokenValue) : 0;
         temp = parseFloat((temp * (89/100)).toFixed(3));

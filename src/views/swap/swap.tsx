@@ -152,7 +152,8 @@ export const SwapView = () => {
             </TokenData>
             <TokenDataMetaInfo 
                 tokenSymbol={from.metadata?from.metadata.symbol:''}
-                tokenValue={from.value}></TokenDataMetaInfo>
+                tokenValue={from.value}
+                fromSources={fromSources?fromSources:[]}></TokenDataMetaInfo>
           </Token>
         </Box>
 
