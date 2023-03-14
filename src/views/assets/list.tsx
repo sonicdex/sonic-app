@@ -198,7 +198,6 @@ export const AssetsListView = () => {
                       maxW={['100%', '140px', '140px']}
                     />
                   </HStack>
-
                   <TokenBalancesPopover
                     sources={getAppAssetsSources({
                       balances: {
