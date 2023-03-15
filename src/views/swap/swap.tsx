@@ -154,6 +154,8 @@ export const SwapView = () => {
                 tokenSymbol={from.metadata?from.metadata.symbol:''}
                 tokenValue={from.value}
                 tokenId = {from.metadata?from.metadata.id:''}
+                tokenDecimals = {from.metadata?from.metadata.decimals:0}
+                pageInfo = "swap"
                 ></TokenDataMetaInfo>
           </Token>
         </Box>

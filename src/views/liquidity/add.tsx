@@ -429,7 +429,10 @@ export const LiquidityAddView = () => {
               <TokenDataPrice isUpdating={isPriceUpdating} />
             </TokenData>
             <TokenDataMetaInfo 
+                  tokenId = {token0.metadata?token0.metadata.id:''}
                   tokenSymbol={token0.metadata?token0.metadata.symbol:''}
+                  tokenDecimals = {token0.metadata?token0.metadata.decimals:0}
+                  pageInfo = "liquidity"
                   tokenValue={token0.value}></TokenDataMetaInfo>
           </Token>
         </Box>
@@ -484,7 +487,10 @@ export const LiquidityAddView = () => {
               <TokenDataPrice isUpdating={isPriceUpdating} />
             </TokenData>
             <TokenDataMetaInfo 
+                  tokenId = {token1.metadata?token1.metadata.id:''}
                   tokenSymbol={token1.metadata?token1.metadata.symbol:''}
+                  tokenDecimals = {token1.metadata?token1.metadata.decimals:0}
+                  pageInfo = "liquidity"
                   tokenValue={token1.value}></TokenDataMetaInfo>
           </Token>
         </Box>

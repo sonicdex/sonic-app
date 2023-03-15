@@ -17,7 +17,8 @@
     "cypress:prod:run": "yarn cypress run --env configFile=prod",
     "cypress:prod:run:record": "yarn cypress run --env configFile=prod --key 452e662f-7169-4f19-8f04-575d8ec39e40",
     "release:dev":"webpack --config webpack.dev.js;node ./deploy.js",
-    "release:prod":"webpack --config webpack.prod.js;node ./deploy.js prod"
+    "release:prod":"webpack --config webpack.prod.js;node ./deploy.js prod",
+    "release:preprod":"webpack --config webpack.prod.js;node ./deploy.js"
   },
   "author": {
     "name": "Psychedelic",
