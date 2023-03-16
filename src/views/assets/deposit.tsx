@@ -191,6 +191,7 @@ export const AssetsDepositView = () => {
           </TokenData>
           <TokenDataMetaInfo 
                 tokenSymbol={selectedTokenMetadata?selectedTokenMetadata.symbol:''}
+                pageInfo="deposit"
                 tokenValue={amount}></TokenDataMetaInfo>
         </Token>
       </Box>
