@@ -1,6 +1,5 @@
 import { Stack, Text } from '@chakra-ui/layout';
-import { useColorModeValue } from '@chakra-ui/react';
-
+import { useColorModeValue , Link} from '@chakra-ui/react';
 import { Logo } from '../logo';
 
 export const LogoBox = () => {
@@ -8,7 +7,8 @@ export const LogoBox = () => {
   const shadow = useColorModeValue('base', 'none');
 
   return (
-    <Stack
+    <Link href={'/'} style={{ textDecoration: "none" , boxShadow:'none'}}>
+      <Stack
       direction="row"
       align="center"
       bg={stackBg}
@@ -21,5 +21,6 @@ export const LogoBox = () => {
       <Logo w="5" h="7" />
       <Text fontWeight="bold">Sonic</Text>
     </Stack>
+    </Link>
   );
 };

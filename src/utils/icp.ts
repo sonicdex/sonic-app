@@ -47,7 +47,8 @@ export const fetchICPPrice = async () => {
     const response = await axios.get(ExternalLink.icpPrice);
 
     if (response.status === 200) {
-      return response.data.price;
+     // console.log(response.data)
+      return response.data['internet-computer']['usd'];
     } else {
       throw new Error(response.statusText);
     }

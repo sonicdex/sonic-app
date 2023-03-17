@@ -38,7 +38,7 @@ export class AnalyticsApi {
       variables: {},
     });
 
-    return response.user.positionMetrics;
+    return response?.user?.positionMetrics;
   }
 }
 

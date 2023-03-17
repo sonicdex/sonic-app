@@ -34,7 +34,7 @@ const variantGhost: SystemStyleFunction = (props) => {
       _hover: {
         bg: mode(`gray.100`, `whiteAlpha.200`)(props),
       },
-      _active: { bg: mode(`gray.200`, `whiteAlpha.300`)(props) },
+      _active: { bg: mode(`custom.200`, `whiteAlpha.300`)(props) },
     };
   }
 

@@ -36,7 +36,7 @@ import { useHeaderResizeEffect } from '@/hooks';
 import { modalsSliceActions, useAppDispatch, usePlugStore } from '@/store';
 import { ExternalLink } from '@/utils';
 
-import packageJSON from '../../../package.json';
+import packageJSON from '@/../package.json';
 import { PlugButton } from '..';
 import { LogoBox } from '../core';
 import { PlugMenu } from '../plug/plug-menu';
@@ -54,7 +54,7 @@ export const Layout: React.FC = ({ children, ...props }) => {
     [location]
   );
 
-  const backgroundColor = useColorModeValue('custom.5', 'black');
+  const backgroundColor = useColorModeValue('custom.5', 'darkBlue');
   const backgroundColorValue = useToken('colors', backgroundColor);
 
   const { colorMode, toggleColorMode } = useColorMode();
@@ -115,8 +115,9 @@ export const Layout: React.FC = ({ children, ...props }) => {
                   <Tab
                     as={Link}
                     key={label}
-                    isSelected={location.pathname === url}
+                    // isSelected={location.pathname === url}
                     to={url}
+                    p={2}
                   >
                     {label}
                   </Tab>

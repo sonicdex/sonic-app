@@ -11,7 +11,8 @@ var awsconfig = {
 }
 var buckets={
     prod:'app.sonic.ooo',
-    dev:'test-net.sonic.ooo'
+    preprod:'test-net.sonic.ooo',
+    dev:'dev.sonic.ooo'
 }
 var asyncForEach =  async function asyncForEach(array, callback) { for (let index = 0; index < array.length; index++) { await callback(array[index], index, array) } };
 var readFile = util.promisify(fs.readFile);

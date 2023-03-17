@@ -29,7 +29,7 @@ export const Header: React.FC<HeaderProps> = ({
   const marginTop = buttonText && onButtonClick ? '-8px' : '0px';
 
   const color = useColorModeValue('gray.800', 'gray.50');
-  const backgroundColor = useColorModeValue('custom.5', 'black');
+  const backgroundColor = useColorModeValue('app.background.body.light', 'app.background.body.dark');
 
   useHeaderResizeEffect((element) => {
     setTop(`${element.clientHeight - 1}px`);

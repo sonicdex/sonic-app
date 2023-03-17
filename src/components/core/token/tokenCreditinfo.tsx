@@ -1,7 +1,4 @@
 import { Flex,Text  } from '@chakra-ui/react';
-// import { getAppAssetsSources } from '@/config/utils';
-// import { useBalances } from '@/hooks/use-balances';
-
 import { useTokenTaxCheck } from '@/hooks'
 
 export type TokenMetaProps = {
@@ -20,38 +17,7 @@ export const TokenDataMetaInfo: React.FC<TokenMetaProps> = ({
     pageInfo,
 }) => {
     var info = useTokenTaxCheck({tokenId ,tokenSymbol, tokenDecimals, tokenValue});
-    console.log(info);
-    // const { sonicBalances, tokenBalances ,icpBalance } = useBalances();
-    // const tokenBalance={ wallet:0, sonic:0 }
-    // if(tokenId!='' && tokenId!='ICP' && sonicBalances && tokenBalances){
-    //     var id= tokenId?tokenId:'';
-    //     tokenBalance['wallet'] = tokenBalances[id]? tokenBalances[id]:0;
-    //     tokenBalance['sonic'] = sonicBalances[id]?sonicBalances[id]:0;
-    // }else{ tokenBalance['wallet'] = icpBalance?icpBalance:0;}
-   
-    // var value = tokenValue ? parseFloat(tokenValue) : 0;
-    // var taxedValue = 0;
-    // var nonTaxedValue = 0;
-    // if(pageInfo != "deposit") {
-    //     console.log(tokenBalance);
-    //     let decimals = tokenDecimals?(10**tokenDecimals):1
-    //     let sonicBalance = tokenBalance['sonic'] / decimals;
-    //     if((sonicBalance > value)){
-    //         nonTaxedValue = value;
-    //         taxedValue = 0;
-    //     } else {
-    //         nonTaxedValue = sonicBalance;
-    //         taxedValue = value - nonTaxedValue;
-    //     }    
-    // } else {
-    //     taxedValue = value;
-    //     nonTaxedValue = 0;
-    // }
     let isPrice = (): number => {
-        // console.log(nonTaxedValue, taxedValue);
-        // // var temp: number = tokenValue ? parseFloat(tokenValue) : 0;
-        // var netValue = nonTaxedValue + (taxedValue * (89/100));
-       // return 10.222;
         return parseFloat(info.taxInfo.netValue.toFixed(3));
     };
     let calcPrice: number = isPrice();
