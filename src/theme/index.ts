@@ -16,7 +16,8 @@ const appTheme = {
         fontSize: ['12px', '14px', '16px'],
       },
       body: {
-        bg: mode('custom.5', 'black')(props),
+        // bg: mode('custom.5', 'black')(props),
+        bg: mode('app.background.body.light', 'app.background.body.dark')(props),
       },
     }),
   },

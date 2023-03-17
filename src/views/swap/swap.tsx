@@ -81,7 +81,7 @@ export const SwapView = () => {
     onSwitchTokens,
   } = useSwapViewData();
 
-  const swapPlacementButtonBg = useColorModeValue('gray.50', 'gray.800');
+  const swapPlacementButtonBg = useColorModeValue('gray.50', 'custom.3');
   const menuListShadow = useColorModeValue('lg', 'none');
   const menuListBg = useColorModeValue('gray.50', 'custom.3');
   const linkColor = useColorModeValue('dark-blue.500', 'dark-blue.400');
