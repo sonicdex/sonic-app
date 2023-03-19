@@ -34,13 +34,14 @@ const uploadTos3 = async function(buildType = 'dev') {
             })
         })
         console.log('cleaned up bucket');
-        console.log('Upload Started...');
+        console.log('Upload Started...',);
         await asyncForEach(fileList, async function(item, index){
-           var fileContent =  await readFile(projectRoot+'/dist/'+item).catch(err=>{ console.log('error on read '+item)});
+           var fileContent =  await readFile(projectRoot+'/dist/'+item).catch(err=>{ console.log('error on read ('+index+')'+item)});
            if(fileContent){
             var mimeType = mime.lookup(projectRoot+'/dist/'+item);
             var params = { Bucket:buckets[buildType] , Key: item, Body: fileContent , ContentType:mimeType};
             var s = await s3.putObject(params).promise();
+            console.log( 'completed '+index+' of '+fileList.length );
            }
         })
         console.log('Upload complete...');
