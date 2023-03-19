@@ -53,6 +53,7 @@ export const swapCanisterSlice = createSlice({
       state,
       action: PayloadAction<AppTokenMetadata[]>
     ) => {
+      console.log('action.payload', action.payload)
       state.supportedTokenList = action.payload;
     },
     setSonicBalances: (

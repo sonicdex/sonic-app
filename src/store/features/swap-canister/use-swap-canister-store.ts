@@ -1,5 +1,8 @@
 import { selectSwapCanisterState } from '@/store';
 import { useAppSelector } from '@/store';
 
-export const useSwapCanisterStore = () =>
-  useAppSelector(selectSwapCanisterState);
+
+export const useSwapCanisterStore = () =>{
+  return useAppSelector(selectSwapCanisterState);
+}
+  

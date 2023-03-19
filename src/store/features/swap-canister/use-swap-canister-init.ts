@@ -56,6 +56,9 @@ export const useSwapCanisterInit = () => {
             const swapActor = await createAnonSwapActor();
             const response = await swapActor.getSupportedTokenList();
 
+            console.log('response', response);
+
+
             if (response) {
               dispatch(
                 swapCanisterActions.setSupportedTokenList(

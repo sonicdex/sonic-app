@@ -1,4 +1,6 @@
-import { ActorAdapter, SwapIDL } from '@memecake/sonic-js';
+import { ActorAdapter  } from '@memecake/sonic-js';
+
+import { SwapIDL } from "@/did"
 
 import { ENV } from '@/config';
 
