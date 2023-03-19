@@ -8,17 +8,8 @@ export const LogoBox = () => {
 
   return (
     <Link href={'/'} style={{ textDecoration: "none" , boxShadow:'none'}}>
-      <Stack
-      direction="row"
-      align="center"
-      bg={stackBg}
-      shadow={shadow}
-      px="5"
-      h="12"
-      borderRadius="full"
-      userSelect="none"
-    >
-      <Logo w="5" h="7" />
+      <Stack direction="row" align="center" bg={stackBg} shadow={shadow} px={6} h="12" borderRadius="full" userSelect="none">
+        <Logo w="5" h="7" />
       <Text fontWeight="bold">Sonic</Text>
     </Stack>
     </Link>
