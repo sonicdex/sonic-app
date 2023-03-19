@@ -74,7 +74,10 @@ export const useAddLiquidityTransactionMemo: CreateTransaction<AddLiquidity> = (
         tokenValue:token0.value?token0.value:''
       });
       console.log("Add Liquidity YC Matched", info);
-      token0Value = info.taxInfo.netValue.toFixed(3);
+      token0Value = info.taxInfo.netValue.toString();
+      var _temp = token0Value.split(".");
+      token0Value = _temp[0] + '.' + _temp[1].substring(0,3);
+
     }
 
     if(token1.metadata?.symbol == 'YC') {
@@ -84,7 +87,10 @@ export const useAddLiquidityTransactionMemo: CreateTransaction<AddLiquidity> = (
         tokenValue:token1.value?token1.value:''
       });
       console.log("Add Liquidity YC Matched", info);
-      token1Value = info.taxInfo.netValue.toFixed(3);
+      token1Value = info.taxInfo.netValue.toString();
+      var _temp = token1Value.split(".");
+      token1Value = _temp[0] + '.' + _temp[1].substring(0,3);
+
     }  
 
     const amount0Desired = parseAmount(token0Value, token0.metadata.decimals);
