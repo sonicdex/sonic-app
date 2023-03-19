@@ -45,10 +45,8 @@ export const fetchICP2XDRConversionRate = async () => {
 export const fetchICPPrice = async () => {
   try {
     const response = await axios.get(ExternalLink.icpPrice);
-
     if (response.status === 200) {
-     // console.log(response.data)
-      return response.data['internet-computer']['usd'];
+      return response.data.price // ['internet-computer']['usd'];
     } else {
       throw new Error(response.statusText);
     }

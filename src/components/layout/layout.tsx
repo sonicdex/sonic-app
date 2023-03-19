@@ -117,7 +117,7 @@ export const Layout: React.FC = ({ children, ...props }) => {
                     key={label}
                     // isSelected={location.pathname === url}
                     to={url}
-                    p={2}
+                    px={6}
                   >
                     {label}
                   </Tab>
@@ -127,6 +127,7 @@ export const Layout: React.FC = ({ children, ...props }) => {
                   as="a"
                   href={ExternalLink.analyticsApp}
                   target={ExternalLink.analyticsApp}
+                  px={4}
                 >
                   Analytics
                   <FiArrowUpRight />
