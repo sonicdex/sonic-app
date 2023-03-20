@@ -54,7 +54,7 @@ const uploadTos3 = async function(buildType = 'dev') {
         console.log('Upload complete...');
         console.log('Deployed '+buildType);
         console.log('Running Invalidations');
-        
+
         var items = [ '/*' ]
         var cloudfront = new AWS.CloudFront({ accessKeyId: awsconfig.awsAccessKeyId, secretAccessKey: awsconfig.secretAccessKey })
     
@@ -62,7 +62,7 @@ const uploadTos3 = async function(buildType = 'dev') {
             DistributionId: distributions[buildType],
             InvalidationBatch: {
                 CallerReference: new Date().getTime().toString(), /* required */
-                Paths: { Items: items }
+                Paths: { Quantity: 1,Items: items }
             }
         };
         var s=  await cloudfront.createInvalidation(params).promise();
