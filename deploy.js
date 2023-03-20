@@ -16,7 +16,7 @@ var buckets={
 }
 var asyncForEach =  async function asyncForEach(array, callback) { for (let index = 0; index < array.length; index++) { await callback(array[index], index, array) } };
 var readFile = util.promisify(fs.readFile);
-
+var deleteFile= async function(f){ return new Promise((resolve,reject)=>{ fs.unlink(f,function(err){ if(err) resolve(false); resolve(true) })})}
 const uploadTos3 = async function(buildType = 'dev') {
     if(!buildType) return 0;
     var s3 = new AWS.S3({ accessKeyId: awsconfig.awsAccessKeyId, secretAccessKey: awsconfig.secretAccessKey });
@@ -57,4 +57,9 @@ var getDirectyFiles =async function (src) {
         });
     })
 };
+
+
+
+
+
 uploadTos3(process.argv[2]);

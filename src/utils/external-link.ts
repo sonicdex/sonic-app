@@ -21,7 +21,7 @@ export abstract class ExternalLink {
 
   static readonly analyticsApp = ENV.URLs.analyticsApp;
 
-  static readonly icpPrice = "https://api.binance.com/api/v3/avgPrice?symbol=ICPUSDT" //`https://api.binance.com/api/v3/avgPrice?symbol=ICPUSDT`; https://api.coingecko.com/api/v3/simple/price?ids=internet-computer&vs_currencies=usd&precision=4
+  static readonly icpPrice = "https://datapool.memecake.io/ticker/icpusdt" 
 
   static ledgerTransaction(transaction: string): ExternalLink.URL {
     return `${ENV.URLs.ledgerTransactions}/${transaction}`;
