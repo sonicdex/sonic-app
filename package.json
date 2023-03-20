@@ -6,6 +6,7 @@
   "private": true,
   "scripts": {
     "dev": "cp ./.env-dev .env;webpack-cli serve --open --config webpack.dev.js",
+    "devicrc": "cp ./.env-icrc .env;webpack-cli serve --open --config webpack.dev.js",
     "build": "cp ./.env-prod .env;webpack --config webpack.prod.js",
     "build:dev": "webpack --config webpack.dev.js",
     "format": "prettier --write ./src",
