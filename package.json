@@ -1,12 +1,12 @@
 {
   "name": "sonic-app",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "description": "Sonic application built with React and Typescript.",
   "main": "dist/index.js",
   "private": true,
   "scripts": {
-    "dev": "webpack-cli serve --open --config webpack.dev.js",
-    "build": "webpack --config webpack.prod.js",
+    "dev": "cp ./.env-dev .env;webpack-cli serve --open --config webpack.dev.js",
+    "build": "cp ./.env-prod .env;webpack --config webpack.prod.js",
     "build:dev": "webpack --config webpack.dev.js",
     "format": "prettier --write ./src",
     "test": "jest --watch",
@@ -17,8 +17,8 @@
     "cypress:prod:run": "yarn cypress run --env configFile=prod",
     "cypress:prod:run:record": "yarn cypress run --env configFile=prod --key 452e662f-7169-4f19-8f04-575d8ec39e40",
     "release:dev":"webpack --config webpack.dev.js;node ./deploy.js dev;",
-    "release:prod":"webpack --config webpack.prod.js;node ./deploy.js prod;",
-    "release:preprod":"webpack --config webpack.prod.js;node ./deploy.js preprod;"
+    "release:prod":"cp ./.env-prod .env;webpack --config webpack.prod.js;node ./deploy.js prod;",
+    "release:preprod":"cp ./.env-testnet .env;webpack --config webpack.prod.js;node ./deploy.js preprod;"
   },
   "author": {
     "name": "Psychedelic",
