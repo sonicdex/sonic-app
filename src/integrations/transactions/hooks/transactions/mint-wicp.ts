@@ -12,16 +12,15 @@ export const getMintWICPTransaction: CreateTransaction<MintWICP> = (
 
   return {
     canisterId: ENV.canistersPrincipalIDs.WICP,
-    idl: TokenIDL.factory,
+    idl: TokenIDL.DIP20.factory,
     methodName: 'mint',
-    onSuccess: async (res: TokenIDL.Result) => {
+    onSuccess: async (res: TokenIDL.DIP20.Result) => {
       if ('Err' in res) throw new Error(JSON.stringify(Object.keys(res.Err)));
       if (onSuccess) onSuccess(res);
     },
     onFail,
     args: (prevResponses: any[]) => {
       const argBlockHeight = prevResponses?.[0]?.response;
-
       return [
         subaccount,
         (blockHeight && BigInt(blockHeight)) ?? argBlockHeight,

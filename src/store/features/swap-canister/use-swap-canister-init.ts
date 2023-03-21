@@ -52,13 +52,8 @@ export const useSwapCanisterInit = () => {
                 isRefreshing ? FeatureState.Updating : FeatureState.Loading
               )
             );
-
             const swapActor = await createAnonSwapActor();
             const response = await swapActor.getSupportedTokenList();
-
-            console.log('response', response);
-
-
             if (response) {
               dispatch(
                 swapCanisterActions.setSupportedTokenList(

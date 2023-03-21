@@ -18,9 +18,9 @@ export const useWithdrawWICPTransactionMemo: CreateTransaction<WithdrawWICP> = (
 
     return {
       canisterId: ENV.canistersPrincipalIDs.WICP,
-      idl: TokenIDL.factory,
+      idl: TokenIDL.DIP20.factory,
       methodName: 'withdraw',
-      onSuccess: async (res: TokenIDL.Result) => {
+      onSuccess: async (res: TokenIDL.DIP20.Result) => {
         if ('Err' in res) throw new Error(JSON.stringify(Object.keys(res.Err)));
         if (onSuccess) onSuccess(res);
       },
