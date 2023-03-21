@@ -6,7 +6,7 @@ import { AppLog } from '@/utils';
 
 export const useTokenLogosFetcherInit = (): void => {
   const { supportedTokenList } = useSwapCanisterStore();
-  console.log('supportedTokenList',supportedTokenList)
+ // console.log('supportedTokenList',supportedTokenList)
   useEffect(() => {
     if (!supportedTokenList) return;
     Promise.all(

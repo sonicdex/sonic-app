@@ -102,6 +102,9 @@ export const useSwapViewData = () => {
       targetId: ENV.canistersPrincipalIDs.XTC,
     });
 
+    // console.log('from.metadata?.id', from.metadata);
+
+
   const fromBalance = useTokenBalanceMemo(from.metadata?.id);
   const toBalance = useTokenBalanceMemo(to.metadata?.id);
 
