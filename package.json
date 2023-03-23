@@ -17,9 +17,9 @@
     "cypress:record": "yarn cypress run --record --key 452e662f-7169-4f19-8f04-575d8ec39e40",
     "cypress:prod:run": "yarn cypress run --env configFile=prod",
     "cypress:prod:run:record": "yarn cypress run --env configFile=prod --key 452e662f-7169-4f19-8f04-575d8ec39e40",
-    "release:dev":"webpack --config webpack.dev.js;node ./deploy.js dev;",
-    "release:prod":"cp ./.env-prod .env;webpack --config webpack.prod.js;node ./deploy.js prod;",
-    "release:preprod":"cp ./.env-testnet .env;webpack --config webpack.prod.js;node ./deploy.js preprod;"
+    "release:dev": "webpack --config webpack.dev.js;node ./deploy.js dev;",
+    "release:prod": "cp ./.env-prod .env;webpack --config webpack.prod.js;node ./deploy.js prod;",
+    "release:preprod": "cp ./.env-testnet .env;webpack --config webpack.prod.js;node ./deploy.js preprod;"
   },
   "author": {
     "name": "Psychedelic",
@@ -55,6 +55,7 @@
     "eslint-plugin-testing-library": "^5.0.5",
     "html-webpack-plugin": "^5.5.0",
     "husky": "^7.0.4",
+    "ic-stoic-identity": "^2.0.0",
     "inline-chunk-html-plugin": "^1.1.1",
     "jest": "^27.5.1",
     "lint-staged": "12.3.4",
@@ -82,6 +83,7 @@
     "@memecake/sonic-js": "^0.4.0",
     "@react-icons/all-files": "^4.1.0",
     "@reduxjs/toolkit": "^1.7.2",
+    "artemis-web3-adapter": "^0.1.7",
     "axios": "^0.26.0",
     "bignumber.js": "^9.0.2",
     "buffer-crc32": "^0.2.13",
