@@ -2,8 +2,9 @@ import { Principal } from '@dfinity/principal';
 import { useCallback, useMemo } from 'react';
 
 import { ICP_METADATA } from '@/constants';
-import { createAnonTokenActor } from '@/integrations/actor';
+
 import { createAnonSwapActor } from '@/integrations/actor/create-swap-actor';
+
 import { Balances } from '@/models';
 import { 
   FeatureState,swapCanisterActions, useAppDispatch,
@@ -16,9 +17,11 @@ import { parseResponseUserLPBalances } from '@/utils/canister';
 import { parseAmount } from '@/utils/format';
 import { fetchICPBalance } from '@/utils/icp';
 
+import { getswapActor , getTokenBalance } from '@/utils'
+
 export const useBalances = () => {
   const { principalId } = usePlugStore();
-  const { sonicBalances, icpBalance, tokenBalances, balancesState, userLPBalancesState ,supportedTokenList} = useSwapCanisterStore();
+  const { sonicBalances, icpBalance, tokenBalances, balancesState, userLPBalancesState} = useSwapCanisterStore();
 
   const dispatch = useAppDispatch();
 
@@ -71,26 +74,17 @@ export const useBalances = () => {
       try {
         if (balancesState === FeatureState.Loading ) return;
         if (!principalId) return;
-        dispatch(
-          swapCanisterActions.setBalancesState(
-            isRefreshing ? FeatureState.Updating : FeatureState.Loading
-          )
-        );
-        const swapActor = await createAnonSwapActor();
+        dispatch(swapCanisterActions.setBalancesState(isRefreshing ? FeatureState.Updating : FeatureState.Loading));
+    
+        const swapActor:any = await getswapActor(true);
         const sonicBalances = await swapActor.getUserBalances(Principal.fromText(principalId));
+
         const tokenBalances = sonicBalances? await Promise.all(
-            sonicBalances.map(async (balance) => {
+            sonicBalances.map(async (balance:any) => {
               const tokenCanisterId = balance[0];
               try {
-                var tokenInfo = supportedTokenList?.find(x=>x.id==tokenCanisterId);
-                const tokenActor = await createAnonTokenActor(tokenCanisterId, tokenInfo?.tokenType);
-
                 var tokenBalance = BigInt(0);
-                if(tokenInfo?.tokenType == 'DIP20' || tokenInfo?.tokenType == 'YC' ){
-                  tokenBalance = await tokenActor.balanceOf(Principal.fromText(principalId));
-                }else if( tokenInfo?.tokenType == 'ICRC1'  ){
-                  tokenBalance = await tokenActor.icrc1_balance_of({ owner: Principal.fromText(principalId) , subaccount:[]});
-                }
+                var tokenBalance = await getTokenBalance(tokenCanisterId);
                 const result: [string, bigint] = [balance[0], tokenBalance];
                 return result;
               } catch (error) {
@@ -99,16 +93,10 @@ export const useBalances = () => {
                 return errorResult;
               }
             })
-          )
-          : undefined;
-
+          ): undefined;
         const icpBalance = await fetchICPBalance(principalId);
 
-        dispatch(
-          swapCanisterActions.setICPBalance(
-            parseAmount(icpBalance, ICP_METADATA.decimals)
-          )
-        );
+        dispatch(swapCanisterActions.setICPBalance(parseAmount(icpBalance, ICP_METADATA.decimals)));
         dispatch(swapCanisterActions.setSonicBalances(sonicBalances));
         dispatch(swapCanisterActions.setTokenBalances(tokenBalances));
         dispatch(swapCanisterActions.setBalancesState(FeatureState.Idle));
