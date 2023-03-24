@@ -3,11 +3,11 @@ import { getFromStorage, saveToStorage } from '@/utils';
 import { AppLog , getTokenLogo , tokenList} from '@/utils';
 
 export const useTokenLogosFetcherInit = (): void => {
-  const supportedTokenList = tokenList();
+  const supportedTokenList = tokenList('array');
   useEffect(() => {
     if (!supportedTokenList) return;
     Promise.all(
-      supportedTokenList.map(async (token) => {
+      supportedTokenList.map(async (token:{id:string}) => {
         const storageKey = `${token.id}-logo`;
         const logo = getFromStorage(storageKey);
         if (!logo) {

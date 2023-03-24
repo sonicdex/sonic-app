@@ -4,59 +4,42 @@ import { useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router';
 
 import { plugCircleSrc } from '@/assets';
-import {
-  Token,
-  TokenContent,
-  TokenData,
-  TokenDataBalances,
-  TokenDataPrice,
-  TokenDetailsButton,
-  TokenDetailsLogo,
-  TokenDetailsSymbol,
-  TokenDataMetaInfo,
-  TokenInput,
-  ViewHeader,
+import { 
+  Token, TokenContent, TokenData, TokenDataBalances,TokenDataPrice,TokenDetailsButton,
+  TokenDetailsLogo,TokenDetailsSymbol,TokenDataMetaInfo,TokenInput,ViewHeader,
 } from '@/components';
+
 import { FeeBox } from '@/components/core/fee-box';
+
 import { useQuery } from '@/hooks/use-query';
+
 import { useTokenAllowance } from '@/hooks/use-token-allowance';
 import {
-  depositViewActions,
-  FeatureState,
-  NotificationType,
-  useAppDispatch,
-  useDepositViewStore,
-  useNotificationStore,
-  useSwapCanisterStore,
-  useTokenModalOpener,
+  depositViewActions, FeatureState, NotificationType, useAppDispatch, useDepositViewStore,
+  useNotificationStore, useSwapCanisterStore, useTokenModalOpener,
 } from '@/store';
+
 import { getMaxValue } from '@/utils/format';
 import { debounce } from '@/utils/function';
 
+import {tokenList } from '@/utils';
+
 export const AssetsDepositView = () => {
   const query = useQuery();
-
-  const {
-    supportedTokenList,
-    tokenBalances,
-    balancesState,
-    supportedTokenListState,
-  } = useSwapCanisterStore();
+  const { supportedTokenList, tokenBalances, balancesState, supportedTokenListState } = useSwapCanisterStore();
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+
   const { amount, tokenId } = useDepositViewStore();
+
   const { addNotification } = useNotificationStore();
   const openSelectTokenModal = useTokenModalOpener();
 
-  const selectedTokenMetadata = useMemo(() => {
-    if (tokenId && supportedTokenList) {
-      return supportedTokenList.find(({ id }) => id === tokenId);
-    }
-    return undefined;
-  }, [supportedTokenList, tokenId]);
+  const selectedTokenMetadata =  tokenList('obj')[tokenId?tokenId:''];
 
-  const allowance = useTokenAllowance(selectedTokenMetadata?.id);
+  const allowance = useTokenAllowance(selectedTokenMetadata?.id)
+  
 
   const handleSelectTokenId = (tokenId?: string) => {
     if (tokenId) {
@@ -91,6 +74,7 @@ export const AssetsDepositView = () => {
   };
 
   const [buttonDisabled, buttonMessage] = useMemo<[boolean, string]>(() => {
+
     if (!selectedTokenMetadata?.id) return [true, 'Select a Token'];
 
     if (typeof allowance !== 'number') return [true, 'Getting allowance...'];

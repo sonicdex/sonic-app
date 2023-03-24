@@ -1,11 +1,7 @@
 import { useEffect } from 'react';
 
-import {
-  allowanceActions,
-  useAllowanceStore,
-  useAppDispatch,
-  usePlugStore,
-} from '@/store';
+import { allowanceActions, useAllowanceStore, useAppDispatch, usePlugStore } from '@/store';
+
 import { validPrincipalId } from '@/utils';
 
 export const useTokenAllowance = (tokenId = ''): number | undefined => {
