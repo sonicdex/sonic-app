@@ -14,6 +14,7 @@ export class BatchTransactions implements Batch.Controller {
   private batchTransactionResolver?: (value: unknown) => void;
   private batchTransactionRejector?: (value: unknown) => void;
 
+  
   constructor(
     private provider?: Provider,
     private handleRetry?: (

@@ -53,6 +53,7 @@ export type SwapModalData = {
 export enum DepositModalDataStep {
   Approve = 'approve',
   Deposit = 'deposit',
+
 }
 export type DepositModalData = {
   step?: DepositModalDataStep | Batch.DefaultHookState;

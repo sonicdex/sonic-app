@@ -2,11 +2,8 @@ import { TransactionPrevResponse } from '@memecake/plug-inpage-provider/dist/src
 import { toBigNumber } from '@memecake/sonic-js';
 
 import { MintTokenSymbol } from '@/store';
-import {
-  getFromStorage,
-  LocalStorageKey,
-  MintUncompleteBlockHeights,
-  saveToStorage,
+import {  
+  getFromStorage, LocalStorageKey,  MintUncompleteBlockHeights, saveToStorage,
 } from '@/utils';
 
 export const getAmountDependsOnBalance = (
@@ -15,9 +12,8 @@ export const getAmountDependsOnBalance = (
   fromValue: string
 ): string => {
   const parsedFromValue = parseFloat(fromValue);
-  const parsedTokenBalance = toBigNumber(tokenBalance)
-    .applyDecimals(tokenDecimals)
-    .toNumber();
+  const parsedTokenBalance = toBigNumber(tokenBalance).applyDecimals(tokenDecimals).toNumber();
+
   return (parsedFromValue - parsedTokenBalance).toString();
 };
 
@@ -28,28 +24,19 @@ type GetDepositTransactionsOptions = {
 };
 
 export const getDepositTransactions = ({
-  approveTx,
-  depositTx,
-  txNames = ['approve', 'deposit'],
-}: GetDepositTransactionsOptions) => {
-  const requiredAllowance = Number(approveTx.args[1]);
+  approveTx, depositTx, txNames = ['approve', 'deposit'] }: GetDepositTransactionsOptions) => {
+
+  const requiredAllowance = Number(approveTx?.args[1]);
   const requiredBalance = Number(depositTx.args[1]);
 
   let transactions = {};
 
   if (requiredBalance > 0) {
     if (requiredAllowance > 0) {
-      transactions = {
-        ...transactions,
-        [txNames[0]]: approveTx,
-      };
+      transactions = { ...transactions, [txNames[0]]: approveTx };
     }
-    transactions = {
-      ...transactions,
-      [txNames[1]]: depositTx,
-    };
+    transactions = { ...transactions, [txNames[1]]: depositTx };
   }
-
   return transactions;
 };
 

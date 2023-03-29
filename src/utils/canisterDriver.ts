@@ -21,8 +21,9 @@ export const loadsupportedTokenList = async () => {
   if (plugStat.isConnected) { await artemis.connect('plug'); }
 }
 
-export const tokenList = (returnType: 'array' | 'obj'): AppTokenMetadata[] | any => {
-  return returnType == 'array' ? supportedTokenList : tokenListObj
+export const tokenList = (returnType: 'array' | 'obj' , tokenId?:string): AppTokenMetadata[] | any => {
+  return (returnType == 'array' && !tokenId) ? supportedTokenList :
+    (!tokenId)? tokenListObj:tokenListObj[tokenId];
 };
 
 export const getTokenActor = async (canisterId: string, isAnnon: boolean): Promise<any> => {
@@ -68,8 +69,9 @@ export const getTokenBalance = async (canisterId: string): Promise<bigint> => {
   }
   return tokenBalance
 }
+
 export const getTokenAllowance = async (canisterId: string): Promise<bigint> => {
-  
+
   var allowance = BigInt(0);
   var tokenInfo = tokenListObj?.[canisterId];
   if (!tokenInfo || !artemis.principalId) return allowance;
@@ -81,3 +83,11 @@ export const getTokenAllowance = async (canisterId: string): Promise<bigint> => 
 
   return allowance;
 }
+
+export const initTransaction = async(tokenId:string, tranxType:string='approve'):Promise<any>=>{
+  var tokenInfo = tokenListObj?.[tokenId];
+  if (!tokenInfo) return false;
+
+  tranxType;
+}
+

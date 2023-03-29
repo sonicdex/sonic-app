@@ -40,7 +40,6 @@ export const AssetsDepositView = () => {
 
   const allowance = useTokenAllowance(selectedTokenMetadata?.id)
   
-
   const handleSelectTokenId = (tokenId?: string) => {
     if (tokenId) {
       dispatch(depositViewActions.setTokenId(tokenId));
@@ -48,11 +47,7 @@ export const AssetsDepositView = () => {
   };
 
   const handleOpenSelectTokenModal = () => {
-    openSelectTokenModal({
-      metadata: supportedTokenList,
-      onSelect: (tokenId) => handleSelectTokenId(tokenId),
-      selectedTokenIds: [],
-    });
+    openSelectTokenModal({ metadata: supportedTokenList, onSelect: (tokenId) => handleSelectTokenId(tokenId), selectedTokenIds: []});
   };
 
   const handleDeposit = () => {
@@ -85,10 +80,8 @@ export const AssetsDepositView = () => {
       return [true, `Enter ${selectedTokenMetadata?.symbol} Amount`];
 
     if (
-      parsedFromValue <=
-      toBigNumber(selectedTokenMetadata.fee)
-        .applyDecimals(selectedTokenMetadata.decimals)
-        .toNumber()
+      parsedFromValue <= 
+      toBigNumber(selectedTokenMetadata.fee).applyDecimals(selectedTokenMetadata.decimals).toNumber()
     ) {
       return [true, `Amount must be greater than fee`];
     }
@@ -96,10 +89,7 @@ export const AssetsDepositView = () => {
     if (tokenBalances && selectedTokenMetadata) {
       if (
         parsedFromValue >
-        getMaxValue(
-          selectedTokenMetadata,
-          tokenBalances[selectedTokenMetadata.id]
-        ).toNumber()
+        getMaxValue( selectedTokenMetadata,tokenBalances[selectedTokenMetadata.id]).toNumber()
       ) {
         return [true, `Insufficient ${selectedTokenMetadata.symbol} Balance`];
       }
@@ -116,8 +106,7 @@ export const AssetsDepositView = () => {
     return 0;
   }, [tokenBalances, tokenId]);
 
-  const isLoading = useMemo(
-    () =>
+  const isLoading = useMemo(() =>
       supportedTokenListState === FeatureState.Loading ||
       balancesState === FeatureState.Loading,
     [supportedTokenListState, balancesState]
@@ -142,10 +131,7 @@ export const AssetsDepositView = () => {
 
   return (
     <>
-      <ViewHeader
-        title="Deposit Asset"
-        onArrowBack={() => navigate('/assets')}
-      />
+      <ViewHeader title="Deposit Asset" onArrowBack={() => navigate('/assets')}/>
       <Box my={5}>
         <Token
           isLoading={isLoading}
@@ -166,7 +152,6 @@ export const AssetsDepositView = () => {
               <TokenDetailsLogo />
               <TokenDetailsSymbol />
             </TokenDetailsButton>
-
             <TokenInput autoFocus />
           </TokenContent>
           <TokenData>
@@ -181,15 +166,8 @@ export const AssetsDepositView = () => {
       </Box>
       <FeeBox token={selectedTokenMetadata} isDeposit />
       
-      <Button
-        isFullWidth
-        size="lg"
-        variant="gradient"
-        colorScheme="dark-blue"
-        isDisabled={buttonDisabled}
-        onClick={handleDeposit}
-        isLoading={isLoading}
-      >
+      <Button  isFullWidth  size="lg"  variant="gradient" colorScheme="dark-blue" 
+      isDisabled={buttonDisabled} onClick={handleDeposit} isLoading={isLoading}>
         {buttonMessage}
       </Button>
     </>
