@@ -5,6 +5,7 @@ import Todos2 from './todos';
 import useFetch from './useFetch';
 
 
+
 const initialTodos = [
     {
       id: 1,
@@ -204,13 +205,22 @@ const App2 = () => {
 
 
 const Home = () => {
- // const [data, setData] = useState<[{id?:string , title?:string}]>([{}]);
+ //const [data, setData] = useState<[{id?:string , title?:string}]>([{}]);
 
   type  d= [{id?:string , title?:string}];
-  const data:d= useFetch("https://jsonplaceholder.typicode.com/todos");
- 
-  console.log(data)
-  return (
+ const data:d= useFetch("https://jsonplaceholder.typicode.com/todos");
+
+//  useMemo(():any => {
+
+//   setTimeout(() => {
+//     fetch("https://jsonplaceholder.typicode.com/todos").then(
+//       (res) => res.json()
+//   ).then((data) => setData(data) );
+//   }, 10*1000);
+//  },[]);
+
+
+  return data.length>1 ?(
     <>
       <h1>HOME</h1>
       {data.length>1 &&
@@ -218,7 +228,7 @@ const Home = () => {
           return <p key={item.id} >{item.title}</p>;
         })}
     </>
-  );
+  ): (<></>);
 };
 
 export const TestView = () => {

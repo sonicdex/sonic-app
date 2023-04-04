@@ -342,6 +342,7 @@ export const TokenDataBalances: React.FC<TokeDataBalancesProps> = ({
 type TokenInputProps = NumberInputProps;
 
 export const TokenInput: React.FC<TokenInputProps> = (props) => {
+  
   const { isLoading, isDisabled, shouldGlow, value, setValue, tokenMetadata } =
     useTokenContext();
   const background = shouldGlow ? 'black' : 'custom.2';

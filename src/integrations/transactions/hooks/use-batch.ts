@@ -5,7 +5,7 @@ import { plug } from '@/integrations/plug';
 import { BatchTransactions } from '..';
 import { Batch } from '../models';
 
-export const useBatch = <Model>({ 
+export const useBatch = <Model>({
   transactions, handleRetry
 }: Batch.HookProps<Model>): Batch.Hook<Model> => {
   const [state, setState] = useState(Batch.DefaultHookState.Idle);
@@ -23,12 +23,12 @@ export const useBatch = <Model>({
 
   const batch = useMemo(() => {
     const newBatch = new BatchTransactions(plug, handleRetry);
-
     const transactionsList = Object.values(transactions);
 
     Object.values(transactions).forEach((transaction, index) => {
       const onSuccess = transaction.onSuccess;
       transaction.onSuccess = async (res) => {
+        console.log(res)
         let txSuccessResponse;
         if (onSuccess) {
           txSuccessResponse = await onSuccess(res);
@@ -38,11 +38,11 @@ export const useBatch = <Model>({
         } else {
           setState(Batch.DefaultHookState.Done);
         }
-
         return txSuccessResponse;
       };
       const onFail = transaction.onFail;
       transaction.onFail = async (err, prevRes) => {
+        console.log(err);
         if (onFail) await onFail(err, prevRes);
         handleError(err);
       };
@@ -71,5 +71,5 @@ export const useBatch = <Model>({
     }
   };
 
-  return { execute, state, error};
+  return { execute, state, error };
 };

@@ -14,7 +14,6 @@ export class BatchTransactions implements Batch.Controller {
   private batchTransactionResolver?: (value: unknown) => void;
   private batchTransactionRejector?: (value: unknown) => void;
 
-  
   constructor(
     private provider?: Provider,
     private handleRetry?: (
@@ -66,7 +65,6 @@ export class BatchTransactions implements Batch.Controller {
     responses: unknown[]
   ): Promise<unknown> {
     const result = await transaction.onSuccess(responses);
-
     this.pop();
     if (this.transactions.length === 0) {
       this.finishPromise(true, responses);
@@ -128,7 +126,8 @@ export class BatchTransactions implements Batch.Controller {
           ...(otherTransactions?.length > 0 ? otherTransactions : []),
         ]
       : this.transactions;
-
+    
+    
     this.provider?.batchTransactions(transactions).catch((error) => {
       if (this.handleRetry) {
         return this.handleRetry(error).then((response) => {

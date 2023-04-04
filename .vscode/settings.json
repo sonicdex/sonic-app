@@ -1,3 +1,5 @@
 {
-  "exportall.config.folderListener": ["/src/components/modals"]
+  "exportall.config.folderListener": ["/src/components/modals"],
+  // "typescript.enablePromptUseWorkspaceTsdk": true,
+  "typescript.tsdk": "node_modules/typescript/lib"
 }

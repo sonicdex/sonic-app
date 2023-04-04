@@ -18,25 +18,29 @@ export const getAmountDependsOnBalance = (
 };
 
 type GetDepositTransactionsOptions = {
+  getAcnt?:any,
   approveTx: any;
   depositTx: any;
-  txNames?: [string, string];
+  txNames?: string[]
+  tokenType?: string
 };
 
-export const getDepositTransactions = ({
-  approveTx, depositTx, txNames = ['approve', 'deposit'] }: GetDepositTransactionsOptions) => {
-
-  const requiredAllowance = Number(approveTx?.args[1]);
-  const requiredBalance = Number(depositTx.args[1]);
-
-  let transactions = {};
-
-  if (requiredBalance > 0) {
-    if (requiredAllowance > 0) {
-      transactions = { ...transactions, [txNames[0]]: approveTx };
+export const getDepositTransactions = ({approveTx, depositTx, txNames = ['approve', 'deposit'] ,tokenType }: GetDepositTransactionsOptions) => {
+    let transactions = {};
+    if(tokenType ==  'DIP20' || tokenType =='YC'){
+      let requiredAllowance = Number(approveTx?.args[1]);
+      let requiredBalance = Number(depositTx?.args[1] );
+      if (requiredBalance > 0) {
+        if (requiredAllowance > 0) {
+          transactions = { ...transactions, [txNames[0]]: approveTx };
+        }
+        transactions = { ...transactions, [txNames[1]?txNames[1]:'']: depositTx };
+      }
+    }else if( tokenType ==  'ICRC1' ){
+    //  console.log(approveTx ,depositTx , txNames , tokenType)
+      //[txNames[0]]:approveTx,
+      transactions = {   [txNames[1]]: depositTx };
     }
-    transactions = { ...transactions, [txNames[1]]: depositTx };
-  }
   return transactions;
 };
 

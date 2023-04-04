@@ -1,10 +1,7 @@
 import { checkPlainSrc, depositSrc } from '@/assets';
 import {
-  DepositModalData,
-  DepositModalDataStep,
-  modalsSliceActions,
-  useAppDispatch,
-  useModalsStore,
+  DepositModalData, DepositModalDataStep, modalsSliceActions,
+  useAppDispatch, useModalsStore
 } from '@/store';
 
 import { useStepStatus } from '.';
@@ -15,35 +12,28 @@ export const DepositProgressModal = () => {
   const { isDepositProgressModalOpened, depositModalData } = useModalsStore();
   const { steps, tokenSymbol, step: activeStep } = depositModalData;
 
-  const getStepStatus = useStepStatus<DepositModalData['step']>({
-    activeStep,
-    steps,
-  });
+  const getStepStatus = useStepStatus<DepositModalData['step']>({ activeStep, steps });
 
   const handleClose = () => {
     dispatch(modalsSliceActions.closeDepositProgressModal());
   };
 
   return (
-    <TransactionProgressModal
-      onClose={handleClose}
-      isOpen={isDepositProgressModalOpened}
-      isCentered
-      title="Deposit in progress"
-    >
+    <TransactionProgressModal onClose={handleClose}
+      isOpen={isDepositProgressModalOpened} isCentered title="Deposit in progress">
+      {steps?.includes(DepositModalDataStep.Getacnt) && (
+        <TransactionStep status={getStepStatus(DepositModalDataStep.Getacnt)}
+          iconSrc={checkPlainSrc} chevron>
+          Getting Sonic {tokenSymbol}  <br /> Account
+        </TransactionStep>
+      )}
       {steps?.includes(DepositModalDataStep.Approve) && (
-        <TransactionStep
-          status={getStepStatus(DepositModalDataStep.Approve)}
-          iconSrc={checkPlainSrc}
-          chevron
-        >
+        <TransactionStep status={getStepStatus(DepositModalDataStep.Approve)}
+          iconSrc={checkPlainSrc} chevron>
           Approving <br /> {tokenSymbol}
         </TransactionStep>
       )}
-      <TransactionStep
-        status={getStepStatus(DepositModalDataStep.Deposit)}
-        iconSrc={depositSrc}
-      >
+      <TransactionStep status={getStepStatus(DepositModalDataStep.Deposit)} iconSrc={depositSrc}>
         Depositing <br /> {tokenSymbol}
       </TransactionStep>
     </TransactionProgressModal>

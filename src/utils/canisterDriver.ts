@@ -84,10 +84,15 @@ export const getTokenAllowance = async (canisterId: string): Promise<bigint> => 
   return allowance;
 }
 
-export const initTransaction = async(tokenId:string, tranxType:string='approve'):Promise<any>=>{
-  var tokenInfo = tokenListObj?.[tokenId];
-  if (!tokenInfo) return false;
-
-  tranxType;
+export const toHexString = (byteArray:[])  =>{
+  return Array.from(byteArray, function(byte) {
+    return ('0' + (byte & 0xFF).toString(16)).slice(-2);
+  }).join('')
 }
-
+export const fromHexString = (hex:string):number[] => {
+  if(!hex) return [];
+  if (hex.substr(0,2) === "0x") hex = hex.substr(2);
+  for (var bytes:number[] = [], c = 0; c < hex.length; c += 2)
+  bytes.push(parseInt(hex.substr(c, 2), 16));
+  return bytes;
+}

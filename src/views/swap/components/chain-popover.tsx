@@ -59,7 +59,7 @@ export const ChainPopover: React.FC<ChainPopoverProps> = ({ from, to }) => {
         <PopoverBody>
           <Flex width="full" justifyContent="space-between" alignItems="center">
             {path.path.map((item, index) => (
-              <>
+              <div key={index}>
                 <Flex
                   px={2}
                   py={1}
@@ -76,7 +76,7 @@ export const ChainPopover: React.FC<ChainPopoverProps> = ({ from, to }) => {
                 {index !== path.path.length - 1 && (
                   <FaArrowRight size={12} style={{ margin: '0 5px' }} />
                 )}
-              </>
+              </div>
             ))}
           </Flex>
         </PopoverBody>

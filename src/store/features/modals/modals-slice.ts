@@ -53,6 +53,7 @@ export type SwapModalData = {
 export enum DepositModalDataStep {
   Approve = 'approve',
   Deposit = 'deposit',
+  Getacnt = 'getacnt'
 
 }
 export type DepositModalData = {

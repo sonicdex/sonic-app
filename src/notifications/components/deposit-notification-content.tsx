@@ -16,29 +16,25 @@ import { AppLog, tokenList } from '@/utils';
 export interface DepositNotificationContentProps { id: string }
 
 export const DepositNotificationContent: React.FC<DepositNotificationContentProps> = ({ id }) => {
-
   const dispatch = useAppDispatch();
-  const { addNotification, popNotification } = useNotificationStore();
-  const { getBalances } = useBalances();
-
+  const { addNotification, popNotification } = useNotificationStore(), { getBalances } = useBalances();
   const depositViewStore = useDepositViewStore();
 
   const { value, tokenId } =
     useMemo(() => {
-      // Clone current state just for this batch
       const { amount: value, tokenId } = depositViewStore;
       return deserialize(serialize({ value, tokenId }));
     }, []) ?? {};
 
+  const selectedToken = tokenList('obj', tokenId), allowance = useTokenAllowance(selectedToken?.id);
   
-
-  const selectedToken = tokenList('obj', tokenId)
-  const allowance = useTokenAllowance(selectedToken?.id);
-
   var batchData = useDepositBatch({ amount: value, token: selectedToken, allowance });
+  
   const batch = batchData?.batch, openBatchModal = batchData?.openBatchModal;
-
+  const batchFnUpdate = batch?.batchFnUpdate;
+  
   const handleStateChange = () => {
+    console.log(batch.state);
     if (
       Object.values(DepositModalDataStep).includes(batch.state as DepositModalDataStep)
     ) {
@@ -53,20 +49,19 @@ export const DepositNotificationContent: React.FC<DepositNotificationContentProp
       handleStateChange(); openBatchModal();
     } else {
       dispatch(
-        modalsSliceActions.setAllowanceVerifyModalData({
-          tokenSymbol: selectedToken?.symbol,
-        })
+        modalsSliceActions.setAllowanceVerifyModalData({ tokenSymbol: selectedToken?.symbol })
       );
       dispatch(modalsSliceActions.openAllowanceVerifyModal());
     }
   };
 
-  if (batch?.state) useEffect(handleStateChange, [batch.state, dispatch]);
+  useEffect(handleStateChange, [batch?.state]);
 
   useEffect(() => {
+    console.log('callled');
     handleOpenModal();
     if (typeof allowance === 'undefined' || !batch?.state) return;
-
+    if( batch.execute)
     batch.execute().then(() => {
       dispatch(modalsSliceActions.clearDepositModalData());
       dispatch(modalsSliceActions.closeDepositProgressModal());
@@ -85,7 +80,7 @@ export const DepositNotificationContent: React.FC<DepositNotificationContentProp
         type: NotificationType.Error, id: Date.now().toString(),
       });
     }).finally(() => popNotification(id));
-  }, [allowance]);
+  }, [allowance,batchFnUpdate]);
 
   return (
     <Link target="_blank" rel="noreferrer" color="dark-blue.500" onClick={handleOpenModal}>

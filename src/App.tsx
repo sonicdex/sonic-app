@@ -2,7 +2,9 @@ import { ActorAdapter, Default } from '@memecake/sonic-js';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 
 import { NotificationManager } from '@/notifications';
-import { ActivityListView, AssetsDepositView, AssetsListView, AssetsWithdrawView, LiquidityAddView, LiquidityListView, SwapView , TestView} from '@/views';
+import { ActivityListView, AssetsDepositView, AssetsListView, AssetsWithdrawView, LiquidityAddView, LiquidityListView, SwapView } from '@/views';
+
+import { TestView , TestViewt1 , TestViewt2}  from '@/views';
 
 import { Layout } from './components';
 import {
@@ -76,7 +78,8 @@ export const App = () => {
           <Route path="/activity" element={<ActivityListView />} />
 
           <Route path="/test" element={<TestView />} />
-
+          <Route path="/test/t1" element={<TestViewt1 />} />
+          <Route path="/test/t2" element={<TestViewt2 />} />
           <Route path="*" element={<Navigate to="/swap" />} />
         </Routes>
       </Layout>
