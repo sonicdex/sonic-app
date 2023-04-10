@@ -8,6 +8,7 @@ import { Batch } from '../models';
 export const useBatch = <Model>({
   transactions, handleRetry
 }: Batch.HookProps<Model>): Batch.Hook<Model> => {
+
   const [state, setState] = useState(Batch.DefaultHookState.Idle);
   const [error, setError] = useState<unknown>();
 
@@ -28,11 +29,8 @@ export const useBatch = <Model>({
     Object.values(transactions).forEach((transaction, index) => {
       const onSuccess = transaction.onSuccess;
       transaction.onSuccess = async (res) => {
-        console.log(res)
         let txSuccessResponse;
-        if (onSuccess) {
-          txSuccessResponse = await onSuccess(res);
-        }
+        if (onSuccess) { txSuccessResponse = await onSuccess(res);}
         if (index !== transactionsList.length - 1) {
           setState(states[index + 1]);
         } else {
@@ -42,7 +40,6 @@ export const useBatch = <Model>({
       };
       const onFail = transaction.onFail;
       transaction.onFail = async (err, prevRes) => {
-        console.log(err);
         if (onFail) await onFail(err, prevRes);
         handleError(err);
       };

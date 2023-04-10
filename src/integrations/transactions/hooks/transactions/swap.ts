@@ -6,7 +6,7 @@ import { useMemo } from 'react';
 import { ENV } from '@/config';
 import { SwapIDL } from '@/did';
 import { parseAmount } from '@/utils/format';
-import {useBalances} from '@/hooks';
+import { useBalances } from '@/hooks';
 
 import { CreateTransaction, SwapModel } from '../../models';
 
@@ -20,34 +20,37 @@ type useTokenTaxCheckOptions = {
   balances?: any;
   tokenId?: string;
   tokenDecimals?: number;
-  tokenValue?:string;
-  tokenSymbol?:string;
+  tokenValue?: string;
+  tokenSymbol?: string;
 };
 
-const useTokenTaxCheck = ({ balances, tokenId ,tokenSymbol, tokenDecimals=1 , tokenValue='' ,}: useTokenTaxCheckOptions) => {
-  const { sonicBalances, tokenBalances ,icpBalance } = balances;
-  const tokenInfo={ wallet:0, sonic:0, taxInfo:{ input: 0 ,taxedValue:0, nonTaxedValue:0 ,netValue:0} }
-  if(tokenId!='' && tokenId!='ICP' && sonicBalances && tokenBalances){
-      var id= tokenId?tokenId:'';
-      tokenInfo['wallet'] = tokenBalances[id]? tokenBalances[id]:0;
-      tokenInfo['sonic'] = sonicBalances[id]?sonicBalances[id]:0;
-  }else{ tokenInfo['wallet'] = icpBalance?icpBalance:0;}
-  if(tokenValue){
-    let tokenVal:number = parseFloat(tokenValue)
-      if(tokenSymbol == 'YC'){
-          let decimals = tokenDecimals?(10**tokenDecimals):1
-          let sonicBalance = tokenInfo['sonic'] / decimals;
-          console.log("Swap Tax check", tokenSymbol, tokenVal, sonicBalance);
-          if((sonicBalance > tokenVal)){
-              tokenInfo.taxInfo.nonTaxedValue = tokenVal;
-              tokenInfo.taxInfo.taxedValue = 0;
-          } else {
-              tokenInfo.taxInfo.nonTaxedValue = sonicBalance;
-              tokenInfo.taxInfo.taxedValue = tokenVal - tokenInfo.taxInfo.nonTaxedValue;
-          }    
-          tokenInfo.taxInfo.netValue = tokenInfo.taxInfo.nonTaxedValue + (tokenInfo.taxInfo.taxedValue * (89/100));
+const useTokenTaxCheck = ({ balances, tokenId, tokenSymbol, tokenDecimals = 1, tokenValue = '', }: useTokenTaxCheckOptions) => {
+
+  console.log('calledd')
+
+  const { sonicBalances, tokenBalances, icpBalance } = balances;
+  const tokenInfo = { wallet: 0, sonic: 0, taxInfo: { input: 0, taxedValue: 0, nonTaxedValue: 0, netValue: 0 } }
+  if (tokenId != '' && tokenId != 'ICP' && sonicBalances && tokenBalances) {
+    var id = tokenId ? tokenId : '';
+    tokenInfo['wallet'] = tokenBalances[id] ? tokenBalances[id] : 0;
+    tokenInfo['sonic'] = sonicBalances[id] ? sonicBalances[id] : 0;
+  } else { tokenInfo['wallet'] = icpBalance ? icpBalance : 0; }
+  if (tokenValue) {
+    let tokenVal: number = parseFloat(tokenValue)
+    if (tokenSymbol == 'YC') {
+      let decimals = tokenDecimals ? (10 ** tokenDecimals) : 1
+      let sonicBalance = tokenInfo['sonic'] / decimals;
+      console.log("Swap Tax check", tokenSymbol, tokenVal, sonicBalance);
+      if ((sonicBalance > tokenVal)) {
+        tokenInfo.taxInfo.nonTaxedValue = tokenVal;
+        tokenInfo.taxInfo.taxedValue = 0;
+      } else {
+        tokenInfo.taxInfo.nonTaxedValue = sonicBalance;
+        tokenInfo.taxInfo.taxedValue = tokenVal - tokenInfo.taxInfo.nonTaxedValue;
       }
-  }    
+      tokenInfo.taxInfo.netValue = tokenInfo.taxInfo.nonTaxedValue + (tokenInfo.taxInfo.taxedValue * (89 / 100));
+    }
+  }
   return tokenInfo
 };
 
@@ -62,30 +65,26 @@ export const useSwapExactTokensTransactionMemo: CreateTransaction<SwapModel> = (
   return useMemo(() => {
 
 
+console.log(from.metadata ,to.metadata ,'to.metadata'); 
+
+
     if (!from.metadata || !to.metadata) throw new Error('Tokens are required');
     if (!principalId) throw new Error('Principal is required');
 
-    console.log("Swap", from.metadata);
+    if (from.metadata?.symbol == 'YC') {
 
-    if(from.metadata?.symbol == 'YC') {
-
-      let info = useTokenTaxCheck({balances: balances, tokenId: from.metadata?from.metadata.id:'',
-        tokenSymbol: from.metadata?from.metadata.symbol:'', 
-        tokenDecimals:from.metadata?from.metadata.decimals:1, 
-        tokenValue:from.value?from.value:''
+      let info = useTokenTaxCheck({
+        balances: balances, tokenId: from.metadata ? from.metadata.id : '',
+        tokenSymbol: from.metadata ? from.metadata.symbol : '',
+        tokenDecimals: from.metadata ? from.metadata.decimals : 1,
+        tokenValue: from.value ? from.value : ''
       });
-      console.log("Swap YC Matched", info);
       fromValue = info.taxInfo.netValue.toFixed(3);
     }
 
     const amountIn = parseAmount(fromValue, from.metadata.decimals);
     const amountOutMin = parseAmount(
-      Swap.getAmountMin({
-        amount: to.value,
-        slippage,
-        decimals: to.metadata.decimals,
-      }).toString(),
-      to.metadata.decimals
+      Swap.getAmountMin({ amount: to.value, slippage, decimals: to.metadata.decimals }).toString(), to.metadata.decimals
     );
     const currentTime = (new Date().getTime() + 5 * 60 * 1000) * 10000000;
 
@@ -131,18 +130,13 @@ export const useSwapForExactTokensTransactionMemo: CreateTransaction<
 
     if (!from.metadata || !to.metadata) throw new Error('Tokens are required');
     if (!principalId) throw new Error('Principal is required');
-
-    console.log("Swap", from.metadata);
-
-    if(from.metadata?.symbol == 'YC') {
-
-      let info = useTokenTaxCheck({balances: balances, tokenId: from.metadata?from.metadata.id:'',
-        tokenSymbol: from.metadata?from.metadata.symbol:'', 
-        tokenDecimals:from.metadata?from.metadata.decimals:1,
-        tokenValue:from.value?from.value:''
+    if (from.metadata?.symbol == 'YC') {
+      let info = useTokenTaxCheck({
+        balances: balances, tokenId: from.metadata ? from.metadata.id : '',
+        tokenSymbol: from.metadata ? from.metadata.symbol : '',
+        tokenDecimals: from.metadata ? from.metadata.decimals : 1,
+        tokenValue: from.value ? from.value : ''
       });
-      console.log("Swap YC Matched", info);
-
       fromValue = info.taxInfo.netValue.toFixed(3);
     }
 

@@ -34,7 +34,6 @@ export const DepositNotificationContent: React.FC<DepositNotificationContentProp
   const batchFnUpdate = batch?.batchFnUpdate;
   
   const handleStateChange = () => {
-    console.log(batch.state);
     if (
       Object.values(DepositModalDataStep).includes(batch.state as DepositModalDataStep)
     ) {
@@ -58,7 +57,6 @@ export const DepositNotificationContent: React.FC<DepositNotificationContentProp
   useEffect(handleStateChange, [batch?.state]);
 
   useEffect(() => {
-    console.log('callled');
     handleOpenModal();
     if (typeof allowance === 'undefined' || !batch?.state) return;
     if( batch.execute)

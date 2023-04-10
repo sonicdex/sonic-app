@@ -39,13 +39,9 @@ export const SwapNotificationContent: React.FC<
 
   const allowance = useTokenAllowance(from.metadata?.id);
 
-  const { batch, openBatchModal } = useSwapBatch({
-    from,
-    to,
-    slippage: Number(slippage),
-    keepInSonic,
-    principalId,
-    allowance,
+  const { batch, openBatchModal } = useSwapBatch({ 
+    from, to, slippage: Number(slippage),keepInSonic,
+    principalId,allowance,
   });
 
   const handleStateChange = () => {
@@ -66,7 +62,6 @@ export const SwapNotificationContent: React.FC<
     if (typeof allowance === 'number') {
       dispatch(modalsSliceActions.closeAllowanceVerifyModal());
       handleStateChange();
-
       openBatchModal();
     } else {
       dispatch(
@@ -83,9 +78,7 @@ export const SwapNotificationContent: React.FC<
   useEffect(() => {
     handleOpenModal();
     if (typeof allowance === 'undefined') return;
-    batch
-      .execute()
-      .then(() => {
+    batch.execute().then(() => {
         dispatch(modalsSliceActions.clearSwapModalData());
         dispatch(modalsSliceActions.closeSwapProgressModal());
 
@@ -97,10 +90,9 @@ export const SwapNotificationContent: React.FC<
         });
         getBalances();
         getAllPairs();
-      })
-      .catch((err) => {
-        dispatch(modalsSliceActions.clearSwapModalData());
+      }).catch((err) => {
 
+        dispatch(modalsSliceActions.clearSwapModalData());
         if (err.message === 'slippage: insufficient output amount') {
           addNotification({
             title: `Slippage is too low to swap ${from.value} ${from.metadata.symbol} for ${to.value} ${to.metadata.symbol}`,
@@ -119,12 +111,7 @@ export const SwapNotificationContent: React.FC<
   }, [allowance]);
 
   return (
-    <Link
-      target="_blank"
-      rel="noreferrer"
-      color="dark-blue.500"
-      onClick={handleOpenModal}
-    >
+    <Link target="_blank" rel="noreferrer" color="dark-blue.500" onClick={handleOpenModal}>
       View progress
     </Link>
   );

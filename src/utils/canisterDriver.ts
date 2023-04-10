@@ -50,7 +50,7 @@ export const getTokenLogo = async (canisterId: string): Promise<string> => {
   if (!token?.tokenType || token?.tokenType == 'DIP20' || token?.tokenType == 'YC') {
     tokenLogo = await tokenActor.logo();
   } else if (token?.tokenType == 'ICRC1') {
-    tokenLogo = ''
+    tokenLogo = "https://d15bmhsw4m27if.cloudfront.net/sonic/"+token.id
   }
   return tokenLogo;
 }

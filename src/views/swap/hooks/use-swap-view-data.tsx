@@ -8,43 +8,24 @@ import { PLUG_WALLET_WEBSITE_URL } from '@/components';
 import { ENV } from '@/config';
 import { getAppAssetsSources } from '@/config/utils';
 import { ICP_METADATA } from '@/constants';
-import {
-  useBalances,
-  useQuery,
-  useTokenAllowance,
-  useTokenBalanceMemo,
-  useTokenSelectionChecker,
-} from '@/hooks';
+import { useBalances, useQuery, useTokenAllowance, useTokenBalanceMemo,useTokenSelectionChecker} from '@/hooks';
+
 import { checkIfPlugProviderVersionCompatible } from '@/integrations/plug';
 import {
-  FeatureState,
-  INITIAL_SWAP_SLIPPAGE,
-  NotificationType,
-  SwapTokenDataKey,
-  swapViewActions,
-  useAppDispatch,
-  useCyclesMintingCanisterStore,
-  useNotificationStore,
-  usePlugStore,
-  usePriceStore,
-  useSwapCanisterStore,
-  useSwapViewStore,
-  useTokenModalOpener,
+  FeatureState,INITIAL_SWAP_SLIPPAGE, NotificationType, SwapTokenDataKey,
+  swapViewActions,useAppDispatch,useCyclesMintingCanisterStore,useNotificationStore,
+  usePlugStore,usePriceStore,useSwapCanisterStore, useSwapViewStore,useTokenModalOpener,
 } from '@/store';
+
 import { formatValue, getMaxValue } from '@/utils/format';
 import { debounce } from '@/utils/function';
 
 import { OperationType } from '../components';
 import {
-  getAmountOutFromPath,
-  getICPValueByXDRRate,
-  getXTCValueByXDRRate,
+  getAmountOutFromPath, getICPValueByXDRRate, getXTCValueByXDRRate,
 } from '../swap.utils';
 
-export enum SwapStep {
-  Home,
-  Review,
-}
+export enum SwapStep { Home, Review }
 
 export const useSwapViewData = () => {
   const [lastChangedInputDataKey, setLastChangedInputDataKey] =
@@ -59,15 +40,10 @@ export const useSwapViewData = () => {
     useSwapViewStore();
   const dispatch = useAppDispatch();
   const {
-    sonicBalances,
-    tokenBalances,
-    icpBalance,
-    balancesState,
-    supportedTokenListState,
-    supportedTokenList,
-    allPairsState,
-    allPairs,
+    sonicBalances, tokenBalances, icpBalance, balancesState,  supportedTokenListState,
+    supportedTokenList, allPairsState, allPairs,
   } = useSwapCanisterStore();
+  
   const { totalBalances } = useBalances();
 
   const { ICPXDRconversionRate } = useCyclesMintingCanisterStore();
@@ -408,6 +384,7 @@ export const useSwapViewData = () => {
       type: NotificationType.Swap,
       id: String(new Date().getTime()),
     });
+
     debounce(resetViewState, 300);
   }, [
     addNotification,
@@ -521,8 +498,7 @@ export const useSwapViewData = () => {
       }
     };
     const buttonText = step === SwapStep.Review ? 'Swap' : 'Review Swap';
-    const waitingForAllowance =
-      step === SwapStep.Review && typeof allowance === 'undefined';
+    const waitingForAllowance = step === SwapStep.Review && typeof allowance === 'undefined';
 
     return [waitingForAllowance, buttonText, handleButtonClick];
   }, [
@@ -571,13 +547,14 @@ export const useSwapViewData = () => {
   ]);
 
   const priceImpact = useMemo(
-    () =>
-      Swap.getPriceImpact({
-        amountIn: from.value,
+    () =>{ 
+      return Swap.getPriceImpact({
+        amountIn: parseFloat(from.value)>0?from.value:'0',
         amountOut: to.value,
         priceIn: from.metadata?.price ?? '0',
         priceOut: to.metadata?.price ?? '0',
-      }).toString(),
+      }).toString();
+    },
     [from, to]
   );
 

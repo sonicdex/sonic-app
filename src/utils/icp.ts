@@ -13,7 +13,9 @@ import { ExternalLink } from './external-link';
 export const ACCOUNT_DOMAIN_SEPERATOR = '\x0Aaccount-id';
 
 export const fetchICPBalance = async (principalId: string) => {
+
   const ledgerActor = await createAnonLedgerActor();
+
   const accountId = getAccountId(Principal.fromText(principalId || ''), 0);
 
   if (accountId) {
@@ -21,9 +23,7 @@ export const fetchICPBalance = async (principalId: string) => {
       await ledgerActor.account_balance_dfx({ account: accountId })
     ).e8s;
 
-    const icpBalanceNoDecimals = new BigNumber(balance.toString())
-      .div(new BigNumber('100000000'))
-      .toString();
+    const icpBalanceNoDecimals = new BigNumber(balance.toString()).div(new BigNumber('100000000')).toString();
 
     return icpBalanceNoDecimals;
   } else {
@@ -34,11 +34,8 @@ export const fetchICPBalance = async (principalId: string) => {
 export const fetchICP2XDRConversionRate = async () => {
   const cmActor =
     await ActorAdapter.createAnonymousActor<CyclesMintingIDL.Factory>(
-      'rkp4c-7iaaa-aaaaa-aaaca-cai',
-      CyclesMintingIDL.factory,
-      'https://ic0.app/'
+      'rkp4c-7iaaa-aaaaa-aaaca-cai', CyclesMintingIDL.factory,'https://ic0.app/'
     );
-
   return cmActor.get_icp_xdr_conversion_rate();
 };
 
@@ -58,10 +55,8 @@ export const fetchICPPrice = async () => {
 /*
     Used dfinity/keysmith/account/account.go as a base for the ID generation
 */
-export const getAccountId = (
-  principal: Principal,
-  subAccount?: number
-): string => {
+export const getAccountId = ( principal: Principal, subAccount?: number): string => {
+  
   const sha = CryptoJS.algo.SHA224.create();
   sha.update(ACCOUNT_DOMAIN_SEPERATOR); // Internally parsed with UTF-8, like go does
   sha.update(byteArrayToWordArray(principal.toUint8Array()));

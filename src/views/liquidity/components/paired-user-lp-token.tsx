@@ -160,31 +160,27 @@ export const PairedUserLPToken: React.FC<PairedUserLPTokenProps> = ({
           py={1}
           borderRadius="xl"
         >
-          <Text
-            color={headerColor}
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
-          >
+          <Text color={headerColor} display="flex" justifyContent="space-between" alignItems="center">
             Fees Earned
-            <Popover trigger="hover">
-              <PopoverTrigger>
-                <Box>
-                  <FaInfoCircle />
-                </Box>
-              </PopoverTrigger>
-
-              <PopoverContent color={useColorModeValue('black', 'white')}>
-                <PopoverArrow />
-                <PopoverBody>
-                  Your fees earned are based on periodic snapshots of the
-                  estimated prices of the assets your fees accrued in. Both the
-                  prices & assets that make up your fees earned are subject to
-                  change.
-                </PopoverBody>
-              </PopoverContent>
-            </Popover>
           </Text>
+          <Popover trigger="hover">
+            <PopoverTrigger>
+              <Box>
+                <FaInfoCircle />
+              </Box>
+            </PopoverTrigger>
+
+            <PopoverContent color={useColorModeValue('black', 'white')}>
+              <PopoverArrow />
+              <PopoverBody>
+                Your fees earned are based on periodic snapshots of the
+                estimated prices of the assets your fees accrued in. Both the
+                prices & assets that make up your fees earned are subject to
+                change.
+              </PopoverBody>
+            </PopoverContent>
+          </Popover>
+
           <DisplayValue
             color={successColor}
             isUpdating={isMetricsLoading}

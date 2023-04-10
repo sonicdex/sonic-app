@@ -113,6 +113,8 @@ export default class RosettaApi {
    */
   public networkIdentifier;
   public axios;
+  private balanceFetchTimeout=30;
+  private lastFetchTime='';
   constructor() {
     this.axios = axios.create({
       baseURL:
@@ -139,6 +141,9 @@ export default class RosettaApi {
    * a RosettaError for error.
    */
   async getAccountBalance(accountAddress: string) {
+
+    console.log(this.balanceFetchTimeout , this.lastFetchTime)
+
     try {
       const response = await this.accountBalanceByAddress(accountAddress);
       return new BigNumber(response.balances[0].value);

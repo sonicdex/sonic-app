@@ -1,21 +1,11 @@
-import { useMemo, useEffect } from 'react'; //useEffect , useState
+import { useMemo } from 'react';
 
 import { DepositModalDataStep, modalsSliceActions, useAppDispatch } from '@/store';
 
 import { Deposit } from '../..';
-import { useApproveTransactionMemo, useDepositTransactionMemo, useBatch, intitICRCTokenDeposit, useICRCDepositMemo, useICRCDepositInit, useICRCDepositEff } from '..';  // useICRCDepositMemo  //useICRCDepositInit  intitICRCTokenDeposit // useICRCDepositMemo
+import { useApproveTransactionMemo, useDepositTransactionMemo, useBatch, intitICRCTokenDeposit, useICRCDepositMemo } from '..';  // useICRCDepositMemo  //useICRCDepositInit  intitICRCTokenDeposit // useICRCDepositMemo
 
 import { getDepositTransactions } from '.';
-import { getTokenActor, fromHexString } from '@/utils';
-
-// import { Principal } from '@dfinity/principal'; 
-// import { ENV } from '@/config';
-// import { parseAmount } from '@/utils/format';
-
-
-intitICRCTokenDeposit; useICRCDepositMemo; useICRCDepositInit; useICRCDepositEff; useEffect; getTokenActor; fromHexString;
-
-// interface depositBatchType { batch: any, openBatchModal: any };
 
 export const useDepositBatch = (deposit: Deposit): any => {
   const dispatch = useAppDispatch();
@@ -23,8 +13,6 @@ export const useDepositBatch = (deposit: Deposit): any => {
   var batchLoad: any = { state: "idle" };
   var DepositBatch = { batch: batchLoad, openBatchModal: () => { } };
   var tokenType = deposit.token?.tokenType;
-
-  // console.log('render');
 
   if (tokenType == 'DIP20' || tokenType == 'YC') {
     var approveTx = useApproveTransactionMemo(deposit);
@@ -75,8 +63,6 @@ export const useDepositBatch = (deposit: Deposit): any => {
     var approveTx: any = useICRCDepositMemo({ ...deposit, tokenAcnt: getAcnt });
     var depositTx = useDepositTransactionMemo(deposit);
     var transactions = useMemo(() => {
-      // Object.keys(approveTx).length>0
-
       if (getAcnt && approveTx)
         return getDepositTransactions({ approveTx: {}, depositTx, txNames: ['approve', 'deposit'], tokenType: deposit.token?.tokenType })
       else return {}
