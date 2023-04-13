@@ -53,17 +53,11 @@ export const TokenSelectModal = () => {
  
  
   const handleSelect = (tokenId?: string) => {  
-    
-    console.log('handleSelect start ');
-
     onSelect(tokenId);handleTokenSelectClose();
-
-    console.log('handleSelect ends ');
   };
 
   const handleImportToken = (tokenData: any) => {
-    setAddToken(true);
-    setImportTokenData(importTokenData);
+    setAddToken(true);setImportTokenData(importTokenData);
   };
 
   const importToken = () => {

@@ -18,11 +18,7 @@ export const getAmountDependsOnBalance = (
 };
 
 type GetDepositTransactionsOptions = {
-  getAcnt?:any,
-  approveTx: any;
-  depositTx: any;
-  txNames?: string[]
-  tokenType?: string
+  getAcnt?:any, approveTx: any;depositTx: any;txNames?: string[],tokenType?: string
 };
 
 export const getDepositTransactions = ({approveTx, depositTx, txNames = ['approve', 'deposit'] ,tokenType }: GetDepositTransactionsOptions) => {
@@ -37,8 +33,6 @@ export const getDepositTransactions = ({approveTx, depositTx, txNames = ['approv
         transactions = { ...transactions, [txNames[1]?txNames[1]:'']: depositTx };
       }
     }else if( tokenType ==  'ICRC1' ){
-    //  console.log(approveTx ,depositTx , txNames , tokenType)
-      //[txNames[0]]:approveTx,
       transactions = {   [txNames[1]]: depositTx };
     }
   return transactions;
@@ -106,9 +100,8 @@ export const saveBlockHeightToStorage = ({
   principalId,
   tokenSymbol,
 }: SaveBlockHeightToStorageOptions) => {
-  if (!principalId || !blockHeight) {
-    return null;
-  }
+  
+  if (!principalId || !blockHeight) { return null;}
 
   const localStorageKey =
     tokenSymbol === MintTokenSymbol.XTC

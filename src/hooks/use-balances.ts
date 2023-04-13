@@ -75,10 +75,10 @@ export const useBalances = () => {
             })
           ): undefined;
         const icpBalance = await fetchICPBalance(principalId);
+        console.log('Balance update...');
         dispatch(swapCanisterActions.setICPBalance(parseAmount(icpBalance, ICP_METADATA.decimals)));
         dispatch(swapCanisterActions.setSonicBalances(sonicBalances));
         dispatch(swapCanisterActions.setTokenBalances(tokenBalances));
-        console.log(tokenBalances)
         dispatch(swapCanisterActions.setBalancesState(FeatureState.Idle));
       } catch (error) {
         AppLog.error(`Balances fetch error`, error);

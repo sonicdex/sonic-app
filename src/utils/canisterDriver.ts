@@ -21,7 +21,6 @@ export const loadsupportedTokenList = async () => {
 
   if (!supportedTokenList || Object.keys(tokenListObj).length > 0) return false;
   supportedTokenList.forEach((el: { id: string }) => { tokenListObj[el.id] = el });
-  console.log(tokenListObj);
   if (plugStat.isConnected) { await artemis.connect('plug'); }
 }
 
@@ -64,6 +63,7 @@ export const getTokenBalance = async (canisterId: string , principalId?:string):
   var tokenBalance: bigint = BigInt(0);
   if (!tokenInfo) { return tokenBalance;}
   var prin = artemis.principalId?artemis.principalId:principalId;
+
   if(!prin) return tokenBalance;
 
   var tokenActor = await getTokenActor(tokenInfo.id, true);

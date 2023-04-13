@@ -1,41 +1,29 @@
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import {
-  modalsSliceActions,
-  SwapModalDataStep,
-  useAppDispatch,
-  useSwapCanisterStore,
-} from '@/store';
-
+import {  modalsSliceActions, SwapModalDataStep, useAppDispatch, useSwapCanisterStore } from '@/store';
 import { SwapModel } from '../..';
+
 import {
-  useApproveTransactionMemo,
-  useBatch,
-  useDepositTransactionMemo,
-  useSwapExactTokensTransactionMemo,
-  useWithdrawTransactionMemo,
+  useApproveTransactionMemo,useBatch, useDepositTransactionMemo,
+  useSwapExactTokensTransactionMemo,useWithdrawTransactionMemo,
 } from '..';
-import {
-  getAmountDependsOnBalance,
-  getDepositTransactions,
-} from './batch.utils';
+
+import {  getAmountDependsOnBalance, getDepositTransactions } from './batch.utils';
+
 
 export interface ExtraDepositSwapBatchOptions {
   keepInSonic: boolean;
 }
 
-export const useSwapBatch = ({
-  keepInSonic,
-  ...swapParams
-}: SwapModel & ExtraDepositSwapBatchOptions) => {
+export const useSwapBatch = ({ keepInSonic,...swapParams}: SwapModel & ExtraDepositSwapBatchOptions) => {
   const dispatch = useAppDispatch();
+
   const { sonicBalances } = useSwapCanisterStore();
 
   if (!sonicBalances) throw new Error('Sonic balance is required');
 
-  if (!swapParams.from.metadata || !swapParams.to.metadata)
-    throw new Error('Tokens are required');
+  if (!swapParams.from.metadata || !swapParams.to.metadata) throw new Error('Tokens are required');
 
   const navigate = useNavigate();
 
@@ -48,38 +36,25 @@ export const useSwapBatch = ({
     ),
     allowance: swapParams.allowance,
   };
-  const withdrawParams = {
-    token: swapParams.to.metadata,
-    amount: swapParams.to.value,
-  };
+  const withdrawParams = { token: swapParams.to.metadata, amount: swapParams.to.value };
+
 
   const approve = useApproveTransactionMemo(depositParams);
   const deposit = useDepositTransactionMemo(depositParams);
+
+
+  console.log(depositParams)
+
   const swap = useSwapExactTokensTransactionMemo(swapParams);
   const withdraw = useWithdrawTransactionMemo(withdrawParams);
 
   const transactions = useMemo(() => {
     let _transactions = {};
+    _transactions = { ...getDepositTransactions({ approveTx: approve, depositTx: deposit ,tokenType: depositParams.token.tokenType})};
 
-    _transactions = {
-      ...getDepositTransactions({
-        approveTx: approve,
-        depositTx: deposit,
-      }),
-    };
+    _transactions = { ..._transactions,swap};
 
-    _transactions = {
-      ..._transactions,
-      swap,
-    };
-
-    if (!keepInSonic) {
-      _transactions = {
-        ..._transactions,
-        withdraw,
-      };
-    }
-
+    if (!keepInSonic) {  _transactions = { ..._transactions, withdraw}};
     return _transactions;
   }, [...Object.values(swapParams), keepInSonic]);
 

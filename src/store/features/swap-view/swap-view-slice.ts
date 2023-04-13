@@ -1,14 +1,15 @@
-import { MaximalPaths, Pair , Swap} from '@memecake/sonic-js';
+import { MaximalPaths, Pair, Swap } from '@memecake/sonic-js';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { ENV } from '@/config';
 import { ICP_METADATA } from '@/constants';
-import { AppTokenMetadata, AppTokenMetadataListObject, BaseTokenData} from '@/models';
+import { AppTokenMetadata, AppTokenMetadataListObject, BaseTokenData } from '@/models';
 
 import { FeatureState, RootState } from '@/store';
 import { capitalize } from '@/utils/format';
 import { getAmountOutFromPath } from '@/views';
-import BigNumber from 'bignumber.js';
+
+// import BigNumber from 'bignumber.js';
 
 export type SwapTokenDataKey = 'from' | 'to';
 
@@ -52,7 +53,7 @@ export const swapViewSlice = createSlice({
       state.state = action.payload;
     },
     setValue: (state, action: PayloadAction<{ data: SwapTokenDataKey; value: string }>) => {
-      console.log('dssds');
+
       const { allPairs, tokenList } = state;
       const { data, value } = action.payload;
 
@@ -60,18 +61,13 @@ export const swapViewSlice = createSlice({
       const oppositeMetadata = data === 'to' ? state.from.metadata : state.to.metadata;
 
       const oppositeDataKey = data === 'from' ? 'to' : 'from';
-
       state[data].value = value;
-
       if (tokenList && metadata && oppositeMetadata && !(metadata.id === ICP_METADATA.id) && !(oppositeMetadata.id === ICP_METADATA.id)) {
-
         const paths: any = getTokenPaths(allPairs as Pair.List, tokenList, metadata.id, state[data].value, data);
+
         // Swap.getTokenPaths({
         //   pairList: allPairs as Pair.List, tokenList, tokenId: metadata.id, amount: value, dataKey: data,
         // });
-        
-        console.log(paths);
-      
         state[data].paths = paths;
 
         state[oppositeDataKey].value = getAmountOutFromPath(state[data] as SwapTokenData, state[oppositeDataKey] as SwapTokenData);
@@ -82,18 +78,21 @@ export const swapViewSlice = createSlice({
       }
     },
     setToken: (state, action: PayloadAction<{ data: SwapTokenDataKey; tokenId: string | undefined }>) => {
-      console.log('setToken');
+    
       const { allPairs, tokenList } = state;
       const { data, tokenId } = action.payload;
 
       if (tokenId && tokenList && allPairs) {
         const paths = getTokenPaths(allPairs as Pair.List, tokenList, tokenId, state[data].value, data);
-       // const paths = //Swap.getTokenPaths({ pairList: allPairs as Pair.List, tokenList, tokenId, amount: state[data].value, dataKey: data });  
+
+        // const paths = //Swap.getTokenPaths({ pairList: allPairs as Pair.List, tokenList, tokenId, amount: state[data].value, dataKey: data });  
+        
         state[data].metadata = { ...tokenList[tokenId] };
         state[data].paths = paths;
         const tokenPathsDataKey = `base${capitalize(data)}TokenPaths` as | 'baseToTokenPaths' | 'baseFromTokenPaths';
-        state[tokenPathsDataKey] =  getTokenPaths(allPairs as Pair.List, tokenList, tokenId, state[data].value, data);
-         // Swap.getTokenPaths({ pairList: allPairs as Pair.List, tokenList, tokenId, dataKey: data });
+
+        state[tokenPathsDataKey] = getTokenPaths(allPairs as Pair.List, tokenList, tokenId, state[data].value, data);
+        // Swap.getTokenPaths({ pairList: allPairs as Pair.List, tokenList, tokenId, dataKey: data });
 
       } else { state[data].metadata = undefined; }
       if (data === 'from') {
@@ -102,9 +101,6 @@ export const swapViewSlice = createSlice({
       }
     },
     switchTokens: (state, action: PayloadAction<SwapTokenDataKey>) => {
-      
-      console.log('switchTokens');
-
       const dataKey = action.payload;
       const oppositeDataKey = dataKey === 'from' ? 'to' : 'from';
       const oppositeMetadata = state[oppositeDataKey].metadata;
@@ -112,13 +108,9 @@ export const swapViewSlice = createSlice({
       if (state.from.metadata && state.to.metadata && oppositeMetadata && state.tokenList && state.allPairs) {
         // FIXME: Handle WICP/ICP specific case better/in other place
 
-        const isICPToWICPPair =
-          state.from.metadata.id === ICP_METADATA.id &&
-          state.to.metadata.id === ENV.canistersPrincipalIDs.WICP;
+        const isICPToWICPPair = state.from.metadata.id === ICP_METADATA.id && state.to.metadata.id === ENV.canistersPrincipalIDs.WICP;
 
-        const isWICPToICPPair =
-          state.to.metadata.id === ICP_METADATA.id &&
-          state.from.metadata.id === ENV.canistersPrincipalIDs.WICP;
+        const isWICPToICPPair = state.to.metadata.id === ICP_METADATA.id && state.from.metadata.id === ENV.canistersPrincipalIDs.WICP;
 
         const isWICPAndICPPair = isICPToWICPPair || isWICPToICPPair;
 
@@ -131,12 +123,10 @@ export const swapViewSlice = createSlice({
         //   amount: value,
         //   dataKey: oppositeDataKey,
         // });
-        const oppositeTokenPaths =getTokenPaths(state.allPairs as Pair.List, state.tokenList ,  state[dataKey].metadata!.id, value , oppositeDataKey);
 
-        const oppositeValue = getAmountOutFromPath(
-          { ...state[dataKey], paths: oppositeTokenPaths },
-          state[oppositeDataKey] as SwapTokenData
-        );
+        const oppositeTokenPaths = getTokenPaths(state.allPairs as Pair.List, state.tokenList, state[dataKey].metadata!.id, value, oppositeDataKey);
+
+        const oppositeValue = getAmountOutFromPath( { ...state[dataKey], paths: oppositeTokenPaths },state[oppositeDataKey] as SwapTokenData );
 
         // const tokenPaths = Swap.getTokenPaths({
         //   pairList: state.allPairs as Pair.List,
@@ -145,7 +135,8 @@ export const swapViewSlice = createSlice({
         //   amount: oppositeValue,
         //   dataKey: dataKey,
         // });
-        const tokenPaths = getTokenPaths(state.allPairs as Pair.List, state.tokenList ,  state[oppositeDataKey].metadata!.id, oppositeValue , dataKey);
+
+        const tokenPaths = getTokenPaths(state.allPairs as Pair.List, state.tokenList, state[oppositeDataKey].metadata!.id, oppositeValue, dataKey);
 
         const tempMetadata = { ...state.from.metadata };
         state.from.metadata = { ...state.to.metadata };
@@ -159,28 +150,20 @@ export const swapViewSlice = createSlice({
           state[oppositeDataKey].value = value;
           state[dataKey].value = oppositeValue;
 
-          const baseFromPaths = getTokenPaths(state.allPairs as Pair.List, state.tokenList ,  state.from.metadata.id);
-          // Swap.getTokenPaths({
-          //   pairList: state.allPairs as Pair.List,
-          //   tokenList: state.tokenList,
-          //   tokenId: state.from.metadata.id,
-          // });
-           const baseToPaths =  getTokenPaths(state.allPairs as Pair.List, state.tokenList ,  state.to.metadata.id);
-          //Swap.getTokenPaths({
-          //   pairList: state.allPairs as Pair.List,
-          //   tokenList: state.tokenList,
-          //   tokenId: state.to.metadata.id,
-          // });
+          const baseFromPaths = getTokenPaths(state.allPairs as Pair.List, state.tokenList, state.from.metadata.id);
+
+          // Swap.getTokenPaths({ pairList: state.allPairs as Pair.List,   tokenList: state.tokenList, tokenId: state.from.metadata.id });
+          
+          const baseToPaths = getTokenPaths(state.allPairs as Pair.List, state.tokenList, state.to.metadata.id);
+          
+          //Swap.getTokenPaths({ pairList: state.allPairs as Pair.List, tokenList: state.tokenList,tokenId: state.to.metadata.id, });
 
           state.baseFromTokenPaths = baseFromPaths;
           state.baseToTokenPaths = baseToPaths;
         }
       }
     },
-    setTokenList: (
-      state,
-      action: PayloadAction<AppTokenMetadataListObject>
-    ) => {
+    setTokenList: ( state, action: PayloadAction<AppTokenMetadataListObject>) => {
       state.tokenList = action.payload;
       const tokens = Object.values(action.payload);
       if (!state.from.metadata) {
@@ -208,47 +191,31 @@ export const swapViewSlice = createSlice({
 export const swapViewActions = swapViewSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
+
 export const selectSwapViewState = (state: RootState) => state.swapView;
 
+
+//getTokenPaths to avoid cpu load in built fn
+
 function getTokenPaths(allPairs?: any, tokenList?: any, tokenId?: string, amount?: any, dataKey?: any) {
-  var allPairs = JSON.parse(toJson(allPairs));
-  var tokenList = JSON.parse(toJson(tokenList));
-  var tokenPaths: any = {};
-
-
-
-
+  var allPairs = JSON.parse(toJson(allPairs)),
+    tokenList = JSON.parse(toJson(tokenList)),
+    tokenPaths: any = {};
 
   if (tokenId) {
     Object.keys(allPairs[tokenId]).forEach((x: string) => {
+      let fromValue = amount ? amount : 0;
 
-  
-      BigNumber;
-    //  var p =  new BigNumber(amount) ;
-    let fromValue = amount?amount:0;
-  
-
-     var p = Swap.getAmountOut({
-       amountIn: fromValue.toString(),
-       decimalsIn: tokenList[tokenId].decimals,
-       decimalsOut: tokenList[x].decimals,
-       reserveIn: allPairs[tokenId][x].reserve0,
-       reserveOut: allPairs[tokenId][x].reserve1,
+      var p = Swap.getAmountOut({ 
+        amountIn: fromValue.toString(),decimalsIn: tokenList[tokenId].decimals, decimalsOut: tokenList[x].decimals,
+        reserveIn: allPairs[tokenId][x].reserve0,reserveOut: allPairs[tokenId][x].reserve1,
       })
-
-      tokenPaths[x] = {
-        amountOut:p,
-        path: [tokenId]
-      }
+      tokenPaths[x] = { amountOut: p, path: [tokenId, x] }
     })
   }
   function toJson(data: any) {
-    return JSON.stringify(data, (_, v) => typeof v === 'bigint' ? `${v}n` : v)
-      .replace(/"(-?\d+)n"/g, (_, a) => a);
+    return JSON.stringify(data, (_, v) => typeof v === 'bigint' ? `${v}n` : v).replace(/"(-?\d+)n"/g, (_, a) => a);
   }
-
-  console.log(tokenPaths);
-
   return tokenPaths;
 }
 
