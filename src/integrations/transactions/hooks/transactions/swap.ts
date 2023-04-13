@@ -19,15 +19,13 @@ export interface SwapExtraArgs {
 type useTokenTaxCheckOptions = {
   balances?: any;
   tokenId?: string;
+  
   tokenDecimals?: number;
   tokenValue?: string;
   tokenSymbol?: string;
 };
 
 const useTokenTaxCheck = ({ balances, tokenId, tokenSymbol, tokenDecimals = 1, tokenValue = '', }: useTokenTaxCheckOptions) => {
-
-  console.log('calledd')
-
   const { sonicBalances, tokenBalances, icpBalance } = balances;
   const tokenInfo = { wallet: 0, sonic: 0, taxInfo: { input: 0, taxedValue: 0, nonTaxedValue: 0, netValue: 0 } }
   if (tokenId != '' && tokenId != 'ICP' && sonicBalances && tokenBalances) {
@@ -63,11 +61,6 @@ export const useSwapExactTokensTransactionMemo: CreateTransaction<SwapModel> = (
   let balances = useBalances();
 
   return useMemo(() => {
-
-
-console.log(from.metadata ,to.metadata ,'to.metadata'); 
-
-
     if (!from.metadata || !to.metadata) throw new Error('Tokens are required');
     if (!principalId) throw new Error('Principal is required');
 

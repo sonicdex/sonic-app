@@ -1,24 +1,8 @@
-import {
-  Box,
-  Button,
-  Flex,
-  Heading,
-  Icon,
-  Image,
-  Link,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  Skeleton,
-  Stack,
-  Text,
-  Tooltip,
-  useColorModeValue,
+import { 
+  Box, Button,Flex,Heading,Icon,Image,Modal,ModalBody,ModalCloseButton,ModalContent,
+  ModalHeader,ModalOverlay,Skeleton,Stack,Text,Tooltip,useColorModeValue,
 } from '@chakra-ui/react';
+
 import { deserialize } from '@memecake/sonic-js';
 import { FaHdd } from '@react-icons/all-files/fa/FaHdd';
 import { useEffect, useMemo, useState } from 'react';
@@ -26,13 +10,9 @@ import { useEffect, useMemo, useState } from 'react';
 import { arrowBackSrc, questionMarkSrc } from '@/assets';
 import { useBalances } from '@/hooks/use-balances';
 import { AppTokenMetadata } from '@/models';
-import {
-  FeatureState,
-  modalsSliceActions,
-  useAppDispatch,
-  useModalsStore,
-} from '@/store';
-import { ExternalLink } from '@/utils';
+import { FeatureState, modalsSliceActions, useAppDispatch, useModalsStore} from '@/store';
+
+// import { ExternalLink } from '@/utils';
 
 import { DisplayValue, SearchBar } from '..';
 import { ImportToken } from './components';
@@ -44,21 +24,11 @@ export const TokenSelectModal = () => {
     isTokenSelectModalModalOpened: isTokenSelectOpened,
   } = useModalsStore();
 
-  const {
-    tokens,
-    onSelect,
-    selectedTokenIds,
-    isLoading = false,
-    allowAddToken, // This controls if token can be imported
-  } = tokenSelectData;
+  const { tokens, onSelect, selectedTokenIds, isLoading = false, allowAddToken} = tokenSelectData; // This controls if token can be imported
 
   const [addToken, setAddToken] = useState(false);
-  const [importTokenData, setImportTokenData] = useState({
-    name: '',
-    symbol: '',
-    logo: '',
-    id: '',
-  });
+  const [importTokenData, setImportTokenData] = useState({ name: '',symbol: '',logo: '',id: ''});
+
   const parsedTokens = useMemo(() => deserialize(tokens), [tokens]);
   const [search, setSearch] = useState('');
   const [filteredList, setFilteredList] =
@@ -71,7 +41,6 @@ export const TokenSelectModal = () => {
         return true;
       }
       const lowerSearch = search.toLowerCase();
-
       return (
         symbol?.toLowerCase().includes(lowerSearch) ||
         name?.toLowerCase().includes(lowerSearch)
@@ -81,10 +50,15 @@ export const TokenSelectModal = () => {
     const filteredItems = parsedTokens.filter(filterFunction);
     setFilteredList(filteredItems);
   }, [search, parsedTokens]);
+ 
+ 
+  const handleSelect = (tokenId?: string) => {  
+    
+    console.log('handleSelect start ');
 
-  const handleSelect = (tokenId?: string) => {
-    onSelect(tokenId);
-    handleTokenSelectClose();
+    onSelect(tokenId);handleTokenSelectClose();
+
+    console.log('handleSelect ends ');
   };
 
   const handleImportToken = (tokenData: any) => {
@@ -107,41 +81,19 @@ export const TokenSelectModal = () => {
   const emptyColor = useColorModeValue('gray.600', 'gray.300');
 
   return (
-    <Modal
-      isOpen={isTokenSelectOpened}
-      onClose={handleTokenSelectClose}
-      scrollBehavior="inside"
-      isCentered
-      size="md"
-    >
+    <Modal isOpen={isTokenSelectOpened} onClose={handleTokenSelectClose} scrollBehavior="inside" isCentered size="md">
       <ModalOverlay />
       <ModalContent bg={bg}>
         <ModalCloseButton zIndex="docked" />
         <ModalHeader>
           {addToken ? (
-            <Box
-              onClick={() => setAddToken(false)}
-              position="absolute"
-              p={2}
-              top={3}
-              left={4}
-              cursor="pointer"
-              transition="background 400ms"
-              _hover={{
-                background: 'custom.3',
-              }}
+            <Box onClick={() => setAddToken(false)} position="absolute" p={2} top={3}
+              left={4} cursor="pointer" transition="background 400ms" _hover={{ background: 'custom.3'}}
             >
               <Image src={arrowBackSrc} alt="Back" />
             </Box>
           ) : (
-            <Flex
-              w="100%"
-              direction="column"
-              alignItems="center"
-              position="sticky"
-              bg={bg}
-              top={0}
-            >
+            <Flex w="100%" direction="column" alignItems="center" position="sticky" bg={bg} top={0}>
               <Heading as="h1" fontWeight={700} fontSize="lg">
                 Select Token
               </Heading>
@@ -153,36 +105,23 @@ export const TokenSelectModal = () => {
         </ModalHeader>
         <ModalBody>
           {addToken ? (
-            <>
-              <ImportToken
-                id={importTokenData?.id}
-                symbol={importTokenData?.symbol}
-                name={importTokenData?.name}
-                handleImport={importToken}
-              />
-            </>
+            <div>
+              <ImportToken id={importTokenData?.id} symbol={importTokenData?.symbol} name={importTokenData?.name} handleImport={importToken}/>
+            </div>
           ) : (
             <Stack width="100%" direction="column">
               {isLoading &&
                 [...Array(4)].map(() => <TokenSelectItemSkeleton />)}
               {!isLoading && filteredList.length > 0 ? (
                 filteredList.map(({ id, logo, symbol, decimals, name }) => (
-                  <TokenSelectItem
-                    key={id}
-                    balance={totalBalances && totalBalances[id]}
-                    symbol={symbol}
-                    decimals={decimals}
-                    name={name}
-                    onSelect={() => handleSelect(id)}
-                    isLoading={isLoading}
-                    isSelected={selectedTokenIds?.includes(id)}
-                    logoSrc={logo}
+                  <TokenSelectItem key={id} balance={totalBalances && totalBalances[id]}
+                    symbol={symbol} decimals={decimals} name={name} onSelect={() => handleSelect(id)} isLoading={isLoading}
+                    isSelected={selectedTokenIds?.includes(id)} logoSrc={logo}
                   />
                 ))
               ) : (
                 <Stack color={emptyColor} alignItems="center" pt={2}>
                   <Icon as={FaHdd} />
-
                   <Text textAlign="center">
                     Can't see your token? Request it to be added to Sonic using
                     the button below.
@@ -191,26 +130,14 @@ export const TokenSelectModal = () => {
               )}
 
               {allowAddToken && filteredList.length === 0 && (
-                <Flex
-                  direction="row"
-                  alignItems="center"
-                  py={3}
-                  px={3}
-                  cursor="pointer"
-                  justifyContent="space-between"
-                  width="100%"
-                  transition="border 400ms"
-                  border="1px solid transparent"
-                  borderRadius="20px"
+                <Flex direction="row" alignItems="center" py={3} px={3}
+                  cursor="pointer" justifyContent="space-between" width="100%"
+                  transition="border 400ms" border="1px solid transparent" borderRadius="20px"
                 >
                   <Flex direction="row" alignItems="center">
                     <Skeleton isLoaded={!isLoading} borderRadius={40}>
-                      <Image
-                        alt={importTokenData.symbol}
-                        src={importTokenData.logo}
-                        w={10}
-                        h={10}
-                        borderRadius={40}
+                      <Image alt={importTokenData.symbol} src={importTokenData.logo}
+                        w={10} h={10} borderRadius={40}
                       />
                     </Skeleton>
                     <Skeleton isLoaded={!isLoading} minWidth={4} ml={3}>
@@ -225,14 +152,8 @@ export const TokenSelectModal = () => {
                     </Skeleton>
                   </Flex>
                   <Skeleton isLoaded={!isLoading} minWidth={17} ml={2}>
-                    <Button
-                      width="fit-content"
-                      variant="gradient"
-                      colorScheme="dark-blue"
-                      px={4}
-                      borderRadius={20}
-                      fontWeight={700}
-                      onClick={handleImportToken}
+                    <Button width="fit-content" variant="gradient" colorScheme="dark-blue"
+                      px={4} borderRadius={20} fontWeight={700} onClick={handleImportToken}
                     >
                       Import
                     </Button>
@@ -242,45 +163,20 @@ export const TokenSelectModal = () => {
             </Stack>
           )}
         </ModalBody>
-        <ModalFooter>
-          <Button
-            as={Link}
-            href={ExternalLink.tokenRequestForm}
-            isFullWidth
-            variant="gradient"
-            colorScheme="dark-blue"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Request Token (Soon)
-          </Button>
-        </ModalFooter>
       </ModalContent>
     </Modal>
   );
 };
 
 type TokenSelectItemProps = Partial<{
-  balance: number;
-  onSelect: any;
-  name: string;
-  symbol: string;
-  decimals: number;
-  isSelected: boolean;
-  isLoading: boolean;
-
-  logoSrc: string;
+  balance: number; onSelect: any; name: string;
+  symbol: string; decimals: number;isSelected: boolean;
+  isLoading: boolean;logoSrc: string;
 }>;
 
 const TokenSelectItem = ({
-  balance = 0,
-  onSelect,
-  name = '',
-  symbol = '',
-  decimals = 0,
-  isSelected = false,
-  isLoading = false,
-  logoSrc = questionMarkSrc,
+  balance = 0, onSelect, name = '', symbol = '', decimals = 0,isSelected = false,
+  isLoading = false, logoSrc = questionMarkSrc,
 }: TokenSelectItemProps) => {
   const { balancesState } = useBalances();
 
@@ -291,21 +187,9 @@ const TokenSelectItem = ({
   const nameColor = useColorModeValue('gray.700', 'gray.300');
 
   return (
-    <Flex
-      alignItems="center"
-      justifyContent="space-between"
-      py={3}
-      px={3}
-      cursor="pointer"
-      width="100%"
-      transition="border 400ms"
-      border="1px solid"
-      borderColor={isSelected ? 'gray.600' : 'transparent'}
-      borderRadius="20px"
-      onClick={onSelect}
-      _hover={{
-        borderColor: 'custom.4',
-      }}
+    <Flex alignItems="center" justifyContent="space-between" py={3} px={3} cursor="pointer"
+      width="100%" transition="border 400ms" border="1px solid" borderColor={isSelected ? 'gray.600' : 'transparent'}
+      borderRadius="20px" onClick={onSelect} _hover={{ borderColor: 'custom.4'}}
     >
       <Stack direction="row" alignItems="center" spacing={4}>
         <Skeleton isLoaded={!isLoading}>
@@ -327,14 +211,8 @@ const TokenSelectItem = ({
         </Box>
       </Stack>
       <Skeleton isLoaded={!isLoading} minWidth="fit-content" ml={3}>
-        <DisplayValue
-          isUpdating={isBalancesUpdating}
-          value={balance}
-          decimals={decimals}
-          fontSize="1.125rem"
-          fontWeight={700}
-          textAlign="right"
-          shouldDivideByDecimals
+        <DisplayValue isUpdating={isBalancesUpdating} value={balance} decimals={decimals}
+          fontSize="1.125rem" fontWeight={700} textAlign="right" shouldDivideByDecimals
         />
       </Skeleton>
     </Flex>
@@ -342,17 +220,8 @@ const TokenSelectItem = ({
 };
 
 const TokenSelectItemSkeleton = () => (
-  <Flex
-    direction="row"
-    alignItems="center"
-    py={3}
-    px={2}
-    cursor="pointer"
-    height={16}
-    justifyContent="space-between"
-    width="100%"
-    transition="border 400ms"
-    border="1px solid transparent"
+  <Flex direction="row" alignItems="center" py={3} px={2} cursor="pointer" height={16}
+   justifyContent="space-between" width="100%" transition="border 400ms" border="1px solid transparent"
     borderRadius={20}
   >
     <Flex direction="row" alignItems="center">

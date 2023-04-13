@@ -2,7 +2,7 @@ import { Link } from '@chakra-ui/react';
 import { deserialize, serialize } from '@memecake/sonic-js';
 import { useEffect, useMemo } from 'react';
 
-import { useAllPairs, useTokenAllowance } from '@/hooks';
+import { useTokenAllowance } from '@/hooks';
 import { useBalances } from '@/hooks/use-balances';
 import { useSwapBatch } from '@/integrations/transactions';
 import {
@@ -27,7 +27,7 @@ export const SwapNotificationContent: React.FC<
   const { addNotification, popNotification } = useNotificationStore();
   const { principalId } = usePlugStore();
   const { getBalances } = useBalances();
-  const { getAllPairs } = useAllPairs();
+  // const { getAllPairs } = useAllPairs();
 
   const { from, to, slippage, keepInSonic } =
     useMemo(() => {
@@ -89,7 +89,7 @@ export const SwapNotificationContent: React.FC<
           transactionLink: '/activity',
         });
         getBalances();
-        getAllPairs();
+       // getAllPairs();
       }).catch((err) => {
 
         dispatch(modalsSliceActions.clearSwapModalData());

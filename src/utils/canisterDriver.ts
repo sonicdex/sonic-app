@@ -11,13 +11,17 @@ import { ENV } from '@/config';
 var supportedTokenList: any = [];
 
 var tokenListObj: any = {};
+
 export const artemis = new Artemis();
 
 export const loadsupportedTokenList = async () => {
   var plugStat = usePlugStore();
   supportedTokenList = useSwapCanisterStore()?.supportedTokenList;
-  if (!supportedTokenList) return false;
+  
+
+  if (!supportedTokenList || Object.keys(tokenListObj).length > 0) return false;
   supportedTokenList.forEach((el: { id: string }) => { tokenListObj[el.id] = el });
+  console.log(tokenListObj);
   if (plugStat.isConnected) { await artemis.connect('plug'); }
 }
 
@@ -55,19 +59,21 @@ export const getTokenLogo = async (canisterId: string): Promise<string> => {
   return tokenLogo;
 }
 
-export const getTokenBalance = async (canisterId: string): Promise<bigint> => {
+export const getTokenBalance = async (canisterId: string , principalId?:string): Promise<bigint> => {
   var tokenInfo = tokenListObj?.[canisterId];
   var tokenBalance: bigint = BigInt(0);
-  if (!tokenInfo || !artemis.principalId) return tokenBalance;
+  if (!tokenInfo) { return tokenBalance;}
+  var prin = artemis.principalId?artemis.principalId:principalId;
+  if(!prin) return tokenBalance;
 
   var tokenActor = await getTokenActor(tokenInfo.id, true);
 
   if (tokenInfo?.tokenType == 'DIP20' || tokenInfo?.tokenType == 'YC') {
-    tokenBalance = await tokenActor.balanceOf(Principal.fromText(artemis.principalId));
+    tokenBalance = await tokenActor.balanceOf(Principal.fromText(prin));
   } else if (tokenInfo?.tokenType == 'ICRC1') {
-    tokenBalance = await tokenActor.icrc1_balance_of({ owner: Principal.fromText(artemis.principalId), subaccount: [] });
+    tokenBalance = await tokenActor.icrc1_balance_of({ owner: Principal.fromText(prin), subaccount: [] });
   }
-  return tokenBalance
+  return tokenBalance;
 }
 
 export const getTokenAllowance = async (canisterId: string): Promise<bigint> => {

@@ -3,8 +3,6 @@ import { useCallback, useMemo } from 'react';
 
 import { ICP_METADATA } from '@/constants';
 
-import { createAnonSwapActor } from '@/integrations/actor/create-swap-actor';
-
 import { Balances } from '@/models';
 import { 
   FeatureState,swapCanisterActions, useAppDispatch,
@@ -25,43 +23,26 @@ export const useBalances = () => {
 
   const dispatch = useAppDispatch();
 
-  const getUserPositiveLPBalances = useKeepSync(
-    'getUserPositiveLPBalances',
+  const getUserPositiveLPBalances = useKeepSync('getUserPositiveLPBalances',
     useCallback(
       async (isRefreshing?: boolean) => {
         try {
           if (userLPBalancesState === FeatureState.Loading) return;
-          dispatch(
-            swapCanisterActions.setUserLPBalancesState(
-              isRefreshing ? FeatureState.Updating : FeatureState.Loading
-            )
-          );
+          dispatch( swapCanisterActions.setUserLPBalancesState(isRefreshing ? FeatureState.Updating : FeatureState.Loading));
           if (!principalId) throw new Error('Principal ID not found');
 
-          const swapActor = await createAnonSwapActor();
-          const response = await swapActor.getUserLPBalancesAbove(
-            Principal.fromText(principalId),
-            BigInt(0)
-          );
+          const swapActor = await getswapActor(true);
+          const response = await swapActor.getUserLPBalancesAbove( Principal.fromText(principalId),BigInt(0));
 
           if (response) {
-            dispatch(
-              swapCanisterActions.setUserLPBalances(
-                parseResponseUserLPBalances(response)
-              )
-            );
+            dispatch(swapCanisterActions.setUserLPBalances( parseResponseUserLPBalances(response)));
           } else {
             throw new Error('No "getUserLPBalancesAbove" response');
           }
-
-          dispatch(
-            swapCanisterActions.setUserLPBalancesState(FeatureState.Idle)
-          );
+          dispatch(swapCanisterActions.setUserLPBalancesState(FeatureState.Idle));
         } catch (error) {
           AppLog.error(`User LP balances fetch error`, error);
-          dispatch(
-            swapCanisterActions.setUserLPBalancesState(FeatureState.Error)
-          );
+          dispatch(swapCanisterActions.setUserLPBalancesState(FeatureState.Error));
         }
       },
       [userLPBalancesState, principalId, dispatch]
@@ -78,13 +59,12 @@ export const useBalances = () => {
     
         const swapActor:any = await getswapActor(true);
         const sonicBalances = await swapActor.getUserBalances(Principal.fromText(principalId));
-
         const tokenBalances = sonicBalances? await Promise.all(
             sonicBalances.map(async (balance:any) => {
               const tokenCanisterId = balance[0];
               try {
                 var tokenBalance = BigInt(0);
-                var tokenBalance = await getTokenBalance(tokenCanisterId);
+                tokenBalance = await getTokenBalance(tokenCanisterId , principalId);
                 const result: [string, bigint] = [balance[0], tokenBalance];
                 return result;
               } catch (error) {
@@ -95,10 +75,10 @@ export const useBalances = () => {
             })
           ): undefined;
         const icpBalance = await fetchICPBalance(principalId);
-
         dispatch(swapCanisterActions.setICPBalance(parseAmount(icpBalance, ICP_METADATA.decimals)));
         dispatch(swapCanisterActions.setSonicBalances(sonicBalances));
         dispatch(swapCanisterActions.setTokenBalances(tokenBalances));
+        console.log(tokenBalances)
         dispatch(swapCanisterActions.setBalancesState(FeatureState.Idle));
       } catch (error) {
         AppLog.error(`Balances fetch error`, error);
@@ -106,28 +86,20 @@ export const useBalances = () => {
       }
     },
       [principalId, dispatch, balancesState]
-    )
+    ),{ interval:19*1000}
   );
+    
 
   const totalBalances = useMemo(() => {
     if (tokenBalances && sonicBalances) {
-      return sumBalances(tokenBalances, sonicBalances, {
-        [ICP_METADATA.id]: icpBalance ?? 0,
-      });
+      return sumBalances(tokenBalances, sonicBalances, { [ICP_METADATA.id]: icpBalance ?? 0});
     }
-
     return undefined;
   }, [tokenBalances, sonicBalances, icpBalance]);
 
   return {
-    totalBalances,
-    sonicBalances,
-    tokenBalances,
-    icpBalance,
-    balancesState,
-    userLPBalancesState,
-    getBalances,
-    getUserPositiveLPBalances,
+    totalBalances, sonicBalances, tokenBalances, icpBalance, balancesState,
+    userLPBalancesState, getBalances, getUserPositiveLPBalances,
   };
 };
 

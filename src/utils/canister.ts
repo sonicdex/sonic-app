@@ -76,27 +76,13 @@ export const parseResponseAllPairs = (
 ): Pair.List => {
   return response.reduce((list, pair) => {
     const { token0, token1, reserve0, reserve1 } = pair;
-
     for (const token of [token0, token1]) {
       if (ENV.hiddenTokens.includes(token)) return list;
     }
 
-    return {
-      ...list,
-      [token0]: {
-        ...list[token0],
-        [token1]: pair,
-      },
-      [token1]: {
-        ...list[token1],
-        [token0]: {
-          ...pair,
-          token0: token1,
-          token1: token0,
-          reserve0: reserve1,
-          reserve1: reserve0,
-        },
-      },
+    return { ...list,
+      [token0]: {...list[token0],[token1]: pair},
+      [token1]: {...list[token1],[token0]: {...pair,token0: token1,token1: token0,reserve0: reserve1,reserve1: reserve0}},
     } as Pair.List;
   }, {} as Pair.List);
 };

@@ -264,8 +264,7 @@ export const useSwapViewData = () => {
 
     const options = dataKey === 'from' ? fromTokenOptions : toTokenOptions;
     const oppositeDataKey = dataKey === 'from' ? 'to' : 'from';
-    const oppositeTokenId =
-      dataKey === 'from' ? to.metadata?.id : from.metadata?.id;
+    const oppositeTokenId = dataKey === 'from' ? to.metadata?.id : from.metadata?.id;
 
     openSelectTokenModal({
       metadata: options,
@@ -277,23 +276,12 @@ export const useSwapViewData = () => {
           ) {
             return;
           }
-
           if (oppositeTokenId === tokenId) {
-            dispatch(
-              swapViewActions.setToken({
-                data: oppositeDataKey,
-                tokenId: undefined,
-              })
-            );
+            dispatch(swapViewActions.setToken({ data: oppositeDataKey, tokenId: undefined}));
             dispatch(swapViewActions.setToken({ data: dataKey, tokenId }));
-          } else if (
-            tokenId === ENV.canistersPrincipalIDs.XTC &&
-            to.metadata?.id === ICP_METADATA.id
-          ) {
+          } else if ( tokenId === ENV.canistersPrincipalIDs.XTC && to.metadata?.id === ICP_METADATA.id) {
             dispatch(swapViewActions.setToken({ data: dataKey, tokenId }));
-            dispatch(
-              swapViewActions.setToken({ data: oppositeDataKey, tokenId: '' })
-            );
+            dispatch(swapViewActions.setToken({ data: oppositeDataKey, tokenId: '' }));
           } else {
             dispatch(swapViewActions.setToken({ data: dataKey, tokenId }));
           }
