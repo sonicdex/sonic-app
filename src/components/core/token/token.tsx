@@ -360,6 +360,7 @@ export const TokenInput: React.FC<TokenInputProps> = (props) => {
       // Handle zeros on left
       // Handle only one dot in input
       // Handle only token decimals in input
+      
       if (tokenMetadata && setValue) {
         if (_value === '') return setValue('');
         const [nat, decimals] = _value.split('.');

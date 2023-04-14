@@ -16,6 +16,8 @@ export const NumberInput = forwardRef<NumberInputProps, 'input'>(
     const handleValueChange = (event: ChangeEvent<HTMLInputElement>) => {
       const value = event.target.value;
 
+      if(value == '.' ) setValue?setValue('0.'):false;
+
       if (isNaN(Number(value))) return;
 
       if (onChange) {
