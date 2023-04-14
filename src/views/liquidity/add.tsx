@@ -186,7 +186,7 @@ export const LiquidityAddView = () => {
         if(tokenSymbol == 'YC'){
             let decimals = tokenDecimals?(10**tokenDecimals):1
             let sonicBalance = tokenInfo['sonic'] / decimals;
-            console.log("Swap Tax check", tokenSymbol, tokenVal, sonicBalance);
+            
             if((sonicBalance > tokenVal)){
                 tokenInfo.taxInfo.nonTaxedValue = tokenVal;
                 tokenInfo.taxInfo.taxedValue = 0;
@@ -244,7 +244,8 @@ export const LiquidityAddView = () => {
             tokenValue : amountIn
           });
           fromAmount = info.taxInfo.netValue.toFixed(3);
-          console.log("AddLiquidity fromAmount", info.taxInfo.netValue.toFixed(3));
+         
+          
         }
         const lpValue = Liquidity.getOppositeAmount({
           amountIn : fromAmount,
@@ -266,8 +267,6 @@ export const LiquidityAddView = () => {
           parsedLPValue = info.taxInfo.netValue.toFixed(3);
         }
 
-        console.log("Addliquidity lpValue", lpValue.toString());
-        console.log("Addliquidity parsedLPValue", parsedLPValue.toString());
 
         dispatch(
           liquidityViewActions.setValue({ data: dataKey, value: amountIn })

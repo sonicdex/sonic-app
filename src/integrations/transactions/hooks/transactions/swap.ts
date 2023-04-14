@@ -19,7 +19,7 @@ export interface SwapExtraArgs {
 type useTokenTaxCheckOptions = {
   balances?: any;
   tokenId?: string;
-  
+
   tokenDecimals?: number;
   tokenValue?: string;
   tokenSymbol?: string;
@@ -38,7 +38,7 @@ const useTokenTaxCheck = ({ balances, tokenId, tokenSymbol, tokenDecimals = 1, t
     if (tokenSymbol == 'YC') {
       let decimals = tokenDecimals ? (10 ** tokenDecimals) : 1
       let sonicBalance = tokenInfo['sonic'] / decimals;
-      console.log("Swap Tax check", tokenSymbol, tokenVal, sonicBalance);
+
       if ((sonicBalance > tokenVal)) {
         tokenInfo.taxInfo.nonTaxedValue = tokenVal;
         tokenInfo.taxInfo.taxedValue = 0;
@@ -46,26 +46,21 @@ const useTokenTaxCheck = ({ balances, tokenId, tokenSymbol, tokenDecimals = 1, t
         tokenInfo.taxInfo.nonTaxedValue = sonicBalance;
         tokenInfo.taxInfo.taxedValue = tokenVal - tokenInfo.taxInfo.nonTaxedValue;
       }
-      tokenInfo.taxInfo.netValue = tokenInfo.taxInfo.nonTaxedValue + (tokenInfo.taxInfo.taxedValue * (89 / 100));
+      tokenInfo.taxInfo.netValue = tokenInfo.taxInfo.nonTaxedValue + (tokenInfo.taxInfo.taxedValue * (88.9 / 100));
     }
   }
   return tokenInfo
 };
 
 export const useSwapExactTokensTransactionMemo: CreateTransaction<SwapModel> = (
-  { from, to, slippage, principalId }: SwapModel,
-  onSuccess,
-  onFail
-) => {
+  { from, to, slippage, principalId, entryVal }: SwapModel, onSuccess, onFail) => {
   var fromValue = from.value;
   let balances = useBalances();
-
   return useMemo(() => {
     if (!from.metadata || !to.metadata) throw new Error('Tokens are required');
     if (!principalId) throw new Error('Principal is required');
 
     if (from.metadata?.symbol == 'YC') {
-
       let info = useTokenTaxCheck({
         balances: balances, tokenId: from.metadata ? from.metadata.id : '',
         tokenSymbol: from.metadata ? from.metadata.symbol : '',
@@ -76,11 +71,15 @@ export const useSwapExactTokensTransactionMemo: CreateTransaction<SwapModel> = (
     }
 
     const amountIn = parseAmount(fromValue, from.metadata.decimals);
-    const amountOutMin = parseAmount(
-      Swap.getAmountMin({ amount: to.value, slippage, decimals: to.metadata.decimals }).toString(), to.metadata.decimals
-    );
+    var outAmountMin = Swap.getAmountMin({ amount: to.value, slippage, decimals: to.metadata.decimals }).toNumber();
+
+    if (from.metadata?.symbol == 'YC' && parseFloat(entryVal || '') > 0) {
+      outAmountMin = outAmountMin - (outAmountMin * 0.11);
+    }
+
     const currentTime = (new Date().getTime() + 5 * 60 * 1000) * 10000000;
 
+    var amountOutMin = parseAmount(outAmountMin.toString(), to.metadata.decimals);
     return {
       canisterId: ENV.canistersPrincipalIDs.swap,
       idl: SwapIDL.factory,
@@ -90,25 +89,10 @@ export const useSwapExactTokensTransactionMemo: CreateTransaction<SwapModel> = (
         if ('err' in res) throw new Error(res.err);
         if (onSuccess) onSuccess(res);
       },
-      args: [
-        amountIn,
-        amountOutMin,
-        from.paths[to.metadata.id]?.path,
-        Principal.fromText(principalId),
-        BigInt(currentTime),
-      ],
+      args: [amountIn, amountOutMin, from.paths[to.metadata.id]?.path, Principal.fromText(principalId), BigInt(currentTime)],
+      amountOutMin:outAmountMin
     };
-  }, [
-    from.metadata,
-    from.value,
-    from.paths,
-    to.metadata,
-    to.value,
-    principalId,
-    slippage,
-    onFail,
-    onSuccess,
-  ]);
+  }, [from.metadata, from.value, from.paths, to.metadata, to.value, principalId, slippage, onFail, onSuccess]);
 };
 
 export const useSwapForExactTokensTransactionMemo: CreateTransaction<
@@ -118,9 +102,7 @@ export const useSwapForExactTokensTransactionMemo: CreateTransaction<
   var fromValue = from.value;
   let balances = useBalances();
 
-
   return useMemo(() => {
-
     if (!from.metadata || !to.metadata) throw new Error('Tokens are required');
     if (!principalId) throw new Error('Principal is required');
     if (from.metadata?.symbol == 'YC') {

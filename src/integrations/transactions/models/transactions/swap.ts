@@ -6,4 +6,5 @@ export type SwapModel = {
   slippage: number;
   principalId?: string;
   allowance?: number;
+  entryVal?: string;
 };

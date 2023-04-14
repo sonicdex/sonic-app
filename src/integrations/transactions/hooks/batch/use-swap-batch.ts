@@ -34,6 +34,7 @@ export const useSwapBatch = ({ keepInSonic, ...swapParams }: SwapModel & ExtraDe
       swapParams.from.value
     ),
     allowance: swapParams.allowance,
+    entryVal:'0'
   };
   const withdrawParams = { token: swapParams.to.metadata, amount: swapParams.to.value };
   var tokenType = depositParams.token?.tokenType;
@@ -45,10 +46,12 @@ export const useSwapBatch = ({ keepInSonic, ...swapParams }: SwapModel & ExtraDe
 
     var approve = useApproveTransactionMemo(depositParams);
     var deposit = useDepositTransactionMemo(depositParams);
+    swapParams.entryVal = depositParams.amount;
 
     var swap = useSwapExactTokensTransactionMemo(swapParams);
+    withdrawParams.amount = swap.amountOutMin?.toString();
+    
     var withdraw = useWithdrawTransactionMemo(withdrawParams);
-
     const transactions = useMemo(() => {
       let _transactions = {};
       _transactions = { ...getDepositTransactions({ approveTx: approve, depositTx: deposit, tokenType: depositParams.token.tokenType }) };
@@ -126,6 +129,7 @@ export const useSwapBatch = ({ keepInSonic, ...swapParams }: SwapModel & ExtraDe
       approveTx = useICRCDepositMemo({ ...depositParams, tokenAcnt: getAcnt });
       depositTx = useDepositTransactionMemo(depositParams);
     }
+    
 
     var swap = useSwapExactTokensTransactionMemo(swapParams);
     var withdraw = useWithdrawTransactionMemo(withdrawParams);
@@ -141,13 +145,15 @@ export const useSwapBatch = ({ keepInSonic, ...swapParams }: SwapModel & ExtraDe
       } else {
         _transactions = { ..._transactions, swap };
       }
-
       if (!keepInSonic) { _transactions = { ..._transactions, withdraw } };
 
       return _transactions;
     }, [approveTx]);
+    
+    console.log( Object.keys(transactions).length )
 
     if (Object.keys(transactions).length > 1) {
+      console.log('here main if ')
       batchLoad = useBatch<SwapModalDataStep>({
         transactions,
         handleRetry: () => {
@@ -174,6 +180,7 @@ export const useSwapBatch = ({ keepInSonic, ...swapParams }: SwapModel & ExtraDe
       }),
         batchLoad.batchFnUpdate = true;
     } else {
+    console.log('here else ');
       batchLoad = useBatch<SwapModalDataStep>({
         transactions: {},
         handleRetry: () => { return Promise.resolve(false) },

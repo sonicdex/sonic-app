@@ -210,7 +210,7 @@ const getTokenPaths = function(allPairs?: any, tokenList?: any, tokenId?: string
         amountIn: fromValue.toString(),decimalsIn: tokenList[tokenId].decimals, decimalsOut: tokenList[x].decimals,
         reserveIn: allPairs[tokenId][x].reserve0,reserveOut: allPairs[tokenId][x].reserve1,
       })
-      tokenPaths[x] = { amountOut: p, path: [tokenId, x] }
+      tokenPaths[x] = { amountOut: p, path: [tokenId, x] ,  }
     })
   }
   function toJson(data: any) {
@@ -220,5 +220,4 @@ const getTokenPaths = function(allPairs?: any, tokenList?: any, tokenId?: string
   return tokenPaths;
 }
 export const getTokenPath = getTokenPaths;
-
 export default swapViewSlice.reducer;
