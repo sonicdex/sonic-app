@@ -8,13 +8,12 @@ import { PLUG_WALLET_WEBSITE_URL } from '@/components';
 import { ENV } from '@/config';
 import { getAppAssetsSources } from '@/config/utils';
 import { ICP_METADATA } from '@/constants';
-import { useBalances, useQuery, useTokenAllowance, useTokenBalanceMemo,useTokenSelectionChecker} from '@/hooks';
+import { useBalances, useQuery, useTokenAllowance, useTokenBalanceMemo, useTokenSelectionChecker } from '@/hooks';
 
 import { checkIfPlugProviderVersionCompatible } from '@/integrations/plug';
 import {
-  FeatureState,INITIAL_SWAP_SLIPPAGE, NotificationType, SwapTokenDataKey,
-  swapViewActions,useAppDispatch,useCyclesMintingCanisterStore,useNotificationStore,
-  usePlugStore,usePriceStore,useSwapCanisterStore, useSwapViewStore,useTokenModalOpener,
+  FeatureState, INITIAL_SWAP_SLIPPAGE, NotificationType, SwapTokenDataKey, swapViewActions, useAppDispatch, useCyclesMintingCanisterStore,
+  useNotificationStore, usePlugStore, usePriceStore, useSwapCanisterStore, useSwapViewStore, useTokenModalOpener, getTokenPath
 } from '@/store';
 
 import { formatValue, getMaxValue } from '@/utils/format';
@@ -40,10 +39,10 @@ export const useSwapViewData = () => {
     useSwapViewStore();
   const dispatch = useAppDispatch();
   const {
-    sonicBalances, tokenBalances, icpBalance, balancesState,  supportedTokenListState,
+    sonicBalances, tokenBalances, icpBalance, balancesState, supportedTokenListState,
     supportedTokenList, allPairsState, allPairs,
   } = useSwapCanisterStore();
-  
+
   const { totalBalances } = useBalances();
 
   const { ICPXDRconversionRate } = useCyclesMintingCanisterStore();
@@ -56,30 +55,17 @@ export const useSwapViewData = () => {
     isFirstIsSelected: isFromTokenIsICP,
     isSecondIsSelected: isToTokenIsICP,
     isTokenSelected: isICPSelected,
-  } = useTokenSelectionChecker({
-    id0: from.metadata?.id,
-    id1: to.metadata?.id,
-  });
+  } = useTokenSelectionChecker({ id0: from.metadata?.id, id1: to.metadata?.id });
 
   const {
     isTokenSelected: isWICPSelected,
     isFirstIsSelected: isFromTokenIsWICP,
     isSecondIsSelected: isToTokenIsWICP,
-  } = useTokenSelectionChecker({
-    id0: from.metadata?.id,
-    id1: to.metadata?.id,
-    targetId: ENV.canistersPrincipalIDs.WICP,
-  });
+  } = useTokenSelectionChecker({ id0: from.metadata?.id, id1: to.metadata?.id, targetId: ENV.canistersPrincipalIDs.WICP });
 
-  const { isSecondIsSelected: isToTokenIsXTC, isTokenSelected: isXTCSelected } =
-    useTokenSelectionChecker({
-      id0: from.metadata?.id,
-      id1: to.metadata?.id,
-      targetId: ENV.canistersPrincipalIDs.XTC,
-    });
-
-    // console.log('from.metadata?.id', from.metadata);
-
+  const {
+    isSecondIsSelected: isToTokenIsXTC, isTokenSelected: isXTCSelected } =
+    useTokenSelectionChecker({ id0: from.metadata?.id, id1: to.metadata?.id, targetId: ENV.canistersPrincipalIDs.XTC });
 
   const fromBalance = useTokenBalanceMemo(from.metadata?.id);
   const toBalance = useTokenBalanceMemo(to.metadata?.id);
@@ -94,12 +80,9 @@ export const useSwapViewData = () => {
       dataKey === 'from' ? _newValue.minus(icpFee) : _newValue.plus(icpFee);
 
     dispatch(
-      swapViewActions.setValue({
-        data: oppositeDataKey,
-        value:
-          value.toNumber() > 0
-            ? value.dp(ICP_METADATA.decimals).toString()
-            : '',
+      swapViewActions.setValue({ 
+        data: oppositeDataKey, 
+        value: value.toNumber() > 0 ? value.dp(ICP_METADATA.decimals).toString(): '',
       })
     );
   }
@@ -130,9 +113,9 @@ export const useSwapViewData = () => {
         dataKey === 'from'
           ? newValue
           : new BigNumber(newValue)
-              .plus(xtcFees)
-              .plus(icpFeesConvertedToXTC)
-              .toString();
+            .plus(xtcFees)
+            .plus(icpFeesConvertedToXTC)
+            .toString();
 
       const rateBasedAmount = handler({
         amount,
@@ -163,25 +146,13 @@ export const useSwapViewData = () => {
     );
 
     if (wrappedICPMetadata && tokenList && allPairs) {
-      const paths = Swap.getTokenPaths({
-        pairList: allPairs as unknown as Pair.List,
-        tokenList,
-        tokenId: wrappedICPMetadata.id,
-        amount: newValue,
+
+      const paths = getTokenPath({
+        pairList: allPairs as unknown as Pair.List, tokenList,
+        tokenId: wrappedICPMetadata.id, amount: newValue,
       });
-
-      const dataWICP = {
-        ...data,
-        metadata: wrappedICPMetadata,
-        paths,
-      };
-
-      dispatch(
-        swapViewActions.setValue({
-          data: oppositeDataKey,
-          value: getAmountOutFromPath(dataWICP, oppositeData),
-        })
-      );
+      const dataWICP = { ...data, metadata: wrappedICPMetadata, paths };
+      dispatch(swapViewActions.setValue({ data: oppositeDataKey, value: getAmountOutFromPath(dataWICP, oppositeData) }));
     }
   }
 
@@ -191,18 +162,8 @@ export const useSwapViewData = () => {
 
   const resetViewState = useCallback(() => {
     setStep(SwapStep.Home);
-    dispatch(
-      swapViewActions.setValue({
-        data: 'from',
-        value: '',
-      })
-    );
-    dispatch(
-      swapViewActions.setValue({
-        data: 'to',
-        value: '',
-      })
-    );
+    dispatch(swapViewActions.setValue({ data: 'from', value: '' }));
+    dispatch(swapViewActions.setValue({ data: 'to', value: '' }));
   }, [dispatch]);
 
   const resetStepToHome = useCallback(() => {
@@ -250,12 +211,9 @@ export const useSwapViewData = () => {
     const balance = dataKey === 'from' ? fromBalance : toBalance;
     const metadata = dataKey === 'from' ? from.metadata : to.metadata;
 
-    if (!balance) {
-      return;
-    }
+    if (!balance) { return }
 
     const maxValue = getMaxValue(metadata, balance).toString();
-
     handleChangeValue(maxValue, dataKey);
   };
 
@@ -277,9 +235,9 @@ export const useSwapViewData = () => {
             return;
           }
           if (oppositeTokenId === tokenId) {
-            dispatch(swapViewActions.setToken({ data: oppositeDataKey, tokenId: undefined}));
+            dispatch(swapViewActions.setToken({ data: oppositeDataKey, tokenId: undefined }));
             dispatch(swapViewActions.setToken({ data: dataKey, tokenId }));
-          } else if ( tokenId === ENV.canistersPrincipalIDs.XTC && to.metadata?.id === ICP_METADATA.id) {
+          } else if (tokenId === ENV.canistersPrincipalIDs.XTC && to.metadata?.id === ICP_METADATA.id) {
             dispatch(swapViewActions.setToken({ data: dataKey, tokenId }));
             dispatch(swapViewActions.setToken({ data: oppositeDataKey, tokenId: '' }));
           } else {
@@ -298,22 +256,16 @@ export const useSwapViewData = () => {
 
     addNotification({
       title: (
-        <>
+        <div>
           You're using an outdated version of Plug, please update to the latest
           one{' '}
-          <Link
-            color="blue.400"
-            href={PLUG_WALLET_WEBSITE_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+          <Link color="blue.400" href={PLUG_WALLET_WEBSITE_URL} target="_blank" rel="noopener noreferrer">
             here
           </Link>
           .
-        </>
+        </div>
       ),
-      type: NotificationType.Error,
-      id: String(new Date().getTime()),
+      type: NotificationType.Error, id: String(new Date().getTime()),
     });
     return false;
   }, [addNotification]);
@@ -344,13 +296,7 @@ export const useSwapViewData = () => {
       });
       debounce(resetViewState, 300);
     }
-  }, [
-    addNotification,
-    checkIsPlugProviderVersionCompatible,
-    from.metadata?.symbol,
-    from.value,
-    resetViewState,
-  ]);
+  }, [addNotification, checkIsPlugProviderVersionCompatible, from.metadata?.symbol, from.value, resetViewState]);
 
   const handleWithdrawWICP = useCallback(() => {
     addNotification({
@@ -361,27 +307,16 @@ export const useSwapViewData = () => {
     debounce(resetViewState, 300);
   }, [addNotification, from.metadata?.symbol, from.value, resetViewState]);
 
-  useEffect(() => {
-    handleChangeValue(from.value, 'from');
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [to.metadata]);
+  useEffect(() => { handleChangeValue(from.value, 'from');}, [to.metadata]);
 
   const handleApproveSwap = useCallback(() => {
     addNotification({
       title: `Swap ${from.value} ${from.metadata?.symbol} for ${to.value} ${to.metadata?.symbol}`,
-      type: NotificationType.Swap,
-      id: String(new Date().getTime()),
+      type: NotificationType.Swap, id: String(new Date().getTime()),
     });
 
     debounce(resetViewState, 300);
-  }, [
-    addNotification,
-    from.metadata?.symbol,
-    from.value,
-    resetViewState,
-    to.metadata?.symbol,
-    to.value,
-  ]);
+  }, [addNotification, from.metadata?.symbol, from.value, resetViewState, to.metadata?.symbol, to.value]);
 
   const allowance = useTokenAllowance(from.metadata?.id);
 
@@ -439,10 +374,7 @@ export const useSwapViewData = () => {
       return [true, `Enter ${from.metadata.symbol} Amount`];
 
     if (
-      parsedFromValue <=
-      toBigNumber(from.metadata.fee)
-        .applyDecimals(from.metadata.decimals)
-        .toNumber()
+      parsedFromValue <= toBigNumber(from.metadata.fee).applyDecimals(from.metadata.decimals).toNumber()
     ) {
       return [true, `${from.metadata.symbol} amount must be greater than fee`];
     }
@@ -450,10 +382,7 @@ export const useSwapViewData = () => {
     const parsedToValue = (to.value && parseFloat(to.value)) || 0;
 
     if (
-      parsedToValue <=
-      toBigNumber(to.metadata.fee)
-        .applyDecimals(to.metadata.decimals)
-        .toNumber()
+      parsedToValue <= toBigNumber(to.metadata.fee).applyDecimals(to.metadata.decimals).toNumber()
     ) {
       return [true, `${to.metadata.symbol} amount must be greater than fee`];
     }
@@ -490,26 +419,9 @@ export const useSwapViewData = () => {
 
     return [waitingForAllowance, buttonText, handleButtonClick];
   }, [
-    isLoading,
-    isFetchingNotStarted,
-    from.metadata,
-    from.value,
-    to.metadata,
-    to.value,
-    toTokenOptions,
-    totalBalances,
-    fromBalance,
-    isFromTokenIsICP,
-    isToTokenIsWICP,
-    isFromTokenIsWICP,
-    isToTokenIsICP,
-    isToTokenIsXTC,
-    step,
-    allowance,
-    handleMintWICP,
-    handleWithdrawWICP,
-    handleMintXTC,
-    handleApproveSwap,
+    isLoading, isFetchingNotStarted, from.metadata, from.value, to.metadata, to.value, toTokenOptions, totalBalances,
+    fromBalance, isFromTokenIsICP, isToTokenIsWICP, isFromTokenIsWICP, isToTokenIsICP, isToTokenIsXTC, step, allowance,
+    handleMintWICP, handleWithdrawWICP, handleMintXTC, handleApproveSwap,
   ]);
 
   const headerTitle = useMemo(() => {
@@ -535,9 +447,9 @@ export const useSwapViewData = () => {
   ]);
 
   const priceImpact = useMemo(
-    () =>{ 
+    () => {
       return Swap.getPriceImpact({
-        amountIn: parseFloat(from.value)>0?from.value:'0',
+        amountIn: parseFloat(from.value) > 0 ? from.value : '0',
         amountOut: to.value,
         priceIn: from.metadata?.price ?? '0',
         priceOut: to.metadata?.price ?? '0',
@@ -608,8 +520,8 @@ export const useSwapViewData = () => {
       isFromTokenIsICP && isToTokenIsWICP
         ? OperationType.Wrap
         : isFromTokenIsICP && isToTokenIsXTC
-        ? OperationType.Mint
-        : OperationType.Swap,
+          ? OperationType.Mint
+          : OperationType.Swap,
     [isFromTokenIsICP, isToTokenIsWICP, isToTokenIsXTC]
   );
 
@@ -624,9 +536,7 @@ export const useSwapViewData = () => {
       if (tokenFromId) {
         const from = fromTokenOptions.find(({ id }) => id === tokenFromId);
         if (from?.id) {
-          dispatch(
-            swapViewActions.setToken({ data: 'from', tokenId: from.id })
-          );
+          dispatch( swapViewActions.setToken({ data: 'from', tokenId: from.id }));
           dispatch(swapViewActions.setValue({ data: 'from', value: '' }));
         }
       }
@@ -643,35 +553,12 @@ export const useSwapViewData = () => {
   }, [isLoading]);
 
   return {
-    step,
-    allowance,
-    isButtonDisabled,
-    buttonMessage,
-    canHeldInSonic,
-    isAutoSlippage,
-    headerTitle,
-    isConnected,
-    isLoading,
-    isBalancesUpdating,
-    isPriceUpdating,
-    priceImpact,
-    fromSources,
-    toSources,
-    currentOperation,
-    isICPSelected,
+    step, allowance, isButtonDisabled, buttonMessage, canHeldInSonic, isAutoSlippage, headerTitle, isConnected, isLoading, isBalancesUpdating,
+    isPriceUpdating, priceImpact, fromSources, toSources, currentOperation, isICPSelected, isExplanationTooltipVisible,
+    isSelectTokenButtonDisabled, selectTokenButtonText, setStep, setLastChangedInputDataKey,
 
-    isExplanationTooltipVisible,
-    isSelectTokenButtonDisabled,
-    selectTokenButtonText,
-    setStep,
-    setLastChangedInputDataKey,
-    onButtonClick: handleButtonClick,
-    onMenuClose: handleMenuClose,
-    onSetSlippage: handleSetSlippage,
-    onSetIsAutoSlippage: handleSetIsAutoSlippage,
-    onChangeValue: handleChangeValue,
-    onSelectToken: handleSelectToken,
-    onMaxClick: handleMaxClick,
-    onSwitchTokens: handleSwitchTokens,
+    onButtonClick: handleButtonClick, onMenuClose: handleMenuClose, onSetSlippage: handleSetSlippage,
+    onSetIsAutoSlippage: handleSetIsAutoSlippage, onChangeValue: handleChangeValue, onSelectToken: handleSelectToken,
+    onMaxClick: handleMaxClick, onSwitchTokens: handleSwitchTokens,
   };
 };

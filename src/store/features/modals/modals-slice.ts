@@ -37,6 +37,7 @@ export type WithdrawWICPModalData = {
 };
 
 export enum SwapModalDataStep {
+  Getacnt= 'getacnt',
   Approve = 'approve',
   Deposit = 'deposit',
   Swap = 'swap',

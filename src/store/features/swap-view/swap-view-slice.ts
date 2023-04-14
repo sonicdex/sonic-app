@@ -53,7 +53,6 @@ export const swapViewSlice = createSlice({
       state.state = action.payload;
     },
     setValue: (state, action: PayloadAction<{ data: SwapTokenDataKey; value: string }>) => {
-
       const { allPairs, tokenList } = state;
       const { data, value } = action.payload;
 
@@ -78,7 +77,6 @@ export const swapViewSlice = createSlice({
       }
     },
     setToken: (state, action: PayloadAction<{ data: SwapTokenDataKey; tokenId: string | undefined }>) => {
-    
       const { allPairs, tokenList } = state;
       const { data, tokenId } = action.payload;
 
@@ -197,12 +195,14 @@ export const selectSwapViewState = (state: RootState) => state.swapView;
 
 //getTokenPaths to avoid cpu load in built fn
 
-function getTokenPaths(allPairs?: any, tokenList?: any, tokenId?: string, amount?: any, dataKey?: any) {
+const getTokenPaths = function(allPairs?: any, tokenList?: any, tokenId?: string, amount?: any, dataKey?: any) {
   var allPairs = JSON.parse(toJson(allPairs)),
     tokenList = JSON.parse(toJson(tokenList)),
     tokenPaths: any = {};
 
   if (tokenId) {
+    if(!allPairs[tokenId] ) return tokenPaths;
+
     Object.keys(allPairs[tokenId]).forEach((x: string) => {
       let fromValue = amount ? amount : 0;
 
@@ -214,9 +214,11 @@ function getTokenPaths(allPairs?: any, tokenList?: any, tokenId?: string, amount
     })
   }
   function toJson(data: any) {
-    return JSON.stringify(data, (_, v) => typeof v === 'bigint' ? `${v}n` : v).replace(/"(-?\d+)n"/g, (_, a) => a);
+    if(data) return JSON.stringify(data, (_, v) => typeof v === 'bigint' ? `${v}n` : v).replace(/"(-?\d+)n"/g, (_, a) => a);
+    return '{}';
   }
   return tokenPaths;
 }
+export const getTokenPath = getTokenPaths;
 
 export default swapViewSlice.reducer;

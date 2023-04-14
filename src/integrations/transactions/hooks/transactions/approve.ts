@@ -15,9 +15,6 @@ export const useApproveTransactionMemo: CreateTransaction<Deposit> = (
     const tokenType = token.tokenType;
     const parsedAmount = amount ? parseAmount(amount, token.decimals) : BigInt(0);
     const toApproveAmount = parsedAmount + token.fee > BigInt(allowance) ? parsedAmount : 0;
-    
-    console.log('parsedAmount' ,parsedAmount);
-
     if (tokenType == 'DIP20') {
       return {
         canisterId: token.id, idl: TokenIDL.DIP20.factory, methodName: 'approve',

@@ -1,10 +1,6 @@
 import { checkPlainSrc, depositSrc, swapSrc, withdrawSrc } from '@/assets';
 import {
-  modalsSliceActions,
-  SwapModalData,
-  SwapModalDataStep,
-  useAppDispatch,
-  useModalsStore,
+  modalsSliceActions, SwapModalData, SwapModalDataStep, useAppDispatch, useModalsStore,
 } from '@/store';
 
 import { useStepStatus } from '.';
@@ -13,58 +9,37 @@ import { TransactionProgressModal, TransactionStep } from './components';
 export const SwapProgressModal = () => {
   const dispatch = useAppDispatch();
   const { isSwapProgressModalOpened, swapModalData } = useModalsStore();
-  const {
-    steps,
-    fromTokenSymbol,
-    toTokenSymbol,
-    step: activeStep,
-  } = swapModalData;
-  const getStepStatus = useStepStatus<SwapModalData['step']>({
-    activeStep,
-    steps,
-  });
+  const { steps, fromTokenSymbol, toTokenSymbol, step: activeStep } = swapModalData;
+
+  const getStepStatus = useStepStatus<SwapModalData['step']>({ activeStep, steps });
 
   const handleClose = () => {
     dispatch(modalsSliceActions.closeSwapProgressModal());
   };
 
   return (
-    <TransactionProgressModal
-      onClose={handleClose}
-      isOpen={isSwapProgressModalOpened}
-      isCentered
-      title="Swap in progress"
-    >
+    <TransactionProgressModal onClose={handleClose} isOpen={isSwapProgressModalOpened} isCentered title="Swap in progress">
+       {steps?.includes(SwapModalDataStep.Getacnt) && (
+        <TransactionStep status={getStepStatus(SwapModalDataStep.Getacnt)}
+          iconSrc={checkPlainSrc} chevron>
+          Getting Sonic<br />{fromTokenSymbol} Account
+        </TransactionStep>
+      )}
       {steps?.includes(SwapModalDataStep.Approve) && (
-        <TransactionStep
-          status={getStepStatus(SwapModalDataStep.Approve)}
-          iconSrc={checkPlainSrc}
-          chevron
-        >
+        <TransactionStep status={getStepStatus(SwapModalDataStep.Approve)} iconSrc={checkPlainSrc} chevron>
           Approving <br /> {fromTokenSymbol}
         </TransactionStep>
       )}
       {steps?.includes(SwapModalDataStep.Deposit) && (
-        <TransactionStep
-          status={getStepStatus(SwapModalDataStep.Deposit)}
-          iconSrc={depositSrc}
-          chevron
-        >
+        <TransactionStep status={getStepStatus(SwapModalDataStep.Deposit)} iconSrc={depositSrc} chevron>
           Depositing <br /> {fromTokenSymbol}
         </TransactionStep>
       )}
-      <TransactionStep
-        status={getStepStatus(SwapModalDataStep.Swap)}
-        iconSrc={swapSrc}
-        chevron={steps?.includes(SwapModalDataStep.Withdraw)}
-      >
+      <TransactionStep status={getStepStatus(SwapModalDataStep.Swap)} iconSrc={swapSrc} chevron={steps?.includes(SwapModalDataStep.Withdraw)}>
         Swapping <br /> {fromTokenSymbol} to {toTokenSymbol}
       </TransactionStep>
       {steps?.includes(SwapModalDataStep.Withdraw) && (
-        <TransactionStep
-          status={getStepStatus(SwapModalDataStep.Withdraw)}
-          iconSrc={withdrawSrc}
-        >
+        <TransactionStep status={getStepStatus(SwapModalDataStep.Withdraw)} iconSrc={withdrawSrc}>
           Withdrawing <br /> {toTokenSymbol}
         </TransactionStep>
       )}

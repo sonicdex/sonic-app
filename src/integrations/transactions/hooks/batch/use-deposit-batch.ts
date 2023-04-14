@@ -45,7 +45,8 @@ export const useDepositBatch = (deposit: Deposit): any => {
       }),
       openBatchModal,
     };
-    return DepositBatch
+    return DepositBatch;
+
   } else if (tokenType == 'ICRC1') {
 
     var openBatchModal = () => {
@@ -59,9 +60,11 @@ export const useDepositBatch = (deposit: Deposit): any => {
     };
 
     DepositBatch = { ...DepositBatch, openBatchModal };
+    
     var getAcnt = intitICRCTokenDeposit(deposit);
     var approveTx: any = useICRCDepositMemo({ ...deposit, tokenAcnt: getAcnt });
     var depositTx = useDepositTransactionMemo(deposit);
+
     var transactions = useMemo(() => {
       if (getAcnt && approveTx)
         return getDepositTransactions({ approveTx: {}, depositTx, txNames: ['approve', 'deposit'], tokenType: deposit.token?.tokenType })
@@ -83,14 +86,13 @@ export const useDepositBatch = (deposit: Deposit): any => {
         transactions: {},
         handleRetry: () => { return Promise.resolve(false) },
       });
-      if (getAcnt)
-        batchLoad = { state: "approve" }
-      else
-        batchLoad = { state: "getacnt" }
+
+      if (getAcnt) batchLoad = { state: "approve" }
+      else batchLoad = { state: "getacnt" };
+    
     }
-    return DepositBatch = {
-      ...DepositBatch, batch: batchLoad, openBatchModal
-    }
+
+    return DepositBatch = {...DepositBatch, batch: batchLoad, openBatchModal}
   }
   else return DepositBatch
 
