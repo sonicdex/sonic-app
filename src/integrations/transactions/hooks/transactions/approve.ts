@@ -26,7 +26,7 @@ export const useApproveTransactionMemo: CreateTransaction<Deposit> = (
         args: [ Principal.fromText(ENV.canistersPrincipalIDs.swap), toApproveAmount],
       };
     }
-    else if (token.tokenType == 'YC') {
+    else if (tokenType== 'YC') {
       return {
         canisterId: token.id, idl: TokenIDL.DIP20.YCfactory, methodName: 'approve',
         onSuccess: async (res: TokenIDL.DIP20.YCResult) => {

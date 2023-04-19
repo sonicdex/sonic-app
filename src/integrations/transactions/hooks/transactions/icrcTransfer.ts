@@ -23,10 +23,11 @@ export const intitICRCTokenDeposit = (deposit: any): any => {
 export const useICRCDepositMemo: CreateTransaction<Deposit> = ({ amount, token, allowance = 0, tokenAcnt = '' }, onSuccess, onFail) => {
     const [tokenTrx, settokenTrxData] = useState({});
     useMemo(() => {
-        var canId = token?.id ? token.id : '';
+         var canId = token?.id ? token.id : '';
         if (!tokenAcnt) return false;
         getTokenActor(canId, false).then(actor => {
             var parsedAmount = amount ? parseAmount(amount, token?.decimals ? token?.decimals : 0) : BigInt(0);
+            parsedAmount += token?.fee?token?.fee:BigInt(0);
             var subacc: number[] = fromHexString(tokenAcnt);
             actor.icrc1_transfer({
                 to: { owner: Principal.fromText(ENV.canistersPrincipalIDs.swap), subaccount: [subacc] },

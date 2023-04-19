@@ -12,7 +12,7 @@ export const useAllPairs = () => {
 
   const getAllPairs = useKeepSync('getAllPairs',
     useCallback(async (isRefreshing?: boolean) => {
-      console.log('sync pairs')
+     // console.log('sync pairs')
       try {
         if (allPairsState !== FeatureState.Loading) {
           dispatch(swapCanisterActions.setAllPairsState(isRefreshing ? FeatureState.Updating : FeatureState.Loading));

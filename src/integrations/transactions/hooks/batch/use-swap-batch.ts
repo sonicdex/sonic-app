@@ -50,8 +50,8 @@ export const useSwapBatch = ({ keepInSonic, ...swapParams }: SwapModel & ExtraDe
 
     var swap = useSwapExactTokensTransactionMemo(swapParams);
     withdrawParams.amount = swap.amountOutMin?.toString();
-    
     var withdraw = useWithdrawTransactionMemo(withdrawParams);
+
     const transactions = useMemo(() => {
       let _transactions = {};
       _transactions = { ...getDepositTransactions({ approveTx: approve, depositTx: deposit, tokenType: depositParams.token.tokenType }) };
@@ -100,15 +100,14 @@ export const useSwapBatch = ({ keepInSonic, ...swapParams }: SwapModel & ExtraDe
     };
 
     return DepositBatch;
-
   } else if (tokenType == 'ICRC1') {
+
     var steps = ['swap', 'withdraw'];
     var reqAmt = parseFloat(depositParams.amount);
 
     if (reqAmt > 0) {
       steps = ['getacnt', 'approve', 'deposit', ...steps];
     }
-
     const openBatchModal = () => {
       dispatch(
         modalsSliceActions.setSwapModalData({
@@ -130,7 +129,6 @@ export const useSwapBatch = ({ keepInSonic, ...swapParams }: SwapModel & ExtraDe
       depositTx = useDepositTransactionMemo(depositParams);
     }
     
-
     var swap = useSwapExactTokensTransactionMemo(swapParams);
     var withdraw = useWithdrawTransactionMemo(withdrawParams);
 
@@ -146,14 +144,10 @@ export const useSwapBatch = ({ keepInSonic, ...swapParams }: SwapModel & ExtraDe
         _transactions = { ..._transactions, swap };
       }
       if (!keepInSonic) { _transactions = { ..._transactions, withdraw } };
-
       return _transactions;
     }, [approveTx]);
-    
-    console.log( Object.keys(transactions).length )
 
-    if (Object.keys(transactions).length > 1) {
-      console.log('here main if ')
+    if (Object.keys(transactions).includes('swap')) {
       batchLoad = useBatch<SwapModalDataStep>({
         transactions,
         handleRetry: () => {
@@ -177,10 +171,9 @@ export const useSwapBatch = ({ keepInSonic, ...swapParams }: SwapModel & ExtraDe
             dispatch(modalsSliceActions.openSwapFailModal());
           });
         },
-      }),
-        batchLoad.batchFnUpdate = true;
+      });
+      batchLoad.batchFnUpdate = true;
     } else {
-    console.log('here else ');
       batchLoad = useBatch<SwapModalDataStep>({
         transactions: {},
         handleRetry: () => { return Promise.resolve(false) },
@@ -188,73 +181,6 @@ export const useSwapBatch = ({ keepInSonic, ...swapParams }: SwapModel & ExtraDe
       if (getAcnt) batchLoad = { state: "approve" }
       else batchLoad = { state: "getacnt" }
     }
-
-    return DepositBatch = {
-      ...DepositBatch, batch: batchLoad, openBatchModal
-    }
-
-  } else return DepositBatch
-
-
-
-
-
-  // const transactions = useMemo(() => {
-  //   let _transactions = {};
-  //   _transactions = { ...getDepositTransactions({ approveTx: approve, depositTx: deposit ,tokenType: depositParams.token.tokenType})};
-
-  //   _transactions = { ..._transactions,swap};
-
-  //   if (!keepInSonic) {  _transactions = { ..._transactions, withdraw}};
-  //   return _transactions;
-
-  // }, [...Object.values(swapParams), keepInSonic]);
-
-  // const handleRetry = async () => {
-  //   return new Promise<boolean>((resolve) => {
-  //     dispatch(
-  //       modalsSliceActions.setSwapModalData({
-  //         callbacks: [
-  //           // Retry callback
-  //           () => {
-  //             dispatch(modalsSliceActions.closeSwapFailModal());
-  //             openBatchModal();
-  //             resolve(true);
-  //           },
-  //           // Withdraw callback
-  //           () => {
-  //             navigate(
-  //               `/assets/withdraw?tokenId=${swapParams.from.metadata?.id}&amount=${swapParams.from.value}`
-  //             );
-  //             dispatch(modalsSliceActions.closeSwapFailModal());
-  //             resolve(false);
-  //           },
-  //           // Close callback
-  //           () => {
-  //             resolve(false);
-  //           },
-  //         ],
-  //       })
-  //     );
-
-  //     dispatch(modalsSliceActions.closeSwapProgressModal());
-  //     dispatch(modalsSliceActions.openSwapFailModal());
-  //   });
-  // };
-
-  // const openBatchModal = () => {
-  //   dispatch(
-  //     modalsSliceActions.setSwapModalData({
-  //       steps: Object.keys(transactions) as SwapModalDataStep[],
-  //       fromTokenSymbol: swapParams.from.metadata?.symbol,
-  //       toTokenSymbol: swapParams.to.metadata?.symbol,
-  //     })
-  //   );
-  //   dispatch(modalsSliceActions.openSwapProgressModal());
-  // };
-
-  // return {
-  //   batch: useBatch<SwapModalDataStep>({ transactions, handleRetry }),
-  //   openBatchModal,
-  // };
+    return DepositBatch = { ...DepositBatch, batch: batchLoad, openBatchModal}
+  } else return DepositBatch;
 };

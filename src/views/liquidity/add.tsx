@@ -1,26 +1,8 @@
 import {
-  Box,
-  Button,
-  Center,
-  Flex,
-  HStack,
-  Icon,
-  IconButton,
-  Menu,
-  MenuButton,
-  MenuList,
-  Popover,
-  PopoverArrow,
-  PopoverBody,
-  PopoverContent,
-  PopoverHeader,
-  PopoverTrigger,
-  Skeleton,
-  Stack,
-  Text,
-  Tooltip,
-  useColorModeValue,
+  Box, Button, Center, Flex, HStack, Icon, IconButton, Menu, MenuButton, MenuList, Popover, PopoverArrow, PopoverBody,
+  PopoverContent, PopoverHeader, PopoverTrigger, Skeleton, Stack, Text, Tooltip, useColorModeValue,
 } from '@chakra-ui/react';
+
 import { Liquidity } from '@memecake/sonic-js';
 import { FaCog } from '@react-icons/all-files/fa/FaCog';
 import { FaEquals } from '@react-icons/all-files/fa/FaEquals';
@@ -30,40 +12,19 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 
 import {
-  DisplayValue,
-  LPImageBlock,
-  PlugButton,
-  SlippageSettings,
-  StackLine,
-  Token,
-  TokenContent,
-  TokenData,
-  TokenDataBalances,
-  TokenDataPrice,
-  TokenDetailsButton,
-  TokenDetailsLogo,
-  TokenDetailsSymbol,
-  TokenDataMetaInfo,
-  TokenInput,
-  ViewHeader,
+  DisplayValue, LPImageBlock, PlugButton, SlippageSettings, StackLine, Token, TokenContent, TokenData, TokenDataBalances, TokenDataPrice,
+  TokenDetailsButton, TokenDetailsLogo, TokenDetailsSymbol, TokenDataMetaInfo, TokenInput, ViewHeader,
 } from '@/components';
+
 import { useTokenAllowance, useTokenBalanceMemo } from '@/hooks';
 import { useBalances } from '@/hooks/use-balances';
 import { useQuery } from '@/hooks/use-query';
+
 import {
-  FeatureState,
-  INITIAL_LIQUIDITY_SLIPPAGE,
-  LiquidityTokenDataKey,
-  liquidityViewActions,
-  NotificationType,
-  useAppDispatch,
-  useLiquidityViewStore,
-  useNotificationStore,
-  usePlugStore,
-  usePriceStore,
-  useSwapCanisterStore,
-  useTokenModalOpener,
+  FeatureState, INITIAL_LIQUIDITY_SLIPPAGE, LiquidityTokenDataKey, liquidityViewActions, NotificationType, useAppDispatch,
+  useLiquidityViewStore, useNotificationStore, usePlugStore, usePriceStore, useSwapCanisterStore, useTokenModalOpener,
 } from '@/store';
+
 import { AppLog } from '@/utils';
 import { getMaxValue } from '@/utils/format';
 import { debounce } from '@/utils/function';
@@ -141,22 +102,11 @@ export const LiquidityAddView = () => {
               return;
             }
 
-            const foundToken = supportedTokenList.find(
-              ({ id }) => id === tokenId
-            );
+            const foundToken = supportedTokenList.find( ({ id }) => id === tokenId);
 
-            dispatch(
-              liquidityViewActions.setToken({
-                data: dataKey,
-                token: foundToken,
-              })
-            );
-            dispatch(
-              liquidityViewActions.setValue({ data: 'token0', value: '' })
-            );
-            dispatch(
-              liquidityViewActions.setValue({ data: 'token1', value: '' })
-            );
+            dispatch( liquidityViewActions.setToken({ data: dataKey, token: foundToken}));
+            dispatch( liquidityViewActions.setValue({ data: 'token0', value: '' }));
+            dispatch( liquidityViewActions.setValue({ data: 'token1', value: '' }));
           }
         },
         selectedTokenIds,
@@ -168,118 +118,88 @@ export const LiquidityAddView = () => {
     balances?: any;
     tokenId?: string;
     tokenDecimals?: number;
-    tokenValue?:string;
-    tokenSymbol?:string;
-    needAsNetValue?:boolean;
+    tokenValue?: string;
+    tokenSymbol?: string;
+    needAsNetValue?: boolean;
   };
-  
-  const useTokenTaxCheck = ({ balances, tokenId ,tokenSymbol, tokenDecimals=1 , tokenValue='' , needAsNetValue=false}: useTokenTaxCheckOptions) => {
-    const { sonicBalances, tokenBalances ,icpBalance } = balances;
-    const tokenInfo={ wallet:0, sonic:0, taxInfo:{ input: 0 ,taxedValue:0, nonTaxedValue:0 ,netValue:0} }
-    if(tokenId!='' && tokenId!='ICP' && sonicBalances && tokenBalances){
-        var id= tokenId?tokenId:'';
-        tokenInfo['wallet'] = tokenBalances[id]? tokenBalances[id]:0;
-        tokenInfo['sonic'] = sonicBalances[id]?sonicBalances[id]:0;
-    }else{ tokenInfo['wallet'] = icpBalance?icpBalance:0;}
-    if(tokenValue){
-      let tokenVal:number = parseFloat(tokenValue)
-        if(tokenSymbol == 'YC'){
-            let decimals = tokenDecimals?(10**tokenDecimals):1
-            let sonicBalance = tokenInfo['sonic'] / decimals;
-            
-            if((sonicBalance > tokenVal)){
-                tokenInfo.taxInfo.nonTaxedValue = tokenVal;
-                tokenInfo.taxInfo.taxedValue = 0;
-            } else {
-                tokenInfo.taxInfo.nonTaxedValue = sonicBalance;
-                tokenInfo.taxInfo.taxedValue = tokenVal - tokenInfo.taxInfo.nonTaxedValue;
-            }
-            if(needAsNetValue){
-              // sonic balance + X * (89/100) = parsedLPValue
-              // X = (parsedLPValue - sonic balance)/0.89
-              // requestamount = sonic balance + ((parsedLPValue - sonic balance)/0.89)
-              // ~ balance + (estimate - balance)/0.89
-              if(tokenInfo.taxInfo.taxedValue > 0){
-                tokenInfo.taxInfo.netValue = tokenInfo.taxInfo.nonTaxedValue + ((tokenVal - tokenInfo.taxInfo.nonTaxedValue)/0.89);
-              } else {
-                tokenInfo.taxInfo.netValue = tokenInfo.taxInfo.nonTaxedValue;
-              }
-            }  else{
-              tokenInfo.taxInfo.netValue = tokenInfo.taxInfo.nonTaxedValue + (tokenInfo.taxInfo.taxedValue * (89/100));
-            }
+
+  const useTokenTaxCheck = ({ balances, tokenId, tokenSymbol, tokenDecimals = 1, tokenValue = '', needAsNetValue = false }: useTokenTaxCheckOptions) => {
+    const { sonicBalances, tokenBalances, icpBalance } = balances;
+    const tokenInfo = { wallet: 0, sonic: 0, taxInfo: { input: 0, taxedValue: 0, nonTaxedValue: 0, netValue: 0 } }
+    if (tokenId != '' && tokenId != 'ICP' && sonicBalances && tokenBalances) {
+      var id = tokenId ? tokenId : '';
+      tokenInfo['wallet'] = tokenBalances[id] ? tokenBalances[id] : 0;
+      tokenInfo['sonic'] = sonicBalances[id] ? sonicBalances[id] : 0;
+    } else { tokenInfo['wallet'] = icpBalance ? icpBalance : 0; }
+    if (tokenValue) {
+      let tokenVal: number = parseFloat(tokenValue)
+      if (tokenSymbol == 'YC') {
+        let decimals = tokenDecimals ? (10 ** tokenDecimals) : 1
+        let sonicBalance = tokenInfo['sonic'] / decimals;
+
+        if ((sonicBalance > tokenVal)) {
+          tokenInfo.taxInfo.nonTaxedValue = tokenVal;
+          tokenInfo.taxInfo.taxedValue = 0;
+        } else {
+          tokenInfo.taxInfo.nonTaxedValue = sonicBalance;
+          tokenInfo.taxInfo.taxedValue = tokenVal - tokenInfo.taxInfo.nonTaxedValue;
         }
-    }    
+        if (needAsNetValue) {
+          // sonic balance + X * (89/100) = parsedLPValue
+          // X = (parsedLPValue - sonic balance)/0.89
+          // requestamount = sonic balance + ((parsedLPValue - sonic balance)/0.89)
+          // ~ balance + (estimate - balance)/0.89
+          if (tokenInfo.taxInfo.taxedValue > 0) {
+            tokenInfo.taxInfo.netValue = tokenInfo.taxInfo.nonTaxedValue + ((tokenVal - tokenInfo.taxInfo.nonTaxedValue) / 0.89);
+          } else {
+            tokenInfo.taxInfo.netValue = tokenInfo.taxInfo.nonTaxedValue;
+          }
+        } else {
+          tokenInfo.taxInfo.netValue = tokenInfo.taxInfo.nonTaxedValue + (tokenInfo.taxInfo.taxedValue * (89 / 100));
+        }
+      }
+    }
     return tokenInfo
   };
   // Utils
   const setInAndOutTokenValues = useCallback(
     (dataKey: LiquidityTokenDataKey, value?: string) => {
+
       const [amountIn, reserveIn, reserveOut, decimalsIn, decimalsOut] =
         dataKey === 'token0'
-          ? [
-              value ?? token0.value,
-              String(pair?.reserve0),
-              String(pair?.reserve1),
-              Number(token0.metadata?.decimals),
-              Number(token1.metadata?.decimals),
-            ]
-          : [
-              value ?? token1.value,
-              String(pair?.reserve1),
-              String(pair?.reserve0),
-              Number(token1.metadata?.decimals),
-              Number(token0.metadata?.decimals),
-            ];
+          ? [value ?? token0.value, String(pair?.reserve0), String(pair?.reserve1),
+          Number(token0.metadata?.decimals), Number(token1.metadata?.decimals)]
+          : [value ?? token1.value, String(pair?.reserve1), String(pair?.reserve0),
+          Number(token1.metadata?.decimals), Number(token0.metadata?.decimals)];
 
       try {
-        var token = (dataKey == 'token0')?token0:token1;
-        var convertToken = (dataKey == 'token0')?token1:token0;
+        var token = (dataKey == 'token0') ? token0 : token1;
+        var convertToken = (dataKey == 'token0') ? token1 : token0;
         var fromAmount = amountIn;
-        if(token.metadata?.symbol == "YC"){
+        if (token.metadata?.symbol == "YC") {
           var info = useTokenTaxCheck({
-            balances: balances,
-            tokenId : token.metadata.id,
-            tokenSymbol : token.metadata.symbol,
-            tokenDecimals : token.metadata.decimals,
-            tokenValue : amountIn
+            balances: balances, tokenId: token.metadata.id, tokenSymbol: token.metadata.symbol, tokenDecimals: token.metadata.decimals, tokenValue: amountIn
           });
           fromAmount = info.taxInfo.netValue.toFixed(3);
-         
-          
         }
-        const lpValue = Liquidity.getOppositeAmount({
-          amountIn : fromAmount,
-          reserveIn,
-          reserveOut,
-          decimalsIn,
-          decimalsOut,
-        });
+
+        const lpValue = Liquidity.getOppositeAmount({ amountIn: fromAmount ? fromAmount : '0', reserveIn, reserveOut, decimalsIn, decimalsOut });
+
         var parsedLPValue = lpValue.toString();
-        if(convertToken.metadata?.symbol == "YC") {
+        if (convertToken.metadata?.symbol == "YC") {
           var info = useTokenTaxCheck({
-            balances: balances,
-            tokenId : convertToken.metadata.id,
-            tokenSymbol : convertToken.metadata.symbol,
-            tokenDecimals : convertToken.metadata.decimals,
-            tokenValue : parsedLPValue,
-            needAsNetValue : true
+            balances: balances, tokenId: convertToken.metadata.id, tokenSymbol: convertToken.metadata.symbol, tokenDecimals: convertToken.metadata.decimals,
+            tokenValue: parsedLPValue, needAsNetValue: true
           });
           parsedLPValue = info.taxInfo.netValue.toFixed(3);
         }
 
+        dispatch(liquidityViewActions.setValue({ data: dataKey, value: amountIn }));
 
-        dispatch(
-          liquidityViewActions.setValue({ data: dataKey, value: amountIn })
-        );
         const reversedDataKey = dataKey === 'token0' ? 'token1' : 'token0';
 
         if (lpValue.gt(0)) {
-          dispatch(
-            liquidityViewActions.setValue({
-              data: reversedDataKey,
-              value: parsedLPValue,
-            })
-          );
+          dispatch(liquidityViewActions.setValue({ data: reversedDataKey, value: parsedLPValue }));
         }
       } catch (e) {
         if (e instanceof Error && e.message.startsWith('Minimal amountIn')) {
@@ -290,15 +210,7 @@ export const LiquidityAddView = () => {
         }
       }
     },
-    [
-      dispatch,
-      pair?.reserve0,
-      pair?.reserve1,
-      token0.metadata,
-      token0.value,
-      token1.metadata,
-      token1.value,
-    ]
+    [dispatch, pair?.reserve0, pair?.reserve1, token0.metadata, token0.value, token1.metadata, token1.value]
   );
 
   // Memorized values
@@ -366,17 +278,7 @@ export const LiquidityAddView = () => {
 
     if (isReviewing) return [false, 'Confirm Supply'];
     return [false, 'Review Supply'];
-  }, [
-    isLoading,
-    token0,
-    token1,
-    totalBalances,
-    token0Balance,
-    token1Balance,
-    isReviewing,
-    token0Allowance,
-    token1Allowance,
-  ]);
+  }, [isLoading, token0, token1, totalBalances, token0Balance, token1Balance, isReviewing, token0Allowance, token1Allowance]);
 
   const selectedTokenIds = useMemo(() => {
     const selectedIds = [];
@@ -386,20 +288,10 @@ export const LiquidityAddView = () => {
     return selectedIds;
   }, [token0?.metadata?.id, token1?.metadata?.id]);
 
-  const { fee0, fee1, price0, price1, shareOfPool, liquidityAmount } =
-    useAddLiquidityMemo({ pair, token0, token1 });
+  const { fee0, fee1, price0, price1, shareOfPool, liquidityAmount } = useAddLiquidityMemo({ pair, token0, token1 });
 
-  const token0Sources = useTokenSourceMemo({
-    token: token0,
-    tokenBalances,
-    sonicBalances,
-  });
-
-  const token1Sources = useTokenSourceMemo({
-    token: token1,
-    tokenBalances,
-    sonicBalances,
-  });
+  const token0Sources = useTokenSourceMemo({ token: token0, tokenBalances, sonicBalances });
+  const token1Sources = useTokenSourceMemo({ token: token1, tokenBalances, sonicBalances });
 
   useEffect(() => {
     if (!isLoading && supportedTokenList) {
@@ -408,20 +300,13 @@ export const LiquidityAddView = () => {
 
       if (token0Id) {
         const token0 = supportedTokenList.find(({ id }) => id === token0Id);
-        dispatch(
-          liquidityViewActions.setToken({
-            data: 'token0',
-            token: token0,
-          })
-        );
+        dispatch(liquidityViewActions.setToken({ data: 'token0', token: token0 }));
         dispatch(liquidityViewActions.setValue({ data: 'token0', value: '' }));
       }
 
       if (token1Id) {
         const token1 = supportedTokenList.find(({ id }) => id === token1Id);
-        dispatch(
-          liquidityViewActions.setToken({ data: 'token1', token: token1 })
-        );
+        dispatch(liquidityViewActions.setToken({ data: 'token1', token: token1 }));
         dispatch(liquidityViewActions.setValue({ data: 'token1', value: '' }));
       }
     }
@@ -450,44 +335,22 @@ export const LiquidityAddView = () => {
       <ViewHeader onArrowBack={handlePreviousStep} title="Add Liquidity">
         <Menu onClose={handleMenuClose}>
           <Tooltip label="Adjust the slippage">
-            <MenuButton
-              as={IconButton}
-              isRound
-              size="sm"
-              aria-label="Adjust the slippage"
-              icon={<FaCog />}
-              ml="auto"
-            />
+            <MenuButton as={IconButton} isRound size="sm" aria-label="Adjust the slippage" icon={<FaCog />} ml="auto" />
           </Tooltip>
-          <MenuList
-            shadow={menuListShadow}
-            bg={menuListBg}
-            border="none"
-            borderRadius={20}
-            py={0}
-          >
-            <SlippageSettings
-              slippage={slippage}
+          <MenuList shadow={menuListShadow} bg={menuListBg} border="none" borderRadius={20} py={0}>
+            <SlippageSettings slippage={slippage}
               setSlippage={(value) =>
                 dispatch(liquidityViewActions.setSlippage(value))
               }
-              isAutoSlippage={autoSlippage}
-              setIsAutoSlippage={handleSetIsAutoSlippage}
+              isAutoSlippage={autoSlippage} setIsAutoSlippage={handleSetIsAutoSlippage}
             />
           </MenuList>
         </Menu>
       </ViewHeader>
       <Flex direction="column" alignItems="center">
-  
         <Box width="100%">
-          <Token
-            value={token0.value}
-            setValue={(value) => setInAndOutTokenValues('token0', value)}
-            tokenListMetadata={supportedTokenList}
-            tokenMetadata={token0.metadata}
-            isDisabled={isReviewing}
-            sources={token0Sources}
-            isLoading={isLoading}
+          <Token value={token0.value} setValue={(value) => setInAndOutTokenValues('token0', value)} tokenListMetadata={supportedTokenList}
+            tokenMetadata={token0.metadata} isDisabled={isReviewing} sources={token0Sources} isLoading={isLoading}
           >
             <TokenContent>
               <TokenDetailsButton onClick={() => handleSelectToken('token0')}>
@@ -498,44 +361,23 @@ export const LiquidityAddView = () => {
               <TokenInput autoFocus />
             </TokenContent>
             <TokenData>
-              <TokenDataBalances
-                isUpdating={isBalancesUpdating}
-                onMaxClick={() => handleTokenMaxClick('token0')}
-              />
+              <TokenDataBalances isUpdating={isBalancesUpdating} onMaxClick={() => handleTokenMaxClick('token0')} />
               <TokenDataPrice isUpdating={isPriceUpdating} />
             </TokenData>
-            <TokenDataMetaInfo 
-                  tokenId = {token0.metadata?token0.metadata.id:''}
-                  tokenSymbol={token0.metadata?token0.metadata.symbol:''}
-                  tokenDecimals = {token0.metadata?token0.metadata.decimals:0}
-                  pageInfo = "liquidity"
-                  tokenValue={token0.value}></TokenDataMetaInfo>
+            <TokenDataMetaInfo tokenId={token0.metadata ? token0.metadata.id : ''}
+              tokenSymbol={token0.metadata ? token0.metadata.symbol : ''} tokenDecimals={token0.metadata ? token0.metadata.decimals : 0}
+              pageInfo="liquidity" tokenValue={token0.value}></TokenDataMetaInfo>
           </Token>
         </Box>
 
-        <Center
-          borderRadius={12}
-          width={10}
-          height={10}
-          border="1px solid"
-          borderColor={iconBorderColor}
-          bg={menuListBg}
-          mt={-2}
-          mb={-2}
-          zIndex="docked"
-        >
+        <Center borderRadius={12} width={10} height={10} border="1px solid" borderColor={iconBorderColor}
+          bg={menuListBg} mt={-2} mb={-2} zIndex="docked">
           <Icon as={FaPlus} />
         </Center>
 
         <Box width="100%">
-          <Token
-            value={token1.value}
-            setValue={(value) => setInAndOutTokenValues('token1', value)}
-            tokenListMetadata={supportedTokenList}
-            tokenMetadata={token1.metadata}
-            isDisabled={isReviewing}
-            sources={token1Sources}
-            isLoading={isLoading}
+          <Token value={token1.value} setValue={(value) => setInAndOutTokenValues('token1', value)} tokenListMetadata={supportedTokenList}
+            tokenMetadata={token1.metadata} isDisabled={isReviewing} sources={token1Sources} isLoading={isLoading}
           >
             <TokenContent>
               {token1.metadata ? (
@@ -544,9 +386,7 @@ export const LiquidityAddView = () => {
                   <TokenDetailsSymbol />
                 </TokenDetailsButton>
               ) : (
-                <TokenDetailsButton
-                  onClick={() => handleSelectToken('token1')}
-                  variant={isLoading ? 'solid' : 'gradient'}
+                <TokenDetailsButton onClick={() => handleSelectToken('token1')} variant={isLoading ? 'solid' : 'gradient'}
                   colorScheme={isLoading ? 'gray' : 'dark-blue'}
                 >
                   <Skeleton isLoaded={!isLoading}>Select a Token</Skeleton>
@@ -556,60 +396,30 @@ export const LiquidityAddView = () => {
               <TokenInput />
             </TokenContent>
             <TokenData>
-              <TokenDataBalances
-                isUpdating={isBalancesUpdating}
-                onMaxClick={() => handleTokenMaxClick('token1')}
-              />
+              <TokenDataBalances isUpdating={isBalancesUpdating} onMaxClick={() => handleTokenMaxClick('token1')} />
               <TokenDataPrice isUpdating={isPriceUpdating} />
             </TokenData>
-            <TokenDataMetaInfo 
-                  tokenId = {token1.metadata?token1.metadata.id:''}
-                  tokenSymbol={token1.metadata?token1.metadata.symbol:''}
-                  tokenDecimals = {token1.metadata?token1.metadata.decimals:0}
-                  pageInfo = "liquidity"
-                  tokenValue={token1.value}></TokenDataMetaInfo>
+            <TokenDataMetaInfo tokenId={token1.metadata ? token1.metadata.id : ''} tokenSymbol={token1.metadata ? token1.metadata.symbol : ''}
+              tokenDecimals={token1.metadata ? token1.metadata.decimals : 0} pageInfo="liquidity" tokenValue={token1.value}>
+            </TokenDataMetaInfo>
           </Token>
         </Box>
         {token0.metadata && token1.metadata && (
           <>
             {isReviewing && (
               <>
-                <Center
-                  borderRadius={12}
-                  width={10}
-                  height={10}
-                  border="1px solid"
-                  borderColor={iconBorderColor}
-                  bg={menuListBg}
-                  mt={-2}
-                  mb={-2}
-                  justifyContent="center"
-                  alignItems="center"
-                  zIndex="docked"
+                <Center borderRadius={12} width={10} height={10} border="1px solid" borderColor={iconBorderColor}
+                  bg={menuListBg} mt={-2} mb={-2} justifyContent="center" alignItems="center" zIndex="docked"
                 >
                   <Icon as={FaEquals} />
                 </Center>
 
                 <Token value={liquidityAmount} isDisabled shouldGlow>
                   <TokenContent>
-                    <Flex
-                      borderRadius="full"
-                      mr={5}
-                      minWidth="fit-content"
-                      background={bg}
-                      height={10}
-                      px={4}
-                      justifyContent="center"
-                      alignItems="center"
-                      fontWeight="bold"
+                    <Flex borderRadius="full" mr={5} minWidth="fit-content" background={bg}
+                      height={10} px={4} justifyContent="center" alignItems="center" fontWeight="bold"
                     >
-                      <LPImageBlock
-                        imageSources={[
-                          token0.metadata?.logo,
-                          token1.metadata?.logo,
-                        ]}
-                        size="sm"
-                      />
+                      <LPImageBlock imageSources={[token0.metadata?.logo, token1.metadata?.logo]} size="sm" />
                       <Text ml={2.5}>
                         {`${token0.metadata?.symbol}-${token1.metadata?.symbol}`}
                       </Text>
@@ -643,13 +453,7 @@ export const LiquidityAddView = () => {
             )}
 
             {liquidityAmount && (
-              <Flex
-                alignItems="center"
-                justifyContent="space-between"
-                width="full"
-                mt={5}
-                px={5}
-              >
+              <Flex alignItems="center" justifyContent="space-between" width="full" mt={5} px={5}>
                 <Text color={textColor}>
                   {`1 ${token0.metadata?.symbol} = `}{' '}
                   <DisplayValue as="span" value={price1} />{' '}
@@ -698,22 +502,9 @@ export const LiquidityAddView = () => {
       {!isConnected ? (
         <PlugButton variant="dark" />
       ) : (
-        <Button
-          isFullWidth
-          size="lg"
-          variant="gradient"
-          colorScheme="dark-blue"
-          onClick={handleAddLiquidity}
-          isDisabled={
-            buttonDisabled ||
-            typeof token0Allowance !== 'number' ||
-            typeof token1Allowance !== 'number'
-          }
-          isLoading={
-            isLoading ||
-            typeof token0Allowance !== 'number' ||
-            typeof token1Allowance !== 'number'
-          }
+        <Button isFullWidth size="lg" variant="gradient" colorScheme="dark-blue" onClick={handleAddLiquidity}
+          isDisabled={buttonDisabled || typeof token0Allowance !== 'number' || typeof token1Allowance !== 'number'}
+          isLoading={isLoading || typeof token0Allowance !== 'number' || typeof token1Allowance !== 'number'}
         >
           {buttonMessage}
         </Button>

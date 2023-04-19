@@ -17,11 +17,9 @@ export const artemis = new Artemis();
 export const loadsupportedTokenList = async () => {
   var plugStat = usePlugStore();
   supportedTokenList = useSwapCanisterStore()?.supportedTokenList;
-  
-
   if (!supportedTokenList || Object.keys(tokenListObj).length > 0) return false;
   supportedTokenList.forEach((el: { id: string }) => { tokenListObj[el.id] = el });
-  if (plugStat.isConnected) { await artemis.connect('plug'); }
+  if (plugStat.isConnected) { await artemis.connect('plug');  }
 }
 
 export const tokenList = (returnType: 'array' | 'obj' , tokenId?:string): AppTokenMetadata[] | any => {
@@ -41,7 +39,7 @@ export const getTokenActor = async (canisterId: string, isAnnon: boolean): Promi
 }
 
 export const getswapActor = async (isAnnon: boolean): Promise<SwapIDL.Factory> => {
-  var actor = await artemis.getCanisterActor(ENV.canistersPrincipalIDs.swap, SwapIDL.factory, isAnnon)
+  var actor = await artemis.getCanisterActor(ENV.canistersPrincipalIDs.swap, SwapIDL.factory, isAnnon);
   return actor;
 }
 

@@ -7,13 +7,10 @@ import { useBalances } from '@/hooks/use-balances';
 import { useTokenAllowance } from '@/hooks/use-token-allowance';
 import { useAddLiquidityBatch } from '@/integrations/transactions';
 import {
-  AddLiquidityModalDataStep,
-  modalsSliceActions,
-  NotificationType,
-  useAppDispatch,
-  useLiquidityViewStore,
-  useNotificationStore,
+  AddLiquidityModalDataStep, modalsSliceActions, NotificationType,
+  useAppDispatch, useLiquidityViewStore, useNotificationStore,
 } from '@/store';
+
 import { AppLog } from '@/utils';
 
 export interface AddLiquidityNotificationContentProps {
@@ -33,7 +30,6 @@ export const AddLiquidityNotificationContent: React.FC<
     useMemo(() => {
       // Clone current state just for this batch
       const { token0, token1, slippage, pair } = liquidityViewStore;
-
       // Is needed to send to canister the values in the pair id order
       if (pair) {
         const token0Id = pair.id.split(':')[0];
@@ -43,18 +39,16 @@ export const AddLiquidityNotificationContent: React.FC<
           );
         }
       }
-
       return deserialize(serialize({ token0, token1, slippage }));
     }, []) ?? {};
 
   const allowance0 = useTokenAllowance(token0.metadata?.id);
   const allowance1 = useTokenAllowance(token1.metadata?.id);
 
-  const { batch, openBatchModal } = useAddLiquidityBatch({
-    token0,
-    token1,
-    slippage: Number(slippage),
-  });
+  var batchData = useAddLiquidityBatch({ token0, token1, slippage: Number(slippage) });
+
+  const batch: any = batchData?.batch, openBatchModal: any = batchData?.openBatchModal;
+  const batchFnUpdate = batch?.batchFnUpdate;
 
   const handleStateChange = () => {
     if (
@@ -62,11 +56,7 @@ export const AddLiquidityNotificationContent: React.FC<
         batch.state as AddLiquidityModalDataStep
       )
     ) {
-      dispatch(
-        modalsSliceActions.setAddLiquidityModalData({
-          step: batch.state as AddLiquidityModalDataStep,
-        })
-      );
+      dispatch(modalsSliceActions.setAddLiquidityModalData({ step: batch.state as AddLiquidityModalDataStep }));
     }
   };
 
@@ -74,7 +64,6 @@ export const AddLiquidityNotificationContent: React.FC<
     if (typeof allowance0 === 'number' && typeof allowance1 === 'number') {
       dispatch(modalsSliceActions.closeAllowanceVerifyModal());
       handleStateChange();
-
       openBatchModal();
     } else {
       dispatch(
@@ -92,40 +81,29 @@ export const AddLiquidityNotificationContent: React.FC<
     handleOpenModal();
     if (typeof allowance0 === 'undefined' || typeof allowance1 === 'undefined')
       return;
-    batch
-      .execute()
-      .then(() => {
-        dispatch(modalsSliceActions.clearAddLiquidityModalData());
-        dispatch(modalsSliceActions.closeAddLiquidityProgressModal());
-        addNotification({
-          title: `Added LP of ${token0.value} ${token0.metadata.symbol} + ${token1.value} ${token1.metadata.symbol}`,
-          type: NotificationType.Success,
-          id: Date.now().toString(),
-          transactionLink: '/activity',
-        });
-        getBalances();
-        getAllPairs();
-        getUserPositiveLPBalances();
-      })
-      .catch((err) => {
-        AppLog.error('Add Liquidity Error', err);
-        dispatch(modalsSliceActions.clearAddLiquidityModalData());
-        addNotification({
-          title: `Add LP of ${token0.value} ${token0.metadata.symbol} + ${token1.value} ${token1.metadata.symbol} failed`,
-          type: NotificationType.Error,
-          id: Date.now().toString(),
-        });
-      })
-      .finally(() => popNotification(id));
-  }, [allowance0, allowance1]);
+    if (batch.execute)
+    batch.execute().then(() => {
+      dispatch(modalsSliceActions.clearAddLiquidityModalData());
+      dispatch(modalsSliceActions.closeAddLiquidityProgressModal());
+      addNotification({
+        title: `Added LP of ${token0.value} ${token0.metadata.symbol} + ${token1.value} ${token1.metadata.symbol}`,
+        type: NotificationType.Success,id: Date.now().toString(),transactionLink: '/activity',
+      });
+      getBalances();
+      getAllPairs();
+      getUserPositiveLPBalances();
+    }).catch((err:any) => {
+      AppLog.error('Add Liquidity Error', err);
+      dispatch(modalsSliceActions.clearAddLiquidityModalData());
+      addNotification({
+        title: `Add LP of ${token0.value} ${token0.metadata.symbol} + ${token1.value} ${token1.metadata.symbol} failed`,
+        type: NotificationType.Error, id: Date.now().toString(),
+      });
+    }).finally(() => popNotification(id));
+  }, [allowance0, allowance1 , batchFnUpdate]);
 
   return (
-    <Link
-      target="_blank"
-      rel="noreferrer"
-      color="dark-blue.500"
-      onClick={handleOpenModal}
-    >
+    <Link target="_blank" rel="noreferrer" color="dark-blue.500" onClick={handleOpenModal}>
       View progress
     </Link>
   );

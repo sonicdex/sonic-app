@@ -19,9 +19,6 @@ export const useDepositTransactionMemo: CreateTransaction<Deposit> = ({ amount, 
         if (onSuccess) onSuccess(res);
       },
       onFail,
-      args: [
-        Principal.fromText(token?.id),
-        parseAmount(amount, token?.decimals),
-      ],
+      args: [ Principal.fromText(token?.id),parseAmount(amount, token?.decimals)],
     };
   }, [amount, token]);

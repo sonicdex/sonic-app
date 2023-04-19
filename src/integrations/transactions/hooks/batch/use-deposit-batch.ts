@@ -60,7 +60,7 @@ export const useDepositBatch = (deposit: Deposit): any => {
     };
 
     DepositBatch = { ...DepositBatch, openBatchModal };
-    
+
     var getAcnt = intitICRCTokenDeposit(deposit);
     var approveTx: any = useICRCDepositMemo({ ...deposit, tokenAcnt: getAcnt });
     var depositTx = useDepositTransactionMemo(deposit);
@@ -91,7 +91,7 @@ export const useDepositBatch = (deposit: Deposit): any => {
       else batchLoad = { state: "getacnt" };
     
     }
-
+    
     return DepositBatch = {...DepositBatch, batch: batchLoad, openBatchModal}
   }
   else return DepositBatch

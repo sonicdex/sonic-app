@@ -36,7 +36,6 @@ export const SwapNotificationContent: React.FC<SwapNotificationContentProps> = (
 
   const batch: any = batchData?.batch, openBatchModal: any = batchData?.openBatchModal;
   const batchFnUpdate = batch?.batchFnUpdate;
-  // const { batch, openBatchModal }  
 
   const handleStateChange = () => {
     if (Object.values(SwapModalDataStep).includes(batch.state as SwapModalDataStep)){
@@ -85,8 +84,7 @@ export const SwapNotificationContent: React.FC<SwapNotificationContentProps> = (
           });
         }
       }).finally(() => popNotification(id));
-
-  }, [allowance, batchFnUpdate]);
+  }, [allowance , batchFnUpdate]);
 
   return (
     <Link target="_blank" rel="noreferrer" color="dark-blue.500" onClick={handleOpenModal}>
