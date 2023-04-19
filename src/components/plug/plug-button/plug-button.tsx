@@ -76,9 +76,10 @@ export const PlugButton = forwardRef<HTMLButtonElement, PlugButtonProps>(
 
     const handleClick = (): void => {
       switch (state) {
-        case PlugState.Disconnected:
+        case PlugState.Disconnected:{
           dispatch(plugActions.connect());
           break;
+        }
         case PlugState.NotInstalled:
           window.open('https://plugwallet.ooo/', '_plug');
           break;

@@ -8,6 +8,8 @@ import { AppLog } from '@/utils';
 import { plugSlice, PlugState } from '../plug-slice';
 import { disconnect } from './disconnect';
 
+import {artemis} from '@/utils';
+
 export const connect = createAsyncThunk<void>(
   'plug/connect',
   async (_, { dispatch, getState }): Promise<void> => {
@@ -33,6 +35,8 @@ export const connect = createAsyncThunk<void>(
             accountChangeCallback(data.sessionData.principalId);
           },
         });
+        
+        artemis.connect('plug', { whitelist: Object.values(ENV.canistersPrincipalIDs)} );
 
         const principal = await plug.getPrincipal();
         await accountChangeCallback(

@@ -34,7 +34,7 @@ export const getTokenActor = async (canisterId: string, isAnnon: boolean): Promi
   var idl: any = token.tokenType == 'DIP20' ? TokenIDL.DIP20.factory :
     token.tokenType == 'YC' ? TokenIDL.DIP20.YCfactory :
       token.tokenType == 'ICRC1' ? TokenIDL.ICRC1.factory : TokenIDL.DIP20.factory;
-  actor = await artemis.getCanisterActor(token.id, idl, isAnnon)
+  actor = await artemis.getCanisterActor(token.id, idl, isAnnon);
   return actor;
 }
 
