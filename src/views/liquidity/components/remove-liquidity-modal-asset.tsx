@@ -29,32 +29,17 @@ export const RemoveLiquidityModalAsset: FC<RemoveLiquidityModalAssetProps> = ({
 
   return (
     <Flex justifyContent="space-between">
-      <HStack
-        pl={2}
-        py={2}
-        pr={4}
-        bg={bg}
-        borderRadius="full"
-        alignSelf="center"
-      >
+      <HStack pl={2} py={2} pr={4} bg={bg} borderRadius="full" alignSelf="center">
         <Image src={logo} alt={symbol} boxSize={6} borderRadius="full" />
         <Text fontWeight="bold">{symbol}</Text>
       </HStack>
       <Box textAlign="end">
-        <Text fontSize="xl" fontWeight="bold">
-          <DisplayValue
-            value={balance}
-            isUpdating={isUpdating}
-            decimals={decimals}
-          />
-        </Text>
-        <Text fontSize="xs">
-          <DisplayValue
-            value={balancePrice}
-            prefix="~$"
-            isUpdating={isUpdating}
-          />
-        </Text>
+        <Box fontSize="xl" fontWeight="bold">
+          <DisplayValue value={balance} isUpdating={isUpdating} decimals={decimals}/>
+        </Box>
+        <Box fontSize="xs">
+          <DisplayValue value={balancePrice} prefix="~$" isUpdating={isUpdating}/>
+        </Box>
       </Box>
     </Flex>
   );

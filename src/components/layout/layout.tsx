@@ -146,104 +146,50 @@ export const Layout: React.FC = ({ children, ...props }) => {
             <HStack>
               {isConnected ? <PlugMenu /> : <PlugButton />}
               <Menu placement="bottom-end">
-                <MenuButton
-                  as={IconButton}
-                  aria-label="Menu"
-                  icon={<FaEllipsisH />}
-                  borderRadius="full"
-                  bg={menuBg}
-                  shadow={menuShadow}
-                />
+                <MenuButton as={IconButton} aria-label="Menu" icon={<FaEllipsisH />} borderRadius="full" bg={menuBg} shadow={menuShadow} />
+                <div>
+                  <MenuList bg={menuBg} shadow={menuShadow} borderRadius="xl">
+                    {ENV.isDarkModeEnabled && (
+                      <MenuItem onClick={toggleColorMode} icon={colorMode === 'dark' ? <FaSun /> : <FaMoon />}>
+                        {colorMode === 'dark' ? 'Light mode' : 'Dark mode'}
+                      </MenuItem>
+                    )}
+                    {isConnected && (
+                      <MenuItem onClick={() => dispatch(modalsSliceActions.openMintManualModal())} icon={<FaRedo />}>
+                        Retry minting
+                      </MenuItem>
+                    )}
 
-                <MenuList bg={menuBg} shadow={menuShadow} borderRadius="xl">
-                  {ENV.isDarkModeEnabled && (
-                    <MenuItem
-                      onClick={toggleColorMode}
-                      icon={colorMode === 'dark' ? <FaSun /> : <FaMoon />}
-                    >
-                      {colorMode === 'dark' ? 'Light mode' : 'Dark mode'}
-                    </MenuItem>
-                  )}
-                  {isConnected && (
-                    <MenuItem
-                      onClick={() =>
-                        dispatch(modalsSliceActions.openMintManualModal())
-                      }
-                      icon={<FaRedo />}
-                    >
-                      Retry minting
-                    </MenuItem>
-                  )}
-
-                  <MenuDivider />
-                  <ChakraLink
-                    href={ExternalLink.twitter}
-                    target={ExternalLink.twitter}
-                    rel="noopener noreferrer"
-                    fontWeight="bold"
-                  >
-                    <MenuItem icon={<FaTwitter />}>Twitter</MenuItem>
-                  </ChakraLink>
-                  <ChakraLink
-                    href={ExternalLink.discord}
-                    target={ExternalLink.discord}
-                    rel="noopener noreferrer"
-                    fontWeight="bold"
-                  >
-                    <MenuItem icon={<FaDiscord />}>Discord</MenuItem>
-                  </ChakraLink>
-                  <ChakraLink
-                    href={ExternalLink.medium}
-                    target={ExternalLink.medium}
-                    rel="noopener noreferrer"
-                    fontWeight="bold"
-                  >
-                    <MenuItem icon={<FaMedium />}>Medium</MenuItem>
-                  </ChakraLink>
-                  <ChakraLink
-                    href={ExternalLink.sonicDocs}
-                    target={ExternalLink.sonicDocs}
-                    rel="noopener noreferrer"
-                    fontWeight="bold"
-                  >
-                    <MenuItem icon={<FaBook />}>Documentation</MenuItem>
-                  </ChakraLink>
-                  <ChakraLink
-                    href={ExternalLink.swapApiDocs}
-                    target={ExternalLink.swapApiDocs}
-                    rel="noopener noreferrer"
-                    fontWeight="bold"
-                  >
-                    <MenuItem icon={<FaNetworkWired />}>API</MenuItem>
-                  </ChakraLink>
-                </MenuList>
+                    <MenuDivider />
+                    <ChakraLink href={ExternalLink.twitter} target={ExternalLink.twitter} rel="noopener noreferrer" fontWeight="bold">
+                      <MenuItem icon={<FaTwitter />}>Twitter</MenuItem>
+                    </ChakraLink>
+                    <ChakraLink href={ExternalLink.discord} target={ExternalLink.discord} rel="noopener noreferrer" fontWeight="bold">
+                      <MenuItem icon={<FaDiscord />}>Discord</MenuItem>
+                    </ChakraLink>
+                    <ChakraLink href={ExternalLink.medium} target={ExternalLink.medium} rel="noopener noreferrer" fontWeight="bold">
+                      <MenuItem icon={<FaMedium />}>Medium</MenuItem>
+                    </ChakraLink>
+                    <ChakraLink href={ExternalLink.sonicDocs} target={ExternalLink.sonicDocs} rel="noopener noreferrer" fontWeight="bold">
+                      <MenuItem icon={<FaBook />}>Documentation</MenuItem>
+                    </ChakraLink>
+                    <ChakraLink href={ExternalLink.swapApiDocs} target={ExternalLink.swapApiDocs} rel="noopener noreferrer" fontWeight="bold">
+                      <MenuItem icon={<FaNetworkWired />}>API</MenuItem>
+                    </ChakraLink>
+                  </MenuList>
+                </div>
               </Menu>
             </HStack>
           </Flex>
         </Flex>
       </Container>
 
-      <Container
-        as="main"
-        maxW="xl"
-        minH={`calc(100vh - ${headerHeight} - ${FOOTER_HEIGHT})`}
-        py="10"
-        display="flex"
-        flexDirection="column"
-        {...props}
-      >
+      <Container as="main" maxW="xl" minH={`calc(100vh - ${headerHeight} - ${FOOTER_HEIGHT})`} py="10" display="flex" flexDirection="column" {...props}>
         {children}
       </Container>
 
-      <chakra.footer
-        px="4"
-        py="2"
-        position="fixed"
-        bottom={0}
-        left={0}
-        right={0}
-        background={`linear-gradient(to bottom, transparent 0%, ${backgroundColorValue} 50%)`}
-        pointerEvents="none"
+      <chakra.footer px="4" py="2" position="fixed" bottom={0} left={0} right={0}
+        background={`linear-gradient(to bottom, transparent 0%, ${backgroundColorValue} 50%)`} pointerEvents="none"
       >
         <Text>Sonic v{packageJSON.version}</Text>
       </chakra.footer>

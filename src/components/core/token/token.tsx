@@ -116,14 +116,7 @@ export const TokenDetailsButton = forwardRef<TokenDetailsButtonProps, 'button'>(
   ({ children, ...props }, ref) => {
     const { isLoading } = useTokenContext();
     return (
-      <Button
-        ref={ref}
-        borderRadius="full"
-        mr={5}
-        minWidth="fit-content"
-        {...props}
-        isDisabled={isLoading || props.isDisabled}
-      >
+      <Button ref={ref} borderRadius="full" mr={5} minWidth="fit-content" {...props} isDisabled={isLoading || props.isDisabled}>
         {children}
         <Icon as={FaChevronDown} ml={2.5} width={3} />
       </Button>
@@ -232,10 +225,10 @@ export const TokenDataPrice: React.FC<TokenDataPriceProps> = ({
         priceImpactNumber > 0
           ? 'green.500'
           : priceImpactNumber <= 0 && priceImpactNumber >= -1
-          ? defaultColor
-          : priceImpactNumber < -1 && priceImpactNumber >= -5
-          ? 'yellow.500'
-          : 'red.500';
+            ? defaultColor
+            : priceImpactNumber < -1 && priceImpactNumber >= -5
+              ? 'yellow.500'
+              : 'red.500';
 
       return color;
     }
@@ -342,38 +335,25 @@ export const TokenDataBalances: React.FC<TokeDataBalancesProps> = ({
 type TokenInputProps = NumberInputProps;
 
 export const TokenInput: React.FC<TokenInputProps> = (props) => {
-  
-  const { isLoading, isDisabled, shouldGlow, value, setValue, tokenMetadata } =
-    useTokenContext();
+
+  const { isLoading, isDisabled, shouldGlow, value, setValue, tokenMetadata } = useTokenContext();
   const background = shouldGlow ? 'black' : 'custom.2';
 
   const isActive = useMemo(() => {
-    if (isLoading || parseFloat(value || '0') <= 0) {
-      return false;
-    }
-
+    if (isLoading || parseFloat(value || '0') <= 0) { return false;}
     return true;
   }, [isLoading, value]);
 
-  const handleChange = useCallback(
-    (_value: string) => {
-      // Handle zeros on left
-      // Handle only one dot in input
-      // Handle only token decimals in input
-      
-      if (tokenMetadata && setValue) {
-        if (_value === '') return setValue('');
-        const [nat, decimals] = _value.split('.');
-        let newValue = parseInt(nat) > 0 ? nat.replace(/^0+/, '') : '0';
-        if (_value.includes('.') && tokenMetadata.decimals > 0) {
-          newValue += '.';
-        }
-        if (decimals) {
-          newValue += `${decimals.slice(0, tokenMetadata.decimals)}`;
-        }
-        setValue(newValue);
-      }
-    },
+  const handleChange = useCallback((_value: string) => {
+    if (tokenMetadata && setValue) {
+      if (_value === '' || typeof (_value) == undefined) return setValue('');
+      const [nat, decimals] = _value.split('.');
+      let newValue = parseInt(nat) > 0 ? nat.replace(/^0+/, '') : '0';
+      if (_value.includes('.') && tokenMetadata.decimals > 0) { newValue += '.'; }
+      if (decimals) { newValue += `${decimals.slice(0, tokenMetadata.decimals)}`; }
+      setValue(newValue);
+    }
+  },
     [tokenMetadata, setValue]
   );
   const activeColor = useColorModeValue('gray.800', 'gray.50');

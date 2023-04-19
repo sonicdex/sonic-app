@@ -48,20 +48,20 @@ export const PlugMenu: FC<Omit<MenuProps, 'children'>> = (props) => {
       <MenuButton borderRadius="full" px="4" h="12" bg={bg} shadow={shadow}>
         <Flex direction="row" alignItems="center">
           {state === PlugState.Loading ? <Spinner /> : <PlugLogo />}
-          <Box ml="2" fontWeight={600}>
-            {shortPrincipalId}
-          </Box>
+          <Box ml="2" fontWeight={600}> {shortPrincipalId}</Box>
           <Icon as={FaChevronDown} ml={3} />
         </Flex>
       </MenuButton>
-      <MenuList bg={bg} shadow={shadow} borderRadius="xl" overflow="hidden">
-        <MenuItem onClick={handleCopy} icon={<FiCopy />}>
-          <Text>Copy ID</Text>
-        </MenuItem>
-        <MenuItem onClick={handleDisconnect} icon={<BiExit />}>
-          <Text>Disconnect</Text>
-        </MenuItem>
-      </MenuList>
+      <div>
+        <MenuList bg={bg} shadow={shadow} borderRadius="xl" overflow="hidden">
+          <MenuItem onClick={handleCopy} icon={<FiCopy />}>
+            <Text>Copy ID</Text>
+          </MenuItem>
+          <MenuItem onClick={handleDisconnect} icon={<BiExit />}>
+            <Text>Disconnect</Text>
+          </MenuItem>
+        </MenuList>
+      </div>
     </Menu>
   );
 };

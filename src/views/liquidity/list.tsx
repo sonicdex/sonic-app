@@ -3,36 +3,22 @@ import { Liquidity, toBigNumber } from '@memecake/sonic-js';
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router';
 
-import {
-  Asset,
-  Header,
-  InformationBox,
-  PlugNotConnected,
-  TokenImageBlock,
-} from '@/components';
+import { Asset, Header, InformationBox, PlugNotConnected, TokenImageBlock } from '@/components';
 import { useUserMetrics } from '@/hooks';
 import { AppTokenMetadata } from '@/models';
+
 import {
-  FeatureState,
-  liquidityViewActions,
-  modalsSliceActions,
-  useAppDispatch,
-  useLiquidityViewStore,
-  usePlugStore,
-  useSwapCanisterStore,
+  FeatureState, liquidityViewActions, modalsSliceActions, useAppDispatch, useLiquidityViewStore,
+  usePlugStore, useSwapCanisterStore,
 } from '@/store';
 
-import {
-  PairedUserLPToken,
-  PairedUserLPTokenProps,
-  RemoveLiquidityModal,
-} from './components';
+import { PairedUserLPToken, PairedUserLPTokenProps, RemoveLiquidityModal } from './components';
 
 const INFORMATION_TITLE = 'Liquidity Provider Rewards';
-const INFORMATION_DESCRIPTION =
-  'Liquidity providers earn a 0.3% fee on all trades proportional to their share of the pool. Fees are added to the pool, accrue in real time and can be claimed by withdrawing your liquidity. If you want to learn ';
-const INFORMATION_LINK =
-  'https://docs.sonic.ooo/product/adding-liquidity/claiming-your-rewards';
+const INFORMATION_DESCRIPTION = `Liquidity providers earn a 0.3% fee on all trades proportional to their share of the pool. Fees are added to the pool, 
+  accrue in real time and can be claimed by withdrawing your liquidity. If you want to learn `;
+
+const INFORMATION_LINK = 'https://docs.sonic.ooo/product/adding-liquidity/claiming-your-rewards';
 
 const InformationDescription = () => {
   const color = useColorModeValue('gray.600', 'custom.1');
@@ -40,15 +26,7 @@ const InformationDescription = () => {
   return (
     <Text color={color}>
       {INFORMATION_DESCRIPTION}
-      <Box
-        as="a"
-        color={color}
-        href={INFORMATION_LINK}
-        textDecoration="underline"
-        _visited={{
-          color: color,
-        }}
-      >
+      <Box as="a" color={color} href={INFORMATION_LINK} textDecoration="underline" _visited={{ color: color }}>
         review our documentation
       </Box>
       .
@@ -60,36 +38,22 @@ export const LiquidityListView = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { isConnected } = usePlugStore();
-  const {
-    allPairs,
-    allPairsState,
-    userLPBalances,
-    userLPBalancesState,
-    supportedTokenList,
-    supportedTokenListState,
-  } = useSwapCanisterStore();
+
+  const { allPairs, allPairsState, userLPBalances, userLPBalancesState, supportedTokenList, supportedTokenListState } = useSwapCanisterStore();
   const { isBannerOpened } = useLiquidityViewStore();
   const { isLoading: isMetricsLoading, userPairMetrics } = useUserMetrics();
 
   const moveToAddLiquidityView = (token0?: string, token1?: string) => {
-    const query =
-      token0 || token1
-        ? `?${token0 ? `token0=${token0}` : ''}${
-            token1 ? `&token1=${token1}` : ''
-          }`
+    const query = token0 || token1
+        ? `?${token0 ? `token0=${token0}` : ''}${token1 ? `&token1=${token1}` : ''
+        }`
         : '';
-
     navigate(`/liquidity/add${query}`);
   };
 
-  const handleInformationClose = () => {
-    dispatch(liquidityViewActions.setIsBannerOpened(false));
-  };
+  const handleInformationClose = () => { dispatch(liquidityViewActions.setIsBannerOpened(false));};
 
-  const handleOpenRemoveLiquidityModal = (
-    token0: AppTokenMetadata,
-    token1: AppTokenMetadata
-  ) => {
+  const handleOpenRemoveLiquidityModal = ( token0: AppTokenMetadata, token1: AppTokenMetadata) => {
     dispatch(liquidityViewActions.setToken({ data: 'token0', token: token0 }));
     dispatch(liquidityViewActions.setToken({ data: 'token1', token: token1 }));
     dispatch(modalsSliceActions.openRemoveLiquidityModal());
@@ -127,15 +91,10 @@ export const LiquidityListView = () => {
           if (existentPairs.has(`${tokenId1}:${tokenId0}`)) continue;
           existentPairs.add(`${tokenId0}:${tokenId1}`);
 
-          const token0 = supportedTokenList.find(
-            (token) => token.id === tokenId0
-          );
-          const token1 = supportedTokenList.find(
-            (token) => token.id === tokenId1
-          );
+          const token0 = supportedTokenList.find((token) => token.id === tokenId0);
+          const token1 = supportedTokenList.find((token) => token.id === tokenId1);
 
-          let balance0;
-          let balance1;
+          let balance0, balance1;
 
           if (userLPBalances && allPairs && token0 && token1) {
             const lpBalance = userLPBalances[token0.id]?.[token1.id];
@@ -154,15 +113,11 @@ export const LiquidityListView = () => {
             balance1 = balances.balance1.toString();
           }
 
-          const userShares = toBigNumber(userLPBalances[tokenId0][tokenId1])
-            .applyDecimals(Liquidity.PAIR_DECIMALS)
-            .toString();
+          const userShares = toBigNumber(userLPBalances[tokenId0][tokenId1]).applyDecimals(Liquidity.PAIR_DECIMALS).toString();
 
           const totalShares = toBigNumber(
             allPairs?.[tokenId0]?.[tokenId1]?.totalSupply
-          )
-            .applyDecimals(Liquidity.PAIR_DECIMALS)
-            .toString();
+          ).applyDecimals(Liquidity.PAIR_DECIMALS).toString();
 
           pairedList.push({
             pairId: allPairs?.[tokenId0]?.[tokenId1]?.id,
@@ -184,7 +139,7 @@ export const LiquidityListView = () => {
   const headerColor = useColorModeValue('gray.600', 'gray.400');
 
   return (
-    <>
+    <div>
       <Header
         title="Your Liquidity Positions"
         buttonText="Create Position"
@@ -229,32 +184,18 @@ export const LiquidityListView = () => {
         </Text>
       ) : (
         <Stack
-          css={{
-            msOverflowStyle: 'none',
-            scrollbarWidth: 'none',
-            '&::-webkit-scrollbar': {
-              display: 'none',
-            },
-          }}
-          spacing={4}
-          pb={40}
-          overflow="auto"
-        >
+          css={{ msOverflowStyle: 'none', scrollbarWidth: 'none','&::-webkit-scrollbar': { display: 'none'}}}
+          spacing={4} pb={40} overflow="auto">
           {pairedUserLPTokens.map((userLPToken) => {
             return (
-              <PairedUserLPToken
-                {...userLPToken}
-                key={userLPToken.pairId}
-                handleRemove={handleOpenRemoveLiquidityModal}
-                handleAdd={moveToAddLiquidityView}
-                pairMetrics={userPairMetrics?.[userLPToken.pairId]}
-                isMetricsLoading={isMetricsLoading}
-                isLPBalanceLoading={isUserLPBalancesUpdating}
+              <PairedUserLPToken {...userLPToken} key={userLPToken.pairId} handleRemove={handleOpenRemoveLiquidityModal}
+                handleAdd={moveToAddLiquidityView} pairMetrics={userPairMetrics?.[userLPToken.pairId]}
+                isMetricsLoading={isMetricsLoading} isLPBalanceLoading={isUserLPBalancesUpdating}
               />
             );
           })}
         </Stack>
       )}
-    </>
+    </div>
   );
 };

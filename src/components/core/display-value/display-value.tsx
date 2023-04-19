@@ -1,10 +1,6 @@
-import {
-  forwardRef,
-  keyframes,
-  Text,
-  TextProps,
-  Tooltip,
+import { forwardRef, keyframes,Text,TextProps,Tooltip,
 } from '@chakra-ui/react';
+
 import { formatAmount, toBigNumber } from '@memecake/sonic-js';
 import { useMemo } from 'react';
 
@@ -18,25 +14,12 @@ export type DisplayValueProps = TextProps & {
   shouldDivideByDecimals?: boolean;
 };
 
-export const DisplayValue = forwardRef<DisplayValueProps, 'p'>(
-  (
-    {
-      value = 0,
-      decimals = 4,
-      isUpdating,
-      prefix,
-      suffix,
-      disableTooltip,
-      shouldDivideByDecimals,
-      ...textProps
-    },
-    ref
+export const DisplayValue = forwardRef<DisplayValueProps, 'p'>((
+    { 
+      value = 0,decimals = 4, isUpdating, prefix, suffix,disableTooltip,
+      shouldDivideByDecimals, ...textProps},ref
   ) => {
-    const blinker = keyframes`
-      50% {
-        opacity: 0.35;
-      }
-    `;
+    const blinker = keyframes`50% { opacity: 0.35;}`;
 
     const [formattedValue, tooltipAmount, isDisabled] = useMemo(() => {
       const tooltipAmount = shouldDivideByDecimals
@@ -44,21 +27,13 @@ export const DisplayValue = forwardRef<DisplayValueProps, 'p'>(
         : toBigNumber(value).dp(decimals).toString();
 
       const formattedValue = formatAmount(tooltipAmount);
-
-      return [
-        formattedValue,
-        tooltipAmount,
-        disableTooltip || String(tooltipAmount).length <= 4,
-      ];
+      
+      return [formattedValue, tooltipAmount, disableTooltip || String(tooltipAmount).length <= 4,];
     }, [value, decimals, disableTooltip, shouldDivideByDecimals]);
-
+  
     return (
       <Tooltip label={tooltipAmount} isDisabled={isDisabled}>
-        <Text
-          ref={ref}
-          {...textProps}
-          animation={isUpdating ? `${blinker} 1s linear infinite` : undefined}
-        >
+        <Text ref={ref} {...textProps} animation={isUpdating ? `${blinker} 1s linear infinite` : undefined}>
           {prefix}
           {formattedValue}
           {suffix}

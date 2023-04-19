@@ -13,17 +13,10 @@ type TokenBalancesPopoverItemProps = {
 };
 
 export const TokenBalancesPopoverItem: FC<TokenBalancesPopoverItemProps> = ({
-  src = questionMarkSrc,
-  symbol,
-  balance,
-  decimals,
-  name,
-}) => {
-  const _balance = useMemo(
-    () =>
-      toBigNumber(balance ?? 0)
-        .applyDecimals(decimals ?? 0)
-        .toString(),
+  src = questionMarkSrc, symbol,balance,decimals,name}) => {
+    
+  const _balance = useMemo(() =>
+      toBigNumber(balance ?? 0).applyDecimals(decimals ?? 0).toString(),
     [balance, decimals]
   );
 

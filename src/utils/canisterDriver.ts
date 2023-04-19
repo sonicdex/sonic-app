@@ -34,11 +34,14 @@ export const getTokenActor = async (canisterId: string, isAnnon: boolean): Promi
   var idl: any = token.tokenType == 'DIP20' ? TokenIDL.DIP20.factory :
     token.tokenType == 'YC' ? TokenIDL.DIP20.YCfactory :
       token.tokenType == 'ICRC1' ? TokenIDL.ICRC1.factory : TokenIDL.DIP20.factory;
+  if(!artemis.provider){ await artemis.connect('plug');}
   actor = await artemis.getCanisterActor(token.id, idl, isAnnon);
+ 
   return actor;
 }
 
 export const getswapActor = async (isAnnon: boolean): Promise<SwapIDL.Factory> => {
+  if(!artemis.provider){ await artemis.connect('plug');}
   var actor = await artemis.getCanisterActor(ENV.canistersPrincipalIDs.swap, SwapIDL.factory, isAnnon);
   return actor;
 }

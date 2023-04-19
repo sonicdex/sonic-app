@@ -108,6 +108,7 @@ export const useSwapBatch = ({ keepInSonic, ...swapParams }: SwapModel & ExtraDe
     if (reqAmt > 0) {
       steps = ['getacnt', 'approve', 'deposit', ...steps];
     }
+    
     const openBatchModal = () => {
       dispatch(
         modalsSliceActions.setSwapModalData({

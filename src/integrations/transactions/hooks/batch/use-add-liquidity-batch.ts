@@ -94,7 +94,6 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
 
   if (token1Amt > 0) {
     if (token1Type == 'DIP20' || token1Type == 'YC') {
-
       approve1 = useApproveTransactionMemo(deposit1Params);
       deposit1 = useDepositTransactionMemo(deposit1Params);
       steps = [...steps,'approve1', 'deposit1'];
@@ -151,7 +150,7 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
           ...getDepositTransactions({ txNames: ['approve1', 'deposit1'], approveTx: {}, depositTx: deposit1, tokenType: 'ICRC1' }),
         };
       }
-    steps = [...steps, 'addLiquidity']
+    steps = [...steps, 'addLiquidity'];
     _transactions = { ..._transactions, addLiquidity };
     return _transactions;
   }, [steps])
