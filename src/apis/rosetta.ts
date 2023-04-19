@@ -142,7 +142,7 @@ export default class RosettaApi {
    */
   async getAccountBalance(accountAddress: string) {
 
-    console.log(this.balanceFetchTimeout , this.lastFetchTime)
+  //  console.log(this.balanceFetchTimeout , this.lastFetchTime)
 
     try {
       const response = await this.accountBalanceByAddress(accountAddress);

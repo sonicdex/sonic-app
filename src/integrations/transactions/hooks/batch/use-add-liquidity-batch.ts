@@ -194,7 +194,7 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
     dispatch(modalsSliceActions.openAddLiquidityProgressModal());
   };
 
-  console.log('tx1complete && tx2complete', tx1complete , tx2complete);
+  //console.log('tx1complete && tx2complete', tx1complete , tx2complete);
 
   if (tx1complete && tx2complete) {
    // console.log(transactions);
