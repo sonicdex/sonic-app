@@ -37,7 +37,7 @@ export const App = () => {
   useNetworkErrorNotifications();
   loadsupportedTokenList();
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/">
       <Layout>
         <NotificationManager />
 

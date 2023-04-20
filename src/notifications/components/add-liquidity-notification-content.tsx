@@ -98,7 +98,7 @@ export const AddLiquidityNotificationContent: React.FC<
         type: NotificationType.Error, id: Date.now().toString(),
       });
     }).finally(() => popNotification(id));
-  }, [allowance0, allowance1 , batchFnUpdate]);
+  }, [batchFnUpdate]);
 
   return (
     <Link target="_blank" rel="noreferrer" color="dark-blue.500" onClick={handleOpenModal}>

@@ -23,8 +23,8 @@ export const intitICRCTokenDeposit = (deposit?:any): any => {
 };
 
 export const useICRCTransferMemo: CreateTransaction<Deposit> = (
-    { amount, token, allowance = 0, tokenAcnt = '' },onSuccess, onFail) => useMemo(() => {
-        if (!tokenAcnt && !token?.id) return false;
+    { amount, token, allowance = 0, tokenAcnt='' },onSuccess, onFail) => useMemo(() => {
+        if (!token?.id && tokenAcnt) { return; }
         var canId = token?.id ? token.id : '';
         var parsedAmount = amount ? parseAmount(amount, token?.decimals ? token?.decimals : 0) : BigInt(0);
         parsedAmount += token?.fee ? token?.fee : BigInt(0);
@@ -43,7 +43,7 @@ export const useICRCTransferMemo: CreateTransaction<Deposit> = (
                 fee: [], memo: [], amount: parsedAmount, from_subaccount: [], created_at_time: []
             }],
         };
-    }, [amount, token, tokenAcnt]);
+    }, [tokenAcnt]);
 
 
 export const useICRCDepositMemo: CreateTransaction<Deposit> = ({ amount, token, allowance = 0, tokenAcnt = '' }, onSuccess, onFail) => {

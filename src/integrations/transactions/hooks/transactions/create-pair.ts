@@ -11,15 +11,10 @@ import { CreatePair, CreateTransaction } from '../../models';
 export type CreatePairTransaction = Transaction;
 
 export const useCreatePairTransactionMemo: CreateTransaction<CreatePair> = (
-  { token0, token1 }: CreatePair,
-  onSuccess,
-  onFail
-) =>
-  useMemo(() => {
+   { token0, token1 }: CreatePair,onSuccess,onFail) =>useMemo(() => {
     if (!token0.metadata || !token1.metadata) {
       return {};
     }
-
     return {
       canisterId: ENV.canistersPrincipalIDs.swap,
       idl: SwapIDL.factory,
@@ -38,4 +33,4 @@ export const useCreatePairTransactionMemo: CreateTransaction<CreatePair> = (
         Principal.fromText(token1.metadata.id),
       ],
     };
-  }, [token0, token1]);
+  }, []);

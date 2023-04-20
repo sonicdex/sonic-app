@@ -75,6 +75,7 @@ export type WithdrawModalData = {
 };
 
 export enum AddLiquidityModalDataStep {
+  Getacnt = 'getacnt',
   Approve0 = 'approve0',
   Deposit0 = 'deposit0',
   Approve1 = 'approve1',

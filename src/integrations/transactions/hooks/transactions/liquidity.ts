@@ -7,7 +7,8 @@ import { ENV } from '@/config';
 import { SwapIDL } from '@/did';
 import { AppLog } from '@/utils';
 import { parseAmount } from '@/utils/format';
-import { useBalances } from '@/hooks';
+
+// import { useBalances } from '@/hooks';
 
 import { AddLiquidity, CreateTransaction, RemoveLiquidity } from '../../models';
 
@@ -52,40 +53,42 @@ const useTokenTaxCheck = ({ balances, tokenId, tokenSymbol, tokenDecimals = 1, t
   }
   return tokenInfo
 };
+useTokenTaxCheck;
 
 export const useAddLiquidityTransactionMemo: CreateTransaction<AddLiquidity> = (
   { token0, token1, slippage }: AddLiquidity, onSuccess, onFail) => {
-  var token0Value = token0.value, token1Value = token1.value, balances = useBalances();
+  var token0Value = token0.value, token1Value = token1.value;
+ // balances = useBalances();
 
   return useMemo(() => {
     if (!token0.metadata || !token1.metadata) throw new Error('Tokens are required');
 
-    if (token0.metadata?.symbol == 'YC') {
-      let info = useTokenTaxCheck({
-        balances: balances, tokenId: token0.metadata ? token0.metadata.id : '',
-        tokenSymbol: token0.metadata ? token0.metadata.symbol : '',
-        tokenDecimals: token0.metadata ? token0.metadata.decimals : 1,
-        tokenValue: token0.value ? token0.value : ''
-      });
+    // if (token0.metadata?.symbol == 'YC') {
+    //   let info = useTokenTaxCheck({
+    //     balances: balances, tokenId: token0.metadata ? token0.metadata.id : '',
+    //     tokenSymbol: token0.metadata ? token0.metadata.symbol : '',
+    //     tokenDecimals: token0.metadata ? token0.metadata.decimals : 1,
+    //     tokenValue: token0.value ? token0.value : ''
+    //   });
 
-      token0Value = info.taxInfo.netValue.toString();
-      var _temp = token0Value.split(".");
+    //   token0Value = info.taxInfo.netValue.toString();
+    //   var _temp = token0Value.split(".");
 
-      token0Value = _temp[0] + '.' + (_temp[1] ? _temp[1].substring(0, 3):'0');
-    }
+    //   token0Value = _temp[0] + '.' + (_temp[1] ? _temp[1].substring(0, 3):'0');
+    // }
 
-    if (token1.metadata?.symbol == 'YC') {
-      let info = useTokenTaxCheck({
-        balances: balances, tokenId: token1.metadata ? token1.metadata.id : '',
-        tokenSymbol: token1.metadata ? token1.metadata.symbol : '',
-        tokenDecimals: token1.metadata ? token1.metadata.decimals : 1,
-        tokenValue: token1.value ? token1.value : ''
-      });
+    // if (token1.metadata?.symbol == 'YC') {
+    //   let info = useTokenTaxCheck({
+    //     balances: balances, tokenId: token1.metadata ? token1.metadata.id : '',
+    //     tokenSymbol: token1.metadata ? token1.metadata.symbol : '',
+    //     tokenDecimals: token1.metadata ? token1.metadata.decimals : 1,
+    //     tokenValue: token1.value ? token1.value : ''
+    //   });
 
-      token1Value = info.taxInfo.netValue.toString();
-      var _temp = token1Value.split(".");
-      token1Value = _temp[0] + '.' + ( _temp[1]? _temp[1].substring(0, 3):'0');
-    }
+    //   token1Value = info.taxInfo.netValue.toString();
+    //   var _temp = token1Value.split(".");
+    //   token1Value = _temp[0] + '.' + ( _temp[1]? _temp[1].substring(0, 3):'0');
+    // }
 
     const amount0Desired = parseAmount(token0Value, token0.metadata.decimals);
     const amount1Desired = parseAmount(token1Value, token1.metadata.decimals);
@@ -100,7 +103,6 @@ export const useAddLiquidityTransactionMemo: CreateTransaction<AddLiquidity> = (
     );
 
     const currentTime = (new Date().getTime() + 5 * 60 * 1000) * 10000000;
-
     return {
       canisterId: ENV.canistersPrincipalIDs.swap,
       idl: SwapIDL.factory,

@@ -37,6 +37,24 @@ export const AddLiquidityProgressModal = () => {
       isCentered
       title="Add LP in progress"
     >
+
+      {steps?.includes(AddLiquidityModalDataStep.Getacnt) && (
+        <TransactionStep status={getStepStatus(AddLiquidityModalDataStep.Getacnt)}
+          iconSrc={checkPlainSrc} chevron>
+          Getting Sonic <br /> Account
+
+        </TransactionStep>
+      )}
+      {steps?.includes(AddLiquidityModalDataStep.CreatePair) && (
+        <TransactionStep
+          status={getStepStatus(AddLiquidityModalDataStep.CreatePair)}
+          iconSrc={plusSrc}
+          chevron
+        >
+          Creating pair <br /> {token0Symbol} - {token1Symbol}
+        </TransactionStep>
+      )}
+
       {steps?.includes(AddLiquidityModalDataStep.Approve0) && (
         <TransactionStep
           status={getStepStatus(AddLiquidityModalDataStep.Approve0)}
@@ -73,21 +91,15 @@ export const AddLiquidityProgressModal = () => {
           Depositing <br /> {token1Symbol}
         </TransactionStep>
       )}
-      {steps?.includes(AddLiquidityModalDataStep.CreatePair) && (
-        <TransactionStep
-          status={getStepStatus(AddLiquidityModalDataStep.CreatePair)}
-          iconSrc={plusSrc}
-          chevron
-        >
-          Creating pair <br /> {token0Symbol} - {token1Symbol}
-        </TransactionStep>
-      )}
+
       <TransactionStep
         status={getStepStatus(AddLiquidityModalDataStep.AddLiquidity)}
         iconSrc={dropSrc}
       >
         Adding LP of <br /> {token0Symbol} + {token1Symbol}
       </TransactionStep>
+
+
     </TransactionProgressModal>
   );
 };
