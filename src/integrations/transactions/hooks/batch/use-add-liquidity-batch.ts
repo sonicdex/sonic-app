@@ -61,7 +61,7 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
 
   var approve0: any, deposit0: any, approve1: any, deposit1: any, steps: any = [];
   var tx1complete = false, tx2complete = false;
-  var getAcnt0: any, approveTx1:any, getAcnt1: any, approveTx2: any;
+  var getAcnt0: any, approveTx1: any, getAcnt1: any, approveTx2: any;
   //var trxStat: string = '', getAcnt0: any, getAcnt1: any, getAcnt2: any, approveTx1: any, approveTx2: any;
 
   var batchLoad: any = { state: "idle" };
@@ -86,9 +86,9 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
       approveTx1 = useICRCDepositMemo({ ...deposit0Params, tokenAcnt: getAcnt0 });
       deposit0 = useDepositTransactionMemo(deposit0Params);
 
-      if(getAcnt0 && approveTx1?.resp)tx1complete=true;
+      if (getAcnt0 && approveTx1?.resp) tx1complete = true;
 
-      steps = [ 'approve0','deposit0'];
+      steps = ['approve0', 'deposit0'];
     }
   } else tx1complete = true;
 
@@ -96,21 +96,21 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
     if (token1Type == 'DIP20' || token1Type == 'YC') {
       approve1 = useApproveTransactionMemo(deposit1Params);
       deposit1 = useDepositTransactionMemo(deposit1Params);
-      steps = [...steps,'approve1', 'deposit1'];
+      steps = [...steps, 'approve1', 'deposit1'];
 
-      if(tx1complete) tx2complete = true;
+      if (tx1complete) tx2complete = true;
       else tx2complete = false;
 
     } else if (token1Type == 'ICRC1') {
 
-      getAcnt1 = intitICRCTokenDeposit(deposit1Params);      
+      getAcnt1 = intitICRCTokenDeposit(deposit1Params);
       deposit1 = useDepositTransactionMemo(deposit1Params);
       approveTx2 = useICRCDepositMemo({ ...deposit1Params, tokenAcnt: getAcnt1 });
-      
-      if(getAcnt1 && approveTx2?.resp && tx1complete) tx2complete=true;
-      else tx2complete=false;
-      
-      steps = [...steps,'approve1', 'deposit1'];
+
+      if (getAcnt1 && approveTx2?.resp && tx1complete) tx2complete = true;
+      else tx2complete = false;
+
+      steps = [...steps, 'approve1', 'deposit1'];
     }
   } else tx2complete = true;
 
@@ -145,7 +145,7 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
           ...getDepositTransactions({ txNames: ['approve1', 'deposit1'], approveTx: {}, depositTx: deposit1, tokenType: 'ICRC1' }),
         };
       }
-     
+
     if (!pair) {
       steps = [...steps, 'createPair'];
       _transactions = { ..._transactions, createPair }
@@ -200,14 +200,13 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
     // if(!pair){  batchLoad.state= "createPair" }
     batchLoad.batchFnUpdate = true;
   } else {
-    batchLoad = useBatch<AddLiquidityModalDataStep>({ transactions: {},handleRetry:handleRetry });
+    batchLoad = useBatch<AddLiquidityModalDataStep>({ transactions: {}, handleRetry: handleRetry });
     batchLoad = { state: "idle" };
-    if(token0Amt > 0 && token0Type == 'ICRC1' && !tx1complete){
-      batchLoad.state= "approve0" ;
-    }else if(token1Amt > 0 && token1Type == 'ICRC1' && tx1complete && !tx2complete){
-      batchLoad.state= "approve1" ;
+    if (token0Amt > 0 && token0Type == 'ICRC1' && !tx1complete) {
+      batchLoad.state = "approve0";
+    } else if (token1Amt > 0 && token1Type == 'ICRC1' && tx1complete && !tx2complete) {
+      batchLoad.state = "approve1";
     }
-    
   }
 
   DepositBatch = { ...DepositBatch, batch: batchLoad, openBatchModal }
