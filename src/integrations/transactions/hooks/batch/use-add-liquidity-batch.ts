@@ -120,11 +120,6 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
   const transactions = useMemo(() => {
     let _transactions: Transactions = {};
 
-    if (!pair) {
-      steps = [...steps, 'createPair'];
-      _transactions = { ..._transactions, createPair }
-    }
-
     if (token0Amt > 0)
       if ((token0Type == 'DIP20' || token0Type == 'YC')) {
         _transactions = {
@@ -150,6 +145,11 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
           ...getDepositTransactions({ txNames: ['approve1', 'deposit1'], approveTx: {}, depositTx: deposit1, tokenType: 'ICRC1' }),
         };
       }
+     
+    if (!pair) {
+      steps = [...steps, 'createPair'];
+      _transactions = { ..._transactions, createPair }
+    }
     steps = [...steps, 'addLiquidity'];
     _transactions = { ..._transactions, addLiquidity };
     return _transactions;
@@ -196,8 +196,8 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
   //console.log('tx1complete && tx2complete', tx1complete , tx2complete);
 
   if (tx1complete && tx2complete) {
-   // console.log(transactions);
     batchLoad = useBatch<AddLiquidityModalDataStep>({ transactions, handleRetry });
+    // if(!pair){  batchLoad.state= "createPair" }
     batchLoad.batchFnUpdate = true;
   } else {
     batchLoad = useBatch<AddLiquidityModalDataStep>({ transactions: {},handleRetry:handleRetry });
@@ -207,139 +207,10 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
     }else if(token1Amt > 0 && token1Type == 'ICRC1' && tx1complete && !tx2complete){
       batchLoad.state= "approve1" ;
     }
+    
   }
 
   DepositBatch = { ...DepositBatch, batch: batchLoad, openBatchModal }
   return DepositBatch;
 };
-
-  /// v1
-  // if (token0Type == 'DIP20' || token0Type == 'YC') {
-  //   steps = [...steps, 'approve0', 'deposit0']
-  //   approve0 = useApproveTransactionMemo(deposit0Params);
-  //   deposit0 = useDepositTransactionMemo(deposit0Params);
-  // } else if (token0Type == 'ICRC1') {
-  //   if (parseFloat(deposit0Params?.amount ? deposit0Params?.amount : '0') > 0) {
-  //     getAcnt0 = intitICRCTokenDeposit(deposit0Params);
-  //     steps = [...steps, 'approve0', 'deposit0'];
-  //     approveTx1 = useICRCDepositMemo({ ...deposit0Params, tokenAcnt: getAcnt0 });
-  //     deposit0 = useDepositTransactionMemo(deposit0Params);
-  //   }
-
-  // }
-
-  // if (parseFloat(deposit0Params?.amount ? deposit0Params?.amount : '0') <= 0) { steps = []; }
-
-
-  // if (token1Type == 'DIP20' || token0Type == 'YC') {
-  //   steps = [...steps, 'approve1', 'deposit1']
-  //   approve1 = useApproveTransactionMemo(deposit1Params);
-  //   deposit1 = useDepositTransactionMemo(deposit1Params);
-  //   trxStat = 'DIP20';
-  // } else if (addLiquidityParams.token0.metadata.tokenType == 'ICRC1') {
-  //   if (parseFloat(deposit1Params?.amount ? deposit1Params?.amount : '0') > 0) {
-  //     getAcnt2 = intitICRCTokenDeposit(deposit1Params);
-  //     steps = [...steps, 'approve1', 'deposit1'];
-  //     approveTx2 = useICRCDepositMemo({ ...deposit1Params, tokenAcnt: getAcnt0 });
-  //     deposit1 = useDepositTransactionMemo(deposit1Params);
-  //     trxStat = 'ICRC1';
-  //   }
-  // }
-  // if (parseFloat(deposit1Params?.amount ? deposit1Params?.amount : '0') <= 0) { steps = [...steps, 'approve0', 'deposit0'] }
-
-
-  // getAcnt1; getAcnt2; approveTx2; approveTx1;
-
-
-
-  // var createPair = useCreatePairTransactionMemo(createPairParams);
-  // var addLiquidity = useAddLiquidityTransactionMemo(addLiquidityParams);
-
-  // const transactions = useMemo(() => {
-  //   let _transactions: Transactions = {};
-  //   if (!pair) {
-  //     steps = [...steps, 'createPair']
-  //     _transactions = { ..._transactions, createPair }
-  //   }
-
-  //   if (addLiquidityParams.token0.metadata) {
-  //     if (token0Type == 'DIP20' || token0Type == 'YC') {
-  //       _transactions = {
-  //         ..._transactions,
-  //         ...getDepositTransactions({ txNames: ['approve0', 'deposit0'], approveTx: approve0, depositTx: deposit0, tokenType: 'DIP20' }),
-  //       };
-  //     } else if (token0Type == 'ICRC1') {
-  //       _transactions = {
-  //         ..._transactions,
-  //         ...getDepositTransactions({ txNames: ['approve0', 'deposit0'], approveTx: {}, depositTx: deposit0, tokenType: 'ICRC1' }),
-  //       };
-  //     }
-  //   }
-
-  //   if (addLiquidityParams.token1.metadata) {
-  //     if (token1Type == 'DIP20' || token0Type == 'YC') {
-  //       _transactions = {
-  //         ..._transactions,
-  //         ...getDepositTransactions({ txNames: ['approve1', 'deposit1'], approveTx: approve1, depositTx: deposit1, tokenType: 'DIP20' }),
-  //       };
-  //     } else if (token1Type == 'ICRC1') {
-  //       _transactions = {
-  //         ..._transactions,
-  //         ...getDepositTransactions({ txNames: ['approve1', 'deposit1'], approveTx: {}, depositTx: deposit1, tokenType: 'ICRC1' }),
-  //       };
-  //     }
-  //   }
-  //   _transactions = { ..._transactions, addLiquidity };
-  //   return _transactions;
-  // }, [trxStat]);
-
-  // steps = [...steps, 'addLiquidity']
-
-  // // console.log(steps);
-
-  // const handleRetry = async () => {
-  //   return new Promise<boolean>((resolve) => {
-  //     dispatch(
-  //       modalsSliceActions.setAddLiquidityModalData({
-  //         callbacks: [
-  //           // Retry callback
-  //           () => {
-  //             dispatch(modalsSliceActions.closeAddLiquidityFailModal());
-  //             openBatchModal();
-  //             resolve(true);
-  //           },
-  //           // Cancel callback
-  //           () => {
-  //             dispatch(modalsSliceActions.closeAddLiquidityFailModal());
-  //             resolve(false);
-  //           },
-  //         ],
-  //       })
-  //     );
-
-  //     dispatch(modalsSliceActions.closeAddLiquidityProgressModal());
-  //     dispatch(modalsSliceActions.openAddLiquidityFailModal());
-  //   });
-  // };
-
-  // const openBatchModal = () => {
-  //   dispatch(
-  //     modalsSliceActions.setAddLiquidityModalData({
-  //       steps: steps as AddLiquidityModalDataStep[],
-  //       token0Symbol: addLiquidityParams.token0.metadata?.symbol,
-  //       token1Symbol: addLiquidityParams.token1.metadata?.symbol,
-  //     })
-  //   );
-
-  //   dispatch(modalsSliceActions.openAddLiquidityProgressModal());
-  // };
-
-  // console.log(transactions);
-
-
-  // batchLoad = useBatch<AddLiquidityModalDataStep>({ transactions, handleRetry });
-
-  // DepositBatch = { ...DepositBatch, batch: batchLoad, openBatchModal }
-
-  // return DepositBatch;
 

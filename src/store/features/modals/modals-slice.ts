@@ -75,11 +75,11 @@ export type WithdrawModalData = {
 };
 
 export enum AddLiquidityModalDataStep {
-  CreatePair = 'createPair',
   Approve0 = 'approve0',
   Deposit0 = 'deposit0',
   Approve1 = 'approve1',
   Deposit1 = 'deposit1',
+  CreatePair = 'createPair',
   AddLiquidity = 'addLiquidity',
 }
 export type AddLiquidityModalData = {
