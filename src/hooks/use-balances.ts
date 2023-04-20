@@ -42,7 +42,7 @@ export const useBalances = () => {
           dispatch(swapCanisterActions.setUserLPBalancesState(FeatureState.Idle));
         } catch (error) {
           AppLog.error(`User LP balances fetch error`, error);
-          dispatch(swapCanisterActions.setUserLPBalancesState(FeatureState.Error));
+         // dispatch(swapCanisterActions.setUserLPBalancesState(FeatureState.Error));
         }
       },
       [userLPBalancesState, principalId, dispatch]

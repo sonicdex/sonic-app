@@ -7,7 +7,7 @@ import { SwapModel } from '../..';
 import {
   useApproveTransactionMemo, useBatch, useDepositTransactionMemo,
   useSwapExactTokensTransactionMemo, useWithdrawTransactionMemo,
-  intitICRCTokenDeposit, useICRCDepositMemo
+  intitICRCTokenDeposit, useICRCTransferMemo , // useICRCDepositMemo , 
 } from '..';
 
 import { getAmountDependsOnBalance, getDepositTransactions } from './batch.utils';
@@ -71,35 +71,35 @@ export const useSwapBatch = ({ keepInSonic, ...swapParams }: SwapModel & ExtraDe
       dispatch(modalsSliceActions.openSwapProgressModal());
     };
 
-    DepositBatch = {
-      batch: useBatch<SwapModalDataStep>({
-        transactions,
-        handleRetry: () => {
-          return new Promise<boolean>((resolve) => {
-            dispatch(
-              modalsSliceActions.setSwapModalData({
-                callbacks: [
-                  () => {
-                    dispatch(modalsSliceActions.closeSwapFailModal());
-                    openBatchModal(); resolve(true);
-                  },
-                  () => {
-                    navigate(`/assets/withdraw?tokenId=${swapParams.from.metadata?.id}&amount=${swapParams.from.value}`);
-                    dispatch(modalsSliceActions.closeSwapFailModal()); resolve(false);
-                  },
-                  () => { resolve(false); },
-                ],
-              })
-            );
-            dispatch(modalsSliceActions.closeSwapProgressModal());
-            dispatch(modalsSliceActions.openSwapFailModal());
-          });
-        },
-      }),
-      openBatchModal,
-    };
+    batchLoad = useBatch<SwapModalDataStep>({
+      transactions,
+      handleRetry: () => {
+        return new Promise<boolean>((resolve) => {
+          dispatch(
+            modalsSliceActions.setSwapModalData({
+              callbacks: [
+                () => {
+                  dispatch(modalsSliceActions.closeSwapFailModal());
+                  openBatchModal(); resolve(true);
+                },
+                () => {
+                  navigate(`/assets/withdraw?tokenId=${swapParams.from.metadata?.id}&amount=${swapParams.from.value}`);
+                  dispatch(modalsSliceActions.closeSwapFailModal()); resolve(false);
+                },
+                () => { resolve(false); },
+              ],
+            })
+          );
+          dispatch(modalsSliceActions.closeSwapProgressModal());
+          dispatch(modalsSliceActions.openSwapFailModal());
+        });
+      },
+    });
 
-    return DepositBatch;
+    if(batchLoad.execute) batchLoad.batchFnUpdate = true;
+
+    return DepositBatch = { batch: batchLoad, openBatchModal};
+    
   } else if (tokenType == 'ICRC1') {
 
     var steps = ['swap', 'withdraw'];
@@ -124,11 +124,9 @@ export const useSwapBatch = ({ keepInSonic, ...swapParams }: SwapModel & ExtraDe
 
     var getAcnt: any, approveTx: any, depositTx: any;
 
-    if (reqAmt > 0) {
-      getAcnt = intitICRCTokenDeposit(depositParams);
-      approveTx = useICRCDepositMemo({ ...depositParams, tokenAcnt: getAcnt });
-      depositTx = useDepositTransactionMemo(depositParams);
-    }
+    getAcnt = intitICRCTokenDeposit(); 
+    approveTx = useICRCTransferMemo({ ...depositParams, tokenAcnt: getAcnt });
+    depositTx = useDepositTransactionMemo(depositParams);
     
     var swap = useSwapExactTokensTransactionMemo(swapParams);
     var withdraw = useWithdrawTransactionMemo(withdrawParams);
@@ -136,9 +134,9 @@ export const useSwapBatch = ({ keepInSonic, ...swapParams }: SwapModel & ExtraDe
     var transactions = useMemo(() => {
       let _transactions = {};
       if (reqAmt > 0) {
-        if (getAcnt && approveTx) {
+        if (getAcnt) {
           _transactions = {
-            ...getDepositTransactions({ approveTx: {}, depositTx, txNames: ['approve', 'deposit'], tokenType: tokenType }), swap
+            ...getDepositTransactions({ approveTx: approveTx, depositTx, txNames: ['approve', 'deposit'], tokenType: tokenType }), swap
           }
         }
       } else {

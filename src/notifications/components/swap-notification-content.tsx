@@ -22,7 +22,7 @@ export const SwapNotificationContent: React.FC<SwapNotificationContentProps> = (
   const { principalId } = usePlugStore();
   const { getBalances } = useBalances();
   // const { getAllPairs } = useAllPairs();
-
+ 
   const { from, to, slippage, keepInSonic } =
     useMemo(() => {
       // Clone current state just for this batch
@@ -38,12 +38,14 @@ export const SwapNotificationContent: React.FC<SwapNotificationContentProps> = (
   const batchFnUpdate = batch?.batchFnUpdate;
 
   const handleStateChange = () => {
+    if (batch && batch.state)
     if (Object.values(SwapModalDataStep).includes(batch.state as SwapModalDataStep)){
       dispatch( modalsSliceActions.setSwapModalData({ step: batch.state as SwapModalDataStep}));
     }
   };
 
   const handleOpenModal = () => {
+    if (!batch?.state && from.metadata?.symbol) return;
     if (typeof allowance === 'number') {
       dispatch(modalsSliceActions.closeAllowanceVerifyModal());
       handleStateChange();
@@ -63,14 +65,15 @@ export const SwapNotificationContent: React.FC<SwapNotificationContentProps> = (
       batch.execute().then(() => {
         dispatch(modalsSliceActions.clearSwapModalData());
         dispatch(modalsSliceActions.closeSwapProgressModal());
-
+        getBalances();
         addNotification({
           title: `Swapped ${from.value} ${from.metadata.symbol} for ${to.value} ${to.metadata.symbol}`,
           type: NotificationType.Success, id: Date.now().toString(), transactionLink: '/activity',
         });
-        getBalances();
+        
         // getAllPairs();
       }).catch((err: any) => {
+
         dispatch(modalsSliceActions.clearSwapModalData());
         if (err.message === 'slippage: insufficient output amount') {
           addNotification({
@@ -84,7 +87,7 @@ export const SwapNotificationContent: React.FC<SwapNotificationContentProps> = (
           });
         }
       }).finally(() => popNotification(id));
-  }, [allowance , batchFnUpdate]);
+  }, [ batchFnUpdate]);
 
   return (
     <Link target="_blank" rel="noreferrer" color="dark-blue.500" onClick={handleOpenModal}>
