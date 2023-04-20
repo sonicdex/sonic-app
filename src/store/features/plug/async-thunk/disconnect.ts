@@ -12,6 +12,8 @@ export const disconnect = createAsyncThunk<void>(
     if (plug) {
       dispatch(plugSlice.actions.setState(PlugState.Disconnected));
       plug.disconnect();
+      localStorage.clear();
+      location.reload()
     } else {
       dispatch(plugSlice.actions.setState(PlugState.NotInstalled));
     }

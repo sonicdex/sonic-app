@@ -61,8 +61,7 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
 
   var approve0: any, deposit0: any, approve1: any, deposit1: any, steps: any = [];
   var tx1complete = false, tx2complete = false;
-  var getAcnt0: any, approveTx1: any, getAcnt1: any, approveTx2: any;
-  //var trxStat: string = '', getAcnt0: any, getAcnt1: any, getAcnt2: any, approveTx1: any, approveTx2: any;
+  var getAcnt0: any, approveTx0: any, getAcnt1: any, approveTx2: any;
 
   var batchLoad: any = { state: "idle" };
   var DepositBatch = { batch: batchLoad, openBatchModal: () => { } };
@@ -73,20 +72,22 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
   var token0Amt = parseFloat(deposit0Params?.amount ? deposit0Params?.amount : '0');
   var token1Amt = parseFloat(deposit1Params?.amount ? deposit1Params?.amount : '0');
 
+
+
   if (token0Amt > 0) {
     if ((token0Type == 'DIP20' || token0Type == 'YC')) {
       approve0 = useApproveTransactionMemo(deposit0Params);
       deposit0 = useDepositTransactionMemo(deposit0Params);
       steps = ['approve0', 'deposit0'];
       tx1complete = true;
-
+      
     } else if (token0Type == 'ICRC1') {
 
       getAcnt0 = intitICRCTokenDeposit(deposit0Params);
-      approveTx1 = useICRCDepositMemo({ ...deposit0Params, tokenAcnt: getAcnt0 });
+      approveTx0 = useICRCDepositMemo({ ...deposit0Params, tokenAcnt: getAcnt0 });
       deposit0 = useDepositTransactionMemo(deposit0Params);
 
-      if (getAcnt0 && approveTx1?.resp) tx1complete = true;
+      if (getAcnt0 && approveTx0?.resp) tx1complete = true;
 
       steps = ['approve0', 'deposit0'];
     }
@@ -94,6 +95,7 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
 
   if (token1Amt > 0) {
     if (token1Type == 'DIP20' || token1Type == 'YC') {
+      
       approve1 = useApproveTransactionMemo(deposit1Params);
       deposit1 = useDepositTransactionMemo(deposit1Params);
       steps = [...steps, 'approve1', 'deposit1'];
@@ -113,6 +115,7 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
       steps = [...steps, 'approve1', 'deposit1'];
     }
   } else tx2complete = true;
+
 
   var createPair = useCreatePairTransactionMemo(createPairParams);
   var addLiquidity = useAddLiquidityTransactionMemo(addLiquidityParams);
@@ -145,6 +148,7 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
           ...getDepositTransactions({ txNames: ['approve1', 'deposit1'], approveTx: {}, depositTx: deposit1, tokenType: 'ICRC1' }),
         };
       }
+    
 
     if (!pair) {
       steps = [...steps, 'createPair'];
@@ -189,7 +193,6 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
         token1Symbol: addLiquidityParams.token1.metadata?.symbol,
       })
     );
-
     dispatch(modalsSliceActions.openAddLiquidityProgressModal());
   };
 

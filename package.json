@@ -84,6 +84,7 @@
     "@memecake/sonic-js": "^0.4.0",
     "@react-icons/all-files": "^4.1.0",
     "@reduxjs/toolkit": "^1.7.2",
+    "@sentry/react": "^7.48.0",
     "artemis-web3-adapter": "^0.1.7",
     "axios": "^0.26.0",
     "bignumber.js": "^9.0.2",

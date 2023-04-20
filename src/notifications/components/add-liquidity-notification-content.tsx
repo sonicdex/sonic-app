@@ -42,6 +42,7 @@ export const AddLiquidityNotificationContent: React.FC<
       return deserialize(serialize({ token0, token1, slippage }));
     }, []) ?? {};
 
+    
   const allowance0 = useTokenAllowance(token0.metadata?.id);
   const allowance1 = useTokenAllowance(token1.metadata?.id);
 
@@ -51,12 +52,9 @@ export const AddLiquidityNotificationContent: React.FC<
   const batchFnUpdate = batch?.batchFnUpdate;
 
   const handleStateChange = () => {
-    if (
-      Object.values(AddLiquidityModalDataStep).includes(
-        batch.state as AddLiquidityModalDataStep
-      )
-    ) {
-      dispatch(modalsSliceActions.setAddLiquidityModalData({ step: batch.state as AddLiquidityModalDataStep }));
+    if (Object.values(AddLiquidityModalDataStep).includes(batch.state as AddLiquidityModalDataStep)){
+      dispatch(modalsSliceActions.setAddLiquidityModalData({ step: batch.state as AddLiquidityModalDataStep 
+    }));
     }
   };
 
@@ -66,7 +64,7 @@ export const AddLiquidityNotificationContent: React.FC<
       handleStateChange();
       openBatchModal();
     } else {
-      dispatch(
+      dispatch( 
         modalsSliceActions.setAllowanceVerifyModalData({
           tokenSymbol: [token0.metadata?.symbol, token1.metadata?.symbol],
         })

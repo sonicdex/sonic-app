@@ -33,7 +33,7 @@ export const getDepositTransactions = ({approveTx, depositTx, txNames = ['approv
         transactions = { ...transactions, [txNames[1]?txNames[1]:'']: depositTx };
       }
     }else if( tokenType ==  'ICRC1' ){
-      transactions = {   [txNames[1]]: depositTx };
+      transactions = {[txNames[0]]: approveTx, [txNames[1]]: depositTx };
     }
   return transactions;
 };

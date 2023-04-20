@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { DepositModalDataStep, modalsSliceActions, useAppDispatch } from '@/store';
 
 import { Deposit } from '../..';
-import { useApproveTransactionMemo, useDepositTransactionMemo, useBatch, intitICRCTokenDeposit, useICRCDepositMemo } from '..';  // useICRCDepositMemo  //useICRCDepositInit  intitICRCTokenDeposit // useICRCDepositMemo
+import { useApproveTransactionMemo, useDepositTransactionMemo, useBatch, intitICRCTokenDeposit , useICRCTransferMemo } from '..'; //useICRCDepositMemo
 
 import { getDepositTransactions } from '.';
 
@@ -58,16 +58,15 @@ export const useDepositBatch = (deposit: Deposit): any => {
       );
       dispatch(modalsSliceActions.openDepositProgressModal());
     };
-
     DepositBatch = { ...DepositBatch, openBatchModal };
-
-    var getAcnt = intitICRCTokenDeposit(deposit);
-    var approveTx: any = useICRCDepositMemo({ ...deposit, tokenAcnt: getAcnt });
+    var getAcnt = intitICRCTokenDeposit(); 
+    
+    var approveTx = useICRCTransferMemo({ ...deposit, tokenAcnt: getAcnt }); // useICRCDepositMemo
     var depositTx = useDepositTransactionMemo(deposit);
 
     var transactions = useMemo(() => {
-      if (getAcnt && approveTx)
-        return getDepositTransactions({ approveTx: {}, depositTx, txNames: ['approve', 'deposit'], tokenType: deposit.token?.tokenType })
+      if (getAcnt)
+        return getDepositTransactions({ approveTx: approveTx, depositTx, txNames: ['approve', 'deposit'], tokenType: deposit.token?.tokenType })
       else return {}
     }, [approveTx]);
 
@@ -89,9 +88,7 @@ export const useDepositBatch = (deposit: Deposit): any => {
 
       if (getAcnt) batchLoad = { state: "approve" }
       else batchLoad = { state: "getacnt" };
-    
     }
-    
     return DepositBatch = {...DepositBatch, batch: batchLoad, openBatchModal}
   }
   else return DepositBatch
