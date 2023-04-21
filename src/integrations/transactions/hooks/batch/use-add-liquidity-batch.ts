@@ -60,7 +60,7 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
   }, [addLiquidityParams.token0, addLiquidityParams.token1]);
 
   var approve0: any, deposit0: any, approve1: any, deposit1: any, steps: any = [];
-  var tx0complete = false, tx1complete = false, getICRCAcnt:any , TrxLoaded=0;
+  var tx0complete = false, tx1complete = false, getICRCAcnt: any, TrxLoaded = 0;
 
   // getAcnt0: any, approveTx0: any, getAcnt1: any, approveTx2: any;
 
@@ -72,13 +72,12 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
 
   var token0Amt = parseFloat(deposit0Params?.amount ? deposit0Params?.amount : '0');
   var token1Amt = parseFloat(deposit1Params?.amount ? deposit1Params?.amount : '0');
-  var createPair: any;
 
-  if (!pair) { 
-    steps = ['createPair']; createPair = useCreatePairTransactionMemo(createPairParams);
-  }
-  if (token0Type == 'ICRC1' || token1Type == 'ICRC1') { 
-    getICRCAcnt = intitICRCTokenDeposit(); steps = [...steps, 'getacnt']; 
+
+  if (!pair) { steps = ['createPair'] }
+
+  if (token0Type == 'ICRC1' || token1Type == 'ICRC1') {
+    getICRCAcnt = intitICRCTokenDeposit(); steps = [...steps, 'getacnt'];
   }
 
   //step 1
@@ -114,13 +113,17 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
     steps = [...steps, 'approve1', 'deposit1'];
   } else tx1complete = true;
 
- // useAddLiquidityTransactionMemo; getDepositTransactions; deposit1; deposit0;
+  // useAddLiquidityTransactionMemo; getDepositTransactions; deposit1; deposit0;
+  const createPair = useCreatePairTransactionMemo(createPairParams);
+  const addLiquidity = useAddLiquidityTransactionMemo(addLiquidityParams);
 
-  var addLiquidity = useAddLiquidityTransactionMemo(addLiquidityParams);
- 
-  if (tx1complete && tx0complete) TrxLoaded=1;
+  //addLiquidity;
+
+  if (tx1complete && tx0complete) TrxLoaded = 1;
   const TrxFull = useMemo(() => {
-   
+
+    console.log('called here TrxFull .. .. .')
+
     let _transactions: Transactions = {};
     if (!pair) { _transactions = { ..._transactions, createPair } }
 
@@ -136,13 +139,13 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
         ...getDepositTransactions({ txNames: ['approve1', 'deposit1'], approveTx: approve1, depositTx: deposit1, tokenType: token0Type })
       }
     }
-   
     _transactions = { ..._transactions, addLiquidity };
+
     return _transactions;
   }, [TrxLoaded])
 
   steps = [...steps, 'addLiquidity'];
- 
+
   const handleRetry = async () => {
     return new Promise<boolean>((resolve) => {
       dispatch(
@@ -180,7 +183,7 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
     batchLoad.batchFnUpdate = true;
   } else {
     batchLoad = useBatch<AddLiquidityModalDataStep>({ transactions: {}, handleRetry: () => { return Promise.resolve(false) } });
-    if(steps.includes('getacnt')) batchLoad = { state: "getacnt" };
+    if (steps.includes('getacnt')) batchLoad = { state: "getacnt" };
     else batchLoad = { state: "idle" }
   }
   DepositBatch = { ...DepositBatch, batch: batchLoad, openBatchModal };

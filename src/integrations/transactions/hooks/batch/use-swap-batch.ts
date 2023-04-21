@@ -44,13 +44,13 @@ export const useSwapBatch = ({ keepInSonic, ...swapParams }: SwapModel & ExtraDe
 
   if (tokenType == 'DIP20' || tokenType == 'YC') {
 
-    var approve = useApproveTransactionMemo(depositParams);
-    var deposit = useDepositTransactionMemo(depositParams);
+    const approve = useApproveTransactionMemo(depositParams);
+    const deposit = useDepositTransactionMemo(depositParams);
     swapParams.entryVal = depositParams.amount;
 
-    var swap = useSwapExactTokensTransactionMemo(swapParams);
+    const swap = useSwapExactTokensTransactionMemo(swapParams);
     withdrawParams.amount = swap.amountOutMin?.toString();
-    var withdraw = useWithdrawTransactionMemo(withdrawParams);
+    const withdraw = useWithdrawTransactionMemo(withdrawParams);
 
     const transactions = useMemo(() => {
       let _transactions = {};
@@ -128,10 +128,10 @@ export const useSwapBatch = ({ keepInSonic, ...swapParams }: SwapModel & ExtraDe
     approveTx = useICRCTransferMemo({ ...depositParams, tokenAcnt: getAcnt });
     depositTx = useDepositTransactionMemo(depositParams);
     
-    var swap = useSwapExactTokensTransactionMemo(swapParams);
-    var withdraw = useWithdrawTransactionMemo(withdrawParams);
+    const swap = useSwapExactTokensTransactionMemo(swapParams);
+    const withdraw = useWithdrawTransactionMemo(withdrawParams);
 
-    var transactions = useMemo(() => {
+    const transactions = useMemo(() => {
       let _transactions = {};
       if (reqAmt > 0) {
         if (getAcnt) {
