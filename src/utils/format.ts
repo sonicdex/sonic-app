@@ -4,7 +4,6 @@ import BigNumber from 'bignumber.js';
 import { ethers } from 'ethers';
 import { formatUnits, parseUnits } from 'ethers/lib/utils';
 
-import { ICP_METADATA } from '@/constants';
 import { AppTokenMetadata } from '@/models';
 
 export type BigNumberish = BigNumber | Bytes | bigint | string | number;
@@ -58,8 +57,12 @@ export const getMaxValue = (
   balance?: number | bigint
 ): BigNumber => {
   if (!token || !balance) return new BigNumber(0);
-
-  const times = token.id === ICP_METADATA.id ? 1 : 2;
+  var times = 1;
+  if(token.tokenType =='ICRC1'){
+    times = 3;
+  }else if(token.tokenType =='DIP20'){
+    times = 2;
+  }
 
   const value = toBigNumber(Number(balance)).minus(Number(token.fee) * times);
 
