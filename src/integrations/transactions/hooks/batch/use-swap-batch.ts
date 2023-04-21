@@ -49,6 +49,7 @@ export const useSwapBatch = ({ keepInSonic, ...swapParams }: SwapModel & ExtraDe
     swapParams.entryVal = depositParams.amount;
 
     const swap = useSwapExactTokensTransactionMemo(swapParams);
+
     withdrawParams.amount = swap.amountOutMin?.toString();
     const withdraw = useWithdrawTransactionMemo(withdrawParams);
 

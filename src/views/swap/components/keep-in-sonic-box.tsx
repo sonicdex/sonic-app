@@ -14,7 +14,7 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react';
 import { FaInfoCircle } from '@react-icons/all-files/fa/FaInfoCircle';
-import { useMemo } from 'react';
+import { useMemo , useEffect } from 'react';
 
 import { swapViewActions, useAppDispatch, useSwapViewStore } from '@/store';
 
@@ -47,9 +47,7 @@ export const KeepInSonicBox: React.FC<KeepInSonicBoxProps> = ({
 
   const checkboxColorKeepInSonic = useColorModeValue('black', 'white');
   const checkboxColorNotKeepInSonic = useColorModeValue('gray.600', 'custom.1');
-  const checkboxColor = keepInSonic
-    ? checkboxColorKeepInSonic
-    : checkboxColorNotKeepInSonic;
+  const checkboxColor = keepInSonic? checkboxColorKeepInSonic: checkboxColorNotKeepInSonic;
 
   const { label, popoverLabel } = useMemo(() => {
     switch (operation) {
@@ -96,6 +94,7 @@ export const KeepInSonicBox: React.FC<KeepInSonicBoxProps> = ({
         };
     }
   }, [operation, symbol]);
+  useEffect(()=>{ dispatch(swapViewActions.setKeepInSonic(true))  },[])
 
   return (
     <Flex
