@@ -61,8 +61,6 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
   }, []);
 
 
-
-
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   var approve0: any, deposit0: any, approve1: any, deposit1: any, steps: any = [];
@@ -81,7 +79,7 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
   if (!pair) { steps = ['createPair'] }
 
   if (token0Type == 'ICRC1' || token1Type == 'ICRC1') {
-    getICRCAcnt = intitICRCTokenDeposit();  //steps = [...steps, 'getacnt'];
+    getICRCAcnt = intitICRCTokenDeposit();steps = [...steps, 'getacnt'];
   }
 
   //step 1
