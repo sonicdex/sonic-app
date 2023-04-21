@@ -15,11 +15,15 @@ var tokenListObj: any = {};
 export const artemis = new Artemis();
 
 export const loadsupportedTokenList = async () => {
+  
   var plugStat = usePlugStore();
   supportedTokenList = useSwapCanisterStore()?.supportedTokenList;
   if (!supportedTokenList || Object.keys(tokenListObj).length > 0) return false;
   supportedTokenList.forEach((el: { id: string }) => { tokenListObj[el.id] = el });
-  if (plugStat.isConnected) { artemis.connect('plug');  }
+  if (plugStat.isConnected) { 
+    console.log('called')
+  //   artemis.connect('plug');  
+  }
 }
 
 export const tokenList = (returnType: 'array' | 'obj' , tokenId?:string): AppTokenMetadata[] | any => {
@@ -28,13 +32,16 @@ export const tokenList = (returnType: 'array' | 'obj' , tokenId?:string): AppTok
 };
 
 export const getTokenActor = async (canisterId: string, isAnnon: boolean): Promise<any> => {
+
   var token = tokenListObj?.[canisterId];
   if (!token) return false;
   var actor = false;
   var idl: any = token.tokenType == 'DIP20' ? TokenIDL.DIP20.factory :
     token.tokenType == 'YC' ? TokenIDL.DIP20.YCfactory :
       token.tokenType == 'ICRC1' ? TokenIDL.ICRC1.factory : TokenIDL.DIP20.factory;
-  if(!artemis.provider){ await artemis.connect('plug');}
+
+  if(isAnnon==false && !artemis.provider){await artemis.connect('plug');}
+
   actor = await artemis.getCanisterActor(token.id, idl, isAnnon);
  
   return actor;

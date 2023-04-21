@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo  } from 'react';
 
 import { AddLiquidityModalDataStep, modalsSliceActions, useAppDispatch, useLiquidityViewStore, useSwapCanisterStore } from '@/store';
 
@@ -15,9 +15,10 @@ interface Transactions {
   [transactionName: string]: any;
 }
 
-export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
 
+export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
   const dispatch = useAppDispatch();
+
   const { sonicBalances } = useSwapCanisterStore();
   const { pair } = useLiquidityViewStore();
 
@@ -37,7 +38,7 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
         allowance: addLiquidityParams.allowance0,
       };
     }
-  }, [sonicBalances, addLiquidityParams.token0]) as Deposit;
+  }, []) as Deposit;
 
   const deposit1Params = useMemo(() => {
     if (addLiquidityParams.token1.metadata) {
@@ -50,20 +51,23 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
         allowance: addLiquidityParams.allowance1,
       };
     }
-  }, [sonicBalances, addLiquidityParams.token1]) as Deposit;
+  }, []) as Deposit;
 
   const createPairParams = useMemo(() => {
     return {
       token0: addLiquidityParams.token0,
       token1: addLiquidityParams.token1,
     };
-  }, [addLiquidityParams.token0, addLiquidityParams.token1]);
+  }, []);
+
+
+
+
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   var approve0: any, deposit0: any, approve1: any, deposit1: any, steps: any = [];
-  var tx0complete = false, tx1complete = false, getICRCAcnt: any, TrxLoaded = 0;
-
-  // getAcnt0: any, approveTx0: any, getAcnt1: any, approveTx2: any;
-
+  var tx0complete = false, tx1complete = false, getICRCAcnt: any;
+  
   var batchLoad: any = { state: "idle" };
   var DepositBatch = { batch: batchLoad, openBatchModal: () => { } };
 
@@ -72,12 +76,12 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
 
   var token0Amt = parseFloat(deposit0Params?.amount ? deposit0Params?.amount : '0');
   var token1Amt = parseFloat(deposit1Params?.amount ? deposit1Params?.amount : '0');
-
+  
 
   if (!pair) { steps = ['createPair'] }
 
   if (token0Type == 'ICRC1' || token1Type == 'ICRC1') {
-    getICRCAcnt = intitICRCTokenDeposit(); steps = [...steps, 'getacnt'];
+    getICRCAcnt = intitICRCTokenDeposit();  //steps = [...steps, 'getacnt'];
   }
 
   //step 1
@@ -91,7 +95,6 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
 
       approve0 = useICRCTransferMemo({ ...deposit0Params, tokenAcnt: getICRCAcnt });
       deposit0 = useDepositTransactionMemo(deposit0Params);
-
       if (getICRCAcnt) tx0complete = true;
     }
     steps = [...steps, 'approve0', 'deposit0'];
@@ -113,20 +116,12 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
     steps = [...steps, 'approve1', 'deposit1'];
   } else tx1complete = true;
 
-  // useAddLiquidityTransactionMemo; getDepositTransactions; deposit1; deposit0;
   const createPair = useCreatePairTransactionMemo(createPairParams);
   const addLiquidity = useAddLiquidityTransactionMemo(addLiquidityParams);
 
-  //addLiquidity;
-
-  if (tx1complete && tx0complete) TrxLoaded = 1;
-  const TrxFull = useMemo(() => {
-
-    console.log('called here TrxFull .. .. .')
-
+  var  TrxFull = useMemo(() => {
     let _transactions: Transactions = {};
     if (!pair) { _transactions = { ..._transactions, createPair } }
-
     if (token0Amt > 0) {
       _transactions = {
         ..._transactions,
@@ -136,15 +131,17 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
     if (token1Amt > 0) {
       _transactions = {
         ..._transactions,
-        ...getDepositTransactions({ txNames: ['approve1', 'deposit1'], approveTx: approve1, depositTx: deposit1, tokenType: token0Type })
+        ...getDepositTransactions({ txNames: ['approve1', 'deposit1'], approveTx: approve1, depositTx: deposit1, tokenType: token1Type })
       }
     }
     _transactions = { ..._transactions, addLiquidity };
-
     return _transactions;
-  }, [TrxLoaded])
+  }, [ tx1complete]);
+
 
   steps = [...steps, 'addLiquidity'];
+  
+  // console.log(TrxFull);
 
   const handleRetry = async () => {
     return new Promise<boolean>((resolve) => {
@@ -178,7 +175,7 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
     dispatch(modalsSliceActions.openAddLiquidityProgressModal());
   };
 
-  if (TrxLoaded) {
+  if ( tx0complete && tx1complete && Object.keys(TrxFull).length>0) {
     batchLoad = useBatch<AddLiquidityModalDataStep>({ transactions: TrxFull, handleRetry });
     batchLoad.batchFnUpdate = true;
   } else {
@@ -186,6 +183,5 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
     if (steps.includes('getacnt')) batchLoad = { state: "getacnt" };
     else batchLoad = { state: "idle" }
   }
-  DepositBatch = { ...DepositBatch, batch: batchLoad, openBatchModal };
-  return DepositBatch;
+  return DepositBatch = { ...DepositBatch, batch: batchLoad, openBatchModal };
 };

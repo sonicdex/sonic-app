@@ -53,13 +53,11 @@ const useTokenTaxCheck = ({ balances, tokenId, tokenSymbol, tokenDecimals = 1, t
   }
   return tokenInfo
 };
-useTokenTaxCheck;
 
 export const useAddLiquidityTransactionMemo: CreateTransaction<AddLiquidity> = (
   { token0, token1, slippage }: AddLiquidity, onSuccess, onFail) => {
   var token0Value = token0.value, token1Value = token1.value;
   var balances = useBalances();
-
   return useMemo(() => {
     if (!token0.metadata || !token1.metadata) throw new Error('Tokens are required');
 

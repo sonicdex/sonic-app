@@ -52,6 +52,7 @@ export const AddLiquidityNotificationContent: React.FC<
   const batchFnUpdate = batch?.batchFnUpdate;
 
   const handleStateChange = () => {
+    if (batch && batch.state)
     if (Object.values(AddLiquidityModalDataStep).includes(batch.state as AddLiquidityModalDataStep)){
       dispatch(modalsSliceActions.setAddLiquidityModalData({ step: batch.state as AddLiquidityModalDataStep 
     }));
@@ -59,6 +60,7 @@ export const AddLiquidityNotificationContent: React.FC<
   };
 
   const handleOpenModal = () => {
+    if (!batch?.state) return;
     if (typeof allowance0 === 'number' && typeof allowance1 === 'number') {
       dispatch(modalsSliceActions.closeAllowanceVerifyModal());
       handleStateChange();
@@ -72,9 +74,7 @@ export const AddLiquidityNotificationContent: React.FC<
       dispatch(modalsSliceActions.openAllowanceVerifyModal());
     }
   };
-
   useEffect(handleStateChange, [batch.state, dispatch]);
-
   useEffect(() => {
     handleOpenModal();
     if (typeof allowance0 === 'undefined' || typeof allowance1 === 'undefined')
@@ -83,13 +83,17 @@ export const AddLiquidityNotificationContent: React.FC<
     batch.execute().then(() => {
       dispatch(modalsSliceActions.clearAddLiquidityModalData());
       dispatch(modalsSliceActions.closeAddLiquidityProgressModal());
+
       addNotification({
         title: `Added LP of ${token0.value} ${token0.metadata.symbol} + ${token1.value} ${token1.metadata.symbol}`,
         type: NotificationType.Success,id: Date.now().toString(),transactionLink: '/activity',
       });
       getBalances();
       getAllPairs();
+      
       getUserPositiveLPBalances();
+      
+
     }).catch((err:any) => {
       AppLog.error('Add Liquidity Error', err);
       dispatch(modalsSliceActions.clearAddLiquidityModalData());
@@ -99,7 +103,6 @@ export const AddLiquidityNotificationContent: React.FC<
       });
     }).finally(() => popNotification(id));
   }, [batchFnUpdate]);
-
   return (
     <Link target="_blank" rel="noreferrer" color="dark-blue.500" onClick={handleOpenModal}>
       View progress

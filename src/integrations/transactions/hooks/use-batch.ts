@@ -25,7 +25,6 @@ export const useBatch = <Model>({
   const batch = useMemo(() => {
     const newBatch = new BatchTransactions(plug, handleRetry);
     const transactionsList = Object.values(transactions);
-
     Object.values(transactions).forEach((transaction, index) => {
       const onSuccess = transaction.onSuccess;
       transaction.onSuccess = async (res) => {

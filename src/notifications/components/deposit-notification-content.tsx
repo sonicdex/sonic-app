@@ -62,7 +62,6 @@ export const DepositNotificationContent: React.FC<DepositNotificationContentProp
     if (typeof allowance === 'undefined' || !batch?.state) return;
     if (batch.execute)
       batch.execute().then(() => {
-        
         dispatch(modalsSliceActions.closeDepositProgressModal());
         getBalances();
         addNotification({
@@ -71,9 +70,7 @@ export const DepositNotificationContent: React.FC<DepositNotificationContentProp
           id: Date.now().toString(),
           transactionLink: '/activity',
         });
-       
         dispatch(modalsSliceActions.clearDepositModalData());
-        
       }).catch((err: any) => {
         AppLog.error(`Deposit Error`, err);
         dispatch(modalsSliceActions.clearDepositModalData());
