@@ -37,7 +37,7 @@ export const ENV = {
     ledgerTransactions:
       process.env.LEDGER_TRANSACTIONS_URL || 'https://icscan.io/transaction',
   },
-
   hiddenTokens: (process.env.HIDDEN_TOKENS || '').split(','),
   maintenanceMode: process.env.MAINTENANCE_MODE === 'true',
+  prorityOrder:['ICP', 'WICP', 'XTC', 'ckBTC', 'SNS1', 'CHAT', 'BOX', 'OGY', 'YC', 'DONGE']
 };

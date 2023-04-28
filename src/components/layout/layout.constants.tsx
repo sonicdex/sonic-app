@@ -3,6 +3,7 @@ export const FOOTER_HEIGHT = '40px';
 
 export const NAVIGATION_TABS = [
   { label: 'Swap', url: '/swap' },
+  { label: 'Mint', url: '/mint' },
   { label: 'Liquidity', url: '/liquidity' },
   { label: 'Assets', url: '/assets' },
   { label: 'Activity', url: '/activity' },

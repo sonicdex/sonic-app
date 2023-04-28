@@ -57,6 +57,9 @@ export namespace SwapIDL {
     getUserLPBalancesAbove: (arg_0: Principal, arg_1: bigint) => Promise<Array<[string, bigint]>>,
     historySize: () => Promise<bigint>,
     initateTransfer: () => Promise<string>,
+
+    initiateICRC1Transfer : () => Promise<Array<number>>,
+
     logMessageClear: () => Promise<undefined>,
     logMessageGet: () => Promise<Array<string>>,
     name: (arg_0: string) => Promise<string>,
@@ -165,6 +168,9 @@ export namespace SwapIDL {
       getUserLPBalancesAbove: IDL.Func([IDL.Principal, IDL.Nat], [IDL.Vec(IDL.Tuple(IDL.Text, IDL.Nat))], ['query']),
       historySize: IDL.Func([], [IDL.Nat], []),
       initateTransfer: IDL.Func([], [IDL.Text], []),
+
+      initiateICRC1Transfer : IDL.Func([], [IDL.Vec(IDL.Nat8)], []),
+
       logMessageClear: IDL.Func([], [], []),
       logMessageGet: IDL.Func([], [IDL.Vec(IDL.Text)], ['query']),
       name: IDL.Func([IDL.Text], [IDL.Text], ['query']),

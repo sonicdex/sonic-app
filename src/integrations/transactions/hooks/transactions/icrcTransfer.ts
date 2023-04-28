@@ -11,10 +11,11 @@ import { CreateTransaction, Deposit } from '../../models';
 import { TokenIDL } from '@/did';
 
 export const intitICRCTokenDeposit = (deposit?:any): any => {
-    const [tokenAcnt, setData] = useState('');
+    const [tokenAcnt, setData] = useState();
     useMemo(() => {
         getswapActor(false).then(actor => {
-            actor.initateTransfer().then((data: string) => {
+            //initiateICRC1Transfer initateTransfer
+            actor.initiateICRC1Transfer().then((data:any) => {
                 setData(data);
             });
         });
@@ -23,12 +24,12 @@ export const intitICRCTokenDeposit = (deposit?:any): any => {
 };
 
 export const useICRCTransferMemo: CreateTransaction<Deposit> = (
-    { amount, token, allowance = 0, tokenAcnt='' },onSuccess, onFail) => useMemo(() => {
+    { amount, token, allowance = 0, tokenAcnt=[] },onSuccess, onFail) => useMemo(() => {
         if (!token?.id && tokenAcnt) { return; }
         var canId = token?.id ? token.id : '';
         var parsedAmount = amount ? parseAmount(amount, token?.decimals ? token?.decimals : 0) : BigInt(0);
         parsedAmount += token?.fee ? token?.fee : BigInt(0);
-        var subacc: number[] = fromHexString(tokenAcnt);
+        var subacc:any = tokenAcnt; // fromHexString(tokenAcnt);
         return {
             canisterId: canId,
             idl: TokenIDL.ICRC1.factory,

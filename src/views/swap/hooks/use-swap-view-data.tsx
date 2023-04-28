@@ -26,18 +26,23 @@ import {
 
 export enum SwapStep { Home, Review }
 
-export const useSwapViewData = () => {
-  const [lastChangedInputDataKey, setLastChangedInputDataKey] =
-    useState<SwapTokenDataKey>('from');
+export const useSwapViewData = (action:string) => {
+
+  const dispatch = useAppDispatch();
+  
+  const [lastChangedInputDataKey, setLastChangedInputDataKey] = useState<SwapTokenDataKey>('from');
 
   const [step, setStep] = useState(SwapStep.Home);
   const [isAutoSlippage, setIsAutoSlippage] = useState(true);
 
   const query = useQuery();
   const { addNotification } = useNotificationStore();
-  const { fromTokenOptions, toTokenOptions, from, to, tokenList, keepInSonic } =
-    useSwapViewStore();
-  const dispatch = useAppDispatch();
+  const { fromTokenOptions, toTokenOptions, from, to, tokenList, keepInSonic } = useSwapViewStore();
+
+  
+
+  
+
   const {
     sonicBalances, tokenBalances, icpBalance, balancesState, supportedTokenListState,
     supportedTokenList, allPairsState, allPairs,
@@ -80,9 +85,9 @@ export const useSwapViewData = () => {
       dataKey === 'from' ? _newValue.minus(icpFee) : _newValue.plus(icpFee);
 
     dispatch(
-      swapViewActions.setValue({ 
-        data: oppositeDataKey, 
-        value: value.toNumber() > 0 ? value.dp(ICP_METADATA.decimals).toString(): '',
+      swapViewActions.setValue({
+        data: oppositeDataKey,
+        value: value.toNumber() > 0 ? value.dp(ICP_METADATA.decimals).toString() : '',
       })
     );
   }
@@ -103,24 +108,16 @@ export const useSwapViewData = () => {
       const icpFeesConvertedToXTC = getXTCValueByXDRRate({
         amount: formatValue(ICP_METADATA.fee, ICP_METADATA.decimals),
         conversionRate: ICPXDRconversionRate,
-      })
-        .minus(xtcFee)
-        .multipliedBy(2);
+      }).minus(xtcFee).multipliedBy(2);
 
       const xtcFees = xtcFee.multipliedBy(keepInSonic ? 4 : 2);
 
       const amount =
         dataKey === 'from'
           ? newValue
-          : new BigNumber(newValue)
-            .plus(xtcFees)
-            .plus(icpFeesConvertedToXTC)
-            .toString();
+          : new BigNumber(newValue).plus(xtcFees).plus(icpFeesConvertedToXTC).toString();
 
-      const rateBasedAmount = handler({
-        amount,
-        conversionRate: ICPXDRconversionRate,
-      });
+      const rateBasedAmount = handler({ amount, conversionRate: ICPXDRconversionRate});
 
       const resultAmount =
         dataKey === 'from'
@@ -141,12 +138,9 @@ export const useSwapViewData = () => {
     const data = dataKey === 'from' ? from : to;
     const oppositeData = dataKey === 'from' ? to : from;
 
-    const wrappedICPMetadata = supportedTokenList?.find(
-      (token) => token.id === ENV.canistersPrincipalIDs.WICP
-    );
+    const wrappedICPMetadata = supportedTokenList?.find((token) => token.id === ENV.canistersPrincipalIDs.WICP);
 
     if (wrappedICPMetadata && tokenList && allPairs) {
-
       const paths = getTokenPath({
         pairList: allPairs as unknown as Pair.List, tokenList,
         tokenId: wrappedICPMetadata.id, amount: newValue,
@@ -307,7 +301,7 @@ export const useSwapViewData = () => {
     debounce(resetViewState, 300);
   }, [addNotification, from.metadata?.symbol, from.value, resetViewState]);
 
-  useEffect(() => { handleChangeValue(from.value, 'from');}, [to.metadata]);
+  useEffect(() => { handleChangeValue(from.value, 'from'); }, [to.metadata]);
 
   const handleApproveSwap = useCallback(() => {
     addNotification({
@@ -536,7 +530,7 @@ export const useSwapViewData = () => {
       if (tokenFromId) {
         const from = fromTokenOptions.find(({ id }) => id === tokenFromId);
         if (from?.id) {
-          dispatch( swapViewActions.setToken({ data: 'from', tokenId: from.id }));
+          dispatch(swapViewActions.setToken({ data: 'from', tokenId: from.id }));
           dispatch(swapViewActions.setValue({ data: 'from', value: '' }));
         }
       }
@@ -555,10 +549,8 @@ export const useSwapViewData = () => {
   return {
     step, allowance, isButtonDisabled, buttonMessage, canHeldInSonic, isAutoSlippage, headerTitle, isConnected, isLoading, isBalancesUpdating,
     isPriceUpdating, priceImpact, fromSources, toSources, currentOperation, isICPSelected, isExplanationTooltipVisible,
-    isSelectTokenButtonDisabled, selectTokenButtonText, setStep, setLastChangedInputDataKey,
-
-    onButtonClick: handleButtonClick, onMenuClose: handleMenuClose, onSetSlippage: handleSetSlippage,
-    onSetIsAutoSlippage: handleSetIsAutoSlippage, onChangeValue: handleChangeValue, onSelectToken: handleSelectToken,
-    onMaxClick: handleMaxClick, onSwitchTokens: handleSwitchTokens,
+    isSelectTokenButtonDisabled, selectTokenButtonText, setStep, setLastChangedInputDataKey,onButtonClick: handleButtonClick,
+    onMenuClose: handleMenuClose, onSetSlippage: handleSetSlippage,onSetIsAutoSlippage: handleSetIsAutoSlippage, onChangeValue: handleChangeValue,
+    onSelectToken: handleSelectToken,onMaxClick: handleMaxClick, onSwitchTokens: handleSwitchTokens,
   };
 };

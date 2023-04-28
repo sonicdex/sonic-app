@@ -19,28 +19,24 @@ import { ExchangeBox, KeepInSonicBox } from './components';
 import { useSwapViewData } from './hooks';
 
 export const SwapView = () => {
-  useSwapView();
-
+  useSwapView('swap');
   const { fromTokenOptions, toTokenOptions, from, to, slippage } = useSwapViewStore();
-
+  
   const {
     allowance, step, headerTitle,isAutoSlippage,isICPSelected,isLoading,isBalancesUpdating,isPriceUpdating, isExplanationTooltipVisible, 
     isSelectTokenButtonDisabled, selectTokenButtonText, currentOperation,priceImpact, fromSources,toSources,canHeldInSonic,
     isConnected,isButtonDisabled,buttonMessage,setStep, setLastChangedInputDataKey,onButtonClick, onChangeValue,
     onSetIsAutoSlippage, onSetSlippage, onMenuClose, onMaxClick,onSelectToken, onSwitchTokens,
-  } = useSwapViewData();
+  } = useSwapViewData('swap');
 
   const swapPlacementButtonBg = useColorModeValue('gray.50', 'custom.3');
   const menuListShadow = useColorModeValue('lg', 'none');
   const menuListBg = useColorModeValue('gray.50', 'custom.3');
   const linkColor = useColorModeValue('dark-blue.500', 'dark-blue.400');
-
   return (
     <Stack spacing={4}>
       <ViewHeader title={headerTitle}
-        onArrowBack={
-          step === SwapStep.Review ? () => setStep(SwapStep.Home) : undefined
-        }
+        onArrowBack={ step === SwapStep.Review ? () => setStep(SwapStep.Home) : undefined}
       >
         <Menu onClose={onMenuClose}>
           <Tooltip label="Adjust the slippage">
@@ -51,7 +47,6 @@ export const SwapView = () => {
           <MenuList bg={menuListBg} shadow={menuListShadow} borderRadius={20} ml={-20} py={0}>
             <SlippageSettings slippage={slippage} isAutoSlippage={isAutoSlippage} setSlippage={onSetSlippage} setIsAutoSlippage={onSetIsAutoSlippage}/>
           </MenuList>
-
         </Menu>
       </ViewHeader>
       <Flex direction="column" alignItems="center">
@@ -106,7 +101,6 @@ export const SwapView = () => {
                     </Skeleton>
                   </TokenDetailsButton>
                 )}
-
                 <TokenInput onChange={() => setLastChangedInputDataKey('to')} />
               </TokenContent>
               <TokenData>

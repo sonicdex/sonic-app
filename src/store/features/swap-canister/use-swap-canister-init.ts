@@ -41,42 +41,24 @@ export const useSwapCanisterInit = () => {
     getAllPairs({ isRefreshing: false });
   }, []);
 
-  const getSupportedTokenList = useKeepSync(
-    'getSupportedTokenList',
+  const getSupportedTokenList = useKeepSync( 'getSupportedTokenList',
     useCallback(
       async (isRefreshing?: boolean) => {
         if (supportedTokenListState !== FeatureState.Loading) {
           try {
-            dispatch(
-              swapCanisterActions.setSupportedTokensListState(
-                isRefreshing ? FeatureState.Updating : FeatureState.Loading
-              )
-            );
+            dispatch( swapCanisterActions.setSupportedTokensListState( isRefreshing ? FeatureState.Updating : FeatureState.Loading));
             const swapActor = await createAnonSwapActor();
             const response = await swapActor.getSupportedTokenList();
-            
             if (response) {
-              dispatch(
-                swapCanisterActions.setSupportedTokenList(
-                  parseResponseSupportedTokenList(response)
-                )
-              );
+              dispatch( swapCanisterActions.setSupportedTokenList( parseResponseSupportedTokenList(response)));
             } else {
               throw new Error('No "getSupportedTokenList" response');
             }
-
-            dispatch(
-              swapCanisterActions.setSupportedTokensListState(FeatureState.Idle)
-            );
-
+            dispatch( swapCanisterActions.setSupportedTokensListState(FeatureState.Idle));
             return response;
           } catch (error) {
             AppLog.error('Failed to fetch supported token list', error);
-            dispatch(
-              swapCanisterActions.setSupportedTokensListState(
-                FeatureState.Error
-              )
-            );
+            dispatch( swapCanisterActions.setSupportedTokensListState( FeatureState.Error));
           }
         }
       },

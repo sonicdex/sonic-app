@@ -12,6 +12,7 @@ import {
 import { useKeepSync } from '@/store/features/keep-sync';
 import { AppLog } from '@/utils';
 import { parseResponseUserLPBalances } from '@/utils/canister';
+
 import { parseAmount } from '@/utils/format';
 import { fetchICPBalance } from '@/utils/icp';
 
@@ -74,9 +75,12 @@ export const useBalances = () => {
               }
             })
           ): undefined;
+          
         const icpBalance = await fetchICPBalance(principalId);
+       // icpBalance;
         // console.log('Balance update...');
         dispatch(swapCanisterActions.setICPBalance(parseAmount(icpBalance, ICP_METADATA.decimals)));
+
         dispatch(swapCanisterActions.setSonicBalances(sonicBalances));
         dispatch(swapCanisterActions.setTokenBalances(tokenBalances));
         dispatch(swapCanisterActions.setBalancesState(FeatureState.Idle));

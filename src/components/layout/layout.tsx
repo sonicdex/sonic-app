@@ -68,43 +68,16 @@ export const Layout: React.FC = ({ children, ...props }) => {
 
   return (
     <>
-      <Container
-        maxW={['100%', 'container.xl', 'container.xl']}
-        position="sticky"
-        top={0}
-        zIndex={10}
-        id="header"
-      >
-        <Flex
-          zIndex="1000"
-          as="header"
-          width="full"
-          maxWidth="container.xl"
-          margin="auto"
-          direction="row"
-          justifyContent="center"
-          alignItems="center"
-          flexWrap="wrap"
-          gap="4"
-          p={['4', '4', '8']}
-          position="sticky"
-          top="0"
-          bg={backgroundColor}
+      <Container  maxW={['100%', 'container.xl', 'container.xl']} position="sticky" top={0} zIndex={10} id="header">
+        <Flex 
+          zIndex="1000" as="header" width="full" maxWidth="container.xl" margin="auto"
+          direction="row" justifyContent="center" alignItems="center" flexWrap="wrap"
+          gap="4" p={['4', '4', '8']} position="sticky" top="0"bg={backgroundColor}
         >
-          <Flex
-            display={['none', 'none', 'none', 'flex']}
-            width={['0', '24%']}
-            alignItems="center"
-            justifyContent="center"
-          >
+          <Flex  flex={1} display={['none', 'none', 'none', 'flex']}   width={['0', '24%']}  alignItems="center" justifyContent="center">
             <LogoBox />
           </Flex>
-          <chakra.nav
-            flex="1"
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-          >
+          <chakra.nav flex="1" display="flex" alignItems="center" justifyContent="center">
             <Tabs
               index={currentTabIndex}
               variant="solid-rounded"
@@ -112,13 +85,7 @@ export const Layout: React.FC = ({ children, ...props }) => {
             >
               <TabList bg={menuBg}>
                 {NAVIGATION_TABS.map(({ label, url }) => (
-                  <Tab
-                    as={Link}
-                    key={label}
-                    // isSelected={location.pathname === url}
-                    to={url}
-                    px={6}
-                  >
+                  <Tab  as={Link} key={label} to={url} px={6}>
                     {label}
                   </Tab>
                 ))}

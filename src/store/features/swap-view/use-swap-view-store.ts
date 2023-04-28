@@ -10,6 +10,7 @@ import { useSwapCanisterStore } from '..';
 
 export const useSwapViewStore = () => {
   const state = useAppSelector(selectSwapViewState);
+ 
   const { from, tokenList } = state;
   const { allPairs } = useSwapCanisterStore();
 
@@ -32,43 +33,24 @@ export const useSwapViewStore = () => {
     if (isICPSelected) {
       const wicpTokenMetadata = tokenList[ENV.canistersPrincipalIDs.WICP];
       const xtcTokenMetadata = tokenList[ENV.canistersPrincipalIDs.XTC];
-
       const icpToTokenOptions: AppTokenMetadata[] = [
         ...(wicpTokenMetadata ? [wicpTokenMetadata] : []),
         ...(xtcTokenMetadata ? [xtcTokenMetadata] : []),
       ];
-
       return [fromTokenOptions, icpToTokenOptions];
     }
-
     const toTokenPathsIds = Object.keys(from.paths);
     const toTokenOptions = fromTokenOptions.filter((token) =>
       toTokenPathsIds.includes(token.id)
     );
 
     if (isWICPSelected) {
-      const icpToken = fromTokenOptions.find(
-        (token) => token.id === ICP_METADATA.id
-      );
-
-      if (icpToken) {
-        toTokenOptions.unshift({ ...icpToken });
-      }
+      const icpToken = fromTokenOptions.find((token) => token.id === ICP_METADATA.id);
+      if (icpToken) { toTokenOptions.unshift({ ...icpToken });}
     }
-
     return [fromTokenOptions, toTokenOptions];
-  }, [
-    from.metadata,
-    from.paths,
-    tokenList,
-    allPairs,
-    isICPSelected,
-    isWICPSelected,
+  }, [ from.metadata, from.paths, tokenList, allPairs, isICPSelected,isWICPSelected,
   ]);
 
-  return {
-    ...state,
-    fromTokenOptions,
-    toTokenOptions,
-  };
+  return { ...state, fromTokenOptions, toTokenOptions};
 };

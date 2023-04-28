@@ -15,42 +15,27 @@ import { useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router';
 
 import {
-  Asset,
-  AssetIconButton,
-  AssetImageBlock,
-  AssetTitleBlock,
-  DisplayValue,
-  Header,
-  InformationBox,
-  PlugNotConnected,
-  TokenBalancesPopover,
+  Asset, AssetIconButton, AssetImageBlock, AssetTitleBlock, DisplayValue, Header,
+  InformationBox, PlugNotConnected, TokenBalancesPopover,
 } from '@/components';
 import { getAppAssetsSources } from '@/config/utils';
 import { ICP_METADATA } from '@/constants';
 import { useBalances } from '@/hooks/use-balances';
 import { AppTokenMetadata } from '@/models';
 import {
-  assetsViewActions,
-  FeatureState,
-  useAppDispatch,
+  assetsViewActions, FeatureState, useAppDispatch,
   useAssetsViewStore,
   usePlugStore,
   usePriceStore,
   useSwapCanisterStore,
 } from '@/store';
 
-const getAssetPriceByBalance = (
-  price?: string,
-  balance?: number,
-  decimals?: number
-) => {
+const getAssetPriceByBalance = ( price?: string, balance?: number, decimals?: number) => {
   if (price && balance && decimals) {
     return (
-      Number(price) *
-      Number(toBigNumber(balance).applyDecimals(decimals).toString())
+      Number(price) * Number(toBigNumber(balance).applyDecimals(decimals).toString())
     );
   }
-
   return price;
 };
 
@@ -58,60 +43,48 @@ export const AssetsListView = () => {
   const dispatch = useAppDispatch();
   const { isBannerOpened } = useAssetsViewStore();
   const { totalBalances, sonicBalances, tokenBalances } = useBalances();
-  const { supportedTokenListState, balancesState, supportedTokenList } =
-    useSwapCanisterStore();
+  const { supportedTokenListState, balancesState, supportedTokenList } = useSwapCanisterStore();
   const { icpPrice } = usePriceStore();
   const { isConnected } = usePlugStore();
 
   const navigate = useNavigate();
 
   const navigateToDeposit = (tokenId?: string) => {
-    if (tokenId) {
-      navigate(`/assets/deposit?tokenId=${tokenId}`);
-    }
+    if (tokenId) { navigate(`/assets/deposit?tokenId=${tokenId}`); }
   };
 
   const navigateToWithdraw = (tokenId?: string) => {
-    if (tokenId) {
-      navigate(`/assets/withdraw?tokenId=${tokenId}`);
-    }
+    if (tokenId) { navigate(`/assets/withdraw?tokenId=${tokenId}`); }
   };
 
   const handleBannerClose = () => {
     dispatch(assetsViewActions.setIsBannerOpened(false));
   };
 
+
   const notEmptyTokenList = useMemo(() => {
     const supportedTokenListWithICP: AppTokenMetadata[] = [
-      Object.assign({}, ICP_METADATA, { price: icpPrice }),
-      ...(supportedTokenList || []),
+      Object.assign({}, ICP_METADATA, { price: icpPrice }), ...(supportedTokenList || []),
     ];
-
     if (totalBalances) {
       return supportedTokenListWithICP.filter(
         (token) => totalBalances[token.id] !== 0
       );
     }
-
     return [];
   }, [supportedTokenList, totalBalances, icpPrice]);
 
-  const isTokenListPresent = useMemo(
-    () => notEmptyTokenList && notEmptyTokenList.length > 0,
-    [notEmptyTokenList]
-  );
+  const isTokenListPresent = useMemo(() => notEmptyTokenList && notEmptyTokenList.length > 0, [notEmptyTokenList]);
 
-  const isLoading = useMemo(
-    () =>
-      supportedTokenListState === FeatureState.Loading ||
-      balancesState === FeatureState.Loading,
+  const isLoading = useMemo(() =>
+    supportedTokenListState === FeatureState.Loading ||
+    balancesState === FeatureState.Loading,
     [supportedTokenListState, balancesState]
   );
 
-  const isUpdating = useMemo(
-    () =>
-      supportedTokenListState === FeatureState.Updating ||
-      balancesState === FeatureState.Updating,
+  const isUpdating = useMemo(() =>
+    supportedTokenListState === FeatureState.Updating ||
+    balancesState === FeatureState.Updating,
     [supportedTokenListState, balancesState]
   );
 
@@ -120,22 +93,14 @@ export const AssetsListView = () => {
 
   const getCanWithdraw = useCallback(
     (tokenId: string) => {
-      return (
-        tokenId !== ICP_METADATA.id &&
-        sonicBalances &&
-        sonicBalances[tokenId] > 0
-      );
+      return (tokenId !== ICP_METADATA.id && sonicBalances && sonicBalances[tokenId] > 0);
     },
     [sonicBalances]
   );
 
   const getCanDeposit = useCallback(
     (tokenId: string) => {
-      return (
-        tokenId !== ICP_METADATA.id &&
-        tokenBalances &&
-        tokenBalances[tokenId] > 0
-      );
+      return ( tokenId !== ICP_METADATA.id && tokenBalances && tokenBalances[tokenId] > 0);
     },
     [tokenBalances]
   );
@@ -144,11 +109,7 @@ export const AssetsListView = () => {
     <>
       <Header title="Your Assets" isUpdating={isUpdating}>
         {isBannerOpened && (
-          <InformationBox
-            title="Assets Details"
-            mb={9}
-            onClose={handleBannerClose}
-          >
+          <InformationBox title="Assets Details" mb={9} onClose={handleBannerClose}>
             <Text color={assetsDetailsTextColor}>
               View all the assets you have deposited or obtained on Sonic
               through our Liquidity and Swaps protocols, and deposit more or
@@ -184,90 +145,47 @@ export const AssetsListView = () => {
             notEmptyTokenList.map(
               ({ id, name, symbol, decimals, price, logo }) => (
                 <Asset key={id} imageSources={[logo]}>
-                  <HStack
-                    spacing={4}
-                    flex={2}
-                    minW={['100%', '200px', '200px']}
-                    overflow="hidden"
-                    mr={4}
-                  >
+                  <HStack spacing={4} flex={2} minW={['100%', '200px', '200px']} overflow="hidden" mr={4}>
                     <AssetImageBlock />
-                    <AssetTitleBlock
-                      title={symbol}
-                      subtitle={name}
-                      maxW={['100%', '140px', '140px']}
-                    />
+                    <AssetTitleBlock title={symbol} subtitle={name} maxW={['100%', '140px', '140px']} />
                   </HStack>
                   <TokenBalancesPopover
                     sources={getAppAssetsSources({
                       balances: {
-                        plug:
-                          id === ICP_METADATA.id
-                            ? totalBalances?.[id]
-                            : tokenBalances?.[id],
+                        plug: id === ICP_METADATA.id ? totalBalances?.[id] : tokenBalances?.[id],
                         sonic: sonicBalances?.[id],
                       },
                     })}
-                    decimals={decimals}
-                    symbol={symbol}
+                    decimals={decimals} symbol={symbol}
                   >
                     <Flex flex={1} direction="column">
-                      <Text
-                        fontWeight="bold"
-                        color={headerColor}
-                        display="flex"
-                        alignItems="center"
-                      >
+                      <Text fontWeight="bold" color={headerColor} display="flex" alignItems="center">
                         Balance
-                        <Icon
-                          as={FaInfoCircle}
-                          w={4}
-                          h={4}
-                          ml={1.5}
-                          opacity={0.45}
-                        />
+                        <Icon as={FaInfoCircle} w={4} h={4} ml={1.5} opacity={0.45} />
                       </Text>
-                      <DisplayValue
-                        isUpdating={isUpdating}
-                        value={totalBalances?.[id]}
-                        decimals={decimals}
-                        fontWeight="bold"
-                        disableTooltip
-                        shouldDivideByDecimals
+                      <DisplayValue isUpdating={isUpdating} value={totalBalances?.[id]}
+                        decimals={decimals} fontWeight="bold" disableTooltip shouldDivideByDecimals
                       />
                     </Flex>
                   </TokenBalancesPopover>
                   <Flex flex={1} direction="column">
                     <Text fontWeight="bold" color={headerColor}>
-                      Price
+                      Price 
                     </Text>
-                    <DisplayValue
-                      isUpdating={isUpdating}
-                      fontWeight="bold"
-                      prefix="~$"
-                      value={
-                        getAssetPriceByBalance(
-                          price,
-                          totalBalances?.[id],
-                          decimals
-                        ) ?? 0
+                    <DisplayValue isUpdating={isUpdating} fontWeight="bold" prefix="~$"
+                      value={ 
+                        (id == 'ryjl3-tyaaa-aaaaa-aaaba-cai')?
+                        ((totalBalances?.[id])?(totalBalances?.[id] / 10**decimals):0)* (parseFloat(icpPrice || '1')) :
+                        getAssetPriceByBalance(price, totalBalances?.[id], decimals) ?? 0
                       }
                     />
                   </Flex>
-
                   <HStack>
-                    <AssetIconButton
-                      aria-label={`Withdraw ${symbol}`}
-                      icon={<FaMinus />}
-                      onClick={() => navigateToWithdraw(id)}
-                      isDisabled={!getCanWithdraw(id)}
+                    <AssetIconButton aria-label={`Withdraw ${symbol}`} icon={<FaMinus />}
+                      onClick={() => navigateToWithdraw(id)} isDisabled={!getCanWithdraw(id)}
                     />
-                    <AssetIconButton
-                      colorScheme="dark-blue"
-                      aria-label={`Deposit ${symbol}`}
-                      icon={<FaPlus />}
-                      onClick={() => navigateToDeposit(id)}
-                      isDisabled={!getCanDeposit(id)}
+                    <AssetIconButton colorScheme="dark-blue" aria-label={`Deposit ${symbol}`} icon={<FaPlus />}
+                      onClick={() => navigateToDeposit(id)} isDisabled={!getCanDeposit(id)}
                     />
                   </HStack>
                 </Asset>

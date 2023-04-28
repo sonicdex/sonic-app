@@ -49,6 +49,9 @@ export const swapViewSlice = createSlice({
   // `createSlice` will infer the state type from the `initialState` argument
   initialState,
   reducers: {
+    reset:(state)=>{
+      state =initialState;
+    },
     setState: (state, action: PayloadAction<FeatureState>) => {
       state.state = action.payload;
     },
@@ -77,14 +80,13 @@ export const swapViewSlice = createSlice({
       }
     },
     setToken: (state, action: PayloadAction<{ data: SwapTokenDataKey; tokenId: string | undefined }>) => {
+      
       const { allPairs, tokenList } = state;
       const { data, tokenId } = action.payload;
 
       if (tokenId && tokenList && allPairs) {
         const paths = getTokenPaths(allPairs as Pair.List, tokenList, tokenId, state[data].value, data);
-
         // const paths = //Swap.getTokenPaths({ pairList: allPairs as Pair.List, tokenList, tokenId, amount: state[data].value, dataKey: data });  
-        
         state[data].metadata = { ...tokenList[tokenId] };
         state[data].paths = paths;
         const tokenPathsDataKey = `base${capitalize(data)}TokenPaths` as | 'baseToTokenPaths' | 'baseFromTokenPaths';
@@ -162,6 +164,7 @@ export const swapViewSlice = createSlice({
       }
     },
     setTokenList: ( state, action: PayloadAction<AppTokenMetadataListObject>) => {
+   // if(action.payload['ICP']) delete action.payload['ICP'];
       state.tokenList = action.payload;
       const tokens = Object.values(action.payload);
       if (!state.from.metadata) {
@@ -170,6 +173,10 @@ export const swapViewSlice = createSlice({
         state.from.value = '';
         state.to.value = '';
       }
+      // if(state.from.metadata.id=='ryjl3-tyaaa-aaaaa-aaaba-cai'){
+      //   const { allPairs, tokenList } = state;
+      //   state.from.paths =  getTokenPaths(allPairs as Pair.List, tokenList, "ryjl3-tyaaa-aaaaa-aaaba-cai", 0, "from");
+      // }
     },
     setAllPairs: (state, action: PayloadAction<Pair.List | undefined>) => {
       state.allPairs = action.payload;
