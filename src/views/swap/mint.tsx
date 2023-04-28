@@ -12,15 +12,16 @@ import {
     TokenDataMetaInfo,TokenDetailsButton, TokenDetailsLogo, TokenDetailsSymbol, TokenInput,ViewHeader,
   } from '@/components';
   
-  import { useSwapView, useSwapViewStore } from '@/store';
+  import { useSwapView, useSwapViewStore  } from '@/store';
   
   import { SwapStep } from './';
-  import { ExchangeBox, KeepInSonicBox } from './components';
+  import { ExchangeBox, KeepInSonicBox , SwapSubTab} from './components';
   import { useSwapViewData } from './hooks';
   
   export const MintView = () => {
     useSwapView('mint');
-    const { fromTokenOptions, toTokenOptions, from, to, slippage } = useSwapViewStore();
+    const { fromTokenOptions, toTokenOptions, from, to, slippage  } = useSwapViewStore();
+
     const {
       allowance, step, headerTitle,isAutoSlippage,isICPSelected,isLoading,isBalancesUpdating,isPriceUpdating, isExplanationTooltipVisible, 
       isSelectTokenButtonDisabled, selectTokenButtonText, currentOperation,priceImpact, fromSources,toSources,canHeldInSonic,
@@ -34,6 +35,7 @@ import {
     const linkColor = useColorModeValue('dark-blue.500', 'dark-blue.400');
     return (
       <Stack spacing={4}>
+        <SwapSubTab tabname={'mint'} />
         <ViewHeader title={headerTitle}
           onArrowBack={ step === SwapStep.Review ? () => setStep(SwapStep.Home) : undefined}
         >

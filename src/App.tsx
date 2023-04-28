@@ -70,7 +70,7 @@ export const App = () => {
 
         <Routes>
           <Route path="/swap" element={<SwapView />} />
-          <Route path="/mint" element={<MintView />} />
+          <Route path="/swap/mint" element={<MintView />} />
           <Route path="/assets" element={<AssetsListView />} />
           <Route path="/assets/withdraw" element={<AssetsWithdrawView />} />
           <Route path="/assets/deposit" element={<AssetsDepositView />} />

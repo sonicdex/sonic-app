@@ -27,9 +27,7 @@ import {
 export enum SwapStep { Home, Review }
 
 export const useSwapViewData = (action:string) => {
-
   const dispatch = useAppDispatch();
-  
   const [lastChangedInputDataKey, setLastChangedInputDataKey] = useState<SwapTokenDataKey>('from');
 
   const [step, setStep] = useState(SwapStep.Home);
@@ -39,9 +37,6 @@ export const useSwapViewData = (action:string) => {
   const { addNotification } = useNotificationStore();
   const { fromTokenOptions, toTokenOptions, from, to, tokenList, keepInSonic } = useSwapViewStore();
 
-  
-
-  
 
   const {
     sonicBalances, tokenBalances, icpBalance, balancesState, supportedTokenListState,
@@ -431,7 +426,7 @@ export const useSwapViewData = (action:string) => {
       return 'Unwrap';
     }
 
-    return 'Swap';
+    return action=='swap'? 'Swap':action=='mint'? 'Mint':'';
   }, [
     isFromTokenIsICP,
     isToTokenIsXTC,

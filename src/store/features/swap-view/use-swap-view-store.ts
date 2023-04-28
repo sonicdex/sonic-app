@@ -10,7 +10,6 @@ import { useSwapCanisterStore } from '..';
 
 export const useSwapViewStore = () => {
   const state = useAppSelector(selectSwapViewState);
- 
   const { from, tokenList } = state;
   const { allPairs } = useSwapCanisterStore();
 

@@ -7,7 +7,7 @@ import { AppLog } from '@/utils';
 
 import { plugSlice, PlugState } from '../plug-slice';
 import { disconnect } from './disconnect';
-
+import { tokenList} from '@/utils'
 //import {artemis} from '@/utils';
 
 export const connect = createAsyncThunk<void>(
@@ -15,7 +15,7 @@ export const connect = createAsyncThunk<void>(
   async (_, { dispatch, getState }): Promise<void> => {
     if ((getState() as RootState).plug.state === PlugState.Loading) return;
     dispatch(plugSlice.actions.setState(PlugState.Loading));
-
+    var tknList= tokenList("obj");
     if (plug) {
       try {
         const accountChangeCallback = async (
@@ -24,10 +24,9 @@ export const connect = createAsyncThunk<void>(
           AppLog.warn(`Connected to Plug with principal ${newPrincipalId}`);
           dispatch(plugSlice.actions.setPrincipalId(newPrincipalId));
         };
-
         await plug.requestConnect({
           host: ENV.host,
-          whitelist: Object.values(ENV.canistersPrincipalIDs),
+          whitelist: [...Object.values(ENV.canistersPrincipalIDs),...Object.keys(tknList)],
           onConnectionUpdate: (data: any) => {
             if (!data.sessionData) {
               return dispatch(disconnect());

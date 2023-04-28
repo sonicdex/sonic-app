@@ -31,7 +31,10 @@ interface SwapViewState {
 }
 
 export const INITIAL_SWAP_SLIPPAGE = '0.5';
-
+function toJson(data: any) {
+  if(data) return JSON.stringify(data, (_, v) => typeof v === 'bigint' ? `${v}n` : v).replace(/"(-?\d+)n"/g, (_, a) => a);
+  return '{}';
+}
 const initialState: SwapViewState = {
   state: FeatureState?.Idle,
   from: { paths: {}, metadata: undefined, value: '' },
@@ -49,8 +52,8 @@ export const swapViewSlice = createSlice({
   // `createSlice` will infer the state type from the `initialState` argument
   initialState,
   reducers: {
-    reset:(state)=>{
-      state =initialState;
+    reset: (state) => {
+      
     },
     setState: (state, action: PayloadAction<FeatureState>) => {
       state.state = action.payload;
@@ -164,7 +167,6 @@ export const swapViewSlice = createSlice({
       }
     },
     setTokenList: ( state, action: PayloadAction<AppTokenMetadataListObject>) => {
-   // if(action.payload['ICP']) delete action.payload['ICP'];
       state.tokenList = action.payload;
       const tokens = Object.values(action.payload);
       if (!state.from.metadata) {
@@ -172,11 +174,12 @@ export const swapViewSlice = createSlice({
         state.from.paths = {};
         state.from.value = '';
         state.to.value = '';
+        if(state.from.metadata.id=='ryjl3-tyaaa-aaaaa-aaaba-cai'){
+          const { allPairs, tokenList } = state;
+          state.from.paths =  getTokenPaths(allPairs as Pair.List, tokenList, "ryjl3-tyaaa-aaaaa-aaaba-cai", 0, "from");
+        }
       }
-      // if(state.from.metadata.id=='ryjl3-tyaaa-aaaaa-aaaba-cai'){
-      //   const { allPairs, tokenList } = state;
-      //   state.from.paths =  getTokenPaths(allPairs as Pair.List, tokenList, "ryjl3-tyaaa-aaaaa-aaaba-cai", 0, "from");
-      // }
+    
     },
     setAllPairs: (state, action: PayloadAction<Pair.List | undefined>) => {
       state.allPairs = action.payload;
@@ -203,26 +206,18 @@ export const selectSwapViewState = (state: RootState) => state.swapView;
 //getTokenPaths to avoid cpu load in built fn
 
 const getTokenPaths = function(allPairs?: any, tokenList?: any, tokenId?: string, amount?: any, dataKey?: any) {
-  var allPairs = JSON.parse(toJson(allPairs)),
-    tokenList = JSON.parse(toJson(tokenList)),
-    tokenPaths: any = {};
+  var allPairs = JSON.parse(toJson(allPairs)), tokenList = JSON.parse(toJson(tokenList)),tokenPaths: any = {};
 
   if (tokenId) {
     if(!allPairs[tokenId] ) return tokenPaths;
-
     Object.keys(allPairs[tokenId]).forEach((x: string) => {
       let fromValue = amount ? amount : 0;
-
       var p = Swap.getAmountOut({ 
-        amountIn: fromValue.toString(),decimalsIn: tokenList[tokenId].decimals, decimalsOut: tokenList[x].decimals,
+        amountIn: fromValue.toString(),decimalsIn: tokenList[tokenId]?.decimals, decimalsOut: tokenList[x]?.decimals,
         reserveIn: allPairs[tokenId][x].reserve0,reserveOut: allPairs[tokenId][x].reserve1,
       })
       tokenPaths[x] = { amountOut: p, path: [tokenId, x] ,  }
     })
-  }
-  function toJson(data: any) {
-    if(data) return JSON.stringify(data, (_, v) => typeof v === 'bigint' ? `${v}n` : v).replace(/"(-?\d+)n"/g, (_, a) => a);
-    return '{}';
   }
   return tokenPaths;
 }

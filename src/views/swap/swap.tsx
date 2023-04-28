@@ -15,8 +15,10 @@ import {
 import { useSwapView, useSwapViewStore } from '@/store';
 
 import { SwapStep } from './';
-import { ExchangeBox, KeepInSonicBox } from './components';
+import { ExchangeBox, KeepInSonicBox , SwapSubTab } from './components';
 import { useSwapViewData } from './hooks';
+
+
 
 export const SwapView = () => {
   useSwapView('swap');
@@ -35,6 +37,7 @@ export const SwapView = () => {
   const linkColor = useColorModeValue('dark-blue.500', 'dark-blue.400');
   return (
     <Stack spacing={4}>
+        <SwapSubTab tabname={'swap'} />
       <ViewHeader title={headerTitle}
         onArrowBack={ step === SwapStep.Review ? () => setStep(SwapStep.Home) : undefined}
       >

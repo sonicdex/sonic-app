@@ -72,9 +72,9 @@ export const Layout: React.FC = ({ children, ...props }) => {
         <Flex 
           zIndex="1000" as="header" width="full" maxWidth="container.xl" margin="auto"
           direction="row" justifyContent="center" alignItems="center" flexWrap="wrap"
-          gap="4" p={['4', '4', '8']} position="sticky" top="0"bg={backgroundColor}
+          gap="4" p={['4', '4', '8']} position="sticky" top="0" bg={backgroundColor}
         >
-          <Flex  flex={1} display={['none', 'none', 'none', 'flex']}   width={['0', '24%']}  alignItems="center" justifyContent="center">
+          <Flex display={['none', 'none', 'none', 'flex']}   width={['0', '24%']}  alignItems="center" justifyContent="center">
             <LogoBox />
           </Flex>
           <chakra.nav flex="1" display="flex" alignItems="center" justifyContent="center">
@@ -151,7 +151,7 @@ export const Layout: React.FC = ({ children, ...props }) => {
         </Flex>
       </Container>
 
-      <Container as="main" maxW="xl" minH={`calc(100vh - ${headerHeight} - ${FOOTER_HEIGHT})`} py="10" display="flex" flexDirection="column" {...props}>
+      <Container as="main" maxW="xl" minH={`calc(100vh - ${headerHeight} - ${FOOTER_HEIGHT})`} py="4" display="flex" flexDirection="column" {...props}>
         {children}
       </Container>
 
