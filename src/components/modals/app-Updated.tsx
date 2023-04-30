@@ -4,25 +4,32 @@ import {
 import React from 'react';
 import packageJSON from '@/../package.json';
 
+import { useState } from "react";
+
 var appVer = localStorage.getItem('appver');
-var isModelOpen = true;
-if(packageJSON.version == appVer){
-    isModelOpen=false;
-}
-function handleClose() {
-    localStorage.setItem('appver',  packageJSON.version);
-    isModelOpen=false;
-}
+
 type AppUpdatedModalProps =  {
     isNotiOpen: boolean;
-  };
+};
   
 export const AppUpdatedModal: React.FC<AppUpdatedModalProps>  = ({ isNotiOpen }) => {
+
+    const [isModelOpen, setisModelOpen] = useState(true);
+
+
+    if(packageJSON.version == appVer){
+        setisModelOpen(false);
+    }
+    function handleClose() {
+        localStorage.setItem('appver',  packageJSON.version);
+        setisModelOpen(false);
+    }
+
     const bg = useColorModeValue('gray.50', 'custom.2');
     const color = useColorModeValue('gray.600', 'custom.1');
     const titleColor = useColorModeValue('gray.800', 'gray.50');
     return  isModelOpen?(
-        <Modal isOpen={isModelOpen} isCentered onClose={handleClose} >
+        <Modal isOpen={isModelOpen} isCentered onClose={handleClose}>
             <ModalOverlay />
             <ModalContent as={Flex} maxW="md" direction="column" alignItems="center" bg={bg}
                 pt="37px" px="37px" pb="43px" borderRadius={20} 

@@ -64,7 +64,7 @@ export const AssetsListView = () => {
 
   const notEmptyTokenList = useMemo(() => {
     const supportedTokenListWithICP: AppTokenMetadata[] = [
-      Object.assign({}, ICP_METADATA, { price: icpPrice }), ...(supportedTokenList || []),
+       ...(supportedTokenList || []),
     ];
     if (totalBalances) {
       return supportedTokenListWithICP.filter(
