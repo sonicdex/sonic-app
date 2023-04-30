@@ -1,13 +1,12 @@
 import {
     Flex, Heading, Modal, ModalCloseButton, ModalContent, ModalOverlay, Text, useColorModeValue
 } from '@chakra-ui/react';
-import React from 'react';
+import React,{ useState , useEffect}  from 'react';
 import packageJSON from '@/../package.json';
 
-import { useState } from "react";
+
 
 var appVer = localStorage.getItem('appver');
-
 type AppUpdatedModalProps =  {
     isNotiOpen: boolean;
 };
@@ -15,9 +14,13 @@ type AppUpdatedModalProps =  {
 export const AppUpdatedModal: React.FC<AppUpdatedModalProps>  = ({ isNotiOpen }) => {
 
     const [isModelOpen, setisModelOpen] = useState(true);
-    if(packageJSON.version == appVer){
-        setisModelOpen(false);
-    }
+    
+    useEffect(() => {
+        if(packageJSON.version == appVer){
+            setisModelOpen(false);
+        }    
+    },[appVer])
+    
     function handleClose() {
         localStorage.setItem('appver',  packageJSON.version);
         setisModelOpen(false);
