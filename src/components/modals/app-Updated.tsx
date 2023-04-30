@@ -15,8 +15,6 @@ type AppUpdatedModalProps =  {
 export const AppUpdatedModal: React.FC<AppUpdatedModalProps>  = ({ isNotiOpen }) => {
 
     const [isModelOpen, setisModelOpen] = useState(true);
-
-
     if(packageJSON.version == appVer){
         setisModelOpen(false);
     }
