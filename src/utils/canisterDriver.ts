@@ -20,7 +20,9 @@ export const loadsupportedTokenList = async () => {
   supportedTokenList = useSwapCanisterStore()?.supportedTokenList;
   if (!supportedTokenList || Object.keys(tokenListObj).length > 0) return false;
   supportedTokenList.forEach((el: { id: string }) => { tokenListObj[el.id] = el });
-  if (plugStat.isConnected) {   artemis.connect('plug'); }
+  if (plugStat.isConnected) { 
+    [...Object.values(ENV.canistersPrincipalIDs),...Object.keys(supportedTokenList)]
+    artemis.connect('plug',); }
 }
 
 export const tokenList = (returnType: 'array' | 'obj' , tokenId?:string): AppTokenMetadata[] | any => {

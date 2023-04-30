@@ -11,6 +11,7 @@ import {
   AddLiquidityFailModal, AddLiquidityProgressModal, AllowanceVerifyModal, DepositProgressModal, MintManualModal, MintWICPFailModal,
   MintWICPProgressModal, MintXTCFailModal, MintXTCProgressModal, RemoveLiquidityFailModal, RemoveLiquidityProgressModal, SwapFailModal,
   SwapProgressModal, TermsAndConditionsModal, TokenSelectModal, WithdrawProgressModal, WithdrawWICPFailModal, WithdrawWICPProgressModal,
+  AppUpdatedModal
 } from './components/modals';
 
 import { ENV } from './config';
@@ -77,12 +78,12 @@ export const App = () => {
           <Route path="/liquidity" element={<LiquidityListView />} />
           <Route path="/liquidity/add" element={<LiquidityAddView />} />
           <Route path="/activity" element={<ActivityListView />} />
-
           <Route path="/test" element={<TestView />} />
           <Route path="/test/t1" element={<TestViewt1 />} />
           <Route path="/test/t2" element={<TestViewt2 />} />
           <Route path="*" element={<Navigate to="/swap" />} />
         </Routes>
+        <AppUpdatedModal isNotiOpen={true}/>
       </Layout>
     </BrowserRouter>
   );
