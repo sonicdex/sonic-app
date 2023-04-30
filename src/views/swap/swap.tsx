@@ -19,7 +19,6 @@ import { ExchangeBox, KeepInSonicBox , SwapSubTab } from './components';
 import { useSwapViewData } from './hooks';
 
 
-
 export const SwapView = () => {
   useSwapView('swap');
   const { fromTokenOptions, toTokenOptions, from, to, slippage } = useSwapViewStore();

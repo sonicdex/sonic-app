@@ -28,8 +28,7 @@ export const useSwapBatch = ({ keepInSonic, ...swapParams }: SwapModel & ExtraDe
 
   const depositParams = {
     token: swapParams.from.metadata,
-    amount: getAmountDependsOnBalance(
-      sonicBalances[swapParams.from.metadata.id],
+    amount: getAmountDependsOnBalance( sonicBalances[swapParams.from.metadata.id],
       swapParams.from.metadata.decimals,
       swapParams.from.value
     ),
@@ -47,9 +46,8 @@ export const useSwapBatch = ({ keepInSonic, ...swapParams }: SwapModel & ExtraDe
     const approve = useApproveTransactionMemo(depositParams);
     const deposit = useDepositTransactionMemo(depositParams);
     swapParams.entryVal = depositParams.amount;
-
+    
     const swap = useSwapExactTokensTransactionMemo(swapParams);
-
     withdrawParams.amount = swap.amountOutMin?.toString();
     const withdraw = useWithdrawTransactionMemo(withdrawParams);
 

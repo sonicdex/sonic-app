@@ -3,13 +3,7 @@ import { useCallback, useEffect } from 'react';
 import { useAllPairs } from '@/hooks';
 import { useBalances } from '@/hooks/use-balances';
 import { createAnonSwapActor } from '@/integrations/actor';
-import {
-  FeatureState,
-  swapCanisterActions,
-  useAppDispatch,
-  usePlugStore,
-  useSwapCanisterStore,
-} from '@/store';
+import { FeatureState, swapCanisterActions, useAppDispatch, usePlugStore, useSwapCanisterStore} from '@/store';
 import { AppLog } from '@/utils';
 import { parseResponseSupportedTokenList } from '@/utils/canister';
 
@@ -43,7 +37,7 @@ export const useSwapCanisterInit = () => {
 
   const getSupportedTokenList = useKeepSync( 'getSupportedTokenList',
     useCallback(
-      async (isRefreshing?: boolean) => {
+      async (isRefreshing?: boolean , loadAction?:string) => {
         if (supportedTokenListState !== FeatureState.Loading) {
           try {
             dispatch( swapCanisterActions.setSupportedTokensListState( isRefreshing ? FeatureState.Updating : FeatureState.Loading));

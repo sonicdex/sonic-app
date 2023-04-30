@@ -15,6 +15,9 @@ export const useApproveTransactionMemo: CreateTransaction<Deposit> = (
     const tokenType = token.tokenType;
     const parsedAmount = amount ? parseAmount(amount, token.decimals) : BigInt(0);
     const toApproveAmount = parsedAmount + token.fee > BigInt(allowance) ? parsedAmount : 0;
+
+    console.log('useApproveTransactionMemo',amount , parsedAmount, toApproveAmount)
+
     if (tokenType == 'DIP20') {
       return {
         canisterId: token.id, idl: TokenIDL.DIP20.factory, methodName: 'approve',
@@ -23,10 +26,10 @@ export const useApproveTransactionMemo: CreateTransaction<Deposit> = (
           if (onSuccess) onSuccess(res);
         },
         onFail,
-        args: [ Principal.fromText(ENV.canistersPrincipalIDs.swap), toApproveAmount],
+        args: [Principal.fromText(ENV.canistersPrincipalIDs.swap), toApproveAmount],
       };
     }
-    else if (tokenType== 'YC') {
+    else if (tokenType == 'YC') {
       return {
         canisterId: token.id, idl: TokenIDL.DIP20.YCfactory, methodName: 'approve',
         onSuccess: async (res: TokenIDL.DIP20.YCResult) => {
@@ -34,7 +37,7 @@ export const useApproveTransactionMemo: CreateTransaction<Deposit> = (
           if (onSuccess) onSuccess(res);
         },
         onFail,
-        args: [ Principal.fromText(ENV.canistersPrincipalIDs.swap), toApproveAmount],
+        args: [Principal.fromText(ENV.canistersPrincipalIDs.swap), toApproveAmount],
       };
     }
     else return false;

@@ -6,11 +6,7 @@ import {
   getFromStorage, LocalStorageKey,  MintUncompleteBlockHeights, saveToStorage,
 } from '@/utils';
 
-export const getAmountDependsOnBalance = (
-  tokenBalance: number,
-  tokenDecimals: number,
-  fromValue: string
-): string => {
+export const getAmountDependsOnBalance = ( tokenBalance: number,tokenDecimals: number, fromValue: string): string => {
   const parsedFromValue = parseFloat(fromValue);
   const parsedTokenBalance = toBigNumber(tokenBalance).applyDecimals(tokenDecimals).toNumber();
 

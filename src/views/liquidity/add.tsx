@@ -42,7 +42,7 @@ export const LiquidityAddView = () => {
   const navigate = useNavigate();
   const balances = useBalances();
   const { tokenBalances, sonicBalances, totalBalances } = balances;
-  const { supportedTokenList, supportedTokenListState, balancesState } =
+  var { supportedTokenList, supportedTokenListState, balancesState } =
     useSwapCanisterStore();
   const { state: priceState } = usePriceStore();
   const openSelectTokenModal = useTokenModalOpener();
@@ -57,7 +57,6 @@ export const LiquidityAddView = () => {
       navigate('/liquidity');
     }
   };
-
   const handleAddLiquidity = () => {
     if (!isReviewing) {
       setIsReviewing(true);
@@ -88,25 +87,44 @@ export const LiquidityAddView = () => {
 
     setInAndOutTokenValues(dataKey, maxValue);
   };
+  const lockedPairsList = [['ryjl3-tyaaa-aaaaa-aaaba-cai', 'utozz-siaaa-aaaam-qaaxq-cai']];
+  lockedPairsList;
 
   const handleSelectToken = (dataKey: LiquidityTokenDataKey) => {
     if (!isReviewing) {
+
+      const excludeToken = (() => {
+        const foundPair = lockedPairsList.find(pair => {
+          if (dataKey === 'token0') {
+            return pair[0] === token1.metadata?.id || pair[1] === token1.metadata?.id;
+          } else if (dataKey === 'token1') {
+            return pair[0] === token0.metadata?.id || pair[1] === token0.metadata?.id;
+          }
+          return false;
+        });
+        return foundPair ? foundPair.find(x => x !== (token0.metadata?.id || token1.metadata?.id)) : '';
+      })();
+
+      const customTokenList = supportedTokenList ? supportedTokenList.filter(x => {
+        if (dataKey === 'token0') {
+          return x.id !== token1.metadata?.id && x.id !== excludeToken;
+        } else if (dataKey === 'token1') {
+          return x.id !== token0.metadata?.id && x.id !== excludeToken;
+        }
+      }) : [];
+
       openSelectTokenModal({
-        metadata: supportedTokenList,
+        metadata: customTokenList,
         onSelect: (tokenId) => {
           if (tokenId && supportedTokenList) {
-            if (
-              token0.metadata?.id === tokenId ||
-              token1.metadata?.id === tokenId
-            ) {
+            if (token0.metadata?.id === tokenId || token1.metadata?.id === tokenId) {
               return;
             }
+            const foundToken = supportedTokenList.find(({ id }) => id === tokenId);
 
-            const foundToken = supportedTokenList.find( ({ id }) => id === tokenId);
-
-            dispatch( liquidityViewActions.setToken({ data: dataKey, token: foundToken}));
-            dispatch( liquidityViewActions.setValue({ data: 'token0', value: '' }));
-            dispatch( liquidityViewActions.setValue({ data: 'token1', value: '' }));
+            dispatch(liquidityViewActions.setToken({ data: dataKey, token: foundToken }));
+            dispatch(liquidityViewActions.setValue({ data: 'token0', value: '' }));
+            dispatch(liquidityViewActions.setValue({ data: 'token1', value: '' }));
           }
         },
         selectedTokenIds,

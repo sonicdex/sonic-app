@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from 'react';
 
-import { ENV } from '@/config';
+// import { ENV } from '@/config';
 import { Pair } from '@/models';
 import { useAppDispatch } from '@/store';
 
@@ -24,11 +24,7 @@ export const useLiquidityViewInit = () => {
 
   useEffect(() => {
     if (supportedTokenList && !token0.metadata?.id) {
-      const token =
-        supportedTokenList.find(
-          (token) => token.id === ENV.canistersPrincipalIDs.WICP
-        ) ?? supportedTokenList[0];
-
+      const token = supportedTokenList[0];
       dispatch(liquidityViewActions.setToken({ data: 'token0', token }));
     }
   }, [supportedTokenList, dispatch]);
