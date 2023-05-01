@@ -15,12 +15,12 @@ export const parseAmount = (val: string, decimals: string | number , fee?:bigint
   try {
     const fixedVal = new BigNumber(val).toFixed(Number(decimals)); // Fix for scientific notation string
     var str = parseUnits(fixedVal, decimals).toString();
-    if(val){
-      var t1=parseFloat(val), t2 = parseFloat(str);
-      if(t1>0 && t2 == 0 ){
-        str = parseUnits((1/10**(Number(decimals)-2)).toString(), decimals).toString() ;
-      }
-    }
+    // if(val){
+    //   var t1=parseFloat(val), t2 = parseFloat(str);
+    //   if(t1>0 && t2 == 0 ){
+    //     str = parseUnits((1/10**(Number(decimals)-2)).toString(), decimals).toString() ;
+    //   }
+    // }
     return BigInt(str);
   } catch (err) {
     console.log(err);
@@ -67,11 +67,10 @@ export const getMaxValue = (
   if (!token || !balance) return new BigNumber(0);
   var times = 1;
   if(token.tokenType =='ICRC1'){
-    times = 3;
+    times = 2;
   }else if(token.tokenType =='DIP20'){
     times = 2;
   }
-
   const value = toBigNumber(Number(balance)).minus(Number(token.fee) * times);
 
   if (value.isNegative() || value.isZero()) {
