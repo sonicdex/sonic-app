@@ -39,27 +39,35 @@ export const useSwapView = (method: string) => {
   const isLoaded = useMemo(() => {
     if (Object.keys(tokenListTemp ? tokenListTemp : {}).length > 0) return true;
     return false
-  }, [dispatch , tokenListTemp])
+  }, [dispatch, tokenListTemp])
 
   useEffect(() => {
     const setInitToken = async () => {
       if (method == 'swap') {
         const temp = Object.keys(tokenListTemp)[0];
         if (tokenListTemp[temp]?.id) {
-
           await dispatch(swapViewActions.setToken({ data: "from", tokenId: tokenListTemp[temp].id }));
           await dispatch(swapViewActions.setValue({ data: 'from', value: '' }));
           await dispatch(swapViewActions.setValue({ data: 'to', value: '' }));
-          await dispatch(swapViewActions.setAllPairs(allPairs));
+          dispatch(swapViewActions.setAllPairs(allPairs));
         }
+
       } else if (method == 'mint') {
         await dispatch(swapViewActions.setToken({ data: 'from', tokenId: 'ICP' }));
         await dispatch(swapViewActions.setValue({ data: 'from', value: '' }));
         await dispatch(swapViewActions.setValue({ data: 'to', value: '' }));
-        
+        dispatch(swapViewActions.setAllPairs(allPairs));
       }
+
     }
     setInitToken();
   }, [isLoaded]);
-  useEffect(() => { dispatch(swapViewActions.setAllPairs(allPairs)); }, [allPairs, dispatch, isLoaded]);
+  useEffect(() => {
+    dispatch(swapViewActions.setAllPairs(allPairs));
+  }, [allPairs, dispatch, isLoaded, tokenListTemp]);
+
+  useEffect(() => {
+    if (method == 'swap') {dispatch(swapViewActions.setKeepInSonic(true))}
+    else dispatch(swapViewActions.setKeepInSonic(false))
+  },[method])
 };

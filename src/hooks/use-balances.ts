@@ -50,15 +50,11 @@ export const useBalances = () => {
     )
   );
   const maxDecimalPlaces = 5;
-
   const getBalances = useKeepSync('getBalances', useCallback(async (isRefreshing?: boolean) => {
       try {
         if (balancesState === FeatureState.Loading) return;
         if (!principalId) return;
         const tokenInfo = tokenList('obj');
-
-        console.log(tokenInfo);
-
         dispatch(swapCanisterActions.setBalancesState(isRefreshing ? FeatureState.Updating : FeatureState.Loading));
         const swapActor: any = await getswapActor(true);
         const sonicBalances = await swapActor.getUserBalances(Principal.fromText(principalId));
@@ -92,7 +88,6 @@ export const useBalances = () => {
     },[principalId, dispatch, balancesState]), { interval: 19 * 1000 }
   );
 
-
   const totalBalances = useMemo(() => {
     if (tokenBalances && sonicBalances) {
       return sumBalances(tokenBalances, sonicBalances, { [ICP_METADATA.id]: icpBalance ?? 0 });
@@ -105,8 +100,6 @@ export const useBalances = () => {
     userLPBalancesState, getBalances, getUserPositiveLPBalances,
   };
 };
-
-// === UTILS ===
 
 const sumBalances = (...balances: Balances[]): Balances => {
   return balances.reduce((acc, current) => {

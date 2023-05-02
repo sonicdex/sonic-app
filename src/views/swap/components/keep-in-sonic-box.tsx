@@ -14,7 +14,7 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react';
 import { FaInfoCircle } from '@react-icons/all-files/fa/FaInfoCircle';
-import { useMemo , useEffect } from 'react';
+import { useMemo } from 'react';
 
 import { swapViewActions, useAppDispatch, useSwapViewStore } from '@/store';
 
@@ -94,7 +94,6 @@ export const KeepInSonicBox: React.FC<KeepInSonicBoxProps> = ({
         };
     }
   }, [operation, symbol]);
-  useEffect(()=>{ dispatch(swapViewActions.setKeepInSonic(true))  },[])
 
   return (
     <Flex
