@@ -23,8 +23,7 @@ export const parseAmount = (val: string, decimals: string | number): bigint => {
 export const roundBigInt = ( val:BigInt ,actualDecimals:string | number, roundOfdecimals:number ): bigint =>{
   try {
     var ad:number = parseInt(actualDecimals.toString());
-
-    var roundedNumber = (Number(val) / 10 ** ad).toFixed(roundOfdecimals);
+    var roundedNumber =  (Math.floor( (Number(val) / 10 ** ad) *(10**roundOfdecimals))/(10**roundOfdecimals)).toString();
     var tmp:number = parseFloat(roundedNumber)*(10**ad);
     tmp=Number(tmp.toFixed(0))
     return BigInt(tmp);
