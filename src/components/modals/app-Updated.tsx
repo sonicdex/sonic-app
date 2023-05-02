@@ -40,13 +40,19 @@ export const AppUpdatedModal: React.FC<AppUpdatedModalProps> = ({ isNotiOpen }) 
                     UPDATE NOTIFICATION!
                 </Heading>
                 <Text as="p" color={color} mb={2}>
-                    We're excited to announce the launch of new features on SONIC, designed to improve your trading experience.
+                We're excited to announce the launch of new features on SONIC, designed to improve your trading experience. 
                 </Text>
                 <Text as="p" color={color} mb={2}>
-                    With the introduction of ICRC support, you can now trade and add liquidity pools for ckBTC, SNS1, and CHAT tokens. We've also implemented ICP, allowing you to trade and create LP for your favorite tokens using ICP without affecting current WICP pairs.
-                    </Text>
+                With the introduction of ICRC support, you can now trade and add liquidity pools for ckBTC, SNS1, and CHAT tokens. We've also implemented ICP, allowing you to trade and create LP for your favorite tokens using ICP without affecting current WICP pairs.
+   
+                </Text>
                 <Text as="p" color={color} mb={2}>
-                    Additionally, we've streamlined the ICP warping process under the mint option for greater ease of use.
+                Additionally, we've streamlined the ICP warping process under the mint option for greater ease of use. 
+                </Text>
+                <Text as="p" color={color} mb={2}>
+                By default, tokens will be kept in your sonic wallet to facilitate high-frequency trading, where even a few extra seconds matter a lot. However, during the swap,
+                 you can uncheck this feature if you want to withdraw directly to your web wallet.
+                 <a style={{color:"#008eff" , fontWeight:"bold" }} href='https://docs.sonic.ooo/product/assets#keeping-assets-in-sonic-after-a-swap' target="_blank">Learn more</a>
                 </Text>
                 <Text as="p" color={color} mb={2}>
                     We're confident that these updates will enhance your trading efficiency on Sonic DEX. Thank you for choosing Sonic DEX!

@@ -49,25 +49,21 @@ export const useSwapView = (method: string) => {
           await dispatch(swapViewActions.setToken({ data: "from", tokenId: tokenListTemp[temp].id }));
           await dispatch(swapViewActions.setValue({ data: 'from', value: '' }));
           await dispatch(swapViewActions.setValue({ data: 'to', value: '' }));
-          dispatch(swapViewActions.setAllPairs(allPairs));
+          await dispatch(swapViewActions.setKeepInSonic(true))
         }
 
       } else if (method == 'mint') {
         await dispatch(swapViewActions.setToken({ data: 'from', tokenId: 'ICP' }));
         await dispatch(swapViewActions.setValue({ data: 'from', value: '' }));
         await dispatch(swapViewActions.setValue({ data: 'to', value: '' }));
-        dispatch(swapViewActions.setAllPairs(allPairs));
+        await dispatch(swapViewActions.setKeepInSonic(false))
       }
-
+      await dispatch(swapViewActions.setAllPairs(allPairs));
     }
     setInitToken();
+    
   }, [isLoaded]);
   useEffect(() => {
     dispatch(swapViewActions.setAllPairs(allPairs));
   }, [allPairs, dispatch, isLoaded, tokenListTemp]);
-
-  useEffect(() => {
-    if (method == 'swap') {dispatch(swapViewActions.setKeepInSonic(true))}
-    else dispatch(swapViewActions.setKeepInSonic(false))
-  },[method])
 };
