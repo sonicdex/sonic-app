@@ -22,10 +22,8 @@ import { useEffect } from 'react';
 
 import { swapViewActions, useAppDispatch } from '@/store';
 
-
 export const SwapView = () => {
   useSwapView('swap');
-  const { fromTokenOptions, toTokenOptions, from, to, slippage } = useSwapViewStore();
   const dispatch = useAppDispatch();
   const {
     allowance, step, headerTitle, isAutoSlippage, isICPSelected, isLoading, isBalancesUpdating, isPriceUpdating, isExplanationTooltipVisible,
@@ -38,8 +36,10 @@ export const SwapView = () => {
   const menuListShadow = useColorModeValue('lg', 'none');
   const menuListBg = useColorModeValue('gray.50', 'custom.3');
   const linkColor = useColorModeValue('dark-blue.500', 'dark-blue.400');
+
   useEffect(() => { dispatch(swapViewActions.setKeepInSonic(true)); }, []);
 
+  const { fromTokenOptions, toTokenOptions, from, to, slippage } = useSwapViewStore();
   return (
     <Stack spacing={4}>
       <SwapSubTab tabname={'swap'} />

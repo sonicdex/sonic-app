@@ -47,7 +47,7 @@ export const getTokenActor = async (canisterId: string, isAnnon: boolean): Promi
 }
 
 export const getswapActor = async (isAnnon: boolean): Promise<SwapIDL.Factory> => {
-  if(!artemis.provider){ await artemis.connect('plug');}
+  if(!isAnnon && !artemis.provider){ await artemis.connect('plug');}
   var actor = await artemis.getCanisterActor(ENV.canistersPrincipalIDs.swap, SwapIDL.factory, isAnnon);
   return actor;
 }

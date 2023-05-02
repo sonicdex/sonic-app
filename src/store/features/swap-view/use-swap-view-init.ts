@@ -1,64 +1,58 @@
-import { useEffect, useMemo } from 'react';
-
+import { useEffect, useState } from 'react';
 import { getICPTokenMetadata } from '@/constants';
 import { useAppDispatch } from '@/store'; //selectSwapViewState selectSwapViewState, useAppSelector
 import { parseResponseTokenList } from '@/utils/canister';
 
 import { usePriceStore, useSwapCanisterStore } from '..';
 import { swapViewActions } from '.';
-
 import { AppTokenMetadataListObject } from '@/models';
 
-
 export const useSwapView = (method: string) => {
-
   const dispatch = useAppDispatch();
   const { icpPrice } = usePriceStore();
   const { allPairs, supportedTokenList } = useSwapCanisterStore();
 
+  const [isPairLoaded, setIsPairLoad] = useState<boolean>(false);
   var tokenListTemp: AppTokenMetadataListObject = {};
 
-
   useEffect(() => {
-    const getTokenList = async () => {
-      if (!supportedTokenList) return;
-      tokenListTemp = parseResponseTokenList([getICPTokenMetadata(icpPrice), ...supportedTokenList]);
-      if (method === "swap" && tokenListTemp.ICP) delete tokenListTemp.ICP;
-      else if (method === "mint") {
-        tokenListTemp = {
-          ICP: tokenListTemp.ICP,
-          "utozz-siaaa-aaaam-qaaxq-cai": tokenListTemp["utozz-siaaa-aaaam-qaaxq-cai"],
-          "aanaa-xaaaa-aaaah-aaeiq-cai": tokenListTemp["aanaa-xaaaa-aaaah-aaeiq-cai"],
-        };
-      }
-      await dispatch(swapViewActions.setTokenList(tokenListTemp));
+    if (!supportedTokenList) return;
+    tokenListTemp = parseResponseTokenList([getICPTokenMetadata(icpPrice), ...supportedTokenList]);
+    if (method == 'swap') {
+      delete tokenListTemp.ICP;
+    } else if (method == 'mint') {
+      tokenListTemp = {
+        ICP: tokenListTemp.ICP,
+        "utozz-siaaa-aaaam-qaaxq-cai": tokenListTemp["utozz-siaaa-aaaam-qaaxq-cai"],
+        "aanaa-xaaaa-aaaah-aaeiq-cai": tokenListTemp["aanaa-xaaaa-aaaah-aaeiq-cai"],
+      };
     }
-    getTokenList();
-  }, [dispatch, icpPrice, supportedTokenList]);
+    dispatch(swapViewActions.setTokenList(tokenListTemp));
 
-  const isLoaded = useMemo(() => {
-    if (Object.keys(tokenListTemp ? tokenListTemp : {}).length > 0) return true;
-    return false
-  }, [dispatch, tokenListTemp])
-
-  useEffect(() => {
     const setInitToken = async () => {
       await dispatch(swapViewActions.setAllPairs(allPairs));
-      if (method == 'swap') {
-        const temp = Object.keys(tokenListTemp)[0];
-        if (tokenListTemp[temp]?.id) {
-          await dispatch(swapViewActions.setToken({ data: "from", tokenId: tokenListTemp[temp].id }));
-          await dispatch(swapViewActions.setValue({ data: 'from', value: '' }));
-          await dispatch(swapViewActions.setValue({ data: 'to', value: '' }));
-        }
-
-      } else if (method == 'mint') {
-        await dispatch(swapViewActions.setToken({ data: 'from', tokenId: 'ICP' }));
-        await dispatch(swapViewActions.setValue({ data: 'from', value: '' }));
-        await dispatch(swapViewActions.setValue({ data: 'to', value: '' }));
-      }
+      setIsPairLoad(true);
     }
-    setInitToken();
-  }, [isLoaded]);
- useEffect(() => { dispatch(swapViewActions.setAllPairs(allPairs)); }, [allPairs, dispatch, supportedTokenList]);
+
+    if (allPairs && Object.keys(tokenListTemp)) {
+      setInitToken();
+    }
+
+  }, [allPairs, supportedTokenList, dispatch, icpPrice]);
+
+  useEffect(() => {
+    if (method == 'mint') {
+      dispatch(swapViewActions.setToken({ data: 'from', tokenId: 'ICP' }));
+      dispatch(swapViewActions.setValue({ data: 'from', value: '' }));
+      dispatch(swapViewActions.setValue({ data: 'to', value: '' }));
+    }
+    tokenListTemp = parseResponseTokenList([...supportedTokenList || []]);
+    if (!isPairLoaded || !tokenListTemp) return;
+    if (method == 'swap') {
+      const temp = Object.keys(tokenListTemp)[0];
+      dispatch(swapViewActions.setToken({ data: "from", tokenId: tokenListTemp[temp]?.id }));
+      dispatch(swapViewActions.setValue({ data: 'from', value: '' }));
+      dispatch(swapViewActions.setValue({ data: 'to', value: '' }));
+    }
+  }, [isPairLoaded, method])
 };

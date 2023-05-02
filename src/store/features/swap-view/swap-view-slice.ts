@@ -92,7 +92,6 @@ export const swapViewSlice = createSlice({
         state[data].metadata = { ...tokenList[tokenId] };
         state[data].paths = paths;
         const tokenPathsDataKey = `base${capitalize(data)}TokenPaths` as | 'baseToTokenPaths' | 'baseFromTokenPaths';
-
         state[tokenPathsDataKey] = getTokenPaths(allPairs as Pair.List, tokenList, tokenId, state[data].value, data);
         // Swap.getTokenPaths({ pairList: allPairs as Pair.List, tokenList, tokenId, dataKey: data });
 
@@ -168,17 +167,19 @@ export const swapViewSlice = createSlice({
     setTokenList: ( state, action: PayloadAction<AppTokenMetadataListObject>) => {
       state.tokenList = action.payload;
       const tokens = Object.values(action.payload);
+      const { allPairs, tokenList } = state;
       if (!state.from.metadata) {
         state.from.metadata = { ...tokens[0] };
         state.from.paths = {};
         state.from.value = '';
         state.to.value = '';
         if(state.from.metadata.id){
-          const { allPairs, tokenList } = state;
           state.from.paths =  getTokenPaths(allPairs as Pair.List, tokenList, state.from.metadata.id, 0, "from");
         }
       }
-    
+      if(state.from.metadata && !state.from.paths){
+        state.from.paths =  getTokenPaths(allPairs as Pair.List, tokenList, state.from.metadata.id, 0, "from");
+      }
     },
     setAllPairs: (state, action: PayloadAction<Pair.List | undefined>) => {
       state.allPairs = action.payload;
@@ -206,7 +207,6 @@ export const selectSwapViewState = (state: RootState) => state.swapView;
 
 const getTokenPaths = function(allPairs?: any, tokenList?: any, tokenId?: string, amount?: any, dataKey?: any) {
   var allPairs = JSON.parse(toJson(allPairs)), tokenList = JSON.parse(toJson(tokenList)),tokenPaths: any = {};
-
   if (tokenId) {
     if(!allPairs[tokenId] ) return tokenPaths;
     Object.keys(allPairs[tokenId]).forEach((x: string) => {

@@ -36,8 +36,7 @@ export const useSwapViewData = (action:string) => {
   const query = useQuery();
   const { addNotification } = useNotificationStore();
   const { fromTokenOptions, toTokenOptions, from, to, tokenList, keepInSonic } = useSwapViewStore();
-
-
+  
   const {
     sonicBalances, tokenBalances, icpBalance, balancesState, supportedTokenListState,
     supportedTokenList, allPairsState, allPairs,

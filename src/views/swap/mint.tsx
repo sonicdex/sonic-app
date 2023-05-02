@@ -25,8 +25,14 @@ import { swapViewActions, useAppDispatch } from '@/store';
 export const MintView = () => {
   useSwapView('mint');
   const dispatch = useAppDispatch();
-  const { fromTokenOptions, toTokenOptions, from, to, slippage } = useSwapViewStore();
 
+  const swapPlacementButtonBg = useColorModeValue('gray.50', 'custom.3');
+  const menuListShadow = useColorModeValue('lg', 'none');
+  const menuListBg = useColorModeValue('gray.50', 'custom.3');
+  const linkColor = useColorModeValue('dark-blue.500', 'dark-blue.400');
+  useEffect(() => { dispatch(swapViewActions.setKeepInSonic(false)) }, []);
+
+  
   const {
     allowance, step, headerTitle, isAutoSlippage, isICPSelected, isLoading, isBalancesUpdating, isPriceUpdating, isExplanationTooltipVisible,
     isSelectTokenButtonDisabled, selectTokenButtonText, currentOperation, priceImpact, fromSources, toSources, canHeldInSonic,
@@ -34,11 +40,7 @@ export const MintView = () => {
     onSetIsAutoSlippage, onSetSlippage, onMenuClose, onMaxClick, onSelectToken, onSwitchTokens,
   } = useSwapViewData('mint');
 
-  const swapPlacementButtonBg = useColorModeValue('gray.50', 'custom.3');
-  const menuListShadow = useColorModeValue('lg', 'none');
-  const menuListBg = useColorModeValue('gray.50', 'custom.3');
-  const linkColor = useColorModeValue('dark-blue.500', 'dark-blue.400');
-  useEffect(() => { dispatch(swapViewActions.setKeepInSonic(false)) }, []);
+  const { fromTokenOptions, toTokenOptions, from, to, slippage } = useSwapViewStore();
 
   return (
     <Stack spacing={4}>

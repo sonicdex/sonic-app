@@ -1,7 +1,9 @@
 import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { createAnonSwapActor } from '@/integrations/actor';
+import { getswapActor } from '@/utils/canisterDriver'
+
+
 import { FeatureState, swapCanisterActions, useKeepSync, useSwapCanisterStore } from '@/store';
 import { AppLog } from '@/utils';
 import { parseResponseAllPairs } from '@/utils/canister';
@@ -12,16 +14,12 @@ export const useAllPairs = () => {
 
   const getAllPairs = useKeepSync('getAllPairs',
     useCallback(async (isRefreshing?: boolean) => {
-     // console.log('sync pairs')
       try {
         if (allPairsState !== FeatureState.Loading) {
           dispatch(swapCanisterActions.setAllPairsState(isRefreshing ? FeatureState.Updating : FeatureState.Loading));
-          const swapActor = await createAnonSwapActor();
+          const swapActor = await getswapActor(true);
           var response = await swapActor.getAllPairs();
           if (response) {
-            
-           // console.log( parseResponseAllPairs(response));
-
             dispatch(swapCanisterActions.setAllPairs(parseResponseAllPairs(response)));
           } else {
             throw new Error('No "getAllPairs" response');
@@ -32,10 +30,28 @@ export const useAllPairs = () => {
         AppLog.error(`All pairs fetch error`, error);
         dispatch(swapCanisterActions.setAllPairsState(FeatureState.Error));
       }
-    },
-      [dispatch, allPairsState]
-    ), { interval: 60 * 1000 }
+    },[dispatch, allPairsState]),{ interval: 30 * 1000 }
   );
 
-  return { allPairs, allPairsState, getAllPairs };
+  const directGetAllPairs = async()=>{
+    try {
+      if (allPairsState !== FeatureState.Loading) {
+        dispatch(swapCanisterActions.setAllPairsState(FeatureState.Updating ));
+        const swapActor = await getswapActor(true);
+        var response = await swapActor.getAllPairs();
+        if (response) {
+          dispatch(swapCanisterActions.setAllPairs(parseResponseAllPairs(response)));
+        } else {
+          throw new Error('No "getAllPairs" response');
+        }
+        dispatch(swapCanisterActions.setAllPairsState(FeatureState.Idle));
+      }
+    } catch (error) {
+      AppLog.error(`All pairs fetch error`, error);
+      dispatch(swapCanisterActions.setAllPairsState(FeatureState.Error));
+    }
+  }
+
+  return { allPairs, allPairsState, getAllPairs , directGetAllPairs };
 };
+
