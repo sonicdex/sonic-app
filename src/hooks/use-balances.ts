@@ -50,25 +50,28 @@ export const useBalances = () => {
     )
   );
   const maxDecimalPlaces = 5;
+
   const getBalances = useKeepSync('getBalances', useCallback(async (isRefreshing?: boolean) => {
       try {
         if (balancesState === FeatureState.Loading) return;
         if (!principalId) return;
         const tokenInfo = tokenList('obj');
+
+        console.log(tokenInfo);
+
         dispatch(swapCanisterActions.setBalancesState(isRefreshing ? FeatureState.Updating : FeatureState.Loading));
         const swapActor: any = await getswapActor(true);
         const sonicBalances = await swapActor.getUserBalances(Principal.fromText(principalId));
         const tokenBalances = sonicBalances ? await Promise.all(
           sonicBalances.map(async (balance: any, index: number) => {
             const tokenCanisterId = balance[0];
-            var tokenFeeLen = tokenInfo[tokenCanisterId].toString().length;
+           var tokenFeeLen = tokenInfo[tokenCanisterId]?.fee.toString().length;
             var tokenDecimals = tokenInfo[tokenCanisterId].decimals;
-            // console.log(tokenInfo[tokenCanisterId].name ,  tokenFee , tokenDecimals , sonicBalances[index][1]);
-            sonicBalances[index][1] = roundBigInt(sonicBalances[index][1], tokenDecimals, tokenFeeLen > maxDecimalPlaces ? tokenFeeLen : maxDecimalPlaces);
+            sonicBalances[index][1] = roundBigInt(sonicBalances[index][1], tokenDecimals, tokenFeeLen>maxDecimalPlaces?tokenFeeLen:maxDecimalPlaces );
             try {
               var tokenBalance = BigInt(0);
               tokenBalance = await getTokenBalance(tokenCanisterId, principalId);
-              const result: [string, bigint] = [balance[0], roundBigInt(tokenBalance, tokenDecimals, maxDecimalPlaces)];
+              const result: [string, bigint] = [balance[0], roundBigInt(tokenBalance, tokenDecimals, tokenFeeLen>maxDecimalPlaces?tokenFeeLen:maxDecimalPlaces)];
               return result;
             } catch (error) {
               AppLog.error(`Token balance fetch error: token="${tokenCanisterId}"`, error);
