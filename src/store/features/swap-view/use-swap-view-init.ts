@@ -50,14 +50,16 @@ export const useSwapView = (method: string) => {
           await dispatch(swapViewActions.setToken({ data: "from", tokenId: tokenListTemp[temp].id }));
           await dispatch(swapViewActions.setValue({ data: 'from', value: '' }));
           await dispatch(swapViewActions.setValue({ data: 'to', value: '' }));
+          await dispatch(swapViewActions.setAllPairs(allPairs));
         }
       } else if (method == 'mint') {
         await dispatch(swapViewActions.setToken({ data: 'from', tokenId: 'ICP' }));
         await dispatch(swapViewActions.setValue({ data: 'from', value: '' }));
         await dispatch(swapViewActions.setValue({ data: 'to', value: '' }));
+        
       }
     }
     setInitToken();
   }, [isLoaded]);
-  useEffect(() => { dispatch(swapViewActions.setAllPairs(allPairs)); }, [allPairs, dispatch]);
+  useEffect(() => { dispatch(swapViewActions.setAllPairs(allPairs)); }, [allPairs, dispatch, isLoaded]);
 };

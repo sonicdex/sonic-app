@@ -9,24 +9,28 @@ import { AppTokenMetadata } from '@/models';
 export type BigNumberish = BigNumber | Bytes | bigint | string | number;
 
 //BigNumber.config({ EXPONENTIAL_AT: 99 });
-BigNumber.config({ EXPONENTIAL_AT: 1e+9 });
+BigNumber.config({ EXPONENTIAL_AT: 99 });
 
-export const parseAmount = (val: string, decimals: string | number , fee?:bigint): bigint => {
+export const parseAmount = (val: string, decimals: string | number): bigint => {
   try {
     const fixedVal = new BigNumber(val).toFixed(Number(decimals)); // Fix for scientific notation string
-    var str = parseUnits(fixedVal, decimals).toString();
-    // if(val){
-    //   var t1=parseFloat(val), t2 = parseFloat(str);
-    //   if(t1>0 && t2 == 0 ){
-    //     str = parseUnits((1/10**(Number(decimals)-2)).toString(), decimals).toString() ;
-    //   }
-    // }
+    const str = parseUnits(fixedVal, decimals).toString();
     return BigInt(str);
   } catch (err) {
-    console.log(err);
     return BigInt(0);
   }
 };
+export const roundBigInt = ( val:BigInt ,actualDecimals:string | number, roundOfdecimals:number ): bigint =>{
+  try {
+    var ad:number = parseInt(actualDecimals.toString());
+    var roundedNumber = (Number(val) / 10 ** ad).toFixed(roundOfdecimals);
+    return BigInt(parseFloat(roundedNumber)*(10**ad));
+    
+  }catch (err) {
+    return BigInt(100000);
+  }
+}
+
 
 export const formatValue = (
   val: BigInt | number | string,
