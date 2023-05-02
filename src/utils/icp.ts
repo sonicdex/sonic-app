@@ -9,22 +9,16 @@ import { CyclesMintingIDL } from '@/did/sonic/cycles-minting.did';
 import { createAnonLedgerActor } from '@/integrations/actor';
 
 import { ExternalLink } from './external-link';
-
+import { roundBigInt } from '@/utils/format';
 export const ACCOUNT_DOMAIN_SEPERATOR = '\x0Aaccount-id';
 
 export const fetchICPBalance = async (principalId: string) => {
-
   const ledgerActor = await createAnonLedgerActor();
-
   const accountId = getAccountId(Principal.fromText(principalId || ''), 0);
-
   if (accountId) {
-    const balance = (
-      await ledgerActor.account_balance_dfx({ account: accountId })
-    ).e8s;
-
-    const icpBalanceNoDecimals = new BigNumber(balance.toString()).div(new BigNumber('100000000')).toString();
-
+    const balance = ( await ledgerActor.account_balance_dfx({ account: accountId })).e8s;
+    var temp =  roundBigInt(balance, 8, 5);
+    const icpBalanceNoDecimals = new BigNumber(temp.toString()).div(new BigNumber('100000000')).toString();
     return icpBalanceNoDecimals;
   } else {
     throw new Error('Account ID is required');

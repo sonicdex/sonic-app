@@ -78,7 +78,6 @@ export const useBalances = () => {
           })
         ) : undefined;
         const icpBalance = await fetchICPBalance(principalId);
-    
         dispatch(swapCanisterActions.setICPBalance(parseAmount(icpBalance, ICP_METADATA.decimals)));
         dispatch(swapCanisterActions.setSonicBalances(sonicBalances));
         dispatch(swapCanisterActions.setTokenBalances(tokenBalances));
