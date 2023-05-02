@@ -30,7 +30,7 @@ export const useAllPairs = () => {
         AppLog.error(`All pairs fetch error`, error);
         dispatch(swapCanisterActions.setAllPairsState(FeatureState.Error));
       }
-    },[dispatch, allPairsState]),{ interval: 30 * 1000 }
+    },[dispatch, allPairsState]),{ interval: 25 * 1000 }
   );
 
   const directGetAllPairs = async()=>{

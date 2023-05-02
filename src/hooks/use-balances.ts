@@ -85,7 +85,7 @@ export const useBalances = () => {
         AppLog.error(`Balances fetch error`, error);
         dispatch(swapCanisterActions.setBalancesState(FeatureState.Error));
       }
-    },[principalId, dispatch, balancesState]), { interval: 19 * 1000 }
+    },[principalId, dispatch, balancesState]), { interval: 10 * 1000 }
   );
 
   const totalBalances = useMemo(() => {
