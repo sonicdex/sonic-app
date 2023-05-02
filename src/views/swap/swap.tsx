@@ -1,6 +1,6 @@
 import {
-  Box,Button,Flex, Icon,IconButton,Link,Menu,MenuButton,MenuList,Popover,PopoverArrow,PopoverBody,
-  PopoverContent,PopoverTrigger,Skeleton,Stack,Text,Tooltip,useColorModeValue,
+  Box, Button, Flex, Icon, IconButton, Link, Menu, MenuButton, MenuList, Popover, PopoverArrow, PopoverBody,
+  PopoverContent, PopoverTrigger, Skeleton, Stack, Text, Tooltip, useColorModeValue,
 } from '@chakra-ui/react';
 
 import { FaArrowDown } from '@react-icons/all-files/fa/FaArrowDown';
@@ -8,48 +8,52 @@ import { FaCog } from '@react-icons/all-files/fa/FaCog';
 import { FaInfoCircle } from '@react-icons/all-files/fa/FaInfoCircle';
 
 import {
-  PlugButton, SlippageSettings, Token, TokenContent,TokenData,TokenDataBalances,TokenDataPrice,
-  TokenDataMetaInfo,TokenDetailsButton, TokenDetailsLogo, TokenDetailsSymbol, TokenInput,ViewHeader,
+  PlugButton, SlippageSettings, Token, TokenContent, TokenData, TokenDataBalances, TokenDataPrice,
+  TokenDataMetaInfo, TokenDetailsButton, TokenDetailsLogo, TokenDetailsSymbol, TokenInput, ViewHeader,
 } from '@/components';
 
 import { useSwapView, useSwapViewStore } from '@/store';
 
 import { SwapStep } from './';
-import { ExchangeBox, KeepInSonicBox , SwapSubTab } from './components';
+import { ExchangeBox, KeepInSonicBox, SwapSubTab } from './components';
 import { useSwapViewData } from './hooks';
+
+import { useEffect } from 'react';
+
+import { swapViewActions, useAppDispatch } from '@/store';
 
 
 export const SwapView = () => {
   useSwapView('swap');
   const { fromTokenOptions, toTokenOptions, from, to, slippage } = useSwapViewStore();
-  
+  const dispatch = useAppDispatch();
   const {
-    allowance, step, headerTitle,isAutoSlippage,isICPSelected,isLoading,isBalancesUpdating,isPriceUpdating, isExplanationTooltipVisible, 
-    isSelectTokenButtonDisabled, selectTokenButtonText, currentOperation,priceImpact, fromSources,toSources,canHeldInSonic,
-    isConnected,isButtonDisabled,buttonMessage,setStep, setLastChangedInputDataKey,onButtonClick, onChangeValue,
-    onSetIsAutoSlippage, onSetSlippage, onMenuClose, onMaxClick,onSelectToken, onSwitchTokens,
+    allowance, step, headerTitle, isAutoSlippage, isICPSelected, isLoading, isBalancesUpdating, isPriceUpdating, isExplanationTooltipVisible,
+    isSelectTokenButtonDisabled, selectTokenButtonText, currentOperation, priceImpact, fromSources, toSources, canHeldInSonic,
+    isConnected, isButtonDisabled, buttonMessage, setStep, setLastChangedInputDataKey, onButtonClick, onChangeValue,
+    onSetIsAutoSlippage, onSetSlippage, onMenuClose, onMaxClick, onSelectToken, onSwitchTokens,
   } = useSwapViewData('swap');
 
   const swapPlacementButtonBg = useColorModeValue('gray.50', 'custom.3');
   const menuListShadow = useColorModeValue('lg', 'none');
   const menuListBg = useColorModeValue('gray.50', 'custom.3');
   const linkColor = useColorModeValue('dark-blue.500', 'dark-blue.400');
+  useEffect(() => { dispatch(swapViewActions.setKeepInSonic(true)); }, []);
 
-  
   return (
     <Stack spacing={4}>
-        <SwapSubTab tabname={'swap'} />
+      <SwapSubTab tabname={'swap'} />
       <ViewHeader title={headerTitle}
-        onArrowBack={ step === SwapStep.Review ? () => setStep(SwapStep.Home) : undefined}
+        onArrowBack={step === SwapStep.Review ? () => setStep(SwapStep.Home) : undefined}
       >
         <Menu onClose={onMenuClose}>
           <Tooltip label="Adjust the slippage">
-            <MenuButton as={IconButton} isRound size="sm" aria-label="Adjust the slippage" 
-            icon={<FaCog />} ml="auto" isDisabled={isICPSelected}
+            <MenuButton as={IconButton} isRound size="sm" aria-label="Adjust the slippage"
+              icon={<FaCog />} ml="auto" isDisabled={isICPSelected}
             />
           </Tooltip>
           <MenuList bg={menuListBg} shadow={menuListShadow} borderRadius={20} ml={-20} py={0}>
-            <SlippageSettings slippage={slippage} isAutoSlippage={isAutoSlippage} setSlippage={onSetSlippage} setIsAutoSlippage={onSetIsAutoSlippage}/>
+            <SlippageSettings slippage={slippage} isAutoSlippage={isAutoSlippage} setSlippage={onSetSlippage} setIsAutoSlippage={onSetIsAutoSlippage} />
           </MenuList>
         </Menu>
       </ViewHeader>
@@ -74,16 +78,16 @@ export const SwapView = () => {
               />
               <TokenDataPrice isUpdating={isPriceUpdating} />
             </TokenData>
-            <TokenDataMetaInfo 
-                tokenSymbol={from.metadata?from.metadata.symbol:''} tokenValue={from.value}
-                tokenId = {from.metadata?from.metadata.id:''} tokenDecimals = {from.metadata?from.metadata.decimals:0}
-                pageInfo = "swap"
-                ></TokenDataMetaInfo>
+            <TokenDataMetaInfo
+              tokenSymbol={from.metadata ? from.metadata.symbol : ''} tokenValue={from.value}
+              tokenId={from.metadata ? from.metadata.id : ''} tokenDecimals={from.metadata ? from.metadata.decimals : 0}
+              pageInfo="swap"
+            ></TokenDataMetaInfo>
           </Token>
         </Box>
 
         <Flex direction="column-reverse" w="full">
-          
+
           <Box width="full">
             <Token value={to.value} setValue={(value) => onChangeValue(value, 'to')} tokenListMetadata={toTokenOptions}
               tokenMetadata={to.metadata} isLoading={isLoading} sources={toSources}
@@ -96,7 +100,7 @@ export const SwapView = () => {
                     <TokenDetailsSymbol />
                   </TokenDetailsButton>
                 ) : (
-                  <TokenDetailsButton  onClick={() => onSelectToken('to')}
+                  <TokenDetailsButton onClick={() => onSelectToken('to')}
                     isDisabled={isSelectTokenButtonDisabled} variant={isLoading ? 'solid' : 'gradient'}
                     colorScheme={isLoading ? 'gray' : 'dark-blue'}
                   >
@@ -160,7 +164,7 @@ export const SwapView = () => {
 
       <ExchangeBox priceImpact={priceImpact} />
 
-      <KeepInSonicBox canHeldInSonic={canHeldInSonic} symbol={to.metadata?.symbol} operation={currentOperation}/>
+      <KeepInSonicBox canHeldInSonic={canHeldInSonic} symbol={to.metadata?.symbol} operation={currentOperation} />
 
       {isConnected ? (
         <Button isFullWidth variant="gradient" colorScheme="dark-blue" size="lg" onClick={onButtonClick}

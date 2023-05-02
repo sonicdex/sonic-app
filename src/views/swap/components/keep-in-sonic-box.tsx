@@ -47,15 +47,14 @@ export const KeepInSonicBox: React.FC<KeepInSonicBoxProps> = ({
 
   const checkboxColorKeepInSonic = useColorModeValue('black', 'white');
   const checkboxColorNotKeepInSonic = useColorModeValue('gray.600', 'custom.1');
-  const checkboxColor = keepInSonic? checkboxColorKeepInSonic: checkboxColorNotKeepInSonic;
+  const checkboxColor = keepInSonic ? checkboxColorKeepInSonic : checkboxColorNotKeepInSonic;
 
   const { label, popoverLabel } = useMemo(() => {
     switch (operation) {
       case 'swap':
         return {
-          label: `Keep ${
-            symbol ? symbol : 'tokens'
-          } in Sonic after ${operation}`,
+          label: `Keep ${symbol ? symbol : 'tokens'
+            } in Sonic after ${operation}`,
           popoverLabel: (
             <>
               Keeping tokens in Sonic (instead of withdrawing to Plug) is good
@@ -72,9 +71,8 @@ export const KeepInSonicBox: React.FC<KeepInSonicBoxProps> = ({
       case 'mint':
       case 'wrap':
         return {
-          label: `Deposit ${
-            symbol ? symbol : 'tokens'
-          } to Sonic after ${operation}`,
+          label: `Deposit ${symbol ? symbol : 'tokens'
+            } to Sonic after ${operation}`,
           popoverLabel: (
             <>
               If you keep your tokens deposited in Sonic (instead of withdrawing
