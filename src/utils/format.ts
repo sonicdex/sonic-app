@@ -25,9 +25,8 @@ export const roundBigInt = ( val:BigInt ,actualDecimals:string | number, roundOf
     var ad:number = parseInt(actualDecimals.toString());
     var roundedNumber = (Number(val) / 10 ** ad).toFixed(roundOfdecimals);
     return BigInt(parseFloat(roundedNumber)*(10**ad));
-    
   }catch (err) {
-    return BigInt(100000);
+    return BigInt(0);
   }
 }
 
