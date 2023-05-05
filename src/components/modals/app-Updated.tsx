@@ -47,7 +47,7 @@ export const AppUpdatedModal: React.FC<AppUpdatedModalProps> = ({ isNotiOpen }) 
    
                 </Text>
                 <Text as="p" color={color} mb={2}>
-                Additionally, we've streamlined the ICP warping process under the mint option for greater ease of use. 
+                Additionally, we've streamlined the ICP Wrapping process under the mint option for greater ease of use. 
                 </Text>
                 <Text as="p" color={color} mb={2}>
                 By default, tokens will be kept in your sonic wallet to facilitate high-frequency trading, where even a few extra seconds matter a lot. However, during the swap,
