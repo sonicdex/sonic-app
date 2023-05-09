@@ -33,7 +33,7 @@ setInterval(() => {
         var params = { Bucket:bucket , Key: objPath, Body: fileContent , ContentType:'application/json'};
         var s = await s3.putObject(params).promise();
        // await deleteFile(projectRoot+'/icpusdt.json');
-        console.log(response.data);
+       // console.log(response.data);
 
     }).catch(function (error) { console.log(error);});
 
