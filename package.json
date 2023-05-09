@@ -5,10 +5,10 @@
   "main": "dist/index.js",
   "private": true,
   "scripts": {
-    "dev": "cp ./.env-dev .env;webpack-cli serve --open --config webpack.dev.js",
-    "proddev": "cp ./.env-prod .env;webpack-cli serve --open --config webpack.dev.js",
-    "devicrc": "cp ./.env-icrc .env;webpack-cli serve --open --config webpack.dev.js",
-    "build": "cp ./.env-prod .env;webpack --config webpack.prod.js",
+    "dev": "node cp.js ./.env-dev .env  && webpack-cli serve --open --config webpack.dev.js",
+    "proddev": "node cp.js ./.env-prod .env  && webpack-cli serve --open --config webpack.dev.js",
+    "devicrc": "node cp.js ./.env-icrc .env  && webpack-cli serve --open --config webpack.dev.js",
+    "build": "node cp.js ./.env-prod .env  && webpack --config webpack.prod.js",
     "build:dev": "webpack --config webpack.dev.js",
     "format": "prettier --write ./src",
     "test": "jest --watch",
@@ -18,10 +18,10 @@
     "cypress:record": "yarn cypress run --record --key 452e662f-7169-4f19-8f04-575d8ec39e40",
     "cypress:prod:run": "yarn cypress run --env configFile=prod",
     "cypress:prod:run:record": "yarn cypress run --env configFile=prod --key 452e662f-7169-4f19-8f04-575d8ec39e40",
-    "release:dev": "cp ./.env-icrc .env;webpack --config webpack.dev.js;node ./deploy.js dev;",
-    "release:prod": "cp ./.env-prod .env;webpack --config webpack.prod.js;node ./deploy.js prod;",
-    "release:maintanance": "cp ./.env-prod-maintanance .env;webpack --config webpack.prod.js;node ./deploy.js prod;",
-    "release:preprod": "cp ./.env-prod .env;webpack --config webpack.prod.js;node ./deploy.js preprod;"
+    "release:dev": "node cp.js ./.env-icrc .env  && webpack --config webpack.dev.js;node ./deploy.js dev;",
+    "release:prod": "node cp.js ./.env-prod .env  && webpack --config webpack.prod.js;node ./deploy.js prod;",
+    "release:maintanance": "node cp.js ./.env-prod-maintanance .env  && webpack --config webpack.prod.js;node ./deploy.js prod;",
+    "release:preprod": "node cp.js ./.env-prod .env  && webpack --config webpack.prod.js;node ./deploy.js preprod;"
   },
   "author": {
     "name": "Psychedelic",
