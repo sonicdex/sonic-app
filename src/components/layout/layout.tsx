@@ -33,7 +33,7 @@ import { Link, useLocation } from 'react-router-dom';
 
 import { ENV } from '@/config';
 import { useHeaderResizeEffect } from '@/hooks';
-import { modalsSliceActions, useAppDispatch , useWalletStore } from '@/store'; // usePlugStore
+import { modalsSliceActions, useAppDispatch , useWalletStore } from '@/store';
 import { ExternalLink } from '@/utils';
 
 import packageJSON from '@/../package.json';
@@ -46,7 +46,7 @@ import { WalletConnectBtn , WalletMenu } from '@/components/wallet';
 
 
 export const Layout: React.FC = ({ children, ...props }) => {
- // const { isConnected } = usePlugStore();
+
   const { isConnected } = useWalletStore();
 
   const dispatch = useAppDispatch();

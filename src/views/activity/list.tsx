@@ -8,7 +8,7 @@ import {
   useActivityView,
   useActivityViewStore,
   useAppDispatch,
-  usePlugStore,
+  useWalletStore,
 } from '@/store';
 
 import {
@@ -23,7 +23,7 @@ import {
 
 export const ActivityListView = () => {
   useActivityView();
-  const { isConnected } = usePlugStore();
+  const { isConnected } = useWalletStore();
   const { activityList, CAPstate, LedgerState, page, lastPage } =
     useActivityViewStore();
   const dispatch = useAppDispatch();

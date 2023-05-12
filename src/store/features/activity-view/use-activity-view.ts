@@ -8,11 +8,11 @@ import { AppLog } from '@/utils';
 import { parseResponseTokenList } from '@/utils/canister';
 import { getAccountId } from '@/utils/icp';
 
-import { usePlugStore, useSwapCanisterStore } from '..';
+import { useWalletStore, useSwapCanisterStore } from '..';
 import { activityViewActions, useActivityViewStore } from '.';
 
 export const useActivityView = () => {
-  const { principalId } = usePlugStore();
+  const { principalId } = useWalletStore();
   const { supportedTokenList } = useSwapCanisterStore();
   const { page, lastPage, fetchedPages } = useActivityViewStore();
   const dispatch = useAppDispatch();

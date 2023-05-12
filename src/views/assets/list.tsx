@@ -1,12 +1,4 @@
-import {
-  Flex,
-  HStack,
-  Icon,
-  // AlertDescription,
-  Stack,
-  Text,
-  useColorModeValue,
-} from '@chakra-ui/react';
+import {  Flex, HStack, Icon, Stack, Text, useColorModeValue } from '@chakra-ui/react';
 import { toBigNumber } from '@memecake/sonic-js';
 import { FaInfoCircle } from '@react-icons/all-files/fa/FaInfoCircle';
 import { FaMinus } from '@react-icons/all-files/fa/FaMinus';
@@ -16,18 +8,17 @@ import { useNavigate } from 'react-router';
 
 import {
   Asset, AssetIconButton, AssetImageBlock, AssetTitleBlock, DisplayValue, Header,
-  InformationBox, PlugNotConnected, TokenBalancesPopover,
+  InformationBox, WalletNotConnected, TokenBalancesPopover,
 } from '@/components';
+
 import { getAppAssetsSources } from '@/config/utils';
 import { ICP_METADATA } from '@/constants';
 import { useBalances } from '@/hooks/use-balances';
 import { AppTokenMetadata } from '@/models';
+
 import {
-  assetsViewActions, FeatureState, useAppDispatch,
-  useAssetsViewStore,
-  usePlugStore,
-  usePriceStore,
-  useSwapCanisterStore,
+  assetsViewActions, FeatureState, useAppDispatch,useAssetsViewStore,
+  usePriceStore, useSwapCanisterStore,useWalletStore
 } from '@/store';
 
 const getAssetPriceByBalance = ( price?: string, balance?: number, decimals?: number) => {
@@ -43,9 +34,11 @@ export const AssetsListView = () => {
   const dispatch = useAppDispatch();
   const { isBannerOpened } = useAssetsViewStore();
   const { totalBalances, sonicBalances, tokenBalances } = useBalances();
+
   const { supportedTokenListState, balancesState, supportedTokenList } = useSwapCanisterStore();
+
   const { icpPrice } = usePriceStore();
-  const { isConnected } = usePlugStore();
+  const { isConnected } = useWalletStore();
 
   const navigate = useNavigate();
 
@@ -120,7 +113,7 @@ export const AssetsListView = () => {
       </Header>
 
       {!isConnected ? (
-        <PlugNotConnected message="Your assets will appear here." />
+        <WalletNotConnected message="Your assets will appear here." />
       ) : (
         <Stack spacing={4} pb={8} flex={1}>
           {isLoading ? (

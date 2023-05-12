@@ -5,8 +5,7 @@ import { ICP_METADATA } from '@/constants';
 
 import { Balances } from '@/models';
 import {
-  FeatureState, swapCanisterActions, useAppDispatch,
-  usePlugStore, useSwapCanisterStore,
+  FeatureState, swapCanisterActions, useAppDispatch, useSwapCanisterStore, useWalletStore
 } from '@/store';
 
 import { useKeepSync } from '@/store/features/keep-sync';
@@ -19,7 +18,8 @@ import { fetchICPBalance } from '@/utils/icp';
 import { getswapActor, getTokenBalance, tokenList } from '@/utils'
 
 export const useBalances = () => {
-  const { principalId } = usePlugStore();
+  const { principalId } = useWalletStore();
+
   const { sonicBalances, icpBalance, tokenBalances, balancesState, userLPBalancesState } = useSwapCanisterStore();
 
   const dispatch = useAppDispatch();
@@ -93,7 +93,7 @@ export const useBalances = () => {
       return sumBalances(tokenBalances, sonicBalances, { [ICP_METADATA.id]: icpBalance ?? 0 });
     }
     return undefined;
-  }, [tokenBalances, sonicBalances, icpBalance]);
+  }, [tokenBalances, sonicBalances, icpBalance, principalId]);
 
   return {
     totalBalances, sonicBalances, tokenBalances, icpBalance, balancesState,

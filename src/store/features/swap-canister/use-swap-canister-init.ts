@@ -3,7 +3,7 @@ import { useCallback, useEffect } from 'react';
 import { useAllPairs } from '@/hooks';
 import { useBalances } from '@/hooks/use-balances';
 import { createAnonSwapActor } from '@/integrations/actor';
-import { FeatureState, swapCanisterActions, useAppDispatch, usePlugStore, useSwapCanisterStore} from '@/store';
+import { FeatureState, swapCanisterActions, useAppDispatch, useSwapCanisterStore , useWalletStore} from '@/store'; 
 import { AppLog } from '@/utils';
 import { parseResponseSupportedTokenList } from '@/utils/canister';
 
@@ -11,7 +11,7 @@ import { useKeepSync } from '../keep-sync';
 
 export const useSwapCanisterInit = () => {
   const { getBalances, getUserPositiveLPBalances } = useBalances();
-  const { principalId, isConnected, state: plugState } = usePlugStore();
+  const { principalId, isConnected, state: walletState } = useWalletStore();
   const { supportedTokenListState } = useSwapCanisterStore();
   const { getAllPairs } = useAllPairs();
 
@@ -21,7 +21,7 @@ export const useSwapCanisterInit = () => {
     if (!isConnected) {
       dispatch(swapCanisterActions.setBalancesState(FeatureState.Idle));
     }
-  }, [isConnected, plugState]);
+  }, [isConnected, walletState]);
 
   useEffect(() => {
     if (principalId) {
