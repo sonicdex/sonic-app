@@ -15,6 +15,8 @@ import swapReducer from '@/store/features/swap-canister/swap-canister-slice';
 import swapViewReducer from '@/store/features/swap-view/swap-view-slice';
 import withdrawViewReducer from '@/store/features/withdraw-view/withdraw-view-slice';
 
+import walletReducer from '@/store/features/dfinitywallet/wallet-slice';
+
 export const store = configureStore({
   reducer: {
     cyclesMinting: cyclesMintingCanisterReducer,
@@ -24,7 +26,6 @@ export const store = configureStore({
     swap: swapReducer,
     price: priceReducer,
     keepSync: keepSyncReducer,
-
     activityView: activityViewReducer,
     assetsView: assetsViewReducer,
     depositView: depositViewReducer,
@@ -32,11 +33,10 @@ export const store = configureStore({
     swapView: swapViewReducer,
     withdrawView: withdrawViewReducer,
     allowance: allowanceReducer,
+    dfinityWallet:walletReducer
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      serializableCheck: false,
-    }),
+    getDefaultMiddleware({ serializableCheck: false}),
 });
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

@@ -11,7 +11,7 @@ import {
   AddLiquidityFailModal, AddLiquidityProgressModal, AllowanceVerifyModal, DepositProgressModal, MintManualModal, MintWICPFailModal,
   MintWICPProgressModal, MintXTCFailModal, MintXTCProgressModal, RemoveLiquidityFailModal, RemoveLiquidityProgressModal, SwapFailModal,
   SwapProgressModal, TermsAndConditionsModal, TokenSelectModal, WithdrawProgressModal, WithdrawWICPFailModal, WithdrawWICPProgressModal,
-  AppUpdatedModal
+  AppUpdatedModal , WalletListModal
 } from './components/modals';
 
 import { ENV } from './config';
@@ -40,6 +40,7 @@ export const App = () => {
   return (
     <BrowserRouter basename="/">
       <Layout>
+        <WalletListModal/>
         <NotificationManager />
 
         <TermsAndConditionsModal />

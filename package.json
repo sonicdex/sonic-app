@@ -86,7 +86,7 @@
     "@react-icons/all-files": "^4.1.0",
     "@reduxjs/toolkit": "^1.7.2",
     "@sentry/react": "^7.48.0",
-    "artemis-web3-adapter": "^0.1.7",
+    "artemis-web3-adapter": "^0.2.1",
     "axios": "^0.26.0",
     "bignumber.js": "^9.0.2",
     "buffer-crc32": "^0.2.13",

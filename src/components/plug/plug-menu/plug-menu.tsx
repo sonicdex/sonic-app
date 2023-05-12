@@ -16,15 +16,17 @@ import { FaChevronDown } from '@react-icons/all-files/fa/FaChevronDown';
 import { FiCopy } from '@react-icons/all-files/fi/FiCopy';
 import { FC, useMemo } from 'react';
 
-import { plugActions, PlugState, useAppDispatch, usePlugStore } from '@/store';
+import { plugActions, walletState, useAppDispatch, useWalletStore } from '@/store';
 import { copyToClipboard } from '@/utils';
 import { desensitizationPrincipalId } from '@/utils/canister';
 
 import { PlugLogo } from '..';
 
 export const PlugMenu: FC<Omit<MenuProps, 'children'>> = (props) => {
-  const { principalId, state } = usePlugStore();
+  const { principalId, state } = useWalletStore();
   const dispatch = useAppDispatch();
+
+  console.log(principalId);
 
   const handleDisconnect = async () => {
     dispatch(plugActions.disconnect());
@@ -47,7 +49,7 @@ export const PlugMenu: FC<Omit<MenuProps, 'children'>> = (props) => {
     <Menu {...props}>
       <MenuButton borderRadius="full" px="4" h="12" bg={bg} shadow={shadow}>
         <Flex direction="row" alignItems="center">
-          {state === PlugState.Loading ? <Spinner /> : <PlugLogo />}
+          {state === walletState.Loading ? <Spinner /> : <PlugLogo />}
           <Box ml="2" fontWeight={600}> {shortPrincipalId}</Box>
           <Icon as={FaChevronDown} ml={3} />
         </Flex>

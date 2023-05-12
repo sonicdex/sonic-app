@@ -50,7 +50,6 @@ export const plugActions = { ...plugSlice.actions, connect, disconnect };
 
 const selectPlugState = (state: RootState): PlugStoreState => state.plug;
 
-export const usePlugStore = (): PlugStoreState =>
-  useAppSelector(selectPlugState);
+export const usePlugStore = (): PlugStoreState =>useAppSelector(selectPlugState);
 
 export default plugSlice.reducer;

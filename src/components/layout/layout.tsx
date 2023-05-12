@@ -33,17 +33,22 @@ import { Link, useLocation } from 'react-router-dom';
 
 import { ENV } from '@/config';
 import { useHeaderResizeEffect } from '@/hooks';
-import { modalsSliceActions, useAppDispatch, usePlugStore } from '@/store';
+import { modalsSliceActions, useAppDispatch , useWalletStore } from '@/store'; // usePlugStore
 import { ExternalLink } from '@/utils';
 
 import packageJSON from '@/../package.json';
-import { PlugButton } from '..';
+
 import { LogoBox } from '../core';
-import { PlugMenu } from '../plug/plug-menu';
+
 import { FOOTER_HEIGHT, NAVIGATION_TABS } from './layout.constants';
 
+import { WalletConnectBtn , WalletMenu } from '@/components/wallet';
+
+
 export const Layout: React.FC = ({ children, ...props }) => {
-  const { isConnected } = usePlugStore();
+ // const { isConnected } = usePlugStore();
+  const { isConnected } = useWalletStore();
+
   const dispatch = useAppDispatch();
   const location = useLocation();
   const [headerHeight, setHeaderHeight] = useState('116px');
@@ -62,15 +67,13 @@ export const Layout: React.FC = ({ children, ...props }) => {
   const menuBg = useColorModeValue('gray.50', 'custom.2');
   const menuShadow = useColorModeValue('base', 'none');
 
-  useHeaderResizeEffect((element) => {
-    setHeaderHeight(`${element.clientHeight}px`);
-  });
+  useHeaderResizeEffect((element) => { setHeaderHeight(`${element.clientHeight}px`);});
 
   return (
     <>
-      <Container  maxW={['100%', 'container.xl', 'container.xl']} position="sticky" top={0} zIndex={10} id="header">
+      <Container as="header"  maxW={['100%', 'container.xl', 'container.xl']} position="sticky" top={0} zIndex={10} id="header">
         <Flex 
-          zIndex="1000" as="header" width="full" maxWidth="container.xl" margin="auto"
+          zIndex="1000"  width="full" maxWidth="container.xl" margin="auto"
           direction="row" justifyContent="center" alignItems="center" flexWrap="wrap"
           gap="4" p={['4', '4', '8']} position="sticky" top="0" bg={backgroundColor}
         >
@@ -111,7 +114,8 @@ export const Layout: React.FC = ({ children, ...props }) => {
             justifyContent="flex-end"
           >
             <HStack>
-              {isConnected ? <PlugMenu /> : <PlugButton />}
+             
+              {isConnected ? <WalletMenu /> : <WalletConnectBtn/>  }
               <Menu placement="bottom-end">
                 <MenuButton as={IconButton} aria-label="Menu" icon={<FaEllipsisH />} borderRadius="full" bg={menuBg} shadow={menuShadow} />
                 <div>
