@@ -15,7 +15,7 @@ import { useQuery } from '@/hooks/use-query';
 import { useTokenAllowance } from '@/hooks/use-token-allowance';
 import {
   depositViewActions, FeatureState, NotificationType, useAppDispatch, useDepositViewStore,
-  useNotificationStore, useSwapCanisterStore, useTokenModalOpener,
+  useNotificationStore, useSwapCanisterStore, useTokenModalOpener, useWalletStore
 } from '@/store';
 
 import { getMaxValue } from '@/utils/format';
@@ -29,6 +29,8 @@ import {artemis} from '@/integrations/artemis';
 export const AssetsDepositView = () => {
   const query = useQuery();
   const { supportedTokenList, tokenBalances, balancesState, supportedTokenListState } = useSwapCanisterStore();
+
+  const {isConnected} = useWalletStore()
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -71,7 +73,7 @@ export const AssetsDepositView = () => {
   };
 
   const [buttonDisabled, buttonMessage] = useMemo<[boolean, string]>(() => {
-
+    if(!isConnected) return [true, 'Connect wallet'];
     if (!selectedTokenMetadata?.id) return [true, 'Select a Token'];
 
     if (typeof allowance !== 'number') return [true, 'Getting allowance...'];
@@ -132,7 +134,7 @@ export const AssetsDepositView = () => {
   }, []);
 
   var connectedWalletInfo = artemis.connectedWalletInfo;
- 
+  isConnected
   return (
     <>
       <ViewHeader title="Deposit Asset" onArrowBack={() => navigate('/assets')}/>
@@ -175,5 +177,5 @@ export const AssetsDepositView = () => {
         {buttonMessage}
       </Button>
     </>
-  );
+  )
 };

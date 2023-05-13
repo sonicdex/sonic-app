@@ -51,41 +51,44 @@ export const useBalances = () => {
   );
   const maxDecimalPlaces = 5;
   const getBalances = useKeepSync('getBalances', useCallback(async (isRefreshing?: boolean) => {
-      try {
-        if (balancesState === FeatureState.Loading) return;
-        if (!principalId) return;
-        const tokenInfo = tokenList('obj');
-        dispatch(swapCanisterActions.setBalancesState(isRefreshing ? FeatureState.Updating : FeatureState.Loading));
-        const swapActor: any = await getswapActor(true);
-        const sonicBalances = await swapActor.getUserBalances(Principal.fromText(principalId));
-        const tokenBalances = sonicBalances ? await Promise.all(
-          sonicBalances.map(async (balance: any, index: number) => {
-            const tokenCanisterId = balance[0];
-           var tokenFeeLen = tokenInfo[tokenCanisterId]?.fee.toString().length;
-            var tokenDecimals = tokenInfo[tokenCanisterId].decimals;
-            sonicBalances[index][1] = roundBigInt(sonicBalances[index][1], tokenDecimals, tokenFeeLen>maxDecimalPlaces?tokenFeeLen:maxDecimalPlaces );
-            try {
-              var tokenBalance = BigInt(0);
-              tokenBalance = await getTokenBalance(tokenCanisterId, principalId);
-              const result: [string, bigint] = [balance[0], roundBigInt(tokenBalance, tokenDecimals, tokenFeeLen>maxDecimalPlaces?tokenFeeLen:maxDecimalPlaces)];
-              return result;
-            } catch (error) {
-              AppLog.error(`Token balance fetch error: token="${tokenCanisterId}"`, error);
-              const errorResult: [string, bigint] = [balance[0], BigInt(0)];
-              return errorResult;
-            }
-          })
-        ) : undefined;
-        const icpBalance = await fetchICPBalance(principalId);
-        dispatch(swapCanisterActions.setICPBalance(parseAmount(icpBalance, ICP_METADATA.decimals)));
-        dispatch(swapCanisterActions.setSonicBalances(sonicBalances));
-        dispatch(swapCanisterActions.setTokenBalances(tokenBalances));
-        dispatch(swapCanisterActions.setBalancesState(FeatureState.Idle));
-      } catch (error) {
-        AppLog.error(`Balances fetch error`, error);
-        dispatch(swapCanisterActions.setBalancesState(FeatureState.Error));
-      }
-    },[principalId, dispatch, balancesState]), { interval: 10 * 1000 }
+    try {
+      if (balancesState === FeatureState.Loading) return;
+      if (!principalId) return;
+      const tokenInfo = tokenList('obj');
+      dispatch(swapCanisterActions.setBalancesState(isRefreshing ? FeatureState.Updating : FeatureState.Loading));
+      const swapActor: any = await getswapActor(true);
+      const sonicBalances = await swapActor.getUserBalances(Principal.fromText(principalId));
+      const tokenBalances = sonicBalances ? await Promise.all(
+        sonicBalances.map(async (balance: any, index: number) => {
+          const tokenCanisterId = balance[0];
+          
+          var tokenFeeLen = tokenInfo[tokenCanisterId]?.fee.toString().length;
+          var tokenDecimals = tokenInfo[tokenCanisterId]?.decimals;
+
+
+          sonicBalances[index][1] = roundBigInt(sonicBalances[index][1], tokenDecimals, tokenFeeLen > maxDecimalPlaces ? tokenFeeLen : maxDecimalPlaces);
+          try {
+            var tokenBalance = BigInt(0);
+            tokenBalance = await getTokenBalance(tokenCanisterId, principalId);
+            const result: [string, bigint] = [balance[0], roundBigInt(tokenBalance, tokenDecimals, tokenFeeLen > maxDecimalPlaces ? tokenFeeLen : maxDecimalPlaces)];
+            return result;
+          } catch (error) {
+           // AppLog.error(`Token balance fetch error: token="${tokenCanisterId}"`, error);
+            const errorResult: [string, bigint] = [balance[0], BigInt(0)];
+            return errorResult;
+          }
+        })
+      ) : undefined;
+      const icpBalance = await fetchICPBalance(principalId);
+      dispatch(swapCanisterActions.setICPBalance(parseAmount(icpBalance, ICP_METADATA.decimals)));
+      dispatch(swapCanisterActions.setSonicBalances(sonicBalances));
+      dispatch(swapCanisterActions.setTokenBalances(tokenBalances));
+      dispatch(swapCanisterActions.setBalancesState(FeatureState.Idle));
+    } catch (error) {
+      AppLog.error(`Balances fetch error`, error);
+      dispatch(swapCanisterActions.setBalancesState(FeatureState.Error));
+    }
+  }, [principalId, dispatch, balancesState]), { interval: 10 * 1000 }
   );
 
   const totalBalances = useMemo(() => {

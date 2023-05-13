@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useAppDispatch, walletActions, walletState } from '@/store';
 import Artemis from 'artemis-web3-adapter';
+
 import { tokenList } from '@/utils'
 import { ENV } from '@/config';
 
@@ -10,7 +11,6 @@ export const useWalletInit = (): void => {
     const dispatch = useAppDispatch();
     const tknList = tokenList("obj");
     const connectObj = { host: ENV.host, whitelist: [...Object.values(ENV.canistersPrincipalIDs), ...Object.keys(tknList)] };
-  
     useEffect(() => {
       const initAdapter = async (): Promise<void> => {
         const walletId: string = localStorage.getItem('dfinityWallet') || '';
