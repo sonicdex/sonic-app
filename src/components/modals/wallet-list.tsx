@@ -24,8 +24,10 @@ export const WalletListModal: React.FC = () => {
             host: ENV.host,
             whitelist: [...Object.values(ENV.canistersPrincipalIDs),...Object.keys(tknList)],
         }
+        
         dispatch(walletActions.setWalletSelected(id));
         dispatch(walletActions.setOnwalletList(walletState.Connecting));
+
         var connectInfo = await artemis.connect(id,connectObj);
         if(connectInfo){
             if(artemis?.principalId && artemis?.provider){

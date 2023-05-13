@@ -23,7 +23,7 @@ export const WalletConnectBtn: React.FC = ({ }) => {
         dispatch(walletActions.setOnwalletList(walletState.OpenWalletList));
     }
     return (
-        <Button borderRadius={100} style={{ color: color, backgroundColor: background }} onClick={handleClick}>
+        <Button size="lg" borderRadius={100} style={{ width:'100%', color: color, backgroundColor: background }} onClick={handleClick}>
             Connect Wallet
         </Button>
     );

@@ -466,14 +466,14 @@ export const useSwapViewData = (action:string) => {
       if (from.metadata.id === ICP_METADATA.id) {
         return getAppAssetsSources({
           balances: {
-            plug: icpBalance ?? 0,
+            wallet: icpBalance ?? 0,
           },
         });
       }
 
       return getAppAssetsSources({
         balances: {
-          plug: tokenBalances ? tokenBalances[from.metadata.id] : 0,
+          wallet: tokenBalances ? tokenBalances[from.metadata.id] : 0,
           sonic: sonicBalances ? sonicBalances[from.metadata.id] : 0,
         },
       });
@@ -485,14 +485,14 @@ export const useSwapViewData = (action:string) => {
       if (to.metadata.id === ICP_METADATA.id) {
         return getAppAssetsSources({
           balances: {
-            plug: icpBalance ?? 0,
+            wallet: icpBalance ?? 0,
           },
         });
       }
 
       return getAppAssetsSources({
         balances: {
-          plug: tokenBalances ? tokenBalances[to.metadata.id] : 0,
+          wallet: tokenBalances ? tokenBalances[to.metadata.id] : 0,
           sonic: sonicBalances ? sonicBalances[to.metadata.id] : 0,
         },
       });

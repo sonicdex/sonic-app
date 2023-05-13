@@ -3,7 +3,7 @@ import { Liquidity, toBigNumber } from '@memecake/sonic-js';
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router';
 
-import { Asset, Header, InformationBox, PlugNotConnected, TokenImageBlock } from '@/components';
+import { Asset, Header, InformationBox, WalletNotConnected, TokenImageBlock } from '@/components';
 import { useUserMetrics } from '@/hooks';
 import { AppTokenMetadata } from '@/models';
 
@@ -160,7 +160,7 @@ export const LiquidityListView = () => {
       <RemoveLiquidityModal />
 
       {!isConnected ? (
-        <PlugNotConnected message="Your liquidity positions will appear here." />
+        <WalletNotConnected message="Your liquidity positions will appear here." />
       ) : isLoading ? (
         <Stack spacing={4}>
           <Asset isLoading justifyContent="flex-start" gridGap={2}>

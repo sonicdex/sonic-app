@@ -1,7 +1,7 @@
 import { Skeleton, Stack, Text, useColorModeValue } from '@chakra-ui/react';
 import React, { Fragment, useEffect, useMemo } from 'react';
 
-import { Header, PlugNotConnected } from '@/components';
+import { Header, WalletNotConnected } from '@/components';
 import {
   activityViewActions,
   FeatureState,
@@ -24,8 +24,8 @@ import {
 export const ActivityListView = () => {
   useActivityView();
   const { isConnected } = useWalletStore();
-  const { activityList, CAPstate, LedgerState, page, lastPage } =
-    useActivityViewStore();
+  const { activityList, CAPstate, LedgerState, page, lastPage } = useActivityViewStore();
+  
   const dispatch = useAppDispatch();
 
   const color = useColorModeValue('gray.600', 'custom.1');
@@ -56,7 +56,7 @@ export const ActivityListView = () => {
     return (
       <>
         <Header title="Your Activity" />
-        <PlugNotConnected message="Your transaction activity will appear here." />
+        <WalletNotConnected message="Your transaction activity will appear here." />
       </>
     );
   }

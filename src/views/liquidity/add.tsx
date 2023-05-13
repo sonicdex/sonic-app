@@ -14,15 +14,17 @@ import { useNavigate } from 'react-router';
 import {
   DisplayValue, LPImageBlock, PlugButton, SlippageSettings, StackLine, Token, TokenContent, TokenData, TokenDataBalances, TokenDataPrice,
   TokenDetailsButton, TokenDetailsLogo, TokenDetailsSymbol, TokenDataMetaInfo, TokenInput, ViewHeader,
+  WalletNotConnected
 } from '@/components';
 
+PlugButton;
 import { useTokenAllowance, useTokenBalanceMemo } from '@/hooks';
 import { useBalances } from '@/hooks/use-balances';
 import { useQuery } from '@/hooks/use-query';
 
 import {
   FeatureState, INITIAL_LIQUIDITY_SLIPPAGE, LiquidityTokenDataKey, liquidityViewActions, NotificationType, useAppDispatch,
-  useLiquidityViewStore, useNotificationStore, usePlugStore, usePriceStore, useSwapCanisterStore, useTokenModalOpener,
+  useLiquidityViewStore, useNotificationStore, useWalletStore, usePriceStore, useSwapCanisterStore, useTokenModalOpener,
 } from '@/store';
 
 import { AppLog } from '@/utils';
@@ -34,7 +36,7 @@ import { useAddLiquidityMemo, useTokenSourceMemo } from './liquidity.utils';
 export const LiquidityAddView = () => {
   const query = useQuery();
 
-  const { isConnected } = usePlugStore();
+  const { isConnected } = useWalletStore();
 
   const { addNotification } = useNotificationStore();
   const { token0, token1, slippage, pair, pairState } = useLiquidityViewStore();
@@ -518,7 +520,7 @@ export const LiquidityAddView = () => {
         )}
       </Flex>
       {!isConnected ? (
-        <PlugButton variant="dark" />
+        <WalletNotConnected />
       ) : (
         <Button isFullWidth size="lg" variant="gradient" colorScheme="dark-blue" onClick={handleAddLiquidity}
           isDisabled={buttonDisabled || typeof token0Allowance !== 'number' || typeof token1Allowance !== 'number'}

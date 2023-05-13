@@ -156,7 +156,7 @@ export const useTokenSourceMemo = ({
     if (token.metadata) {
       return getAppAssetsSources({
         balances: {
-          plug: tokenBalances ? tokenBalances[token.metadata.id] : 0,
+          wallet: tokenBalances ? tokenBalances[token.metadata.id] : 0,
           sonic: sonicBalances ? sonicBalances[token.metadata.id] : 0,
         },
       });

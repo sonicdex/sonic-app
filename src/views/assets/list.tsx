@@ -145,7 +145,7 @@ export const AssetsListView = () => {
                   <TokenBalancesPopover
                     sources={getAppAssetsSources({
                       balances: {
-                        plug: id === ICP_METADATA.id ? totalBalances?.[id] : tokenBalances?.[id],
+                        wallet: id === ICP_METADATA.id ? totalBalances?.[id] : tokenBalances?.[id],
                         sonic: sonicBalances?.[id],
                       },
                     })}

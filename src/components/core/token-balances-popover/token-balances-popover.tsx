@@ -32,7 +32,7 @@ export const TokenBalancesPopover: FC<TokenBalancesPopoverProps> = ({
         {children || (
           <HStack spacing={1}>
             {filteredSources.map((source) => (
-              <Image boxSize='20px' key={source?.src} src={source?.src} alt={source.name} />
+              <Image borderRadius='full' boxSize='20px' key={source?.src} src={source?.src} alt={source.name} />
             ))}
           </HStack>
           

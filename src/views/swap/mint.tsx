@@ -8,7 +8,7 @@ import { FaCog } from '@react-icons/all-files/fa/FaCog';
 import { FaInfoCircle } from '@react-icons/all-files/fa/FaInfoCircle';
 
 import {
-  PlugButton, SlippageSettings, Token, TokenContent, TokenData, TokenDataBalances, TokenDataPrice,
+  WalletNotConnected, SlippageSettings, Token, TokenContent, TokenData, TokenDataBalances, TokenDataPrice,
   TokenDataMetaInfo, TokenDetailsButton, TokenDetailsLogo, TokenDetailsSymbol, TokenInput, ViewHeader,
 } from '@/components';
 
@@ -179,7 +179,7 @@ export const MintView = () => {
           {buttonMessage}
         </Button>
       ) : (
-        <PlugButton variant="dark" />
+        <WalletNotConnected />
       )}
     </Stack>
   );

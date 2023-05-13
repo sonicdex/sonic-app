@@ -8,8 +8,9 @@ import { FaCog } from '@react-icons/all-files/fa/FaCog';
 import { FaInfoCircle } from '@react-icons/all-files/fa/FaInfoCircle';
 
 import {
-  PlugButton, SlippageSettings, Token, TokenContent, TokenData, TokenDataBalances, TokenDataPrice,
+  SlippageSettings, Token, TokenContent, TokenData, TokenDataBalances, TokenDataPrice,
   TokenDataMetaInfo, TokenDetailsButton, TokenDetailsLogo, TokenDetailsSymbol, TokenInput, ViewHeader,
+  WalletNotConnected
 } from '@/components';
 
 import { useSwapView, useSwapViewStore } from '@/store';
@@ -177,7 +178,7 @@ export const SwapView = () => {
           {buttonMessage}
         </Button>
       ) : (
-        <PlugButton variant="dark" />
+        <WalletNotConnected />
       )}
     </Stack>
   );

@@ -23,7 +23,7 @@ export const TokenBalancesPopoverItem: FC<TokenBalancesPopoverItemProps> = ({
   return (
     <Flex justify="space-between" pb={3} _last={{ pb: 0 }}>
       <HStack flex={0} minWidth="fit-content">
-        <Image src={src} boxSize={4} alt={`${symbol} logo`} />
+        <Image borderRadius='full' src={src} boxSize={4} alt={`${symbol} logo`} />
         <Text>{name}</Text>
       </HStack>
       <Text textAlign="right" flex={1}>

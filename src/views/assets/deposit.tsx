@@ -134,7 +134,7 @@ export const AssetsDepositView = () => {
   }, []);
 
   var connectedWalletInfo = artemis.connectedWalletInfo;
-  isConnected
+  
   return (
     <>
       <ViewHeader title="Deposit Asset" onArrowBack={() => navigate('/assets')}/>

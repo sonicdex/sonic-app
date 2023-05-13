@@ -1,8 +1,10 @@
-import { plugCircleSrc, sonicCircleSrc } from '@/assets';
+import { sonicCircleSrc } from '@/assets';
+
+import {artemis} from '@/integrations/artemis';
 
 export type GetAppAssetsSourcesParams = {
   balances: {
-    plug?: number;
+    wallet?: number;
     sonic?: number;
   };
 };
@@ -16,11 +18,13 @@ export type AppAssetSource = {
 export const getAppAssetsSources = ({
   balances,
 }: GetAppAssetsSourcesParams): AppAssetSource[] => {
+  var connectedWalletInfo = artemis.connectedWalletInfo;
+  connectedWalletInfo;
   return [
     {
-      name: 'Plug Wallet',
-      src: plugCircleSrc,
-      balance: balances.plug,
+      name: connectedWalletInfo.name,
+      src: connectedWalletInfo.icon,
+      balance: balances.wallet,
     },
     {
       name: 'Sonic',
