@@ -1,8 +1,10 @@
 import { useEffect } from 'react';
 import { useAppDispatch, walletActions, walletState } from '@/store';
-import { artemis } from '@/utils/canisterDriver';
+import Artemis from 'artemis-web3-adapter';
 import { tokenList } from '@/utils'
 import { ENV } from '@/config';
+
+export const artemis = new Artemis();
 
 export const useWalletInit = (): void => {
     const dispatch = useAppDispatch();

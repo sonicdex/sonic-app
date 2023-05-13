@@ -1,9 +1,10 @@
 import { TokenIDL, SwapIDL } from '@/did';
-import { useSwapCanisterStore, usePlugStore } from '@/store';
+import { useSwapCanisterStore, useWalletStore } from '@/store';
 
 import { Principal } from '@dfinity/principal';
 
-import Artemis from 'artemis-web3-adapter';
+import {artemis} from '@/integrations/artemis';
+
 import { AppTokenMetadata } from '@/models';
 
 import { ENV } from '@/config';
@@ -12,17 +13,18 @@ var supportedTokenList: any = [];
 
 var tokenListObj: any = {};
 
-export const artemis = new Artemis();
 
 export const loadsupportedTokenList = async () => {
   
-  var plugStat = usePlugStore();
+  const { isConnected} = useWalletStore();
+  isConnected;
   supportedTokenList = useSwapCanisterStore()?.supportedTokenList;
   if (!supportedTokenList || Object.keys(tokenListObj).length > 0) return false;
   supportedTokenList.forEach((el: { id: string }) => { tokenListObj[el.id] = el });
-  if (plugStat.isConnected) { 
-    [...Object.values(ENV.canistersPrincipalIDs),...Object.keys(supportedTokenList)]
-    artemis.connect('plug',); }
+  
+  // if (isConnected) { 
+  //   [...Object.values(ENV.canistersPrincipalIDs),...Object.keys(supportedTokenList)]
+  //   artemis.connect('plug',); }
 }
 
 export const tokenList = (returnType: 'array' | 'obj' , tokenId?:string): AppTokenMetadata[] | any => {

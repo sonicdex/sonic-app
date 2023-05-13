@@ -13,7 +13,7 @@ type FetchAllowance = { tokenId: string };
 export const fetchAllowance = createAsyncThunk<void, FetchAllowance>(
   'plug/disconnect',
   async ({ tokenId }, { dispatch, getState }): Promise<void> => {
-    const { principalId } = (getState() as RootState).plug;
+    const { principalId } = (getState() as RootState).dfinityWallet;
     try {
       if (!principalId) throw new Error('Plug is not connected');
       const allowance = await getTokenAllowance(tokenId);

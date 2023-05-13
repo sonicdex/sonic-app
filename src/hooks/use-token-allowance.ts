@@ -1,12 +1,12 @@
 import { useEffect } from 'react';
 
-import { allowanceActions, useAllowanceStore, useAppDispatch, usePlugStore } from '@/store';
+import { allowanceActions, useAllowanceStore, useAppDispatch, useWalletStore } from '@/store';
 
 import { validPrincipalId } from '@/utils';
 
 export const useTokenAllowance = (tokenId = ''): number | undefined => {
   const dispatch = useAppDispatch();
-  const { principalId } = usePlugStore();
+  const { principalId } = useWalletStore();
   const { tokensAllowance } = useAllowanceStore();
 
   useEffect(() => {

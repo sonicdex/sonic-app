@@ -6,7 +6,8 @@ import React from 'react';
 
 import { useWalletStore, walletState, useAppDispatch, walletActions } from '@/store';
 
-import { artemis } from '@/utils/canisterDriver';
+import {artemis} from '@/integrations/artemis';
+
 import { tokenList} from '@/utils'
 import { ENV } from '@/config';
 

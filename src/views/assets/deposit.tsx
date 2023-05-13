@@ -3,7 +3,6 @@ import { toBigNumber } from '@memecake/sonic-js';
 import { useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router';
 
-import { plugCircleSrc } from '@/assets';
 import { 
   Token, TokenContent, TokenData, TokenDataBalances,TokenDataPrice,TokenDetailsButton,
   TokenDetailsLogo,TokenDetailsSymbol,TokenDataMetaInfo,TokenInput,ViewHeader,
@@ -23,6 +22,9 @@ import { getMaxValue } from '@/utils/format';
 import { debounce } from '@/utils/function';
 
 import {tokenList } from '@/utils';
+
+import {artemis} from '@/integrations/artemis';
+
 
 export const AssetsDepositView = () => {
   const query = useQuery();
@@ -129,6 +131,8 @@ export const AssetsDepositView = () => {
     };
   }, []);
 
+  var connectedWalletInfo = artemis.connectedWalletInfo;
+ 
   return (
     <>
       <ViewHeader title="Deposit Asset" onArrowBack={() => navigate('/assets')}/>
@@ -139,8 +143,8 @@ export const AssetsDepositView = () => {
           setValue={(value) => dispatch(depositViewActions.setAmount(value))}
           sources={[
             {
-              name: 'Plug Wallet',
-              src: plugCircleSrc,
+              name: connectedWalletInfo?.name,
+              src: connectedWalletInfo?.icon,
               balance: tokenBalance,
             },
           ]}

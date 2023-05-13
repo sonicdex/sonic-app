@@ -12,7 +12,8 @@ import { walletState, useAppDispatch, useWalletStore, walletActions } from '@/st
 import { copyToClipboard } from '@/utils';
 import { desensitizationPrincipalId } from '@/utils/canister';
 
-import { artemis } from '@/utils/canisterDriver';
+import {artemis} from '@/integrations/artemis';
+
 
 export const WalletMenu: FC<Omit<MenuProps, 'children'>> = (props) => {
   const { principalId, state } = useWalletStore();
