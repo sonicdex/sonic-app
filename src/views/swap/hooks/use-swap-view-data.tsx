@@ -13,7 +13,7 @@ import { useBalances, useQuery, useTokenAllowance, useTokenBalanceMemo, useToken
 import { checkIfPlugProviderVersionCompatible } from '@/integrations/plug';
 import {
   FeatureState, INITIAL_SWAP_SLIPPAGE, NotificationType, SwapTokenDataKey, swapViewActions, useAppDispatch, useCyclesMintingCanisterStore,
-  useNotificationStore, usePlugStore, usePriceStore, useSwapCanisterStore, useSwapViewStore, useTokenModalOpener, getTokenPath
+  useNotificationStore, useWalletStore, usePriceStore, useSwapCanisterStore, useSwapViewStore, useTokenModalOpener, getTokenPath
 } from '@/store';
 
 import { formatValue, getMaxValue } from '@/utils/format';
@@ -46,7 +46,7 @@ export const useSwapViewData = (action:string) => {
 
   const { ICPXDRconversionRate } = useCyclesMintingCanisterStore();
   const { state: priceState } = usePriceStore();
-  const { isConnected } = usePlugStore();
+  const { isConnected } = useWalletStore();
 
   const openSelectTokenModal = useTokenModalOpener();
 

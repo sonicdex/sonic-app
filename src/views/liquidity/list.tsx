@@ -9,7 +9,7 @@ import { AppTokenMetadata } from '@/models';
 
 import {
   FeatureState, liquidityViewActions, modalsSliceActions, useAppDispatch, useLiquidityViewStore,
-  usePlugStore, useSwapCanisterStore,
+  useWalletStore , useSwapCanisterStore,
 } from '@/store';
 
 import { PairedUserLPToken, PairedUserLPTokenProps, RemoveLiquidityModal } from './components';
@@ -37,7 +37,7 @@ const InformationDescription = () => {
 export const LiquidityListView = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { isConnected } = usePlugStore();
+  const { isConnected } = useWalletStore();
 
   const { allPairs, allPairsState, userLPBalances, userLPBalancesState, supportedTokenList, supportedTokenListState } = useSwapCanisterStore();
   const { isBannerOpened } = useLiquidityViewStore();
