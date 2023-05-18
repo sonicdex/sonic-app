@@ -29,7 +29,7 @@ export const useBatch = <Model>({
       const onSuccess = transaction.onSuccess;
       transaction.onSuccess = async (res) => {
         let txSuccessResponse;
-        if (onSuccess) { txSuccessResponse = await onSuccess(res);}
+        if (onSuccess) { txSuccessResponse = await onSuccess(res); }
         if (index !== transactionsList.length - 1) {
           setState(states[index + 1]);
         } else {
@@ -44,7 +44,6 @@ export const useBatch = <Model>({
       };
       newBatch.push(transaction);
     });
-
     return newBatch;
   }, [transactions, handleRetry]);
 
@@ -56,16 +55,22 @@ export const useBatch = <Model>({
       return Promise.reject('Batch is not idle');
     }
     setState(states[0]);
-    try {
-      return await batch.execute();
-    } catch (error: any) {
-      // TODO: Improve rejection flow to support other providers
-      if (error.message === 'The transactions was rejected.') {
-        setState(Batch.DefaultHookState.Error);
-      }
-      throw error;
-    }
-  };
+    console.log(batch);
 
+
+    //   
+    //   try {
+    //     return await batch.execute();
+    //   } catch (error: any) {
+    //     // TODO: Improve rejection flow to support other providers
+    //     if (error.message === 'The transactions was rejected.') {
+    //       setState(Batch.DefaultHookState.Error);
+    //     }
+    //     throw error;
+    //   }
+  
+    
+  };
+  execute; state; error;
   return { execute, state, error };
 };

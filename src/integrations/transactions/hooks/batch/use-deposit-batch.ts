@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { DepositModalDataStep, modalsSliceActions, useAppDispatch } from '@/store';
 
 import { Deposit } from '../..';
-import { useApproveTransactionMemo, useDepositTransactionMemo, useBatch, intitICRCTokenDeposit , useICRCTransferMemo } from '..'; //useICRCDepositMemo
+import { useApproveTransactionMemo, useDepositTransactionMemo, useBatch, intitICRCTokenDeposit, useICRCTransferMemo } from '..'; //useICRCDepositMemo
 
 import { getDepositTransactions } from '.';
 
@@ -59,8 +59,8 @@ export const useDepositBatch = (deposit: Deposit): any => {
       dispatch(modalsSliceActions.openDepositProgressModal());
     };
     DepositBatch = { ...DepositBatch, openBatchModal };
-    var getAcnt = intitICRCTokenDeposit(); 
-    
+    var getAcnt = intitICRCTokenDeposit();
+
     var approveTx = useICRCTransferMemo({ ...deposit, tokenAcnt: getAcnt }); // useICRCDepositMemo
     var depositTx = useDepositTransactionMemo(deposit);
 
@@ -85,11 +85,11 @@ export const useDepositBatch = (deposit: Deposit): any => {
         transactions: {},
         handleRetry: () => { return Promise.resolve(false) },
       });
-
       if (getAcnt) batchLoad = { state: "approve" }
       else batchLoad = { state: "getacnt" };
     }
-    return DepositBatch = {...DepositBatch, batch: batchLoad, openBatchModal}
+    DepositBatch = { ...DepositBatch, batch: batchLoad, openBatchModal };
+    return DepositBatch;
   }
   else return DepositBatch
 

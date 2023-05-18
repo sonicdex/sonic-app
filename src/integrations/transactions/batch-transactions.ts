@@ -5,15 +5,17 @@ import type {
 } from '@memecake/plug-inpage-provider/dist/src/Provider/interfaces';
 
 import { AppLog } from '@/utils';
-
 import { Batch } from './models/batch';
+
+import {artemis} from '@/integrations/artemis';
+
+artemis;
 
 export class BatchTransactions implements Batch.Controller {
   private transactions: Transaction[] = [];
   private state: Batch.State = Batch.State.Idle;
   private batchTransactionResolver?: (value: unknown) => void;
   private batchTransactionRejector?: (value: unknown) => void;
-
   constructor(
     private provider?: Provider,
     private handleRetry?: (
@@ -112,6 +114,10 @@ export class BatchTransactions implements Batch.Controller {
   }
 
   private start(nextTxArgs?: any): void {
+
+    console.log( this.provider )
+
+
     const firstTransaction = this.transactions[0];
     const otherTransactions = this.transactions.filter(
       (txData, index) => index !== 0
