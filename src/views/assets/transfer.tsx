@@ -12,9 +12,8 @@ import { FeeBox } from '@/components/core/fee-box';
 
 import { useQuery } from '@/hooks/use-query';
 
-import { useTokenAllowance } from '@/hooks/use-token-allowance';
 import {
-  depositViewActions, FeatureState, NotificationType, useAppDispatch, useDepositViewStore,
+  transferViewActions, FeatureState, NotificationType, useAppDispatch, useTransferViewStore,
   useNotificationStore, useSwapCanisterStore, useTokenModalOpener, useWalletStore
 } from '@/store';
 
@@ -34,18 +33,17 @@ export const AssetsTransferView = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const { amount, tokenId , } = useDepositViewStore();
+  const { amount, tokenId , } = useTransferViewStore();
 
   const { addNotification } = useNotificationStore();
   const openSelectTokenModal = useTokenModalOpener();
 
   const selectedTokenMetadata = tokenList('obj')[tokenId ? tokenId : ''];
 
-  const allowance = useTokenAllowance(selectedTokenMetadata?.id)
 
   const handleSelectTokenId = (tokenId?: string) => {
     if (tokenId) {
-      dispatch(depositViewActions.setTokenId(tokenId));
+      dispatch(transferViewActions.setTokenId(tokenId));
     }
   };
   
@@ -59,13 +57,13 @@ export const AssetsTransferView = () => {
       type: NotificationType.Deposit,
       id: String(new Date().getTime()),
     });
-    debounce(() => dispatch(depositViewActions.setAmount('')), 300);
+    debounce(() => dispatch(transferViewActions.setAmount('')), 300);
   };
 
   const handleMaxClick = () => {
     if (tokenBalance && selectedTokenMetadata)
       dispatch(
-        depositViewActions.setAmount(
+        transferViewActions.setAmount(
           getMaxValue(selectedTokenMetadata, tokenBalance, true).toString()
         )
       );
@@ -75,7 +73,6 @@ export const AssetsTransferView = () => {
     if (!isConnected) return [true, 'Connect wallet'];
     if (!selectedTokenMetadata?.id) return [true, 'Select a Token'];
 
-    if (typeof allowance !== 'number') return [true, 'Getting allowance...'];
     const parsedFromValue = (amount && parseFloat(amount)) || 0;
 
     if (parsedFromValue <= 0)
@@ -98,7 +95,7 @@ export const AssetsTransferView = () => {
     }
 
     return [false, 'Deposit'];
-  }, [amount, tokenBalances, selectedTokenMetadata, allowance]);
+  }, [amount, tokenBalances, selectedTokenMetadata]);
 
   const tokenBalance = useMemo(() => {
     if (tokenBalances && tokenId) {
@@ -119,7 +116,7 @@ export const AssetsTransferView = () => {
     const fromQueryValue = query.get('amount');
 
     if (fromQueryValue) {
-      dispatch(depositViewActions.setAmount(fromQueryValue));
+      dispatch(transferViewActions.setAmount(fromQueryValue));
     }
 
     if (tokenId) {
@@ -127,7 +124,7 @@ export const AssetsTransferView = () => {
     }
 
     return () => {
-      dispatch(depositViewActions.setAmount(''));
+      dispatch(transferViewActions.setAmount(''));
     };
   }, []);
 
@@ -140,7 +137,7 @@ export const AssetsTransferView = () => {
         <Token
           isLoading={isLoading}
           value={amount}
-          setValue={(value) => dispatch(depositViewActions.setAmount(value))}
+          setValue={(value) => dispatch(transferViewActions.setAmount(value))}
           sources={[
             {
               name: connectedWalletInfo?.name,

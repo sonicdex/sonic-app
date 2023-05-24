@@ -13,3 +13,4 @@ export * from './swap-view';
 export * from './withdraw-view';
 export * from './allowance';
 export * from './dfinitywallet';
+export * from './transfer-view';

@@ -15,6 +15,7 @@ import swapReducer from '@/store/features/swap-canister/swap-canister-slice';
 import swapViewReducer from '@/store/features/swap-view/swap-view-slice';
 import withdrawViewReducer from '@/store/features/withdraw-view/withdraw-view-slice';
 
+import trasferViewReducer from '@/store/features/transfer-view/transfer-view-slice';
 import walletReducer from '@/store/features/dfinitywallet/wallet-slice';
 
 export const store = configureStore({
@@ -33,7 +34,8 @@ export const store = configureStore({
     swapView: swapViewReducer,
     withdrawView: withdrawViewReducer,
     allowance: allowanceReducer,
-    dfinityWallet:walletReducer
+    dfinityWallet:walletReducer,
+    transferView: trasferViewReducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({ serializableCheck: false}),
