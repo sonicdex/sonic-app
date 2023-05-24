@@ -137,7 +137,7 @@ export const AssetsDepositView = () => {
   
   return (
     <>
-      <ViewHeader title="Deposit Asset" onArrowBack={() => navigate('/assets')}/>
+      <ViewHeader title={ "Deposit "+ selectedTokenMetadata?.symbol + '' } onArrowBack={() => navigate('/assets')}/>
       <Box my={5}>
         <Token
           isLoading={isLoading}

@@ -4,6 +4,7 @@ import { FaArrowRight } from '@react-icons/all-files/fa/FaArrowRight';
 import React, { useMemo } from 'react';
 
 import { AppTokenMetadata } from '@/models';
+import {artemis} from '@/integrations/artemis';
 
 export type FeeBoxProps = {
   token?: AppTokenMetadata;
@@ -11,6 +12,9 @@ export type FeeBoxProps = {
 };
 
 export const FeeBox: React.FC<FeeBoxProps> = ({ isDeposit = false, token }) => {
+
+  var connectedWalletInfo = artemis.connectedWalletInfo;
+  
   const fee = useMemo(() => {
     if (token) {
       return toBigNumber(BigInt(isDeposit ? 2 : 1) * token.fee)
@@ -24,9 +28,9 @@ export const FeeBox: React.FC<FeeBoxProps> = ({ isDeposit = false, token }) => {
   return (
     <Flex opacity={0.5} alignItems="center" px={4} fontWeight={400} mb={5}>
       <Text display="flex" alignItems="center">
-        {isDeposit ? 'Plug' : 'Sonic'}&nbsp;
+        {isDeposit ? connectedWalletInfo.name : 'Sonic'}&nbsp;
         <FaArrowRight />
-        &nbsp;{isDeposit ? 'Sonic' : 'Plug'}
+        &nbsp;{isDeposit ? 'Sonic' : connectedWalletInfo.name}
       </Text>
       <Text flex={1} textAlign="right" mx={2}>
         {token.symbol}&nbsp;Fee =&nbsp;

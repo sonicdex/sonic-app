@@ -48,7 +48,7 @@ export const AssetsWithdrawView = () => {
 
   const selectedTokenMetadata = useMemo(() => {
     if (tokenId && supportedTokenList) {
-      return supportedTokenList.find(({ id }) => id === tokenId);
+      return supportedTokenList.find(({id}) => id === tokenId);
     }
     return undefined;
   }, [supportedTokenList, tokenId]);
@@ -155,7 +155,7 @@ export const AssetsWithdrawView = () => {
   return (
     <>
       <ViewHeader
-        title="Withdraw Asset"
+        title={"Withdraw "+ selectedTokenMetadata?.symbol + ''}
         onArrowBack={() => navigate('/assets')}
       />
       <Box my={5}>

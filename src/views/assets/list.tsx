@@ -1,9 +1,9 @@
-import {  Flex, HStack, Icon, Stack, Text, useColorModeValue } from '@chakra-ui/react';
+import { Flex, HStack, Icon, Stack, Text, useColorModeValue, ButtonGroup,Button  } from '@chakra-ui/react';
 import { toBigNumber } from '@memecake/sonic-js';
 import { FaInfoCircle } from '@react-icons/all-files/fa/FaInfoCircle';
 import { FaMinus } from '@react-icons/all-files/fa/FaMinus';
 import { FaPlus } from '@react-icons/all-files/fa/FaPlus';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo , useState} from 'react';
 import { useNavigate } from 'react-router';
 
 import {
@@ -17,11 +17,14 @@ import { useBalances } from '@/hooks/use-balances';
 import { AppTokenMetadata } from '@/models';
 
 import {
-  assetsViewActions, FeatureState, useAppDispatch,useAssetsViewStore,
-  usePriceStore, useSwapCanisterStore,useWalletStore
+  assetsViewActions, FeatureState, useAppDispatch, useAssetsViewStore,
+  usePriceStore, useSwapCanisterStore, useWalletStore
 } from '@/store';
 
-const getAssetPriceByBalance = ( price?: string, balance?: number, decimals?: number) => {
+
+import { DepostAddressModal} from '@/components/modals';
+
+const getAssetPriceByBalance = (price?: string, balance?: number, decimals?: number) => {
   if (price && balance && decimals) {
     return (
       Number(price) * Number(toBigNumber(balance).applyDecimals(decimals).toString())
@@ -34,7 +37,6 @@ export const AssetsListView = () => {
   const dispatch = useAppDispatch();
   const { isBannerOpened } = useAssetsViewStore();
   const { totalBalances, sonicBalances, tokenBalances } = useBalances();
-
   const { supportedTokenListState, balancesState, supportedTokenList } = useSwapCanisterStore();
 
   const { icpPrice } = usePriceStore();
@@ -49,6 +51,9 @@ export const AssetsListView = () => {
   const navigateToWithdraw = (tokenId?: string) => {
     if (tokenId) { navigate(`/assets/withdraw?tokenId=${tokenId}`); }
   };
+  const navigateToTransfer = (tokenId?: string) => {
+    if (tokenId) { navigate(`/assets/transfer?tokenId=${tokenId}`); }
+  };
 
   const handleBannerClose = () => {
     dispatch(assetsViewActions.setIsBannerOpened(false));
@@ -57,7 +62,7 @@ export const AssetsListView = () => {
 
   const notEmptyTokenList = useMemo(() => {
     const supportedTokenListWithICP: AppTokenMetadata[] = [
-       ...(supportedTokenList || []),
+      ...(supportedTokenList || []),
     ];
     if (totalBalances) {
       return supportedTokenListWithICP.filter(
@@ -90,16 +95,23 @@ export const AssetsListView = () => {
     },
     [sonicBalances]
   );
+  const [isModelOpen, setisModelOpen] = useState(false);
+  const [tokenSelected, settokenSelected] = useState('');
+  const showDepositModal= function(tokenId:string){
+    setisModelOpen(true);
+    settokenSelected(tokenId);
+  } 
 
   const getCanDeposit = useCallback(
     (tokenId: string) => {
-      return ( tokenId !== ICP_METADATA.id && tokenBalances && tokenBalances[tokenId] > 0);
+      return (tokenId !== ICP_METADATA.id && tokenBalances && tokenBalances[tokenId] > 0);
     },
     [tokenBalances]
   );
 
   return (
     <>
+      <DepostAddressModal isNotiOpen={isModelOpen} tokenId={tokenSelected} onclose={()=>{ setisModelOpen(false); }}/>
       <Header title="Your Assets" isUpdating={isUpdating}>
         {isBannerOpened && (
           <InformationBox title="Assets Details" mb={9} onClose={handleBannerClose}>
@@ -123,6 +135,7 @@ export const AssetsListView = () => {
                 <HStack>
                   <AssetIconButton aria-label="Deposit" icon={<FaPlus />} />
                   <AssetIconButton aria-label="Withdraw" icon={<FaMinus />} />
+                  <AssetIconButton aria-label="Deposit" icon={<FaPlus />} />
                 </HStack>
               </Asset>
 
@@ -163,24 +176,30 @@ export const AssetsListView = () => {
                   </TokenBalancesPopover>
                   <Flex flex={1} direction="column">
                     <Text fontWeight="bold" color={headerColor}>
-                      Price 
+                      Price
                     </Text>
                     <DisplayValue isUpdating={isUpdating} fontWeight="bold" prefix="~$"
-                      value={ 
-                        (id == 'ryjl3-tyaaa-aaaaa-aaaba-cai')?
-                        ((totalBalances?.[id])?(totalBalances?.[id] / 10**decimals):0)* (parseFloat(icpPrice || '1')) :
-                        getAssetPriceByBalance(price, totalBalances?.[id], decimals) ?? 0
+                      value={
+                        (id == 'ryjl3-tyaaa-aaaaa-aaaba-cai') ?
+                          ((totalBalances?.[id]) ? (totalBalances?.[id] / 10 ** decimals) : 0) * (parseFloat(icpPrice || '1')) :
+                          getAssetPriceByBalance(price, totalBalances?.[id], decimals) ?? 0
                       }
                     />
                   </Flex>
                   <HStack>
-                    <AssetIconButton aria-label={`Withdraw ${symbol}`} icon={<FaMinus />}
+                    <AssetIconButton aria-label={`Withdraw ${symbol} From Sonic`} icon={<FaMinus />}
                       onClick={() => navigateToWithdraw(id)} isDisabled={!getCanWithdraw(id)}
                     />
-                    <AssetIconButton colorScheme="dark-blue" aria-label={`Deposit ${symbol}`} icon={<FaPlus />}
+                    <AssetIconButton colorScheme="dark-blue" aria-label={`Deposit ${symbol} to Sonic`} icon={<FaPlus />}
                       onClick={() => navigateToDeposit(id)} isDisabled={!getCanDeposit(id)}
                     />
                   </HStack>
+                  <Flex flex={1} direction="column" alignItems='end' gap='2' minW={['100%']}>
+                    <ButtonGroup gap='2'>
+                      <Button fontSize={14} px={6}  onClick={() => showDepositModal(id)} >Deposit</Button>
+                      <Button fontSize={14} px={6}  onClick={() => navigateToTransfer(id)} >Tran</Button>
+                    </ButtonGroup>
+                  </Flex>
                 </Asset>
               )
             )

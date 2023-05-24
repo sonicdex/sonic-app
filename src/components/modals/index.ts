@@ -21,3 +21,4 @@ export * from './withdraw-wicp-fail-modal';
 export * from './withdraw-wicp-progress-modal';
 export * from './app-Updated';
 export * from './wallet-list';
+export * from './deposit-info';
