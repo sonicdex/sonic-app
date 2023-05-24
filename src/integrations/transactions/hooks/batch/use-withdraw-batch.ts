@@ -1,39 +1,28 @@
-import {
-  modalsSliceActions,
-  useAppDispatch,
-  WithdrawModalDataStep,
-} from '@/store';
-
+import { modalsSliceActions, useAppDispatch, WithdrawModalDataStep } from '@/store';
+import { useMemo } from 'react';
 import { Withdraw } from '../..';
-import { useBatch, useWithdrawTransactionMemo } from '..';
+import { useWithdrawTransactionMemo } from '..';
+
+import { BatchTransact } from 'artemis-web3-adapter';
+import { artemis } from '@/integrations/artemis';
 
 export const useWithdrawBatch = (withdraw: Withdraw) => {
   const dispatch = useAppDispatch();
+  var batchLoad: any = { state: "idle" };
 
   const openBatchModal = () => {
     dispatch(
-      modalsSliceActions.setWithdrawModalData({
-        steps: ['withdraw'] as WithdrawModalDataStep[],
-        tokenSymbol: withdraw.token?.symbol,
-      })
+      modalsSliceActions.setWithdrawModalData({ steps: ['withdraw'] as WithdrawModalDataStep[], tokenSymbol: withdraw.token?.symbol,})
     );
     dispatch(modalsSliceActions.openWithdrawProgressModal());
   };
-
   const withdrawMemo = useWithdrawTransactionMemo(withdraw);
+  
+  const  WithdrawBatchTx = useMemo(() => {
+    return new BatchTransact({ withdraw: withdrawMemo }, artemis);
+  }, [withdrawMemo]);
 
-  return {
-    batch: useBatch({
-      transactions: {
-        withdraw: withdrawMemo,
-      },
-      handleRetry: () => {
-        dispatch(modalsSliceActions.closeWithdrawProgressModal());
-        dispatch(modalsSliceActions.openWithdrawFailModal());
+  if (WithdrawBatchTx) { batchLoad.batchExecute = WithdrawBatchTx;}
 
-        return Promise.resolve(false);
-      },
-    }),
-    openBatchModal,
-  };
+  return {batch: batchLoad, openBatchModal };
 };

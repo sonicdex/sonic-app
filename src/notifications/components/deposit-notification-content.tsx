@@ -26,16 +26,18 @@ export const DepositNotificationContent: React.FC<DepositNotificationContentProp
   }, []) ?? {};
 
   const selectedToken = tokenList('obj', tokenId), allowance = useTokenAllowance(selectedToken?.id);
+
   var batchData = useDepositBatch({ amount: value, token: selectedToken, allowance });
+
   const batch = batchData?.batch, openBatchModal = batchData?.openBatchModal;
   const batchExecutalbe = batch?.batchExecute;
 
   const handleStateChange = () => {
     if (!batch?.state) return;
 
-    if(batch?.state && batchExecutalbe?.state == "running"){
+    if (batch?.state && batchExecutalbe?.state == "running") {
       batch.state = batchExecutalbe.activeStep;
-    }else if(batch?.state =='error'){
+    } else if (batch?.state == 'error') {
       handleError();
     }
     if (batch?.state) {
@@ -56,15 +58,15 @@ export const DepositNotificationContent: React.FC<DepositNotificationContentProp
     }
   };
 
-  const handleError =(err?:any)=>{
-    if(err) AppLog.error(`Deposit Error`, err);
+  const handleError = (err?: any) => {
+    if (err) AppLog.error(`Deposit Error`, err);
     dispatch(modalsSliceActions.closeDepositProgressModal());
     dispatch(modalsSliceActions.clearDepositModalData());
     addNotification({ title: `Deposit ${value} ${selectedToken?.symbol} failed`, type: NotificationType.Error, id: Date.now().toString(), });
     popNotification(id)
   }
 
-  useEffect(handleStateChange, [batchExecutalbe?.activeStep , batch.state]);
+  useEffect(handleStateChange, [batchExecutalbe?.activeStep, batch.state]);
 
   useEffect(() => {
     handleOpenModal();
@@ -78,12 +80,8 @@ export const DepositNotificationContent: React.FC<DepositNotificationContentProp
             title: `Deposited ${value} ${selectedToken?.symbol}`, type: NotificationType.Success, id: Date.now().toString(), transactionLink: '/activity',
           });
           dispatch(modalsSliceActions.clearDepositModalData());
-        } else {
-          handleError()
-        }
-      }).catch((err: any) => {
-        handleError(err)
-      }).finally(() => popNotification(id));
+        } else handleError();
+      }).catch((err: any) => handleError(err)).finally(() => popNotification(id));
     }
   }, [allowance, batchExecutalbe]);
 
