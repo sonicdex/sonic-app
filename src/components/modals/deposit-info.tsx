@@ -54,7 +54,10 @@ export const DepostAddressModal: React.FC<DepostAddressProps> = ({ isNotiOpen, t
         }
     };
     
-    const tokenData = tokenId ? tokenList('obj', tokenId) : {};
+    const tokenData =  useMemo(() => {
+        return tokenId ? tokenList('obj', tokenId) : {};
+    },[tokenId]) 
+    
     const bg = useColorModeValue('gray.50', 'custom.2');
     const titleColor = useColorModeValue('gray.800', 'gray.50');
     return isModelOpen ? (
@@ -93,7 +96,7 @@ export const DepostAddressModal: React.FC<DepostAddressProps> = ({ isNotiOpen, t
                             </Box>
                         </Flex>
                     </Box>
-
+                    { tokenData?.symbol =='ICP' &&
                     <Box width={'full'} py={3} px={2} mt="3" >
                         <Heading as="h2" color={titleColor} fontWeight={400} fontSize="1.2rem" mb={3}>
                             Use Account ID
@@ -112,7 +115,7 @@ export const DepostAddressModal: React.FC<DepostAddressProps> = ({ isNotiOpen, t
                                 {accountId && <QRCode value={accountId} size={100} />}
                             </Box>
                         </Flex>
-                    </Box>
+                    </Box>}
                 </ModalBody>
             </ModalContent>
         </Modal>

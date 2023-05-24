@@ -115,7 +115,7 @@ export const Layout: React.FC = ({ children, ...props }) => {
           >
             <HStack>
              
-              {isConnected ? <WalletMenu /> : <WalletConnectBtn/>  }
+              {isConnected ? <WalletMenu placement="bottom-end" /> : <WalletConnectBtn/>  }
               <Menu placement="bottom-end">
                 <MenuButton as={IconButton} aria-label="Menu" icon={<FaEllipsisH />} borderRadius="full" bg={menuBg} shadow={menuShadow} />
                 <div>

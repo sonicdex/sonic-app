@@ -48,7 +48,7 @@ export const AssetsTransferView = () => {
       dispatch(depositViewActions.setTokenId(tokenId));
     }
   };
-
+  
   const handleOpenSelectTokenModal = () => {
     openSelectTokenModal({ metadata: supportedTokenList, onSelect: (tokenId) => handleSelectTokenId(tokenId), selectedTokenIds: [] });
   };
@@ -76,7 +76,6 @@ export const AssetsTransferView = () => {
     if (!selectedTokenMetadata?.id) return [true, 'Select a Token'];
 
     if (typeof allowance !== 'number') return [true, 'Getting allowance...'];
-
     const parsedFromValue = (amount && parseFloat(amount)) || 0;
 
     if (parsedFromValue <= 0)

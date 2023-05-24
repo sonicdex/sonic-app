@@ -12,11 +12,11 @@ import { walletState, useAppDispatch, useWalletStore, walletActions } from '@/st
 import { copyToClipboard } from '@/utils';
 import { desensitizationPrincipalId } from '@/utils/canister';
 
-import {artemis} from '@/integrations/artemis';
+import { artemis } from '@/integrations/artemis';
 
 
 export const WalletMenu: FC<Omit<MenuProps, 'children'>> = (props) => {
-  const { principalId, state } = useWalletStore();
+  const { principalId, state, accountId } = useWalletStore();
   const dispatch = useAppDispatch();
 
   const iconUrl = artemis?.connectedWalletInfo.icon;
@@ -24,17 +24,27 @@ export const WalletMenu: FC<Omit<MenuProps, 'children'>> = (props) => {
   const handleDisconnect = async () => {
     await artemis.disconnect();
     await dispatch(walletActions.resetWallet());
-  //  location.reload();
+    location.reload();
   };
 
   const shortPrincipalId = useMemo(() => {
     return desensitizationPrincipalId(principalId);
   }, [principalId]);
+  const shortaccountId = useMemo(() => {
+    return desensitizationPrincipalId(accountId);
+  }, [accountId]);
 
-  const handleCopy = () => {
-    if (principalId) {
-      copyToClipboard(principalId, 'Principal ID copied to clipboard');
+  const handleCopy = (type: string = 'princ') => {
+    if (type == 'princ') {
+      if (principalId) {
+        copyToClipboard(principalId, 'Principal ID copied to clipboard');
+      }
+    } else if (type == 'acnt') {
+      if (accountId) {
+        copyToClipboard(accountId, 'Account ID copied to clipboard');
+      }
     }
+
   };
 
   const bg = useColorModeValue('gray.50', 'custom.2');
@@ -51,8 +61,11 @@ export const WalletMenu: FC<Omit<MenuProps, 'children'>> = (props) => {
       </MenuButton>
       <div>
         <MenuList bg={bg} shadow={shadow} borderRadius="xl" overflow="hidden">
-          <MenuItem onClick={handleCopy} icon={<FiCopy />}>
-            <Text>Copy ID</Text>
+          <MenuItem onClick={() => handleCopy('princ')} icon={<FiCopy />}>
+            <Text>Principal ID {shortPrincipalId} </Text>
+          </MenuItem>
+          <MenuItem onClick={() => handleCopy('acnt')} icon={<FiCopy />}>
+            <Text>Account ID {shortaccountId} </Text>
           </MenuItem>
           <MenuItem onClick={handleDisconnect} icon={<BiExit />}>
             <Text>Disconnect</Text>
