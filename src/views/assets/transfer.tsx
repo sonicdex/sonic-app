@@ -1,11 +1,11 @@
-import { Box, Button } from '@chakra-ui/react';
+import { Box, Button, Skeleton, Input, Text } from '@chakra-ui/react';
 import { toBigNumber } from '@memecake/sonic-js';
 import { useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router';
 
-import { 
-  Token, TokenContent, TokenData, TokenDataBalances,TokenDataPrice,TokenDetailsButton,
-  TokenDetailsLogo,TokenDetailsSymbol,TokenDataMetaInfo,TokenInput,ViewHeader,
+import {
+  Token, TokenContent, TokenData, TokenDataBalances, TokenDataPrice, TokenDetailsButton,
+  TokenDetailsLogo, TokenDetailsSymbol, TokenDataMetaInfo, TokenInput, ViewHeader,
 } from '@/components';
 
 import { FeeBox } from '@/components/core/fee-box';
@@ -21,28 +21,28 @@ import {
 import { getMaxValue } from '@/utils/format';
 import { debounce } from '@/utils/function';
 
-import {tokenList } from '@/utils';
+import { tokenList } from '@/utils';
 
-import {artemis} from '@/integrations/artemis';
+import { artemis } from '@/integrations/artemis';
 
 
 export const AssetsTransferView = () => {
   const query = useQuery();
   const { supportedTokenList, tokenBalances, balancesState, supportedTokenListState } = useSwapCanisterStore();
-  const {isConnected} = useWalletStore()
+  const { isConnected } = useWalletStore()
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const { amount, tokenId } = useDepositViewStore();
+  const { amount, tokenId , } = useDepositViewStore();
 
   const { addNotification } = useNotificationStore();
   const openSelectTokenModal = useTokenModalOpener();
 
-  const selectedTokenMetadata =  tokenList('obj')[tokenId?tokenId:''];
+  const selectedTokenMetadata = tokenList('obj')[tokenId ? tokenId : ''];
 
   const allowance = useTokenAllowance(selectedTokenMetadata?.id)
-  
+
   const handleSelectTokenId = (tokenId?: string) => {
     if (tokenId) {
       dispatch(depositViewActions.setTokenId(tokenId));
@@ -50,7 +50,7 @@ export const AssetsTransferView = () => {
   };
 
   const handleOpenSelectTokenModal = () => {
-    openSelectTokenModal({ metadata: supportedTokenList, onSelect: (tokenId) => handleSelectTokenId(tokenId), selectedTokenIds: []});
+    openSelectTokenModal({ metadata: supportedTokenList, onSelect: (tokenId) => handleSelectTokenId(tokenId), selectedTokenIds: [] });
   };
 
   const handleDeposit = () => {
@@ -66,13 +66,13 @@ export const AssetsTransferView = () => {
     if (tokenBalance && selectedTokenMetadata)
       dispatch(
         depositViewActions.setAmount(
-          getMaxValue(selectedTokenMetadata, tokenBalance).toString()
+          getMaxValue(selectedTokenMetadata, tokenBalance, true).toString()
         )
       );
   };
 
   const [buttonDisabled, buttonMessage] = useMemo<[boolean, string]>(() => {
-    if(!isConnected) return [true, 'Connect wallet'];
+    if (!isConnected) return [true, 'Connect wallet'];
     if (!selectedTokenMetadata?.id) return [true, 'Select a Token'];
 
     if (typeof allowance !== 'number') return [true, 'Getting allowance...'];
@@ -83,7 +83,7 @@ export const AssetsTransferView = () => {
       return [true, `Enter ${selectedTokenMetadata?.symbol} Amount`];
 
     if (
-      parsedFromValue <= 
+      parsedFromValue <=
       toBigNumber(selectedTokenMetadata.fee).applyDecimals(selectedTokenMetadata.decimals).toNumber()
     ) {
       return [true, `Amount must be greater than fee`];
@@ -92,7 +92,7 @@ export const AssetsTransferView = () => {
     if (tokenBalances && selectedTokenMetadata) {
       if (
         parsedFromValue >
-        getMaxValue( selectedTokenMetadata,tokenBalances[selectedTokenMetadata.id]).toNumber()
+        getMaxValue(selectedTokenMetadata, tokenBalances[selectedTokenMetadata.id], true).toNumber()
       ) {
         return [true, `Insufficient ${selectedTokenMetadata.symbol} Balance`];
       }
@@ -110,8 +110,8 @@ export const AssetsTransferView = () => {
   }, [tokenBalances, tokenId]);
 
   const isLoading = useMemo(() =>
-      supportedTokenListState === FeatureState.Loading ||
-      balancesState === FeatureState.Loading,
+    supportedTokenListState === FeatureState.Loading ||
+    balancesState === FeatureState.Loading,
     [supportedTokenListState, balancesState]
   );
 
@@ -133,10 +133,10 @@ export const AssetsTransferView = () => {
   }, []);
 
   var connectedWalletInfo = artemis.connectedWalletInfo;
-  
+
   return (
     <>
-      <ViewHeader title={ "Transfer "+ selectedTokenMetadata?.symbol + '' } onArrowBack={() => navigate('/assets')}/>
+      <ViewHeader title={"Transfer " + selectedTokenMetadata?.symbol + ''} onArrowBack={() => navigate('/assets')} />
       <Box my={5}>
         <Token
           isLoading={isLoading}
@@ -163,16 +163,20 @@ export const AssetsTransferView = () => {
             <TokenDataBalances onMaxClick={handleMaxClick} />
             <TokenDataPrice />
           </TokenData>
-          <TokenDataMetaInfo 
-                tokenSymbol={selectedTokenMetadata?selectedTokenMetadata.symbol:''}
-                pageInfo="deposit"
-                tokenValue={amount}></TokenDataMetaInfo>
+          <TokenDataMetaInfo
+            tokenSymbol={selectedTokenMetadata ? selectedTokenMetadata.symbol : ''}
+            pageInfo="deposit"
+            tokenValue={amount}></TokenDataMetaInfo>
+          <Skeleton isLoaded={!isLoading} borderRadius="6" mt={'3'}>
+            <Text mb="4" fontWeight={600}> To :</Text>
+            <Input type="text" fontSize={'large'} placeholder="Enter Principal ID or Account ID" size="md"/>
+          </Skeleton>
         </Token>
       </Box>
-      <FeeBox token={selectedTokenMetadata} />
-      
-      <Button  isFullWidth  size="lg"  variant="gradient" colorScheme="dark-blue" 
-      isDisabled={buttonDisabled} onClick={handleDeposit} isLoading={isLoading}>
+      <FeeBox isTransfer token={selectedTokenMetadata} />
+
+      <Button isFullWidth size="lg" variant="gradient" colorScheme="dark-blue"
+        isDisabled={buttonDisabled} onClick={handleDeposit} isLoading={isLoading}>
         {buttonMessage}
       </Button>
     </>

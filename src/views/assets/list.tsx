@@ -197,7 +197,7 @@ export const AssetsListView = () => {
                   <Flex flex={1} direction="column" alignItems='end' gap='2' minW={['100%']}>
                     <ButtonGroup gap='2'>
                       <Button fontSize={14} px={6}  onClick={() => showDepositModal(id)} >Deposit</Button>
-                      <Button fontSize={14} px={6}  onClick={() => navigateToTransfer(id)} >Tran</Button>
+                      <Button fontSize={14} px={6}  onClick={() => navigateToTransfer(id)} >Send</Button>
                     </ButtonGroup>
                   </Flex>
                 </Asset>

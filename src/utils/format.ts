@@ -65,17 +65,14 @@ export const getValueWithoutFees = ({
   return _value.minus(_feesAmount);
 };
 
-export const getMaxValue = (
-  token?: AppTokenMetadata,
-  balance?: number | bigint
-): BigNumber => {
+export const getMaxValue = ( token?: AppTokenMetadata, balance?: number | bigint, isTransfer:boolean=false ): BigNumber => {
   if (!token || !balance) return new BigNumber(0);
   var times = 1;
-  if(token.tokenType =='ICRC1'){
-    times = 2;
-  }else if(token.tokenType =='DIP20'){
+  if(token.tokenType =='ICRC1' || token.tokenType =='DIP20'){
     times = 2;
   }
+  if(isTransfer){ times = 1;}
+  
   const value = toBigNumber(Number(balance)).minus(Number(token.fee) * times);
 
   if (value.isNegative() || value.isZero()) {
