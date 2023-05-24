@@ -10,7 +10,7 @@ import {
   NotificationType,
   useAppDispatch,
   useNotificationStore,
-  usePlugStore,
+  useWalletStore,
   useSwapViewStore,
   WithdrawWICPModalDataStep,
 } from '@/store';
@@ -24,7 +24,7 @@ export interface WithdrawWICPNotificationContentProps {
 export const WithdrawWICPNotificationContent: React.FC<
   WithdrawWICPNotificationContentProps
 > = ({ id }) => {
-  const { principalId } = usePlugStore();
+  const { principalId  } = useWalletStore();
   const dispatch = useAppDispatch();
   const swapViewStore = useSwapViewStore();
   const { addNotification, popNotification } = useNotificationStore();
@@ -39,9 +39,7 @@ export const WithdrawWICPNotificationContent: React.FC<
 
   const { batch, openBatchModal } = useWithdrawWICPBatch({
     amount: from.value,
-    toAccountId: principalId
-      ? getAccountId(Principal.fromText(principalId))
-      : undefined,
+    toAccountId: principalId? getAccountId(Principal.fromText(principalId)): undefined,
   });
 
   const handleStateChange = () => {

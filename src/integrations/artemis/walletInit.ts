@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useAppDispatch, walletActions, walletState } from '@/store';
-import Artemis from 'artemis-web3-adapter';
+import {Artemis} from 'artemis-web3-adapter';
 
 import { tokenList } from '@/utils'
 import { ENV } from '@/config';

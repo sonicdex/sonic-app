@@ -7,7 +7,7 @@ import { useBalances } from '@/hooks/use-balances';
 import { useSwapBatch } from '@/integrations/transactions';
 import {
   modalsSliceActions, NotificationType, SwapModalDataStep, useAppDispatch,
-  useNotificationStore, usePlugStore,useSwapViewStore,
+  useNotificationStore, useWalletStore,useSwapViewStore,
 } from '@/store';
 
 export interface SwapNotificationContentProps {
@@ -19,7 +19,7 @@ export const SwapNotificationContent: React.FC<SwapNotificationContentProps> = (
   const dispatch = useAppDispatch();
   const swapViewStore = useSwapViewStore();
   const { addNotification, popNotification } = useNotificationStore();
-  const { principalId } = usePlugStore();
+  const { principalId } = useWalletStore();
   const { getBalances } = useBalances();
   // const { getAllPairs } = useAllPairs();
  

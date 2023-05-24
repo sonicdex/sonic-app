@@ -7,11 +7,14 @@ import { useApproveTransactionMemo, useDepositTransactionMemo, useBatch, intitIC
 
 import { getDepositTransactions } from '.';
 
+import { BatchTransact } from 'artemis-web3-adapter';
+import { artemis } from '@/integrations/artemis';
+
 export const useDepositBatch = (deposit: Deposit): any => {
   const dispatch = useAppDispatch();
-
   var batchLoad: any = { state: "idle" };
-  var DepositBatch = { batch: batchLoad, openBatchModal: () => { } };
+
+  var DepositBatch = { batch: batchLoad, openBatchModal: () => { }, transactions: {} };
   var tokenType = deposit.token?.tokenType;
 
   if (tokenType == 'DIP20' || tokenType == 'YC') {
@@ -44,6 +47,7 @@ export const useDepositBatch = (deposit: Deposit): any => {
         },
       }),
       openBatchModal,
+      transactions
     };
     return DepositBatch;
 
@@ -64,30 +68,20 @@ export const useDepositBatch = (deposit: Deposit): any => {
     var approveTx = useICRCTransferMemo({ ...deposit, tokenAcnt: getAcnt }); // useICRCDepositMemo
     var depositTx = useDepositTransactionMemo(deposit);
 
-    var transactions = useMemo(() => {
-      if (getAcnt)
-        return getDepositTransactions({ approveTx: approveTx, depositTx, txNames: ['approve', 'deposit'], tokenType: deposit.token?.tokenType })
-      else return {}
-    }, [approveTx]);
+    const DepositBatchTx = useMemo(() => {
+      if(!getAcnt) return false;
+      return new BatchTransact({ approve: approveTx, deposit: depositTx }, artemis);
+    }, [getAcnt]);
 
-    if (Object.keys(transactions).length > 0) {
-      batchLoad = useBatch<DepositModalDataStep>({
-        transactions,
-        handleRetry: () => {
-          dispatch(modalsSliceActions.closeDepositProgressModal());
-          dispatch(modalsSliceActions.openDepositFailModal());
-          return Promise.resolve(false);
-        },
-      });
-      batchLoad.batchFnUpdate = true;
-    } else {
-      batchLoad = useBatch<DepositModalDataStep>({
-        transactions: {},
-        handleRetry: () => { return Promise.resolve(false) },
-      });
-      if (getAcnt) batchLoad = { state: "approve" }
-      else batchLoad = { state: "getacnt" };
+    if (getAcnt) batchLoad = { state: "approve"  }
+    else if(getAcnt ==false) batchLoad = { state: "error" }
+    else batchLoad = { state: "getacnt" };
+
+    if(DepositBatchTx){
+      batchLoad.batchExecute = DepositBatchTx;
+      DepositBatch = { ...DepositBatch, batch: batchLoad, openBatchModal }; 
     }
+
     DepositBatch = { ...DepositBatch, batch: batchLoad, openBatchModal };
     return DepositBatch;
   }
