@@ -11,7 +11,7 @@ import {
   AddLiquidityFailModal, AddLiquidityProgressModal, AllowanceVerifyModal, DepositProgressModal, MintManualModal, MintWICPFailModal,
   MintWICPProgressModal, MintXTCFailModal, MintXTCProgressModal, RemoveLiquidityFailModal, RemoveLiquidityProgressModal, SwapFailModal,
   SwapProgressModal, TermsAndConditionsModal, TokenSelectModal, WithdrawProgressModal, WithdrawWICPFailModal, WithdrawWICPProgressModal,
-  AppUpdatedModal , WalletListModal
+  AppUpdatedModal , WalletListModal, TransferProgressModal
 } from './components/modals';
 
 import { ENV } from './config';
@@ -58,6 +58,8 @@ export const App = () => {
         <WithdrawProgressModal />
 
         <DepositProgressModal />
+
+        <TransferProgressModal />
 
         <AddLiquidityProgressModal />
         <AddLiquidityFailModal />

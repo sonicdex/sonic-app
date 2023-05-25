@@ -9,3 +9,4 @@ export * from './swap';
 export * from './withdraw-wicp';
 export * from './withdraw';
 export * from './icrcTransfer'
+export * from './transfer'

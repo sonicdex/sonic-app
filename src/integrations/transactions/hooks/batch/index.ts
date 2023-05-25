@@ -8,3 +8,4 @@ export * from './use-remove-liquidity-batch';
 export * from './use-swap-batch';
 export * from './use-withdraw-batch';
 export * from './use-withdraw-wicp-batch';
+export * from './use-transfer-batch';

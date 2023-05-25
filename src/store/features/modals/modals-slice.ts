@@ -57,6 +57,7 @@ export enum DepositModalDataStep {
   Getacnt = 'getacnt'
 
 }
+
 export type DepositModalData = {
   step?: DepositModalDataStep | Batch.DefaultHookState;
   steps?: (DepositModalDataStep | Batch.DefaultHookState)[];
@@ -73,6 +74,18 @@ export type WithdrawModalData = {
   tokenSymbol?: string;
   callbacks?: [ModalsCallback, ModalsCallback];
 };
+
+export enum TransferModalDataStep {
+  Transfer = 'transfer',
+}
+
+export type TransferModalData = {
+  step?: TransferModalDataStep | Batch.DefaultHookState;
+  steps?: (TransferModalDataStep | Batch.DefaultHookState)[];
+  tokenSymbol?: string;
+  callbacks?: [ModalsCallback, ModalsCallback];
+};
+
 
 export enum AddLiquidityModalDataStep {
   Getacnt = 'getacnt',
@@ -151,6 +164,9 @@ interface ModalsState {
   isDepositFailModalOpened: boolean;
   depositModalData: DepositModalData;
 
+  transferModalData: TransferModalData;
+  isTransferProgressModalOpened: boolean;
+
   isWithdrawProgressModalOpened: boolean;
   isWithdrawFailModalOpened: boolean;
   withdrawModalData: WithdrawModalData;
@@ -192,6 +208,11 @@ const initialSwapModalData: SwapModalData = {
 };
 
 const initialDepositModalData: DepositModalData = {
+  step: undefined,
+};
+
+
+const initialTransferModalData: TransferModalData= {
   step: undefined,
 };
 
@@ -244,6 +265,9 @@ const initialState: ModalsState = {
   isDepositFailModalOpened: false,
   depositModalData: initialDepositModalData,
 
+  isTransferProgressModalOpened:false,
+  transferModalData: initialTransferModalData,
+  
   isWithdrawProgressModalOpened: false,
   isWithdrawFailModalOpened: false,
   withdrawModalData: initialWithdrawModalData,
@@ -419,6 +443,7 @@ export const modalsSlice = createSlice({
     openDepositFailModal: (state) => {
       state.isDepositFailModalOpened = true;
     },
+
     closeDepositFailModal: (state) => {
       state.isDepositFailModalOpened = false;
     },
@@ -431,6 +456,17 @@ export const modalsSlice = createSlice({
         ...action.payload,
       };
     },
+
+    setTransferModalData: (state, action: PayloadAction<TransferModalData>) => {
+      state.transferModalData = { ...state.transferModalData, ...action.payload};
+    },
+    openTransferProgressModal: (state) => {
+      state.isTransferProgressModalOpened = true;
+    },
+    closeTransferProgressModal: (state) => {
+      state.isTransferProgressModalOpened = false;
+    },
+
 
     openWithdrawProgressModal: (state) => {
       state.isWithdrawProgressModalOpened = true;

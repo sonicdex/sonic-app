@@ -14,6 +14,7 @@ import {
   TransactionNotificationContent,
   WithdrawNotificationContent,
   WithdrawWICPNotificationContent,
+  TransferNotificationContent
 } from './components';
 
 export type NotificationContentProps = Notification;
@@ -54,6 +55,7 @@ export const NotificationContent: React.FC<NotificationContentProps> = ({
       <MintAutoNotificationContent id={id} state={state} />
     ),
     [NotificationType.MintManual]: <MintManualNotificationContent id={id} />,
+    [NotificationType.Transfer]: <TransferNotificationContent id={id} />,
     [NotificationType.Error]: errorMessage && (
       <Text fontSize="sm" color={messageColor}>
         {errorMessage}

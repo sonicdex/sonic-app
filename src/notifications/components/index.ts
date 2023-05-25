@@ -9,3 +9,4 @@ export * from './swap-notification-content';
 export * from './transaction-notification-content';
 export * from './withdraw-notification-content';
 export * from './withdraw-wicp-notification-content';
+export * from './transfer-notification-content';

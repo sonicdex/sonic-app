@@ -18,9 +18,6 @@ export const WithdrawNotificationContent: React.FC<
   const dispatch = useAppDispatch();
   const { addNotification, popNotification } = useNotificationStore();
   const { getBalances } = useBalances();
-
-  getBalances;
-
   const { amount: value, tokenId } = useWithdrawViewStore();
   const { supportedTokenList } = useSwapCanisterStore();
 
@@ -28,7 +25,6 @@ export const WithdrawNotificationContent: React.FC<
     if (tokenId && supportedTokenList) {
       return supportedTokenList.find(({ id }) => id === tokenId);
     }
-
     return undefined;
   }, [supportedTokenList, tokenId]);
 

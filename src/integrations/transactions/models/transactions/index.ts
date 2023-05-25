@@ -7,3 +7,4 @@ export * from './mint-xtc';
 export * from './swap';
 export * from './withdraw-wicp';
 export * from './withdraw';
+export * from './transfer'

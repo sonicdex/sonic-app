@@ -3,7 +3,7 @@ import { useSwapCanisterStore, useWalletStore } from '@/store';
 
 import { Principal } from '@dfinity/principal';
 
-import {artemis} from '@/integrations/artemis';
+import { artemis } from '@/integrations/artemis';
 
 import { AppTokenMetadata } from '@/models';
 
@@ -15,21 +15,21 @@ var tokenListObj: any = {};
 
 
 export const loadsupportedTokenList = async () => {
-  
-  const { isConnected} = useWalletStore();
+
+  const { isConnected } = useWalletStore();
   isConnected;
   supportedTokenList = useSwapCanisterStore()?.supportedTokenList;
   if (!supportedTokenList || Object.keys(tokenListObj).length > 0) return false;
   supportedTokenList.forEach((el: { id: string }) => { tokenListObj[el.id] = el });
-  
+
   // if (isConnected) { 
   //   [...Object.values(ENV.canistersPrincipalIDs),...Object.keys(supportedTokenList)]
   //   artemis.connect('plug',); }
 }
 
-export const tokenList = (returnType: 'array' | 'obj' , tokenId?:string): AppTokenMetadata[] | any => {
+export const tokenList = (returnType: 'array' | 'obj', tokenId?: string): AppTokenMetadata[] | any => {
   return (returnType == 'array' && !tokenId) ? supportedTokenList :
-    (!tokenId)? tokenListObj:tokenListObj[tokenId];
+    (!tokenId) ? tokenListObj : tokenListObj[tokenId];
 };
 
 export const getTokenActor = async (canisterId: string, isAnnon: boolean): Promise<any> => {
@@ -40,14 +40,14 @@ export const getTokenActor = async (canisterId: string, isAnnon: boolean): Promi
   var idl: any = token.tokenType == 'DIP20' ? TokenIDL.DIP20.factory :
     token.tokenType == 'YC' ? TokenIDL.DIP20.YCfactory :
       token.tokenType == 'ICRC1' ? TokenIDL.ICRC1.factory : TokenIDL.DIP20.factory;
-  if(isAnnon==false && !artemis.provider){await artemis.connect('plug');}
+  if (isAnnon == false && !artemis.provider) { await artemis.connect('plug'); }
   actor = await artemis.getCanisterActor(token.id, idl, isAnnon);
   return actor;
 }
 
 export const getswapActor = async (isAnnon: boolean): Promise<SwapIDL.Factory> => {
-  if(!isAnnon && !artemis.provider){
-     await artemis.autoConnect();
+  if (!isAnnon && !artemis.provider) {
+    await artemis.autoConnect();
   }
   var actor = await artemis.getCanisterActor(ENV.canistersPrincipalIDs.swap, SwapIDL.factory, isAnnon);
   return actor;
@@ -61,18 +61,18 @@ export const getTokenLogo = async (canisterId: string): Promise<string> => {
   if (!token?.tokenType || token?.tokenType == 'DIP20' || token?.tokenType == 'YC') {
     tokenLogo = await tokenActor.logo();
   } else if (token?.tokenType == 'ICRC1') {
-    tokenLogo = "https://d15bmhsw4m27if.cloudfront.net/sonic/"+token.id
+    tokenLogo = "https://d15bmhsw4m27if.cloudfront.net/sonic/" + token.id
   }
   return tokenLogo;
 }
 
-export const getTokenBalance = async (canisterId: string , principalId?:string): Promise<bigint> => {
+export const getTokenBalance = async (canisterId: string, principalId?: string): Promise<bigint> => {
   var tokenInfo = tokenListObj?.[canisterId];
   var tokenBalance: bigint = BigInt(0);
-  if (!tokenInfo) { return tokenBalance;}
-  var prin = artemis.principalId?artemis.principalId:principalId;
+  if (!tokenInfo) { return tokenBalance; }
+  var prin = artemis.principalId ? artemis.principalId : principalId;
 
-  if(!prin) return tokenBalance;
+  if (!prin) return tokenBalance;
 
   var tokenActor = await getTokenActor(tokenInfo.id, true);
 
@@ -98,15 +98,33 @@ export const getTokenAllowance = async (canisterId: string): Promise<bigint> => 
   return allowance;
 }
 
-export const toHexString = (byteArray:[])  =>{
-  return Array.from(byteArray, function(byte) {
+export const toHexString = (byteArray: []) => {
+  return Array.from(byteArray, function (byte) {
     return ('0' + (byte & 0xFF).toString(16)).slice(-2);
   }).join('')
 }
-export const fromHexString = (hex:string):number[] => {
-  if(!hex) return [];
-  if (hex.substr(0,2) === "0x") hex = hex.substr(2);
-  for (var bytes:number[] = [], c = 0; c < hex.length; c += 2)
-  bytes.push(parseInt(hex.substr(c, 2), 16));
+export const fromHexString = (hex: string): number[] => {
+  if (!hex) return [];
+  if (hex.substr(0, 2) === "0x") hex = hex.substr(2);
+  for (var bytes: number[] = [], c = 0; c < hex.length; c += 2)
+    bytes.push(parseInt(hex.substr(c, 2), 16));
   return bytes;
+}
+export const checkAddressType = (address: string): string => {
+  if (address.length < 23) return 'invalid';
+  if (isValidAccountId(address)) return 'accountId';
+  else if (isPrincipalId(address)) return 'principalId';
+  else return 'invalid'
+
+  function isPrincipalId(id: string) {
+    try {
+      Principal.fromText(id); return true;
+    } catch (error) {
+      return false;
+    }
+  }
+  function isValidAccountId(accountId: string) {
+    const accountIdRegex = /^[A-Fa-f0-9]{64}$/;
+    return accountIdRegex.test(accountId);
+  }
 }

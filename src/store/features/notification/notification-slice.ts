@@ -7,15 +7,12 @@ import { FeatureState } from '@/store';
 export enum NotificationType {
   Success,
   Error,
-
   Deposit,
   Withdraw,
-
+  Transfer,
   Swap,
-
   AddLiquidity,
   RemoveLiquidity,
-
   MintXTC,
   MintWICP,
   WithdrawWICP,

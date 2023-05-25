@@ -1,5 +1,6 @@
 import {
-  Box, Flex, Icon, Menu, MenuButton, MenuItem, MenuList, MenuProps, Text, useColorModeValue, Image
+  Box, Flex, Icon, Menu, MenuButton, MenuItem, MenuList, MenuProps, Text,
+  useColorModeValue, Image,
 } from '@chakra-ui/react';
 
 import { Spinner } from '@chakra-ui/spinner';
