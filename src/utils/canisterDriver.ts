@@ -6,12 +6,16 @@ import { Principal } from '@dfinity/principal';
 import { artemis } from '@/integrations/artemis';
 
 import { AppTokenMetadata } from '@/models';
-
 import { ENV } from '@/config';
 
-var supportedTokenList: any = [];
 
+import crc32 from 'buffer-crc32';
+import { Buffer } from 'buffer';
+import crypto from "crypto-js";
+
+var supportedTokenList: any = [];
 var tokenListObj: any = {};
+
 
 
 export const loadsupportedTokenList = async () => {
@@ -127,4 +131,79 @@ export const checkAddressType = (address: string): string => {
     const accountIdRegex = /^[A-Fa-f0-9]{64}$/;
     return accountIdRegex.test(accountId);
   }
+}
+const ACCOUNT_DOMAIN_SEPERATOR = '\x0Aaccount-id';
+const SUB_ACCOUNT_ZERO = Buffer.alloc(32);
+
+const byteArrayToWordArray = (byteArray: any) => {
+  const wordArray: any = [];
+  let i;
+  for (i = 0; i < byteArray.length; i += 1) {
+    wordArray[(i / 4) | 0] |= byteArray[i] << (24 - 8 * i);
+  }
+  // eslint-disable-next-line
+  const result = crypto.lib.WordArray.create(wordArray, byteArray.length);
+  return result;
+};
+const wordToByteArray = (word: any, length: number) => {
+  const byteArray = [];
+  const xFF = 0xff;
+  if (length > 0) byteArray.push(word >>> 24);
+  if (length > 1) byteArray.push((word >>> 16) & xFF);
+  if (length > 2) byteArray.push((word >>> 8) & xFF);
+  if (length > 3) byteArray.push(word & xFF);
+
+  return byteArray;
+};
+const wordArrayToByteArray = (wordArray: any, length: number) => {
+  if (
+    wordArray.hasOwnProperty('sigBytes') &&
+    wordArray.hasOwnProperty('words')
+  ) {
+    length = wordArray.sigBytes;
+    wordArray = wordArray.words;
+  }
+
+  let result: any = [];
+  let bytes;
+  let i = 0;
+  while (length > 0) {
+    bytes = wordToByteArray(wordArray[i], Math.min(4, length));
+    length -= bytes.length;
+    result = [...result, bytes];
+    i++;
+  }
+  return [].concat.apply([], result);
+};
+const generateChecksum = (hash: any) => {
+  const crc = crc32.unsigned(Buffer.from(hash));
+  const hex = intToHex(crc);
+  return hex.padStart(8, '0');
+};
+
+const intToHex = (val: any) =>
+  val < 0 ? (Number(val) >>> 0).toString(16) : Number(val).toString(16);
+
+export const getAccountIdFromPrincipalId = (principalId: string) => {
+
+  try {
+    var principal = Principal.from(principalId);
+    const sha = crypto.algo.SHA224.create();
+    sha.update(ACCOUNT_DOMAIN_SEPERATOR); // Internally parsed with UTF-8, like go does
+    sha.update(byteArrayToWordArray(principal.toUint8Array()));
+    const subBuffer = Buffer.from(SUB_ACCOUNT_ZERO);
+
+    sha.update(byteArrayToWordArray(subBuffer));
+    const hash = sha.finalize();
+    const byteArray = wordArrayToByteArray(hash, 28);
+    const checksum = generateChecksum(byteArray);
+    const val = checksum + hash.toString();
+    return val;
+  } catch (error) { return '' }
+}
+
+export const getPrincipalFromText = (prin: string) => {
+  try {
+    return Principal.fromText(prin)
+  } catch (error) { return false }
 }

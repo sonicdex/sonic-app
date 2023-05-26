@@ -34,7 +34,7 @@ export const useICRCTransferMemo: CreateTransaction<Deposit> = (
             canisterId: canId,
             idl: TokenIDL.ICRC1.factory,
             methodName: 'icrc1_transfer',
-            onSuccess: async (res: TokenIDL.DIP20.Result) => {
+            onSuccess: async (res: TokenIDL.ICRC1.Result) => {
                 if ('Err' in res) throw new Error(JSON.stringify(res.Err));
                 if (onSuccess) onSuccess(res);
             },

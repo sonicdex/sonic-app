@@ -6,7 +6,7 @@ import { useBalances } from '@/hooks/use-balances';
 import { useTransferBatch } from '@/integrations/transactions';
 
 import {
-  TransferModalDataStep, modalsSliceActions, useAppDispatch, useTransferViewStore, NotificationType, useNotificationStore,
+  TransferModalDataStep, modalsSliceActions, useAppDispatch, useTransferViewStore, NotificationType, useNotificationStore,transferViewActions
 } from '@/store';
 
 import { tokenList, AppLog } from '@/utils';
@@ -25,7 +25,12 @@ export const TransferNotificationContent: React.FC<TransferNotificationContentPr
   }, []) ?? {};
 
   const selectedToken = tokenList('obj', tokenId);
-  var batchData = useTransferBatch({ amount: value, token: selectedToken});
+
+  const toAddress= transferViewStore.toAddress;
+
+  const addressType = transferViewStore.addressType;
+
+  var batchData = useTransferBatch({ amount: value, token: selectedToken, address:toAddress , addressType:addressType});
 
   const batch = batchData?.batch, openBatchModal = batchData?.openBatchModal;
   const batchExecutalbe = batch?.batchExecute;
@@ -52,10 +57,10 @@ export const TransferNotificationContent: React.FC<TransferNotificationContentPr
   };
 
   const handleError = (err?: any) => {
-    if (err) AppLog.error(`Deposit Error`, err);
-    dispatch(modalsSliceActions.closeDepositProgressModal());
-    dispatch(modalsSliceActions.clearDepositModalData());
-    addNotification({ title: `Deposit ${value} ${selectedToken?.symbol} failed`, type: NotificationType.Error, id: Date.now().toString(), });
+    if (err) AppLog.error(`Transfer Error`, err);
+    dispatch(modalsSliceActions.closeTransferProgressModal());
+    dispatch(modalsSliceActions.clearTransferModalData() );
+    addNotification({ title: `Transfer ${value} ${selectedToken?.symbol} failed`, type: NotificationType.Error, id: Date.now().toString(), });
     popNotification(id)
   }
 
@@ -68,12 +73,13 @@ export const TransferNotificationContent: React.FC<TransferNotificationContentPr
     if (batchExecutalbe?.execute) {
       batchExecutalbe.execute().then((data: any) => {
         if (data) {
-          dispatch(modalsSliceActions.closeDepositProgressModal());
+          dispatch(transferViewActions.setToAddress(''));
+          dispatch(modalsSliceActions.closeTransferProgressModal());
           getBalances();
           addNotification({
-            title: `Deposited ${value} ${selectedToken?.symbol}`, type: NotificationType.Success, id: Date.now().toString(), transactionLink: '/activity',
+            title: `Transfered ${value} ${selectedToken?.symbol}`, type: NotificationType.Success, id: Date.now().toString(), transactionLink: '',
           });
-          dispatch(modalsSliceActions.clearDepositModalData());
+          dispatch(modalsSliceActions.clearTransferModalData());
         } else handleError();
       }).catch((err: any) => handleError(err)).finally(() => popNotification(id));
     }

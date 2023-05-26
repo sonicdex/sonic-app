@@ -15,7 +15,7 @@ export const TransferProgressModal = () => {
   const getStepStatus = useStepStatus<TransferModalData['step']>({ activeStep, steps });
 
   const handleClose = () => {
-    dispatch(modalsSliceActions.closeDepositProgressModal());
+    dispatch(modalsSliceActions.closeTransferProgressModal());
   };
 
   return (

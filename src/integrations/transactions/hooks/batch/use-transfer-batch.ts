@@ -9,7 +9,6 @@ import { useTransferTransactionMemo } from '..';
 import { BatchTransact } from 'artemis-web3-adapter';
 import { artemis } from '@/integrations/artemis';
 
-
 export const useTransferBatch = (transfer: Transfer): any => {
   const dispatch = useAppDispatch();
   var batchLoad: any = { state: "idle", batchExecute: {} };
@@ -21,14 +20,17 @@ export const useTransferBatch = (transfer: Transfer): any => {
     );
     dispatch(modalsSliceActions.openTransferProgressModal());
   };
-  const transferTrx = {}; useTransferTransactionMemo; //useTransferTransactionMemo(transfer);
+
+  const transferTrx = useTransferTransactionMemo(transfer); //useTransferTransactionMemo(transfer);
 
   const TransferBatchTx = useMemo(() => {
     return new BatchTransact({ transfer: transferTrx }, artemis);
   }, [transferTrx]);
 
-  if (TransferBatchTx) { batchLoad.batchExecute = false; TransferBatchTx; }
-
-  TransferBatch = { ...TransferBatch, batch: batchLoad, openBatchModal };
-  return TransferBatch;
+  if (TransferBatchTx) { 
+    batchLoad.batchExecute = TransferBatchTx; 
+    TransferBatch = { ...TransferBatch, batch: batchLoad, openBatchModal };
+    return TransferBatch;
+  }
+  else  return TransferBatch;
 };

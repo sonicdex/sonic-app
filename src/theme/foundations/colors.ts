@@ -12,7 +12,7 @@ export const colors = {
     900: '#0B0D0F',
   },
   black: '#151515',
-  darkBlue:"0C0D30",
+  darkBlue:"#0C0D30",
   custom: {
     1: '#888E8F',
     2: "#1c1f43", // "#1c1f43",// '#1E1E1E',

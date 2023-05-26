@@ -466,7 +466,9 @@ export const modalsSlice = createSlice({
     closeTransferProgressModal: (state) => {
       state.isTransferProgressModalOpened = false;
     },
-
+    clearTransferModalData: (state) => {
+      state.transferModalData = initialTransferModalData;
+    },
 
     openWithdrawProgressModal: (state) => {
       state.isWithdrawProgressModalOpened = true;

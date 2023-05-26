@@ -3,20 +3,26 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { RootState } from '@/store';
 import { FeatureState } from '@/store';
 
+import {  checkAddressType } from '@/utils';
+enum AddressType {
+  AccountId = 'accountId',
+  PrincipalId = 'principalId',
+  None = 'none',
+}
 interface TransferViewState {
   state: FeatureState;
   amount: string;
   tokenId?: string;
-  accountId?: string;
-  principalId?: string;
+  toAddress?:string;
+  addressType?:AddressType
 }
 
 const initialState: TransferViewState = {
   state: FeatureState?.Idle,
   amount: '',
   tokenId: undefined,
-  accountId: undefined,
-  principalId: undefined,
+  toAddress: '',
+  addressType: AddressType.None,
 };
 
 export const transferViewSlice = createSlice({
@@ -32,11 +38,14 @@ export const transferViewSlice = createSlice({
     setTokenId: (state, action: PayloadAction<string>) => {
       state.tokenId = action.payload;
     },
-    setAccountId: (state, action: PayloadAction<string>) => {
-      state.accountId = action.payload;
-    },
-    setPrincipalId: (state, action: PayloadAction<string>) => {
-      state.principalId = action.payload;
+    setToAddress: (state, action: PayloadAction<string>) => {
+      state.toAddress = action.payload;
+      const addressType = checkAddressType(action.payload);
+      if(addressType == 'accountId' ) 
+        state.addressType = AddressType.AccountId;
+      else if(addressType == 'principalId' ) 
+        state.addressType = AddressType.PrincipalId;
+      else   state.addressType = AddressType.None
     },
   },
 });

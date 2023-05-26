@@ -71,11 +71,11 @@ export const Layout: React.FC = ({ children, ...props }) => {
 
   return (
     <>
-      <Container as="header"  maxW={['100%', 'container.xl', 'container.xl']} position="sticky" top={0} zIndex={10} id="header">
+      <Container as="header"  maxW={['100%', 'container.xl', 'container.xl']} position="sticky" top={0} zIndex={10} id="header" bg={backgroundColor}>
         <Flex 
           zIndex="1000"  width="full" maxWidth="container.xl" margin="auto"
           direction="row" justifyContent="center" alignItems="center" flexWrap="wrap"
-          gap="4" p={['4', '4', '8']} position="sticky" top="0" bg={backgroundColor}
+          gap="4" p={['4', '4', '8']} position="sticky" top="0" 
         >
           <Flex display={['none', 'none', 'none', 'flex']}   width={['0', '24%']}  alignItems="center" justifyContent="center">
             <LogoBox />

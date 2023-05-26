@@ -1,39 +1,58 @@
-import { Principal } from '@dfinity/principal';
 import { useMemo } from 'react';
 
-import { ENV } from '@/config';
 import { TokenIDL } from '@/did';
 import { parseAmount } from '@/utils/format';
+import { getAccountIdFromPrincipalId, fromHexString, getPrincipalFromText } from "@/utils"
 
 import { CreateTransaction, Transfer } from '../../models';
 
-export const useTransferTransactionMemo: CreateTransaction<Transfer> = ({ amount, token,  address }, onSuccess, onFail) =>
+export const useTransferTransactionMemo: CreateTransaction<Transfer> = ({ amount, token, address, addressType }, onSuccess, onFail) =>
   useMemo(() => {
-    if (!token?.id) { return; }
+    if (!token?.id || !address || !amount) { return; }
     const tokenType = token.tokenType;
     const parsedAmount = amount ? parseAmount(amount, token.decimals) : BigInt(0);
-    const toApproveAmount = parsedAmount + token.fee;
-
-    if (tokenType == 'DIP20') {
+    if (token?.symbol == 'ICP') {
+      var natAddress = addressType == 'accountId' ? fromHexString(address) : fromHexString(getAccountIdFromPrincipalId(address));
       return {
-        canisterId: token.id, idl: TokenIDL.DIP20.factory, methodName: 'approve',
-        onSuccess: async (res: TokenIDL.DIP20.Result) => {
-          if ('Err' in res) throw new Error(JSON.stringify(res.Err));
-          if (onSuccess) onSuccess(res);
-        },
+        canisterId: token.id,
+        idl: TokenIDL.ICRC1.factory,
+        methodName: 'transfer',
+        args: [{ to: natAddress, amount: { e8s: parsedAmount }, fee: { e8s: token.fee }, memo: 0, from_subaccount: [], created_at_time: [] }],
+        onSuccess: onSuccess,
         onFail,
-        args: [Principal.fromText(ENV.canistersPrincipalIDs.swap), toApproveAmount],
-      };
+      }
+    } else if (tokenType == 'DIP20') {
+      if (addressType != 'principalId') return false;
+      return {
+        canisterId: token.id,
+        idl: TokenIDL.DIP20.factory,
+        methodName: 'transfer',
+        args: [getPrincipalFromText(address), parsedAmount],
+        onSuccess: onSuccess,
+        onFail,
+      }
+    } else if (tokenType == 'YC') {
+      if (addressType != 'principalId') return false;
+      return {
+        canisterId: token.id,
+        idl: TokenIDL.DIP20.YCfactory,
+        methodName: 'transfer',
+        args: [getPrincipalFromText(address), parsedAmount],
+        onSuccess: onSuccess,
+        onFail,
+      }
     }
-    else if (tokenType == 'YC') {
+    else if (tokenType == 'ICRC1') {
       return {
-        canisterId: token.id, idl: TokenIDL.DIP20.YCfactory, methodName: 'approve',
-        onSuccess: async (res: TokenIDL.DIP20.YCResult) => {
-          if ('Err' in res) throw new Error(JSON.stringify(res.Err));
-          if (onSuccess) onSuccess(res);
-        },
+        canisterId: token.id,
+        idl: TokenIDL.ICRC1.factory,
+        methodName: 'icrc1_transfer',
+        onSuccess: onSuccess,
         onFail,
-        args: [Principal.fromText(ENV.canistersPrincipalIDs.swap), toApproveAmount],
+        args: [{
+          to: { owner: getPrincipalFromText(address), subaccount: [] },
+          fee: [], memo: [], amount: parsedAmount, from_subaccount: [], created_at_time: []
+        }],
       };
     }
     else return false;

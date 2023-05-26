@@ -1,6 +1,6 @@
 import {
   Box, Flex, Icon, Menu, MenuButton, MenuItem, MenuList, MenuProps, Text,
-  useColorModeValue, Image,
+  useColorModeValue, Image,Link
 } from '@chakra-ui/react';
 
 import { Spinner } from '@chakra-ui/spinner';
@@ -67,6 +67,9 @@ export const WalletMenu: FC<Omit<MenuProps, 'children'>> = (props) => {
           </MenuItem>
           <MenuItem onClick={() => handleCopy('acnt')} icon={<FiCopy />}>
             <Text>Account ID {shortaccountId} </Text>
+          </MenuItem>
+          <MenuItem as={Link}  to={'/'} icon={<FiCopy />}>
+            <Text>Send Token </Text>
           </MenuItem>
           <MenuItem onClick={handleDisconnect} icon={<BiExit />}>
             <Text>Disconnect</Text>

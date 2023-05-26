@@ -252,8 +252,18 @@ export namespace TokenIDL {
     { CreatedInFuture: { ledger_time: bigint } } |
     { TooOld: null } |
     { InsufficientFunds: { balance: bigint } };
+    export type TransferError_1 = { TxTooOld : { allowed_window_nanos : bigint }} |
+    { BadFee : { expected_fee : Tokens } } | { TxDuplicate : { duplicate_of : bigint } } | { TxCreatedInFuture : null } |
+    { InsufficientFunds : { balance : Tokens } };
+    
     export type Value = { Int: bigint } | { Nat: bigint } | { Blob: Array<number> } | { Text: string };
-
+    export interface Tokens { 'e8s' : bigint };
+    export interface TimeStamp { 'timestamp_nanos' : bigint };
+    export type Result_1 = { 'Ok' : bigint } |{ 'Err' : TransferError_1 };
+    export interface TransferArgs {
+      to : Array<number>, fee : Tokens, memo : bigint,from_subaccount : [] | [Array<number>],
+      created_at_time : [] | [TimeStamp], amount : Tokens,
+    };
     export interface Token {
       get_transactions: (arg_0: GetTransactionsRequest) => Promise<GetTransactionsResponse>,
       http_request: (arg_0: HttpRequest) => Promise<HttpResponse>,
@@ -267,6 +277,7 @@ export namespace TokenIDL {
       icrc1_symbol: () => Promise<string>,
       icrc1_total_supply: () => Promise<bigint>,
       icrc1_transfer: (arg_0: TransferArg) => Promise<Result>,
+      transfer : (arg_0: TransferArgs) => Promise<Result_1>,
     };
     export type Factory = Token;
     export const factory: IDL.InterfaceFactory = ({ IDL }) => {
@@ -323,6 +334,29 @@ export namespace TokenIDL {
         TooOld: IDL.Null,
         InsufficientFunds: IDL.Record({ balance: IDL.Nat }),
       });
+      
+      const Tokens = IDL.Record({ e8s : IDL.Nat64 });
+      const TimeStamp = IDL.Record({ timestamp_nanos : IDL.Nat64 });
+
+      const TransferError_1 = IDL.Variant({
+        TxTooOld : IDL.Record({ 'allowed_window_nanos' : IDL.Nat64 }),
+        BadFee : IDL.Record({ 'expected_fee' : Tokens }),
+        TxDuplicate : IDL.Record({ 'duplicate_of' : IDL.Nat64 }),
+        TxCreatedInFuture : IDL.Null,
+        InsufficientFunds : IDL.Record({ 'balance' : Tokens }),
+      });
+
+      const Result_1 = IDL.Variant({ 'Ok' : IDL.Nat64, 'Err' : TransferError_1 });
+
+      const TransferArgs = IDL.Record({
+        to : IDL.Vec(IDL.Nat8),
+        fee : Tokens,
+        memo : IDL.Nat64,
+        from_subaccount : IDL.Opt(IDL.Vec(IDL.Nat8)),
+        created_at_time : IDL.Opt(TimeStamp),
+        amount : Tokens,
+      });
+      
       const Result = IDL.Variant({ Ok: IDL.Nat, Err: TransferError });
       return IDL.Service({
         get_transactions: IDL.Func( [GetTransactionsRequest], [GetTransactionsResponse],['query']),
@@ -337,6 +371,7 @@ export namespace TokenIDL {
         icrc1_symbol: IDL.Func([], [IDL.Text], ['query']),
         icrc1_total_supply: IDL.Func([], [IDL.Nat], ['query']),
         icrc1_transfer: IDL.Func([TransferArg], [Result], []),
+        transfer : IDL.Func([TransferArgs], [Result_1], []),
       });
     }
   }

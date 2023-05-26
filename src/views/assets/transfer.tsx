@@ -1,6 +1,6 @@
 import { Box, Button, Skeleton, Input, Text } from '@chakra-ui/react';
 import { toBigNumber } from '@memecake/sonic-js';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router';
 
 import { FeeBox } from '@/components/core/fee-box';
@@ -18,7 +18,7 @@ import {
 
 import { getMaxValue } from '@/utils/format';
 import { debounce } from '@/utils/function';
-import { tokenList, checkAddressType } from '@/utils';
+import { tokenList } from '@/utils';
 
 import { artemis } from '@/integrations/artemis';
 
@@ -30,7 +30,7 @@ export const AssetsTransferView = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const { amount, tokenId } = useTransferViewStore(); 
+  const { amount, tokenId , toAddress ,addressType} = useTransferViewStore(); 
    
   const { addNotification } = useNotificationStore();
   const openSelectTokenModal = useTokenModalOpener();
@@ -60,7 +60,7 @@ export const AssetsTransferView = () => {
     if (tokenBalance && selectedTokenMetadata)
       dispatch(transferViewActions.setAmount(getMaxValue(selectedTokenMetadata, tokenBalance, true).toString()));
   };
-  const [toAddress, setToAddress] = useState('');
+  //const [toAddress, setToAddress] = useState('');
 
   const [buttonDisabled, buttonMessage] = useMemo<[boolean, string]>(() => {
     if (!isConnected) return [true, 'Connect wallet'];
@@ -76,9 +76,9 @@ export const AssetsTransferView = () => {
         return [true, `Insufficient ${selectedTokenMetadata.symbol} Balance`];
       }
     }
-    const addressType = checkAddressType(toAddress);
+   // const addressType = checkAddressType(toAddress);
     if (supportingAddrsType == 'both') {
-      if (addressType == 'invalid') {
+      if (addressType == 'none') {
         return [true, 'Invalid Address'];
       }
     } else {
@@ -86,12 +86,8 @@ export const AssetsTransferView = () => {
         return [true, 'Invalid Address'];
       }
     }
-
-    if(addressType == 'principalId'){ dispatch(transferViewActions.setPrincipalId(toAddress)) }
-    else if(addressType == 'accountId'){ dispatch(transferViewActions.setAccountId(toAddress)) }
-
     return [false, 'Transfer ' + amount];
-  }, [amount, toAddress, tokenBalances, selectedTokenMetadata]);
+  }, [amount, toAddress, tokenBalances, selectedTokenMetadata,addressType]);
 
   const tokenBalance = useMemo(() => {
     if (tokenBalances && tokenId) return tokenBalances[tokenId];
@@ -112,9 +108,8 @@ export const AssetsTransferView = () => {
 
   var connectedWalletInfo = artemis.connectedWalletInfo;
 
-
   const handleToAddressChange = (event: any) => {
-    setToAddress(event?.target?.value);
+    dispatch(transferViewActions.setToAddress(event?.target?.value))
   };
 
   return (
