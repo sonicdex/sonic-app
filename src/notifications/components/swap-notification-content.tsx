@@ -7,7 +7,7 @@ import { useBalances } from '@/hooks/use-balances';
 import { useSwapBatch } from '@/integrations/transactions';
 import {
   modalsSliceActions, NotificationType, SwapModalDataStep, useAppDispatch,
-  useNotificationStore, useWalletStore,useSwapViewStore,
+  useNotificationStore, useWalletStore, useSwapViewStore,
 } from '@/store';
 
 export interface SwapNotificationContentProps {
@@ -22,72 +22,79 @@ export const SwapNotificationContent: React.FC<SwapNotificationContentProps> = (
   const { principalId } = useWalletStore();
   const { getBalances } = useBalances();
   // const { getAllPairs } = useAllPairs();
- 
-  const { from, to, slippage, keepInSonic } =
-    useMemo(() => {
-      // Clone current state just for this batch
-      const { from, to, slippage, keepInSonic } = swapViewStore;
 
-      return deserialize(serialize({ from, to, slippage, keepInSonic }));
-    }, []) ?? {};
+  const { from, to, slippage, keepInSonic } = useMemo(() => {
+    const { from, to, slippage, keepInSonic } = swapViewStore;
+    return deserialize(serialize({ from, to, slippage, keepInSonic }));
+  }, []) ?? {};
 
   const allowance = useTokenAllowance(from.metadata?.id);
   var batchData = useSwapBatch({ from, to, slippage: Number(slippage), keepInSonic, principalId, allowance });
 
-  const batch: any = batchData?.batch, openBatchModal: any = batchData?.openBatchModal;
-  const batchFnUpdate = batch?.batchFnUpdate;
+  const batch = batchData?.batch, openBatchModal = batchData?.openBatchModal;
+  const batchExecutalbe = batch?.batchExecute;
+  const batchFnUpdate = batch.batchFnUpdate;
 
   const handleStateChange = () => {
-    if (batch && batch.state)
-    if (Object.values(SwapModalDataStep).includes(batch.state as SwapModalDataStep)){
-      dispatch( modalsSliceActions.setSwapModalData({ step: batch.state as SwapModalDataStep}));
+    if (!batch?.state) return;
+    if (batch?.state && batchExecutalbe?.state == "running") batch.state = batchExecutalbe.activeStep;
+    else if (batch?.state == 'error') { handleError() }
+    if (batch?.state) {
+      if (Object.values(SwapModalDataStep).includes(batch?.state as SwapModalDataStep)) {
+        dispatch(modalsSliceActions.setSwapModalData({ step: batch?.state as SwapModalDataStep }));
+      }
     }
   };
 
   const handleOpenModal = () => {
-    if (!batch?.state && from.metadata?.symbol) return;
+    if (!batch?.state && from.metadata?.symbol || !openBatchModal) return;
     if (typeof allowance === 'number') {
       dispatch(modalsSliceActions.closeAllowanceVerifyModal());
       handleStateChange();
       openBatchModal();
     } else {
-      dispatch( modalsSliceActions.setAllowanceVerifyModalData({ tokenSymbol: from.metadata?.symbol}));
+      dispatch(modalsSliceActions.setAllowanceVerifyModalData({ tokenSymbol: from.metadata?.symbol }));
       dispatch(modalsSliceActions.openAllowanceVerifyModal());
     }
   };
 
-  useEffect(handleStateChange, [batch.state, dispatch]);
+  const handleError = (err?: any) => {
+    if (err) console.error(`Deposit Error`, err);
+    dispatch(modalsSliceActions.clearSwapModalData());
+    dispatch(modalsSliceActions.closeSwapProgressModal());
+    if (err.message === 'slippage: insufficient output amount') {
+      addNotification({
+        title: `Slippage is too low to swap ${from.value} ${from.metadata.symbol} for ${to.value} ${to.metadata.symbol}`,
+        type: NotificationType.Error, id: Date.now().toString(),
+      });
+    } else {
+      addNotification({
+        title: `Swap ${from.value} ${from.metadata.symbol} for ${to.value} ${to.metadata.symbol} failed`,
+        type: NotificationType.Error, id: Date.now().toString(),
+      });
+    }
+    popNotification(id)
+  }
+
+  useEffect(handleStateChange, [batchExecutalbe?.activeStep, batch.state]);
 
   useEffect(() => {
     handleOpenModal();
-    if (typeof allowance === 'undefined') return;
-    if (batch.execute)
-      batch.execute().then(() => {
-        dispatch(modalsSliceActions.clearSwapModalData());
-        dispatch(modalsSliceActions.closeSwapProgressModal());
-        getBalances();
-        addNotification({
-          title: `Swapped ${from.value} ${from.metadata.symbol} for ${to.value} ${to.metadata.symbol}`,
-          type: NotificationType.Success, id: Date.now().toString(), transactionLink: '/activity',
-        });
-        
-        // getAllPairs();
-      }).catch((err: any) => {
-
-        dispatch(modalsSliceActions.clearSwapModalData());
-        if (err.message === 'slippage: insufficient output amount') {
+    if (typeof allowance === 'undefined' || !batch?.state) return;
+    if (batchExecutalbe?.execute) {
+      batchExecutalbe.execute().then((data: any) => {
+        if (data) {
+          dispatch(modalsSliceActions.clearSwapModalData());
+          dispatch(modalsSliceActions.closeSwapProgressModal());
           addNotification({
-            title: `Slippage is too low to swap ${from.value} ${from.metadata.symbol} for ${to.value} ${to.metadata.symbol}`,
-            type: NotificationType.Error, id: Date.now().toString(),
+            title: `Swapped ${from.value} ${from.metadata.symbol} for ${to.value} ${to.metadata.symbol}`,
+            type: NotificationType.Success, id: Date.now().toString(), transactionLink: '/activity',
           });
-        } else {
-          addNotification({
-            title: `Swap ${from.value} ${from.metadata.symbol} for ${to.value} ${to.metadata.symbol} failed`,
-            type: NotificationType.Error, id: Date.now().toString(),
-          });
-        }
-      }).finally(() => popNotification(id));
-  }, [ batchFnUpdate]);
+          getBalances();
+        } else handleError();
+      }).catch((err: any) => handleError(err)).finally(() => popNotification(id));
+    }
+  }, [batchFnUpdate]);
 
   return (
     <Link target="_blank" rel="noreferrer" color="dark-blue.500" onClick={handleOpenModal}>
