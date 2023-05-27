@@ -1,12 +1,15 @@
 import {
   Box, Flex, Icon, Menu, MenuButton, MenuItem, MenuList, MenuProps, Text,
-  useColorModeValue, Image,Link
+  useColorModeValue, Image
 } from '@chakra-ui/react';
+
+import { useNavigate } from 'react-router-dom';
 
 import { Spinner } from '@chakra-ui/spinner';
 import { BiExit } from '@react-icons/all-files/bi/BiExit';
 import { FaChevronDown } from '@react-icons/all-files/fa/FaChevronDown';
 import { FiCopy } from '@react-icons/all-files/fi/FiCopy';
+import { FaExchangeAlt } from '@react-icons/all-files/fa/FaExchangeAlt';
 import { FC, useMemo } from 'react';
 
 import { walletState, useAppDispatch, useWalletStore, walletActions } from '@/store';
@@ -15,8 +18,9 @@ import { desensitizationPrincipalId } from '@/utils/canister';
 
 import { artemis } from '@/integrations/artemis';
 
-
 export const WalletMenu: FC<Omit<MenuProps, 'children'>> = (props) => {
+  const navigate = useNavigate();
+
   const { principalId, state, accountId } = useWalletStore();
   const dispatch = useAppDispatch();
 
@@ -68,8 +72,8 @@ export const WalletMenu: FC<Omit<MenuProps, 'children'>> = (props) => {
           <MenuItem onClick={() => handleCopy('acnt')} icon={<FiCopy />}>
             <Text>Account ID {shortaccountId} </Text>
           </MenuItem>
-          <MenuItem as={Link}  to={'/'} icon={<FiCopy />}>
-            <Text>Send Token </Text>
+          <MenuItem onClick={() => navigate('/assets/transfer?tokenId=ryjl3-tyaaa-aaaaa-aaaba-cai') } icon={<FaExchangeAlt/>}>
+            <Text>Transfer Token </Text>
           </MenuItem>
           <MenuItem onClick={handleDisconnect} icon={<BiExit />}>
             <Text>Disconnect</Text>

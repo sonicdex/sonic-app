@@ -18,7 +18,7 @@ export const TransferNotificationContent: React.FC<TransferNotificationContentPr
 
   const { addNotification, popNotification } = useNotificationStore(), { getBalances } = useBalances();
   const transferViewStore = useTransferViewStore();
-
+  //getBalances()
   const { value, tokenId } = useMemo(() => {
     const { amount: value, tokenId  } = transferViewStore;
     return deserialize(serialize({ value, tokenId }));

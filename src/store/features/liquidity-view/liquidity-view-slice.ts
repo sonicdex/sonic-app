@@ -97,8 +97,6 @@ export const liquidityViewSlice = createSlice({
 });
 
 export const liquidityViewActions = liquidityViewSlice.actions;
-
-// Other code such as selectors can use the imported `RootState` type
 export const selectLiquidityViewState = (state: RootState) =>
   state.liquidityView;
 

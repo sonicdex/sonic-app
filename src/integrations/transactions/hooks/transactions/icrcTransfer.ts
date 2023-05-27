@@ -14,12 +14,11 @@ export const intitICRCTokenDeposit = (deposit?:any): any => {
     const [tokenAcnt, setData] = useState<undefined | boolean>();
     useMemo(() => {
         getswapActor(false).then(actor => {
-            //initiateICRC1Transfer initateTransfer
             actor.initiateICRC1Transfer().then((data:any) => {
                 setData(data);
             }).catch(e=>{ setData(false)});
         });
-    }, []);
+    }, [deposit]);
     return tokenAcnt;
 };
 

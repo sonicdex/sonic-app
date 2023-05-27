@@ -35,11 +35,9 @@ export const DepositNotificationContent: React.FC<DepositNotificationContentProp
   const handleStateChange = () => {
     if (!batch?.state) return;
 
-    if (batch?.state && batchExecutalbe?.state == "running") {
-      batch.state = batchExecutalbe.activeStep;
-    } else if (batch?.state == 'error') {
-      handleError();
-    }
+    if (batch?.state && batchExecutalbe?.state == "running") batch.state = batchExecutalbe.activeStep;
+    else if (batch?.state == 'error') { handleError() }
+    
     if (batch?.state) {
       if (Object.values(DepositModalDataStep).includes(batch?.state as DepositModalDataStep)) {
         dispatch(modalsSliceActions.setDepositModalData({ step: batch?.state as DepositModalDataStep }));

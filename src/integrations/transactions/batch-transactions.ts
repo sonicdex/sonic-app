@@ -114,10 +114,6 @@ export class BatchTransactions implements Batch.Controller {
   }
 
   private start(nextTxArgs?: any): void {
-
-    console.log( this.provider )
-
-
     const firstTransaction = this.transactions[0];
     const otherTransactions = this.transactions.filter(
       (txData, index) => index !== 0

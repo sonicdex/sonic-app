@@ -1,30 +1,34 @@
-import { useMemo  } from 'react';
+import { useMemo } from 'react';
 
 import { AddLiquidityModalDataStep, modalsSliceActions, useAppDispatch, useLiquidityViewStore, useSwapCanisterStore } from '@/store';
 
 import { AddLiquidity, Deposit } from '../..';
 import {
-  useAddLiquidityTransactionMemo, useApproveTransactionMemo, useBatch, useDepositTransactionMemo,
-  intitICRCTokenDeposit, useICRCTransferMemo, //useICRCDepositMemo
+  useAddLiquidityTransactionMemo, useApproveTransactionMemo, useDepositTransactionMemo, 
+  intitICRCTokenDeposit, useICRCTransferMemo, //useICRCDepositMemo //useBatch
 } from '..';
+
 import { useCreatePairTransactionMemo } from '../transactions/create-pair';
 
-import { getAmountDependsOnBalance, getDepositTransactions } from './batch.utils';
+import { getAmountDependsOnBalance } from './batch.utils';
 
-interface Transactions {
-  [transactionName: string]: any;
-}
+interface Transactions { [transactionName: string]: any;}
+
+import { BatchTransact } from 'artemis-web3-adapter';
+import { artemis } from '@/integrations/artemis';
 
 
 export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
   const dispatch = useAppDispatch();
-
+  var batchLoad: any = { state: "idle" };
   const { sonicBalances } = useSwapCanisterStore();
   const { pair } = useLiquidityViewStore();
 
-  if (!sonicBalances) { throw new Error('Sonic balance are required'); }
+  if (!sonicBalances) {
+     return { batch: batchLoad, openBatchModal: () => { } };
+  }
   if (!addLiquidityParams.token0.metadata || !addLiquidityParams.token1.metadata) {
-    throw new Error('Tokens are required');
+    return { batch: batchLoad, openBatchModal: () => { } };
   }
 
   const deposit0Params = useMemo(() => {
@@ -60,13 +64,9 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
     };
   }, []);
 
-
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
   var approve0: any, deposit0: any, approve1: any, deposit1: any, steps: any = [];
   var tx0complete = false, tx1complete = false, getICRCAcnt: any;
-  
-  var batchLoad: any = { state: "idle" };
+
   var DepositBatch = { batch: batchLoad, openBatchModal: () => { } };
 
   var token0Type = addLiquidityParams.token0.metadata.tokenType;
@@ -74,12 +74,11 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
 
   var token0Amt = parseFloat(deposit0Params?.amount ? deposit0Params?.amount : '0');
   var token1Amt = parseFloat(deposit1Params?.amount ? deposit1Params?.amount : '0');
-  
 
   if (!pair) { steps = ['createPair'] }
 
   if (token0Type == 'ICRC1' || token1Type == 'ICRC1') {
-    getICRCAcnt = intitICRCTokenDeposit();steps = [...steps, 'getacnt'];
+    getICRCAcnt = intitICRCTokenDeposit(); steps = [...steps, 'getacnt'];
   }
 
   //step 1
@@ -87,10 +86,8 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
     if (token0Type == 'DIP20' || token0Type == 'YC') {
       approve0 = useApproveTransactionMemo(deposit0Params);
       deposit0 = useDepositTransactionMemo(deposit0Params);
-
       if (deposit0) tx0complete = true;
     } else if (token0Type == 'ICRC1') {
-
       approve0 = useICRCTransferMemo({ ...deposit0Params, tokenAcnt: getICRCAcnt });
       deposit0 = useDepositTransactionMemo(deposit0Params);
       if (getICRCAcnt) tx0complete = true;
@@ -117,29 +114,21 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
   const createPair = useCreatePairTransactionMemo(createPairParams);
   const addLiquidity = useAddLiquidityTransactionMemo(addLiquidityParams);
 
-  var  TrxFull = useMemo(() => {
+  const LiquidityBatchTx = useMemo(() => {
     let _transactions: Transactions = {};
     if (!pair) { _transactions = { ..._transactions, createPair } }
     if (token0Amt > 0) {
-      _transactions = {
-        ..._transactions,
-        ...getDepositTransactions({ txNames: ['approve0', 'deposit0'], approveTx: approve0, depositTx: deposit0, tokenType: token0Type })
-      }
+      _transactions = {..._transactions,approve0:approve0, deposit0:deposit0}
     }
     if (token1Amt > 0) {
-      _transactions = {
-        ..._transactions,
-        ...getDepositTransactions({ txNames: ['approve1', 'deposit1'], approveTx: approve1, depositTx: deposit1, tokenType: token1Type })
-      }
+      _transactions = {..._transactions,approve1:approve1,deposit1:deposit1}
     }
     _transactions = { ..._transactions, addLiquidity };
-    return _transactions;
-  }, [ tx1complete]);
-
+     
+    return new BatchTransact(_transactions, artemis);
+  }, [getICRCAcnt]);
 
   steps = [...steps, 'addLiquidity'];
-  
-  // console.log(TrxFull);
 
   const handleRetry = async () => {
     return new Promise<boolean>((resolve) => {
@@ -173,13 +162,16 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
     dispatch(modalsSliceActions.openAddLiquidityProgressModal());
   };
 
-  if ( tx0complete && tx1complete && Object.keys(TrxFull).length>0) {
-    batchLoad = useBatch<AddLiquidityModalDataStep>({ transactions: TrxFull, handleRetry });
-    batchLoad.batchFnUpdate = true;
-  } else {
-    batchLoad = useBatch<AddLiquidityModalDataStep>({ transactions: {}, handleRetry: () => { return Promise.resolve(false) } });
-    if (steps.includes('getacnt')) batchLoad = { state: "getacnt" };
-    else batchLoad = { state: "idle" }
+  if(LiquidityBatchTx && tx0complete &&tx1complete  ){
+    batchLoad.batchExecute = LiquidityBatchTx;
+    batchLoad.handleRetry = handleRetry; 
+    batchLoad.batchFnUpdate=true;
+  }else {
+    if(!getICRCAcnt){
+      batchLoad.state = 'getacnt';
+    }
   }
-  return DepositBatch = { ...DepositBatch, batch: batchLoad, openBatchModal };
+
+  DepositBatch = { ...DepositBatch, batch: batchLoad, openBatchModal };
+   return DepositBatch
 };

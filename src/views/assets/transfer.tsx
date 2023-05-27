@@ -29,22 +29,23 @@ export const AssetsTransferView = () => {
   const { isConnected } = useWalletStore()
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-
+  const ICPTOKENID='ryjl3-tyaaa-aaaaa-aaaba-cai';
   const { amount, tokenId , toAddress ,addressType} = useTransferViewStore(); 
    
   const { addNotification } = useNotificationStore();
   const openSelectTokenModal = useTokenModalOpener();
 
-  const selectedTokenMetadata = tokenId ? tokenList('obj')[tokenId] : tokenList('obj')['ryjl3-tyaaa-aaaaa-aaaba-cai'];
+  const selectedTokenMetadata = tokenId ? tokenList('obj')[tokenId] : tokenList('obj')[ICPTOKENID];
 
   const supportingAddrsType: string = useMemo(() => {
-    if (selectedTokenMetadata?.id == 'ryjl3-tyaaa-aaaaa-aaaba-cai') {
+    if (selectedTokenMetadata?.id == ICPTOKENID) {
       return 'both';
     } else return 'principalId';
   }, [selectedTokenMetadata])
 
   const handleSelectTokenId = (tokenId?: string) => {
     if (tokenId) { dispatch(transferViewActions.setTokenId(tokenId)); }
+
   };
 
   const handleOpenSelectTokenModal = () => {
@@ -92,7 +93,7 @@ export const AssetsTransferView = () => {
   const tokenBalance = useMemo(() => {
     if (tokenBalances && tokenId) return tokenBalances[tokenId];
     return 0;
-  }, [tokenBalances, tokenId]);
+  }, [tokenBalances, tokenId ]);
 
   const isLoading = useMemo(() =>
     supportedTokenListState === FeatureState.Loading ||
@@ -106,7 +107,7 @@ export const AssetsTransferView = () => {
     return () => { dispatch(transferViewActions.setAmount('')); };
   }, []);
 
-  var connectedWalletInfo = artemis.connectedWalletInfo;
+  const connectedWalletInfo = artemis.connectedWalletInfo;
 
   const handleToAddressChange = (event: any) => {
     dispatch(transferViewActions.setToAddress(event?.target?.value))
