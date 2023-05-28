@@ -10,6 +10,7 @@ import { CreateTransaction, Deposit } from '../../models';
 export const useDepositTransactionMemo: CreateTransaction<Deposit> = ({ amount, token }, onSuccess, onFail) =>
   useMemo(() => {
     if (!token?.id || !amount) { return {} }
+    if(amount) if(parseFloat(amount) <= 0) return;
     return {
       canisterId: ENV.canistersPrincipalIDs.swap,
       idl: SwapIDL.factory,

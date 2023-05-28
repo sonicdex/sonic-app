@@ -59,20 +59,22 @@ export const SwapNotificationContent: React.FC<SwapNotificationContentProps> = (
   };
 
   const handleError = (err?: any) => {
-    if (err) console.error(`Deposit Error`, err);
+    if (err){
+      if (err.message === 'slippage: insufficient output amount') {
+        addNotification({
+          title: `Slippage is too low to swap ${from.value} ${from.metadata.symbol} for ${to.value} ${to.metadata.symbol}`,
+          type: NotificationType.Error, id: Date.now().toString(),
+        });
+      } else {
+        addNotification({
+          title: `Swap ${from.value} ${from.metadata.symbol} for ${to.value} ${to.metadata.symbol} failed`,
+          type: NotificationType.Error, id: Date.now().toString(),
+        });
+      }
+    }
     dispatch(modalsSliceActions.clearSwapModalData());
     dispatch(modalsSliceActions.closeSwapProgressModal());
-    if (err.message === 'slippage: insufficient output amount') {
-      addNotification({
-        title: `Slippage is too low to swap ${from.value} ${from.metadata.symbol} for ${to.value} ${to.metadata.symbol}`,
-        type: NotificationType.Error, id: Date.now().toString(),
-      });
-    } else {
-      addNotification({
-        title: `Swap ${from.value} ${from.metadata.symbol} for ${to.value} ${to.metadata.symbol} failed`,
-        type: NotificationType.Error, id: Date.now().toString(),
-      });
-    }
+   
     popNotification(id)
   }
 

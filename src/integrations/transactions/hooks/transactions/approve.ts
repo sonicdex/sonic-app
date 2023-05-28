@@ -11,7 +11,9 @@ export const useApproveTransactionMemo: CreateTransaction<Deposit> = (
   { amount, token, allowance = 0 }, onSuccess, onFail
 ) =>
   useMemo(() => {
-    if (!token?.id) { return; }
+    if (!token?.id ) { return; }
+    if(amount) if(parseFloat(amount) <= 0) return;
+    
     const tokenType = token.tokenType;
     const parsedAmount = amount ? parseAmount(amount, token.decimals) : BigInt(0);
     const toApproveAmount = parsedAmount + token.fee > BigInt(allowance) ? parsedAmount : 0;

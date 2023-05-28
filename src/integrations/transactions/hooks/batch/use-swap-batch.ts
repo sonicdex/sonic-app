@@ -24,13 +24,11 @@ export interface ExtraDepositSwapBatchOptions {
 
 export const useSwapBatch = ({ keepInSonic, ...swapParams }: SwapModel & ExtraDepositSwapBatchOptions) => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const { sonicBalances } = useSwapCanisterStore();
-
+  navigate;
   if (!sonicBalances) throw new Error('Sonic balance is required');
   if (!swapParams.from.metadata || !swapParams.to.metadata) throw new Error('Tokens are required');
-
-  const navigate = useNavigate();
-  navigate;
 
   const depositParams = {
     token: swapParams.from.metadata,
@@ -56,7 +54,7 @@ export const useSwapBatch = ({ keepInSonic, ...swapParams }: SwapModel & ExtraDe
     const withdraw = useWithdrawTransactionMemo(withdrawParams);
 
     const SwapBatchTrx = useMemo(() => {
-      let _transactions: any = { approve: approve, deposit: deposit, swap: swap };
+      var _transactions: any = { approve: approve, deposit: deposit, swap: swap };
       if (!keepInSonic) { _transactions = { ..._transactions, withdraw: withdraw } };
       return new BatchTransact(_transactions, artemis);
     }, [withdraw]);
@@ -79,8 +77,8 @@ export const useSwapBatch = ({ keepInSonic, ...swapParams }: SwapModel & ExtraDe
     SwapBatch = { batch: batchLoad, openBatchModal };
     return SwapBatch;
   } else if (tokenType == 'ICRC1') {
-
-    var steps = ['swap', 'withdraw'];
+    var steps = ['swap']; 
+    if (!keepInSonic) steps = [ 'swap' , 'withdraw']
     var reqAmt = parseFloat(depositParams.amount);
     if (reqAmt > 0) { steps = ['getacnt', 'approve', 'deposit', ...steps]; }
 
@@ -94,6 +92,7 @@ export const useSwapBatch = ({ keepInSonic, ...swapParams }: SwapModel & ExtraDe
       );
       dispatch(modalsSliceActions.openSwapProgressModal());
     };
+    
     SwapBatch = { ...SwapBatch, openBatchModal };
     const getAcnt = intitICRCTokenDeposit();
     const approveTx = useICRCTransferMemo({ ...depositParams, tokenAcnt: getAcnt });
@@ -108,7 +107,7 @@ export const useSwapBatch = ({ keepInSonic, ...swapParams }: SwapModel & ExtraDe
       if (!keepInSonic) { _transactions = { ..._transactions, withdraw: withdraw } };
       return new BatchTransact(_transactions, artemis);
     }, [getAcnt]);
-
+    if(!getAcnt)  batchLoad.state = 'getacnt';
     if (SwapBatchTrx) {
       batchLoad.batchExecute = SwapBatchTrx;
       batchLoad.batchFnUpdate = true;
