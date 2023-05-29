@@ -14,10 +14,7 @@ export const MintWICPProgressModal = () => {
   const dispatch = useAppDispatch();
   const { isMintWICPProgressModalOpened, mintWICPModalData } = useModalsStore();
   const { steps, step: activeStep } = mintWICPModalData;
-  const getStepStatus = useStepStatus<MintModalData['step']>({
-    activeStep,
-    steps,
-  });
+  const getStepStatus = useStepStatus<MintModalData['step']>({ activeStep, steps});
 
   const handleClose = () => {
     dispatch(modalsSliceActions.closeMintWICPProgressModal());

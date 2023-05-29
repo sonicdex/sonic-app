@@ -79,57 +79,6 @@ export const WithdrawNotificationContent: React.FC<
       }).catch((err: any) => handleError(err)).finally(() => popNotification(id));
     }
   }, []);
-
-
-  // const handleStateChange = () => {
-  //   if (
-  //     Object.values(WithdrawModalDataStep).includes(
-  //       batch.state as WithdrawModalDataStep
-  //     )
-  //   ) {
-  //     dispatch(
-  //       modalsSliceActions.setWithdrawModalData({
-  //         step: batch.state as WithdrawModalDataStep,
-  //       })
-  //     );
-  //   }
-  // };
-
-  // const handleOpenModal = () => {
-  //   handleStateChange();
-  //   openBatchModal();
-  // };
-
-  // useEffect(handleStateChange, [batch.state, dispatch]);
-
-  // useEffect(() => {
-  //   batch
-  //     .execute()
-  //     .then(() => {
-  //       dispatch(modalsSliceActions.clearWithdrawModalData());
-  //       dispatch(modalsSliceActions.closeWithdrawProgressModal());
-  //       addNotification({
-  //         title: `Withdrawn ${value} ${selectedToken?.symbol}`,
-  //         type: NotificationType.Success,
-  //         id: Date.now().toString(),
-  //         transactionLink: '/activity',
-  //       });
-  //       getBalances();
-  //     })
-  //     .catch((err) => {
-  //       AppLog.error('Withdraw Error', err);
-  //       dispatch(modalsSliceActions.clearWithdrawModalData());
-  //       addNotification({
-  //         title: `Withdraw ${value} ${selectedToken?.symbol} failed`,
-  //         type: NotificationType.Error,
-  //         id: Date.now().toString(),
-  //       });
-  //     })
-  //     .finally(() => popNotification(id));
-
-  //   handleOpenModal();
-  // }, []);
-
   return (
     <Link target="_blank" rel="noreferrer" color="dark-blue.500" onClick={handleOpenModal}>
       View progress

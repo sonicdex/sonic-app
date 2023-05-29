@@ -1,15 +1,9 @@
 import { ENV } from '@/config';
 import { TokenIDL } from '@/did';
-
 import { CreateTransaction, MintWICP } from '../../models';
 
-export const getMintWICPTransaction: CreateTransaction<MintWICP> = (
-  options = {},
-  onSuccess,
-  onFail
-) => {
+export const getMintWICPTransaction: CreateTransaction<MintWICP> = (options = {},onSuccess,onFail) => {
   const { blockHeight, subaccount = [] } = options;
-
   return {
     canisterId: ENV.canistersPrincipalIDs.WICP,
     idl: TokenIDL.DIP20.factory,
@@ -19,12 +13,6 @@ export const getMintWICPTransaction: CreateTransaction<MintWICP> = (
       if (onSuccess) onSuccess(res);
     },
     onFail,
-    args: (prevResponses: any[]) => {
-      const argBlockHeight = prevResponses?.[0]?.response;
-      return [
-        subaccount,
-        (blockHeight && BigInt(blockHeight)) ?? argBlockHeight,
-      ];
-    },
+    args:[subaccount , blockHeight]
   };
 };

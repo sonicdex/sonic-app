@@ -1,10 +1,6 @@
 import { swapSrc, withdrawSrc } from '@/assets';
 import {
-  modalsSliceActions,
-  useAppDispatch,
-  useModalsStore,
-  WithdrawWICPModalData,
-  WithdrawWICPModalDataStep,
+  modalsSliceActions,useAppDispatch,useModalsStore, WithdrawWICPModalData, WithdrawWICPModalDataStep,
 } from '@/store';
 
 import { useStepStatus } from '.';
@@ -12,14 +8,10 @@ import { TransactionProgressModal, TransactionStep } from './components';
 
 export const WithdrawWICPProgressModal = () => {
   const dispatch = useAppDispatch();
-  const { isWithdrawWICPProgressModalOpened, withdrawWICPModalData } =
-    useModalsStore();
+  const { isWithdrawWICPProgressModalOpened, withdrawWICPModalData } = useModalsStore();
   const { steps, step: activeStep } = withdrawWICPModalData;
 
-  const getStepStatus = useStepStatus<WithdrawWICPModalData['step']>({
-    activeStep,
-    steps,
-  });
+  const getStepStatus = useStepStatus<WithdrawWICPModalData['step']>({activeStep,steps,});
 
   const handleClose = () => {
     dispatch(modalsSliceActions.closeWithdrawWICPProgressModal());

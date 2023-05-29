@@ -117,10 +117,7 @@ export const saveBlockHeightToStorage = ({
   saveToStorage(localStorageKey, newBlockHeights);
 };
 
-export const updateFailedBlockHeight = ({
-  prevResponses,
-  ...props
-}: Omit<SaveBlockHeightToStorageOptions, 'blockHeight'> & {
+export const updateFailedBlockHeight = ({prevResponses,...props}: Omit<SaveBlockHeightToStorageOptions, 'blockHeight'> & {
   prevResponses: TransactionPrevResponse[];
 }) => {
   const failedBlockHeight = prevResponses?.[0]?.response as bigint | undefined;

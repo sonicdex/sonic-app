@@ -7,18 +7,10 @@ import { parseAmount } from '@/utils/format';
 
 import { CreateTransaction, LedgerTransfer } from '../../models';
 
-export const useLedgerTransferTransactionMemo: CreateTransaction<
-  LedgerTransfer
-> = (
-  { toAccountId, fee = ICP_METADATA.fee, amount, memo = BigInt(0) },
-  onSuccess,
-  onFail
-) =>
+export const useLedgerTransferTransactionMemo: CreateTransaction<LedgerTransfer> = (
+  { toAccountId, fee = ICP_METADATA.fee, amount, memo = BigInt(0) }, onSuccess, onFail) =>
   useMemo(() => {
-    if (!toAccountId || !amount) {
-      return {};
-    }
-
+    if (!toAccountId || !amount) { return {}; }
     return {
       canisterId: ENV.canistersPrincipalIDs.ledger,
       idl: LedgerIDL.factory,
@@ -29,15 +21,9 @@ export const useLedgerTransferTransactionMemo: CreateTransaction<
       },
       onFail,
       args: [
-        {
-          to: toAccountId,
-          fee: { e8s: fee },
-          amount: {
-            e8s: parseAmount(amount, ICP_METADATA.decimals),
-          },
-          memo,
-          from_subaccount: [], // For now, using default subaccount to handle ICP
-          created_at_time: [],
+        { to: toAccountId, fee: { e8s: fee },
+          amount: { e8s: parseAmount(amount, ICP_METADATA.decimals)},
+          memo,from_subaccount: [],created_at_time: [],
         },
       ],
     };

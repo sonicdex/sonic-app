@@ -3,29 +3,25 @@ import { useMemo } from 'react';
 import { ENV } from '@/config';
 import { ICP_METADATA } from '@/constants';
 import {
-  modalsSliceActions,
-  useAppDispatch,
-  useSwapCanisterStore,
-  useSwapViewStore,
-  WithdrawWICPModalDataStep,
+  modalsSliceActions, useAppDispatch, useSwapCanisterStore, useSwapViewStore, WithdrawWICPModalDataStep,
 } from '@/store';
 
-import { useBatch } from '..';
 import {
-  useWithdrawTransactionMemo,
-  useWithdrawWICPTransactionMemo,
+  useWithdrawTransactionMemo, useWithdrawWICPTransactionMemo,
 } from '../transactions';
+
 import { getAmountDependsOnBalance } from '.';
+
+
+import { BatchTransact } from 'artemis-web3-adapter';
+import { artemis } from '@/integrations/artemis';
 
 type UseWithdrawWICPBatchOptions = {
   amount: string;
   toAccountId?: string;
 };
 
-export const useWithdrawWICPBatch = ({
-  amount,
-  toAccountId,
-}: UseWithdrawWICPBatchOptions) => {
+export const useWithdrawWICPBatch = ({ amount, toAccountId, }: UseWithdrawWICPBatchOptions) => {
   const { tokenList } = useSwapViewStore();
   const { tokenBalances } = useSwapCanisterStore();
   const dispatch = useAppDispatch();
@@ -33,75 +29,69 @@ export const useWithdrawWICPBatch = ({
   if (!tokenBalances) throw new Error('Sonic balance is required');
   if (!tokenList) throw new Error('Token list is required');
 
+  var batchLoad: any = { state: "idle" };
+
   const withdraw = useWithdrawTransactionMemo({
     token: tokenList[ENV.canistersPrincipalIDs.WICP],
     amount: getAmountDependsOnBalance(
-      tokenBalances[ENV.canistersPrincipalIDs.WICP],
-      ICP_METADATA.decimals,
-      amount
+      tokenBalances[ENV.canistersPrincipalIDs.WICP], ICP_METADATA.decimals,amount
     ),
   });
+  const withdrawWICP = useWithdrawWICPTransactionMemo({ toAccountId, amount });
 
-  const withdrawWICP = useWithdrawWICPTransactionMemo({
-    toAccountId,
-    amount,
-  });
-
-  const transactions = useMemo(() => {
+  const WithdrawBatch = useMemo(() => {
     let _transactions = {};
-
-    if (Number(withdraw.args[1]) > 0) {
-      _transactions = {
-        withdraw,
-      };
-    }
-
-    _transactions = {
-      ..._transactions,
-      withdrawWICP,
-    };
-
-    return _transactions;
+    if (Number(withdraw.args[1]) > 0) { _transactions = { withdraw };}
+    _transactions = { ..._transactions, withdrawWICP };
+    return new BatchTransact(_transactions, artemis);
   }, [withdrawWICP, withdraw]);
 
   const openBatchModal = () => {
     dispatch(
       modalsSliceActions.setWithdrawWICPModalData({
-        steps: Object.keys(transactions) as WithdrawWICPModalDataStep[],
+        steps: Object.keys(WithdrawBatch.stepsList) as WithdrawWICPModalDataStep[],
       })
     );
-
     dispatch(modalsSliceActions.openWithdrawWICPProgressModal());
   };
 
-  return {
-    batch: useBatch({
-      transactions,
-      handleRetry: () => {
-        return new Promise((resolve) => {
-          dispatch(
-            modalsSliceActions.setWithdrawWICPModalData({
-              callbacks: [
-                // Retry callback
-                () => {
-                  dispatch(modalsSliceActions.closeWithdrawWICPFailModal());
-                  openBatchModal();
-                  resolve(true);
-                },
-                // Close callback
-                () => {
-                  dispatch(modalsSliceActions.closeWithdrawWICPFailModal());
-                  resolve(false);
-                },
-              ],
-            })
-          );
+  if (WithdrawBatch) { batchLoad.batchExecute = WithdrawBatch;}
 
-          dispatch(modalsSliceActions.closeWithdrawWICPProgressModal());
-          dispatch(modalsSliceActions.openWithdrawWICPFailModal());
-        });
-      },
-    }),
-    openBatchModal,
-  };
+  return {batch: batchLoad, openBatchModal };
+
+  // if(WithdrawBatch){
+
+  // }
+
+
+  // return {
+  //   batch: useBatch({
+  //     transactions,
+  //     handleRetry: () => {
+  //       return new Promise((resolve) => {
+  //         dispatch(
+  //           modalsSliceActions.setWithdrawWICPModalData({
+  //             callbacks: [
+  //               // Retry callback
+  //               () => {
+  //                 dispatch(modalsSliceActions.closeWithdrawWICPFailModal());
+  //                 openBatchModal();
+  //                 resolve(true);
+  //               },
+  //               // Close callback
+  //               () => {
+  //                 dispatch(modalsSliceActions.closeWithdrawWICPFailModal());
+  //                 resolve(false);
+  //               },
+  //             ],
+  //           })
+  //         );
+
+  //         dispatch(modalsSliceActions.closeWithdrawWICPProgressModal());
+  //         dispatch(modalsSliceActions.openWithdrawWICPFailModal());
+  //       });
+  //     },
+  //   }),
+  //   openBatchModal,
+  // };
 };

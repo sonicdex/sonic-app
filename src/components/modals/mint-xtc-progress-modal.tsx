@@ -1,10 +1,6 @@
 import { checkPlainSrc, depositSrc, swapSrc, withdrawSrc } from '@/assets';
 import {
-  MintModalData,
-  MintModalDataStep,
-  modalsSliceActions,
-  useAppDispatch,
-  useModalsStore,
+  MintModalData,MintModalDataStep,modalsSliceActions,useAppDispatch,useModalsStore,
 } from '@/store';
 
 import { useStepStatus } from '.';
@@ -15,11 +11,7 @@ export const MintXTCProgressModal = () => {
   const { isMintXTCProgressModalOpened, mintXTCModalData } = useModalsStore();
   const { steps, step: activeStep } = mintXTCModalData;
 
-  const getStepStatus = useStepStatus<MintModalData['step']>({
-    activeStep,
-    steps,
-  });
-
+  const getStepStatus = useStepStatus<MintModalData['step']>({activeStep,steps,});
   const handleClose = () => {
     dispatch(modalsSliceActions.closeMintXTCProgressModal());
   };
@@ -31,11 +23,7 @@ export const MintXTCProgressModal = () => {
       isCentered
       title="Mint XTC in progress"
     >
-      <TransactionStep
-        status={getStepStatus(MintModalDataStep.LedgerTransfer)}
-        iconSrc={withdrawSrc}
-        chevron
-      >
+      <TransactionStep status={getStepStatus(MintModalDataStep.LedgerTransfer)} iconSrc={withdrawSrc} chevron>
         Ledger Transfer <br /> ICP
       </TransactionStep>
       <TransactionStep
