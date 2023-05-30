@@ -11,8 +11,10 @@ import {
   AddLiquidityFailModal, AddLiquidityProgressModal, AllowanceVerifyModal, DepositProgressModal, MintManualModal, MintWICPFailModal,
   MintWICPProgressModal, MintXTCFailModal, MintXTCProgressModal, RemoveLiquidityFailModal, RemoveLiquidityProgressModal, SwapFailModal,
   SwapProgressModal, TermsAndConditionsModal, TokenSelectModal, WithdrawProgressModal, WithdrawWICPFailModal, WithdrawWICPProgressModal,
-  AppUpdatedModal , WalletListModal, TransferProgressModal
+  WalletListModal, TransferProgressModal
 } from './components/modals';
+
+//AppUpdatedModal
 
 import { ENV } from './config';
 import { useNetworkErrorNotifications, useTokenLogosFetcherInit, } from './hooks';
@@ -91,7 +93,6 @@ export const App = () => {
           <Route path="/test/t2" element={<TestViewt2 />} />
           <Route path="*" element={<Navigate to="/swap" />} />
         </Routes>
-        <AppUpdatedModal isNotiOpen={true}/>
       </Layout>
     </BrowserRouter>
   );
