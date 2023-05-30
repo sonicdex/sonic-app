@@ -87,7 +87,7 @@ export const AssetsTransferView = () => {
         return [true, 'Invalid Address'];
       }
     }
-    return [false, 'Transfer ' + amount];
+    return [false, `Send ${amount} ${selectedTokenMetadata.symbol} `];
   }, [amount, toAddress, tokenBalances, selectedTokenMetadata,addressType]);
 
   const tokenBalance = useMemo(() => {

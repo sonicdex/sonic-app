@@ -1,5 +1,5 @@
 import { TokenIDL, SwapIDL } from '@/did';
-import { useSwapCanisterStore, useWalletStore } from '@/store';
+import { useSwapCanisterStore } from '@/store';
 
 import { Principal } from '@dfinity/principal';
 
@@ -19,9 +19,6 @@ var tokenListObj: any = {};
 
 
 export const loadsupportedTokenList = async () => {
-
-  const { isConnected } = useWalletStore();
-  isConnected;
   supportedTokenList = useSwapCanisterStore()?.supportedTokenList;
   if (!supportedTokenList || Object.keys(tokenListObj).length > 0) return false;
   supportedTokenList.forEach((el: { id: string }) => { tokenListObj[el.id] = el });

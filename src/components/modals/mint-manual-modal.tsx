@@ -31,7 +31,7 @@ import {
 } from 'react';
 import { Link } from 'react-router-dom';
 
-import { checkIfPlugProviderVersionCompatible } from '@/integrations/plug';
+
 import {
   MintTokenSymbol,
   modalsSliceActions,
@@ -42,7 +42,6 @@ import {
 } from '@/store';
 import { ExternalLink } from '@/utils';
 
-import { PLUG_WALLET_WEBSITE_URL } from '..';
 
 export const MintManualModal = () => {
   const TOKEN_OPTIONS = useConst([
@@ -76,32 +75,6 @@ export const MintManualModal = () => {
 
   const handleMint = useCallback(
     (tokenSymbol: MintTokenSymbol) => {
-      const isVersionCompatible = checkIfPlugProviderVersionCompatible();
-
-      if (!isVersionCompatible) {
-        addNotification({
-          title: (
-            <>
-              You're using an outdated version of Plug, please update to the
-              latest one&nbsp;
-              <ChakraLink
-                color="blue.400"
-                href={PLUG_WALLET_WEBSITE_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                here
-              </ChakraLink>
-              .
-            </>
-          ),
-          type: NotificationType.Error,
-          id: String(new Date().getTime()),
-        });
-
-        return;
-      }
-
       addNotification({
         title: `Minting ${tokenSymbol}`,
         type: NotificationType.MintManual,

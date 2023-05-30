@@ -19,9 +19,7 @@ export const useWalletInit = (): void => {
           dispatch(walletActions.setWalletSelected(walletId));
           dispatch(walletActions.setOnwalletList(walletState.Connecting));
         }
-  
         const walletStatus = await artemis.autoConnect(connectObj);
-  
         if (walletStatus && artemis?.principalId && artemis?.provider) {
           dispatch(walletActions.setWalletLoaded({
             principleId: artemis.principalId,
@@ -34,5 +32,5 @@ export const useWalletInit = (): void => {
       };
   
       initAdapter();
-    }, [dispatch]);
+    }, []);
   };
