@@ -7,6 +7,7 @@ import { useApproveTransactionMemo, useDepositTransactionMemo, intitICRCTokenDep
 
 
 import { BatchTransact } from 'artemis-web3-adapter';
+
 import { artemis } from '@/integrations/artemis';
 
 export const useDepositBatch = (deposit: Deposit): any => {
@@ -48,7 +49,7 @@ export const useDepositBatch = (deposit: Deposit): any => {
     };
     DepositBatch = { ...DepositBatch, openBatchModal };
     var getAcnt = intitICRCTokenDeposit();
-
+    
     var approveTx = useICRCTransferMemo({ ...deposit, tokenAcnt: getAcnt }); // useICRCDepositMemo
     var depositTx = useDepositTransactionMemo(deposit);
 
@@ -60,7 +61,7 @@ export const useDepositBatch = (deposit: Deposit): any => {
     if (getAcnt) batchLoad = { state: "approve" }
     else if (getAcnt == false) batchLoad = { state: "error" }
     else batchLoad = { state: "getacnt" };
-
+   
     if (DepositBatchTx) {
       batchLoad.batchExecute = DepositBatchTx;
       DepositBatch = { ...DepositBatch, batch: batchLoad, openBatchModal };

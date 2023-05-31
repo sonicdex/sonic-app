@@ -59,7 +59,7 @@ export const WalletListModal: React.FC = () => {
                             </Heading>
                         </ModalHeader>
                         <ModalBody mt={4} p={0}>
-                            {artemis?.wallets.map((item: any, i) => (
+                            {artemis?.wallets.map((item: any, i:number) => (
                                 <Stack width="100%" maxWidth="100%" direction={['column', 'row']} key={i}
                                     alignItems="center" mt={2} cursor="pointer" mb={2} pt={1} pb={1} pl={2} pr={20} border="1px solid rgb(63, 81, 181)" borderRadius="60px"
                                     onClick={() => handleSelectWallet(item?.id)}

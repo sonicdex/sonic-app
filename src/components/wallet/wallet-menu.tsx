@@ -10,6 +10,8 @@ import { BiExit } from '@react-icons/all-files/bi/BiExit';
 import { FaChevronDown } from '@react-icons/all-files/fa/FaChevronDown';
 import { FiCopy } from '@react-icons/all-files/fi/FiCopy';
 import { FaExchangeAlt } from '@react-icons/all-files/fa/FaExchangeAlt';
+// import { FaList } from '@react-icons/all-files/fa/FaList';
+
 import { FC, useMemo } from 'react';
 
 import { walletState, useAppDispatch, useWalletStore, walletActions } from '@/store';
@@ -74,6 +76,12 @@ export const WalletMenu: FC<Omit<MenuProps, 'children'>> = (props) => {
           </MenuItem>
           <MenuItem onClick={() => navigate('/assets/transfer?tokenId=ryjl3-tyaaa-aaaaa-aaaba-cai') } icon={<FaExchangeAlt/>}>
             <Text>Transfer Token </Text>
+          </MenuItem>
+          <MenuItem onClick={() => window.open('https://dashboard.internetcomputer.org/account/'+accountId, '_blank') } icon={<img width={'18px'} src='https://d15bmhsw4m27if.cloudfront.net/sonic/ryjl3-tyaaa-aaaaa-aaaba-cai'/>}>
+            <Text> View in IC Dashboard </Text>
+          </MenuItem>
+          <MenuItem onClick={() => window.open('https://t5t44-naaaa-aaaah-qcutq-cai.raw.ic0.app/holder/'+accountId+'/tokenTransactions', '_blank') } icon={<img width={'18px'} src="https://t5t44-naaaa-aaaah-qcutq-cai.raw.ic0.app/favicon-64.svg" /> }>
+            <Text> Token Txns NFTGeek </Text>
           </MenuItem>
           <MenuItem onClick={handleDisconnect} icon={<BiExit />}>
             <Text>Disconnect</Text>
