@@ -43,7 +43,6 @@ export const useBalances = () => {
           dispatch(swapCanisterActions.setUserLPBalancesState(FeatureState.Idle));
         } catch (error) {
           AppLog.error(`User LP balances fetch error`, error);
-          // dispatch(swapCanisterActions.setUserLPBalancesState(FeatureState.Error));
         }
       },
       [userLPBalancesState, principalId, dispatch]
@@ -107,13 +106,12 @@ export const useBalances = () => {
 const sumBalances = (...balances: Balances[]): Balances => {
   return balances.reduce((acc, current) => {
     const balance = Object.entries(current);
+    
     balance.forEach(([canisterId, amount]) => {
-      if (acc[canisterId]) {
-        acc[canisterId] += amount;
-      } else {
-        acc[canisterId] = amount;
-      }
+      if (acc[canisterId]) { acc[canisterId] += amount;}
+      else { acc[canisterId] = amount;}
     });
+
     return acc;
   }, {} as Balances);
 };

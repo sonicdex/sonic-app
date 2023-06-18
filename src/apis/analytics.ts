@@ -19,10 +19,7 @@ export class AnalyticsApi {
     return (await this.axios.request({ data: data })).data.data;
   }
 
-  async queryUserLPMetrics(
-    principalId: string,
-    pairId?: string
-  ): Promise<AnalyticsApi.PositionMetrics> {
+  async queryUserLPMetrics( principalId: string, pairId?: string): Promise<AnalyticsApi.PositionMetrics> {
     const response = await this.request<AnalyticsApi.UserLPMetricsQuery>({
       operationName: null,
       query: `
@@ -37,7 +34,6 @@ export class AnalyticsApi {
             `,
       variables: {},
     });
-
     return response?.user?.positionMetrics;
   }
 }

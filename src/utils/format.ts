@@ -86,14 +86,23 @@ export const capitalize = (str: string) => {
   return str.charAt(0).toUpperCase() + str.slice(1);
 };
 
-export const getPairIdsFromPairList = (pairList: Pair.List): string[] => {
+export const getPairIdsFromPairList = (pairList: Pair.List ): string[] => {
   const idsSet = new Set<string>();
-
   Object.values(pairList).forEach((paired) => {
     Object.values(paired).forEach((pair) => {
       idsSet.add(pair.id);
     });
   });
-
   return Array.from(idsSet);
 };
+
+export const getUserPailListFromPairList =  (pairList: Pair.List, principalId?:any ): string[] => {
+  const idsSet = new Set<string>();
+  Object.values(pairList).forEach( paired=>{
+    Object.values(paired).forEach(pair=>{
+      if(pair?.creator.toString() == principalId) idsSet.add(pair.id);
+    })
+})
+  return Array.from(idsSet);
+}
+

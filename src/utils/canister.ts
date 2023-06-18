@@ -71,18 +71,14 @@ export const parseResponseAllPairs = (
   }, {} as Pair.List);
 };
 
-export const parseResponseUserLPBalances = (
-  response: [tokenId: string, amount: bigint][]
-): PairBalances => {
+export const parseResponseUserLPBalances = ( response: [tokenId: string, amount: bigint][]): PairBalances => {
   return response.reduce((balances, [tokenId, amount]) => {
     const tokenIds = tokenId.split(':');
     for (const token of tokenIds) {
       if (ENV.hiddenTokens.includes(token)) return balances;
     }
     const [token0Id, token1Id] = tokenIds;
-    return {
-      ...balances,
-      [token0Id]: { ...balances[token0Id], [token1Id]: Number(amount) },
+    return {...balances,[token0Id]: { ...balances[token0Id], [token1Id]: Number(amount) },
       [token1Id]: { ...balances[token1Id], [token0Id]: Number(amount) },
     };
   }, {} as PairBalances);

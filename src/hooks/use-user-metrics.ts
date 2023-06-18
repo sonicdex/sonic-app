@@ -1,74 +1,52 @@
-import { useCallback, useEffect, useState } from 'react';
-
+import { useEffect, useState } from 'react';
+import { Principal } from '@dfinity/principal';
 import { AnalyticsApi } from '@/apis';
-import {
-  KEEP_SYNC_DEFAULT_INTERVAL,
-  useKeepSync,
-  usePlugStore,
-  useSwapCanisterStore,
-} from '@/store';
+import {  useWalletStore, useSwapCanisterStore } from '@/store';
 import { AppLog } from '@/utils';
-import { getPairIdsFromPairList } from '@/utils/format';
-import { debounce } from '@/utils/function';
+
+import { getswapActor } from '@/utils'
 
 export type UserLPMetrics = {
   [pairId: string]: AnalyticsApi.PositionMetrics;
 };
 
+
 export const useUserMetrics = () => {
-  const { principalId } = usePlugStore();
+  const { principalId } = useWalletStore();
+
   const { allPairs } = useSwapCanisterStore();
   const [isLoading, setIsLoading] = useState(false);
   const [userLPMetrics, setUserLPMetrics] = useState<UserLPMetrics>();
 
-  const getUserLPMetrics = useKeepSync(
-    'getUserMetrics',
-    useCallback(async () => {
-      try {
-        if (isLoading) {
-          return;
-        }
+  const getUserLPMetrics = async () => {
+    try {
+      if (isLoading) { return; }
+      if (!principalId || !allPairs) { setUserLPMetrics(undefined); return; }
 
-        if (!principalId || !allPairs) {
-          setUserLPMetrics(undefined);
-          return;
-        }
+      const swapActor = await getswapActor(true);
+      const response = await swapActor.getUserLPBalancesAbove(Principal.fromText(principalId), BigInt(0));
 
-        const pairIds = getPairIdsFromPairList(allPairs);
+      const pairIds:any[] =response.length >0? response.map(x=>x[0] ) :[];
 
-        setIsLoading(true);
-        const analyticsApi = new AnalyticsApi();
-        const promises = pairIds.map((pairId) =>
-          analyticsApi.queryUserLPMetrics(principalId, pairId)
-        );
-        const responses = await Promise.all(promises);
+      setIsLoading(true);
 
-        const _userPairMetrics = responses.reduce((acc, response, index) => {
-          acc[pairIds[index]] = response;
-          return acc;
-        }, {} as UserLPMetrics);
+      const analyticsApi = new AnalyticsApi();
+      const promises = pairIds.map((pairId) => analyticsApi.queryUserLPMetrics(principalId, pairId));
+      const responses = await Promise.all(promises);
 
-        setUserLPMetrics(_userPairMetrics);
-      } catch (error) {
-        AppLog.error(`User metrics fetch error`, error);
-        await new Promise((resolve) =>
-          debounce(resolve, KEEP_SYNC_DEFAULT_INTERVAL)
-        );
-      }
-      setIsLoading(false);
-    }, [setUserLPMetrics, principalId, allPairs, isLoading])
-  );
+      const _userPairMetrics = responses.reduce((acc, response, index) => {
+        acc[pairIds[index]] = response; return acc;
+      }, {} as UserLPMetrics);
+      setUserLPMetrics(_userPairMetrics);
+    } catch (error) {
+      AppLog.error(`User metrics fetch error`, error);
+    }
+    setIsLoading(false);
+  };
 
   useEffect(() => {
-    if (!userLPMetrics) {
-      getUserLPMetrics();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    getUserLPMetrics()
   }, [principalId]);
 
-  return {
-    isLoading,
-    userPairMetrics: userLPMetrics,
-    getUserMetrics: getUserLPMetrics,
-  };
+  return { isLoading, userPairMetrics: userLPMetrics, getUserMetrics: getUserLPMetrics};
 };
