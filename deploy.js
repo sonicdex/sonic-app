@@ -25,8 +25,11 @@ var readFile = util.promisify(fs.readFile);
 var deleteFile= async function(f){ return new Promise((resolve,reject)=>{ fs.unlink(f,function(err){ if(err) resolve(false); resolve(true) })})}
 const uploadTos3 = async function(buildType = 'dev') {
 
+    console.log( buckets[buildType]);
+    
+
     if(!buildType) return 0;
-    var s3 = new AWS.S3({ accessKeyId: awsconfig.awsAccessKeyId, secretAccessKey: awsconfig.secretAccessKey });
+    var s3 = new AWS.S3({ accessKeyId: awsconfig.awsAccessKeyId, secretAccessKey: awsconfig.secretAccessKey , });
     var fileList = await getDirectyFiles('dist');
     if(!fileList.length) console.log('DIst folder empty..')
     else{
@@ -81,6 +84,6 @@ var getDirectyFiles =async function (src) {
 
 
 
-
+console.log(process.argv[2])
 
 uploadTos3(process.argv[2]);

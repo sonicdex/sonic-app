@@ -187,6 +187,7 @@ export const LiquidityListView = () => {
           css={{ msOverflowStyle: 'none', scrollbarWidth: 'none','&::-webkit-scrollbar': { display: 'none'}}}
           spacing={4} pb={40} overflow="auto">
           {pairedUserLPTokens.map((userLPToken) => {
+
             return (
               <PairedUserLPToken {...userLPToken} key={userLPToken.pairId} handleRemove={handleOpenRemoveLiquidityModal}
                 handleAdd={moveToAddLiquidityView} pairMetrics={userPairMetrics?.[userLPToken.pairId]}

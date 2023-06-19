@@ -29,7 +29,7 @@ const useNotificationEffect = (
   }, [state]);
 
 export const useNetworkErrorNotifications = () => {
-  const { allPairsState, supportedTokenListState, priceState, balanceState } =
+  const { allPairsState, supportedTokenListState,  balanceState } =
     useAppSelector((state) => ({
       allPairsState: state.swap.allPairsState,
       supportedTokenListState: state.swap.supportedTokenListState,
@@ -37,13 +37,13 @@ export const useNetworkErrorNotifications = () => {
       balanceState: state.swap.balancesState,
     }));
   const notifications = useNotificationStore();
-
-  useNotificationEffect(
-    'icp-price-error',
-    'Failed to fetch ICP price',
-    priceState,
-    notifications
-  );
+ 
+  // useNotificationEffect(
+  //   'icp-price-error',
+  //   'Failed to fetch ICP price',
+  //   priceState,
+  //   notifications
+  // );
 
   useNotificationEffect(
     'supported-token-list-error',
