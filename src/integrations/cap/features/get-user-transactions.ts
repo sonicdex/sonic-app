@@ -12,10 +12,7 @@ export interface UserTransactionsResponse {
   page: number;
 }
 
-export const getUserTransactions = async (
-  principalId: string,
-  page?: number
-): Promise<UserTransactionsResponse> => {
+export const getUserTransactions = async ( principalId: string, page?: number): Promise<UserTransactionsResponse> => {
   const capRoot = await getCapRootInstance({
     canisterId: ENV.canistersPrincipalIDs.swapCapRoot,
   });

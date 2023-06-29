@@ -1,12 +1,7 @@
 import { Heading, HStack, Stack } from '@chakra-ui/react';
 import { FaArrowRight } from '@react-icons/all-files/fa/FaArrowRight';
 
-import {
-  Asset,
-  AssetImageBlock,
-  AssetTitleBlock,
-  DisplayValue,
-} from '@/components';
+import { Asset, AssetImageBlock, AssetTitleBlock, DisplayValue } from '@/components';
 import { useActivityViewStore } from '@/store';
 
 export type SwapActivityProps = {

@@ -48,25 +48,19 @@ export const useDepositBatch = (deposit: Deposit): any => {
       dispatch(modalsSliceActions.openDepositProgressModal());
     };
     DepositBatch = { ...DepositBatch, openBatchModal };
+
     var getAcnt = intitICRCTokenDeposit();
-    
-    var approveTx = useICRCTransferMemo({ ...deposit, tokenAcnt: getAcnt }); // useICRCDepositMemo
+    var approveTx = useICRCTransferMemo({ ...deposit });
     var depositTx = useDepositTransactionMemo(deposit);
 
     const DepositBatchTx = useMemo(() => {
-      if (!getAcnt) return false;
-      return new BatchTransact({ approve: approveTx, deposit: depositTx }, artemis);
-    }, [getAcnt]);
+      return new BatchTransact({getacnt:getAcnt, approve: approveTx, deposit: depositTx }, artemis);
+    }, []);
 
-    if (getAcnt) batchLoad = { state: "approve" }
-    else if (getAcnt == false) batchLoad = { state: "error" }
-    else batchLoad = { state: "getacnt" };
-   
     if (DepositBatchTx) {
       batchLoad.batchExecute = DepositBatchTx;
       DepositBatch = { ...DepositBatch, batch: batchLoad, openBatchModal };
     }
-
     DepositBatch = { ...DepositBatch, batch: batchLoad, openBatchModal };
     return DepositBatch;
   }

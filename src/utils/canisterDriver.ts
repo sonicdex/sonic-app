@@ -1,4 +1,4 @@
-import { TokenIDL, SwapIDL } from '@/did';
+import { TokenIDL, SwapIDL , capCanIDL } from '@/did';
 import { useSwapCanisterStore } from '@/store';
 
 import { Principal } from '@dfinity/principal';
@@ -53,6 +53,15 @@ export const getswapActor = async (isAnnon: boolean): Promise<SwapIDL.Factory> =
   var actor = await artemis.getCanisterActor(ENV.canistersPrincipalIDs.swap, SwapIDL.factory, isAnnon);
   return actor;
 }
+
+export const getSwapCapActor = async (isAnnon: boolean): Promise<capCanIDL.Factory> => {
+  if (!isAnnon && !artemis.provider) {
+    await artemis.autoConnect();
+  }
+  var actor = await artemis.getCanisterActor(ENV.canistersPrincipalIDs.swapCapRoot, capCanIDL.factory, isAnnon);
+  return actor;
+}
+
 
 export const getTokenLogo = async (canisterId: string): Promise<string> => {
   var token = tokenListObj?.[canisterId];

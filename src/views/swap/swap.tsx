@@ -38,7 +38,10 @@ export const SwapView = () => {
   const menuListBg = useColorModeValue('gray.50', 'custom.3');
   const linkColor = useColorModeValue('dark-blue.500', 'dark-blue.400');
 
-  useEffect(() => { dispatch(swapViewActions.setKeepInSonic(true)); }, []);
+
+  useEffect; swapViewActions;dispatch;
+  
+  // useEffect(() => { dispatch(swapViewActions.setKeepInSonic(true)); }, []);
 
   const { fromTokenOptions, toTokenOptions, from, to, slippage } = useSwapViewStore();
   return (

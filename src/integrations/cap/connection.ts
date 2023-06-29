@@ -7,11 +7,5 @@ export interface CapRouterInstanceProps {
   host?: string;
 }
 
-export const getCapRootInstance = async ({
-  canisterId,
-  host = ENV.host,
-}: CapRouterInstanceProps) =>
-  await CapRoot.init({
-    host,
-    canisterId,
-  });
+export const getCapRootInstance = async ({ canisterId, host = ENV.host}: CapRouterInstanceProps) =>
+  await CapRoot.init({host,canisterId});
