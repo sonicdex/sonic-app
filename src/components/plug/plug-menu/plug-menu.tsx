@@ -25,9 +25,6 @@ import { PlugLogo } from '..';
 export const PlugMenu: FC<Omit<MenuProps, 'children'>> = (props) => {
   const { principalId, state } = useWalletStore();
   const dispatch = useAppDispatch();
-
-  console.log(principalId);
-
   const handleDisconnect = async () => {
     dispatch(plugActions.disconnect());
   };

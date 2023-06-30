@@ -42,7 +42,7 @@ export const MintManualNotificationContent: React.FC<
         })
       }).finally(() => popNotification(id));;
     } else {
-      console.log(batch);
+      
     }
   }, [batchFnUpdate])
 
