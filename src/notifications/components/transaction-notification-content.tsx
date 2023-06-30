@@ -12,12 +12,7 @@ export const TransactionNotificationContent: React.FC<
   if (!transactionLink) return null;
 
   return (
-    <Link
-      as={NavLink}
-      to={transactionLink}
-      rel="noreferrer"
-      color="dark-blue.500"
-    >
+    <Link as={NavLink} to={transactionLink} rel="noreferrer" color="dark-blue.500">
       View in activity tab
     </Link>
   );

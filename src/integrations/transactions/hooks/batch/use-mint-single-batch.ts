@@ -1,52 +1,67 @@
 import { useMemo } from 'react';
 
-import { MintTokenSymbol, usePlugStore } from '@/store';
+import { MintTokenSymbol, usePlugStore, useWalletStore } from '@/store';
 
-import { getMintWICPTransaction, useBatch } from '..';
+import { getMintWICPTransaction } from '..';
 import { getMintXTCTransaction } from '../transactions/mint-xtc';
-import { removeBlockHeightFromStorage } from '.';
+
+// import { removeBlockHeightFromStorage } from '.';
 
 export type UseMintSingleBatchOptions = {
   tokenSymbol: MintTokenSymbol;
   blockHeight: string;
 };
 
-export const useMintSingleBatch = ({
-  tokenSymbol,
-  blockHeight,
-}: UseMintSingleBatchOptions) => {
-  const { principalId } = usePlugStore();
+import { BatchTransact } from 'artemis-web3-adapter';
+import { artemis } from '@/integrations/artemis';
 
-  const transactions = useMemo(() => {
-    let transactions: Record<string, any> = {};
+BatchTransact; artemis; usePlugStore;
 
-    if (!principalId) {
-      return transactions;
+export const useMintSingleBatch: any = ({ tokenSymbol, blockHeight }: UseMintSingleBatchOptions) => {
+  const { principalId } = useWalletStore();
+  if (!principalId) { return false };
+
+  var batchLoad: any = { state: "idle" };
+  var MintBatchTx = { batch: batchLoad };
+
+  const batchTx = useMemo(() => {
+    var trx:any;
+    if (tokenSymbol === MintTokenSymbol.WICP) {
+      trx = getMintWICPTransaction({ blockHeight:  blockHeight })
+    } else if (tokenSymbol === MintTokenSymbol.XTC) {
+      trx = getMintXTCTransaction({ blockHeight: blockHeight })
     }
+    return new BatchTransact({ mint : trx}, artemis);
+  }, []);
+  if(batchTx){
+    batchLoad.batchExecute = batchTx;
+  }
 
-    const handler =
-      tokenSymbol === MintTokenSymbol.XTC
-        ? getMintXTCTransaction
-        : getMintWICPTransaction;
+  return MintBatchTx;
+    // const transactions = useMemo(() => {
+    //   let transactions: Record<string, any> = {};
+    //   if (!principalId) { return transactions; }
 
-    transactions = {
-      ...transactions,
-      [tokenSymbol]: handler({ blockHeight }, () =>
-        removeBlockHeightFromStorage({
-          blockHeight,
-          tokenSymbol: tokenSymbol,
-          principalId,
-        })
-      ),
-    };
+    //   const handler = tokenSymbol === MintTokenSymbol.XTC ? getMintXTCTransaction : getMintWICPTransaction;
 
-    return transactions;
-  }, [principalId, tokenSymbol, blockHeight]);
+    //   transactions = {
+    //     ...transactions,
+    //     [tokenSymbol]: handler({ blockHeight }, () =>
+    //       removeBlockHeightFromStorage({
+    //         blockHeight,
+    //         tokenSymbol: tokenSymbol,
+    //         principalId,
+    //       })
+    //     ),
+    //   };
 
-  const getTransactionNames = () => Object.keys(transactions);
+    //   return transactions;
+    // }, [principalId, tokenSymbol, blockHeight]);
 
-  return {
-    batch: useBatch<string>({ transactions }),
-    getTransactionNames,
-  };
+    // const getTransactionNames = () => Object.keys(transactions);
+
+    // return {
+    //   batch: useBatch<string>({ transactions }),
+    //   getTransactionNames,
+    // };
 };

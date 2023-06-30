@@ -81,22 +81,15 @@ export const Layout: React.FC = ({ children, ...props }) => {
             <LogoBox />
           </Flex>
           <chakra.nav flex="1" display="flex" alignItems="center" justifyContent="center">
-            <Tabs
-              index={currentTabIndex}
-              variant="solid-rounded"
-              colorScheme="dark-blue"
-            >
+            <Tabs index={currentTabIndex} variant="solid-rounded" colorScheme="dark-blue">
               <TabList bg={menuBg}>
                 {NAVIGATION_TABS.map(({ label, url }) => (
                   <Tab  as={Link} key={label} to={url} px={6}>
                     {label}
                   </Tab>
                 ))}
-                <Tab
-                  display={['none', 'none', 'flex', 'flex']}
-                  as="a"
-                  href={ExternalLink.analyticsApp}
-                  target={ExternalLink.analyticsApp}
+                <Tab display={['none', 'none', 'flex', 'flex']} as="a"
+                  href={ExternalLink.analyticsApp} target={ExternalLink.analyticsApp}
                   px={4}
                 >
                   Analytics
@@ -105,16 +98,9 @@ export const Layout: React.FC = ({ children, ...props }) => {
               </TabList>
             </Tabs>
           </chakra.nav>
-          <Flex
-            direction="row"
-            width={['fit-content', 'fit-content', '24%']}
-            gap="4"
-            mr="-2"
-            alignItems="center"
-            justifyContent="flex-end"
-          >
+          <Flex direction="row" width={['fit-content', 'fit-content', '24%']} gap="4" mr="-2"
+            alignItems="center" justifyContent="flex-end">
             <HStack>
-             
               {isConnected ? <WalletMenu placement="bottom-end" /> : <WalletConnectBtn/>  }
               <Menu placement="bottom-end">
                 <MenuButton as={IconButton} aria-label="Menu" icon={<FaEllipsisH />} borderRadius="full" bg={menuBg} shadow={menuShadow} />

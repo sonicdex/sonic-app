@@ -4,6 +4,9 @@ import { CreateTransaction, MintWICP } from '../../models';
 
 export const getMintWICPTransaction: CreateTransaction<MintWICP> = (options = {},onSuccess,onFail) => {
   const { blockHeight, subaccount = [] } = options;
+  var bh:bigint=BigInt(0);
+  if(typeof(blockHeight) == 'string' || typeof(blockHeight) =='number'){ bh = BigInt(blockHeight)  }
+
   return {
     canisterId: ENV.canistersPrincipalIDs.WICP,
     idl: TokenIDL.DIP20.factory,
@@ -13,6 +16,6 @@ export const getMintWICPTransaction: CreateTransaction<MintWICP> = (options = {}
       if (onSuccess) onSuccess(res);
     },
     onFail,
-    args:[subaccount , blockHeight]
+    args:[subaccount , bh]
   };
 };

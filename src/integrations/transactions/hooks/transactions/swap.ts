@@ -86,7 +86,6 @@ export const useSwapExactTokensTransactionMemo: CreateTransaction<SwapModel> = (
       idl: SwapIDL.factory,
       methodName: 'swapExactTokensForTokens',
       onFail,
-
       onSuccess: async (res: SwapIDL.Result) => {
         if ('err' in res) throw new Error(res.err);
         if (onSuccess) onSuccess(res);
@@ -98,51 +97,25 @@ export const useSwapExactTokensTransactionMemo: CreateTransaction<SwapModel> = (
           const actor = await getSwapCapActor(true);
           const data = await actor.get_user_transactions({ user: Principal.fromText(principalId), page: [], witness: false });
           if (data) {
-            console.log(data);
-            var trxInfo:any = data.data.filter(item =>( item.operation === "swap"));
-            if(trxInfo.length>1){
-              trxInfo = trxInfo[trxInfo.length-1];
+            var trxInfo: any = data.data.filter(item => (item.operation === "swap"));
+            if (trxInfo.length > 1) {
+              trxInfo = trxInfo[trxInfo.length - 1];
             }
-            if (trxInfo ) {
-              const matchingDetail = trxInfo.details.find((detail:any) => detail[0] === "amountOut");
-              if(matchingDetail.length>0){
-               // console.log(matchingDetail);
+            if (trxInfo) {
+              const matchingDetail = trxInfo.details.find((detail: any) => detail[0] === "amountOut");
+              if (matchingDetail.length > 0) {
                 nextTrxItem.args[1] = matchingDetail[1]?.U64;
               }
             }
-           
-            // var trxInfo:any = data.data.filter(item => {
-            //   if (item.operation === "swap") {
-                
-            //     const matchingDetail = item.details.find((detail:any) => detail[0] === "tokenTxid" && detail[1]?.U64 == trxResult.ok);
-            //     return matchingDetail !== undefined;
-            //   }
-            //   return false;
-            // });
-            // if (trxInfo[0] ) {
-            //   trxInfo = trxInfo[0]
-            // }
-
-            //console.log(trxInfo)
           }
-
-         // console.log(actor, Principal, data);
-
-          // var tx:any = {} //await actor.getTxRecords(trxResult?.ok, BigInt(1)) ;
-          // if(tx[0]) tx = tx[0];
-          // if(tx){
-          //   nextTrxItem.args[0] = tx.tokenOut[0] && Principal.fromText(tx.tokenOut[0].toText())
-          //   nextTrxItem.args[1] = tx.amountOut[0];
-          // }
         }
       },
     };
   }, [from.metadata, from.value, from.paths, to.metadata, to.value, principalId, slippage, onFail, onSuccess]);
 };
 
-export const useSwapForExactTokensTransactionMemo: CreateTransaction<
-  SwapModel
-> = ({ from, to, slippage, principalId }: SwapModel, onSuccess, onFail) => {
+export const useSwapForExactTokensTransactionMemo: CreateTransaction<SwapModel> =
+ ({ from, to, slippage, principalId }: SwapModel, onSuccess, onFail) => {
 
   var fromValue = from.value;
   let balances = useBalances();

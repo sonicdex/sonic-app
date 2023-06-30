@@ -1,4 +1,4 @@
-import { Flex, Heading, HStack, Link } from '@chakra-ui/react';
+import { Flex, Heading, HStack, Link, Box } from '@chakra-ui/react';
 import { FaCube } from '@react-icons/all-files/fa/FaCube';
 import { useMemo } from 'react';
 
@@ -14,6 +14,9 @@ import { AppTokenMetadata } from '@/models';
 import { useSwapCanisterStore } from '@/store';
 import { ExternalLink } from '@/utils';
 
+import { copyToClipboard } from '@/utils';
+
+import { FiCopy } from '@react-icons/all-files/fi/FiCopy';
 export type LedgerTransactionActivityProps = LedgerTransaction;
 
 const getTokenByAddress = (
@@ -74,25 +77,21 @@ export const LedgerTransactionActivity = ({
           mt="1"
           mb="0.5"
         >
-          <DisplayValue
-            value={amount.toString()}
-            decimals={token.decimals}
-            suffix={' ICP'}
-            shouldDivideByDecimals
-          />
+          <DisplayValue value={amount.toString()} decimals={token.decimals} suffix={' ICP'} shouldDivideByDecimals />
         </Heading>
-        <Link
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          fontSize="sm"
-          href={ExternalLink.ledgerTransaction(hash)}
-          target="_blank"
-          color="gray.400"
-        >
-          {blockIndex}&nbsp;
-          <FaCube />
-        </Link>
+        <Box>
+          <Flex>
+            <Flex> <FiCopy cursor={'pointer'} onClick={() => copyToClipboard(blockIndex.toString(), 'Block index ( ' + blockIndex + ' ) copied')} /> &nbsp; {blockIndex}&nbsp; </Flex>
+            <Link display="flex" justifyContent="center" alignItems="center" fontSize="sm"
+              href={ExternalLink.ledgerTransaction(hash)} target="_blank" color="gray.400"
+            >
+              <FaCube />
+            </Link>
+          </Flex>
+
+
+        </Box>
+
       </Flex>
     </Asset>
   );

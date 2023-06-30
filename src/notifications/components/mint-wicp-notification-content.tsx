@@ -49,7 +49,6 @@ export const MintWICPNotificationContent: React.FC<
     handleStateChange();
     openBatchModal();
   };
-  console.log(batchExecutalbe , batchFnUpdate);
 
   const handleError = (err?: any) => {
     if (err) AppLog.error('Mint WICP Error', err);
@@ -58,14 +57,14 @@ export const MintWICPNotificationContent: React.FC<
       title: `Wrap ${from.value} ${from.metadata.symbol} failed`, type: NotificationType.Error, id: Date.now().toString(),
     });
     popNotification(id);
-  }
-  useEffect(handleStateChange, [batchExecutalbe?.activeStep, batch.state]);  
+  };
+
+  useEffect(handleStateChange, [batchExecutalbe?.activeStep, batch.state]);
+
   useEffect(() => {
     handleOpenModal();
     if (batchExecutalbe?.execute) {
-      console.log(batchExecutalbe);
       batchExecutalbe.execute().then((data: any) => {
-          console.log(batchExecutalbe);
         if (data) {
           dispatch(modalsSliceActions.closeMintWICPProgressModal());
           addNotification({ title: `Wrapped ${from.value} ${from.metadata.symbol}`, type: NotificationType.Success, id: Date.now().toString(), transactionLink: '/activity' });
@@ -73,13 +72,10 @@ export const MintWICPNotificationContent: React.FC<
         } else handleError();
        }).catch((err: any) => handleError(err)).finally(() => popNotification(id));
     }
-    console.log(batchFnUpdate)
     if(batchFnUpdate=='error') handleError();
   }, [batchFnUpdate]);
 
   return (
-    <Link target="_blank" rel="noreferrer" color="dark-blue.500" onClick={handleOpenModal}>
-      View progress
-    </Link>
+    <Link target="_blank" rel="noreferrer" color="dark-blue.500" onClick={handleOpenModal}>View progress</Link>
   );
 };

@@ -80,12 +80,7 @@ export const SwapNotificationContent: React.FC<SwapNotificationContentProps> = (
 
   useEffect(handleStateChange, [batchExecutalbe?.activeStep, batch.state]);
 
-  
-
   useEffect(() => {
-
-    
-
     handleOpenModal();
     if (typeof allowance === 'undefined' || !batch?.state) return;
     if (batchExecutalbe?.execute) {

@@ -20,10 +20,13 @@ export const useLedgerTransferTransactionMemo: CreateTransaction<LedgerTransfer>
         return blockHeight;
       },
       onFail,
+      updateNextStep: (trxResult: any, nextTrxItem: any) => {
+        if (nextTrxItem) { nextTrxItem.args[1] = trxResult; }
+      },
       args: [
-        { to: toAccountId, fee: { e8s: fee },
-          amount: { e8s: parseAmount(amount, ICP_METADATA.decimals)},
-          memo,from_subaccount: [],created_at_time: [],
+        {
+          to: toAccountId, fee: { e8s: fee }, amount: { e8s: parseAmount(amount, ICP_METADATA.decimals) },
+          memo, from_subaccount: [], created_at_time: [],
         },
       ],
     };

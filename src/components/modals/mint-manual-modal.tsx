@@ -209,13 +209,7 @@ export const MintManualModal = () => {
           )}
         </ModalBody>
         <ModalFooter as={HStack}>
-          <Button
-            leftIcon={<FaRedoAlt />}
-            isFullWidth
-            type="submit"
-            variant="gradient"
-            colorScheme="dark-blue"
-          >
+          <Button leftIcon={<FaRedoAlt />} isFullWidth type="submit" variant="gradient" colorScheme="dark-blue">
             Retry
           </Button>
         </ModalFooter>

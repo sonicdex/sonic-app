@@ -1,5 +1,4 @@
 import { useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 import { modalsSliceActions, SwapModalDataStep, useAppDispatch, useSwapCanisterStore } from '@/store';
 import { SwapModel } from '../..';
@@ -10,26 +9,18 @@ import {
   intitICRCTokenDeposit, useICRCTransferMemo, // useICRCDepositMemo , 
 } from '..';
 
-intitICRCTokenDeposit; useICRCTransferMemo;
-
 import { getAmountDependsOnBalance } from './batch.utils';
 
 import { BatchTransact } from 'artemis-web3-adapter';
 import { artemis } from '@/integrations/artemis';
 
-
-artemis; BatchTransact; useMemo;
-
-
-export interface ExtraDepositSwapBatchOptions {
-  keepInSonic: boolean;
-}
+export interface ExtraDepositSwapBatchOptions { keepInSonic: boolean}
 
 export const useSwapBatch = ({ keepInSonic, ...swapParams }: SwapModel & ExtraDepositSwapBatchOptions) => {
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
+ 
   const { sonicBalances } = useSwapCanisterStore();
-  navigate;
+ 
   if (!sonicBalances) throw new Error('Sonic balance is required');
   if (!swapParams.from.metadata || !swapParams.to.metadata) throw new Error('Tokens are required');
 
