@@ -5,7 +5,7 @@ import { AddLiquidityModalDataStep, modalsSliceActions, useAppDispatch, useLiqui
 import { AddLiquidity, Deposit } from '../..';
 import {
   useAddLiquidityTransactionMemo, useApproveTransactionMemo, useDepositTransactionMemo, 
-  intitICRCTokenDeposit, useICRCTransferMemo, //useICRCDepositMemo //useBatch
+  intitICRCTokenDepositIn, useICRCTransferMemo, //useICRCDepositMemo //useBatch
 } from '..';
 
 import { useCreatePairTransactionMemo } from '../transactions/create-pair';
@@ -78,7 +78,7 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
   if (!pair) { steps = ['createPair'] }
 
   if (token0Type == 'ICRC1' || token1Type == 'ICRC1') {
-    getICRCAcnt = intitICRCTokenDeposit(); steps = [...steps, 'getacnt'];
+    getICRCAcnt = intitICRCTokenDepositIn(); steps = [...steps, 'getacnt'];
   }
 
   //step 1

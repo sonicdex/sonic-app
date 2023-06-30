@@ -1,4 +1,4 @@
-import { fromHexString, getTokenActor } from '@/utils';
+import { fromHexString, getTokenActor, getswapActor } from '@/utils';
 
 import { useState, useMemo, useEffect } from "react";
 
@@ -10,24 +10,24 @@ import { CreateTransaction, Deposit } from '../../models';
 
 import { TokenIDL, SwapIDL } from '@/did';
 
-// export const intitICRCTokenDeposit = (deposit?:any): any => {
-//     const [tokenAcnt, setData] = useState<undefined | boolean>();
-//     useMemo(() => {
-//         getswapActor(false).then(actor => {
-//             actor.initiateICRC1Transfer().then((data:any) => {
-//                 setData(data);
-//             }).catch(e=>{ setData(false)});
-//         });
-//     }, [deposit]);
-//     return tokenAcnt;
-// };
+export const intitICRCTokenDepositIn = (deposit?:any): any => {
+    const [tokenAcnt, setData] = useState<undefined | boolean>();
+    useMemo(() => {
+        getswapActor(false).then(actor => {
+            actor.initiateICRC1Transfer().then((data:any) => {
+                setData(data);
+            }).catch(e=>{ setData(false)});
+        });
+    }, [deposit]);
+    return tokenAcnt;
+};
 
 export const intitICRCTokenDeposit: any = () => useMemo(() => {
     return {
         canisterId: ENV.canistersPrincipalIDs.swap,
         idl: SwapIDL.factory,
         methodName: 'initiateICRC1Transfer',
-        updateNextStep: (trxResult: any, nextTrxItem: any) => {
+        updateNextStep: (trxResult: any, nextTrxItem: any, ) => {
             nextTrxItem.args[0].to.subaccount = [trxResult]
         },
         onSuccess: () => { },
@@ -38,12 +38,12 @@ export const intitICRCTokenDeposit: any = () => useMemo(() => {
 
 
 export const useICRCTransferMemo: CreateTransaction<Deposit> = (
-    { amount, token, allowance = 0 }, onSuccess, onFail) => useMemo(() => {
+    { amount, token, allowance = 0, tokenAcnt=[] }, onSuccess, onFail) => useMemo(() => {
         if (!token?.id) { return; }
         var canId = token?.id ? token.id : '';
         var parsedAmount = amount ? parseAmount(amount, token?.decimals ? token?.decimals : 0) : BigInt(0);
         parsedAmount += token?.fee ? token?.fee : BigInt(0);
-        var subacc: any = [];
+        var subacc: any = tokenAcnt.length?tokenAcnt: [];
         return {
             canisterId: canId,
             idl: TokenIDL.ICRC1.factory,
@@ -58,7 +58,7 @@ export const useICRCTransferMemo: CreateTransaction<Deposit> = (
                 fee: [], memo: [], amount: parsedAmount, from_subaccount: [], created_at_time: []
             }],
         };
-    }, [token]);
+    }, [token, tokenAcnt]);
 
 export const useICRCDepositMemo: CreateTransaction<Deposit> = ({ amount, token, allowance = 0, tokenAcnt = '' }, onSuccess, onFail) => {
     const [tokenTrx, settokenTrxData] = useState({});
