@@ -167,9 +167,7 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
     batchLoad.handleRetry = handleRetry; 
     batchLoad.batchFnUpdate=true;
   }else {
-    if(!getICRCAcnt){
-      batchLoad.state = 'getacnt';
-    }
+    if(!getICRCAcnt){  batchLoad.state = 'getacnt';}
   }
 
   DepositBatch = { ...DepositBatch, batch: batchLoad, openBatchModal };
