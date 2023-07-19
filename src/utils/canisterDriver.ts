@@ -1,4 +1,4 @@
-import { TokenIDL, SwapIDL , capCanIDL } from '@/did';
+import { TokenIDL, SwapIDL, capCanIDL } from '@/did';
 import { useSwapCanisterStore } from '@/store';
 
 import { Principal } from '@dfinity/principal';
@@ -41,7 +41,7 @@ export const getTokenActor = async (canisterId: string, isAnnon: boolean): Promi
   var idl: any = token.tokenType == 'DIP20' ? TokenIDL.DIP20.factory :
     token.tokenType == 'YC' ? TokenIDL.DIP20.YCfactory :
       token.tokenType == 'ICRC1' ? TokenIDL.ICRC1.factory : TokenIDL.DIP20.factory;
-  if (isAnnon == false && !artemis.provider) { await artemis.connect('plug'); }
+  if (isAnnon == false && !artemis.provider) { await artemis.autoConnect(); }
   actor = await artemis.getCanisterActor(token.id, idl, isAnnon);
   return actor;
 }
@@ -68,11 +68,16 @@ export const getTokenLogo = async (canisterId: string): Promise<string> => {
   if (!token) return '';
   var tokenLogo = '';
   var tokenActor = await getTokenActor(token.id, true);
-  if (!token?.tokenType || token?.tokenType == 'DIP20' || token?.tokenType == 'YC') {
-    tokenLogo = await tokenActor.logo();
-  } else if (token?.tokenType == 'ICRC1') {
-    tokenLogo = "https://d15bmhsw4m27if.cloudfront.net/sonic/" + token.id
+  try {
+    if (!token?.tokenType || token?.tokenType == 'DIP20' || token?.tokenType == 'YC') {
+      tokenLogo = await tokenActor.logo();
+    } else if (token?.tokenType == 'ICRC1') {
+      tokenLogo = "https://d15bmhsw4m27if.cloudfront.net/sonic/" + token.id
+    }
+  } catch (error) {
+    tokenLogo = ''
   }
+
   return tokenLogo;
 }
 
@@ -83,14 +88,18 @@ export const getTokenBalance = async (canisterId: string, principalId?: string):
   var prin = artemis.principalId ? artemis.principalId : principalId;
 
   if (!prin) return tokenBalance;
+  try {
+    var tokenActor = await getTokenActor(tokenInfo.id, true);
 
-  var tokenActor = await getTokenActor(tokenInfo.id, true);
-
-  if (tokenInfo?.tokenType == 'DIP20' || tokenInfo?.tokenType == 'YC') {
-    tokenBalance = await tokenActor.balanceOf(Principal.fromText(prin));
-  } else if (tokenInfo?.tokenType == 'ICRC1') {
-    tokenBalance = await tokenActor.icrc1_balance_of({ owner: Principal.fromText(prin), subaccount: [] });
+    if (tokenInfo?.tokenType == 'DIP20' || tokenInfo?.tokenType == 'YC') {
+      tokenBalance = await tokenActor.balanceOf(Principal.fromText(prin));
+    } else if (tokenInfo?.tokenType == 'ICRC1') {
+      tokenBalance = await tokenActor.icrc1_balance_of({ owner: Principal.fromText(prin), subaccount: [] });
+    }
+  } catch (error) {
+    tokenBalance = BigInt(0);
   }
+
   return tokenBalance;
 }
 
@@ -100,11 +109,14 @@ export const getTokenAllowance = async (canisterId: string): Promise<bigint> => 
   var tokenInfo = tokenListObj?.[canisterId];
   if (!tokenInfo || !artemis.principalId) return allowance;
 
-  var tokenActor = await getTokenActor(canisterId, true);
-  if (tokenInfo?.tokenType == 'DIP20' || tokenInfo?.tokenType == 'YC') {
-    allowance = await tokenActor.allowance(Principal.fromText(artemis.principalId), Principal.fromText(ENV.canistersPrincipalIDs.swap));
-  } else allowance = BigInt(0);
-
+  try {
+    var tokenActor = await getTokenActor(canisterId, true);
+    if (tokenInfo?.tokenType == 'DIP20' || tokenInfo?.tokenType == 'YC') {
+      allowance = await tokenActor.allowance(Principal.fromText(artemis.principalId), Principal.fromText(ENV.canistersPrincipalIDs.swap));
+    } else allowance = BigInt(0);
+  } catch (error) {
+    allowance = BigInt(0);
+  }
   return allowance;
 }
 

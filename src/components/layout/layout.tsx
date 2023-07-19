@@ -75,9 +75,9 @@ export const Layout: React.FC = ({ children, ...props }) => {
         <Flex 
           zIndex="1000"  width="full" maxWidth="container.xl" margin="auto"
           direction="row" justifyContent="center" alignItems="center" flexWrap="wrap"
-          gap="4" p={['4', '4', '8']} position="sticky" top="0" 
+          gap="2" p={['4', '4', '8']} position="sticky" top="0" 
         >
-          <Flex display={['none', 'none', 'none', 'flex']}   width={['0', '24%']}  alignItems="center" justifyContent="center">
+          <Flex display={['none', 'none', 'none', 'flex']}   width={['0', '20%']}  alignItems="center" justifyContent="center">
             <LogoBox />
           </Flex>
           <chakra.nav flex="1" display="flex" alignItems="center" justifyContent="center">
@@ -88,6 +88,16 @@ export const Layout: React.FC = ({ children, ...props }) => {
                     {label}
                   </Tab>
                 ))}
+
+                
+<Tab display={['none', 'none', 'flex', 'flex']} as="a"
+                  href={'https://lbp.sonic.ooo/'} target={'_blank'}
+                  px={4}
+                >
+                  LBP
+                  <FiArrowUpRight />
+                </Tab>
+                
                 <Tab display={['none', 'none', 'flex', 'flex']} as="a"
                   href={ExternalLink.analyticsApp} target={ExternalLink.analyticsApp}
                   px={4}
@@ -98,7 +108,7 @@ export const Layout: React.FC = ({ children, ...props }) => {
               </TabList>
             </Tabs>
           </chakra.nav>
-          <Flex direction="row" width={['fit-content', 'fit-content', '24%']} gap="4" mr="-2"
+          <Flex direction="row" width={['fit-content', 'fit-content', '20%']} gap="4" mr="-2"
             alignItems="center" justifyContent="flex-end">
             <HStack>
               {isConnected ? <WalletMenu placement="bottom-end" /> : <WalletConnectBtn/>  }

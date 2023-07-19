@@ -36,27 +36,32 @@ export const useSwapBatch = ({ keepInSonic, ...swapParams }: SwapModel & ExtraDe
   const withdrawParams = { token: swapParams.to.metadata, amount: swapParams.to.value };
   var tokenType = depositParams.token?.tokenType;
 
+
   var batchLoad: any = { state: "idle" };
   var SwapBatch = { batch: batchLoad, openBatchModal: () => { } };
   var trxList: any = {};
 
-  if (tokenType == 'DIP20' || tokenType == 'YC') {
-    const approve = useApproveTransactionMemo(depositParams);
-    const deposit = useDepositTransactionMemo(depositParams);
-    trxList = { approve: approve, deposit: deposit };
-  } else if (tokenType == 'ICRC1') {
-    var getAcnt = intitICRCTokenDeposit();
-    var approveTx = useICRCTransferMemo({ ...depositParams });
-    var depositTx = useDepositTransactionMemo(depositParams);
-    trxList = { getacnt: getAcnt, approve: approveTx, deposit: depositTx }
-  }
-  swapParams.entryVal = depositParams.amount;
+  
+    if (tokenType == 'DIP20' || tokenType == 'YC') {
+      const approve = useApproveTransactionMemo(depositParams);
+      const deposit = useDepositTransactionMemo(depositParams);
+      if(parseFloat(depositParams.amount)>0)
+        trxList = { approve: approve, deposit: deposit };
+    } else if (tokenType == 'ICRC1') {
+      var getAcnt = intitICRCTokenDeposit();
+      var approveTx = useICRCTransferMemo({ ...depositParams });
+      var depositTx = useDepositTransactionMemo(depositParams);
+      if(parseFloat(depositParams.amount)>0)
+        trxList = { getacnt: getAcnt, approve: approveTx, deposit: depositTx }
+    }
 
+
+  swapParams.entryVal = depositParams.amount;
   const swap = useSwapExactTokensTransactionMemo(swapParams);
+
   trxList = { ...trxList, swap: swap, }
 
   if (!keepInSonic) { 
-    withdrawParams;useWithdrawTransactionMemo
     trxList = { ...trxList, withdraw: useWithdrawTransactionMemo(withdrawParams) } 
   }
 
