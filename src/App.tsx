@@ -20,8 +20,6 @@ import { ENV } from './config';
 import { useNetworkErrorNotifications, useTokenLogosFetcherInit, } from './hooks';
 import { useBlockHeightsInit } from './hooks/use-block-heights-init';
 
-//import { usePlugInit } from './integrations/plug';
-
 import { useWalletInit } from '@/integrations/artemis'
 
 import { useCyclesMintingCanisterInit, useLiquidityViewInit, usePriceInit, useSwapCanisterInit } from './store';
@@ -33,8 +31,6 @@ Default.IC_HOST = ENV.host;
 
 export const App = () => {
   useCyclesMintingCanisterInit();
-
- // usePlugInit();
   useWalletInit();
   usePriceInit();
   useSwapCanisterInit();
