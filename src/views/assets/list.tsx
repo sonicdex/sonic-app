@@ -1,9 +1,9 @@
-import { Flex, HStack, Icon, Stack, Text, useColorModeValue, ButtonGroup,Button  } from '@chakra-ui/react';
+import { Flex, HStack, Icon, Stack, Text, useColorModeValue, ButtonGroup, Button } from '@chakra-ui/react';
 import { toBigNumber } from '@memecake/sonic-js';
 import { FaInfoCircle } from '@react-icons/all-files/fa/FaInfoCircle';
 import { FaMinus } from '@react-icons/all-files/fa/FaMinus';
 import { FaPlus } from '@react-icons/all-files/fa/FaPlus';
-import { useCallback, useMemo , useState} from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 
 import {
@@ -22,7 +22,9 @@ import {
 } from '@/store';
 
 
-import { DepostAddressModal} from '@/components/modals';
+import { DepostAddressModal, RetryFailedTrxModal } from '@/components/modals';
+
+RetryFailedTrxModal;
 
 const getAssetPriceByBalance = (price?: string, balance?: number, decimals?: number) => {
   if (price && balance && decimals) {
@@ -97,10 +99,14 @@ export const AssetsListView = () => {
   );
   const [isModelOpen, setisModelOpen] = useState(false);
   const [tokenSelected, settokenSelected] = useState('');
-  const showDepositModal= function(tokenId:string){
+
+  const [isFailedTrxOpen, setIsFailedTrxOpen] = useState(0);
+  const retryFailedTrx = () => { var r = Math.random() * 100; setIsFailedTrxOpen(r); };
+
+  const showDepositModal = function (tokenId: string) {
     setisModelOpen(true);
     settokenSelected(tokenId);
-  } 
+  }
 
   const getCanDeposit = useCallback(
     (tokenId: string) => {
@@ -108,25 +114,33 @@ export const AssetsListView = () => {
     },
     [tokenBalances]
   );
-
+  retryFailedTrx;
   return (
     <>
-      <DepostAddressModal isNotiOpen={isModelOpen} tokenId={tokenSelected} onclose={()=>{ setisModelOpen(false); }}/>
+      <RetryFailedTrxModal  isRetryOpen={isFailedTrxOpen}/>
+      <DepostAddressModal isNotiOpen={isModelOpen} tokenId={tokenSelected} onclose={() => { setisModelOpen(false); }} />
       <Header title="Your Assets" isUpdating={isUpdating}>
         {isBannerOpened && (
           <InformationBox title="Assets Details" mb={9} onClose={handleBannerClose}>
             <Text color={assetsDetailsTextColor}>
-              View all the assets you have deposited or obtained on Sonic
-              through our Liquidity and Swaps protocols, and deposit more or
-              withdraw them to your wallet.
+            It is the representation of the fees earned from swaps in consecutive tokens.
+             Please note that the accrued fees will be automatically added to your Liquidity pool.
             </Text>
           </InformationBox>
         )}
+        <Flex alignItems={'self-end'} w="100%" flexDirection="column">
+          <Flex>
+            {/* <Button size="sm" variant="gradient" colorScheme="dark-blue" isLoading={isLoading}  onClick={retryFailedTrx}>
+              Retry Failed Deposit
+            </Button> */}
+          </Flex>
+        </Flex>
       </Header>
 
       {!isConnected ? (
         <WalletNotConnected message="Your assets will appear here." />
       ) : (
+
         <Stack spacing={4} pb={8} flex={1}>
           {isLoading ? (
             <>
@@ -138,7 +152,6 @@ export const AssetsListView = () => {
                   <AssetIconButton aria-label="Deposit" icon={<FaPlus />} />
                 </HStack>
               </Asset>
-
               <Asset isLoading>
                 <AssetImageBlock />
                 <HStack>
@@ -196,8 +209,8 @@ export const AssetsListView = () => {
                   </HStack>
                   <Flex flex={1} direction="column" alignItems='end' gap='2' minW={['100%']}>
                     <ButtonGroup gap='2'>
-                      <Button fontSize={14} px={6}  onClick={() => showDepositModal(id)} >Deposit</Button>
-                      <Button fontSize={14} px={6}  onClick={() => navigateToTransfer(id)} >Send</Button>
+                      <Button fontSize={14} px={6} onClick={() => showDepositModal(id)} >Deposit</Button>
+                      <Button fontSize={14} px={6} onClick={() => navigateToTransfer(id)} >Send</Button>
                     </ButtonGroup>
                   </Flex>
                 </Asset>

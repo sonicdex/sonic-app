@@ -17,7 +17,7 @@ import {
 //AppUpdatedModal
 
 import { ENV } from './config';
-import { useNetworkErrorNotifications, useTokenLogosFetcherInit, } from './hooks';
+import { useNetworkErrorNotifications, } from './hooks'; //useTokenLogosFetcherInit
 import { useBlockHeightsInit } from './hooks/use-block-heights-init';
 
 import { useWalletInit } from '@/integrations/artemis'
@@ -36,7 +36,7 @@ export const App = () => {
   useSwapCanisterInit();
   useLiquidityViewInit();
   useBlockHeightsInit();
-  useTokenLogosFetcherInit();
+ // useTokenLogosFetcherInit();
   useNetworkErrorNotifications();
   loadsupportedTokenList();
   return (
