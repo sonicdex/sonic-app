@@ -51,15 +51,12 @@ export const useDepositBatch = (deposit: Deposit): any => {
 
     var getAcnt = intitICRCTokenDeposit();
     var approveTx = useICRCTransferMemo({ ...deposit });
-    //var depositTx =
-     useDepositTransactionMemo(deposit);
+    var depositTx = useDepositTransactionMemo(deposit);
 
     const DepositBatchTx = useMemo(() => {
-      return new BatchTransact({getacnt:getAcnt, approve: approveTx,
-        // deposit: depositTx
-        }, artemis);
+      return new BatchTransact({getacnt:getAcnt, approve: approveTx,deposit: depositTx}, artemis);
     }, []);
-    console.log(DepositBatchTx);
+
     if (DepositBatchTx) {
       batchLoad.batchExecute = DepositBatchTx;
       DepositBatch = { ...DepositBatch, batch: batchLoad, openBatchModal };
