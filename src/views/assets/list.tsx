@@ -130,9 +130,9 @@ export const AssetsListView = () => {
         )}
         <Flex alignItems={'self-end'} w="100%" flexDirection="column">
           <Flex>
-            {/* <Button size="sm" variant="gradient" colorScheme="dark-blue" isLoading={isLoading}  onClick={retryFailedTrx}>
+            <Button size="sm" variant="gradient" colorScheme="dark-blue" isLoading={isLoading}  onClick={retryFailedTrx}>
               Retry Failed Deposit
-            </Button> */}
+            </Button>
           </Flex>
         </Flex>
       </Header>
