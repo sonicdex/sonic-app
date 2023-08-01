@@ -67,7 +67,7 @@ export const PairedUserLPToken: React.FC<PairedUserLPTokenProps> = ({
 
   //getuserLprewards
   const rewardData = getuserLprewards(token0.id, token1.id);
-
+  rewardData;
 
   return (
     <Flex direction="column" borderRadius="xl" bg={bg} shadow={shadow}>
@@ -171,7 +171,7 @@ export const PairedUserLPToken: React.FC<PairedUserLPTokenProps> = ({
               </PopoverBody>
             </PopoverContent>
           </Popover>
-          {!rewardData && (
+          {/* {!rewardData && ( */}
           <DisplayValue
             color={successColor}
             isUpdating={isMetricsLoading}
@@ -180,8 +180,9 @@ export const PairedUserLPToken: React.FC<PairedUserLPTokenProps> = ({
             fontWeight="bold"
             decimals={8}
             width="fit-content"
-          />)}
-          {rewardData && (
+          />
+          {/* )} */}
+          {/* {rewardData && (
             <>
               <Flex>
                 <Flex>
@@ -196,7 +197,7 @@ export const PairedUserLPToken: React.FC<PairedUserLPTokenProps> = ({
                 </Flex>
               </Flex>
             </>
-          )}
+          )} */}
         </Box>
       </Flex>
     </Flex>
