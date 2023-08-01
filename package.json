@@ -1,6 +1,6 @@
 {
   "name": "sonic-app",
-  "version": "1.7.9",
+  "version": "1.8.0",
   "description": "Sonic application built with React and Typescript.",
   "main": "dist/index.js",
   "private": true,

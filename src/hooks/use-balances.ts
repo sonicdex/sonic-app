@@ -34,7 +34,6 @@ export const useBalances = () => {
 
           const swapActor = await getswapActor(true);
           const response = await swapActor.getUserLPBalancesAbove(Principal.fromText(principalId), BigInt(0));
-
           if (response) {
             dispatch(swapCanisterActions.setUserLPBalances(parseResponseUserLPBalances(response)));
           } else {

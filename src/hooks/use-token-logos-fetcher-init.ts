@@ -2,6 +2,8 @@ import { useEffect } from 'react';
 import { getFromStorage, saveToStorage } from '@/utils';
 import { AppLog , tokenList} from '@/utils';
 
+
+// not using
 export const useTokenLogosFetcherInit = (): void => {
   const supportedTokenList = tokenList('array');
   useEffect(() => {

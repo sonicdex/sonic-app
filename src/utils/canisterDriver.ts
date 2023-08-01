@@ -8,7 +8,6 @@ import { artemis } from '@/integrations/artemis';
 import { AppTokenMetadata } from '@/models';
 import { ENV } from '@/config';
 
-
 import crc32 from 'buffer-crc32';
 import { Buffer } from 'buffer';
 import crypto from "crypto-js";
@@ -16,6 +15,11 @@ import crypto from "crypto-js";
 var supportedTokenList: any = [];
 var tokenListObj: any = {};
 
+function waitWithTimeout(ms:number) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => reject(new Error('Timeout')), ms);
+  });
+}
 
 
 export const loadsupportedTokenList = async () => {
@@ -88,19 +92,25 @@ export const getTokenBalance = async (canisterId: string, principalId?: string):
   var prin = artemis.principalId ? artemis.principalId : principalId;
 
   if (!prin) return tokenBalance;
+  
   try {
     var tokenActor = await getTokenActor(tokenInfo.id, true);
-
     if (tokenInfo?.tokenType == 'DIP20' || tokenInfo?.tokenType == 'YC') {
-      tokenBalance = await tokenActor.balanceOf(Principal.fromText(prin));
+      tokenBalance =  await Promise.race([
+        tokenActor.balanceOf(Principal.fromText(prin)), 
+        waitWithTimeout(10000) 
+      ]);
     } else if (tokenInfo?.tokenType == 'ICRC1') {
-      tokenBalance = await tokenActor.icrc1_balance_of({ owner: Principal.fromText(prin), subaccount: [] });
+      tokenBalance =  await Promise.race([
+        tokenActor.icrc1_balance_of({ owner: Principal.fromText(prin), subaccount: [] }),
+        waitWithTimeout(10000) 
+      ]);
     }
   } catch (error) {
     tokenBalance = BigInt(0);
+    console.log(tokenInfo.name+' ('+ tokenInfo.id +') failed to load !!!' );
   }
-
-  return tokenBalance;
+   return tokenBalance;
 }
 
 export const getTokenAllowance = async (canisterId: string): Promise<bigint> => {
