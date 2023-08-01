@@ -17,10 +17,8 @@ import {
 //AppUpdatedModal
 
 import { ENV } from './config';
-import { useNetworkErrorNotifications, useTokenLogosFetcherInit, } from './hooks';
+import { useNetworkErrorNotifications, } from './hooks';
 import { useBlockHeightsInit } from './hooks/use-block-heights-init';
-
-//import { usePlugInit } from './integrations/plug';
 
 import { useWalletInit } from '@/integrations/artemis'
 
@@ -31,16 +29,14 @@ ActorAdapter.DEFAULT_HOST = ENV.host;
 Default.ENV = process.env.NODE_ENV || 'production';
 Default.IC_HOST = ENV.host;
 
+loadsupportedTokenList;
 export const App = () => {
   useCyclesMintingCanisterInit();
-
- // usePlugInit();
   useWalletInit();
   usePriceInit();
   useSwapCanisterInit();
   useLiquidityViewInit();
   useBlockHeightsInit();
-  useTokenLogosFetcherInit();
   useNetworkErrorNotifications();
   loadsupportedTokenList();
   return (

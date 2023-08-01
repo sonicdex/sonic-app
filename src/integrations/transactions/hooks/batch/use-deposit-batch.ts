@@ -54,7 +54,7 @@ export const useDepositBatch = (deposit: Deposit): any => {
     var depositTx = useDepositTransactionMemo(deposit);
 
     const DepositBatchTx = useMemo(() => {
-      return new BatchTransact({getacnt:getAcnt, approve: approveTx, deposit: depositTx }, artemis);
+      return new BatchTransact({getacnt:getAcnt, approve: approveTx,deposit: depositTx}, artemis);
     }, []);
 
     if (DepositBatchTx) {

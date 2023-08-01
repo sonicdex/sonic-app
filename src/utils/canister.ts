@@ -6,8 +6,6 @@ import { ENV } from '@/config';
 import { SwapIDL } from '@/did';
 import { AppTokenMetadata, AppTokenMetadataListObject, PairBalances } from '@/models';
 
-import { getFromStorage } from './local-storage';
-
 var prorityOrder = ENV.prorityOrder;
 
 export const desensitizationPrincipalId = (principalId?: string, firstLength = 5, lastLength = 3) => {
@@ -21,7 +19,7 @@ export const desensitizationPrincipalId = (principalId?: string, firstLength = 5
 export const parseResponseSupportedTokenList = (response: SwapIDL.TokenInfoExt[], price?: string): AppTokenMetadata[] => {
   var a1: any = [], a2: any = [];
   response.forEach((token) => {
-    const logo = getFromStorage(`${token.id}-logo`) || questionMarkSrc;
+    const logo = "https://cdn.sonic.ooo/icons/"+token.id || questionMarkSrc ; // getFromStorage(`${token.id}-logo`) || questionMarkSrc;
     var tempTkn = { ...token, ...(price ? { price } : {}), logo }
     var order = prorityOrder.findIndex(x => x == token.symbol);
     var isBlocked = ENV.hiddenTokens.includes(token.id);
