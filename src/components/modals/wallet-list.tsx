@@ -27,7 +27,7 @@ export const WalletListModal: React.FC = () => {
         
         dispatch(walletActions.setWalletSelected(id));
         dispatch(walletActions.setOnwalletList(walletState.Connecting));
-
+        
         var connectInfo = await artemis.connect(id,connectObj);
         if(connectInfo){
             if(artemis?.principalId && artemis?.provider){
@@ -60,12 +60,12 @@ export const WalletListModal: React.FC = () => {
                         </ModalHeader>
                         <ModalBody mt={4} p={0}>
                             {artemis?.wallets.map((item: any, i:number) => (
-                                <Stack width="100%" maxWidth="100%" direction={['column', 'row']} key={i}
+                                <Stack width="100%" maxWidth="100%" direction={['row', 'row']} key={i}
                                     alignItems="center" mt={2} cursor="pointer" mb={2} pt={1} pb={1} pl={2} pr={20} border="1px solid rgb(63, 81, 181)" borderRadius="60px"
                                     onClick={() => handleSelectWallet(item?.id)}
                                 >
                                     <Box mr={4}>
-                                        <Image borderRadius='full' boxSize='36px' src={item?.icon} alt='' bg={'gray.800'} />
+                                        <Image borderRadius='full' boxSize='32px' src={item?.icon} alt='' bg={'gray.800'} />
                                     </Box>
                                     <Box>
                                         <Text fontSize='14px' > {item?.name}</Text>

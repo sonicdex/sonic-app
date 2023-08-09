@@ -1,15 +1,5 @@
 import {
-  Box,
-  Button,
-  Divider,
-  Flex,
-  Popover,
-  PopoverArrow,
-  PopoverBody,
-  PopoverContent,
-  PopoverTrigger,
-  Text,
-  useColorModeValue,
+  Box, Button, Divider, Flex, Popover, PopoverArrow, PopoverBody, PopoverContent, PopoverTrigger, Text, useColorModeValue,
 } from '@chakra-ui/react';
 import { Liquidity, Pair } from '@memecake/sonic-js';
 import { FaInfoCircle } from '@react-icons/all-files/fa/FaInfoCircle';
@@ -17,7 +7,7 @@ import { useMemo } from 'react';
 
 import { DisplayValue, TokenImageBlock } from '@/components';
 import { LPBreakdownPopover } from '@/components/core/lp-breakdown-popover';
-import { UserLPMetrics } from '@/hooks';
+import { UserLPMetrics, getuserLprewards } from '@/hooks';
 import { AppTokenMetadata } from '@/models';
 
 export interface PairedUserLPTokenProps {
@@ -58,6 +48,8 @@ export const PairedUserLPToken: React.FC<PairedUserLPTokenProps> = ({
   const userLPValue = useMemo(() => {
     const pair = allPairs?.[token0.id]?.[token1.id];
 
+    console.log()
+
     if (pair && token0.price && token1.price && totalShares && userShares) {
       return Liquidity.getUserPositionValue({
         price0: token0.price,
@@ -70,9 +62,12 @@ export const PairedUserLPToken: React.FC<PairedUserLPTokenProps> = ({
         userShares,
       }).toString();
     }
-
     return '0';
   }, [allPairs, token0, token1, totalShares, userShares]);
+
+  //getuserLprewards
+  const rewardData = getuserLprewards(token0.id, token1.id);
+  rewardData;
 
   return (
     <Flex direction="column" borderRadius="xl" bg={bg} shadow={shadow}>
@@ -160,27 +155,23 @@ export const PairedUserLPToken: React.FC<PairedUserLPTokenProps> = ({
           py={1}
           borderRadius="xl"
         >
-          <Text color={headerColor} display="flex" justifyContent="space-between" alignItems="center">
-            Fees Earned
-          </Text>
+
           <Popover trigger="hover">
             <PopoverTrigger>
-              <Box>
-                <FaInfoCircle />
-              </Box>
+              <Flex>
+                <Text color={headerColor} display="flex" justifyContent="space-between" alignItems="center">Fees Earned &nbsp; </Text>
+                <Flex marginTop={1}><FaInfoCircle /></Flex>
+              </Flex>
             </PopoverTrigger>
 
             <PopoverContent color={useColorModeValue('black', 'white')}>
               <PopoverArrow />
               <PopoverBody>
-                Your fees earned are based on periodic snapshots of the
-                estimated prices of the assets your fees accrued in. Both the
-                prices & assets that make up your fees earned are subject to
-                change.
+              It is the representation of the fees earned from swaps in consecutive tokens. Please note that the accrued fees will be automatically added to your LP pool.
               </PopoverBody>
             </PopoverContent>
           </Popover>
-
+          {/* {!rewardData && ( */}
           <DisplayValue
             color={successColor}
             isUpdating={isMetricsLoading}
@@ -190,6 +181,23 @@ export const PairedUserLPToken: React.FC<PairedUserLPTokenProps> = ({
             decimals={8}
             width="fit-content"
           />
+          {/* )} */}
+          {/* {rewardData && (
+            <>
+              <Flex>
+                <Flex>
+                  <DisplayValue color={successColor} value={Number(rewardData.token0) / 10 ** token0.decimals} fontWeight="bold" width="fit-content" />
+                  &nbsp; <Text>{token0.symbol}</Text>
+                </Flex>
+              </Flex>
+              <Flex marginTop={2}>
+                <Flex>
+                  <DisplayValue color={successColor} value={Number(rewardData.token1) / 10 ** token1.decimals} fontWeight="bold" width="fit-content" />
+                  &nbsp; <Text >{token1.symbol}</Text>
+                </Flex>
+              </Flex>
+            </>
+          )} */}
         </Box>
       </Flex>
     </Flex>

@@ -91,9 +91,9 @@ export namespace SwapIDL {
     updateTokenFees: () => Promise<boolean>,
     updateTokenMetadata: (arg_0: string) => Promise<boolean>,
     withdraw: (arg_0: Principal, arg_1: bigint) => Promise<TxReceipt>,
-    withdrawTo: (arg_0: Principal, arg_1: Principal, arg_2: bigint) => Promise<
-      TxReceipt
-    >,
+    withdrawTo: (arg_0: Principal, arg_1: Principal, arg_2: bigint) => Promise<TxReceipt>,
+    getUserReward : (arg_0: Principal, arg_1: string, arg_2: string) => Promise<Result>,
+    retryDeposit : (arg_0: Principal) => Promise<TxReceipt>,
   }
 
   export type Factory = Swap;
@@ -123,7 +123,10 @@ export namespace SwapIDL {
       lpBalances: IDL.Tuple(IDL.Vec(IDL.Tuple(IDL.Text, IDL.Nat)), IDL.Nat),
       balances: IDL.Tuple(IDL.Vec(IDL.Tuple(IDL.Text, IDL.Nat)), IDL.Nat),
     });
-
+    const Result = IDL.Variant({
+      ok : IDL.Tuple(IDL.Nat, IDL.Nat),
+      err : IDL.Text,
+    });
     const Swap = IDL.Service({
       addAuth: IDL.Func([IDL.Principal], [IDL.Bool], []),
       addLiquidity: IDL.Func(
@@ -198,6 +201,8 @@ export namespace SwapIDL {
       updateTokenMetadata: IDL.Func([IDL.Text], [IDL.Bool], []),
       withdraw: IDL.Func([IDL.Principal, IDL.Nat], [TxReceipt], []),
       withdrawTo: IDL.Func([IDL.Principal, IDL.Principal, IDL.Nat], [TxReceipt], []),
+      getUserReward : IDL.Func([IDL.Principal, IDL.Text, IDL.Text],[Result],['query']),
+      retryDeposit : IDL.Func([IDL.Principal], [TxReceipt], []),
     });
     return Swap;
   };

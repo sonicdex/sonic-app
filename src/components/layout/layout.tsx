@@ -33,7 +33,7 @@ import { Link, useLocation } from 'react-router-dom';
 
 import { ENV } from '@/config';
 import { useHeaderResizeEffect } from '@/hooks';
-import { modalsSliceActions, useAppDispatch , useWalletStore } from '@/store';
+import { modalsSliceActions, useAppDispatch, useWalletStore } from '@/store';
 import { ExternalLink } from '@/utils';
 
 import packageJSON from '@/../package.json';
@@ -42,7 +42,7 @@ import { LogoBox } from '../core';
 
 import { FOOTER_HEIGHT, NAVIGATION_TABS } from './layout.constants';
 
-import { WalletConnectBtn , WalletMenu } from '@/components/wallet';
+import { WalletConnectBtn, WalletMenu } from '@/components/wallet';
 
 
 export const Layout: React.FC = ({ children, ...props }) => {
@@ -67,27 +67,37 @@ export const Layout: React.FC = ({ children, ...props }) => {
   const menuBg = useColorModeValue('gray.50', 'custom.2');
   const menuShadow = useColorModeValue('base', 'none');
 
-  useHeaderResizeEffect((element) => { setHeaderHeight(`${element.clientHeight}px`);});
+  useHeaderResizeEffect((element) => { setHeaderHeight(`${element.clientHeight}px`); });
 
   return (
     <>
-      <Container as="header"  maxW={['100%', 'container.xl', 'container.xl']} position="sticky" top={0} zIndex={10} id="header" bg={backgroundColor}>
-        <Flex 
-          zIndex="1000"  width="full" maxWidth="container.xl" margin="auto"
+      <Container as="header" maxW={['100%', 'container.xl', 'container.xl']} position="sticky" top={0} zIndex={10} id="header" bg={backgroundColor}>
+        <Flex
+          zIndex="1000" width="full" maxWidth="container.xl" margin="auto"
           direction="row" justifyContent="center" alignItems="center" flexWrap="wrap"
-          gap="4" p={['4', '4', '8']} position="sticky" top="0" 
+          gap="2" p={['4', '4', '8']} position="sticky" top="0"
         >
-          <Flex display={['none', 'none', 'none', 'flex']}   width={['0', '24%']}  alignItems="center" justifyContent="center">
+          <Flex display={['none', 'none', 'none', 'flex']} width={['0', '20%']} alignItems="center" justifyContent="center">
             <LogoBox />
           </Flex>
           <chakra.nav flex="1" display="flex" alignItems="center" justifyContent="center">
             <Tabs index={currentTabIndex} variant="solid-rounded" colorScheme="dark-blue">
               <TabList bg={menuBg}>
                 {NAVIGATION_TABS.map(({ label, url }) => (
-                  <Tab  as={Link} key={label} to={url} px={6}>
+                  <Tab as={Link} key={label} to={url} px={6}>
                     {label}
                   </Tab>
                 ))}
+
+
+                <Tab display={['none', 'none', 'flex', 'flex']} as="a"
+                  href={'https://lbp.sonic.ooo/'} target={'_blank'}
+                  px={4}
+                >
+                  LBP
+                  <FiArrowUpRight />
+                </Tab>
+
                 <Tab display={['none', 'none', 'flex', 'flex']} as="a"
                   href={ExternalLink.analyticsApp} target={ExternalLink.analyticsApp}
                   px={4}
@@ -98,10 +108,10 @@ export const Layout: React.FC = ({ children, ...props }) => {
               </TabList>
             </Tabs>
           </chakra.nav>
-          <Flex direction="row" width={['fit-content', 'fit-content', '24%']} gap="4" mr="-2"
+          <Flex direction="row" width={['fit-content', 'fit-content', '20%']} gap="4" mr="-2"
             alignItems="center" justifyContent="flex-end">
             <HStack>
-              {isConnected ? <WalletMenu placement="bottom-end" /> : <WalletConnectBtn/>  }
+              {isConnected ? <WalletMenu placement="bottom-end" /> : <WalletConnectBtn />}
               <Menu placement="bottom-end">
                 <MenuButton as={IconButton} aria-label="Menu" icon={<FaEllipsisH />} borderRadius="full" bg={menuBg} shadow={menuShadow} />
                 <div>

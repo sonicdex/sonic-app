@@ -114,6 +114,8 @@ export const useSwapExactTokensTransactionMemo: CreateTransaction<SwapModel> = (
   }, [from.metadata, from.value, from.paths, to.metadata, to.value, principalId, slippage, onFail, onSuccess]);
 };
 
+
+
 export const useSwapForExactTokensTransactionMemo: CreateTransaction<SwapModel> =
  ({ from, to, slippage, principalId }: SwapModel, onSuccess, onFail) => {
 
