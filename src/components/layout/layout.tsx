@@ -82,15 +82,14 @@ export const Layout: React.FC = ({ children, ...props }) => {
           </Flex>
           <chakra.nav flex="1" display="flex" alignItems="center" justifyContent="center">
             <Tabs index={currentTabIndex} variant="solid-rounded" colorScheme="dark-blue">
-              <TabList bg={menuBg}>
+              <TabList bg={menuBg} >
                 {NAVIGATION_TABS.map(({ label, url }) => (
-                  <Tab as={Link} key={label} to={url} px={6}>
+                  <Tab as={Link} key={label} to={url} px={6}> 
                     {label}
                   </Tab>
                 ))}
 
-
-                <Tab display={['none', 'none', 'flex', 'flex']} as="a"
+                <Tab display={['flex', 'flex', 'flex', 'flex']} as="a"
                   href={'https://lbp.sonic.ooo/'} target={'_blank'}
                   px={4}
                 >
