@@ -19,13 +19,8 @@ import { SwapStep } from './';
 import { ExchangeBox, KeepInSonicBox, SwapSubTab } from './components';
 import { useSwapViewData } from './hooks';
 
-//import { useEffect } from 'react';
-
-//import { swapViewActions, useAppDispatch } from '@/store';
-
 export const SwapView = () => {
   useSwapView('swap');
-  //const dispatch = useAppDispatch();
   const {
     allowance, step, headerTitle, isAutoSlippage, isICPSelected, isLoading, isBalancesUpdating, isPriceUpdating, isExplanationTooltipVisible,
     isSelectTokenButtonDisabled, selectTokenButtonText, currentOperation, priceImpact, fromSources, toSources, canHeldInSonic,
@@ -39,11 +34,6 @@ export const SwapView = () => {
   const linkColor = useColorModeValue('dark-blue.500', 'dark-blue.400');
 
   const { fromTokenOptions, toTokenOptions, from, to, slippage } = useSwapViewStore();
-
-  //useEffect; swapViewActions; dispatch;
-
-  // useEffect(() => { dispatch(swapViewActions.setKeepInSonic(true)); }, []);
-
 
   return (
     <Stack spacing={4} mb={9}>
