@@ -123,8 +123,7 @@ export const AssetsListView = () => {
         {isBannerOpened && (
           <InformationBox title="Assets Details" mb={9} onClose={handleBannerClose}>
             <Text color={assetsDetailsTextColor}>
-            It is the representation of the fees earned from swaps in consecutive tokens.
-             Please note that the accrued fees will be automatically added to your Liquidity pool.
+            It is the representation of total token assets in your wallets and sonic wallet associated with this wallet account.
             </Text>
           </InformationBox>
         )}

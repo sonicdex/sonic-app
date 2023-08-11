@@ -52,10 +52,8 @@ export const RemoveLiquidityModal = () => {
   const dispatch = useAppDispatch();
   const { isRemoveLiquidityModalOpened } = useModalsStore();
   const { addNotification } = useNotificationStore();
-  const { token0, token1, removeAmountPercentage, keepInSonic } =
-    useLiquidityViewStore();
-  const { allPairs, userLPBalances, userLPBalancesState } =
-    useSwapCanisterStore();
+  const { token0, token1, removeAmountPercentage, keepInSonic } = useLiquidityViewStore();
+  const { allPairs, userLPBalances, userLPBalancesState } = useSwapCanisterStore();
 
   const handleModalClose = () => {
     dispatch(modalsSliceActions.closeRemoveLiquidityModal());
@@ -85,6 +83,7 @@ export const RemoveLiquidityModal = () => {
     dispatch(liquidityViewActions.setRemoveAmountPercentage(newValue));
   };
 
+
   const isBalancesUpdating = useMemo(
     () => userLPBalancesState === FeatureState.Updating,
     [userLPBalancesState]
@@ -92,8 +91,7 @@ export const RemoveLiquidityModal = () => {
 
   const { balance0, balance1 } = useMemo(() => {
     if (userLPBalances && allPairs && token0.metadata && token1.metadata) {
-      const lpBalance =
-        userLPBalances[token0.metadata.id]?.[token1.metadata.id];
+      const lpBalance = userLPBalances[token0.metadata.id]?.[token1.metadata.id];
       const pair = allPairs[token0.metadata.id]?.[token1.metadata.id];
 
       const { balance0, balance1 } = Liquidity.getTokenBalances({
@@ -106,26 +104,13 @@ export const RemoveLiquidityModal = () => {
       });
 
       return {
-        balance0: balance0
-          .multipliedBy(removeAmountPercentage / 100)
-          .toString(),
-        balance1: balance1
-          .multipliedBy(removeAmountPercentage / 100)
-          .toString(),
+        balance0: balance0.multipliedBy(removeAmountPercentage / 100).toString(),
+        balance1: balance1.multipliedBy(removeAmountPercentage / 100).toString(),
       };
     }
 
-    return {
-      balance0: '0',
-      balance1: '0',
-    };
-  }, [
-    userLPBalances,
-    allPairs,
-    token0.metadata,
-    token1.metadata,
-    removeAmountPercentage,
-  ]);
+    return { balance0: '0', balance1: '0' };
+  }, [userLPBalances, allPairs, token0.metadata, token1.metadata, removeAmountPercentage]);
 
   const { buttonMessage, isAmountIsLow } = useMemo(() => {
     const AMOUNT_TOO_LOW_LABEL = 'Amount is too low';
@@ -159,10 +144,29 @@ export const RemoveLiquidityModal = () => {
 
   const checkboxColorKeepInSonic = useColorModeValue('black', 'white');
   const checkboxColorNotKeepInSonic = useColorModeValue('gray.600', 'custom.1');
-  const checkboxColor = keepInSonic
-    ? checkboxColorKeepInSonic
-    : checkboxColorNotKeepInSonic;
+  const checkboxColor = keepInSonic ? checkboxColorKeepInSonic : checkboxColorNotKeepInSonic;
 
+  const onInputValueChange = (symbol: string, newvalue: number) => {
+    var percentage = 0;
+    if (userLPBalances && allPairs && token0.metadata && token1.metadata) {
+      const lpBalance = userLPBalances[token0.metadata.id]?.[token1.metadata.id];
+      const pair = allPairs[token0.metadata.id]?.[token1.metadata.id];
+      var lpToken = Liquidity.getTokenBalances({ decimals0: token0.metadata.decimals, decimals1: token1.metadata.decimals, reserve0: pair?.reserve0 ?? 0, reserve1: pair?.reserve1 ?? 0, totalSupply: pair?.totalSupply ?? 0, lpBalance });
+      var tmpper: number = 0;
+
+      if (symbol == token0.metadata?.symbol) {
+        tmpper = (newvalue / lpToken.balance0.toNumber()) * 100;
+      } else if (symbol == token1.metadata?.symbol) {
+        tmpper = (newvalue / lpToken.balance1.toNumber()) * 100;
+      }
+
+      if (tmpper > 100) percentage = 100;
+      else percentage = parseFloat(tmpper.toFixed(2));
+      dispatch(liquidityViewActions.setRemoveAmountPercentage(percentage));
+
+    }
+
+  }
   return (
     <Modal
       isCentered
@@ -260,11 +264,13 @@ export const RemoveLiquidityModal = () => {
               {...token0.metadata}
               balance={balance0}
               isUpdating={isBalancesUpdating}
+              onValueChange={onInputValueChange}
             />
             <RemoveLiquidityModalAsset
               {...token1.metadata}
               balance={balance1}
               isUpdating={isBalancesUpdating}
+              onValueChange={onInputValueChange}
             />
           </Stack>
 

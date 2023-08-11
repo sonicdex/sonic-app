@@ -16,7 +16,7 @@ export const getUserTransactions = async ( principalId: string, page?: number): 
   const capRoot = await getCapRootInstance({
     canisterId: ENV.canistersPrincipalIDs.swapCapRoot,
   });
-
+  
   const result = (await capRoot.get_user_transactions({
     user: Principal.fromText(principalId) as any,
     page,

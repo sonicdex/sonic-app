@@ -58,6 +58,9 @@ export const AddLiquidityNotificationContent: React.FC<AddLiquidityNotificationC
   };
 
   const handleError = (err?: any) => {
+
+    console.log(err);
+
     if (err) AppLog.error('Add Liquidity Error', err);
     dispatch(modalsSliceActions.clearAddLiquidityModalData());
     dispatch(modalsSliceActions.clearDepositModalData());

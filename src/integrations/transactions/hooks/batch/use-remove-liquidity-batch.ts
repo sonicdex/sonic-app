@@ -53,6 +53,8 @@ export const useRemoveLiquidityBatch = ({ keepInSonic, ...removeLiquidityParams 
     // return _transactions;
   }, [...Object.values(removeLiquidityParams), keepInSonic]);
 
+
+
   const handleRetry = async () => {
     return new Promise<boolean>((resolve) => {
       dispatch(
@@ -87,10 +89,13 @@ export const useRemoveLiquidityBatch = ({ keepInSonic, ...removeLiquidityParams 
     );
     dispatch(modalsSliceActions.openRemoveLiquidityProgressModal());
   };
+ 
   if (LiquidityBatchTx) {
     batchLoad.batchExecute = LiquidityBatchTx;
     batchLoad.handleRetry = handleRetry;
-    batchLoad.batchFnUpdate = true;
+    batchLoad.batchFnUpdate = false;
   }
+
+  console.log(batchLoad);
   return RemoveLiquidityBatch = { ...RemoveLiquidityBatch, batch: batchLoad, openBatchModal };
 };
