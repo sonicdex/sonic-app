@@ -18,7 +18,7 @@ coverage
 public/js
 
 # Env
-.env*
+.env
 !.env.example
 
 # Cypress
