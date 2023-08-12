@@ -10,7 +10,7 @@ import { FaInfoCircle } from '@react-icons/all-files/fa/FaInfoCircle';
 import {
   SlippageSettings, Token, TokenContent, TokenData, TokenDataBalances, TokenDataPrice,
   TokenDataMetaInfo, TokenDetailsButton, TokenDetailsLogo, TokenDetailsSymbol, TokenInput, ViewHeader,
-  WalletNotConnected
+  WalletNotConnected, InformationBox
 } from '@/components';
 
 import { useSwapView, useSwapViewStore } from '@/store';
@@ -19,13 +19,8 @@ import { SwapStep } from './';
 import { ExchangeBox, KeepInSonicBox, SwapSubTab } from './components';
 import { useSwapViewData } from './hooks';
 
-import { useEffect } from 'react';
-
-import { swapViewActions, useAppDispatch } from '@/store';
-
 export const SwapView = () => {
   useSwapView('swap');
-  const dispatch = useAppDispatch();
   const {
     allowance, step, headerTitle, isAutoSlippage, isICPSelected, isLoading, isBalancesUpdating, isPriceUpdating, isExplanationTooltipVisible,
     isSelectTokenButtonDisabled, selectTokenButtonText, currentOperation, priceImpact, fromSources, toSources, canHeldInSonic,
@@ -38,15 +33,20 @@ export const SwapView = () => {
   const menuListBg = useColorModeValue('gray.50', 'custom.3');
   const linkColor = useColorModeValue('dark-blue.500', 'dark-blue.400');
 
-
-  useEffect; swapViewActions;dispatch;
-  
-  // useEffect(() => { dispatch(swapViewActions.setKeepInSonic(true)); }, []);
-
   const { fromTokenOptions, toTokenOptions, from, to, slippage } = useSwapViewStore();
+
   return (
-    <Stack spacing={4}>
+    <Stack spacing={4} mb={9}>
       <SwapSubTab tabname={'swap'} />
+      {(from.metadata?.symbol == 'BOX' || to.metadata?.symbol == 'BOX') && (
+      <InformationBox title="Important update from BOXY DUDE" mb={3} background={"#E53E3E"} >
+        <Text color={'#fff'} fontSize={'14px'}>
+          The BOXY DIP20 token canister is currently in a paused state for necessary updates in preparation for an
+          upcoming migration to ICRC1 standard. We request you to refrain from engaging in any swaps involving the $BOX token, as these attempts might encounter failures.
+        </Text>
+      </InformationBox>
+      )}
+
       <ViewHeader title={headerTitle}
         onArrowBack={step === SwapStep.Review ? () => setStep(SwapStep.Home) : undefined}
       >
@@ -61,6 +61,8 @@ export const SwapView = () => {
           </MenuList>
         </Menu>
       </ViewHeader>
+
+
       <Flex direction="column" alignItems="center">
         <Box width="full">
           <Token value={from.value} setValue={(value) => onChangeValue(value, 'from')}
