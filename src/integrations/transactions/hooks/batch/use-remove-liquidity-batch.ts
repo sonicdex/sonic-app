@@ -95,7 +95,5 @@ export const useRemoveLiquidityBatch = ({ keepInSonic, ...removeLiquidityParams 
     batchLoad.handleRetry = handleRetry;
     batchLoad.batchFnUpdate = false;
   }
-
-  console.log(batchLoad);
   return RemoveLiquidityBatch = { ...RemoveLiquidityBatch, batch: batchLoad, openBatchModal };
 };
