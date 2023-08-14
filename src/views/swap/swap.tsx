@@ -10,7 +10,7 @@ import { FaInfoCircle } from '@react-icons/all-files/fa/FaInfoCircle';
 import {
   SlippageSettings, Token, TokenContent, TokenData, TokenDataBalances, TokenDataPrice,
   TokenDataMetaInfo, TokenDetailsButton, TokenDetailsLogo, TokenDetailsSymbol, TokenInput, ViewHeader,
-  WalletNotConnected, InformationBox
+  WalletNotConnected
 } from '@/components';
 
 import { useSwapView, useSwapViewStore } from '@/store';
@@ -38,15 +38,6 @@ export const SwapView = () => {
   return (
     <Stack spacing={4} mb={9}>
       <SwapSubTab tabname={'swap'} />
-      {(from.metadata?.symbol == 'BOX' || to.metadata?.symbol == 'BOX') && (
-      <InformationBox title="Important update from BOXY DUDE" mb={3} background={"#E53E3E"} >
-        <Text color={'#fff'} fontSize={'14px'}>
-          The BOXY DIP20 token canister is currently in a paused state for necessary updates in preparation for an
-          upcoming migration to ICRC1 standard. We request you to refrain from engaging in any swaps involving the $BOX token, as these attempts might encounter failures.
-        </Text>
-      </InformationBox>
-      )}
-
       <ViewHeader title={headerTitle}
         onArrowBack={step === SwapStep.Review ? () => setStep(SwapStep.Home) : undefined}
       >
