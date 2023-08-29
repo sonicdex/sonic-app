@@ -19,18 +19,15 @@ export const useActivityView = () => {
 
   useEffect(() => {
     if (!supportedTokenList) return;
-    dispatch(
-      activityViewActions.setTokenList(
-        parseResponseTokenList(supportedTokenList)
-      )
-    );
+    dispatch(activityViewActions.setTokenList( parseResponseTokenList(supportedTokenList)));
   }, [supportedTokenList, dispatch]);
+
 
   const getUserTransactionsPage = useCallback(
     (_principalId: string, _page?: number) => {
       dispatch(activityViewActions.setCAPState(FeatureState.Loading));
-      getUserTransactions(_principalId, _page)
-        .then((res) => {
+
+      getUserTransactions(_principalId, _page).then((res:any) => {
           dispatch(activityViewActions.pushActivityList(res.data));
           dispatch(activityViewActions.setCAPState(FeatureState.Idle));
           dispatch(activityViewActions.pushFetchedPages(res.page));
@@ -39,7 +36,7 @@ export const useActivityView = () => {
             dispatch(activityViewActions.setLastPage(res.page));
           }
         })
-        .catch((err) => {
+        .catch((err:any) => {
           AppLog.error(`Failed to get user transactions: page=${_page}`, err);
           dispatch(activityViewActions.setCAPState(FeatureState.Error));
         });
@@ -66,19 +63,12 @@ export const useActivityView = () => {
   useEffect(() => {
     if (principalId) {
       dispatch(activityViewActions.setLedgerState(FeatureState.Loading));
-      getUserLedgerTransactions(
-        getAccountId(Principal.fromText(principalId), 0)
-      )
-        .then((transactions) => {
+      getUserLedgerTransactions(getAccountId(Principal.fromText(principalId), 0)).then((transactions) => {
           dispatch(activityViewActions.setLedgerState(FeatureState.Idle));
           dispatch(activityViewActions.setLedgerTransactions(transactions));
           dispatch(activityViewActions.pushActivityList([]));
-        })
-        .catch((err) => {
-          AppLog.error(
-            `Failed to get user ledger transactions: principal=${principalId}`,
-            err
-          );
+        }).catch((err) => {
+          AppLog.error( `Failed to get user ledger transactions: principal=${principalId}`,err);
           dispatch(activityViewActions.setLedgerState(FeatureState.Error));
         });
     }

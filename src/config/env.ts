@@ -10,8 +10,7 @@ export const ENV = {
       process.env.CYCLES_MINTING_CANISTER_ID || 'rkp4c-7iaaa-aaaaa-aaaca-cai',
     WICP: process.env.WICP_CANISTER_ID || 'utozz-siaaa-aaaam-qaaxq-cai',
     XTC: process.env.XTC_CANISTER_ID || 'aanaa-xaaaa-aaaah-aaeiq-cai',
-    swapCapRoot:
-      process.env.SWAP_CAP_ROOT_CANISTER_ID || '3qxje-uqaaa-aaaah-qcn4q-cai',
+    swapCapRoot: process.env.SWAP_CAP_ROOT_CANISTER_ID || '3qxje-uqaaa-aaaah-qcn4q-cai',
   },
   accountIDs: {
     XTC:

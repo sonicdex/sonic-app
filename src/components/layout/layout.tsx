@@ -17,7 +17,12 @@ import {
   useColorMode,
   useColorModeValue,
   useToken,
+  Alert,
+  AlertIcon,
+  CloseButton,
 } from '@chakra-ui/react';
+
+
 import { FaBook } from '@react-icons/all-files/fa/FaBook';
 import { FaDiscord } from '@react-icons/all-files/fa/FaDiscord';
 import { FaEllipsisH } from '@react-icons/all-files/fa/FaEllipsisH';
@@ -68,9 +73,23 @@ export const Layout: React.FC = ({ children, ...props }) => {
   const menuShadow = useColorModeValue('base', 'none');
 
   useHeaderResizeEffect((element) => { setHeaderHeight(`${element.clientHeight}px`); });
+  const [showBanner, setShowBanner] = useState(true);
+  const handleCloseBanner = () => {
+    setShowBanner(false);
+  };
 
   return (
     <>
+       {showBanner && (
+        <Alert status="info" mb={4} bg={menuBg} borderRadius={'md'} justifyContent={'center'}>
+          <AlertIcon />
+          <b> LP contest alert : </b> &nbsp; Add any LP in sonic and win a share  of $250K rewards. &nbsp;
+          <ChakraLink href="https://sonicdex.notion.site/Sonic-X-LP-Promotion-65c8b4fd93a7499bbe72f000f0b894c7" fontWeight={600} isExternal color="teal.500">
+          click here 
+          </ChakraLink> &nbsp; for more details
+          <CloseButton size="sm" onClick={handleCloseBanner} position="absolute" right="8px" top="8px" />
+        </Alert>
+      )}
       <Container as="header" maxW={['100%', 'container.xl', 'container.xl']} position="sticky" top={0} zIndex={10} id="header" bg={backgroundColor}>
         <Flex
           zIndex="1000" width="full" maxWidth="container.xl" margin="auto"
