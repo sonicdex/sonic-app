@@ -35,8 +35,8 @@ export const ViewHeader: React.FC<ViewHeaderProps> = ({
         color={color}
         fontWeight={700}
         textAlign="center"
-        borderTopRadius={20}
-        borderBottomRadius={20}
+        borderTopRadius={15}
+        borderBottomRadius={15}
         direction="row"
         align="center"
       >

@@ -144,12 +144,15 @@ export const LiquidityListView = () => {
         buttonText="Create Position"
         onButtonClick={() => moveToAddLiquidityView()}
         isUpdating={isUpdating}
+       
       >
+        
         {isBannerOpened && (
           <InformationBox
             onClose={handleInformationClose}
             title={INFORMATION_TITLE}
             mb={9}
+            mt={9}
           >
             <InformationDescription />
           </InformationBox>
