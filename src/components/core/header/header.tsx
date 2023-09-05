@@ -36,16 +36,8 @@ export const Header: React.FC<HeaderProps> = ({
   });
 
   return (
-    <Flex
-      position="sticky"
-      top={top}
-      pt={5}
-      mt={-10}
-      mb={5}
-      backgroundColor={backgroundColor}
-      transition="background-color 200ms"
-      zIndex={1}
-      flexDirection="column"
+    <Flex position="sticky" top={top} pt={5} mt={1} mb={5}
+      backgroundColor={backgroundColor} transition="background-color 200ms" zIndex={1} flexDirection="column"
     >
       {children}
       <Flex

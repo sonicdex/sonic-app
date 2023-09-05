@@ -21,6 +21,8 @@ public/js
 .env
 !.env.example
 
+.env.dev.dep
+
 # Cypress
 cypress/videos
 cypress/screenshots
