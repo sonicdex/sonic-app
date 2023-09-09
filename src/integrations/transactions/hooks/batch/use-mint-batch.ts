@@ -1,10 +1,8 @@
-// import { TransactionPrevResponse } from '@memecake/plug-inpage-provider/dist/src/Provider/interfaces';
 import { useMemo } from 'react';
 import { ENV } from '@/config';
-// import { MINT_AUTO_NOTIFICATION_TITLES } from '@/notifications';
 
 import {
-  MintTokenSymbol, modalsSliceActions, useAppDispatch, useSwapViewStore  //useWalletStore //addNotification, NotificationType, //MintModalData  addNotification, MintModalDataStep , useModalsStore , NotificationState , NotificationType
+  MintTokenSymbol, modalsSliceActions, useAppDispatch, useSwapViewStore 
 } from '@/store';
 
 import {

@@ -7,7 +7,7 @@ import {
   NotificationType,
   useAppDispatch,
   useNotificationStore,
-  usePlugStore,
+  useWalletStore,
 } from '@/store';
 import {
   getFromStorage,
@@ -17,7 +17,7 @@ import {
 
 export const useBlockHeightsInit = () => {
   const [notificationId] = useState(String(new Date().getTime()));
-  const { isConnected, principalId } = usePlugStore();
+  const { isConnected, principalId } = useWalletStore();
   const { addNotification, popNotification } = useNotificationStore();
   const dispatch = useAppDispatch();
 

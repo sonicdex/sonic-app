@@ -1,7 +1,3 @@
-import type {
-  Transaction,
-  TransactionPrevResponse,
-} from '@memecake/plug-inpage-provider/dist/src/Provider/interfaces';
 
 import { CreateTransaction } from '.';
 
@@ -13,9 +9,9 @@ export namespace Batch {
 
   export type Execute = () => Promise<unknown>;
 
-  export type Push = (transaction: Transaction) => Controller;
+  export type Push = (transaction: any) => Controller;
 
-  export type GetTransactions = () => Transaction[];
+  export type GetTransactions = () => any[];
 
   export type GetState = () => State;
 
@@ -44,11 +40,11 @@ export namespace Batch {
 
   export interface HookProps<Model> {
     transactions: {
-      [key: string]: ReturnType<CreateTransaction<Model, Transaction>>;
+      [key: string]: ReturnType<CreateTransaction<Model, any>>;
     };
     handleRetry?: (
       error: unknown,
-      prevResponses?: TransactionPrevResponse[]
+      prevResponses?: any[]
     ) => Promise<boolean | { nextTxArgs: unknown }>;
   }
 }
