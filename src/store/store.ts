@@ -9,7 +9,7 @@ import keepSyncReducer from '@/store/features/keep-sync/keep-sync-slice';
 import liquidityViewReducer from '@/store/features/liquidity-view/liquidity-view-slice';
 import modalsReducer from '@/store/features/modals/modals-slice';
 import notificationReducer from '@/store/features/notification/notification-slice';
-import plugReducer from '@/store/features/plug/plug-slice';
+
 import priceReducer from '@/store/features/price/price-slice';
 import swapReducer from '@/store/features/swap-canister/swap-canister-slice';
 import swapViewReducer from '@/store/features/swap-view/swap-view-slice';
@@ -21,7 +21,6 @@ import walletReducer from '@/store/features/dfinitywallet/wallet-slice';
 export const store = configureStore({
   reducer: {
     cyclesMinting: cyclesMintingCanisterReducer,
-    plug: plugReducer,
     modals: modalsReducer,
     notification: notificationReducer,
     swap: swapReducer,

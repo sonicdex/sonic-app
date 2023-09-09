@@ -5,7 +5,7 @@ import { AddLiquidityModalDataStep, modalsSliceActions, useAppDispatch, useLiqui
 import { AddLiquidity, Deposit } from '../..';
 import {
   useAddLiquidityTransactionMemo, useApproveTransactionMemo, useDepositTransactionMemo, 
-  intitICRCTokenDepositIn, useICRCTransferMemo, //useICRCDepositMemo //useBatch
+  intitICRCTokenDepositIn, useICRCTransferMemo
 } from '..';
 
 import { useCreatePairTransactionMemo } from '../transactions/create-pair';

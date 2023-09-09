@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { MintTokenSymbol, usePlugStore } from '@/store';
+import { MintTokenSymbol, useWalletStore } from '@/store';
 
 import { getMintWICPTransaction, getMintXTCTransaction, useBatch } from '..';
 import { getTransactionName, removeBlockHeightFromStorage } from '.';
@@ -15,13 +15,11 @@ export type UseMintMultipleBatchOptions = {
 export const useMintMultipleBatch = ({
   blockHeights,
 }: UseMintMultipleBatchOptions) => {
-  const { principalId } = usePlugStore();
-
+  const { principalId } = useWalletStore();
   const [transactions, setTransactions] = useState<Record<string, any>>({});
 
   useEffect(() => {
     let transactions: Record<string, any> = {};
-
     const updateTransactions = (
       tokenSymbol: MintTokenSymbol,
       blockHeight: string

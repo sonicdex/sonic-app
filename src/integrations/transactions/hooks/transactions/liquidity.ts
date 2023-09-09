@@ -1,5 +1,5 @@
 import { Principal } from '@dfinity/principal';
-import { Transaction } from '@memecake/plug-inpage-provider/dist/src/Provider/interfaces';
+
 import { Swap } from '@memecake/sonic-js';
 import { useMemo } from 'react';
 
@@ -12,7 +12,14 @@ import { useBalances } from '@/hooks';
 
 import { AddLiquidity, CreateTransaction, RemoveLiquidity } from '../../models';
 
-export type LiquidityTransaction = Transaction;
+export type LiquidityTransaction = {
+  idl: any;
+  canisterId: string;
+  methodName: string;
+  args: (responses?: any[]) => any[] | any[];
+  onSuccess: (res: any) => Promise<any>;
+  onFail: (err: any, responses?: any[]) => Promise<void>;
+};
 
 export interface LiquidityExtraArgs {
   principal: Principal;

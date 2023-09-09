@@ -1,5 +1,4 @@
 import { Principal } from '@dfinity/principal';
-import { Transaction } from '@memecake/plug-inpage-provider/dist/src/Provider/interfaces';
 import { useMemo } from 'react';
 
 import { ENV } from '@/config';
@@ -8,7 +7,14 @@ import { AppLog } from '@/utils';
 
 import { CreatePair, CreateTransaction } from '../../models';
 
-export type CreatePairTransaction = Transaction;
+export type CreatePairTransaction = {
+  idl: any;
+  canisterId: string;
+  methodName: string;
+  args: (responses?: any[]) => any[] | any[];
+  onSuccess: (res: any) => Promise<any>;
+  onFail: (err: any, responses?: any[]) => Promise<void>;
+};
 
 export const useCreatePairTransactionMemo: CreateTransaction<CreatePair> = (
    { token0, token1 }: CreatePair,onSuccess,onFail) =>useMemo(() => {
