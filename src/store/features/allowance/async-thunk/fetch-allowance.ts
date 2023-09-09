@@ -1,8 +1,5 @@
-// import { Principal } from '@dfinity/principal';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
-// import { ENV } from '@/config';
-// import { createAnonTokenActor } from '@/integrations/actor';
 import { RootState } from '@/store/store';
 import { AppLog , getTokenAllowance} from '@/utils';
 
@@ -10,8 +7,7 @@ import { allowanceActions } from '../allowance-slice';
 
 type FetchAllowance = { tokenId: string };
 
-export const fetchAllowance = createAsyncThunk<void, FetchAllowance>(
-  'plug/disconnect',
+export const fetchAllowance = createAsyncThunk<void, FetchAllowance>('plug/disconnect',
   async ({ tokenId }, { dispatch, getState }): Promise<void> => {
     const { principalId } = (getState() as RootState).dfinityWallet;
     try {

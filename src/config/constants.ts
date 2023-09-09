@@ -6,7 +6,3 @@ export const PATHS = {
 export const ROUTES = {
   Home: '/',
 };
-
-export const ERRORS = {
-  PlugNotConnected: 'Plug is not connected',
-};

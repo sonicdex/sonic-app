@@ -1,4 +1,3 @@
-import { ActorAdapter, Default } from '@memecake/sonic-js';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 
 import { NotificationManager } from '@/notifications';
@@ -14,9 +13,6 @@ import {
   WalletListModal, TransferProgressModal
 } from './components/modals';
 
-//AppUpdatedModal
-
-import { ENV } from './config';
 import { useNetworkErrorNotifications, } from './hooks';
 import { useBlockHeightsInit } from './hooks/use-block-heights-init';
 
@@ -24,10 +20,6 @@ import { useWalletInit } from '@/integrations/artemis'
 
 import { useCyclesMintingCanisterInit, useLiquidityViewInit, usePriceInit, useSwapCanisterInit } from './store';
 import {loadsupportedTokenList} from '@/utils'
-
-ActorAdapter.DEFAULT_HOST = ENV.host;
-Default.ENV = process.env.NODE_ENV || 'production';
-Default.IC_HOST = ENV.host;
 
 loadsupportedTokenList;
 export const App = () => {
