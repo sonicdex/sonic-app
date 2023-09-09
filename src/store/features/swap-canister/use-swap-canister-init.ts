@@ -2,7 +2,9 @@ import { useCallback, useEffect } from 'react';
 
 import { useAllPairs } from '@/hooks';
 import { useBalances } from '@/hooks/use-balances';
-import { createAnonSwapActor } from '@/integrations/actor';
+
+import { getswapActor } from '@/utils'
+
 import { FeatureState, swapCanisterActions, useAppDispatch, useSwapCanisterStore , useWalletStore} from '@/store'; 
 import { AppLog } from '@/utils';
 import { parseResponseSupportedTokenList } from '@/utils/canister';
@@ -41,8 +43,8 @@ export const useSwapCanisterInit = () => {
         if (supportedTokenListState !== FeatureState.Loading) {
           try {
             dispatch( swapCanisterActions.setSupportedTokensListState( isRefreshing ? FeatureState.Updating : FeatureState.Loading));
-            const swapActor = await createAnonSwapActor();
-            const response = await swapActor.getSupportedTokenList();
+            const swapActor = await getswapActor(true);
+            const response = await swapActor?.getSupportedTokenList();
             if (response) {
               dispatch( swapCanisterActions.setSupportedTokenList( parseResponseSupportedTokenList(response)));
             } else {

@@ -1,19 +1,24 @@
 import { Principal } from '@dfinity/principal';
-import { ActorAdapter } from '@memecake/sonic-js';
+
 import axios from 'axios';
 import BigNumber from 'bignumber.js';
 import crc32 from 'buffer-crc32';
 import CryptoJS from 'crypto-js';
 
-import { CyclesMintingIDL } from '@/did/sonic/cycles-minting.did';
-import { createAnonLedgerActor } from '@/integrations/actor';
+import { CyclesMintingIDL } from '@/did';
+
+import { artemis } from '@/integrations/artemis';
+import { ENV } from '@/config';
+import { LedgerIDL } from '@/did';
+
 
 import { ExternalLink } from './external-link';
 import { roundBigInt } from '@/utils/format';
 export const ACCOUNT_DOMAIN_SEPERATOR = '\x0Aaccount-id';
 
 export const fetchICPBalance = async (principalId: string) => {
-  const ledgerActor = await createAnonLedgerActor();
+  const ledgerActor = await artemis.getCanisterActor( ENV.canistersPrincipalIDs.ledger, LedgerIDL.factory,true);
+
   const accountId = getAccountId(Principal.fromText(principalId || ''), 0);
   if (accountId) {
     const balance = ( await ledgerActor.account_balance_dfx({ account: accountId })).e8s;
@@ -26,11 +31,8 @@ export const fetchICPBalance = async (principalId: string) => {
 };
 
 export const fetchICP2XDRConversionRate = async () => {
-  const cmActor =
-    await ActorAdapter.createAnonymousActor<CyclesMintingIDL.Factory>(
-      'rkp4c-7iaaa-aaaaa-aaaca-cai', CyclesMintingIDL.factory,'https://ic0.app/'
-    );
-  return cmActor.get_icp_xdr_conversion_rate();
+  const cmActor = await artemis.getCanisterActor('rkp4c-7iaaa-aaaaa-aaaca-cai',  CyclesMintingIDL.factory, true);
+  return await cmActor.get_icp_xdr_conversion_rate();
 };
 
 export const fetchICPPrice = async () => {

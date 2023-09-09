@@ -1,10 +1,10 @@
-import { Link } from '@chakra-ui/react';
+
 import { Pair, Swap, toBigNumber } from '@memecake/sonic-js';
 import BigNumber from 'bignumber.js';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { batch } from 'react-redux';
 
-import { PLUG_WALLET_WEBSITE_URL } from '@/components';
+
 import { ENV } from '@/config';
 import { getAppAssetsSources } from '@/config/utils';
 import { ICP_METADATA } from '@/constants';
@@ -246,11 +246,7 @@ export const useSwapViewData = (action:string) => {
       title: (
         <div>
           You're using an outdated version of Plug, please update to the latest
-          one{' '}
-          <Link color="blue.400" href={PLUG_WALLET_WEBSITE_URL} target="_blank" rel="noopener noreferrer">
-            here
-          </Link>
-          .
+          one
         </div>
       ),
       type: NotificationType.Error, id: String(new Date().getTime()),
