@@ -1,4 +1,3 @@
-import { TransactionPrevResponse } from '@memecake/plug-inpage-provider/dist/src/Provider/interfaces';
 import { toBigNumber } from '@memecake/sonic-js';
 
 import { MintTokenSymbol } from '@/store';
@@ -13,26 +12,6 @@ export const getAmountDependsOnBalance = ( tokenBalance: number,tokenDecimals: n
   return (parsedFromValue - parsedTokenBalance).toString();
 };
 
-type GetDepositTransactionsOptions = {
-  getAcnt?:any, approveTx: any;depositTx: any;txNames?: string[],tokenType?: string
-};
-
-export const getDepositTransactions = ({approveTx, depositTx, txNames = ['approve', 'deposit'] ,tokenType }: GetDepositTransactionsOptions) => {
-    let transactions = {};
-    if(tokenType ==  'DIP20' || tokenType =='YC'){
-      let requiredAllowance = Number(approveTx?.args[1]);
-      let requiredBalance = Number(depositTx?.args[1] );
-      if (requiredBalance > 0) {
-        if (requiredAllowance > 0) {
-          transactions = { ...transactions, [txNames[0]]: approveTx };
-        }
-        transactions = { ...transactions, [txNames[1]?txNames[1]:'']: depositTx };
-      }
-    }else if( tokenType ==  'ICRC1' ){
-      transactions = {[txNames[0]]: approveTx, [txNames[1]]: depositTx };
-    }
-  return transactions;
-};
 
 export type GetTransactionNameOptions = {
   tokenSymbol: MintTokenSymbol;
@@ -118,7 +97,7 @@ export const saveBlockHeightToStorage = ({
 };
 
 export const updateFailedBlockHeight = ({prevResponses,...props}: Omit<SaveBlockHeightToStorageOptions, 'blockHeight'> & {
-  prevResponses: TransactionPrevResponse[];
+  prevResponses: any[];
 }) => {
   const failedBlockHeight = prevResponses?.[0]?.response as bigint | undefined;
 

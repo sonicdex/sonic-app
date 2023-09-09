@@ -6,7 +6,7 @@ export * from './keep-sync';
 export * from './liquidity-view';
 export * from './modals';
 export * from './notification';
-export * from './plug';
+
 export * from './price';
 export * from './swap-canister';
 export * from './swap-view';

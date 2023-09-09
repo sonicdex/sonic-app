@@ -1,9 +1,9 @@
 import { useMemo, useState } from 'react';
 
-import { plug } from '@/integrations/plug';
-
-import { BatchTransactions } from '..';
 import { Batch } from '../models';
+
+import { BatchTransact } from 'artemis-web3-adapter';
+import { artemis } from '@/integrations/artemis';
 
 export const useBatch = <Model>({
   transactions, handleRetry
@@ -23,11 +23,12 @@ export const useBatch = <Model>({
   );
 
   const batch = useMemo(() => {
-    const newBatch = new BatchTransactions(plug, handleRetry);
     const transactionsList = Object.values(transactions);
+    const newBatch = new BatchTransact(artemis,transactionsList);
+    
     Object.values(transactions).forEach((transaction, index) => {
       const onSuccess = transaction.onSuccess;
-      transaction.onSuccess = async (res) => {
+      transaction.onSuccess = async (res:any) => {
         let txSuccessResponse;
         if (onSuccess) { txSuccessResponse = await onSuccess(res); }
         if (index !== transactionsList.length - 1) {
@@ -38,11 +39,11 @@ export const useBatch = <Model>({
         return txSuccessResponse;
       };
       const onFail = transaction.onFail;
-      transaction.onFail = async (err, prevRes) => {
+      transaction.onFail = async (err:any, prevRes:any) => {
         if (onFail) await onFail(err, prevRes);
         handleError(err);
       };
-      newBatch.push(transaction);
+      //newBatch.push(transaction);
     });
     return newBatch;
   }, [transactions, handleRetry]);

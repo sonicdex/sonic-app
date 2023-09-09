@@ -1,5 +1,5 @@
 import { Principal } from '@dfinity/principal';
-import { Transaction } from '@memecake/plug-inpage-provider/dist/src/Provider/interfaces';
+
 import { Swap } from '@memecake/sonic-js';
 import { useMemo } from 'react';
 
@@ -11,7 +11,14 @@ import { getSwapCapActor } from '@/utils'
 import { CreateTransaction, SwapModel } from '../../models';
 
 
-export type SwapTransaction = Transaction;
+export type SwapTransaction = {
+  idl: any;
+  canisterId: string;
+  methodName: string;
+  args: (responses?: any[]) => any[] | any[];
+  onSuccess: (res: any) => Promise<any>;
+  onFail: (err: any, responses?: any[]) => Promise<void>;
+};
 
 export interface SwapExtraArgs {
   principal: Principal;

@@ -59,7 +59,7 @@ export const AddLiquidityNotificationContent: React.FC<AddLiquidityNotificationC
 
   const handleError = (err?: any) => {
 
-    console.log(err);
+    console.log(batch);
 
     if (err) AppLog.error('Add Liquidity Error', err);
     dispatch(modalsSliceActions.clearAddLiquidityModalData());

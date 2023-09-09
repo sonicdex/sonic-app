@@ -10,7 +10,6 @@ import { getAppAssetsSources } from '@/config/utils';
 import { ICP_METADATA } from '@/constants';
 import { useBalances, useQuery, useTokenAllowance, useTokenBalanceMemo, useTokenSelectionChecker } from '@/hooks';
 
-import { checkIfPlugProviderVersionCompatible } from '@/integrations/plug';
 import {
   FeatureState, INITIAL_SWAP_SLIPPAGE, NotificationType, SwapTokenDataKey, swapViewActions, useAppDispatch, useCyclesMintingCanisterStore,
   useNotificationStore, useWalletStore, usePriceStore, useSwapCanisterStore, useSwapViewStore, useTokenModalOpener, getTokenPath
@@ -26,7 +25,7 @@ import {
 
 export enum SwapStep { Home, Review }
 
-export const useSwapViewData = (action:string) => {
+export const useSwapViewData = (action: string) => {
   const dispatch = useAppDispatch();
   const [lastChangedInputDataKey, setLastChangedInputDataKey] = useState<SwapTokenDataKey>('from');
 
@@ -36,7 +35,7 @@ export const useSwapViewData = (action:string) => {
   const query = useQuery();
   const { addNotification } = useNotificationStore();
   const { fromTokenOptions, toTokenOptions, from, to, tokenList, keepInSonic } = useSwapViewStore();
-  
+
   const {
     sonicBalances, tokenBalances, icpBalance, balancesState, supportedTokenListState,
     supportedTokenList, allPairsState, allPairs,
@@ -75,8 +74,7 @@ export const useSwapViewData = (action:string) => {
     const _newValue = new BigNumber(newValue);
     const icpFee = formatValue(ICP_METADATA.fee, ICP_METADATA.decimals);
 
-    const value =
-      dataKey === 'from' ? _newValue.minus(icpFee) : _newValue.plus(icpFee);
+    const value = dataKey === 'from' ? _newValue.minus(icpFee) : _newValue.plus(icpFee);
 
     dispatch(
       swapViewActions.setValue({
@@ -111,7 +109,7 @@ export const useSwapViewData = (action:string) => {
           ? newValue
           : new BigNumber(newValue).plus(xtcFees).plus(icpFeesConvertedToXTC).toString();
 
-      const rateBasedAmount = handler({ amount, conversionRate: ICPXDRconversionRate});
+      const rateBasedAmount = handler({ amount, conversionRate: ICPXDRconversionRate });
 
       const resultAmount =
         dataKey === 'from'
@@ -237,50 +235,30 @@ export const useSwapViewData = (action:string) => {
     });
   };
 
-  const checkIsPlugProviderVersionCompatible = useCallback(() => {
-    if (checkIfPlugProviderVersionCompatible()) {
-      return true;
-    }
-
-    addNotification({
-      title: (
-        <div>
-          You're using an outdated version of Plug, please update to the latest
-          one
-        </div>
-      ),
-      type: NotificationType.Error, id: String(new Date().getTime()),
-    });
-    return false;
-  }, [addNotification]);
 
   const handleMintXTC = useCallback(() => {
-    if (checkIsPlugProviderVersionCompatible()) {
-      addNotification({
-        title: `Minting ${to.value} ${to.metadata?.symbol}`,
-        type: NotificationType.MintXTC,
-        id: String(new Date().getTime()),
-      });
-      debounce(resetViewState, 300);
-    }
+    addNotification({
+      title: `Minting ${to.value} ${to.metadata?.symbol}`,
+      type: NotificationType.MintXTC,
+      id: String(new Date().getTime()),
+    });
+    debounce(resetViewState, 300);
   }, [
     addNotification,
-    checkIsPlugProviderVersionCompatible,
     resetViewState,
     to.metadata?.symbol,
     to.value,
   ]);
 
   const handleMintWICP = useCallback(() => {
-    if (checkIsPlugProviderVersionCompatible()) {
-      addNotification({
-        title: `Wrapping ${from.value} ${from.metadata?.symbol}`,
-        type: NotificationType.MintWICP,
-        id: String(new Date().getTime()),
-      });
-      debounce(resetViewState, 300);
-    }
-  }, [addNotification, checkIsPlugProviderVersionCompatible, from.metadata?.symbol, from.value, resetViewState]);
+    addNotification({
+      title: `Wrapping ${from.value} ${from.metadata?.symbol}`,
+      type: NotificationType.MintWICP,
+      id: String(new Date().getTime()),
+    });
+
+    debounce(resetViewState, 300);
+  }, [addNotification, from.metadata?.symbol, from.value, resetViewState]);
 
   const handleWithdrawWICP = useCallback(() => {
     addNotification({
@@ -421,7 +399,7 @@ export const useSwapViewData = (action:string) => {
       return 'Unwrap';
     }
 
-    return action=='swap'? 'Swap':action=='mint'? 'Mint':'';
+    return action == 'swap' ? 'Swap' : action == 'mint' ? 'Mint' : '';
   }, [
     isFromTokenIsICP,
     isToTokenIsXTC,
@@ -539,8 +517,8 @@ export const useSwapViewData = (action:string) => {
   return {
     step, allowance, isButtonDisabled, buttonMessage, canHeldInSonic, isAutoSlippage, headerTitle, isConnected, isLoading, isBalancesUpdating,
     isPriceUpdating, priceImpact, fromSources, toSources, currentOperation, isICPSelected, isExplanationTooltipVisible,
-    isSelectTokenButtonDisabled, selectTokenButtonText, setStep, setLastChangedInputDataKey,onButtonClick: handleButtonClick,
-    onMenuClose: handleMenuClose, onSetSlippage: handleSetSlippage,onSetIsAutoSlippage: handleSetIsAutoSlippage, onChangeValue: handleChangeValue,
-    onSelectToken: handleSelectToken,onMaxClick: handleMaxClick, onSwitchTokens: handleSwitchTokens,
+    isSelectTokenButtonDisabled, selectTokenButtonText, setStep, setLastChangedInputDataKey, onButtonClick: handleButtonClick,
+    onMenuClose: handleMenuClose, onSetSlippage: handleSetSlippage, onSetIsAutoSlippage: handleSetIsAutoSlippage, onChangeValue: handleChangeValue,
+    onSelectToken: handleSelectToken, onMaxClick: handleMaxClick, onSwitchTokens: handleSwitchTokens,
   };
 };

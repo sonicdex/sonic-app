@@ -56,42 +56,5 @@ export const useWithdrawWICPBatch = ({ amount, toAccountId, }: UseWithdrawWICPBa
   };
 
   if (WithdrawBatch) { batchLoad.batchExecute = WithdrawBatch;}
-
   return {batch: batchLoad, openBatchModal };
-
-  // if(WithdrawBatch){
-
-  // }
-
-
-  // return {
-  //   batch: useBatch({
-  //     transactions,
-  //     handleRetry: () => {
-  //       return new Promise((resolve) => {
-  //         dispatch(
-  //           modalsSliceActions.setWithdrawWICPModalData({
-  //             callbacks: [
-  //               // Retry callback
-  //               () => {
-  //                 dispatch(modalsSliceActions.closeWithdrawWICPFailModal());
-  //                 openBatchModal();
-  //                 resolve(true);
-  //               },
-  //               // Close callback
-  //               () => {
-  //                 dispatch(modalsSliceActions.closeWithdrawWICPFailModal());
-  //                 resolve(false);
-  //               },
-  //             ],
-  //           })
-  //         );
-
-  //         dispatch(modalsSliceActions.closeWithdrawWICPProgressModal());
-  //         dispatch(modalsSliceActions.openWithdrawWICPFailModal());
-  //       });
-  //     },
-  //   }),
-  //   openBatchModal,
-  // };
 };

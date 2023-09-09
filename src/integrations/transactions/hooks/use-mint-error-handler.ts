@@ -4,7 +4,7 @@ import {
   MintTokenSymbol,
   popNotification,
   useAppDispatch,
-  usePlugStore,
+  useWalletStore,
 } from '@/store';
 import {
   getFromStorage,
@@ -22,7 +22,7 @@ export type UseMintErrorHandlerOptions = {
 export const useMintErrorHandler = ({
   notificationId,
 }: UseMintErrorHandlerOptions) => {
-  const { principalId } = usePlugStore();
+  const { principalId } = useWalletStore();
   const dispatch = useAppDispatch();
 
   const handleMintError = useCallback(
