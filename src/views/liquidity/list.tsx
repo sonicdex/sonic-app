@@ -1,5 +1,5 @@
 import { Box, Stack, Text, useColorModeValue } from '@chakra-ui/react';
-import { Liquidity, toBigNumber } from '@memecake/sonic-js';
+import { Liquidity, toBigNumber } from '@sonicdex/sonic-js';
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router';
 

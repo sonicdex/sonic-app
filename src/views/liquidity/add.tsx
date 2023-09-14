@@ -3,7 +3,7 @@ import {
   PopoverContent, PopoverHeader, PopoverTrigger, Skeleton, Stack, Text, Tooltip, useColorModeValue,
 } from '@chakra-ui/react';
 
-import { Liquidity } from '@memecake/sonic-js';
+import { Liquidity } from '@sonicdex/sonic-js';
 import { FaCog } from '@react-icons/all-files/fa/FaCog';
 import { FaEquals } from '@react-icons/all-files/fa/FaEquals';
 import { FaInfoCircle } from '@react-icons/all-files/fa/FaInfoCircle';

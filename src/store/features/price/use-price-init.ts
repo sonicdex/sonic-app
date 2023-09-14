@@ -1,4 +1,4 @@
-import { toBigNumber } from '@memecake/sonic-js';
+import { toBigNumber } from '@sonicdex/sonic-js';
 import BigNumber from 'bignumber.js';
 import { useCallback, useEffect } from 'react';
 
