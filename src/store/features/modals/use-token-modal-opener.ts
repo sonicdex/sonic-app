@@ -1,4 +1,4 @@
-import { serialize } from '@memecake/sonic-js';
+import { serialize } from '@sonicdex/sonic-js';
 
 import { AppTokenMetadata } from '@/models';
 import { useAppDispatch } from '@/store';

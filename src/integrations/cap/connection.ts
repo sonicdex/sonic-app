@@ -1,4 +1,4 @@
-import { CapRoot } from '@memecake/cap-js';
+import { CapRoot } from '@sonicdex/cap-js';
 
 import { ENV } from '@/config';
 

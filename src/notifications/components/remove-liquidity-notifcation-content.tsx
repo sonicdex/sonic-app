@@ -1,5 +1,5 @@
 import { Link } from '@chakra-ui/react';
-import { deserialize, serialize, toBigNumber } from '@memecake/sonic-js';
+import { deserialize, serialize, toBigNumber } from '@sonicdex/sonic-js';
 import { useEffect, useMemo } from 'react';
 
 import { useBalances } from '@/hooks/use-balances';

@@ -24,7 +24,7 @@ export const ENV = {
     discord: process.env.DISCORD_URL || 'https://discord.com/invite/EkmnRd99h6',
     twitter: process.env.TWITTER_URL || 'https://twitter.com/sonic_ooo',
     medium: process.env.MEDIUM_URL || 'https://medium.com/@sonic-ooo',
-    github: process.env.GITHUB_URL || 'https://github.com/psychedelic/sonic',
+    github: process.env.GITHUB_URL || 'https://github.com/sonicdex',
     sonicDocs: process.env.SONIC_DOCS_URL || 'https://docs.sonic.ooo',
     termsAndConditions:
       process.env.TERMS_AND_CONDITIONS_URL ||

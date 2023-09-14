@@ -1,4 +1,4 @@
-import { Pair, toBigNumber } from '@memecake/sonic-js';
+import { Pair, toBigNumber } from '@sonicdex/sonic-js';
 import BigNumber from 'bignumber.js';
 
 import { AppTokenMetadata } from '@/models';

@@ -1,6 +1,6 @@
 import { Image } from '@chakra-ui/image';
 import { Box, Flex, HStack, Text, useColorModeValue } from '@chakra-ui/react';
-import { Price } from '@memecake/sonic-js';
+import { Price } from '@sonicdex/sonic-js';
 import { FC, useMemo } from 'react'; //useEffect useState
 
 import { questionMarkSrc } from '@/assets';

@@ -32,4 +32,4 @@ Outside of swap functionality the swap page of Sonic Application also supports m
 
 ## Sonic-js 🔧
 
-This application is using [Sonic JavaScript SDK](https://github.com/Psychedelic/sonic-js) for calculations. You can find examples about how to integrate Sonic into your own application using sonic-js [here]().
+This application is using [Sonic JavaScript SDK](https://github.com/sonicdex/sonic-js) for calculations. You can find examples about how to integrate Sonic into your own application using sonic-js [here]().
