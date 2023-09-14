@@ -3,7 +3,7 @@ import {
   ModalHeader,ModalOverlay,Skeleton,Stack,Text,Tooltip,useColorModeValue,
 } from '@chakra-ui/react';
 
-import { deserialize } from '@memecake/sonic-js';
+import { deserialize } from '@sonicdex/sonic-js';
 import { FaHdd } from '@react-icons/all-files/fa/FaHdd';
 import { useEffect, useMemo, useState } from 'react';
 

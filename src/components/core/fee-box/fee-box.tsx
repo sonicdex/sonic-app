@@ -1,5 +1,5 @@
 import { Flex, Text } from '@chakra-ui/react';
-import { toBigNumber } from '@memecake/sonic-js';
+import { toBigNumber } from '@sonicdex/sonic-js';
 import { FaArrowRight } from '@react-icons/all-files/fa/FaArrowRight';
 import React, { useMemo } from 'react';
 

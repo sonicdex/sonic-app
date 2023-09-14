@@ -1,4 +1,4 @@
-import { Liquidity, toBigNumber } from '@memecake/sonic-js';
+import { Liquidity, toBigNumber } from '@sonicdex/sonic-js';
 import { useMemo } from 'react';
 
 import { AppAssetSource, getAppAssetsSources } from '@/config/utils';

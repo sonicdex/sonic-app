@@ -1,5 +1,5 @@
 import { Box, Button, Skeleton, Input, Text } from '@chakra-ui/react';
-import { toBigNumber } from '@memecake/sonic-js';
+import { toBigNumber } from '@sonicdex/sonic-js';
 import { useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router';
 

@@ -1,4 +1,4 @@
-import { toBigNumber } from '@memecake/sonic-js';
+import { toBigNumber } from '@sonicdex/sonic-js';
 
 import { MintTokenSymbol } from '@/store';
 import {  

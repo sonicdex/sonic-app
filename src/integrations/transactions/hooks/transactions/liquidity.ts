@@ -1,6 +1,6 @@
 import { Principal } from '@dfinity/principal';
 
-import { Swap } from '@memecake/sonic-js';
+import { Swap } from '@sonicdex/sonic-js';
 import { useMemo } from 'react';
 
 import { ENV } from '@/config';

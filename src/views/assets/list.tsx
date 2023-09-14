@@ -1,5 +1,5 @@
 import { Flex, HStack, Icon, Stack, Text, useColorModeValue, ButtonGroup, Button } from '@chakra-ui/react';
-import { toBigNumber } from '@memecake/sonic-js';
+import { toBigNumber } from '@sonicdex/sonic-js';
 import { FaInfoCircle } from '@react-icons/all-files/fa/FaInfoCircle';
 import { FaMinus } from '@react-icons/all-files/fa/FaMinus';
 import { FaPlus } from '@react-icons/all-files/fa/FaPlus';

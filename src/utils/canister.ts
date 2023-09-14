@@ -1,5 +1,5 @@
 import { Principal } from '@dfinity/principal';
-import { Pair } from '@memecake/sonic-js';
+import { Pair } from '@sonicdex/sonic-js';
 
 import { questionMarkSrc } from '@/assets';
 import { ENV } from '@/config';

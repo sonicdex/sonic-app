@@ -1,7 +1,7 @@
 import {
   Box, Button, Divider, Flex, Popover, PopoverArrow, PopoverBody, PopoverContent, PopoverTrigger, Text, useColorModeValue,
 } from '@chakra-ui/react';
-import { Liquidity, Pair } from '@memecake/sonic-js';
+import { Liquidity, Pair } from '@sonicdex/sonic-js';
 import { FaInfoCircle } from '@react-icons/all-files/fa/FaInfoCircle';
 import { useMemo } from 'react';
 
