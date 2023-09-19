@@ -105,7 +105,8 @@ export const useSwapExactTokensTransactionMemo: CreateTransaction<SwapModel> = (
           const data = await actor.get_user_transactions({ user: Principal.fromText(principalId), page: [], witness: false });
           if (data) {
             var trxInfo: any = data.data.filter(item => (item.operation === "swap"));
-            if (trxInfo.length > 1) {
+
+            if (trxInfo.length > 0) {
               trxInfo = trxInfo[trxInfo.length - 1];
             }
             if (trxInfo) {
