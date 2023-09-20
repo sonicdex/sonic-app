@@ -4,6 +4,7 @@ import { useEffect, useMemo } from 'react';
 
 import { useAllPairs } from '@/hooks';
 import { useBalances } from '@/hooks/use-balances';
+
 import { useTokenAllowance } from '@/hooks/use-token-allowance';
 import { useAddLiquidityBatch } from '@/integrations/transactions';
 import {
@@ -20,6 +21,7 @@ export const AddLiquidityNotificationContent: React.FC<AddLiquidityNotificationC
   const dispatch = useAppDispatch();
   const liquidityViewStore = useLiquidityViewStore();
   const { addNotification, popNotification } = useNotificationStore();
+  
   const { getBalances, getUserPositiveLPBalances } = useBalances();
   const { getAllPairs } = useAllPairs();
 
@@ -58,9 +60,6 @@ export const AddLiquidityNotificationContent: React.FC<AddLiquidityNotificationC
   };
 
   const handleError = (err?: any) => {
-
-    console.log(batch);
-
     if (err) AppLog.error('Add Liquidity Error', err);
     dispatch(modalsSliceActions.clearAddLiquidityModalData());
     dispatch(modalsSliceActions.clearDepositModalData());
@@ -93,6 +92,7 @@ export const AddLiquidityNotificationContent: React.FC<AddLiquidityNotificationC
   useEffect(() => {
     handleOpenModal();
     if (typeof allowance0 === 'undefined' || typeof allowance1 === 'undefined') return;
+
     if (batchExecutalbe?.execute) {
       batchExecutalbe.execute().then((data: any) => {
         if (data) {

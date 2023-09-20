@@ -107,7 +107,8 @@ export const useAddLiquidityTransactionMemo: CreateTransaction<AddLiquidity> = (
       token1.metadata.decimals
     );
 
-    const currentTime = (new Date().getTime() + 5 * 60 * 1000) * 10000000;
+    const currentTime = (new Date().getTime() + 15 * 60 * 1000) * 10000000;
+
     return {
       canisterId: ENV.canistersPrincipalIDs.swap,
       idl: SwapIDL.factory,

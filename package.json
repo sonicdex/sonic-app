@@ -90,6 +90,7 @@
     "buffer-crc32": "^0.2.13",
     "crc-32": "^1.2.1",
     "crypto-js": "^4.1.1",
+    "ethers": "^5.5.4",
     "framer-motion": "^4.1.17",
     "json-bigint": "^1.0.0",
     "react": "^17.0.2",
