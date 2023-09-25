@@ -42,7 +42,7 @@ const initialState: SwapViewState = {
   tokenList: undefined,
   allPairs: undefined,
   slippage: INITIAL_SWAP_SLIPPAGE,
-  keepInSonic: false,
+  keepInSonic: true,
   baseFromTokenPaths: {},
   baseToTokenPaths: {},
   allowance: undefined,

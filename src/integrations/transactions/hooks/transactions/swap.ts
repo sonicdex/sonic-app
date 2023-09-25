@@ -110,7 +110,8 @@ export const useSwapExactTokensTransactionMemo: CreateTransaction<SwapModel> = (
             var trxInfo: any = data.data.filter((item:any )=> (item.operation === "swap"));
             if (trxInfo.length > 0) {
                   trxInfo = trxInfo[trxInfo.length - 1];
-                  const matchingDetail = trxInfo?.details?.find((detail: any) => detail[0] === "amountOut");
+           //       console.log(trxInfo);
+                  const matchingDetail:any = trxInfo?.details?.find((detail: any) => detail[0] === "amountOut");
                   if (matchingDetail.length > 0) {
                     nextTrxItem.args[1] = matchingDetail[1]?.U64;
                   }
