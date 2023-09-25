@@ -8,7 +8,7 @@ import { SwapIDL } from '@/did';
 import { parseAmount } from '@/utils/format';
 import { useBalances } from '@/hooks';
 
-import { getSwapCapActor } from '@/utils'
+import {  getswapActor } from '@/utils' ; //getSwapCapActor
 
 import { CreateTransaction, SwapModel } from '../../models';
 
@@ -61,8 +61,15 @@ const useTokenTaxCheck = ({ balances, tokenId, tokenSymbol, tokenDecimals = 1, t
   }
   return tokenInfo
 };
-var SwapCapActor:any;
-(async () => {  SwapCapActor = await getSwapCapActor(true)})();
+
+
+// var SwapCapActor:any;
+var SwapActor:any;
+
+(async () => { 
+  //SwapCapActor = await getSwapCapActor(true);
+  SwapActor = await getswapActor(false);
+})();
 
 export const useSwapExactTokensTransactionMemo: CreateTransaction<SwapModel> = (
   { from, to, slippage, principalId, entryVal }: SwapModel, onSuccess, onFail) => {
@@ -106,16 +113,20 @@ export const useSwapExactTokensTransactionMemo: CreateTransaction<SwapModel> = (
       updateNextStep: async (trxResult: any, nextTrxItem: any) => {
         if (nextTrxItem) {
           if (trxResult?.ok) {
-            const data = await SwapCapActor?.get_user_transactions({ user: Principal.fromText(principalId), page: [], witness: false });
-            var trxInfo: any = data.data.filter((item:any )=> (item.operation === "swap"));
-            if (trxInfo.length > 0) {
-                  trxInfo = trxInfo[trxInfo.length - 1];
-           //       console.log(trxInfo);
-                  const matchingDetail:any = trxInfo?.details?.find((detail: any) => detail[0] === "amountOut");
-                  if (matchingDetail.length > 0) {
-                    nextTrxItem.args[1] = matchingDetail[1]?.U64;
-                  }
-              }
+           // const data = await SwapCapActor?.get_user_transactions({ user: Principal.fromText(principalId), page: [], witness: false });
+            const data = await SwapActor?.getSwapLastTransaction();
+            if(data) nextTrxItem.args[1] = data;
+            //console.log(data2);
+
+          //   var trxInfo: any = data.data.filter((item:any )=> (item.operation === "swap"));
+          //   if (trxInfo.length > 0) {
+          //         trxInfo = trxInfo[trxInfo.length - 1];
+          //  //       console.log(trxInfo);
+          //         const matchingDetail:any = trxInfo?.details?.find((detail: any) => detail[0] === "amountOut");
+          //         if (matchingDetail.length > 0) {
+          //           nextTrxItem.args[1] = matchingDetail[1]?.U64;
+          //         }
+          //     }
           }
         }
       },
