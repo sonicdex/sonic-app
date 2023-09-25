@@ -58,6 +58,8 @@ export const getswapActor = async (isAnnon: boolean): Promise<SwapIDL.Factory> =
   return actor;
 }
 
+
+
 export const getSwapCapActor = async (isAnnon: boolean): Promise<capCanIDL.Factory> => {
   if (!isAnnon && !artemis.provider) {
     await artemis.autoConnect();
@@ -108,7 +110,7 @@ export const getTokenBalance = async (canisterId: string, principalId?: string):
     }
   } catch (error) {
     tokenBalance = BigInt(0);
-    console.log(tokenInfo.name+' ('+ tokenInfo.id +') failed to load !!!' );
+   // console.log(tokenInfo.name+' ('+ tokenInfo.id +') failed to load !!!' );
   }
    return tokenBalance;
 }

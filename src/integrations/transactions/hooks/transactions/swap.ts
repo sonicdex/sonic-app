@@ -7,7 +7,9 @@ import { ENV } from '@/config';
 import { SwapIDL } from '@/did';
 import { parseAmount } from '@/utils/format';
 import { useBalances } from '@/hooks';
+
 import { getSwapCapActor } from '@/utils'
+
 import { CreateTransaction, SwapModel } from '../../models';
 
 
@@ -59,6 +61,8 @@ const useTokenTaxCheck = ({ balances, tokenId, tokenSymbol, tokenDecimals = 1, t
   }
   return tokenInfo
 };
+var SwapCapActor:any;
+(async () => {  SwapCapActor = await getSwapCapActor(true)})();
 
 export const useSwapExactTokensTransactionMemo: CreateTransaction<SwapModel> = (
   { from, to, slippage, principalId, entryVal }: SwapModel, onSuccess, onFail) => {
@@ -101,20 +105,16 @@ export const useSwapExactTokensTransactionMemo: CreateTransaction<SwapModel> = (
       amountOutMin: outAmountMin,
       updateNextStep: async (trxResult: any, nextTrxItem: any) => {
         if (nextTrxItem) {
-          const actor = await getSwapCapActor(true);
-          const data = await actor.get_user_transactions({ user: Principal.fromText(principalId), page: [], witness: false });
-          if (data) {
-            var trxInfo: any = data.data.filter(item => (item.operation === "swap"));
-
+          if (trxResult?.ok) {
+            const data = await SwapCapActor?.get_user_transactions({ user: Principal.fromText(principalId), page: [], witness: false });
+            var trxInfo: any = data.data.filter((item:any )=> (item.operation === "swap"));
             if (trxInfo.length > 0) {
-              trxInfo = trxInfo[trxInfo.length - 1];
-            }
-            if (trxInfo) {
-              const matchingDetail = trxInfo?.details?.find((detail: any) => detail[0] === "amountOut");
-              if (matchingDetail.length > 0) {
-                nextTrxItem.args[1] = matchingDetail[1]?.U64;
+                  trxInfo = trxInfo[trxInfo.length - 1];
+                  const matchingDetail = trxInfo?.details?.find((detail: any) => detail[0] === "amountOut");
+                  if (matchingDetail.length > 0) {
+                    nextTrxItem.args[1] = matchingDetail[1]?.U64;
+                  }
               }
-            }
           }
         }
       },
@@ -122,63 +122,61 @@ export const useSwapExactTokensTransactionMemo: CreateTransaction<SwapModel> = (
   }, [from.metadata, from.value, from.paths, to.metadata, to.value, principalId, slippage, onFail, onSuccess]);
 };
 
+// export const useSwapForExactTokensTransactionMemo: CreateTransaction<SwapModel> =
+//  ({ from, to, slippage, principalId }: SwapModel, onSuccess, onFail) => {
 
+//   var fromValue = from.value;
+//   let balances = useBalances();
 
-export const useSwapForExactTokensTransactionMemo: CreateTransaction<SwapModel> =
- ({ from, to, slippage, principalId }: SwapModel, onSuccess, onFail) => {
+//   return useMemo(() => {
+//     if (!from.metadata || !to.metadata) throw new Error('Tokens are required');
+//     if (!principalId) throw new Error('Principal is required');
+//     if (from.metadata?.symbol == 'YC') {
+//       let info = useTokenTaxCheck({
+//         balances: balances, tokenId: from.metadata ? from.metadata.id : '',
+//         tokenSymbol: from.metadata ? from.metadata.symbol : '',
+//         tokenDecimals: from.metadata ? from.metadata.decimals : 1,
+//         tokenValue: from.value ? from.value : ''
+//       });
+//       fromValue = info.taxInfo.netValue.toFixed(3);
+//     }
 
-  var fromValue = from.value;
-  let balances = useBalances();
+//     const amountOut = parseAmount(to.value, to.metadata.decimals);
+//     const amountInMin = parseAmount(
+//       Swap.getAmountMin({
+//         amount: fromValue,
+//         slippage,
+//         decimals: from.metadata.decimals,
+//       }).toString(),
+//       to.metadata.decimals
+//     );
+//     const currentTime = (new Date().getTime() + 5 * 60 * 1000) * 10000000;
 
-  return useMemo(() => {
-    if (!from.metadata || !to.metadata) throw new Error('Tokens are required');
-    if (!principalId) throw new Error('Principal is required');
-    if (from.metadata?.symbol == 'YC') {
-      let info = useTokenTaxCheck({
-        balances: balances, tokenId: from.metadata ? from.metadata.id : '',
-        tokenSymbol: from.metadata ? from.metadata.symbol : '',
-        tokenDecimals: from.metadata ? from.metadata.decimals : 1,
-        tokenValue: from.value ? from.value : ''
-      });
-      fromValue = info.taxInfo.netValue.toFixed(3);
-    }
-
-    const amountOut = parseAmount(to.value, to.metadata.decimals);
-    const amountInMin = parseAmount(
-      Swap.getAmountMin({
-        amount: fromValue,
-        slippage,
-        decimals: from.metadata.decimals,
-      }).toString(),
-      to.metadata.decimals
-    );
-    const currentTime = (new Date().getTime() + 5 * 60 * 1000) * 10000000;
-
-    return {
-      canisterId: ENV.canistersPrincipalIDs.swap,
-      idl: SwapIDL.factory,
-      methodName: 'swapTokensForExactTokens',
-      onFail,
-      onSuccess: async (res: SwapIDL.Result) => {
-        if ('err' in res) throw new Error(res.err);
-        onSuccess(res);
-      },
-      args: [
-        amountOut,
-        amountInMin,
-        [from.metadata.id, to.metadata.id],
-        Principal.fromText(principalId),
-        BigInt(currentTime),
-      ],
-    };
-  }, [
-    from.metadata,
-    from.value,
-    to.metadata,
-    to.value,
-    principalId,
-    slippage,
-    onFail,
-    onSuccess,
-  ]);
-};
+//     return {
+//       canisterId: ENV.canistersPrincipalIDs.swap,
+//       idl: SwapIDL.factory,
+//       methodName: 'swapTokensForExactTokens',
+//       onFail,
+//       onSuccess: async (res: SwapIDL.Result) => {
+//         if ('err' in res) throw new Error(res.err);
+//         onSuccess(res);
+//       },
+//       args: [
+//         amountOut,
+//         amountInMin,
+//         [from.metadata.id, to.metadata.id],
+//         Principal.fromText(principalId),
+//         BigInt(currentTime),
+//       ],
+//     };
+//   }, [
+//     from.metadata,
+//     from.value,
+//     to.metadata,
+//     to.value,
+//     principalId,
+//     slippage,
+//     onFail,
+//     onSuccess,
+//   ]);
+// };

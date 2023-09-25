@@ -22,7 +22,7 @@
     "release:dev": "node cp.js ./.env.dev.dep .env  && webpack --config webpack.dev.js && node ./deploy.js dev",
     "release:prod": "node cp.js ./.env-prod .env  && webpack --config webpack.prod.js;node ./deploy.js prod;",
     "release:maintanance": "node cp.js ./.env-prod-maintanance .env  && webpack --config webpack.prod.js;node ./deploy.js prod",
-    "release:preprod": "node cp.js ./.env.dev.dep .env  && webpack --config webpack.prod.js && node ./deploy.js preprod"
+    "release:preprod": "node cp.js ./.env.prod.dep .env  && webpack --config webpack.prod.js && node ./deploy.js preprod"
   },
   "author": {
     "name": "Sonic Dex",
