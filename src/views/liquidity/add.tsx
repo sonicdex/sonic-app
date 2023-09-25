@@ -315,7 +315,7 @@ export const LiquidityAddView = () => {
   const textColor = useColorModeValue('gray.700', 'gray.300');
 
   return (
-    <Stack spacing={4}>
+    <Stack spacing={4}  mb="5">
       <ViewHeader onArrowBack={handlePreviousStep} title="Add Liquidity">
         <Menu onClose={handleMenuClose}>
           <Tooltip label="Adjust the slippage">
@@ -329,7 +329,7 @@ export const LiquidityAddView = () => {
           </MenuList>
         </Menu>
       </ViewHeader>
-      <Flex direction="column" alignItems="center">
+      <Flex direction="column"  alignItems="center">
         <Box width="100%">
           <Token value={token0.value} setValue={(value) => setInAndOutTokenValues('token0', value)} tokenListMetadata={supportedTokenList}
             tokenMetadata={token0.metadata} isDisabled={isReviewing} sources={token0Sources} isLoading={isLoading}
