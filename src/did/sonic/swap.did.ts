@@ -2,7 +2,6 @@ import { IDL } from '@dfinity/candid';
 import type { Principal } from '@dfinity/principal';
 
 export namespace SwapIDL {
-
   export interface CanisterSettings {
     'freezing_threshold' : [] | [bigint],
     'controllers' : [] | [Array<Principal>],
@@ -85,6 +84,11 @@ export namespace SwapIDL {
     'feeOn' : boolean,
     'feeTo' : Principal,
   };
+  export type SwapLastTransaction = {
+      'RemoveLiquidityOutAmount' : [bigint, bigint]
+    } |
+    { 'SwapOutAmount' : bigint } |
+    { 'NotFound' : boolean };
   export type Time = bigint;
   export interface TokenAnalyticsInfo {
     'fee' : bigint,
@@ -129,168 +133,169 @@ export namespace SwapIDL {
     'userPId' : Principal,
   };
 
-  
+  // ---------------------------------------------
+
   export interface Swap {
     'addAuth' : (arg_0: Principal) => Promise<boolean>,
-    'addLiquidity' : (
-        arg_0: Principal,
-        arg_1: Principal,
-        arg_2: bigint,
-        arg_3: bigint,
-        arg_4: bigint,
-        arg_5: bigint,
-        arg_6: bigint,
-      ) => Promise<TxReceipt>,
-    'addLiquidityForUser' : (
-        arg_0: Principal,
-        arg_1: Principal,
-        arg_2: Principal,
-        arg_3: bigint,
-        arg_4: bigint,
-      ) => Promise<TxReceipt>,
-    'addLiquidityForUserTest' : (
-        arg_0: Principal,
-        arg_1: Principal,
-        arg_2: Principal,
-        arg_3: bigint,
-        arg_4: bigint,
-      ) => Promise<string>,
-    'addToken' : (arg_0: Principal, arg_1: string) => Promise<TxReceipt>,
-    'addUserToBlocklist' : (arg_0: Principal) => Promise<boolean>,
-    'allowance' : (arg_0: string, arg_1: Principal, arg_2: Principal) => Promise<
-        bigint
-      >,
-    'approve' : (arg_0: string, arg_1: Principal, arg_2: bigint) => Promise<
-        boolean
-      >,
-    'balanceOf' : (arg_0: string, arg_1: Principal) => Promise<bigint>,
-    'burn' : (arg_0: string, arg_1: bigint) => Promise<boolean>,
-    'createPair' : (arg_0: Principal, arg_1: Principal) => Promise<TxReceipt>,
-    'decimals' : (arg_0: string) => Promise<number>,
-    'deposit' : (arg_0: Principal, arg_1: bigint) => Promise<TxReceipt>,
-    'depositTo' : (arg_0: Principal, arg_1: Principal, arg_2: bigint) => Promise<
-        TxReceipt
-      >,
-    'exportBalances' : (arg_0: string) => Promise<
-        [] | [Array<[Principal, bigint]>]
-      >,
-    'exportFaileWithdraws' : () => Promise<Array<[string, WithdrawState]>>,
-    'exportLPTokens' : () => Promise<Array<TokenInfoExt>>,
-    'exportPairs' : () => Promise<Array<PairInfoExt>>,
-    'exportRewardInfo' : () => Promise<Array<[Principal, Array<RewardInfo>]>>,
-    'exportRewardPairs' : () => Promise<Array<PairInfoExt>>,
-    'exportSubAccounts' : () => Promise<Array<[Principal, DepositSubAccounts]>>,
-    'exportSwapInfo' : () => Promise<SwapInfoExt>,
-    'exportTokenTypes' : () => Promise<Array<[string, string]>>,
-    'exportTokens' : () => Promise<Array<TokenInfoExt>>,
-    'failedWithdrawRefund' : (arg_0: string) => Promise<WithdrawRefundReceipt>,
-    'getAllPairs' : () => Promise<Array<PairInfoExt>>,
-    'getAllRewardPairs' : () => Promise<Array<PairInfoExt>>,
-    'getAuthList' : () => Promise<Array<[Principal, boolean]>>,
-    'getBlocklistedUsers' : () => Promise<Array<[Principal, boolean]>>,
-    'getCapDetails' : () => Promise<CapDetails>,
-    'getHolders' : (arg_0: string) => Promise<bigint>,
-    'getICRC1SubAccountBalance' : (arg_0: Principal, arg_1: string) => Promise<
-        ICRC1SubAccountBalance
-      >,
-    'getLPTokenId' : (arg_0: Principal, arg_1: Principal) => Promise<string>,
-    'getLiquidityLastTransaction' : () => Promise<[bigint, bigint]>,
-    'getNumPairs' : () => Promise<bigint>,
-    'getPair' : (arg_0: Principal, arg_1: Principal) => Promise<
-        [] | [PairInfoExt]
-      >,
-    'getPairs' : (arg_0: bigint, arg_1: bigint) => Promise<
-        [Array<PairInfoExt>, bigint]
-      >,
-    'getSupportedTokenList' : () => Promise<Array<TokenInfoWithType>>,
-    'getSupportedTokenListByName' : (
-        arg_0: string,
-        arg_1: bigint,
-        arg_2: bigint,
-      ) => Promise<[Array<TokenInfoExt>, bigint]>,
-    'getSupportedTokenListSome' : (arg_0: bigint, arg_1: bigint) => Promise<
-        [Array<TokenInfoExt>, bigint]
-      >,
-    'getSwapInfo' : () => Promise<SwapInfo>,
-    'getSwapLastTransaction' : () => Promise<bigint>,
-    'getTokenMetadata' : (arg_0: string) => Promise<TokenAnalyticsInfo>,
-    'getUserBalances' : (arg_0: Principal) => Promise<Array<[string, bigint]>>,
-    'getUserInfo' : (arg_0: Principal) => Promise<UserInfo>,
-    'getUserInfoAbove' : (
-        arg_0: Principal,
-        arg_1: bigint,
-        arg_2: bigint,
-      ) => Promise<UserInfo>,
-    'getUserInfoByNamePageAbove' : (
-        arg_0: Principal,
-        arg_1: bigint,
-        arg_2: string,
-        arg_3: bigint,
-        arg_4: bigint,
-        arg_5: bigint,
-        arg_6: string,
-        arg_7: bigint,
-        arg_8: bigint,
-      ) => Promise<UserInfoPage>,
-    'getUserLPBalances' : (arg_0: Principal) => Promise<Array<[string, bigint]>>,
-    'getUserLPBalancesAbove' : (arg_0: Principal, arg_1: bigint) => Promise<
-        Array<[string, bigint]>
-      >,
-    'getUserReward' : (arg_0: Principal, arg_1: string, arg_2: string) => Promise<
-        Result_1
-      >,
-    'historySize' : () => Promise<bigint>,
-    'initiateICRC1Transfer' : () => Promise<Array<number>>,
-    'initiateICRC1TransferForUser' : (arg_0: Principal) => Promise<ICRCTxReceipt>,
-    'monitorMetrics' : () => Promise<MonitorMetrics>,
-    'name' : (arg_0: string) => Promise<string>,
-    'removeAuth' : (arg_0: Principal) => Promise<boolean>,
-    'removeLiquidity' : (
-        arg_0: Principal,
-        arg_1: Principal,
-        arg_2: bigint,
-        arg_3: bigint,
-        arg_4: bigint,
-        arg_5: Principal,
-        arg_6: bigint,
-      ) => Promise<TxReceipt>,
-    'removeUserFromBlocklist' : (arg_0: Principal) => Promise<boolean>,
-    'retryDeposit' : (arg_0: Principal) => Promise<TxReceipt>,
-    'retryDepositTo' : (
-        arg_0: Principal,
-        arg_1: Principal,
-        arg_2: bigint,
-      ) => Promise<TxReceipt>,
-    'setCapV1EnableStatus' : (arg_0: boolean) => Promise<boolean>,
-    'setCapV2CanisterId' : (arg_0: string) => Promise<boolean>,
-    'setCapV2EnableStatus' : (arg_0: boolean) => Promise<Result>,
-    'setFeeForToken' : (arg_0: string, arg_1: bigint) => Promise<boolean>,
-    'setFeeOn' : (arg_0: boolean) => Promise<boolean>,
-    'setFeeTo' : (arg_0: Principal) => Promise<boolean>,
-    'setGlobalTokenFee' : (arg_0: bigint) => Promise<boolean>,
-    'setMaxTokens' : (arg_0: bigint) => Promise<boolean>,
-    'setOwner' : (arg_0: Principal) => Promise<boolean>,
-    'swapExactTokensForTokens' : (
-        arg_0: bigint,
-        arg_1: bigint,
-        arg_2: Array<string>,
-        arg_3: Principal,
-        arg_4: bigint,
-      ) => Promise<TxReceipt>,
-    'symbol' : (arg_0: string) => Promise<string>,
-    'totalSupply' : (arg_0: string) => Promise<bigint>,
-    'transferFrom' : (
-        arg_0: string,
-        arg_1: Principal,
-        arg_2: Principal,
-        arg_3: bigint,
-      ) => Promise<boolean>,
-    'updateAllTokenMetadata' : () => Promise<boolean>,
-    'updateTokenFees' : () => Promise<boolean>,
-    'updateTokenMetadata' : (arg_0: string) => Promise<boolean>,
-    'withdraw' : (arg_0: Principal, arg_1: bigint) => Promise<TxReceipt>,
+  'addLiquidity' : (
+      arg_0: Principal,
+      arg_1: Principal,
+      arg_2: bigint,
+      arg_3: bigint,
+      arg_4: bigint,
+      arg_5: bigint,
+      arg_6: bigint,
+    ) => Promise<TxReceipt>,
+  'addLiquidityForUser' : (
+      arg_0: Principal,
+      arg_1: Principal,
+      arg_2: Principal,
+      arg_3: bigint,
+      arg_4: bigint,
+    ) => Promise<TxReceipt>,
+  'addLiquidityForUserTest' : (
+      arg_0: Principal,
+      arg_1: Principal,
+      arg_2: Principal,
+      arg_3: bigint,
+      arg_4: bigint,
+    ) => Promise<string>,
+  'addToken' : (arg_0: Principal, arg_1: string) => Promise<TxReceipt>,
+  'addUserToBlocklist' : (arg_0: Principal) => Promise<boolean>,
+  'allowance' : (arg_0: string, arg_1: Principal, arg_2: Principal) => Promise<
+      bigint
+    >,
+  'approve' : (arg_0: string, arg_1: Principal, arg_2: bigint) => Promise<
+      boolean
+    >,
+  'balanceOf' : (arg_0: string, arg_1: Principal) => Promise<bigint>,
+  'burn' : (arg_0: string, arg_1: bigint) => Promise<boolean>,
+  'createPair' : (arg_0: Principal, arg_1: Principal) => Promise<TxReceipt>,
+  'decimals' : (arg_0: string) => Promise<number>,
+  'deposit' : (arg_0: Principal, arg_1: bigint) => Promise<TxReceipt>,
+  'depositTo' : (arg_0: Principal, arg_1: Principal, arg_2: bigint) => Promise<
+      TxReceipt
+    >,
+  'exportBalances' : (arg_0: string) => Promise<
+      [] | [Array<[Principal, bigint]>]
+    >,
+  'exportFaileWithdraws' : () => Promise<Array<[string, WithdrawState]>>,
+  'exportLPTokens' : () => Promise<Array<TokenInfoExt>>,
+  'exportPairs' : () => Promise<Array<PairInfoExt>>,
+  'exportRewardInfo' : () => Promise<Array<[Principal, Array<RewardInfo>]>>,
+  'exportRewardPairs' : () => Promise<Array<PairInfoExt>>,
+  'exportSubAccounts' : () => Promise<Array<[Principal, DepositSubAccounts]>>,
+  'exportSwapInfo' : () => Promise<SwapInfoExt>,
+  'exportTokenTypes' : () => Promise<Array<[string, string]>>,
+  'exportTokens' : () => Promise<Array<TokenInfoExt>>,
+  'failedWithdrawRefund' : (arg_0: string) => Promise<WithdrawRefundReceipt>,
+  'getAllPairs' : () => Promise<Array<PairInfoExt>>,
+  'getAllRewardPairs' : () => Promise<Array<PairInfoExt>>,
+  'getAuthList' : () => Promise<Array<[Principal, boolean]>>,
+  'getBlocklistedUsers' : () => Promise<Array<[Principal, boolean]>>,
+  'getCapDetails' : () => Promise<CapDetails>,
+  'getHolders' : (arg_0: string) => Promise<bigint>,
+  'getICRC1SubAccountBalance' : (arg_0: Principal, arg_1: string) => Promise<
+      ICRC1SubAccountBalance
+    >,
+  'getLPTokenId' : (arg_0: Principal, arg_1: Principal) => Promise<string>,
+  'getLastTransactionOutAmount' : () => Promise<SwapLastTransaction>,
+  'getNumPairs' : () => Promise<bigint>,
+  'getPair' : (arg_0: Principal, arg_1: Principal) => Promise<
+      [] | [PairInfoExt]
+    >,
+  'getPairs' : (arg_0: bigint, arg_1: bigint) => Promise<
+      [Array<PairInfoExt>, bigint]
+    >,
+  'getSupportedTokenList' : () => Promise<Array<TokenInfoWithType>>,
+  'getSupportedTokenListByName' : (
+      arg_0: string,
+      arg_1: bigint,
+      arg_2: bigint,
+    ) => Promise<[Array<TokenInfoExt>, bigint]>,
+  'getSupportedTokenListSome' : (arg_0: bigint, arg_1: bigint) => Promise<
+      [Array<TokenInfoExt>, bigint]
+    >,
+  'getSwapInfo' : () => Promise<SwapInfo>,
+  'getTokenMetadata' : (arg_0: string) => Promise<TokenAnalyticsInfo>,
+  'getUserBalances' : (arg_0: Principal) => Promise<Array<[string, bigint]>>,
+  'getUserInfo' : (arg_0: Principal) => Promise<UserInfo>,
+  'getUserInfoAbove' : (
+      arg_0: Principal,
+      arg_1: bigint,
+      arg_2: bigint,
+    ) => Promise<UserInfo>,
+  'getUserInfoByNamePageAbove' : (
+      arg_0: Principal,
+      arg_1: bigint,
+      arg_2: string,
+      arg_3: bigint,
+      arg_4: bigint,
+      arg_5: bigint,
+      arg_6: string,
+      arg_7: bigint,
+      arg_8: bigint,
+    ) => Promise<UserInfoPage>,
+  'getUserLPBalances' : (arg_0: Principal) => Promise<Array<[string, bigint]>>,
+  'getUserLPBalancesAbove' : (arg_0: Principal, arg_1: bigint) => Promise<
+      Array<[string, bigint]>
+    >,
+  'getUserReward' : (arg_0: Principal, arg_1: string, arg_2: string) => Promise<
+      Result_1
+    >,
+  'historySize' : () => Promise<bigint>,
+  'initiateICRC1Transfer' : () => Promise<Array<number>>,
+  'initiateICRC1TransferForUser' : (arg_0: Principal) => Promise<ICRCTxReceipt>,
+  'monitorMetrics' : () => Promise<MonitorMetrics>,
+  'name' : (arg_0: string) => Promise<string>,
+  'removeAuth' : (arg_0: Principal) => Promise<boolean>,
+  'removeLiquidity' : (
+      arg_0: Principal,
+      arg_1: Principal,
+      arg_2: bigint,
+      arg_3: bigint,
+      arg_4: bigint,
+      arg_5: Principal,
+      arg_6: bigint,
+    ) => Promise<TxReceipt>,
+  'removeUserFromBlocklist' : (arg_0: Principal) => Promise<boolean>,
+  'retryDeposit' : (arg_0: Principal) => Promise<TxReceipt>,
+  'retryDepositTo' : (
+      arg_0: Principal,
+      arg_1: Principal,
+      arg_2: bigint,
+    ) => Promise<TxReceipt>,
+  'setCapV1EnableStatus' : (arg_0: boolean) => Promise<boolean>,
+  'setCapV2CanisterId' : (arg_0: string) => Promise<boolean>,
+  'setCapV2EnableStatus' : (arg_0: boolean) => Promise<Result>,
+  'setFeeForToken' : (arg_0: string, arg_1: bigint) => Promise<boolean>,
+  'setFeeOn' : (arg_0: boolean) => Promise<boolean>,
+  'setFeeTo' : (arg_0: Principal) => Promise<boolean>,
+  'setGlobalTokenFee' : (arg_0: bigint) => Promise<boolean>,
+  'setMaxTokens' : (arg_0: bigint) => Promise<boolean>,
+  'setOwner' : (arg_0: Principal) => Promise<boolean>,
+  'swapExactTokensForTokens' : (
+      arg_0: bigint,
+      arg_1: bigint,
+      arg_2: Array<string>,
+      arg_3: Principal,
+      arg_4: bigint,
+    ) => Promise<TxReceipt>,
+  'symbol' : (arg_0: string) => Promise<string>,
+  'totalSupply' : (arg_0: string) => Promise<bigint>,
+  'transferFrom' : (
+      arg_0: string,
+      arg_1: Principal,
+      arg_2: Principal,
+      arg_3: bigint,
+    ) => Promise<boolean>,
+  'updateAllTokenMetadata' : () => Promise<boolean>,
+  'updateTokenFees' : () => Promise<boolean>,
+  'updateTokenMetadata' : (arg_0: string) => Promise<boolean>,
+  'withdraw' : (arg_0: Principal, arg_1: bigint) => Promise<TxReceipt>,
   }
-
+  // ---------------------------------------------
+  
   export type Factory = Swap;
 
   export const factory: IDL.InterfaceFactory = ({ IDL }) => {
@@ -351,6 +356,11 @@ export namespace SwapIDL {
     const ICRC1SubAccountBalance = IDL.Variant({
       'ok' : IDL.Nat,
       'err' : IDL.Text,
+    });
+    const SwapLastTransaction = IDL.Variant({
+      'RemoveLiquidityOutAmount' : IDL.Tuple(IDL.Nat, IDL.Nat),
+      'SwapOutAmount' : IDL.Nat,
+      'NotFound' : IDL.Bool,
     });
     const TokenInfoWithType = IDL.Record({
       'id' : IDL.Text,
@@ -525,7 +535,11 @@ export namespace SwapIDL {
           [IDL.Text],
           ['query'],
         ),
-      'getLiquidityLastTransaction' : IDL.Func([], [IDL.Nat, IDL.Nat], ['query']),
+      'getLastTransactionOutAmount' : IDL.Func(
+          [],
+          [SwapLastTransaction],
+          ['query'],
+        ),
       'getNumPairs' : IDL.Func([], [IDL.Nat], ['query']),
       'getPair' : IDL.Func(
           [IDL.Principal, IDL.Principal],
@@ -553,7 +567,6 @@ export namespace SwapIDL {
           ['query'],
         ),
       'getSwapInfo' : IDL.Func([], [SwapInfo], ['query']),
-      'getSwapLastTransaction' : IDL.Func([], [IDL.Nat], ['query']),
       'getTokenMetadata' : IDL.Func([IDL.Text], [TokenAnalyticsInfo], ['query']),
       'getUserBalances' : IDL.Func(
           [IDL.Principal],
@@ -652,5 +665,6 @@ export namespace SwapIDL {
       'updateTokenMetadata' : IDL.Func([IDL.Text], [IDL.Bool], []),
       'withdraw' : IDL.Func([IDL.Principal, IDL.Nat], [TxReceipt], []),
     });
+    
   };
 }

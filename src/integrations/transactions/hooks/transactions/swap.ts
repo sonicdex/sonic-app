@@ -62,7 +62,6 @@ const useTokenTaxCheck = ({ balances, tokenId, tokenSymbol, tokenDecimals = 1, t
   return tokenInfo
 };
 
-
 // var SwapCapActor:any;
 var SwapActor:any;
 
@@ -110,23 +109,11 @@ export const useSwapExactTokensTransactionMemo: CreateTransaction<SwapModel> = (
       },
       args: [amountIn, amountOutMin, from.paths[to.metadata.id]?.path, Principal.fromText(principalId), BigInt(currentTime)],
       amountOutMin: outAmountMin,
-      updateNextStep: async (trxResult: any, nextTrxItem: any) => {
+      updateNextStep: async (trxResult: any, nextTrxItem: any, trxObj:any) => {
         if (nextTrxItem) {
           if (trxResult?.ok) {
-           // const data = await SwapCapActor?.get_user_transactions({ user: Principal.fromText(principalId), page: [], witness: false });
-            const data = await SwapActor?.getSwapLastTransaction();
-            if(data) nextTrxItem.args[1] = data;
-            //console.log(data2);
-
-          //   var trxInfo: any = data.data.filter((item:any )=> (item.operation === "swap"));
-          //   if (trxInfo.length > 0) {
-          //         trxInfo = trxInfo[trxInfo.length - 1];
-          //  //       console.log(trxInfo);
-          //         const matchingDetail:any = trxInfo?.details?.find((detail: any) => detail[0] === "amountOut");
-          //         if (matchingDetail.length > 0) {
-          //           nextTrxItem.args[1] = matchingDetail[1]?.U64;
-          //         }
-          //     }
+            const data = await SwapActor?.getLastTransactionOutAmount();
+            if(data?.SwapOutAmount) nextTrxItem.args[1] = data?.SwapOutAmount;
           }
         }
       },
@@ -192,3 +179,15 @@ export const useSwapExactTokensTransactionMemo: CreateTransaction<SwapModel> = (
 //     onSuccess,
 //   ]);
 // };
+
+   
+ // const data = await SwapCapActor?.get_user_transactions({ user: Principal.fromText(principalId), page: [], witness: false });
+          //   var trxInfo: any = data.data.filter((item:any )=> (item.operation === "swap"));
+          //   if (trxInfo.length > 0) {
+          //         trxInfo = trxInfo[trxInfo.length - 1];
+          //  //       console.log(trxInfo);
+          //         const matchingDetail:any = trxInfo?.details?.find((detail: any) => detail[0] === "amountOut");
+          //         if (matchingDetail.length > 0) {
+          //           nextTrxItem.args[1] = matchingDetail[1]?.U64;
+          //         }
+          //     }
