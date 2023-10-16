@@ -71,10 +71,10 @@ export const DepostAddressModal: React.FC<DepostAddressProps> = ({ isNotiOpen, t
                     Deposit {tokenData?.symbol}
                   
                 </Heading>
-                <Box mb={3}>
+                {/* <Box mb={3}>
                     <br/>
                     <p> <b>Token Canister  :  </b> <span style={{userSelect:'all' , marginRight:'5px'}}>{tokenData?.id}</span> <Box onClick={()=>handleCopy('tokenid')} cursor={'pointer'} as={FiCopy} display={'inline-flex'}/></p>
-                </Box>
+                </Box> */}
                
                 <ModalBody mt={4} p={0} display={'contents'}>
                     <Box width={'full'} py={3} px={2} >
