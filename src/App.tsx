@@ -21,7 +21,7 @@ import { useWalletInit } from '@/integrations/artemis'
 import { useCyclesMintingCanisterInit, useLiquidityViewInit, usePriceInit, useSwapCanisterInit } from './store';
 import {loadsupportedTokenList} from '@/utils'
 
-loadsupportedTokenList;
+
 export const App = () => {
   useCyclesMintingCanisterInit();
   useWalletInit();

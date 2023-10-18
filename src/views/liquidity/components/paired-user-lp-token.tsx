@@ -7,7 +7,7 @@ import { useMemo } from 'react';
 
 import { DisplayValue, TokenImageBlock } from '@/components';
 import { LPBreakdownPopover } from '@/components/core/lp-breakdown-popover';
-import { UserLPMetrics, getuserLprewards } from '@/hooks';
+import { UserLPMetrics } from '@/hooks'; //getuserLprewards
 import { AppTokenMetadata } from '@/models';
 
 export interface PairedUserLPTokenProps {
@@ -48,7 +48,7 @@ export const PairedUserLPToken: React.FC<PairedUserLPTokenProps> = ({
   const userLPValue = useMemo(() => {
     const pair = allPairs?.[token0.id]?.[token1.id];
 
-    console.log()
+    // console.log(token0.price,token1.name ,  token1.price)
 
     if (pair && token0.price && token1.price && totalShares && userShares) {
       return Liquidity.getUserPositionValue({
@@ -66,9 +66,8 @@ export const PairedUserLPToken: React.FC<PairedUserLPTokenProps> = ({
   }, [allPairs, token0, token1, totalShares, userShares]);
 
   //getuserLprewards
-  const rewardData = getuserLprewards(token0.id, token1.id);
-  rewardData;
-
+ // const rewardData = getuserLprewards(token0.id, token1.id);
+ 
   return (
     <Flex direction="column" borderRadius="xl" bg={bg} shadow={shadow}>
       <Flex
