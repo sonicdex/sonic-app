@@ -17,9 +17,9 @@ import {
   useColorMode,
   useColorModeValue,
   useToken,
-  // Alert,
-  // AlertIcon,
-  // CloseButton,
+  Alert,
+  AlertIcon,
+  CloseButton,
 } from '@chakra-ui/react';
 
 
@@ -73,23 +73,25 @@ export const Layout: React.FC = ({ children, ...props }) => {
   const menuShadow = useColorModeValue('base', 'none');
 
   useHeaderResizeEffect((element) => { setHeaderHeight(`${element.clientHeight}px`); });
-  // const [showBanner, setShowBanner] = useState(true);
-  // const handleCloseBanner = () => {
-  //   setShowBanner(false);
-  // };
+  const [showBanner, setShowBanner] = useState(true);
+  const handleCloseBanner = () => {
+    setShowBanner(false);
+  };
 
   return (
     <>
-       {/* {showBanner && (
+       {showBanner && (
         <Alert status="info" mb={4} bg={menuBg} borderRadius={'md'} justifyContent={'center'}>
+          <Container  maxW={['100%', 'container.xl', 'container.xl']}>
+          <Flex>
           <AlertIcon />
-          <b> LP contest alert : </b> &nbsp; Add any LP in sonic and win a share  of $250K rewards. &nbsp;
-          <ChakraLink href="https://sonicdex.notion.site/Sonic-X-LP-Promotion-65c8b4fd93a7499bbe72f000f0b894c7" fontWeight={600} isExternal color="teal.500">
-          click here 
-          </ChakraLink> &nbsp; for more details
+         <Text fontSize={14}> In response to a request from the Boxy team, we will cease supporting the BOX DIP20 token (Canister ID: lzvjb-wyaaa-aaaam-qarua-cai) effective November 7. 
+          We kindly ask all our users to take the necessary steps to remove your BOX DIP20 liquidity pools.</Text>
+          </Flex>
+          </Container>
           <CloseButton size="sm" onClick={handleCloseBanner} position="absolute" right="8px" top="8px" />
         </Alert>
-      )} */}
+      )}
       <Container as="header" maxW={['100%', 'container.xl', 'container.xl']} position="sticky" top={0} zIndex={10} id="header" bg={backgroundColor}>
         <Flex
           zIndex="1000" width="full" maxWidth="container.xl" margin="auto"

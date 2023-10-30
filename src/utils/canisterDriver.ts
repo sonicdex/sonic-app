@@ -45,6 +45,8 @@ export const getTokenActor = async (canisterId: string, isAnnon: boolean): Promi
   var idl: any = token.tokenType == 'DIP20' ? TokenIDL.DIP20.factory :
     token.tokenType == 'YC' ? TokenIDL.DIP20.YCfactory :
       token.tokenType == 'ICRC1' ? TokenIDL.ICRC1.factory : TokenIDL.DIP20.factory;
+
+  if(token?.symbol == 'SNEED'){ idl = TokenIDL.SNEED;} 
   if (isAnnon == false && !artemis.provider) { await artemis.autoConnect(); }
   actor = await artemis.getCanisterActor(token.id, idl, isAnnon);
   return actor;
