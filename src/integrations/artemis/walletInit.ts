@@ -14,7 +14,6 @@ export const useWalletInit = (): void => {
     useEffect(() => {
       const initAdapter = async (): Promise<void> => {
         const walletId: string = localStorage.getItem('dfinityWallet') || '';
-  
         if (walletId) {
           dispatch(walletActions.setWalletSelected(walletId));
           dispatch(walletActions.setOnwalletList(walletState.Connecting));
