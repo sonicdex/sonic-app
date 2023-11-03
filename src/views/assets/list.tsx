@@ -24,8 +24,6 @@ import {
 
 import { DepostAddressModal, RetryFailedTrxModal } from '@/components/modals';
 
-RetryFailedTrxModal;
-
 const getAssetPriceByBalance = (price?: string, balance?: number, decimals?: number) => {
   if (price && balance && decimals) {
     return (
@@ -114,7 +112,7 @@ export const AssetsListView = () => {
     },
     [tokenBalances]
   );
-  retryFailedTrx;
+ 
   return (
     <>
       <RetryFailedTrxModal  isRetryOpen={isFailedTrxOpen}/>

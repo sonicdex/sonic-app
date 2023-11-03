@@ -141,7 +141,7 @@ export const KeepInSonicBox: React.FC<KeepInSonicBoxProps> = ({
         </>
       ) : (
         <Text fontWeight="bold" color="gray.400">
-          {symbol} can’t be held in the Sonic canister
+          {symbol} can't be held in the Sonic canister
         </Text>
       )}
     </Flex>

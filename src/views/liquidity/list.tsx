@@ -1,6 +1,6 @@
-import { Box, Stack, Text, useColorModeValue } from '@chakra-ui/react';
+import { Box, Stack, Text, useColorModeValue, Flex, Button } from '@chakra-ui/react';
 import { Liquidity, toBigNumber } from '@sonicdex/sonic-js';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 
 import { Asset, Header, InformationBox, WalletNotConnected, TokenImageBlock } from '@/components';
@@ -9,10 +9,12 @@ import { AppTokenMetadata } from '@/models';
 
 import {
   FeatureState, liquidityViewActions, modalsSliceActions, useAppDispatch, useLiquidityViewStore,
-  useWalletStore , useSwapCanisterStore,
+  useWalletStore, useSwapCanisterStore,
 } from '@/store';
 
 import { PairedUserLPToken, PairedUserLPTokenProps, RemoveLiquidityModal } from './components';
+
+import { RetryFailedTrxModal } from '@/components/modals';
 
 const INFORMATION_TITLE = 'Liquidity Provider Rewards';
 const INFORMATION_DESCRIPTION = `Liquidity providers earn a 0.25% fee on all trades proportional to their share of the pool. Fees are added to the pool, accrue in real-time, and can be claimed by withdrawing your liquidity. If you want to learn `;
@@ -44,15 +46,15 @@ export const LiquidityListView = () => {
 
   const moveToAddLiquidityView = (token0?: string, token1?: string) => {
     const query = token0 || token1
-        ? `?${token0 ? `token0=${token0}` : ''}${token1 ? `&token1=${token1}` : ''
-        }`
-        : '';
+      ? `?${token0 ? `token0=${token0}` : ''}${token1 ? `&token1=${token1}` : ''
+      }`
+      : '';
     navigate(`/liquidity/add${query}`);
   };
 
-  const handleInformationClose = () => { dispatch(liquidityViewActions.setIsBannerOpened(false));};
+  const handleInformationClose = () => { dispatch(liquidityViewActions.setIsBannerOpened(false)); };
 
-  const handleOpenRemoveLiquidityModal = ( token0: AppTokenMetadata, token1: AppTokenMetadata) => {
+  const handleOpenRemoveLiquidityModal = (token0: AppTokenMetadata, token1: AppTokenMetadata) => {
     dispatch(liquidityViewActions.setToken({ data: 'token0', token: token0 }));
     dispatch(liquidityViewActions.setToken({ data: 'token1', token: token1 }));
     dispatch(modalsSliceActions.openRemoveLiquidityModal());
@@ -136,6 +138,9 @@ export const LiquidityListView = () => {
   }, [userLPBalances, supportedTokenList, allPairs]);
 
   const headerColor = useColorModeValue('gray.600', 'gray.400');
+  const [isFailedTrxOpen, setIsFailedTrxOpen] = useState(0);
+  const retryFailedTrx = () => { var r = Math.random() * 100; setIsFailedTrxOpen(r); };
+
 
   return (
     <div>
@@ -144,9 +149,9 @@ export const LiquidityListView = () => {
         buttonText="Create Position"
         onButtonClick={() => moveToAddLiquidityView()}
         isUpdating={isUpdating}
-       
+
       >
-        
+
         {isBannerOpened && (
           <InformationBox
             onClose={handleInformationClose}
@@ -158,7 +163,7 @@ export const LiquidityListView = () => {
           </InformationBox>
         )}
       </Header>
-
+      <RetryFailedTrxModal isRetryOpen={isFailedTrxOpen} />
       <RemoveLiquidityModal />
 
       {!isConnected ? (
@@ -186,8 +191,8 @@ export const LiquidityListView = () => {
         </Text>
       ) : (
         <Stack
-          css={{ msOverflowStyle: 'none', scrollbarWidth: 'none','&::-webkit-scrollbar': { display: 'none'}}}
-          spacing={4} pb={40} overflow="auto">
+          css={{ msOverflowStyle: 'none', scrollbarWidth: 'none', '&::-webkit-scrollbar': { display: 'none' } }}
+          spacing={4}  overflow="auto">
           {pairedUserLPTokens.map((userLPToken) => {
 
             return (
@@ -199,6 +204,16 @@ export const LiquidityListView = () => {
           })}
         </Stack>
       )}
+
+      <Flex alignItems={'self-end'} w="100%" flexDirection="column" pb={40} mt={10}>
+        <Flex>
+          <Text mr={1} mt={1} color={'custom.1'}>Lost funds during LP addition? </Text>
+          <Button size="sm" borderRadius={8} colorScheme="dark-blue" isLoading={isLoading} onClick={retryFailedTrx}>
+            Claim Here
+          </Button>
+        </Flex>
+      </Flex>
+
     </div>
   );
 };
