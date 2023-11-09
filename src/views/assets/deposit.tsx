@@ -1,11 +1,11 @@
 import { Box, Button } from '@chakra-ui/react';
 import { toBigNumber } from '@sonicdex/sonic-js';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 
-import { 
-  Token, TokenContent, TokenData, TokenDataBalances,TokenDataPrice,TokenDetailsButton,
-  TokenDetailsLogo,TokenDetailsSymbol,TokenInput,ViewHeader,
+import {
+  Token, TokenContent, TokenData, TokenDataBalances, TokenDataPrice, TokenDetailsButton,
+  TokenDetailsLogo, TokenDetailsSymbol, TokenInput, ViewHeader,
 } from '@/components';
 
 import { FeeBox } from '@/components/core/fee-box';
@@ -21,16 +21,18 @@ import {
 import { getMaxValue } from '@/utils/format';
 import { debounce } from '@/utils/function';
 
-import {tokenList } from '@/utils';
+import { tokenList } from '@/utils';
 
-import {artemis} from '@/integrations/artemis';
+import { artemis } from '@/integrations/artemis';
+import { ENV } from '@/config';
 
+ENV
 
 export const AssetsDepositView = () => {
   const query = useQuery();
   const { supportedTokenList, tokenBalances, balancesState, supportedTokenListState } = useSwapCanisterStore();
 
-  const {isConnected} = useWalletStore()
+  const { isConnected } = useWalletStore()
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -40,10 +42,10 @@ export const AssetsDepositView = () => {
   const { addNotification } = useNotificationStore();
   const openSelectTokenModal = useTokenModalOpener();
 
-  const selectedTokenMetadata =  tokenList('obj')[tokenId?tokenId:''];
+  const selectedTokenMetadata = tokenList('obj')[tokenId ? tokenId : ''];
 
   const allowance = useTokenAllowance(selectedTokenMetadata?.id)
-  
+
   const handleSelectTokenId = (tokenId?: string) => {
     if (tokenId) {
       dispatch(depositViewActions.setTokenId(tokenId));
@@ -51,7 +53,7 @@ export const AssetsDepositView = () => {
   };
 
   const handleOpenSelectTokenModal = () => {
-    openSelectTokenModal({ metadata: supportedTokenList, onSelect: (tokenId) => handleSelectTokenId(tokenId), selectedTokenIds: []});
+    openSelectTokenModal({ metadata: supportedTokenList, onSelect: (tokenId) => handleSelectTokenId(tokenId), selectedTokenIds: [] });
   };
 
   const handleDeposit = () => {
@@ -73,7 +75,7 @@ export const AssetsDepositView = () => {
   };
 
   const [buttonDisabled, buttonMessage] = useMemo<[boolean, string]>(() => {
-    if(!isConnected) return [true, 'Connect wallet'];
+    if (!isConnected) return [true, 'Connect wallet'];
     if (!selectedTokenMetadata?.id) return [true, 'Select a Token'];
 
     if (typeof allowance !== 'number') return [true, 'Getting allowance...'];
@@ -84,7 +86,7 @@ export const AssetsDepositView = () => {
       return [true, `Enter ${selectedTokenMetadata?.symbol} Amount`];
 
     if (
-      parsedFromValue <= 
+      parsedFromValue <=
       toBigNumber(selectedTokenMetadata.fee).applyDecimals(selectedTokenMetadata.decimals).toNumber()
     ) {
       return [true, `Amount must be greater than fee`];
@@ -93,7 +95,7 @@ export const AssetsDepositView = () => {
     if (tokenBalances && selectedTokenMetadata) {
       if (
         parsedFromValue >
-        getMaxValue( selectedTokenMetadata,tokenBalances[selectedTokenMetadata.id]).toNumber()
+        getMaxValue(selectedTokenMetadata, tokenBalances[selectedTokenMetadata.id]).toNumber()
       ) {
         return [true, `Insufficient ${selectedTokenMetadata.symbol} Balance`];
       }
@@ -111,8 +113,8 @@ export const AssetsDepositView = () => {
   }, [tokenBalances, tokenId]);
 
   const isLoading = useMemo(() =>
-      supportedTokenListState === FeatureState.Loading ||
-      balancesState === FeatureState.Loading,
+    supportedTokenListState === FeatureState.Loading ||
+    balancesState === FeatureState.Loading,
     [supportedTokenListState, balancesState]
   );
 
@@ -123,7 +125,6 @@ export const AssetsDepositView = () => {
     if (fromQueryValue) {
       dispatch(depositViewActions.setAmount(fromQueryValue));
     }
-
     if (tokenId) {
       handleSelectTokenId(tokenId);
     }
@@ -134,10 +135,20 @@ export const AssetsDepositView = () => {
   }, []);
 
   var connectedWalletInfo = artemis.connectedWalletInfo;
-  
+  const [isDisabled, setIsDisabled] = useState(false);
+
+
+  useEffect(() => {
+    if (tokenId)
+      if (ENV.hiddenTokens.includes(tokenId)) { setIsDisabled(true); }
+  }, [tokenId])
+
+  isDisabled; setIsDisabled;
+
+
   return (
     <>
-      <ViewHeader title={ "Deposit "+ selectedTokenMetadata?.symbol + '' } onArrowBack={() => navigate('/assets')}/>
+      <ViewHeader title={"Deposit " + selectedTokenMetadata?.symbol + ''} onArrowBack={() => navigate('/assets')} />
       <Box my={5}>
         <Token
           isLoading={isLoading}
@@ -164,15 +175,18 @@ export const AssetsDepositView = () => {
             <TokenDataBalances onMaxClick={handleMaxClick} />
             <TokenDataPrice />
           </TokenData>
-         
+
         </Token>
       </Box>
       <FeeBox token={selectedTokenMetadata} isDeposit />
-      
-      <Button  isFullWidth  size="lg"  variant="gradient" colorScheme="dark-blue" 
-      isDisabled={buttonDisabled} onClick={handleDeposit} isLoading={isLoading}>
+      {isDisabled ? 
+        (<Button isFullWidth size="lg" isDisabled={true}>Deposit Disabled</Button>) : 
+        (<Button isFullWidth size="lg" variant="gradient" colorScheme="dark-blue"
+        isDisabled={buttonDisabled} onClick={handleDeposit} isLoading={isLoading}>
         {buttonMessage}
-      </Button>
+      </Button>)
+      }
+
     </>
   )
 };

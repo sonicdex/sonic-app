@@ -39,6 +39,6 @@ export const ENV = {
   hiddenTokens: (process.env.HIDDEN_TOKENS || '').split(','),
   BLOCKED_PAIRS: process.env.BLOCKED_PAIRS,
   maintenanceMode: process.env.MAINTENANCE_MODE === 'true',
-  prorityOrder:['ICP', 'WICP', 'XTC', 'SONICX', 'ckBTC', 'SNS1', 'CHAT', 'OGY','DONGE']
+  prorityOrder:['ICP', 'WICP', 'XTC', 'SONIC', 'ckBTC', 'SNS1', 'CHAT', 'OGY','DONGE']
 };
 
