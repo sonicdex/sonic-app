@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router';
 
 import { 
   Token, TokenContent, TokenData, TokenDataBalances,TokenDataPrice,TokenDetailsButton,
-  TokenDetailsLogo,TokenDetailsSymbol,TokenDataMetaInfo,TokenInput,ViewHeader,
+  TokenDetailsLogo,TokenDetailsSymbol,TokenInput,ViewHeader,
 } from '@/components';
 
 import { FeeBox } from '@/components/core/fee-box';
@@ -164,10 +164,7 @@ export const AssetsDepositView = () => {
             <TokenDataBalances onMaxClick={handleMaxClick} />
             <TokenDataPrice />
           </TokenData>
-          <TokenDataMetaInfo 
-                tokenSymbol={selectedTokenMetadata?selectedTokenMetadata.symbol:''}
-                pageInfo="deposit"
-                tokenValue={amount}></TokenDataMetaInfo>
+         
         </Token>
       </Box>
       <FeeBox token={selectedTokenMetadata} isDeposit />

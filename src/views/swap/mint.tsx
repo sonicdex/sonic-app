@@ -9,7 +9,7 @@ import { FaInfoCircle } from '@react-icons/all-files/fa/FaInfoCircle';
 
 import {
   WalletNotConnected, SlippageSettings, Token, TokenContent, TokenData, TokenDataBalances, TokenDataPrice,
-  TokenDataMetaInfo, TokenDetailsButton, TokenDetailsLogo, TokenDetailsSymbol, TokenInput, ViewHeader,
+   TokenDetailsButton, TokenDetailsLogo, TokenDetailsSymbol, TokenInput, ViewHeader,
 } from '@/components';
 
 import { useSwapView, useSwapViewStore } from '@/store';
@@ -80,11 +80,7 @@ export const MintView = () => {
               />
               <TokenDataPrice isUpdating={isPriceUpdating} />
             </TokenData>
-            <TokenDataMetaInfo
-              tokenSymbol={from.metadata ? from.metadata.symbol : ''} tokenValue={from.value}
-              tokenId={from.metadata ? from.metadata.id : ''} tokenDecimals={from.metadata ? from.metadata.decimals : 0}
-              pageInfo="swap"
-            ></TokenDataMetaInfo>
+           
           </Token>
         </Box>
 

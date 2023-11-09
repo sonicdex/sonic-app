@@ -496,7 +496,7 @@ export const useSwapViewData = (action: string) => {
       const tokenToId = query.get('to');
 
       if (tokenFromId) {
-        const from = fromTokenOptions.find(({ id }) => id === tokenFromId);
+        const from = fromTokenOptions.find(({ id }:any) => id === tokenFromId);
         if (from?.id) {
           dispatch(swapViewActions.setToken({ data: 'from', tokenId: from.id }));
           dispatch(swapViewActions.setValue({ data: 'from', value: '' }));
@@ -504,7 +504,7 @@ export const useSwapViewData = (action: string) => {
       }
 
       if (tokenToId) {
-        const to = toTokenOptions.find(({ id }) => id === tokenToId);
+        const to = toTokenOptions.find(({ id }:any) => id === tokenToId);
         if (to?.id) {
           dispatch(swapViewActions.setToken({ data: 'to', tokenId: to.id }));
           dispatch(swapViewActions.setValue({ data: 'to', value: '' }));

@@ -9,7 +9,7 @@ import { FaInfoCircle } from '@react-icons/all-files/fa/FaInfoCircle';
 
 import {
   SlippageSettings, Token, TokenContent, TokenData, TokenDataBalances, TokenDataPrice,
-  TokenDataMetaInfo, TokenDetailsButton, TokenDetailsLogo, TokenDetailsSymbol, TokenInput, ViewHeader,
+  TokenDetailsButton, TokenDetailsLogo, TokenDetailsSymbol, TokenInput, ViewHeader,
   WalletNotConnected
 } from '@/components';
 
@@ -38,8 +38,7 @@ export const SwapView = () => {
   const linkColor = useColorModeValue('dark-blue.500', 'dark-blue.400');
 
   const { fromTokenOptions, toTokenOptions, from, to, slippage } = useSwapViewStore();
-
-
+  
   const [isFailedTrxOpen, setIsFailedTrxOpen] = useState(0);
   const retryFailedTrx = () => { var r = Math.random() * 100; setIsFailedTrxOpen(r); };
 
@@ -84,11 +83,7 @@ export const SwapView = () => {
               />
               <TokenDataPrice isUpdating={isPriceUpdating} />
             </TokenData>
-            <TokenDataMetaInfo
-              tokenSymbol={from.metadata ? from.metadata.symbol : ''} tokenValue={from.value}
-              tokenId={from.metadata ? from.metadata.id : ''} tokenDecimals={from.metadata ? from.metadata.decimals : 0}
-              pageInfo="swap"
-            ></TokenDataMetaInfo>
+          
           </Token>
         </Box>
 

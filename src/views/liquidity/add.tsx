@@ -13,7 +13,7 @@ import { useNavigate } from 'react-router';
 
 import {
   DisplayValue, LPImageBlock, SlippageSettings, StackLine, Token, TokenContent, TokenData, TokenDataBalances, TokenDataPrice,
-  TokenDetailsButton, TokenDetailsLogo, TokenDetailsSymbol, TokenDataMetaInfo, TokenInput, ViewHeader,
+  TokenDetailsButton, TokenDetailsLogo, TokenDetailsSymbol, TokenInput, ViewHeader,
   WalletNotConnected
 } from '@/components';
 
@@ -31,6 +31,8 @@ import { getMaxValue } from '@/utils/format';
 import { debounce } from '@/utils/function';
 
 import { useAddLiquidityMemo, useTokenSourceMemo } from './liquidity.utils';
+
+import { ENV } from '@/config';
 
 export const LiquidityAddView = () => {
   const query = useQuery();
@@ -55,8 +57,8 @@ export const LiquidityAddView = () => {
     else navigate('/liquidity');
   };
   const handleAddLiquidity = () => {
-    if (!isReviewing) { 
-      setIsReviewing(true);return;
+    if (!isReviewing) {
+      setIsReviewing(true); return;
     }
 
     addNotification({
@@ -88,7 +90,7 @@ export const LiquidityAddView = () => {
     if (!isReviewing) {
 
       const excludeToken = (() => {
-        const foundPair = lockedPairsList.find(pair => {
+        const foundPair = lockedPairsList.find((pair: any) => {
           if (dataKey === 'token0') {
             return pair[0] === token1.metadata?.id || pair[1] === token1.metadata?.id;
           } else if (dataKey === 'token1') {
@@ -101,9 +103,9 @@ export const LiquidityAddView = () => {
 
       const customTokenList = supportedTokenList ? supportedTokenList.filter(x => {
         if (dataKey === 'token0') {
-          return x.id !== token1.metadata?.id && x.id !== excludeToken;
+          return x.id !== token1.metadata?.id && x.id !== excludeToken && !ENV.hiddenTokens.includes(x.id);
         } else if (dataKey === 'token1') {
-          return x.id !== token0.metadata?.id && x.id !== excludeToken;
+          return x.id !== token0.metadata?.id && x.id !== excludeToken && !ENV.hiddenTokens.includes(x.id);
         }
       }) : [];
 
@@ -181,7 +183,7 @@ export const LiquidityAddView = () => {
         var token = (dataKey == 'token0') ? token0 : token1;
         var convertToken = (dataKey == 'token0') ? token1 : token0;
         var fromAmount = amountIn;
-        
+
         if (token.metadata?.symbol == "YC") {
           var info = useTokenTaxCheck({
             balances: balances, tokenId: token.metadata.id, tokenSymbol: token.metadata.symbol, tokenDecimals: token.metadata.decimals, tokenValue: amountIn
@@ -231,7 +233,7 @@ export const LiquidityAddView = () => {
   );
 
   const isBalancesUpdating = useMemo(() => balancesState === FeatureState.Updating, [balancesState]);
-  const isPriceUpdating = useMemo( () => priceState === FeatureState.Updating, [priceState]);
+  const isPriceUpdating = useMemo(() => priceState === FeatureState.Updating, [priceState]);
 
   const [buttonDisabled, buttonMessage] = useMemo<[boolean, string]>(() => {
     if (isLoading) return [true, 'Loading'];
@@ -240,7 +242,7 @@ export const LiquidityAddView = () => {
     const parsedToken0Value = (token0.value && parseFloat(token0.value)) || 0;
     const parsedToken1Value = (token1.value && parseFloat(token1.value)) || 0;
 
-    if ( typeof token0Allowance !== 'number' || typeof token1Allowance !== 'number') {
+    if (typeof token0Allowance !== 'number' || typeof token1Allowance !== 'number') {
       return [true, 'Getting allowance'];
     }
 
@@ -250,12 +252,12 @@ export const LiquidityAddView = () => {
     if (parsedToken1Value <= 0)
       return [true, `Enter ${token1.metadata.symbol} Amount`];
 
-    if ( totalBalances && typeof token0Balance === 'number' && typeof token1Balance === 'number') {
-      if ( parsedToken0Value > getMaxValue(token0.metadata, token0Balance).toNumber()) {
+    if (totalBalances && typeof token0Balance === 'number' && typeof token1Balance === 'number') {
+      if (parsedToken0Value > getMaxValue(token0.metadata, token0Balance).toNumber()) {
         return [true, `Insufficient ${token0.metadata.symbol} Balance`];
       }
 
-      if ( parsedToken1Value > getMaxValue(token1.metadata, token1Balance).toNumber()) {
+      if (parsedToken1Value > getMaxValue(token1.metadata, token1Balance).toNumber()) {
         return [true, `Insufficient ${token1.metadata.symbol} Balance`];
       }
     }
@@ -313,9 +315,24 @@ export const LiquidityAddView = () => {
   const bg = useColorModeValue('gray.100', 'gray.800');
   const iconBorderColor = useColorModeValue('gray.200', 'custom.4');
   const textColor = useColorModeValue('gray.700', 'gray.300');
+  const [isDisabled, setIsDisabled] = useState(false);
+
+  useEffect(() => {
+    
+    const token0Id = token0.metadata?.id;
+    const token1Id = token1.metadata?.id;
+
+    if (token0Id && token0Id.length > 0)
+      if (ENV.hiddenTokens.includes(token0Id)) { setIsDisabled(true); }
+
+    if (token1Id && token1Id.length > 0)
+      if (ENV.hiddenTokens.includes(token1Id)) { setIsDisabled(true); }
+
+  }, [token0?.metadata?.id, token0?.metadata?.id])
+
 
   return (
-    <Stack spacing={4}  mb="5">
+    <Stack spacing={4} mb="5">
       <ViewHeader onArrowBack={handlePreviousStep} title="Add Liquidity">
         <Menu onClose={handleMenuClose}>
           <Tooltip label="Adjust the slippage">
@@ -323,13 +340,13 @@ export const LiquidityAddView = () => {
           </Tooltip>
           <MenuList shadow={menuListShadow} bg={menuListBg} border="none" borderRadius={20} py={0}>
             <SlippageSettings slippage={slippage}
-              setSlippage={(value) =>dispatch(liquidityViewActions.setSlippage(value))}
+              setSlippage={(value) => dispatch(liquidityViewActions.setSlippage(value))}
               isAutoSlippage={autoSlippage} setIsAutoSlippage={handleSetIsAutoSlippage}
             />
           </MenuList>
         </Menu>
       </ViewHeader>
-      <Flex direction="column"  alignItems="center">
+      <Flex direction="column" alignItems="center">
         <Box width="100%">
           <Token value={token0.value} setValue={(value) => setInAndOutTokenValues('token0', value)} tokenListMetadata={supportedTokenList}
             tokenMetadata={token0.metadata} isDisabled={isReviewing} sources={token0Sources} isLoading={isLoading}
@@ -346,9 +363,7 @@ export const LiquidityAddView = () => {
               <TokenDataBalances isUpdating={isBalancesUpdating} onMaxClick={() => handleTokenMaxClick('token0')} />
               <TokenDataPrice isUpdating={isPriceUpdating} />
             </TokenData>
-            <TokenDataMetaInfo tokenId={token0.metadata ? token0.metadata.id : ''}
-              tokenSymbol={token0.metadata ? token0.metadata.symbol : ''} tokenDecimals={token0.metadata ? token0.metadata.decimals : 0}
-              pageInfo="liquidity" tokenValue={token0.value}></TokenDataMetaInfo>
+
           </Token>
         </Box>
 
@@ -381,9 +396,7 @@ export const LiquidityAddView = () => {
               <TokenDataBalances isUpdating={isBalancesUpdating} onMaxClick={() => handleTokenMaxClick('token1')} />
               <TokenDataPrice isUpdating={isPriceUpdating} />
             </TokenData>
-            <TokenDataMetaInfo tokenId={token1.metadata ? token1.metadata.id : ''} tokenSymbol={token1.metadata ? token1.metadata.symbol : ''}
-              tokenDecimals={token1.metadata ? token1.metadata.decimals : 0} pageInfo="liquidity" tokenValue={token1.value}>
-            </TokenDataMetaInfo>
+
           </Token>
         </Box>
         {token0.metadata && token1.metadata && (
@@ -458,7 +471,7 @@ export const LiquidityAddView = () => {
                       <PopoverArrow />
                       <PopoverBody display="inline-block">
                         <Stack>
-                          <StackLine title={`${token0.metadata.name} Deposit Fee`} value={`${fee0} ${token0.metadata.symbol}`}/>
+                          <StackLine title={`${token0.metadata.name} Deposit Fee`} value={`${fee0} ${token0.metadata.symbol}`} />
                           <StackLine
                             title={`${token1.metadata.name} Deposit Fee`}
                             value={`${fee1} ${token1.metadata.symbol}`}
@@ -473,14 +486,21 @@ export const LiquidityAddView = () => {
           </>
         )}
       </Flex>
-      {!isConnected ? ( <WalletNotConnected />) : (
-        <Button isFullWidth size="lg" variant="gradient" colorScheme="dark-blue" onClick={handleAddLiquidity}
-          isDisabled={buttonDisabled || typeof token0Allowance !== 'number' || typeof token1Allowance !== 'number'}
-          isLoading={isLoading || typeof token0Allowance !== 'number' || typeof token1Allowance !== 'number'}
-        >
-          {buttonMessage}
-        </Button>
-      )}
+      {!isConnected && !isDisabled ?
+        (<WalletNotConnected />) :
+        isDisabled ? (
+          <Button isFullWidth size="lg" isDisabled={true}>Liquidity Adding Disabled</Button>
+        ) : (
+          <Button isFullWidth size="lg" variant="gradient" colorScheme="dark-blue" onClick={handleAddLiquidity}
+            isDisabled={buttonDisabled || typeof token0Allowance !== 'number' || typeof token1Allowance !== 'number'}
+            isLoading={isLoading || typeof token0Allowance !== 'number' || typeof token1Allowance !== 'number'}
+          >
+            {buttonMessage}
+          </Button>
+        )
+
+
+      }
     </Stack>
   );
 };
