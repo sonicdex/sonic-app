@@ -9,7 +9,7 @@ import { FaInfoCircle } from '@react-icons/all-files/fa/FaInfoCircle';
 
 import {
   SlippageSettings, Token, TokenContent, TokenData, TokenDataBalances, TokenDataPrice,
-  TokenDataMetaInfo, TokenDetailsButton, TokenDetailsLogo, TokenDetailsSymbol, TokenInput, ViewHeader,
+  TokenDetailsButton, TokenDetailsLogo, TokenDetailsSymbol, TokenInput, ViewHeader,
   WalletNotConnected
 } from '@/components';
 
@@ -18,6 +18,10 @@ import { useSwapView, useSwapViewStore } from '@/store';
 import { SwapStep } from './';
 import { ExchangeBox, KeepInSonicBox, SwapSubTab } from './components';
 import { useSwapViewData } from './hooks';
+
+
+import { RetryFailedTrxModal } from '@/components/modals';
+import { useState } from 'react';
 
 export const SwapView = () => {
   useSwapView('swap');
@@ -34,9 +38,13 @@ export const SwapView = () => {
   const linkColor = useColorModeValue('dark-blue.500', 'dark-blue.400');
 
   const { fromTokenOptions, toTokenOptions, from, to, slippage } = useSwapViewStore();
+  
+  const [isFailedTrxOpen, setIsFailedTrxOpen] = useState(0);
+  const retryFailedTrx = () => { var r = Math.random() * 100; setIsFailedTrxOpen(r); };
 
   return (
     <Stack spacing={4} mb={9}>
+      <RetryFailedTrxModal isRetryOpen={isFailedTrxOpen} />
       <SwapSubTab tabname={'swap'} />
       <ViewHeader title={headerTitle}
         onArrowBack={step === SwapStep.Review ? () => setStep(SwapStep.Home) : undefined}
@@ -75,11 +83,7 @@ export const SwapView = () => {
               />
               <TokenDataPrice isUpdating={isPriceUpdating} />
             </TokenData>
-            <TokenDataMetaInfo
-              tokenSymbol={from.metadata ? from.metadata.symbol : ''} tokenValue={from.value}
-              tokenId={from.metadata ? from.metadata.id : ''} tokenDecimals={from.metadata ? from.metadata.decimals : 0}
-              pageInfo="swap"
-            ></TokenDataMetaInfo>
+          
           </Token>
         </Box>
 
@@ -160,8 +164,13 @@ export const SwapView = () => {
       </Flex>
 
       <ExchangeBox priceImpact={priceImpact} />
-
       <KeepInSonicBox canHeldInSonic={canHeldInSonic} symbol={to.metadata?.symbol} operation={currentOperation} />
+      {(from?.metadata?.symbol == 'ckBTC' || to?.metadata?.symbol == 'ckBTC') ? (
+        <Text fontSize={12} color="#ffc107">
+          Important Notice: The CKBTC price on Sonic DEX might not reflect the current market price accurately due to fluctuations in LP. Users are strongly advised to do price checks before proceeding with ckBTC swaps. The disparity in prices may result in unexpected losses.
+        </Text>) : ''
+      }
+
 
       {isConnected ? (
         <Button isFullWidth variant="gradient" colorScheme="dark-blue" size="lg" onClick={onButtonClick}
@@ -176,6 +185,16 @@ export const SwapView = () => {
       ) : (
         <WalletNotConnected />
       )}
+      {isConnected ? (
+        <Flex alignItems={'self-end'} w="100%" flexDirection="column">
+          <Flex>
+            <Text mr={1} mt={1} color={'custom.1'}>Lost funds after swap? </Text>
+            <Button size="sm" borderRadius={8} colorScheme="dark-blue" isLoading={isLoading} onClick={retryFailedTrx}>
+              Claim Here
+            </Button>
+          </Flex>
+        </Flex>
+      ) : ''}
     </Stack>
   );
 };

@@ -236,29 +236,16 @@ export const TokenDataPrice: React.FC<TokenDataPriceProps> = ({
     return defaultColor;
   }, [priceImpact, defaultColor]);
 
-  const isPrice = useMemo(() => {
-    return price !== '0';
-  }, [price]);
+  const isPrice = useMemo(() => { return price !== '0';}, [price]);
 
   return (
     <Skeleton isLoaded={!isLoading} borderRadius="full" minWidth={5}>
-      <HStack
-        transition="color 400ms"
-        alignItems="center"
-        color={defaultColor}
-        {...props}
-      >
+      <HStack transition="color 400ms" alignItems="center" color={defaultColor} {...props}>
         {isPrice && (
           <DisplayValue isUpdating={isUpdating} value={price} prefix="~$" />
         )}
         {priceImpact && (
-          <DisplayValue
-            isUpdating={isUpdating}
-            color={color}
-            value={priceImpact}
-            prefix="("
-            suffix="%)"
-          />
+          <DisplayValue isUpdating={isUpdating} color={color} value={priceImpact} prefix="(" suffix="%)"/>
         )}
         {children}
       </HStack>
@@ -302,20 +289,10 @@ export const TokenDataBalances: React.FC<TokeDataBalancesProps> = ({
     <Skeleton isLoaded={!isLoading} borderRadius="full" minW={20}>
       <Flex direction="row" color={color} {...props}>
         <HStack>
-          <TokenBalancesPopover
-            sources={sources}
-            decimals={tokenMetadata?.decimals}
-            symbol={tokenMetadata?.symbol}
-          />
-
+          <TokenBalancesPopover sources={sources} decimals={tokenMetadata?.decimals} symbol={tokenMetadata?.symbol}/>
           {typeof totalTokenBalance === 'number' && (
-            <DisplayValue
-              isUpdating={isUpdating}
-              value={totalTokenBalance}
-              decimals={tokenMetadata?.decimals || 0}
-              prefix="Balance: "
-              suffix={tokenMetadata?.symbol && ` ${tokenMetadata?.symbol}`}
-              shouldDivideByDecimals
+            <DisplayValue isUpdating={isUpdating} value={totalTokenBalance} decimals={tokenMetadata?.decimals || 0}
+              prefix="Balance: " suffix={tokenMetadata?.symbol && ` ${tokenMetadata?.symbol}`} shouldDivideByDecimals
             />
           )}
 
@@ -362,13 +339,8 @@ export const TokenInput: React.FC<TokenInputProps> = (props) => {
 
   return (
     <Skeleton isLoaded={!isLoading} borderRadius="full">
-      <NumberInput
-        isDisabled={isDisabled}
-        value={value}
-        setValue={handleChange}
-        color={color}
-        background={background}
-        {...props}
+      <NumberInput isDisabled={isDisabled} value={value} setValue={handleChange} color={color}
+        background={background} {...props}
       />
     </Skeleton>
   );
@@ -377,15 +349,7 @@ export const TokenInput: React.FC<TokenInputProps> = (props) => {
 // === Other Internal Components ===
 
 const TokenGlow = () => (
-  <Box
-    position="absolute"
-    borderRadius={20}
-    top={0}
-    left={0}
-    width="100%"
-    height="100%"
-    filter="blur(6px)"
-    zIndex={-100}
-    bg="dark-blue.500"
+  <Box position="absolute" borderRadius={20} top={0} left={0} width="100%"
+    height="100%" filter="blur(6px)" zIndex={-100} bg="dark-blue.500"
   />
 );

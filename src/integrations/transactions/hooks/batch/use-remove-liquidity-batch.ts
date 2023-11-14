@@ -1,11 +1,11 @@
 import { useMemo } from 'react';
 
 import {
-  modalsSliceActions, RemoveLiquidityModalDataStep, useAppDispatch, useSwapCanisterStore,
+  modalsSliceActions, RemoveLiquidityModalDataStep, useAppDispatch, 
 } from '@/store';
 
 import { RemoveLiquidity } from '../..';
-import { useRemoveLiquidityTransactionMemo, useWithdrawTransactionMemo } from '..';
+import { useRemoveLiquidityTransactionMemo, token0Withdraw, useWithdrawTransactionMemo ,  } from '..';
 
 export interface UseRemoveLiquidityBatchOptions extends RemoveLiquidity {
   keepInSonic: boolean;
@@ -15,15 +15,16 @@ export interface UseRemoveLiquidityBatchOptions extends RemoveLiquidity {
 import { BatchTransact } from 'artemis-web3-adapter';
 import { artemis } from '@/integrations/artemis';
 
+
 export const useRemoveLiquidityBatch = ({ keepInSonic, ...removeLiquidityParams }: UseRemoveLiquidityBatchOptions) => {
   const dispatch = useAppDispatch();
-  const { sonicBalances } = useSwapCanisterStore();
+ // const { sonicBalances } = useSwapCanisterStore();
 
   var batchLoad: any = { state: "idle" };
 
-  if (!sonicBalances) {
-    return { batch: batchLoad, openBatchModal: () => { } };
-  }
+  // if (!sonicBalances) {
+  //   return { batch: batchLoad, openBatchModal: () => { } };
+  // }
 
   if (!removeLiquidityParams.token0.metadata || !removeLiquidityParams.token1.metadata) {
     return { batch: batchLoad, openBatchModal: () => { } };
@@ -41,7 +42,7 @@ export const useRemoveLiquidityBatch = ({ keepInSonic, ...removeLiquidityParams 
   };
 
   const removeLiquidity = useRemoveLiquidityTransactionMemo(removeLiquidityParams);
-  const withdraw0 = useWithdrawTransactionMemo(withdraw0Params);
+  const withdraw0 = token0Withdraw(withdraw0Params);
   const withdraw1 = useWithdrawTransactionMemo(withdraw1Params);
 
   const LiquidityBatchTx = useMemo(() => {

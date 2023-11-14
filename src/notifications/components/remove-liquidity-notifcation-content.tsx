@@ -27,13 +27,11 @@ export const RemoveLiquidityNotificationContent: React.FC<
 
   const { token0, token1, ...removeLiquidityBatchParams } =
     useMemo(() => {
-      const { token0, token1, keepInSonic, removeAmountPercentage, pair } =
-        liquidityViewStore;
+      const { token0, token1, keepInSonic, removeAmountPercentage, pair } = liquidityViewStore;
 
       if (userLPBalances && token0.metadata && token1.metadata && pair) {
-        const tokensLPBalance =
-          userLPBalances[token0.metadata.id]?.[token1.metadata.id];
-        const lpAmount = (removeAmountPercentage / 100) * tokensLPBalance;
+        const tokensLPBalance = userLPBalances[token0.metadata.id]?.[token1.metadata.id];
+        const lpAmount = Math.floor((removeAmountPercentage / 100) * tokensLPBalance);
 
         const amount0Min = toBigNumber(lpAmount).multipliedBy(pair.reserve0.toString()).dividedBy(pair.totalSupply.toString()).applyDecimals(token0.metadata.decimals);
         const amount1Min = toBigNumber(lpAmount).multipliedBy(pair.reserve1.toString()).dividedBy(pair.totalSupply.toString()).applyDecimals(token1.metadata.decimals);

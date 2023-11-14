@@ -3,7 +3,7 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { NotificationManager } from '@/notifications';
 import { ActivityListView, AssetsDepositView, AssetsListView, AssetsWithdrawView, LiquidityAddView, LiquidityListView, SwapView , MintView  , AssetsTransferView} from '@/views';
 
-import { TestView , TestViewt1 , TestViewt2}  from '@/views';
+// import { TestView , TestViewt1 , TestViewt2}  from '@/views';
 
 import { Layout } from './components';
 import {
@@ -21,7 +21,7 @@ import { useWalletInit } from '@/integrations/artemis'
 import { useCyclesMintingCanisterInit, useLiquidityViewInit, usePriceInit, useSwapCanisterInit } from './store';
 import {loadsupportedTokenList} from '@/utils'
 
-loadsupportedTokenList;
+
 export const App = () => {
   useCyclesMintingCanisterInit();
   useWalletInit();
@@ -76,9 +76,9 @@ export const App = () => {
           <Route path="/liquidity" element={<LiquidityListView />} />
           <Route path="/liquidity/add" element={<LiquidityAddView />} />
           <Route path="/activity" element={<ActivityListView />} />
-          <Route path="/test" element={<TestView />} />
+          {/* <Route path="/test" element={<TestView />} />
           <Route path="/test/t1" element={<TestViewt1 />} />
-          <Route path="/test/t2" element={<TestViewt2 />} />
+          <Route path="/test/t2" element={<TestViewt2 />} /> */}
           <Route path="*" element={<Navigate to="/swap" />} />
         </Routes>
       </Layout>

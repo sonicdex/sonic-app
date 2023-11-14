@@ -45,6 +45,8 @@ export const getTokenActor = async (canisterId: string, isAnnon: boolean): Promi
   var idl: any = token.tokenType == 'DIP20' ? TokenIDL.DIP20.factory :
     token.tokenType == 'YC' ? TokenIDL.DIP20.YCfactory :
       token.tokenType == 'ICRC1' ? TokenIDL.ICRC1.factory : TokenIDL.DIP20.factory;
+
+  if(token?.symbol == 'SNEED'){ idl = TokenIDL.SNEED;} 
   if (isAnnon == false && !artemis.provider) { await artemis.autoConnect(); }
   actor = await artemis.getCanisterActor(token.id, idl, isAnnon);
   return actor;
@@ -57,6 +59,8 @@ export const getswapActor = async (isAnnon: boolean): Promise<SwapIDL.Factory> =
   var actor = await artemis.getCanisterActor(ENV.canistersPrincipalIDs.swap, SwapIDL.factory, isAnnon);
   return actor;
 }
+
+
 
 export const getSwapCapActor = async (isAnnon: boolean): Promise<capCanIDL.Factory> => {
   if (!isAnnon && !artemis.provider) {
@@ -108,7 +112,7 @@ export const getTokenBalance = async (canisterId: string, principalId?: string):
     }
   } catch (error) {
     tokenBalance = BigInt(0);
-    console.log(tokenInfo.name+' ('+ tokenInfo.id +') failed to load !!!' );
+   // console.log(tokenInfo.name+' ('+ tokenInfo.id +') failed to load !!!' );
   }
    return tokenBalance;
 }

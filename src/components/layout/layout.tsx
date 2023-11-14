@@ -82,11 +82,15 @@ export const Layout: React.FC = ({ children, ...props }) => {
     <>
        {showBanner && (
         <Alert status="info" mb={4} bg={menuBg} borderRadius={'md'} justifyContent={'center'}>
+          <Container  maxW={['100%', 'container.xl', 'container.xl']}>
+          <Flex>
           <AlertIcon />
-          <b> LP contest alert : </b> &nbsp; Add any LP in sonic and win a share  of $250K rewards. &nbsp;
-          <ChakraLink href="https://sonicdex.notion.site/Sonic-X-LP-Promotion-65c8b4fd93a7499bbe72f000f0b894c7" fontWeight={600} isExternal color="teal.500">
-          click here 
-          </ChakraLink> &nbsp; for more details
+         <Text fontSize={14}> In response to a request from the Boxy & Cigdao team due to the launch of their new tokens, we will cease supporting the BOX DIP20 
+         (Canister ID: lzvjb-wyaaa-aaaam-qarua-cai) YC Dip-20 (Canister ID: 5gxp5-jyaaa-aaaag-qarma-cai) & SONICX (Canister ID: lcyu6-siaaa-aaaah-adk2a-cai) 
+         tokens effective from November 7.We kindly ask all our users to take the necessary steps to remove your respective liquidity pools.
+</Text>
+          </Flex>
+          </Container>
           <CloseButton size="sm" onClick={handleCloseBanner} position="absolute" right="8px" top="8px" />
         </Alert>
       )}

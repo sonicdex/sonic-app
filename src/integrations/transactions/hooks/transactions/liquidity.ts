@@ -10,7 +10,7 @@ import { parseAmount } from '@/utils/format';
 
 import { useBalances } from '@/hooks';
 
-import { AddLiquidity, CreateTransaction, RemoveLiquidity } from '../../models';
+import { AddLiquidity, CreateTransaction, RemoveLiquidity, Withdraw } from '../../models';
 
 export type LiquidityTransaction = {
   idl: any;
@@ -33,6 +33,12 @@ type useTokenTaxCheckOptions = {
   tokenSymbol?: string;
 };
 
+
+import { getswapActor } from '@/utils';
+
+var SwapActor: any;
+(async () => { SwapActor = await getswapActor(false); })();
+
 const useTokenTaxCheck = ({ balances, tokenId, tokenSymbol, tokenDecimals = 1, tokenValue = '', }: useTokenTaxCheckOptions) => {
   const { sonicBalances, tokenBalances, icpBalance } = balances;
   const tokenInfo = { wallet: 0, sonic: 0, taxInfo: { input: 0, taxedValue: 0, nonTaxedValue: 0, netValue: 0 } }
@@ -47,7 +53,7 @@ const useTokenTaxCheck = ({ balances, tokenId, tokenSymbol, tokenDecimals = 1, t
     if (tokenSymbol == 'YC') {
       let decimals = tokenDecimals ? (10 ** tokenDecimals) : 1
       let sonicBalance = tokenInfo['sonic'] / decimals;
-     
+
       if ((sonicBalance > tokenVal)) {
         tokenInfo.taxInfo.nonTaxedValue = tokenVal;
         tokenInfo.taxInfo.taxedValue = 0;
@@ -79,7 +85,7 @@ export const useAddLiquidityTransactionMemo: CreateTransaction<AddLiquidity> = (
       token0Value = info.taxInfo.netValue.toString();
       var _temp = token0Value.split(".");
 
-      token0Value = _temp[0] + '.' + (_temp[1] ? _temp[1].substring(0, 3):'0');
+      token0Value = _temp[0] + '.' + (_temp[1] ? _temp[1].substring(0, 3) : '0');
     }
 
     if (token1.metadata?.symbol == 'YC') {
@@ -92,7 +98,7 @@ export const useAddLiquidityTransactionMemo: CreateTransaction<AddLiquidity> = (
 
       token1Value = info.taxInfo.netValue.toString();
       var _temp = token1Value.split(".");
-      token1Value = _temp[0] + '.' + ( _temp[1]? _temp[1].substring(0, 3):'0');
+      token1Value = _temp[0] + '.' + (_temp[1] ? _temp[1].substring(0, 3) : '0');
     }
 
     const amount0Desired = parseAmount(token0Value, token0.metadata.decimals);
@@ -107,7 +113,8 @@ export const useAddLiquidityTransactionMemo: CreateTransaction<AddLiquidity> = (
       token1.metadata.decimals
     );
 
-    const currentTime = (new Date().getTime() + 5 * 60 * 1000) * 10000000;
+    const currentTime = (new Date().getTime() + 15 * 60 * 1000) * 10000000;
+
     return {
       canisterId: ENV.canistersPrincipalIDs.swap,
       idl: SwapIDL.factory,
@@ -166,5 +173,44 @@ export const useRemoveLiquidityTransactionMemo: CreateTransaction<RemoveLiquidit
         Principal.fromText(principalId),
         BigInt(currentTime),
       ],
+      updateNextStep: async (trxResult: any, nextTrxItem: any) => {
+        if (nextTrxItem) {
+          if (trxResult?.ok) {
+            const data = await SwapActor?.getLastTransactionOutAmount();
+            if (data?.RemoveLiquidityOutAmount) {
+              nextTrxItem.args[1] = data?.RemoveLiquidityOutAmount[0];
+            }
+          }
+        }
+      }
     };
   }, [token0, token1]);
+
+
+
+export const token0Withdraw: CreateTransaction<Withdraw> = ({ amount, token }, onSuccess, onFail) =>
+  useMemo(() => {
+    if (!token?.id || !amount) { return {}; }
+    return {
+      args: [Principal.fromText(token.id), parseAmount(amount, token.decimals)],
+      canisterId: ENV.canistersPrincipalIDs.swap,
+      idl: SwapIDL.factory,
+      updateNextStep: async (trxResult: any, nextTrxItem: any) => {
+        if (nextTrxItem) {
+          if (trxResult?.ok) {
+            const data = await SwapActor?.getLastTransactionOutAmount();
+            if (data?.RemoveLiquidityOutAmount) {
+              nextTrxItem.args[1] = data?.RemoveLiquidityOutAmount[1];
+            }
+          }
+        }
+      },
+      methodName: 'withdraw',
+      onSuccess: async (res: SwapIDL.Result) => {
+        if ('err' in res) throw new Error(res.err);
+        if (onSuccess) onSuccess(res);
+      },
+      onFail,
+      
+    };
+  }, [amount, token, onFail, onSuccess]);

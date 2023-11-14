@@ -26,33 +26,33 @@ export const usePriceInit = () => {
 
       const supportedTokenListWithPrices = supportedTokenList.map((token) => {
         let tokenPrice;
-        if (token.id === ENV.canistersPrincipalIDs.WICP || token.id === ENV.canistersPrincipalIDs.ledger) {
-           tokenPrice = icpPrice; }
-        else {
 
-          var BaseTokenPair = allPairs?.[ENV.canistersPrincipalIDs.WICP]?.[token.id];
-          if(!BaseTokenPair) BaseTokenPair = allPairs?.[ENV.canistersPrincipalIDs.ledger]?.[token.id];
+
+        if (token.id === ENV.canistersPrincipalIDs.WICP || token.id === ENV.canistersPrincipalIDs.ledger) {
+          tokenPrice = icpPrice;
+        }
+        else {
+          var BaseTokenPair = allPairs?.[ENV.canistersPrincipalIDs.ledger]?.[token.id];
+          if (!BaseTokenPair) BaseTokenPair = allPairs?.[ENV.canistersPrincipalIDs.WICP]?.[token.id];
 
           const tokenDecimals = supportedTokenList.find(({ id }) => id === token.id)?.decimals;
-          
           const BaseTokenDecimals = supportedTokenList.find(({ id }) => id === ENV.canistersPrincipalIDs.ledger)?.decimals;
 
           if (BaseTokenPair && tokenDecimals && BaseTokenDecimals) {
             const baseReserve = BaseTokenPair.token0 === ENV.canistersPrincipalIDs.WICP || BaseTokenPair.token0 === ENV.canistersPrincipalIDs.ledger ?
               BaseTokenPair.reserve0 : BaseTokenPair.reserve1;
-
             const tokenReserve = BaseTokenPair.token0 === ENV.canistersPrincipalIDs.WICP || BaseTokenPair.token0 === ENV.canistersPrincipalIDs.ledger ?
               BaseTokenPair.reserve1 : BaseTokenPair.reserve0;
 
-              if (baseReserve && tokenReserve) {
-                tokenPrice = new BigNumber(icpPrice).multipliedBy(toBigNumber(baseReserve).applyDecimals(BaseTokenDecimals))
-                 .div(toBigNumber(tokenReserve).applyDecimals(tokenDecimals)).toString();
-              }
-          }else {
+            if (baseReserve && tokenReserve) {
+              tokenPrice = new BigNumber(icpPrice).multipliedBy(toBigNumber(baseReserve).applyDecimals(BaseTokenDecimals))
+                .div(toBigNumber(tokenReserve).applyDecimals(tokenDecimals)).toString();
+            }
+          } else {
             tokenPrice = '0';
+          }
         }
-        }
-        return {...token,price: tokenPrice};
+        return { ...token, price: tokenPrice };
       });
       dispatch(swapCanisterActions.setSupportedTokenList(supportedTokenListWithPrices));
     }

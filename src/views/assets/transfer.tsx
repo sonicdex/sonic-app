@@ -7,7 +7,7 @@ import { FeeBox } from '@/components/core/fee-box';
 import { useQuery } from '@/hooks/use-query';
 import {
   Token, TokenContent, TokenData, TokenDataBalances, TokenDataPrice, TokenDetailsButton,
-  TokenDetailsLogo, TokenDetailsSymbol, TokenDataMetaInfo, TokenInput, ViewHeader,
+  TokenDetailsLogo, TokenDetailsSymbol, TokenInput, ViewHeader,
 } from '@/components';
 
 
@@ -133,10 +133,7 @@ export const AssetsTransferView = () => {
             <TokenDataBalances onMaxClick={handleMaxClick} />
             <TokenDataPrice />
           </TokenData>
-          <TokenDataMetaInfo
-            tokenSymbol={selectedTokenMetadata ? selectedTokenMetadata.symbol : ''}
-            pageInfo="deposit"
-            tokenValue={amount}></TokenDataMetaInfo>
+          
           <Skeleton isLoaded={!isLoading} borderRadius="6" mt={'3'}>
             <Text mb="4" fontWeight={600}> To :</Text>
             <Input type="text" value={toAddress} onChange={handleToAddressChange} fontSize={'large'}
