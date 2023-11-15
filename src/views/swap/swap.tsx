@@ -18,6 +18,7 @@ import { useSwapView, useSwapViewStore } from '@/store';
 import { SwapStep } from './';
 import { ExchangeBox, KeepInSonicBox, SwapSubTab } from './components';
 import { useSwapViewData } from './hooks';
+import Widget from "@elna-ai/chat-widget";
 
 
 import { RetryFailedTrxModal } from '@/components/modals';
@@ -44,6 +45,13 @@ export const SwapView = () => {
 
   return (
     <Stack spacing={4} mb={9}>
+        <Widget
+          wizardId="dffa1016-6cec-4bcf-8a39-d8de9f3dca17"
+          title="Support Chat"
+          description="Hi there! 🚀 I'm Sonic Helper"
+          chatBg={"#000000"}
+          logo={''}
+        />
       <RetryFailedTrxModal isRetryOpen={isFailedTrxOpen} />
       <SwapSubTab tabname={'swap'} />
       <ViewHeader title={headerTitle}
