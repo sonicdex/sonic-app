@@ -48,7 +48,7 @@ import { LogoBox } from '../core';
 import { FOOTER_HEIGHT, NAVIGATION_TABS } from './layout.constants';
 
 import { WalletConnectBtn, WalletMenu } from '@/components/wallet';
-
+import Widget from "@elna-ai/chat-widget";
 
 export const Layout: React.FC = ({ children, ...props }) => {
 
@@ -176,7 +176,14 @@ export const Layout: React.FC = ({ children, ...props }) => {
       <Container as="main" maxW="xl" minH={`calc(100vh - ${headerHeight} - ${FOOTER_HEIGHT})`} py="4" display="flex" flexDirection="column" {...props}>
         {children}
       </Container>
-
+      
+      <Widget
+          wizardId="dffa1016-6cec-4bcf-8a39-d8de9f3dca17"
+          title="Support Chat"
+          description="Hi there! 🚀 I'm Sonic Helper"
+          chatBg={"#1c1f43"}
+          logo={'https://cdn.sonic.ooo/icons/qbizb-wiaaa-aaaaq-aabwq-cai'}
+        />      
       <chakra.footer px="4" py="2" position="fixed" bottom={0} left={0} right={0}
         background={`linear-gradient(to bottom, transparent 0%, ${backgroundColorValue} 50%)`} pointerEvents="none"
       >

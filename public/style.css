@@ -1,0 +1,26 @@
+.widget__wrapper{
+    display: inline;
+}
+.widget__wrapper .widget__title{
+    background: #1c1f43;
+    box-shadow: #1c1f43 0 5px 20px;
+    border:1px solid var(--chakra-colors-whiteAlpha-300);
+}
+.widget__title__group__title{
+    color: #fff;
+}
+.widget__title__group__description{
+    color: var(--chakra-colors-whiteAlpha-300);
+}
+.chat-header{
+    background: #1c1f43;
+}
+.widget__title svg path{
+    fill: #fff;
+}
+.widget__title{
+    height: 50px;
+}
+.widget__title__group__image{
+    max-width: 30px !important;
+}
