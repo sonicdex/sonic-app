@@ -26,6 +26,7 @@ export const useTokenModalOpener = () => {
         selectedTokenIds,
         // Add when we have a custom token selector
         allowAddToken: false,
+        pinnedTokens: []
       })
     );
     dispatch(modalsSliceActions.openTokenSelectModal());
