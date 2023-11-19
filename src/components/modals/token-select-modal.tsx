@@ -5,6 +5,8 @@ import {
 
 import { deserialize } from '@sonicdex/sonic-js';
 import { FaHdd } from '@react-icons/all-files/fa/FaHdd';
+import { TiPinOutline } from '@react-icons/all-files/ti/TiPinOutline';
+import { TiPin } from '@react-icons/all-files/ti/TiPin';
 import { useEffect, useMemo, useState } from 'react';
 
 import { arrowBackSrc, questionMarkSrc } from '@/assets';
@@ -24,7 +26,7 @@ export const TokenSelectModal = () => {
     isTokenSelectModalModalOpened: isTokenSelectOpened,
   } = useModalsStore();
 
-  const { tokens, onSelect, selectedTokenIds, isLoading = false, allowAddToken} = tokenSelectData; // This controls if token can be imported
+  const { tokens, onSelect, selectedTokenIds, isLoading = false, allowAddToken, pinnedTokens } = tokenSelectData; // This controls if token can be imported
 
   const [addToken, setAddToken] = useState(false);
   const [importTokenData, setImportTokenData] = useState({ name: '',symbol: '',logo: '',id: ''});
@@ -48,8 +50,15 @@ export const TokenSelectModal = () => {
     };
 
     const filteredItems = parsedTokens.filter(filterFunction);
-    setFilteredList(filteredItems);
-  }, [search, parsedTokens]);
+    const filteredItemsWithPinOrderes = filteredItems.sort((a: any,b: any) => {
+      const isAPinnned = pinnedTokens.includes(a.id);
+      const isBPinned = pinnedTokens.includes(b.id);
+
+      if(isAPinnned === isBPinned) return 0;
+      return isAPinnned ? -1 : 1;
+    })
+    setFilteredList(filteredItemsWithPinOrderes);
+  }, [search, parsedTokens, pinnedTokens]);
  
  
   const handleSelect = (tokenId?: string) => {  
@@ -110,7 +119,7 @@ export const TokenSelectModal = () => {
                 filteredList.map(({ id, logo, symbol, decimals, name }) => (
                   <TokenSelectItem key={id} balance={totalBalances && totalBalances[id]}
                     symbol={symbol} decimals={decimals} name={name} onSelect={() => handleSelect(id)} isLoading={isLoading}
-                    isSelected={selectedTokenIds?.includes(id)} logoSrc={logo}
+                    isSelected={selectedTokenIds?.includes(id)} logoSrc={logo} id={id} pinnedTokens={pinnedTokens}
                   />
                 ))
               ) : (
@@ -166,13 +175,27 @@ type TokenSelectItemProps = Partial<{
   balance: number; onSelect: any; name: string;
   symbol: string; decimals: number;isSelected: boolean;
   isLoading: boolean;logoSrc: string;
+  id: string;
+  pinnedTokens: string[];
 }>;
 
 const TokenSelectItem = ({
   balance = 0, onSelect, name = '', symbol = '', decimals = 0,isSelected = false,
-  isLoading = false, logoSrc = questionMarkSrc,
+  isLoading = false, logoSrc = questionMarkSrc, id = '', pinnedTokens = []
 }: TokenSelectItemProps) => {
+  const dispatch = useAppDispatch();
+
   const { balancesState } = useBalances();
+
+  const onPinToken = (e: React.MouseEvent, id: string) => {
+    e.stopPropagation();
+    dispatch(modalsSliceActions.onPinToken(id))
+  }
+
+  const onUnPinToken = (e: React.MouseEvent, id: string) => {
+    e.stopPropagation();
+    dispatch(modalsSliceActions.onUnPinToken(id))
+  }
 
   const isBalancesUpdating = useMemo(() => {
     return balancesState === FeatureState.Updating;
@@ -208,6 +231,12 @@ const TokenSelectItem = ({
         <DisplayValue isUpdating={isBalancesUpdating} value={balance} decimals={decimals}
           fontSize="1.125rem" fontWeight={700} textAlign="right" shouldDivideByDecimals
         />
+      </Skeleton>
+      <Skeleton isLoaded={!isLoading}>
+        {pinnedTokens.includes(id) ? 
+          <TiPin onClick={(e) => onUnPinToken(e, id)}/> : 
+          <TiPinOutline onClick={(e) => onPinToken(e, id)}/>
+        }
       </Skeleton>
     </Flex>
   );
