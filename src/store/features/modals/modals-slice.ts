@@ -2,6 +2,8 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { Batch } from '@/integrations/transactions';
 import type { RootState } from '@/store';
+import { LocalStorageKey, saveToStorage, getFromStorage } from '@/utils';
+
 
 export type ModalsCallback = (...args: unknown[]) => any;
 
@@ -236,7 +238,7 @@ const initialTokenSelectData: TokenSelectData = {
   selectedTokenIds: [],
   isLoading: false,
   allowAddToken: true,
-  pinnedTokens: [],
+  pinnedTokens: getFromStorage(LocalStorageKey.PINNED_TOKENS) ?? [],
 };
 
 // Define the initial state using that type
@@ -601,6 +603,7 @@ export const modalsSlice = createSlice({
       const { pinnedTokens } = state.tokenSelectModalData;
       if(!pinnedTokens.includes(tokenId))
         state.tokenSelectModalData.pinnedTokens.push(action.payload);
+      saveToStorage(LocalStorageKey.PINNED_TOKENS, pinnedTokens);
     },
     onUnPinToken: (
       state,
@@ -610,7 +613,8 @@ export const modalsSlice = createSlice({
       const { pinnedTokens } = state.tokenSelectModalData;
       const updatedPinnedTokens = pinnedTokens.filter((eachPinnedToken) => eachPinnedToken !== tokenId)
       state.tokenSelectModalData.pinnedTokens = updatedPinnedTokens;
-    }
+      saveToStorage(LocalStorageKey.PINNED_TOKENS, updatedPinnedTokens);
+    },
   },
 });
 
