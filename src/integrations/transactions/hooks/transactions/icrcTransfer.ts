@@ -58,7 +58,6 @@ export const useICRCTransferMemo: CreateTransaction<Deposit> = (
 
         var IDL = TokenIDL.ICRC1.factory;
         if (token?.symbol == 'SNEED') { IDL = TokenIDL.SNEED; }
-
         return {
             canisterId: canId,
             idl: IDL,
@@ -80,7 +79,7 @@ export const useICRCTransferMemo: CreateTransaction<Deposit> = (
             onFail,
             args: [{
                 to: { owner: Principal.fromText(ENV.canistersPrincipalIDs.swap), subaccount: [subacc] },
-                fee: [], memo: [], amount: parsedAmount, from_subaccount: [], created_at_time: []
+                fee: [token?.fee ? token?.fee : BigInt(0)], memo: [], amount: parsedAmount, from_subaccount: [], created_at_time: []
             }],
         };
     }, [token, tokenAcnt]);
@@ -96,7 +95,7 @@ export const useICRCDepositMemo: CreateTransaction<Deposit> = ({ amount, token, 
             var subacc: number[] = fromHexString(tokenAcnt);
             actor.icrc1_transfer({
                 to: { owner: Principal.fromText(ENV.canistersPrincipalIDs.swap), subaccount: [subacc] },
-                fee: [], memo: [], amount: parsedAmount, from_subaccount: [], created_at_time: []
+                fee: [token?.fee ? token?.fee : BigInt(0)], memo: [], amount: parsedAmount, from_subaccount: [], created_at_time: []
             }).then((data: any) => {
                 settokenTrxData({ resp: data });
             }).catch(((err: any) => { return false; }))

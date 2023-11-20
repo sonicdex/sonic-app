@@ -375,7 +375,11 @@ export namespace TokenIDL {
       });
     }
   }
-  
+
+  export namespace ICRC2 {
+
+    
+  }
   export const SNEED: IDL.InterfaceFactory = ({ IDL }) =>{
     const ArchiveInterface__1 = IDL.Rec();
     const Subaccount = IDL.Vec(IDL.Nat8);
@@ -613,6 +617,8 @@ export namespace TokenIDL {
       'set_symbol' : IDL.Func([IDL.Text], [SetTextParameterResult], []),
     });
   };
+
+
 }
 
 

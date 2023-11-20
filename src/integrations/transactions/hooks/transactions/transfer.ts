@@ -51,7 +51,7 @@ export const useTransferTransactionMemo: CreateTransaction<Transfer> = ({ amount
         onFail,
         args: [{
           to: { owner: getPrincipalFromText(address), subaccount: [] },
-          fee: [], memo: [], amount: parsedAmount, from_subaccount: [], created_at_time: []
+          fee: [token?.fee ? token?.fee : BigInt(0)], memo: [], amount: parsedAmount, from_subaccount: [], created_at_time: []
         }],
       };
     }
