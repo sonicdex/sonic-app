@@ -10,6 +10,7 @@ export enum LocalStorageKey {
 
   MintWICPUncompleteBlockHeights = 'mintWICPUncompleteBlockHeights',
   MintXTCUncompleteBlockHeights = 'mintXTCUncompleteBlockHeights',
+  PINNED_TOKENS = 'pinnedTokens',
 }
 
 export type MintUncompleteBlockHeights = {

@@ -50,7 +50,7 @@ export const TokenSelectModal = () => {
     };
 
     const filteredItems = parsedTokens.filter(filterFunction);
-    const filteredItemsWithPinOrderes = filteredItems.sort((a: any,b: any) => {
+    const filteredItemsWithPinOrderes = filteredItems.sort((a: any, b: any) => {
       const isAPinnned = pinnedTokens.includes(a.id);
       const isBPinned = pinnedTokens.includes(b.id);
 
@@ -59,7 +59,6 @@ export const TokenSelectModal = () => {
     })
     setFilteredList(filteredItemsWithPinOrderes);
   }, [search, parsedTokens, pinnedTokens]);
- 
  
   const handleSelect = (tokenId?: string) => {  
     onSelect(tokenId);handleTokenSelectClose();
