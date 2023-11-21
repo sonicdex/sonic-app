@@ -170,7 +170,7 @@ export const LiquidityAddView = () => {
   //   return tokenInfo
   // };
 
-  
+
   const setInAndOutTokenValues = useCallback(
     (dataKey: LiquidityTokenDataKey, value?: string) => {
       const [amountIn, reserveIn, reserveOut, decimalsIn, decimalsOut] =
@@ -326,7 +326,7 @@ export const LiquidityAddView = () => {
     // console.log(token0.metadata, token1.metadata);
 
 
-    if( token0?.metadata?.blockStatus && token0?.metadata?.blockStatus){
+    if( token0?.metadata?.blockStatus =='Partial' || token1?.metadata?.blockStatus =='Partial'){
       setIsDisabled(true);
     }
     
