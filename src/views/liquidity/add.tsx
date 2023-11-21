@@ -32,8 +32,6 @@ import { debounce } from '@/utils/function';
 
 import { useAddLiquidityMemo, useTokenSourceMemo } from './liquidity.utils';
 
-import { ENV } from '@/config';
-
 export const LiquidityAddView = () => {
   const query = useQuery();
   const { isConnected } = useWalletStore();
@@ -102,10 +100,11 @@ export const LiquidityAddView = () => {
       })();
 
       const customTokenList = supportedTokenList ? supportedTokenList.filter(x => {
+        //console.log(x);
         if (dataKey === 'token0') {
-          return x.id !== token1.metadata?.id && x.id !== excludeToken && !ENV.hiddenTokens.includes(x.id);
+          return x.id !== token1.metadata?.id && x.id !== excludeToken && x.blockStatus !='Partial';
         } else if (dataKey === 'token1') {
-          return x.id !== token0.metadata?.id && x.id !== excludeToken && !ENV.hiddenTokens.includes(x.id);
+          return x.id !== token0.metadata?.id && x.id !== excludeToken && x.blockStatus !='Partial';
         }
       }) : [];
 
@@ -170,6 +169,8 @@ export const LiquidityAddView = () => {
   //   }
   //   return tokenInfo
   // };
+
+  
   const setInAndOutTokenValues = useCallback(
     (dataKey: LiquidityTokenDataKey, value?: string) => {
       const [amountIn, reserveIn, reserveOut, decimalsIn, decimalsOut] =
@@ -318,15 +319,23 @@ export const LiquidityAddView = () => {
   const [isDisabled, setIsDisabled] = useState(false);
 
   useEffect(() => {
+
+    // const token0Id = token0.metadata?.id;
+    // const token1Id = token1.metadata?.id;
+
+    // console.log(token0.metadata, token1.metadata);
+
+
+    if( token0?.metadata?.blockStatus && token0?.metadata?.blockStatus){
+      setIsDisabled(true);
+    }
     
-    const token0Id = token0.metadata?.id;
-    const token1Id = token1.metadata?.id;
 
-    if (token0Id && token0Id.length > 0)
-      if (ENV.hiddenTokens.includes(token0Id)) { setIsDisabled(true); }
+    // if (token0Id && token0Id.length > 0)
+    //   if (ENV.hiddenTokens.includes(token0Id)) { setIsDisabled(true); }
 
-    if (token1Id && token1Id.length > 0)
-      if (ENV.hiddenTokens.includes(token1Id)) { setIsDisabled(true); }
+    // if (token1Id && token1Id.length > 0)
+    //   if (ENV.hiddenTokens.includes(token1Id)) { setIsDisabled(true); }
 
   }, [token0?.metadata?.id, token0?.metadata?.id])
 

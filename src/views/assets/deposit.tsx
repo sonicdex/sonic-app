@@ -24,9 +24,6 @@ import { debounce } from '@/utils/function';
 import { tokenList } from '@/utils';
 
 import { artemis } from '@/integrations/artemis';
-import { ENV } from '@/config';
-
-ENV
 
 export const AssetsDepositView = () => {
   const query = useQuery();
@@ -139,12 +136,12 @@ export const AssetsDepositView = () => {
 
 
   useEffect(() => {
-    if (tokenId)
-      if (ENV.hiddenTokens.includes(tokenId)) { setIsDisabled(true); }
-  }, [tokenId])
-
-  isDisabled; setIsDisabled;
-
+    if (selectedTokenMetadata) {
+      if (selectedTokenMetadata?.blockStatus == 'Partial') {
+        setIsDisabled(true);
+      } else setIsDisabled(false);
+    };
+  }, [tokenId, selectedTokenMetadata]);
 
   return (
     <>
@@ -179,12 +176,12 @@ export const AssetsDepositView = () => {
         </Token>
       </Box>
       <FeeBox token={selectedTokenMetadata} isDeposit />
-      {isDisabled ? 
-        (<Button isFullWidth size="lg" isDisabled={true}>Deposit Disabled</Button>) : 
+      {isDisabled ?
+        (<Button isFullWidth size="lg" isDisabled={true}>Deposit Disabled</Button>) :
         (<Button isFullWidth size="lg" variant="gradient" colorScheme="dark-blue"
-        isDisabled={buttonDisabled} onClick={handleDeposit} isLoading={isLoading}>
-        {buttonMessage}
-      </Button>)
+          isDisabled={buttonDisabled} onClick={handleDeposit} isLoading={isLoading}>
+          {buttonMessage}
+        </Button>)
       }
 
     </>

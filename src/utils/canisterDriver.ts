@@ -26,7 +26,7 @@ export const loadsupportedTokenList = async () => {
   supportedTokenList = useSwapCanisterStore()?.supportedTokenList;
   if (!supportedTokenList || Object.keys(tokenListObj).length > 0) return false;
 
-  console.log(supportedTokenList);
+  //console.log(supportedTokenList);
   
   supportedTokenList.forEach((el: { id: string }) => { tokenListObj[el.id] = el });
 

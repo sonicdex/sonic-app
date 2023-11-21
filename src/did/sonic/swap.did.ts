@@ -139,7 +139,6 @@ export namespace SwapIDL {
     'value': bigint,
     'userPId': Principal,
   };
-
   // ---------------------------------------------
 
   export interface Swap {
@@ -339,7 +338,6 @@ export namespace SwapIDL {
   export type Factory = Swap;
 
   export const factory: IDL.InterfaceFactory = ({ IDL }) => {
-
     const TxReceipt = IDL.Variant({ 'ok': IDL.Nat, 'err': IDL.Text });
     const TokenBlockType = IDL.Variant({
       'Full': IDL.Bool,
@@ -488,7 +486,6 @@ export namespace SwapIDL {
       'depositTransactionSize': IDL.Nat,
     });
     const Result = IDL.Variant({ 'ok': IDL.Bool, 'err': IDL.Text });
-
     return IDL.Service({
       'addAuth': IDL.Func([IDL.Principal], [IDL.Bool], []),
       'addLiquidity': IDL.Func(
@@ -765,6 +762,7 @@ export namespace SwapIDL {
       ),
       'withdraw': IDL.Func([IDL.Principal, IDL.Nat], [TxReceipt], []),
     });
+
 
   };
 }
