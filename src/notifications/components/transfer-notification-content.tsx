@@ -71,6 +71,9 @@ export const TransferNotificationContent: React.FC<TransferNotificationContentPr
     if (typeof batchExecutalbe?.execute === 'undefined' || !batch?.state) return;
 
     if (batchExecutalbe?.execute) {
+
+      console.log(batchExecutalbe);
+      
       batchExecutalbe.execute().then((data: any) => {
         if (data) {
           dispatch(transferViewActions.setToAddress(''));

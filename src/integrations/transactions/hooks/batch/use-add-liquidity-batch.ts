@@ -5,7 +5,7 @@ import { AddLiquidityModalDataStep, modalsSliceActions, useAppDispatch, useLiqui
 import { AddLiquidity, Deposit } from '../..';
 import {
   useAddLiquidityTransactionMemo, useApproveTransactionMemo, useDepositTransactionMemo, 
-  intitICRCTokenDepositIn, useICRCTransferMemo
+  intitICRCTokenDepositIn, useICRCTransferMemo, useIcrc2Approve,
 } from '..';
 
 import { useCreatePairTransactionMemo } from '../transactions/create-pair';
@@ -69,44 +69,50 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
 
   var DepositBatch = { batch: batchLoad, openBatchModal: () => { } };
 
-  var token0Type = addLiquidityParams.token0.metadata.tokenType;
-  var token1Type = addLiquidityParams.token1.metadata.tokenType;
+  var token0Type = addLiquidityParams.token0.metadata.tokenType?.toLowerCase();
+  var token1Type = addLiquidityParams.token1.metadata.tokenType?.toLowerCase();
 
   var token0Amt = parseFloat(deposit0Params?.amount ? deposit0Params?.amount : '0');
   var token1Amt = parseFloat(deposit1Params?.amount ? deposit1Params?.amount : '0');
 
   if (!pair) { steps = ['createPair'] }
 
-  if (token0Type == 'ICRC1' || token1Type == 'ICRC1') {
+  if (token0Type == 'icrc1' || token1Type == 'icrc1') {
     getICRCAcnt = intitICRCTokenDepositIn(); steps = [...steps, 'getacnt'];
   }
 
   //step 1
   if (token0Amt > 0) {
-    if (token0Type == 'DIP20' || token0Type == 'YC') {
+    if (token0Type == 'dip20' || token0Type == 'yc') {
       approve0 = useApproveTransactionMemo(deposit0Params);
       deposit0 = useDepositTransactionMemo(deposit0Params);
       if (deposit0) tx0complete = true;
-    } else if (token0Type == 'ICRC1') {
+    } else if (token0Type == 'icrc1') {
       approve0 = useICRCTransferMemo({ ...deposit0Params, tokenAcnt: getICRCAcnt });
       deposit0 = useDepositTransactionMemo(deposit0Params);
       if (getICRCAcnt) tx0complete = true;
+    }else if (token0Type == 'icrc2') {
+      approve0 = useIcrc2Approve({ ...deposit0Params });
+      deposit0 = useDepositTransactionMemo(deposit0Params);
+      if (deposit0) tx0complete = true;
     }
     steps = [...steps, 'approve0', 'deposit0'];
   } else tx0complete = true;
 
   //step 2
   if (token1Amt > 0) {
-    if (token1Type == 'DIP20' || token1Type == 'YC') {
+    if (token1Type == 'dip20' || token1Type == 'yc') {
       approve1 = useApproveTransactionMemo(deposit1Params);
       deposit1 = useDepositTransactionMemo(deposit1Params);
-
       if (tx0complete && deposit1) tx1complete = true;
-    } else if (token1Type == 'ICRC1') {
+    } else if (token1Type == 'icrc1') {
       approve1 = useICRCTransferMemo({ ...deposit1Params, tokenAcnt: getICRCAcnt });
       deposit1 = useDepositTransactionMemo(deposit1Params);
-
       if (getICRCAcnt && approve1) tx1complete = true;
+    }else if (token1Type == 'icrc2') {
+      approve0 = useIcrc2Approve({ ...deposit1Params });
+      deposit0 = useDepositTransactionMemo(deposit1Params);
+      if (tx0complete && deposit1) tx1complete = true;
     }
     steps = [...steps, 'approve1', 'deposit1'];
   } else tx1complete = true;

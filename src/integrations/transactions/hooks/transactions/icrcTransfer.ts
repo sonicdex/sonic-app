@@ -48,6 +48,29 @@ export const verifyTokenDeposit: any = () => useMemo(() => {
 }, [])
 
 
+export const useIcrc2Approve: CreateTransaction<Deposit> = (
+    { amount, token, allowance = 0 }, onSuccess, onFail) => 
+    useMemo(() => {
+        if (!token?.id) { return; }
+        if (amount) if (parseFloat(amount) <= 0) return;
+        const parsedAmount = amount ? parseAmount(amount, token.decimals) : BigInt(0);
+        const toApproveAmount = parsedAmount + (token.fee * BigInt(2) );
+        var canId = token?.id ? token.id : '';
+        return {
+            canisterId: canId,
+            idl: TokenIDL.ICRC2.factory,
+            methodName: 'icrc2_approve',
+            args: [{ fee:[], memo:[], created_at_time:[],expected_allowance:[],expires_at:[],from_subaccount:[],
+                spender: { owner: Principal.fromText(ENV.canistersPrincipalIDs.swap) , subaccount:[]}, amount:toApproveAmount,
+            }],
+            onFail,
+            onSuccess: async (res: TokenIDL.ICRC1.Result) => {
+                if ('Err' in res) throw new Error(JSON.stringify(res.Err));
+                if (onSuccess) onSuccess(res);
+            },
+        }
+    }, [amount, token])
+
 export const useICRCTransferMemo: CreateTransaction<Deposit> = (
     { amount, token, allowance = 0, tokenAcnt = [] }, onSuccess, onFail) => useMemo(() => {
         if (!token?.id) { return; }
@@ -70,7 +93,7 @@ export const useICRCTransferMemo: CreateTransaction<Deposit> = (
                 if (nextTrxItem.methodName == 'deposit') {
                     if (nextTrxItem.args[0].toString() == 'r7cp6-6aaaa-aaaag-qco5q-cai') {
                         var actor = await getTokenActor('r7cp6-6aaaa-aaaag-qco5q-cai', true);
-                        var data = await actor.get_transaction(trxResult.Ok);      
+                        var data = await actor.get_transaction(trxResult.Ok);
                         if (!data.length) { data = await actor.get_transaction(trxResult.Ok); }
                         if (!data.length) { data = await actor.get_transaction(trxResult.Ok); }
                     }

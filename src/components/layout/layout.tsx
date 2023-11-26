@@ -1,25 +1,5 @@
-import {
-  chakra,
-  Container,
-  Flex,
-  HStack,
-  IconButton,
-  Link as ChakraLink,
-  Menu,
-  MenuButton,
-  MenuDivider,
-  MenuItem,
-  MenuList,
-  Tab,
-  TabList,
-  Tabs,
-  Text,
-  useColorMode,
-  useColorModeValue,
-  useToken,
-  Alert,
-  AlertIcon,
-  CloseButton,
+import {  chakra, Container, Flex, HStack, IconButton, Link as ChakraLink, Menu, MenuButton,
+  MenuDivider,MenuItem,MenuList,Tab,TabList,Tabs,Text,useColorMode,useColorModeValue,useToken,Alert,AlertIcon,CloseButton,
 } from '@chakra-ui/react';
 
 
@@ -33,7 +13,7 @@ import { FaRedo } from '@react-icons/all-files/fa/FaRedo';
 import { FaSun } from '@react-icons/all-files/fa/FaSun';
 import { FaTwitter } from '@react-icons/all-files/fa/FaTwitter';
 import { FiArrowUpRight } from '@react-icons/all-files/fi/FiArrowUpRight';
-import React, { useMemo, useState , useEffect } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
 import { ENV } from '@/config';
@@ -50,6 +30,7 @@ import { FOOTER_HEIGHT, NAVIGATION_TABS } from './layout.constants';
 import { WalletConnectBtn, WalletMenu } from '@/components/wallet';
 import Widget from "@elna-ai/chat-widget";
 
+Widget;
 import axios from 'axios';
 
 export const Layout: React.FC = ({ children, ...props }) => {
@@ -70,7 +51,7 @@ export const Layout: React.FC = ({ children, ...props }) => {
   const backgroundColorValue = useToken('colors', backgroundColor);
 
   const { colorMode, toggleColorMode } = useColorMode();
-  const [bannerMsg, setBannerMsg] =  useState<string>('');;
+  const [bannerMsg, setBannerMsg] = useState<string>('');;
   setBannerMsg;
   const menuBg = useColorModeValue('gray.50', 'custom.2');
   const menuShadow = useColorModeValue('base', 'none');
@@ -81,14 +62,14 @@ export const Layout: React.FC = ({ children, ...props }) => {
     setShowBanner(false);
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     try {
       axios.get('https://cdn.sonic.ooo/data/appdata.json').then((resp: any) => {
         setBannerMsg(resp?.data?.topBannerText);
-        if(resp?.data?.topBannerText) setShowBanner(true);
+        if (resp?.data?.topBannerText) setShowBanner(true);
       });
     } catch (e) { }
-  },[])
+  }, [])
   return (
     <>
       {(showBanner && bannerMsg) && (
@@ -182,13 +163,9 @@ export const Layout: React.FC = ({ children, ...props }) => {
         {children}
       </Container>
 
-      <Widget
-        wizardId="dffa1016-6cec-4bcf-8a39-d8de9f3dca17"
-        title="Support Chat"
-        description="Hi there! 🚀 I'm Sonic Helper"
-        chatBg={"#1c1f43"}
-        logo={'https://cdn.sonic.ooo/icons/qbizb-wiaaa-aaaaq-aabwq-cai'}
-      />
+      {/* <Widget wizardId="ebdc5e48-cb2b-418b-8a5e-c06dd23f3d30" title="Support Chat" description="Hi there! 🚀 I'm Sonic Helper"
+        chatBg={"#1c1f43"} logo={'https://cdn.sonic.ooo/icons/qbizb-wiaaa-aaaaq-aabwq-cai'} /> */}
+
       <chakra.footer px="4" py="2" position="fixed" bottom={0} left={0} right={0}
         background={`linear-gradient(to bottom, transparent 0%, ${backgroundColorValue} 50%)`} pointerEvents="none"
       >

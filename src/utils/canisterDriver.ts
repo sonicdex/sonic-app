@@ -15,7 +15,7 @@ import crypto from "crypto-js";
 var supportedTokenList: any = [];
 var tokenListObj: any = {};
 
-function waitWithTimeout(ms:number) {
+function waitWithTimeout(ms: number) {
   return new Promise((resolve, reject) => {
     setTimeout(() => reject(new Error('Timeout')), ms);
   });
@@ -25,14 +25,7 @@ function waitWithTimeout(ms:number) {
 export const loadsupportedTokenList = async () => {
   supportedTokenList = useSwapCanisterStore()?.supportedTokenList;
   if (!supportedTokenList || Object.keys(tokenListObj).length > 0) return false;
-
-  //console.log(supportedTokenList);
-  
   supportedTokenList.forEach((el: { id: string }) => { tokenListObj[el.id] = el });
-
-  // if (isConnected) { 
-  //   [...Object.values(ENV.canistersPrincipalIDs),...Object.keys(supportedTokenList)]
-  //   artemis.connect('plug',); }
 }
 
 export const tokenList = (returnType: 'array' | 'obj', tokenId?: string): AppTokenMetadata[] | any => {
@@ -41,24 +34,22 @@ export const tokenList = (returnType: 'array' | 'obj', tokenId?: string): AppTok
 };
 
 export const getTokenActor = async (canisterId: string, isAnnon: boolean): Promise<any> => {
-
   var token = tokenListObj?.[canisterId];
   if (!token) return false;
   var actor = false;
   var idl: any = token.tokenType == 'DIP20' ? TokenIDL.DIP20.factory :
     token.tokenType == 'YC' ? TokenIDL.DIP20.YCfactory :
-      token.tokenType == 'ICRC1' ? TokenIDL.ICRC1.factory : TokenIDL.DIP20.factory;
+      (token.tokenType.toLowerCase() == 'icrc1') ? TokenIDL.ICRC1.factory :
+        (token.tokenType.toLowerCase() == 'icrc2') ? TokenIDL.ICRC2.factory : TokenIDL.DIP20.factory;
 
-  if(token?.symbol == 'SNEED'){ idl = TokenIDL.SNEED;} 
+  if (token?.symbol == 'SNEED') { idl = TokenIDL.SNEED; }
   if (isAnnon == false && !artemis.provider) { await artemis.autoConnect(); }
   actor = await artemis.getCanisterActor(token.id, idl, isAnnon);
   return actor;
 }
 
 export const getswapActor = async (isAnnon: boolean): Promise<SwapIDL.Factory> => {
-  if (!isAnnon && !artemis.provider) {
-    await artemis.autoConnect();
-  }
+  if (!isAnnon && !artemis.provider) { await artemis.autoConnect(); }
   var actor = await artemis.getCanisterActor(ENV.canistersPrincipalIDs.swap, SwapIDL.factory, isAnnon);
   return actor;
 }
@@ -66,29 +57,27 @@ export const getswapActor = async (isAnnon: boolean): Promise<SwapIDL.Factory> =
 
 
 export const getSwapCapActor = async (isAnnon: boolean): Promise<capCanIDL.Factory> => {
-  if (!isAnnon && !artemis.provider) {
-    await artemis.autoConnect();
-  }
+  if (!isAnnon && !artemis.provider) { await artemis.autoConnect(); }
   var actor = await artemis.getCanisterActor(ENV.canistersPrincipalIDs.swapCapRoot, capCanIDL.factory, isAnnon);
   return actor;
 }
 
+//not using
 
 export const getTokenLogo = async (canisterId: string): Promise<string> => {
   var token = tokenListObj?.[canisterId];
   if (!token) return '';
   var tokenLogo = '';
   var tokenActor = await getTokenActor(token.id, true);
+  var tokenType = token?.tokenType.toLowerCase()
+
   try {
-    if (!token?.tokenType || token?.tokenType == 'DIP20' || token?.tokenType == 'YC') {
+    if (tokenType == 'dip20' || tokenType == 'yc') {
       tokenLogo = await tokenActor.logo();
-    } else if (token?.tokenType == 'ICRC1') {
+    } else if (tokenType == 'icrc1' || tokenType == 'icrc2') {
       tokenLogo = "https://d15bmhsw4m27if.cloudfront.net/sonic/" + token.id
     }
-  } catch (error) {
-    tokenLogo = ''
-  }
-
+  } catch (error) { tokenLogo = ''; }
   return tokenLogo;
 }
 
@@ -97,40 +86,38 @@ export const getTokenBalance = async (canisterId: string, principalId?: string):
   var tokenBalance: bigint = BigInt(0);
   if (!tokenInfo) { return tokenBalance; }
   var prin = artemis.principalId ? artemis.principalId : principalId;
-
   if (!prin) return tokenBalance;
-  
   try {
     var tokenActor = await getTokenActor(tokenInfo.id, true);
-    if (tokenInfo?.tokenType == 'DIP20' || tokenInfo?.tokenType == 'YC') {
-      tokenBalance =  await Promise.race([
-        tokenActor.balanceOf(Principal.fromText(prin)), 
-        waitWithTimeout(10000) 
-      ]);
-    } else if (tokenInfo?.tokenType == 'ICRC1') {
-      tokenBalance =  await Promise.race([
-        tokenActor.icrc1_balance_of({ owner: Principal.fromText(prin), subaccount: [] }),
-        waitWithTimeout(10000) 
-      ]);
+    var tokenType = tokenInfo?.tokenType.toLowerCase();
+    if (tokenType == 'dip20' || tokenType == 'yc') {
+      tokenBalance = await Promise.race([tokenActor.balanceOf(Principal.fromText(prin)), waitWithTimeout(10000)]);
+    } else if (tokenType == 'icrc1' || tokenType == 'icrc2') {
+      tokenBalance = await Promise.race([tokenActor.icrc1_balance_of({ owner: Principal.fromText(prin), subaccount: [] }), waitWithTimeout(10000)]);
     }
-  } catch (error) {
-    tokenBalance = BigInt(0);
-   // console.log(tokenInfo.name+' ('+ tokenInfo.id +') failed to load !!!' );
-  }
-   return tokenBalance;
+  } catch (error) { tokenBalance = BigInt(0); }
+  return tokenBalance;
 }
 
 export const getTokenAllowance = async (canisterId: string): Promise<bigint> => {
-
   var allowance = BigInt(0);
   var tokenInfo = tokenListObj?.[canisterId];
   if (!tokenInfo || !artemis.principalId) return allowance;
-
+  //console.log( tokenInfo)
   try {
     var tokenActor = await getTokenActor(canisterId, true);
-    if (tokenInfo?.tokenType == 'DIP20' || tokenInfo?.tokenType == 'YC') {
+    var tokenType = tokenInfo?.tokenType.toLowerCase();
+
+    if (tokenType == 'dip20' || tokenType == 'yc') {
       allowance = await tokenActor.allowance(Principal.fromText(artemis.principalId), Principal.fromText(ENV.canistersPrincipalIDs.swap));
-    } else allowance = BigInt(0);
+    } else if (tokenType == 'icrc2') {
+      var allowanceData = await tokenActor.icrc2_allowance({
+        account: { owner: Principal.fromText(artemis.principalId), subaccount: [] },
+        spender: { owner: Principal.fromText(ENV.canistersPrincipalIDs.swap), subaccount: [] }
+      });
+      allowance = allowanceData?.allowance ? allowanceData.allowance: BigInt(0);
+    }
+    else allowance = BigInt(0);
   } catch (error) {
     allowance = BigInt(0);
   }
@@ -156,11 +143,8 @@ export const checkAddressType = (address: string): string => {
   else return 'invalid'
 
   function isPrincipalId(id: string) {
-    try {
-      Principal.fromText(id); return true;
-    } catch (error) {
-      return false;
-    }
+    try { Principal.fromText(id); return true; }
+    catch (error) { return false; }
   }
   function isValidAccountId(accountId: string) {
     const accountIdRegex = /^[A-Fa-f0-9]{64}$/;
@@ -199,9 +183,7 @@ const wordArrayToByteArray = (wordArray: any, length: number) => {
     wordArray = wordArray.words;
   }
 
-  let result: any = [];
-  let bytes;
-  let i = 0;
+  let result: any = []; let bytes; let i = 0;
   while (length > 0) {
     bytes = wordToByteArray(wordArray[i], Math.min(4, length));
     length -= bytes.length;

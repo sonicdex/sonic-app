@@ -1,7 +1,7 @@
 .widget__wrapper{
     display: inline;
 }
-.widget__wrapper .widget__title{
+.widget__box .widget__title{
     background: #1c1f43;
     box-shadow: #1c1f43 0 5px 20px;
     border:1px solid var(--chakra-colors-whiteAlpha-300);
@@ -19,7 +19,7 @@
     fill: #fff;
 }
 .widget__title{
-    height: 50px;
+    height: 50px !important;
 }
 .widget__title__group__image{
     max-width: 30px !important;
