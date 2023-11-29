@@ -9,7 +9,7 @@ import { CyclesMintingIDL } from '@/did';
 
 import { artemis } from '@/integrations/artemis';
 import { ENV } from '@/config';
-import { LedgerIDL } from '@/did';
+import { LedgerIDL  } from '@/did';
 
 
 import { ExternalLink } from './external-link';

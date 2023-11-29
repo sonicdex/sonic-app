@@ -28,6 +28,10 @@ export const loadsupportedTokenList = async () => {
   supportedTokenList.forEach((el: { id: string }) => { tokenListObj[el.id] = el });
 }
 
+
+
+
+
 export const tokenList = (returnType: 'array' | 'obj', tokenId?: string): AppTokenMetadata[] | any => {
   return (returnType == 'array' && !tokenId) ? supportedTokenList :
     (!tokenId) ? tokenListObj : tokenListObj[tokenId];
@@ -53,8 +57,6 @@ export const getswapActor = async (isAnnon: boolean): Promise<SwapIDL.Factory> =
   var actor = await artemis.getCanisterActor(ENV.canistersPrincipalIDs.swap, SwapIDL.factory, isAnnon);
   return actor;
 }
-
-
 
 export const getSwapCapActor = async (isAnnon: boolean): Promise<capCanIDL.Factory> => {
   if (!isAnnon && !artemis.provider) { await artemis.autoConnect(); }

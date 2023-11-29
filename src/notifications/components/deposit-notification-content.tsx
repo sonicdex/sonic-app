@@ -71,7 +71,7 @@ export const DepositNotificationContent: React.FC<DepositNotificationContentProp
     if (typeof allowance === 'undefined' || !batch?.state) return;
     if (batchExecutalbe?.execute) {
 
-      // console.log(batchExecutalbe);
+    //console.log(batchExecutalbe);
       
       batchExecutalbe.execute().then((data: any) => {
         if (data) {

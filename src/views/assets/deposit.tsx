@@ -143,6 +143,8 @@ export const AssetsDepositView = () => {
     };
   }, [tokenId, selectedTokenMetadata]);
 
+  console.log()
+
   return (
     <>
       <ViewHeader title={"Deposit " + selectedTokenMetadata?.symbol + ''} onArrowBack={() => navigate('/assets')} />

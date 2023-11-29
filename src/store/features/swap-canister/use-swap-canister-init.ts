@@ -43,7 +43,7 @@ export const useSwapCanisterInit = () => {
         if (supportedTokenListState !== FeatureState.Loading) {
           try {
             dispatch( swapCanisterActions.setSupportedTokensListState( isRefreshing ? FeatureState.Updating : FeatureState.Loading));
-            const swapActor = await getswapActor(true);
+            const swapActor = await getswapActor(true)
             const response = await swapActor?.getSupportedTokenList();
             if (response) {
               dispatch( swapCanisterActions.setSupportedTokenList( parseResponseSupportedTokenList(response)));
