@@ -319,25 +319,12 @@ export const LiquidityAddView = () => {
   const [isDisabled, setIsDisabled] = useState(false);
 
   useEffect(() => {
-
-    // const token0Id = token0.metadata?.id;
-    // const token1Id = token1.metadata?.id;
-
-    // console.log(token0.metadata, token1.metadata);
-
-
     if( token0?.metadata?.blockStatus =='Partial' || token1?.metadata?.blockStatus =='Partial'){
       setIsDisabled(true);
+    }else{
+      setIsDisabled(false);
     }
-    
-
-    // if (token0Id && token0Id.length > 0)
-    //   if (ENV.hiddenTokens.includes(token0Id)) { setIsDisabled(true); }
-
-    // if (token1Id && token1Id.length > 0)
-    //   if (ENV.hiddenTokens.includes(token1Id)) { setIsDisabled(true); }
-
-  }, [token0?.metadata?.id, token0?.metadata?.id])
+  }, [token0?.metadata?.id, token1?.metadata?.id])
 
 
   return (
@@ -507,8 +494,6 @@ export const LiquidityAddView = () => {
             {buttonMessage}
           </Button>
         )
-
-
       }
     </Stack>
   );

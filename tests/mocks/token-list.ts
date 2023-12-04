@@ -13,8 +13,8 @@ export const mockTokenList = () =>
         name: 'USDT Test',
         totalSupply: BigInt('100000000000000'),
         symbol: 'USDT',
-        blockStatus:'none',
-        tokenType:'ICRC!'
+        //blockStatus:'none',
+        tokenType:'ICRC1'
       },
       {
         id: 'oexpe-biaaa-aaaah-qcf6q-cai',
@@ -23,8 +23,8 @@ export const mockTokenList = () =>
         name: 'USDC Test',
         totalSupply: BigInt('201000000000000'),
         symbol: 'USDC',
-        blockStatus:'none',
-        tokenType:'ICRC!'
+        //blockStatus:'none',
+        tokenType:'ICRC1'
       },
       {
         id: 'a7saq-3aaaa-aaaai-qbcdq-cai',
@@ -33,8 +33,8 @@ export const mockTokenList = () =>
         name: 'TEST TOKEN',
         totalSupply: BigInt('2156879855'),
         symbol: 'TEST_TOKEN',
-        blockStatus:'none',
-        tokenType:'ICRC!'
+        //blockStatus:'none',
+        tokenType:'ICRC1'
       },
       {
         id: 'kftk5-4qaaa-aaaah-aa5lq-cai',
@@ -43,8 +43,8 @@ export const mockTokenList = () =>
         name: 'test token',
         totalSupply: BigInt('0'),
         symbol: 'TEST',
-        blockStatus:'none',
-        tokenType:'ICRC!'
+        //blockStatus:'none',
+        tokenType:'ICRC1'
       },
       {
         id: 'li5ot-tyaaa-aaaah-aa5ma-cai',
@@ -53,8 +53,8 @@ export const mockTokenList = () =>
         name: 'wicp',
         totalSupply: BigInt('0'),
         symbol: 'WICP',
-        blockStatus:'none',
-        tokenType:'ICRC!'
+        //blockStatus:'none',
+        tokenType:'ICRC1'
       },
       {
         id: 'gagfc-iqaaa-aaaah-qcdvq-cai',
@@ -63,8 +63,8 @@ export const mockTokenList = () =>
         name: 'WICP Test',
         totalSupply: BigInt('110012000000000'),
         symbol: 'WICP',
-        blockStatus:'none',
-        tokenType:'ICRC!'
+        //blockStatus:'none',
+        tokenType:'ICRC1'
       },
       {
         id: 'wjsrf-myaaa-aaaam-qaayq-cai',
@@ -73,8 +73,8 @@ export const mockTokenList = () =>
         name: 'wicp',
         totalSupply: BigInt('126500000'),
         symbol: 'WICP',
-        blockStatus:'none',
-        tokenType:'ICRC!'
+        //blockStatus:'none',
+        tokenType:'ICRC1'
       },
       {
         id: 'u2nsf-eaaaa-aaaam-qaawa-cai',
@@ -83,8 +83,8 @@ export const mockTokenList = () =>
         name: 'wicp',
         totalSupply: BigInt('0'),
         symbol: 'WICP',
-        blockStatus:'none',
-        tokenType:'ICRC!'
+        //blockStatus:'none',
+        tokenType:'ICRC1'
       },
       {
         id: 'gvbup-jyaaa-aaaah-qcdwa-cai',
@@ -93,8 +93,8 @@ export const mockTokenList = () =>
         name: 'XTC Test',
         totalSupply: BigInt('110115300000000'),
         symbol: 'XTC',
-        blockStatus:'none',
-        tokenType:'ICRC!'
+        //blockStatus:'none',
+        tokenType:'ICRC1'
       },
       {
         id: 'xe4vl-dqaaa-aaaam-qaa7a-cai',
@@ -103,8 +103,8 @@ export const mockTokenList = () =>
         name: 'WICP',
         totalSupply: BigInt('0'),
         symbol: 'WICP',
-        blockStatus:'none',
-        tokenType:'ICRC!'
+        //blockStatus:'none',
+        tokenType:'ICRC1'
       },
       {
         id: 'cfoim-fqaaa-aaaai-qbcmq-cai',
@@ -113,8 +113,8 @@ export const mockTokenList = () =>
         name: 'Beta Token',
         totalSupply: BigInt('8911419172'),
         symbol: 'BTKN',
-        blockStatus:'none',
-        tokenType:'ICRC!'
+        //blockStatus:'none',
+        tokenType:'ICRC1'
       },
     ])
   );
