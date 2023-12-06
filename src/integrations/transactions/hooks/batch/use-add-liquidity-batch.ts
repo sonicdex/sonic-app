@@ -110,8 +110,8 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
       deposit1 = useDepositTransactionMemo(deposit1Params);
       if (getICRCAcnt && approve1) tx1complete = true;
     }else if (token1Type == 'icrc2') {
-      approve0 = useIcrc2Approve({ ...deposit1Params });
-      deposit0 = useDepositTransactionMemo(deposit1Params);
+      approve1 = useIcrc2Approve({ ...deposit1Params });
+      deposit1 = useDepositTransactionMemo(deposit1Params);
       if (tx0complete && deposit1) tx1complete = true;
     }
     steps = [...steps, 'approve1', 'deposit1'];
@@ -167,6 +167,8 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
     );
     dispatch(modalsSliceActions.openAddLiquidityProgressModal());
   };
+
+  console.log(LiquidityBatchTx ,tx0complete ,tx1complete );
 
   if(LiquidityBatchTx && tx0complete &&tx1complete  ){
     batchLoad.batchExecute = LiquidityBatchTx;

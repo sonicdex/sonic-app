@@ -70,9 +70,6 @@ export const DepositNotificationContent: React.FC<DepositNotificationContentProp
     handleOpenModal();
     if (typeof allowance === 'undefined' || !batch?.state) return;
     if (batchExecutalbe?.execute) {
-
-    //console.log(batchExecutalbe);
-      
       batchExecutalbe.execute().then((data: any) => {
         if (data) {
           dispatch(modalsSliceActions.closeDepositProgressModal());

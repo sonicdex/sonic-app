@@ -94,6 +94,7 @@ export const AddLiquidityNotificationContent: React.FC<AddLiquidityNotificationC
     if (typeof allowance0 === 'undefined' || typeof allowance1 === 'undefined') return;
 
     if (batchExecutalbe?.execute) {
+      console.log(batchExecutalbe);
       batchExecutalbe.execute().then((data: any) => {
         if (data) {
           dispatch(modalsSliceActions.clearAddLiquidityModalData());
