@@ -22,19 +22,16 @@ setInterval(() => {
         headers: { }
     };
     var s3 = new AWS.S3({ accessKeyId: awsconfig.awsAccessKeyId, secretAccessKey: awsconfig.secretAccessKey });
+    
     axios(config).then(async function (response) {
         var temp = await saveFile(projectRoot+'/icpusdt.json' , JSON.stringify(response.data) )
        // var temp = await s3.deleteObject({ Bucket: bucket , Key:'ticker/icpusdt'}).promise();
-
-        console.log(temp);
-
+      //  console.log(temp);
         var fileContent =  await readFile(projectRoot+'/icpusdt.json').catch(err=>{ console.log('error on read ('+index+')'+item)});
-        
         var params = { Bucket:bucket , Key: objPath, Body: fileContent , ContentType:'application/json'};
         var s = await s3.putObject(params).promise();
        // await deleteFile(projectRoot+'/icpusdt.json');
        // console.log(response.data);
-
     }).catch(function (error) { console.log(error);});
 
 },updateInterval);

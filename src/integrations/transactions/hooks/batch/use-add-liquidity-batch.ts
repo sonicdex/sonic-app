@@ -167,9 +167,6 @@ export const useAddLiquidityBatch = (addLiquidityParams: AddLiquidity) => {
     );
     dispatch(modalsSliceActions.openAddLiquidityProgressModal());
   };
-
-  console.log(LiquidityBatchTx ,tx0complete ,tx1complete );
-
   if(LiquidityBatchTx && tx0complete &&tx1complete  ){
     batchLoad.batchExecute = LiquidityBatchTx;
     batchLoad.handleRetry = handleRetry; 
