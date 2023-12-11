@@ -1,25 +1,5 @@
-import {
-  chakra,
-  Container,
-  Flex,
-  HStack,
-  IconButton,
-  Link as ChakraLink,
-  Menu,
-  MenuButton,
-  MenuDivider,
-  MenuItem,
-  MenuList,
-  Tab,
-  TabList,
-  Tabs,
-  Text,
-  useColorMode,
-  useColorModeValue,
-  useToken,
-  Alert,
-  AlertIcon,
-  CloseButton,
+import {  chakra, Container, Flex, HStack, IconButton, Link as ChakraLink, Menu, MenuButton,
+  MenuDivider,MenuItem,MenuList,Tab,TabList,Tabs,Text,useColorMode,useColorModeValue,useToken,Alert,AlertIcon,CloseButton,
 } from '@chakra-ui/react';
 
 
@@ -33,7 +13,7 @@ import { FaRedo } from '@react-icons/all-files/fa/FaRedo';
 import { FaSun } from '@react-icons/all-files/fa/FaSun';
 import { FaTwitter } from '@react-icons/all-files/fa/FaTwitter';
 import { FiArrowUpRight } from '@react-icons/all-files/fi/FiArrowUpRight';
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
 import { ENV } from '@/config';
@@ -49,6 +29,9 @@ import { FOOTER_HEIGHT, NAVIGATION_TABS } from './layout.constants';
 
 import { WalletConnectBtn, WalletMenu } from '@/components/wallet';
 
+// import Widget from "@elna-ai/chat-widget";
+
+import axios from 'axios';
 
 export const Layout: React.FC = ({ children, ...props }) => {
 
@@ -68,28 +51,31 @@ export const Layout: React.FC = ({ children, ...props }) => {
   const backgroundColorValue = useToken('colors', backgroundColor);
 
   const { colorMode, toggleColorMode } = useColorMode();
-
+  const [bannerMsg, setBannerMsg] = useState<string>('');;
+  setBannerMsg;
   const menuBg = useColorModeValue('gray.50', 'custom.2');
   const menuShadow = useColorModeValue('base', 'none');
 
   useHeaderResizeEffect((element) => { setHeaderHeight(`${element.clientHeight}px`); });
-  const [showBanner, setShowBanner] = useState(true);
+  const [showBanner, setShowBanner] = useState(false);
   const handleCloseBanner = () => {
     setShowBanner(false);
   };
 
+  useEffect(() => {
+    try {
+      axios.get('https://cdn.sonic.ooo/data/appdata.json').then((resp: any) => {
+        setBannerMsg(resp?.data?.topBannerText);
+        if (resp?.data?.topBannerText) setShowBanner(true);
+      });
+    } catch (e) { }
+  }, [])
   return (
     <>
-       {showBanner && (
+      {(showBanner && bannerMsg) && (
         <Alert status="info" mb={4} bg={menuBg} borderRadius={'md'} justifyContent={'center'}>
-          <Container  maxW={['100%', 'container.xl', 'container.xl']}>
-          <Flex>
-          <AlertIcon />
-         <Text fontSize={14}> In response to a request from the Boxy & Cigdao team due to the launch of their new tokens, we will cease supporting the BOX DIP20 
-         (Canister ID: lzvjb-wyaaa-aaaam-qarua-cai) YC Dip-20 (Canister ID: 5gxp5-jyaaa-aaaag-qarma-cai) & SONICX (Canister ID: lcyu6-siaaa-aaaah-adk2a-cai) 
-         tokens effective from November 7.We kindly ask all our users to take the necessary steps to remove your respective liquidity pools.
-</Text>
-          </Flex>
+          <Container maxW={['100%', 'container.xl', 'container.xl']}>
+            <Flex><AlertIcon /><Text fontSize={14}>{bannerMsg} </Text></Flex>
           </Container>
           <CloseButton size="sm" onClick={handleCloseBanner} position="absolute" right="8px" top="8px" />
         </Alert>
@@ -107,7 +93,7 @@ export const Layout: React.FC = ({ children, ...props }) => {
             <Tabs index={currentTabIndex} variant="solid-rounded" colorScheme="dark-blue">
               <TabList bg={menuBg} >
                 {NAVIGATION_TABS.map(({ label, url }) => (
-                  <Tab as={Link} key={label} to={url} px={6}> 
+                  <Tab as={Link} key={label} to={url} px={6}>
                     {label}
                   </Tab>
                 ))}
@@ -176,6 +162,9 @@ export const Layout: React.FC = ({ children, ...props }) => {
       <Container as="main" maxW="xl" minH={`calc(100vh - ${headerHeight} - ${FOOTER_HEIGHT})`} py="4" display="flex" flexDirection="column" {...props}>
         {children}
       </Container>
+
+      {/* <Widget wizardId="ebdc5e48-cb2b-418b-8a5e-c06dd23f3d30" title="Support Chat" description="Hi there! 🚀 I'm Sonic Helper"
+        chatBg={"#1c1f43"} logo={'https://cdn.sonic.ooo/icons/qbizb-wiaaa-aaaaq-aabwq-cai'} /> */}
 
       <chakra.footer px="4" py="2" position="fixed" bottom={0} left={0} right={0}
         background={`linear-gradient(to bottom, transparent 0%, ${backgroundColorValue} 50%)`} pointerEvents="none"

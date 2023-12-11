@@ -2,6 +2,8 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { Batch } from '@/integrations/transactions';
 import type { RootState } from '@/store';
+import { LocalStorageKey, saveToStorage, getFromStorage } from '@/utils';
+
 
 export type ModalsCallback = (...args: unknown[]) => any;
 
@@ -132,6 +134,7 @@ type TokenSelectData = {
   isLoading?: boolean;
   allowAddToken?: boolean;
   onSelect: (tokenId?: string) => void;
+  pinnedTokens: string[];
 };
 
 // Define a type for the slice state
@@ -189,6 +192,7 @@ interface ModalsState {
 
   isTermsAndConditionsModalOpened: boolean;
   termsAndConditionsModalData: TermsAndConditionsModalData;
+
 }
 
 const initialMintXTCModalData: MintModalData = {
@@ -234,6 +238,7 @@ const initialTokenSelectData: TokenSelectData = {
   selectedTokenIds: [],
   isLoading: false,
   allowAddToken: true,
+  pinnedTokens: getFromStorage(LocalStorageKey.PINNED_TOKENS) ?? [],
 };
 
 // Define the initial state using that type
@@ -289,7 +294,7 @@ const initialState: ModalsState = {
   allowanceModalData: {},
 
   isTermsAndConditionsModalOpened: false,
-  termsAndConditionsModalData: {},
+  termsAndConditionsModalData: {}
 };
 
 export const modalsSlice = createSlice({
@@ -555,7 +560,7 @@ export const modalsSlice = createSlice({
       state,
       action: PayloadAction<TokenSelectData>
     ) => {
-      state.tokenSelectModalData = action.payload;
+      state.tokenSelectModalData = { ...action.payload, pinnedTokens: state.tokenSelectModalData.pinnedTokens };
     },
 
     openRemoveLiquidityModal: (state) => {
@@ -589,6 +594,26 @@ export const modalsSlice = createSlice({
       action: PayloadAction<TermsAndConditionsModalData>
     ) => {
       state.termsAndConditionsModalData = action.payload;
+    },
+    onPinToken: (
+      state,
+      action: PayloadAction<string>
+    ) => {
+      const tokenId = action.payload;
+      const { pinnedTokens } = state.tokenSelectModalData;
+      if(!pinnedTokens.includes(tokenId))
+        state.tokenSelectModalData.pinnedTokens.push(action.payload);
+      saveToStorage(LocalStorageKey.PINNED_TOKENS, pinnedTokens);
+    },
+    onUnPinToken: (
+      state,
+      action: PayloadAction<string>
+    ) => {
+      const tokenId = action.payload;
+      const { pinnedTokens } = state.tokenSelectModalData;
+      const updatedPinnedTokens = pinnedTokens.filter((eachPinnedToken) => eachPinnedToken !== tokenId)
+      state.tokenSelectModalData.pinnedTokens = updatedPinnedTokens;
+      saveToStorage(LocalStorageKey.PINNED_TOKENS, updatedPinnedTokens);
     },
   },
 });

@@ -32,8 +32,6 @@ import { debounce } from '@/utils/function';
 
 import { useAddLiquidityMemo, useTokenSourceMemo } from './liquidity.utils';
 
-import { ENV } from '@/config';
-
 export const LiquidityAddView = () => {
   const query = useQuery();
   const { isConnected } = useWalletStore();
@@ -102,10 +100,11 @@ export const LiquidityAddView = () => {
       })();
 
       const customTokenList = supportedTokenList ? supportedTokenList.filter(x => {
+        //console.log(x);
         if (dataKey === 'token0') {
-          return x.id !== token1.metadata?.id && x.id !== excludeToken && !ENV.hiddenTokens.includes(x.id);
+          return x.id !== token1.metadata?.id && x.id !== excludeToken && x.blockStatus !='Partial';
         } else if (dataKey === 'token1') {
-          return x.id !== token0.metadata?.id && x.id !== excludeToken && !ENV.hiddenTokens.includes(x.id);
+          return x.id !== token0.metadata?.id && x.id !== excludeToken && x.blockStatus !='Partial';
         }
       }) : [];
 
@@ -127,49 +126,51 @@ export const LiquidityAddView = () => {
     }
   };
 
-  type useTokenTaxCheckOptions = {
-    balances?: any;
-    tokenId?: string;
-    tokenDecimals?: number;
-    tokenValue?: string;
-    tokenSymbol?: string;
-    needAsNetValue?: boolean;
-  };
+  // type useTokenTaxCheckOptions = {
+  //   balances?: any;
+  //   tokenId?: string;
+  //   tokenDecimals?: number;
+  //   tokenValue?: string;
+  //   tokenSymbol?: string;
+  //   needAsNetValue?: boolean;
+  // };
 
-  const useTokenTaxCheck = ({ balances, tokenId, tokenSymbol, tokenDecimals = 1, tokenValue = '', needAsNetValue = false }: useTokenTaxCheckOptions) => {
-    const { sonicBalances, tokenBalances, icpBalance } = balances;
-    const tokenInfo = { wallet: 0, sonic: 0, taxInfo: { input: 0, taxedValue: 0, nonTaxedValue: 0, netValue: 0 } }
-    if (tokenId != '' && tokenId != 'ICP' && sonicBalances && tokenBalances) {
-      var id = tokenId ? tokenId : '';
-      tokenInfo['wallet'] = tokenBalances[id] ? tokenBalances[id] : 0;
-      tokenInfo['sonic'] = sonicBalances[id] ? sonicBalances[id] : 0;
-    } else { tokenInfo['wallet'] = icpBalance ? icpBalance : 0; }
-    if (tokenValue) {
-      let tokenVal: number = parseFloat(tokenValue)
-      if (tokenSymbol == 'YC') {
-        let decimals = tokenDecimals ? (10 ** tokenDecimals) : 1
-        let sonicBalance = tokenInfo['sonic'] / decimals;
+  // const useTokenTaxCheck = ({ balances, tokenId, tokenSymbol, tokenDecimals = 1, tokenValue = '', needAsNetValue = false }: useTokenTaxCheckOptions) => {
+  //   const { sonicBalances, tokenBalances, icpBalance } = balances;
+  //   const tokenInfo = { wallet: 0, sonic: 0, taxInfo: { input: 0, taxedValue: 0, nonTaxedValue: 0, netValue: 0 } }
+  //   if (tokenId != '' && tokenId != 'ICP' && sonicBalances && tokenBalances) {
+  //     var id = tokenId ? tokenId : '';
+  //     tokenInfo['wallet'] = tokenBalances[id] ? tokenBalances[id] : 0;
+  //     tokenInfo['sonic'] = sonicBalances[id] ? sonicBalances[id] : 0;
+  //   } else { tokenInfo['wallet'] = icpBalance ? icpBalance : 0; }
+  //   if (tokenValue) {
+  //     let tokenVal: number = parseFloat(tokenValue)
+  //     if (tokenSymbol == 'YC') {
+  //       let decimals = tokenDecimals ? (10 ** tokenDecimals) : 1
+  //       let sonicBalance = tokenInfo['sonic'] / decimals;
 
-        if ((sonicBalance > tokenVal)) {
-          tokenInfo.taxInfo.nonTaxedValue = tokenVal;
-          tokenInfo.taxInfo.taxedValue = 0;
-        } else {
-          tokenInfo.taxInfo.nonTaxedValue = sonicBalance;
-          tokenInfo.taxInfo.taxedValue = tokenVal - tokenInfo.taxInfo.nonTaxedValue;
-        }
-        if (needAsNetValue) {
-          if (tokenInfo.taxInfo.taxedValue > 0) {
-            tokenInfo.taxInfo.netValue = tokenInfo.taxInfo.nonTaxedValue + ((tokenVal - tokenInfo.taxInfo.nonTaxedValue) / 0.89);
-          } else {
-            tokenInfo.taxInfo.netValue = tokenInfo.taxInfo.nonTaxedValue;
-          }
-        } else {
-          tokenInfo.taxInfo.netValue = tokenInfo.taxInfo.nonTaxedValue + (tokenInfo.taxInfo.taxedValue * (89 / 100));
-        }
-      }
-    }
-    return tokenInfo
-  };
+  //       if ((sonicBalance > tokenVal)) {
+  //         tokenInfo.taxInfo.nonTaxedValue = tokenVal;
+  //         tokenInfo.taxInfo.taxedValue = 0;
+  //       } else {
+  //         tokenInfo.taxInfo.nonTaxedValue = sonicBalance;
+  //         tokenInfo.taxInfo.taxedValue = tokenVal - tokenInfo.taxInfo.nonTaxedValue;
+  //       }
+  //       if (needAsNetValue) {
+  //         if (tokenInfo.taxInfo.taxedValue > 0) {
+  //           tokenInfo.taxInfo.netValue = tokenInfo.taxInfo.nonTaxedValue + ((tokenVal - tokenInfo.taxInfo.nonTaxedValue) / 0.89);
+  //         } else {
+  //           tokenInfo.taxInfo.netValue = tokenInfo.taxInfo.nonTaxedValue;
+  //         }
+  //       } else {
+  //         tokenInfo.taxInfo.netValue = tokenInfo.taxInfo.nonTaxedValue + (tokenInfo.taxInfo.taxedValue * (89 / 100));
+  //       }
+  //     }
+  //   }
+  //   return tokenInfo
+  // };
+
+
   const setInAndOutTokenValues = useCallback(
     (dataKey: LiquidityTokenDataKey, value?: string) => {
       const [amountIn, reserveIn, reserveOut, decimalsIn, decimalsOut] =
@@ -180,27 +181,27 @@ export const LiquidityAddView = () => {
           Number(token1.metadata?.decimals), Number(token0.metadata?.decimals)];
 
       try {
-        var token = (dataKey == 'token0') ? token0 : token1;
-        var convertToken = (dataKey == 'token0') ? token1 : token0;
+        // var token = (dataKey == 'token0') ? token0 : token1;
+        // var convertToken = (dataKey == 'token0') ? token1 : token0;
         var fromAmount = amountIn;
 
-        if (token.metadata?.symbol == "YC") {
-          var info = useTokenTaxCheck({
-            balances: balances, tokenId: token.metadata.id, tokenSymbol: token.metadata.symbol, tokenDecimals: token.metadata.decimals, tokenValue: amountIn
-          });
-          fromAmount = info.taxInfo.netValue.toFixed(3);
-        }
+        // if (token.metadata?.symbol == "YC") {
+        //   var info = useTokenTaxCheck({
+        //     balances: balances, tokenId: token.metadata.id, tokenSymbol: token.metadata.symbol, tokenDecimals: token.metadata.decimals, tokenValue: amountIn
+        //   });
+        //   fromAmount = info.taxInfo.netValue.toFixed(3);
+        // }
 
         const lpValue = Liquidity.getOppositeAmount({ amountIn: fromAmount ? fromAmount : '0', reserveIn, reserveOut, decimalsIn, decimalsOut });
 
         var parsedLPValue = lpValue.toString();
-        if (convertToken.metadata?.symbol == "YC") {
-          var info = useTokenTaxCheck({
-            balances: balances, tokenId: convertToken.metadata.id, tokenSymbol: convertToken.metadata.symbol, tokenDecimals: convertToken.metadata.decimals,
-            tokenValue: parsedLPValue, needAsNetValue: true
-          });
-          parsedLPValue = info.taxInfo.netValue.toFixed(3);
-        }
+        // if (convertToken.metadata?.symbol == "YC") {
+        //   var info = useTokenTaxCheck({
+        //     balances: balances, tokenId: convertToken.metadata.id, tokenSymbol: convertToken.metadata.symbol, tokenDecimals: convertToken.metadata.decimals,
+        //     tokenValue: parsedLPValue, needAsNetValue: true
+        //   });
+        //   parsedLPValue = info.taxInfo.netValue.toFixed(3);
+        // }
 
         dispatch(liquidityViewActions.setValue({ data: dataKey, value: amountIn }));
 
@@ -318,17 +319,12 @@ export const LiquidityAddView = () => {
   const [isDisabled, setIsDisabled] = useState(false);
 
   useEffect(() => {
-    
-    const token0Id = token0.metadata?.id;
-    const token1Id = token1.metadata?.id;
-
-    if (token0Id && token0Id.length > 0)
-      if (ENV.hiddenTokens.includes(token0Id)) { setIsDisabled(true); }
-
-    if (token1Id && token1Id.length > 0)
-      if (ENV.hiddenTokens.includes(token1Id)) { setIsDisabled(true); }
-
-  }, [token0?.metadata?.id, token0?.metadata?.id])
+    if( token0?.metadata?.blockStatus =='Partial' || token1?.metadata?.blockStatus =='Partial'){
+      setIsDisabled(true);
+    }else{
+      setIsDisabled(false);
+    }
+  }, [token0?.metadata?.id, token1?.metadata?.id])
 
 
   return (
@@ -498,8 +494,6 @@ export const LiquidityAddView = () => {
             {buttonMessage}
           </Button>
         )
-
-
       }
     </Stack>
   );

@@ -18,7 +18,8 @@ import { AppTokenMetadata } from '@/models';
 
 import {
   assetsViewActions, FeatureState, useAppDispatch, useAssetsViewStore,
-  usePriceStore, useSwapCanisterStore, useWalletStore
+  usePriceStore, useSwapCanisterStore, useWalletStore,
+  useModalsStore
 } from '@/store';
 
 
@@ -38,6 +39,8 @@ export const AssetsListView = () => {
   const { isBannerOpened } = useAssetsViewStore();
   const { totalBalances, sonicBalances, tokenBalances } = useBalances();
   const { supportedTokenListState, balancesState, supportedTokenList } = useSwapCanisterStore();
+  const { tokenSelectModalData: tokenSelectData } = useModalsStore();
+  const { pinnedTokens } = tokenSelectData;
 
   const { icpPrice } = usePriceStore();
   const { isConnected } = useWalletStore();
@@ -65,12 +68,21 @@ export const AssetsListView = () => {
       ...(supportedTokenList || []),
     ];
     if (totalBalances) {
-      return supportedTokenListWithICP.filter(
+      const filterdTokenList = supportedTokenListWithICP.filter(
         (token) => totalBalances[token.id] !== 0
       );
+      const sortedTokenListWithPin = filterdTokenList.sort((a: any, b: any) => {
+        const isAPinnned = pinnedTokens.includes(a.id);
+        const isBPinned = pinnedTokens.includes(b.id);
+  
+        if(isAPinnned === isBPinned) return 0;
+        return isAPinnned ? -1 : 1;
+      })
+      return sortedTokenListWithPin;
     }
     return [];
-  }, [supportedTokenList, totalBalances, icpPrice]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [supportedTokenList, totalBalances, icpPrice, pinnedTokens]);
 
   const isTokenListPresent = useMemo(() => notEmptyTokenList && notEmptyTokenList.length > 0, [notEmptyTokenList]);
 

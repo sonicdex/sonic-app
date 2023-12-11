@@ -11,7 +11,7 @@ export const fetchAllowance = createAsyncThunk<void, FetchAllowance>('plug/disco
   async ({ tokenId }, { dispatch, getState }): Promise<void> => {
     const { principalId } = (getState() as RootState).dfinityWallet;
     try {
-      if (!principalId) throw new Error('Plug is not connected');
+      if (!principalId) throw new Error('Wallet not connected');
       const allowance = await getTokenAllowance(tokenId);
       dispatch( allowanceActions.setAllowance({ tokenId,allowance: Number(allowance),expiration: Date.now() + 30000}) );
     } catch (error) {

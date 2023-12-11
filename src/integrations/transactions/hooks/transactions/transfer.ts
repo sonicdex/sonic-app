@@ -9,8 +9,9 @@ import { CreateTransaction, Transfer } from '../../models';
 export const useTransferTransactionMemo: CreateTransaction<Transfer> = ({ amount, token, address, addressType }, onSuccess, onFail) =>
   useMemo(() => {
     if (!token?.id || !address || !amount) { return; }
-    const tokenType = token.tokenType;
+    const tokenType = token.tokenType?.toLowerCase();
     const parsedAmount = amount ? parseAmount(amount, token.decimals) : BigInt(0);
+
     if (token?.symbol == 'ICP') {
       var natAddress = addressType == 'accountId' ? fromHexString(address) : fromHexString(getAccountIdFromPrincipalId(address));
       return {
@@ -21,7 +22,7 @@ export const useTransferTransactionMemo: CreateTransaction<Transfer> = ({ amount
         onSuccess: onSuccess,
         onFail,
       }
-    } else if (tokenType == 'DIP20') {
+    } else if (tokenType == 'dip20') {
       if (addressType != 'principalId') return false;
       return {
         canisterId: token.id,
@@ -31,7 +32,7 @@ export const useTransferTransactionMemo: CreateTransaction<Transfer> = ({ amount
         onSuccess: onSuccess,
         onFail,
       }
-    } else if (tokenType == 'YC') {
+    } else if (tokenType == 'yc') {
       if (addressType != 'principalId') return false;
       return {
         canisterId: token.id,
@@ -42,13 +43,12 @@ export const useTransferTransactionMemo: CreateTransaction<Transfer> = ({ amount
         onFail,
       }
     }
-    else if (tokenType == 'ICRC1') {
+    else if (tokenType == 'icrc1' || tokenType == 'icrc2') {
       return {
         canisterId: token.id,
         idl: TokenIDL.ICRC1.factory,
         methodName: 'icrc1_transfer',
-        onSuccess: onSuccess,
-        onFail,
+        onSuccess: onSuccess, onFail,
         args: [{
           to: { owner: getPrincipalFromText(address), subaccount: [] },
           fee: [], memo: [], amount: parsedAmount, from_subaccount: [], created_at_time: []

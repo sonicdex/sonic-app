@@ -20,11 +20,7 @@ export type DepositActivityProps = {
   time: number;
 };
 
-export const DepositActivity = ({
-  amount,
-  tokenId,
-  time,
-}: DepositActivityProps) => {
+export const DepositActivity = ({ amount, tokenId, time }: DepositActivityProps) => {
   const { tokenList } = useActivityViewStore();
 
   if (!tokenList) return null;

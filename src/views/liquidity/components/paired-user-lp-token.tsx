@@ -46,159 +46,156 @@ export const PairedUserLPToken: React.FC<PairedUserLPTokenProps> = ({
   const headerColor = useColorModeValue('gray.600', 'gray.400');
 
   const userLPValue = useMemo(() => {
-    const pair = allPairs?.[token0.id]?.[token1.id];
-
+    const pair = allPairs?.[token0?.id]?.[token1?.id];
     // console.log(token0.price,token1.name ,  token1.price)
-
     if (pair && token0.price && token1.price && totalShares && userShares) {
       return Liquidity.getUserPositionValue({
-        price0: token0.price,
-        price1: token1.price,
-        reserve0: pair.reserve0,
-        reserve1: pair.reserve1,
-        decimals0: token0.decimals,
-        decimals1: token1.decimals,
-        totalShares,
-        userShares,
+        price0: token0.price, price1: token1.price,
+        reserve0: pair.reserve0, reserve1: pair.reserve1,
+        decimals0: token0.decimals, decimals1: token1.decimals,
+        totalShares, userShares,
       }).toString();
     }
     return '0';
   }, [allPairs, token0, token1, totalShares, userShares]);
 
   //getuserLprewards
- // const rewardData = getuserLprewards(token0.id, token1.id);
- 
-  return (
-    <Flex direction="column" borderRadius="xl" bg={bg} shadow={shadow}>
-      <Flex
-        position="relative"
-        direction="row"
-        alignItems="center"
-        justifyContent="space-between"
-        px={5}
-        py={4}
-        gridGap={1.5}
-      >
-        <TokenImageBlock src={token0.logo} size={7} />
-        <TokenImageBlock src={token1.logo} size={7} />
-        <Text flex={1} fontWeight="bold" fontSize="1.125rem">
-          {token0.symbol}/{token1.symbol}
-        </Text>
-        <Button
-          variant="outline"
-          borderColor="dark-blue.500"
-          onClick={() => handleAdd(token0.id, token1.id)}
-          fontWeight="normal"
-          width="4.5rem"
+  // const rewardData = getuserLprewards(token0.id, token1.id);
+  if(token0 && token1){
+    return (
+      <Flex direction="column" borderRadius="xl" bg={bg} shadow={shadow}>
+        <Flex
+          position="relative"
+          direction="row"
+          alignItems="center"
+          justifyContent="space-between"
+          px={5}
+          py={4}
+          gridGap={1.5}
         >
-          Add
-        </Button>
-        <Button
-          variant="ghost"
-          onClick={() => handleRemove(token0, token1)}
-          fontWeight="normal"
-        >
-          Remove
-        </Button>
-      </Flex>
-
-      <Divider />
-
-      <Flex direction="row" px={6} py={4}>
-        <Box flex={1}>
-          <Text color={headerColor}>LP Tokens</Text>
-          <LPBreakdownPopover
-            sources={[
-              {
-                src: token0.logo,
-                symbol: token0.symbol,
-                decimals: token0.decimals,
-                balance: balance0,
-              },
-              {
-                src: token1.logo,
-                symbol: token1.symbol,
-                decimals: token1.decimals,
-                balance: balance1,
-              },
-            ]}
+          <TokenImageBlock src={token0?.logo} size={7} />
+          <TokenImageBlock src={token1?.logo} size={7} />
+          <Text flex={1} fontWeight="bold" fontSize="1.125rem">
+            {token0.symbol}/{token1.symbol}
+          </Text>
+          <Button
+            variant="outline"
+            borderColor="dark-blue.500"
+            onClick={() => handleAdd(token0.id, token1.id)}
+            fontWeight="normal"
+            width="4.5rem"
           >
+            Add
+          </Button>
+          <Button
+            variant="ghost"
+            onClick={() => handleRemove(token0, token1)}
+            fontWeight="normal"
+          >
+            Remove
+          </Button>
+        </Flex>
+  
+        <Divider />
+  
+        <Flex direction="row" px={6} py={4}>
+          <Box flex={1}>
+            <Text color={headerColor}>LP Tokens</Text>
+            <LPBreakdownPopover
+              sources={[
+                {
+                  src: token0.logo,
+                  symbol: token0.symbol,
+                  decimals: token0.decimals,
+                  balance: balance0,
+                },
+                {
+                  src: token1.logo,
+                  symbol: token1.symbol,
+                  decimals: token1.decimals,
+                  balance: balance1,
+                },
+              ]}
+            >
+              <DisplayValue
+                value={userShares}
+                isUpdating={isLPBalanceLoading}
+                fontWeight="bold"
+                disableTooltip
+                width="fit-content"
+              />
+            </LPBreakdownPopover>
+          </Box>
+  
+          <Box flex={1}>
+            <Text color={headerColor}>USD Value</Text>
             <DisplayValue
-              value={userShares}
               isUpdating={isLPBalanceLoading}
+              prefix="$"
+              value={userLPValue}
               fontWeight="bold"
-              disableTooltip
+              decimals={8}
               width="fit-content"
             />
-          </LPBreakdownPopover>
-        </Box>
-
-        <Box flex={1}>
-          <Text color={headerColor}>USD Value</Text>
-          <DisplayValue
-            isUpdating={isLPBalanceLoading}
-            prefix="$"
-            value={userLPValue}
-            fontWeight="bold"
-            decimals={8}
-            width="fit-content"
-          />
-        </Box>
-
-        <Box
-          flex={1}
-          backgroundColor="#8888882f"
-          mx={-3}
-          my={-1}
-          px={3}
-          py={1}
-          borderRadius="xl"
-        >
-
-          <Popover trigger="hover">
-            <PopoverTrigger>
-              <Flex>
-                <Text color={headerColor} display="flex" justifyContent="space-between" alignItems="center">Fees Earned &nbsp; </Text>
-                <Flex marginTop={1}><FaInfoCircle /></Flex>
-              </Flex>
-            </PopoverTrigger>
-
-            <PopoverContent color={useColorModeValue('black', 'white')}>
-              <PopoverArrow />
-              <PopoverBody>
-              It is the representation of the fees earned from swaps in consecutive tokens. Please note that the accrued fees will be automatically added to your LP pool.
-              </PopoverBody>
-            </PopoverContent>
-          </Popover>
-          {/* {!rewardData && ( */}
-          <DisplayValue
-            color={successColor}
-            isUpdating={isMetricsLoading}
-            prefix="$"
-            value={pairMetrics?.fees ?? 0}
-            fontWeight="bold"
-            decimals={8}
-            width="fit-content"
-          />
-          {/* )} */}
-          {/* {rewardData && (
-            <>
-              <Flex>
+          </Box>
+  
+          <Box
+            flex={1}
+            backgroundColor="#8888882f"
+            mx={-3}
+            my={-1}
+            px={3}
+            py={1}
+            borderRadius="xl"
+          >
+  
+            <Popover trigger="hover">
+              <PopoverTrigger>
                 <Flex>
-                  <DisplayValue color={successColor} value={Number(rewardData.token0) / 10 ** token0.decimals} fontWeight="bold" width="fit-content" />
-                  &nbsp; <Text>{token0.symbol}</Text>
+                  <Text color={headerColor} display="flex" justifyContent="space-between" alignItems="center">Fees Earned &nbsp; </Text>
+                  <Flex marginTop={1}><FaInfoCircle /></Flex>
                 </Flex>
-              </Flex>
-              <Flex marginTop={2}>
+              </PopoverTrigger>
+  
+              <PopoverContent color={useColorModeValue('black', 'white')}>
+                <PopoverArrow />
+                <PopoverBody>
+                  It is the representation of the fees earned from swaps in consecutive tokens. Please note that the accrued fees will be automatically added to your LP pool.
+                </PopoverBody>
+              </PopoverContent>
+            </Popover>
+            {/* {!rewardData && ( */}
+            <DisplayValue
+              color={successColor}
+              isUpdating={isMetricsLoading}
+              prefix="$"
+              value={pairMetrics?.fees ?? 0}
+              fontWeight="bold"
+              decimals={8}
+              width="fit-content"
+            />
+            {/* )} */}
+            {/* {rewardData && (
+              <>
                 <Flex>
-                  <DisplayValue color={successColor} value={Number(rewardData.token1) / 10 ** token1.decimals} fontWeight="bold" width="fit-content" />
-                  &nbsp; <Text >{token1.symbol}</Text>
+                  <Flex>
+                    <DisplayValue color={successColor} value={Number(rewardData.token0) / 10 ** token0.decimals} fontWeight="bold" width="fit-content" />
+                    &nbsp; <Text>{token0.symbol}</Text>
+                  </Flex>
                 </Flex>
-              </Flex>
-            </>
-          )} */}
-        </Box>
+                <Flex marginTop={2}>
+                  <Flex>
+                    <DisplayValue color={successColor} value={Number(rewardData.token1) / 10 ** token1.decimals} fontWeight="bold" width="fit-content" />
+                    &nbsp; <Text >{token1.symbol}</Text>
+                  </Flex>
+                </Flex>
+              </>
+            )} */}
+          </Box>
+        </Flex>
       </Flex>
-    </Flex>
-  );
+    );
+  }else{
+    return(<></>)
+  }
 };

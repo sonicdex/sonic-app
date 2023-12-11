@@ -63,7 +63,6 @@ export const useBalances = () => {
           var tokenFeeLen = tokenInfo[tokenCanisterId]?.fee.toString().length;
           var tokenDecimals = tokenInfo[tokenCanisterId]?.decimals;
 
-
           sonicBalances[index][1] = roundBigInt(sonicBalances[index][1], tokenDecimals, tokenFeeLen > maxDecimalPlaces ? tokenFeeLen : maxDecimalPlaces);
           try {
             var tokenBalance = BigInt(0);

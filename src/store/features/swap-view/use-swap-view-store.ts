@@ -9,9 +9,7 @@ import { selectSwapViewState, useAppSelector } from '@/store';
 import { useSwapCanisterStore } from '..';
 
 
-
 export const useSwapViewStore = () => {
-
   const state = useAppSelector(selectSwapViewState);
   var { from, tokenList } = state;
 
@@ -27,7 +25,7 @@ export const useSwapViewStore = () => {
     if (!from.metadata || !tokenList) return [[], []];
     const fromTokenOptions: any = [];
     Object.values(tokenList).forEach(x => {
-      if (!ENV.hiddenTokens.includes(x.id))
+      if (x.blockStatus!='Partial')
         fromTokenOptions.push(x)
     });
 
