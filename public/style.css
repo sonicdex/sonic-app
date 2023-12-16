@@ -5,6 +5,7 @@
     background: #1c1f43;
     box-shadow: #1c1f43 0 5px 20px;
     border:1px solid var(--chakra-colors-whiteAlpha-300);
+    margin-top:0px !important;
 }
 .widget__title__group__title{
     color: #fff;
@@ -23,4 +24,13 @@
 }
 .widget__title__group__image{
     max-width: 30px !important;
+}
+.widget__box {
+    min-height: 50px !important;
+}
+
+@media only screen and (min-width: 300px) and (max-width: 699px){
+    .widget__box {
+        min-height: 1px !important;
+    }
 }

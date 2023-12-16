@@ -19,7 +19,7 @@
     "cypress:record": "yarn cypress run --record --key 452e662f-7169-4f19-8f04-575d8ec39e40",
     "cypress:prod:run": "yarn cypress run --env configFile=prod",
     "cypress:prod:run:record": "yarn cypress run --env configFile=prod --key 452e662f-7169-4f19-8f04-575d8ec39e40",
-    "release:dev": "node cp.js ./.env.dev.dep .env  && webpack --config webpack.dev.js && node ./deploy.js dev",
+    "release:dev": "node cp.js ./.env-dev .env  && webpack --config webpack.dev.js && node ./deploy.js dev",
     "release:prod": "node cp.js ./.env-prod .env  && webpack --config webpack.prod.js;node ./deploy.js prod;",
     "release:maintanance": "node cp.js ./.env-prod-maintanance .env  && webpack --config webpack.prod.js;node ./deploy.js prod",
     "release:preprod": "node cp.js ./.env.prod.dep .env  && webpack --config webpack.prod.js && node ./deploy.js preprod"
@@ -78,7 +78,7 @@
     "@dfinity/candid": "^0.12.2",
     "@dfinity/identity": "^0.12.2",
     "@dfinity/principal": "^0.12.2",
-    "@elna-ai/chat-widget": "^1.0.11",
+    "@elna-ai/chat-widget": "^1.0.13",
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
     "@react-icons/all-files": "^4.1.0",

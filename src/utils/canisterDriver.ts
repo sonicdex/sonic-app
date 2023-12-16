@@ -14,6 +14,9 @@ import crypto from "crypto-js";
 
 var supportedTokenList: any = [];
 var tokenListObj: any = {};
+var natLabsToken: any = [];
+
+export const getNatLabsToken= ()=>{return natLabsToken};
 
 function waitWithTimeout(ms: number) {
   return new Promise((resolve, reject) => {
@@ -21,12 +24,26 @@ function waitWithTimeout(ms: number) {
   });
 }
 
+export const fetchNatLabsToken = async () => {
+  var actor: any = await getswapActor(true);
+  if (actor?.getNatLabsToken) {
+    var data = await actor?.getNatLabsToken();
+    if(data.length>0){
+      data.forEach((el:any) => {
+        if(el[0] && el[1])natLabsToken.push(el[0])
+      });
+    }
+  }
+}
+
 
 export const loadsupportedTokenList = async () => {
   supportedTokenList = useSwapCanisterStore()?.supportedTokenList;
   if (!supportedTokenList || Object.keys(tokenListObj).length > 0) return false;
   supportedTokenList.forEach((el: { id: string }) => { tokenListObj[el.id] = el });
+  fetchNatLabsToken();
 }
+
 
 
 
@@ -117,7 +134,7 @@ export const getTokenAllowance = async (canisterId: string): Promise<bigint> => 
         account: { owner: Principal.fromText(artemis.principalId), subaccount: [] },
         spender: { owner: Principal.fromText(ENV.canistersPrincipalIDs.swap), subaccount: [] }
       });
-      allowance = allowanceData?.allowance ? allowanceData.allowance: BigInt(0);
+      allowance = allowanceData?.allowance ? allowanceData.allowance : BigInt(0);
     }
     else allowance = BigInt(0);
   } catch (error) {
@@ -226,3 +243,4 @@ export const getPrincipalFromText = (prin: string) => {
     return Principal.fromText(prin)
   } catch (error) { return false }
 }
+

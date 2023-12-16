@@ -1,7 +1,7 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 
 import { NotificationManager } from '@/notifications';
-import { ActivityListView, AssetsDepositView, AssetsListView, AssetsWithdrawView, LiquidityAddView, LiquidityListView, SwapView , MintView  , AssetsTransferView} from '@/views';
+import { ActivityListView, AssetsDepositView, AssetsListView, AssetsWithdrawView, LiquidityAddView, LiquidityListView, SwapView, MintView, AssetsTransferView } from '@/views';
 
 // import { TestView , TestViewt1 , TestViewt2}  from '@/views';
 
@@ -19,7 +19,7 @@ import { useBlockHeightsInit } from './hooks/use-block-heights-init';
 import { useWalletInit } from '@/integrations/artemis'
 
 import { useCyclesMintingCanisterInit, useLiquidityViewInit, usePriceInit, useSwapCanisterInit } from './store';
-import {loadsupportedTokenList} from '@/utils'
+import { loadsupportedTokenList } from '@/utils'
 
 
 export const App = () => {
@@ -31,10 +31,11 @@ export const App = () => {
   useBlockHeightsInit();
   useNetworkErrorNotifications();
   loadsupportedTokenList();
+ 
   return (
     <BrowserRouter basename="/">
       <Layout>
-        <WalletListModal/>
+        <WalletListModal />
         <NotificationManager />
 
         <TermsAndConditionsModal />

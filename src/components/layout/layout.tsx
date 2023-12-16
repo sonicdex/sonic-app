@@ -29,7 +29,7 @@ import { FOOTER_HEIGHT, NAVIGATION_TABS } from './layout.constants';
 
 import { WalletConnectBtn, WalletMenu } from '@/components/wallet';
 
-// import Widget from "@elna-ai/chat-widget";
+import Widget from "@elna-ai/chat-widget";
 
 import axios from 'axios';
 
@@ -163,8 +163,8 @@ export const Layout: React.FC = ({ children, ...props }) => {
         {children}
       </Container>
 
-      {/* <Widget wizardId="ebdc5e48-cb2b-418b-8a5e-c06dd23f3d30" title="Support Chat" description="Hi there! 🚀 I'm Sonic Helper"
-        chatBg={"#1c1f43"} logo={'https://cdn.sonic.ooo/icons/qbizb-wiaaa-aaaaq-aabwq-cai'} /> */}
+       <Widget wizardId="ebdc5e48-cb2b-418b-8a5e-c06dd23f3d30" title="Support Chat" description="Hi there! 🚀 I'm Sonic Helper"
+        chatBg={"#1c1f43"} logo={'https://cdn.sonic.ooo/icons/qbizb-wiaaa-aaaaq-aabwq-cai'} />
 
       <chakra.footer px="4" py="2" position="fixed" bottom={0} left={0} right={0}
         background={`linear-gradient(to bottom, transparent 0%, ${backgroundColorValue} 50%)`} pointerEvents="none"
