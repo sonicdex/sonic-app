@@ -36,7 +36,35 @@ export class AnalyticsApi {
     });
     return response?.user?.positionMetrics;
   }
+
+  
+  async queryUserLPMetrics2( principalId: string, pairId?: string): Promise<AnalyticsApi.userLidityFeeMetrics> {
+    const response = await this.request<AnalyticsApi.userLidityFeeMetricsQuery>({
+      operationName: null,
+      query: `
+            query {
+              user(id: "${principalId}") {
+                userLidityFeeMetrics${pairId ? `(pairId: "${pairId}")` : ''} {
+                  token0Fee,
+                  token1Fee,
+                }
+              }
+            }
+            `,
+      variables: {},
+    });
+
+    var tokens:any = pairId?.split(':')
+
+    var data:any = response?.user?.userLidityFeeMetrics
+    data.token0 = tokens[0];
+    data.token1 = tokens[1];
+    return data ; response?.user?.userLidityFeeMetrics;
+  }
+
 }
+
+
 
 export namespace AnalyticsApi {
   export interface GraphqlQuery {
@@ -50,9 +78,27 @@ export namespace AnalyticsApi {
     fees: string;
   }
 
+
+  export interface userLidityFeeMetrics{
+    token0Fee:number
+    token1Fee:number,
+    token0?:string,
+    token1?:string
+    token0TotalFee?:number,
+    token1TotalFee?:number
+  }
+
   export interface UserLPMetricsQuery {
     user: {
       positionMetrics: PositionMetrics;
     };
   }
+
+  export interface userLidityFeeMetricsQuery {
+    user: {
+      userLidityFeeMetrics: userLidityFeeMetrics;
+    };
+  }
+
+  
 }
