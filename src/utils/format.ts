@@ -20,7 +20,7 @@ export const parseAmount = (val: string, decimals: string | number): bigint => {
     return BigInt(0);
   }
 };
-export const roundBigInt = ( val:BigInt ,actualDecimals:string | number, roundOfdecimals:number ): bigint =>{
+export const roundBigInt = ( val:BigInt ,actualDecimals:string | number, roundOfdecimals:number= 5): bigint =>{
   try {
     var ad:number = parseInt(actualDecimals.toString());
     var roundedNumber =  (Math.floor( (Number(val) / 10 ** ad) *(10**roundOfdecimals))/(10**roundOfdecimals)).toString();

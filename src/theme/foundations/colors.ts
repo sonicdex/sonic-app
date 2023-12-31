@@ -13,6 +13,7 @@ export const colors = {
   },
   black: '#151515',
   darkBlue:"#0C0D30",
+  darkGreen: 'rgb(0, 8, 4)',
   custom: {
     1: '#888E8F',
     2: "#1c1f43", // "#1c1f43",// '#1E1E1E',
@@ -35,7 +36,7 @@ export const colors = {
   app: {
     background: {
     body: {
-      dark: '#0C0D30',
+      dark: 'rgb(0, 8, 4)',
       light: '#FFFFFF',
     }
   }}

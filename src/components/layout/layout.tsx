@@ -29,9 +29,10 @@ import { FOOTER_HEIGHT, NAVIGATION_TABS } from './layout.constants';
 
 import { WalletConnectBtn, WalletMenu } from '@/components/wallet';
 
-// import Widget from "@elna-ai/chat-widget";
+import Widget from "@elna-ai/chat-widget";
 
 import axios from 'axios';
+import { BottomWarning } from './bottomWarning';
 
 export const Layout: React.FC = ({ children, ...props }) => {
 
@@ -47,7 +48,8 @@ export const Layout: React.FC = ({ children, ...props }) => {
     [location]
   );
 
-  const backgroundColor = useColorModeValue('custom.5', 'darkBlue');
+   const backgroundColor = useColorModeValue('custom.5', 'darkGreen');
+
   const backgroundColorValue = useToken('colors', backgroundColor);
 
   const { colorMode, toggleColorMode } = useColorMode();
@@ -80,7 +82,7 @@ export const Layout: React.FC = ({ children, ...props }) => {
           <CloseButton size="sm" onClick={handleCloseBanner} position="absolute" right="8px" top="8px" />
         </Alert>
       )}
-      <Container as="header" maxW={['100%', 'container.xl', 'container.xl']} position="sticky" top={0} zIndex={10} id="header" bg={backgroundColor}>
+      <Container as="header" maxW={['100%', 'container.xl', 'container.xl']} position="sticky" top={0} zIndex={10} id="header" bg={backgroundColorValue} >
         <Flex
           zIndex="1000" width="full" maxWidth="container.xl" margin="auto"
           direction="row" justifyContent="center" alignItems="center" flexWrap="wrap"
@@ -162,15 +164,15 @@ export const Layout: React.FC = ({ children, ...props }) => {
       <Container as="main" maxW="xl" minH={`calc(100vh - ${headerHeight} - ${FOOTER_HEIGHT})`} py="4" display="flex" flexDirection="column" {...props}>
         {children}
       </Container>
+      <BottomWarning/>
+      
+       <Widget wizardId="ebdc5e48-cb2b-418b-8a5e-c06dd23f3d30" title="Support Chat" description="Hi there! 🚀 I'm Sonic Helper"
+        chatBg={"#1c1f43"} logo={'https://cdn.sonic.ooo/icons/qbizb-wiaaa-aaaaq-aabwq-cai'} />
 
-      {/* <Widget wizardId="ebdc5e48-cb2b-418b-8a5e-c06dd23f3d30" title="Support Chat" description="Hi there! 🚀 I'm Sonic Helper"
-        chatBg={"#1c1f43"} logo={'https://cdn.sonic.ooo/icons/qbizb-wiaaa-aaaaq-aabwq-cai'} /> */}
-
-      <chakra.footer px="4" py="2" position="fixed" bottom={0} left={0} right={0}
-        background={`linear-gradient(to bottom, transparent 0%, ${backgroundColorValue} 50%)`} pointerEvents="none"
-      >
+      <chakra.footer px="4" py="2" position="fixed" bottom={0} left={0} right={0} pointerEvents="none">
         <Text>Sonic v{packageJSON.version}</Text>
       </chakra.footer>
+      
     </>
   );
 };

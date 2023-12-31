@@ -7,7 +7,7 @@ import { AppLog } from '@/utils';
 import { getswapActor } from '@/utils'
 
 export type UserLPMetrics = {
-  [pairId: string]: AnalyticsApi.PositionMetrics;
+  [pairId: string]: AnalyticsApi.userLidityFeeMetrics;
 };
 
 
@@ -31,9 +31,8 @@ export const useUserMetrics = () => {
       setIsLoading(true);
 
       const analyticsApi = new AnalyticsApi();
-      const promises = pairIds.map((pairId) => analyticsApi.queryUserLPMetrics(principalId, pairId));
+      const promises = pairIds.map((pairId) => analyticsApi.queryUserLPMetrics2(principalId, pairId));
       const responses = await Promise.all(promises);
-
       const _userPairMetrics = responses.reduce((acc, response, index) => {
         acc[pairIds[index]] = response; return acc;
       }, {} as UserLPMetrics);

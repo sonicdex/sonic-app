@@ -47,7 +47,7 @@ export const useBalances = () => {
       [userLPBalancesState, principalId, dispatch]
     )
   );
-  const maxDecimalPlaces = 5;
+  //const maxDecimalPlaces = 5;
   const getBalances = useKeepSync('getBalances', useCallback(async (isRefreshing?: boolean) => {
     try {
       if (balancesState === FeatureState.Loading) return;
@@ -59,15 +59,14 @@ export const useBalances = () => {
       const tokenBalances = sonicBalances ? await Promise.all(
         sonicBalances.map(async (balance: any, index: number) => {
           const tokenCanisterId = balance[0];
-          
-          var tokenFeeLen = tokenInfo[tokenCanisterId]?.fee.toString().length;
           var tokenDecimals = tokenInfo[tokenCanisterId]?.decimals;
 
-          sonicBalances[index][1] = roundBigInt(sonicBalances[index][1], tokenDecimals, tokenFeeLen > maxDecimalPlaces ? tokenFeeLen : maxDecimalPlaces);
+          sonicBalances[index][1] = roundBigInt(sonicBalances[index][1], tokenDecimals, tokenDecimals);
           try {
             var tokenBalance = BigInt(0);
             tokenBalance = await getTokenBalance(tokenCanisterId, principalId);
-            const result: [string, bigint] = [balance[0], roundBigInt(tokenBalance, tokenDecimals, tokenFeeLen > maxDecimalPlaces ? tokenFeeLen : maxDecimalPlaces)];
+           /// console.log(tokenBalance , tokenInfo[tokenCanisterId]);
+            const result: [string, bigint] = [balance[0], roundBigInt(tokenBalance, tokenDecimals, tokenDecimals)];
             return result;
           } catch (error) {
            // AppLog.error(`Token balance fetch error: token="${tokenCanisterId}"`, error);
@@ -76,6 +75,7 @@ export const useBalances = () => {
           }
         })
       ) : undefined;
+
       const icpBalance = await fetchICPBalance(principalId);
       dispatch(swapCanisterActions.setICPBalance(parseAmount(icpBalance, ICP_METADATA.decimals)));
       dispatch(swapCanisterActions.setSonicBalances(sonicBalances));
