@@ -12,7 +12,6 @@ export const BottomWarning: React.FC = () => {
     const [tandcagreedStat, setTandcagreedStat] = useState(localStorage.getItem('tandcagreedv2'));
 
     window.addEventListener('tandcagreedv2', (e) => {
-        console.log('tandcagreedv2')
         setTandcagreedStat(localStorage.getItem('tandcagreedv2'))
     });
 
