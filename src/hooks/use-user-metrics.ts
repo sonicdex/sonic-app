@@ -4,9 +4,6 @@ import { AnalyticsApi } from '@/apis';
 import { useWalletStore, useSwapCanisterStore } from '@/store';
 import { AppLog } from '@/utils';
 
-// import { Principal } from '@dfinity/principal';
-// import { getswapActor } from '@/utils'
-
 export type UserLPMetrics = {
   [pairId: string]: AnalyticsApi.userLidityFeeMetrics;
 };
@@ -50,20 +47,3 @@ export const useUserMetrics = () => {
 
   return { isLoading, userPairMetrics: userLPMetrics, getUserMetrics: getUserLPMetrics };
 };
-
-// export const getuserLprewards = (token0: string, token1: string) => {
-//   const { principalId } = useWalletStore();
-//   const [data, setData] = useState({ token0: BigInt(0), token1: BigInt(0) });
-
-//   const getUserRwds = async () => {
-//     const swapActor = await getswapActor(true);
-//     if (!principalId) { return; }
-//     const response: any = await swapActor.getUserReward(Principal.fromText(principalId), token0, token1);
-//     setData({ token0: response?.ok[0], token1: response?.ok[1] })
-//     return data;
-//   }
-//   useEffect(() => { getUserRwds(); }, [principalId]);
-
-//   return data
-
-// }
