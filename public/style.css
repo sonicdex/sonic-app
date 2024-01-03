@@ -1,26 +1,59 @@
-.widget__wrapper{
+.widget__wrapper {
     display: inline;
 }
-.widget__box .widget__title{
+
+.widget__box .widget__title {
     background: #1c1f43;
     box-shadow: #1c1f43 0 5px 20px;
-    border:1px solid var(--chakra-colors-whiteAlpha-300);
+    border: 1px solid var(--chakra-colors-whiteAlpha-300);
+    margin-top: 0px !important;
 }
-.widget__title__group__title{
+
+.widget__title__group__title {
     color: #fff;
 }
-.widget__title__group__description{
+
+.widget__title__group__description {
     color: var(--chakra-colors-whiteAlpha-300);
 }
-.chat-header{
+
+.chat-header {
     background: #1c1f43;
 }
-.widget__title svg path{
+
+.widget__title svg path {
     fill: #fff;
 }
-.widget__title{
+
+.widget__title {
     height: 50px !important;
 }
-.widget__title__group__image{
+
+.widget__title__group__image {
     max-width: 30px !important;
 }
+
+.widget__box {
+    min-height: 50px !important;
+}
+
+@media only screen and (min-width: 300px) and (max-width: 699px) {
+    .widget__box {
+        min-height: 1px !important;
+    }
+}
+
+#sonic-app-root{
+    position: relative;
+    z-index: 1;
+}
+
+#canvas {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+  }
+  

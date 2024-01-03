@@ -1,5 +1,5 @@
 import {
-  Box, Button, Divider, Flex, Popover, PopoverArrow, PopoverBody, PopoverContent, PopoverTrigger, Text, useColorModeValue,
+  Box, Button, Divider, Flex, Popover, PopoverArrow, PopoverBody, PopoverContent, PopoverTrigger, Text, useColorModeValue, Spinner
 } from '@chakra-ui/react';
 import { Liquidity, Pair } from '@sonicdex/sonic-js';
 import { FaInfoCircle } from '@react-icons/all-files/fa/FaInfoCircle';
@@ -7,7 +7,7 @@ import { useMemo } from 'react';
 
 import { DisplayValue, TokenImageBlock } from '@/components';
 import { LPBreakdownPopover } from '@/components/core/lp-breakdown-popover';
-import { UserLPMetrics } from '@/hooks'; //getuserLprewards
+import { UserLPMetrics } from '@/hooks';
 import { AppTokenMetadata } from '@/models';
 
 export interface PairedUserLPTokenProps {
@@ -47,7 +47,6 @@ export const PairedUserLPToken: React.FC<PairedUserLPTokenProps> = ({
 
   const userLPValue = useMemo(() => {
     const pair = allPairs?.[token0?.id]?.[token1?.id];
-    // console.log(token0.price,token1.name ,  token1.price)
     if (pair && token0.price && token1.price && totalShares && userShares) {
       return Liquidity.getUserPositionValue({
         price0: token0.price, price1: token1.price,
@@ -59,9 +58,7 @@ export const PairedUserLPToken: React.FC<PairedUserLPTokenProps> = ({
     return '0';
   }, [allPairs, token0, token1, totalShares, userShares]);
 
-  //getuserLprewards
-  // const rewardData = getuserLprewards(token0.id, token1.id);
-  if(token0 && token1){
+  if (token0 && token1) {
     return (
       <Flex direction="column" borderRadius="xl" bg={bg} shadow={shadow}>
         <Flex
@@ -95,9 +92,9 @@ export const PairedUserLPToken: React.FC<PairedUserLPTokenProps> = ({
             Remove
           </Button>
         </Flex>
-  
+
         <Divider />
-  
+
         <Flex direction="row" px={6} py={4}>
           <Box flex={1}>
             <Text color={headerColor}>LP Tokens</Text>
@@ -126,7 +123,7 @@ export const PairedUserLPToken: React.FC<PairedUserLPTokenProps> = ({
               />
             </LPBreakdownPopover>
           </Box>
-  
+
           <Box flex={1}>
             <Text color={headerColor}>USD Value</Text>
             <DisplayValue
@@ -138,7 +135,7 @@ export const PairedUserLPToken: React.FC<PairedUserLPTokenProps> = ({
               width="fit-content"
             />
           </Box>
-  
+
           <Box
             flex={1}
             backgroundColor="#8888882f"
@@ -148,7 +145,7 @@ export const PairedUserLPToken: React.FC<PairedUserLPTokenProps> = ({
             py={1}
             borderRadius="xl"
           >
-  
+
             <Popover trigger="hover">
               <PopoverTrigger>
                 <Flex>
@@ -156,46 +153,93 @@ export const PairedUserLPToken: React.FC<PairedUserLPTokenProps> = ({
                   <Flex marginTop={1}><FaInfoCircle /></Flex>
                 </Flex>
               </PopoverTrigger>
-  
+
               <PopoverContent color={useColorModeValue('black', 'white')}>
                 <PopoverArrow />
                 <PopoverBody>
-                  It is the representation of the fees earned from swaps in consecutive tokens. Please note that the accrued fees will be automatically added to your LP pool.
+                  The earned fee values for your LP (Liquidity Pool) will reset to zero upon a full or partial withdrawal of LP.
                 </PopoverBody>
               </PopoverContent>
             </Popover>
-            {/* {!rewardData && ( */}
-            <DisplayValue
-              color={successColor}
-              isUpdating={isMetricsLoading}
-              prefix="$"
-              value={pairMetrics?.fees ?? 0}
-              fontWeight="bold"
-              decimals={8}
-              width="fit-content"
-            />
-            {/* )} */}
-            {/* {rewardData && (
-              <>
+            <>
+            
+              {
+              isMetricsLoading? (<Spinner width={3} height={3} mx={3} />):
+              pairMetrics?.token0 === token0.id ? (
+                <>
+                  <Flex>
+                    <DisplayValue color={successColor} value={Number(pairMetrics?.token0Fee) / 10 ** token0.decimals} fontWeight="bold" width="fit-content" />
+                    &nbsp; <Text>{token0.symbol}</Text>
+                  </Flex>
+                  <Flex>
+                    <DisplayValue color={successColor} value={Number(pairMetrics?.token1Fee) / 10 ** token1.decimals} fontWeight="bold" width="fit-content" />
+                    &nbsp; <Text>{token1.symbol}</Text>
+                  </Flex>
+                </>
+
+              ) : pairMetrics?.token0 === token1.id ? (
+                <>
+                  <Flex>
+                    <DisplayValue color={successColor} value={Number(pairMetrics?.token0Fee) / 10 ** token1.decimals} fontWeight="bold" width="fit-content" />
+                    &nbsp; <Text>{token1.symbol}</Text>
+                  </Flex>
+                  <Flex>
+                    <DisplayValue color={successColor} value={Number(pairMetrics?.token1Fee) / 10 ** token0.decimals} fontWeight="bold" width="fit-content" />
+                    &nbsp; <Text>{token0.symbol}</Text>
+                  </Flex>
+                </>
+              ) : (
+                <>
+                  <Flex>
+                    <DisplayValue color={successColor} value={0} fontWeight="bold" width="fit-content" />
+                    &nbsp; <Text>{token0.symbol}</Text>
+                  </Flex>
+                  <Flex>
+                    <DisplayValue color={successColor} value={0} fontWeight="bold" width="fit-content" />
+                    &nbsp; <Text>{token1.symbol}</Text>
+                  </Flex>
+                </>
+              )}
+
+
+              {/* {pairMetrics?.token0 === token0.id && (
                 <Flex>
                   <Flex>
-                    <DisplayValue color={successColor} value={Number(rewardData.token0) / 10 ** token0.decimals} fontWeight="bold" width="fit-content" />
+                    <DisplayValue color={successColor} value={Number(pairMetrics?.token0Fee) / 10 ** token0.decimals} fontWeight="bold" width="fit-content" />
                     &nbsp; <Text>{token0.symbol}</Text>
                   </Flex>
                 </Flex>
-                <Flex marginTop={2}>
+              )}
+              {pairMetrics?.token0 === token1.id && (
+                <Flex>
                   <Flex>
-                    <DisplayValue color={successColor} value={Number(rewardData.token1) / 10 ** token1.decimals} fontWeight="bold" width="fit-content" />
-                    &nbsp; <Text >{token1.symbol}</Text>
+                    <DisplayValue color={successColor} value={Number(pairMetrics?.token0Fee) / 10 ** token1.decimals} fontWeight="bold" width="fit-content" />
+                    &nbsp; <Text>{token1.symbol}</Text>
                   </Flex>
                 </Flex>
-              </>
-            )} */}
+              )}
+              {pairMetrics?.token1 === token0.id && (
+                <Flex marginTop={2}>
+                  <Flex>
+                    <DisplayValue color={successColor} value={Number(pairMetrics?.token1Fee) / 10 ** token0.decimals} fontWeight="bold" width="fit-content" />
+                    &nbsp; <Text>{token0.symbol}</Text>
+                  </Flex>
+                </Flex>
+              )}
+              {pairMetrics?.token1 === token1.id && (
+                <Flex marginTop={2}>
+                  <Flex>
+                    <DisplayValue color={successColor} value={Number(pairMetrics?.token1Fee) / 10 ** token1.decimals} fontWeight="bold" width="fit-content" />
+                    &nbsp; <Text>{token1.symbol}</Text>
+                  </Flex>
+                </Flex>
+              )} */}
+            </>
           </Box>
         </Flex>
       </Flex>
     );
-  }else{
-    return(<></>)
+  } else {
+    return (<></>)
   }
 };

@@ -8,8 +8,8 @@ export const LogoBox = () => {
 
   return (
     <Link href={'/'} style={{ textDecoration: "none" , boxShadow:'none'}}>
-      <Stack direction="row" align="center" bg={stackBg} shadow={shadow} px={4} h="12" borderRadius="full" userSelect="none">
-        <Image src='/logo.svg'></Image>
+      <Stack direction="row" align="center" bg={stackBg} shadow={shadow} px={4} h="12" borderRadius="full" userSelect="none" position={'relative'}>
+        <Image src='/logo.svg' position={'relative'} zIndex={1}></Image>
     </Stack>
     </Link>
   );

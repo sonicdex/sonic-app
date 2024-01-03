@@ -19,7 +19,7 @@ export class AnalyticsApi {
     return (await this.axios.request({ data: data })).data.data;
   }
 
-  async queryUserLPMetrics( principalId: string, pairId?: string): Promise<AnalyticsApi.PositionMetrics> {
+  async queryUserLPMetrics(principalId: string, pairId?: string): Promise<AnalyticsApi.PositionMetrics> {
     const response = await this.request<AnalyticsApi.UserLPMetricsQuery>({
       operationName: null,
       query: `
@@ -36,7 +36,38 @@ export class AnalyticsApi {
     });
     return response?.user?.positionMetrics;
   }
+
+
+  async queryUserLPMetrics2(principalId: string): Promise<AnalyticsApi.userLidityFeeMetrics> {
+    const response = await this.request<AnalyticsApi.userLidityFeeMetricsQuery>({
+      operationName: null,
+      query: `
+            query {
+              user(id: "${principalId}") {
+                userLiquidityFeeMetrics{
+                  feeDetails {
+                    poolId
+                    token0Fee
+                    token1Fee
+                  }
+                }
+              }
+            }
+            `,
+      variables: {},
+    });
+
+    //var tokens: any = pairId?.split(':')
+
+    var data: any = response?.user?.userLiquidityFeeMetrics.feeDetails;
+  //  data.token0 = tokens[0];
+    //data.token1 = tokens[1];
+    return data; //response?.user?.userLidityFeeMetrics;
+  }
+
 }
+
+
 
 export namespace AnalyticsApi {
   export interface GraphqlQuery {
@@ -50,9 +81,29 @@ export namespace AnalyticsApi {
     fees: string;
   }
 
+
+  export interface userLidityFeeMetrics {
+    token0Fee: number
+    token1Fee: number,
+    token0?: string,
+    token1?: string
+    token0TotalFee?: number,
+    token1TotalFee?: number
+  }
+
   export interface UserLPMetricsQuery {
     user: {
       positionMetrics: PositionMetrics;
     };
   }
+
+  export interface userLidityFeeMetricsQuery {
+    user: {
+      userLiquidityFeeMetrics:{
+        feeDetails:userLidityFeeMetrics
+      } ;
+    };
+  }
+
+
 }

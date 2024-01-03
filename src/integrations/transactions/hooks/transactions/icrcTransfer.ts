@@ -10,6 +10,9 @@ import { CreateTransaction, Deposit } from '../../models';
 
 import { TokenIDL, SwapIDL, } from '@/did';
 
+import { getNatLabsToken } from '@/utils';
+
+
 export const intitICRCTokenDepositIn = (deposit?: any): any => {
     const [tokenAcnt, setData] = useState<undefined | boolean>();
     useMemo(() => {
@@ -78,9 +81,12 @@ export const useICRCTransferMemo: CreateTransaction<Deposit> = (
         var parsedAmount = amount ? parseAmount(amount, token?.decimals ? token?.decimals : 0) : BigInt(0);
         parsedAmount += token?.fee ? token?.fee : BigInt(0);
         var subacc: any = tokenAcnt.length ? tokenAcnt : [];
-
         var IDL = TokenIDL.ICRC1.factory;
+        var natLabsToken = getNatLabsToken();
+
         if (token?.symbol == 'SNEED') { IDL = TokenIDL.SNEED; }
+        if ( natLabsToken.includes(token?.id)) {  parsedAmount += token?.fee }
+    
         return {
             canisterId: canId,
             idl: IDL,
