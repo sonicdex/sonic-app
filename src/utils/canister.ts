@@ -20,12 +20,12 @@ export const desensitizationPrincipalId = (principalId?: string, firstLength = 5
 
 export const parseResponseSupportedTokenList = (response: SwapIDL.TokenInfoWithType[], price?: string): AppTokenMetadata[] => {
   var a1: any = [], a2: any = [];
+
   response.forEach((token) => {
     const logo = "https://cdn.sonic.ooo/icons/" + token.id || questionMarkSrc; // getFromStorage(`${token.id}-logo`) || questionMarkSrc;
     var tempTkn = { ...token, ...(price ? { price } : {}), logo }
 
-    if( ENV.blockedTokens.includes(token.id)){ tempTkn.blockStatus = 'Partial';}
-    var order = prorityOrder.findIndex(x => x == token.symbol);
+    var order = prorityOrder.findIndex(x => x == token.id);
     if (tempTkn?.blockStatus != 'Full') {
       if (order != -1) { a1[order] = tempTkn }
       else { a2.push(tempTkn) }

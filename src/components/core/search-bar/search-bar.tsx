@@ -11,7 +11,6 @@ type SearchBarProps = {
 export const SearchBar = ({ search, setSearch }: SearchBarProps) => {
   const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
     const inputValue = event.target.value;
-
     setSearch(inputValue);
   };
 
