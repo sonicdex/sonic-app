@@ -40,23 +40,13 @@ export const Header: React.FC<HeaderProps> = ({
       backgroundColor={backgroundColor} transition="background-color 200ms" zIndex={1} flexDirection="column"
     >
       {children}
-      <Flex
-        direction="row"
-        justifyContent="space-between"
-        alignItems="center"
-        pb={paddingToLine}
-        mt={marginTop}
-      >
+      <Flex direction="row" justifyContent="space-between" alignItems="center" pb={paddingToLine} mt={marginTop}>
         <Box as="h3" fontWeight={700} color={color}>
           {title}
           {isUpdating && <Spinner width={3} height={3} mx={3} />}
         </Box>
         {buttonText && onButtonClick && (
-          <Button
-            variant="gradient"
-            colorScheme="dark-blue"
-            onClick={onButtonClick}
-          >
+          <Button variant="gradient" colorScheme="dark-blue" onClick={onButtonClick}>
             {buttonText}
           </Button>
         )}
