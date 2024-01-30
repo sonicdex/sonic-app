@@ -84,8 +84,14 @@ export const SwapNotificationContent: React.FC<SwapNotificationContentProps> = (
     handleOpenModal();
     if (typeof allowance === 'undefined' || !batch?.state) return;
     if (batchExecutalbe?.execute) {
+
+      console.log('swap transactoon' );
+
       batchExecutalbe.execute().then((data: any) => {
         if (data) {
+
+          console.log(batchExecutalbe?.transactionResults);
+
           dispatch(modalsSliceActions.clearSwapModalData());
           dispatch(modalsSliceActions.closeSwapProgressModal());
           addNotification({

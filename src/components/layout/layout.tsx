@@ -165,8 +165,8 @@ export const Layout: React.FC = ({ children, ...props }) => {
         {children}
       </Container>
       <BottomWarning/>
-      
-       {/* <Widget wizardId="ebdc5e48-cb2b-418b-8a5e-c06dd23f3d30" title="Support Chat" description="Hi there! 🚀 I'm Sonic Helper"
+{/*       
+       <Widget wizardId="f1277a4b-0178-4b9e-abf7-b510e3db3085" title="Support Chat" description="Hi there! I'm Sonic Helper"
         chatBg={"#1c1f43"} logo={'https://cdn.sonic.ooo/icons/qbizb-wiaaa-aaaaq-aabwq-cai'} /> */}
 
       <chakra.footer px="4" py="2" position="fixed" bottom={0} left={0} right={0} pointerEvents="none">
