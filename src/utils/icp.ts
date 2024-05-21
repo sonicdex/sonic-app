@@ -16,12 +16,13 @@ import { ExternalLink } from './external-link';
 import { roundBigInt } from '@/utils/format';
 export const ACCOUNT_DOMAIN_SEPERATOR = '\x0Aaccount-id';
 
+
+
 export const fetchICPBalance = async (principalId: string) => {
   const ledgerActor = await artemis.getCanisterActor( ENV.canistersPrincipalIDs.ledger, LedgerIDL.factory,true);
-
   const accountId = getAccountId(Principal.fromText(principalId || ''), 0);
   if (accountId) {
-    const balance = ( await ledgerActor.account_balance_dfx({ account: accountId })).e8s;
+    const balance = ( await ledgerActor.icrc1_balance_of({ owner: Principal.fromText(principalId), subaccount: [] }));
     var temp =  roundBigInt(balance, 8, 5);
     const icpBalanceNoDecimals = new BigNumber(temp.toString()).div(new BigNumber('100000000')).toString();
     return icpBalanceNoDecimals;
