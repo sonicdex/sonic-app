@@ -100,7 +100,7 @@ export const useSwapExactTokensTransactionMemo: CreateTransaction<SwapModel> = (
     return {
       canisterId: ENV.canistersPrincipalIDs.swap,
       idl: SwapIDL.factory,
-      methodName: 'swapExactTokensForTokens',
+      methodName: 'swapExactTokensForTokens', //  swapExactTokensForTokens
       onFail,
       onSuccess: async (res: SwapIDL.Result) => {
         if ('err' in res) throw new Error(res.err);

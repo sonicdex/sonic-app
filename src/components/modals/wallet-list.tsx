@@ -2,7 +2,7 @@ import {
     Flex, Heading, Modal, ModalCloseButton, ModalContent, ModalOverlay, useColorModeValue, ModalHeader, ModalBody,
     Stack, Image, Box, Text, Spinner
 } from '@chakra-ui/react';
-import React from 'react';
+import React ,{ useState}from 'react';
 
 import { useWalletStore, walletState, useAppDispatch, walletActions } from '@/store';
 
@@ -13,12 +13,17 @@ import { ENV } from '@/config';
 
 export const WalletListModal: React.FC = () => {
     const { state , walletSelected} = useWalletStore();
+
+    const [walletSelectedName, setWSName]= useState('');
+
     const dispatch = useAppDispatch();
 
     function handleClose() {
         dispatch(walletActions.setOnwalletList(walletState.Idle));
     }
-    async function handleSelectWallet(id: string) {
+    async function handleSelectWallet(id: string, name?:string) {
+
+
         var tknList= tokenList("obj");
         const connectObj = {
             host: ENV.host,
@@ -26,9 +31,13 @@ export const WalletListModal: React.FC = () => {
         }
         
         dispatch(walletActions.setWalletSelected(id));
+        walletSelected;
+        setWSName( name?name:id);
+
         dispatch(walletActions.setOnwalletList(walletState.Connecting));
         
         var connectInfo = await artemis.connect(id,connectObj);
+    
         if(connectInfo){
             if(artemis?.principalId && artemis?.provider){
                 dispatch(walletActions.setWalletLoaded({ principleId: artemis.principalId ,accountId: artemis.accountId ,walletActive:artemis.walletActive }) );
@@ -36,14 +45,12 @@ export const WalletListModal: React.FC = () => {
         }else{
             dispatch(walletActions.setOnwalletList(walletState.OpenWalletList));
         }
-    }
+    };
+
     const bg = useColorModeValue('gray.50', 'custom.2');
     const titleColor = useColorModeValue('gray.800', 'gray.50');
 
     
-
-
-
     return (
         <Modal isOpen={(state == walletState.OpenWalletList || state == walletState.Connecting) ? true : false} isCentered onClose={handleClose}>
             <ModalOverlay />
@@ -62,7 +69,7 @@ export const WalletListModal: React.FC = () => {
                             {artemis?.wallets.map((item: any, i:number) => (
                                 <Stack width="100%" maxWidth="100%" direction={['row', 'row']} key={i}
                                     alignItems="center" mt={2} cursor="pointer" mb={2} pt={1} pb={1} pl={2} pr={20} border="1px solid rgb(63, 81, 181)" borderRadius="60px"
-                                    onClick={() => handleSelectWallet(item?.id)}
+                                    onClick={() => handleSelectWallet(item?.id, item?.name)}
                                 >
                                     <Box mr={4}>
                                         <Image borderRadius='full' boxSize='32px' src={item?.icon} alt='' bg={'gray.800'} />
@@ -80,7 +87,7 @@ export const WalletListModal: React.FC = () => {
                     <>
                         <ModalHeader>
                             <Heading textAlign={'left'} as="h2" color={titleColor} fontWeight={700} fontSize="1.2rem" mb={4} textTransform={'capitalize'}>
-                                Connecting {walletSelected} Wallet
+                                Connecting {walletSelectedName}
                             </Heading>
                         </ModalHeader>
                         <ModalBody mt={4} p={4}>

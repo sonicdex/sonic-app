@@ -316,6 +316,13 @@ export namespace SwapIDL {
         arg_3: Principal,
         arg_4: bigint,
       ) => Promise<TxReceipt>,
+      'swapExactTokensForTokensAmountOut' : (
+        arg_0: bigint,
+        arg_1: bigint,
+        arg_2: Array<string>,
+        arg_3: Principal,
+        arg_4: bigint,
+      ) => Promise<TxReceipt>,
     'symbol' : (arg_0: string) => Promise<string>,
     'totalSupply' : (arg_0: string) => Promise<bigint>,
     'transferFrom' : (
@@ -757,6 +764,11 @@ export namespace SwapIDL {
       'setMaxTokens' : IDL.Func([IDL.Nat], [IDL.Bool], []),
       'setOwner' : IDL.Func([IDL.Principal], [IDL.Bool], []),
       'swapExactTokensForTokens' : IDL.Func(
+          [IDL.Nat, IDL.Nat, IDL.Vec(IDL.Text), IDL.Principal, IDL.Int],
+          [TxReceipt],
+          [],
+        ),
+        'swapExactTokensForTokensAmountOut' : IDL.Func(
           [IDL.Nat, IDL.Nat, IDL.Vec(IDL.Text), IDL.Principal, IDL.Int],
           [TxReceipt],
           [],
