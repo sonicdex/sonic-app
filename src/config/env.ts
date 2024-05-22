@@ -39,6 +39,7 @@ export const ENV = {
   BLOCKED_PAIRS: process.env.BLOCKED_PAIRS,
   blockedTokens: process.env.HIDDEN_TOKENS? process.env.HIDDEN_TOKENS.split(","):[],
   maintenanceMode: process.env.MAINTENANCE_MODE === 'true',
-  prorityOrder: ['ryjl3-tyaaa-aaaaa-aaaba-cai', 'utozz-siaaa-aaaam-qaaxq-cai', 'aanaa-xaaaa-aaaah-aaeiq-cai', 'qbizb-wiaaa-aaaaq-aabwq-cai','zfcdd-tqaaa-aaaaq-aaaga-cai', 'mxzaz-hqaaa-aaaar-qaada-cai',  '2ouva-viaaa-aaaaq-aaamq-cai']
+  prorityOrder: ['ryjl3-tyaaa-aaaaa-aaaba-cai', 'utozz-siaaa-aaaam-qaaxq-cai', 'aanaa-xaaaa-aaaah-aaeiq-cai', 'qbizb-wiaaa-aaaaq-aabwq-cai','zfcdd-tqaaa-aaaaq-aaaga-cai',
+   'mxzaz-hqaaa-aaaar-qaada-cai', "xevnm-gaaaa-aaaar-qafnq-cai" , 'ss2fx-dyaaa-aaaar-qacoq-cai', '2ouva-viaaa-aaaaq-aaamq-cai' , ]
 };
 
