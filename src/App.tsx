@@ -19,19 +19,18 @@ import { useBlockHeightsInit } from './hooks/use-block-heights-init';
 import { useWalletInit } from '@/integrations/artemis'
 
 import { useCyclesMintingCanisterInit, useLiquidityViewInit, usePriceInit, useSwapCanisterInit } from './store';
-import { loadsupportedTokenList } from '@/utils'
-
+import { loadsupportedTokenList } from '@/utils';
 
 export const App = () => {
   useCyclesMintingCanisterInit();
-  useWalletInit();
   usePriceInit();
   useSwapCanisterInit();
   useLiquidityViewInit();
   useBlockHeightsInit();
   useNetworkErrorNotifications();
   loadsupportedTokenList();
- 
+  useWalletInit();
+
   return (
     <BrowserRouter basename="/">
       <Layout>
