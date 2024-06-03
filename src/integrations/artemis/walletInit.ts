@@ -4,7 +4,7 @@ import {Artemis} from 'artemis-web3-adapter';
 
 import { tokenList } from '@/utils'
 import { ENV } from '@/config';
-
+// @ts-ignore:next-line
 export const artemis = new Artemis({host: ENV.host , whitelist:[]});
 
 export const useWalletInit = (): void => {
