@@ -110,13 +110,13 @@ export const TokenContent: React.FC<TokenContentProps> = (props) => {
 
 // === Details ===
 
-type TokenDetailsButtonProps = ButtonProps;
+type TokenDetailsButtonProps = ButtonProps 
 
 export const TokenDetailsButton = forwardRef<TokenDetailsButtonProps, 'button'>(
   ({ children, ...props }, ref) => {
     const { isLoading } = useTokenContext();
     return (
-      <Button ref={ref} borderRadius="full" mr={5} minWidth="fit-content" {...props} isDisabled={isLoading || props.isDisabled}>
+      <Button ref={ref} borderRadius="full" mr={5} minWidth="fit-content" {...props} colorScheme='green'  isDisabled={isLoading || props.isDisabled}>
         {children}
         <Icon as={FaChevronDown} ml={2.5} width={3} />
       </Button>
@@ -340,7 +340,7 @@ export const TokenInput: React.FC<TokenInputProps> = (props) => {
   return (
     <Skeleton isLoaded={!isLoading} borderRadius="full">
       <NumberInput isDisabled={isDisabled} value={value} setValue={handleChange} color={color}
-        background={background} {...props}
+        data-legacy-background={background} {...props}
       />
     </Skeleton>
   );

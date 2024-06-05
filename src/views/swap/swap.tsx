@@ -44,11 +44,12 @@ export const SwapView = () => {
   const retryFailedTrx = () => { var r = Math.random() * 100; setIsFailedTrxOpen(r); };
 
   return (
-    <Stack spacing={4} mb={9}>
+    <Stack spacing={4} mb={9} >
       <RetryFailedTrxModal isRetryOpen={isFailedTrxOpen} />
       <SwapSubTab tabname={'swap'} />
       <ViewHeader title={headerTitle}
         onArrowBack={step === SwapStep.Review ? () => setStep(SwapStep.Home) : undefined}
+       
       >
         <Menu onClose={onMenuClose}>
           <Tooltip label="Adjust the slippage">
@@ -63,7 +64,7 @@ export const SwapView = () => {
       </ViewHeader>
 
 
-      <Flex direction="column" alignItems="center">
+      <Flex direction="column" alignItems="center" >
         <Box width="full">
           <Token value={from.value} setValue={(value) => onChangeValue(value, 'from')}
             tokenListMetadata={fromTokenOptions} tokenMetadata={from.metadata}
