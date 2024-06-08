@@ -63,8 +63,8 @@ export const Token: React.FC<TokenProps> = ({
   children,
   ...tokenProps
 }) => {
-  const borderGlow = useColorModeValue('dark-blue.300', 'dark-blue.500');
-  const borderNotGlow = useColorModeValue('gray.100', 'custom.4');
+  const borderGlow = useColorModeValue('green', 'green');
+  const borderNotGlow = useColorModeValue('custom.6', 'custom.6');
   const borderColor = shouldGlow ? borderGlow : borderNotGlow;
 
   const backgroundGlow = useColorModeValue('gray.50', 'black');
@@ -350,6 +350,6 @@ export const TokenInput: React.FC<TokenInputProps> = (props) => {
 
 const TokenGlow = () => (
   <Box position="absolute" borderRadius={20} top={0} left={0} width="100%"
-    height="100%" filter="blur(6px)" zIndex={-100} bg="dark-blue.500"
+    height="100%" filter="blur(6px)" zIndex={-100} bg="#3c6149"
   />
 );
