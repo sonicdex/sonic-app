@@ -29,7 +29,7 @@ export const Header: React.FC<HeaderProps> = ({
   const marginTop = buttonText && onButtonClick ? '-8px' : '0px';
 
   const color = useColorModeValue('gray.800', 'gray.50');
-  const backgroundColor = useColorModeValue('app.background.body.light', 'app.background.body.dark');
+  // const backgroundColor = useColorModeValue('app.background.body.light', 'app.background.body.dark');
 
   useHeaderResizeEffect((element) => {
     setTop(`${element.clientHeight - 1}px`);
@@ -37,7 +37,8 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <Flex position="sticky" top={top} pt={5} mt={1} mb={5}
-      backgroundColor={backgroundColor} transition="background-color 200ms" zIndex={1} flexDirection="column"
+      // backgroundColor={backgroundColor}
+       transition="background-color 200ms" zIndex={1} flexDirection="column"
     >
       {children}
       <Flex direction="row" justifyContent="space-between" alignItems="center" pb={paddingToLine} mt={marginTop}>

@@ -212,10 +212,10 @@ export const AssetsListView = () => {
                       />
                     </Flex>
                     <HStack>
-                      <AssetIconButton aria-label={`Withdraw ${symbol} From Sonic`} icon={<FaMinus />}
+                      <AssetIconButton colorScheme="green" aria-label={`Withdraw ${symbol} From Sonic`} icon={<FaMinus />}
                         onClick={() => navigateToWithdraw(id)} isDisabled={!getCanWithdraw(id)}
                       />
-                      <AssetIconButton colorScheme="dark-blue" aria-label={`Deposit ${symbol} to Sonic`} icon={<FaPlus />}
+                      <AssetIconButton colorScheme="green" aria-label={`Deposit ${symbol} to Sonic`} icon={<FaPlus />}
                         onClick={() => navigateToDeposit(id)} isDisabled={!getCanDeposit(id)}
                       />
                     </HStack>

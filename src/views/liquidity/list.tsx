@@ -151,7 +151,6 @@ export const LiquidityListView = () => {
         isUpdating={isUpdating}
 
       >
-
         {isBannerOpened && (
           <InformationBox
             onClose={handleInformationClose}

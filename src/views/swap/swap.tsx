@@ -156,7 +156,7 @@ export const SwapView = () => {
               data-bg={swapPlacementButtonBg} onClick={onSwitchTokens}
               colorScheme="green"
               pointerEvents={!to.metadata ? 'none' : 'all'}
-              style={{background : '#38a169'}}
+              bg={menuListBg}
               _hover={{
                 '& > svg': {
                   transform: 'rotate(180deg)',
@@ -177,7 +177,7 @@ export const SwapView = () => {
 
 
       {isConnected ? (
-        <Button isFullWidth variant="gradient" colorScheme="dark-blue" size="lg" onClick={onButtonClick}
+        <Button isFullWidth variant="gradient" colorScheme="green" size="lg" onClick={onButtonClick}
           isLoading={
             isLoading ||
             (step === SwapStep.Review && typeof allowance !== 'number')
@@ -193,7 +193,7 @@ export const SwapView = () => {
         <Flex alignItems={'self-end'} w="100%" flexDirection="column">
           <Flex>
             <Text mr={1} mt={1} color={'custom.1'}>Lost funds after swap? </Text>
-            <Button size="sm" borderRadius={8} colorScheme="dark-blue" isLoading={isLoading} onClick={retryFailedTrx}>
+            <Button size="sm" borderRadius={8} colorScheme="green" isLoading={isLoading} onClick={retryFailedTrx}>
               Claim Here
             </Button>
           </Flex>

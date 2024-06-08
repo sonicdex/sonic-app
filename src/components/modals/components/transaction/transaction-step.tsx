@@ -44,6 +44,7 @@ export const TransactionStep = ({
         direction="row"
         alignItems="center"
         justifyContent="center"
+       
       >
         <Flex direction="column" alignItems="center">
           <CircleIcon iconSrc={iconSrc} status={status} />
@@ -57,6 +58,7 @@ export const TransactionStep = ({
             transition="color 400ms"
             flex={1}
             justifyContent="center"
+           
             alignItems="center"
           >
             {children}
@@ -71,6 +73,7 @@ export const TransactionStep = ({
             mx={2}
             opacity={opacity}
             transition="opacity 400ms"
+           
           />
         </Box>
       )}
