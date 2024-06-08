@@ -4,19 +4,14 @@ export const useHeaderResizeEffect = (
   callback: (element: HTMLElement) => void
 ) => {
   useEffect(() => {
-    
-    const target = document.getElementById('header');
     const resizeObserver = new ResizeObserver(() => {
-      // const header = document.getElementById('header');
-      if (target) {
-        
-        document.documentElement.style?.setProperty('--header-height',`${target.clientHeight as any }`)
-       
+      const header = document.getElementById('header');
+      if (header) {
+        callback(header);
       }
     });
-    
+    const target = document.getElementById('header');
     if (target) {
-      document.documentElement.style?.setProperty('--header-height',`${target.clientHeight as any }`)
       resizeObserver.observe(target);
     }
     return () => {

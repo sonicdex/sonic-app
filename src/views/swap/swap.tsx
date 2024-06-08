@@ -35,7 +35,7 @@ export const SwapView = () => {
 
   const swapPlacementButtonBg = useColorModeValue('gray.50', 'custom.3');
   const menuListShadow = useColorModeValue('lg', 'none');
-  const menuListBg = useColorModeValue('gray.50', 'custom.3');
+  const menuListBg = useColorModeValue('gray.50', 'custom.2');
   const linkColor = useColorModeValue('dark-blue.500', 'dark-blue.400');
 
   const { fromTokenOptions, toTokenOptions, from, to, slippage } = useSwapViewStore();
@@ -57,7 +57,7 @@ export const SwapView = () => {
               icon={<FaCog />} ml="auto" isDisabled={isICPSelected}
             />
           </Tooltip>
-          <MenuList bg={menuListBg} shadow={menuListShadow} borderRadius={20} ml={-20} py={0}>
+          <MenuList bg={menuListBg} shadow={menuListShadow} borderRadius={20} ml={-20} py={0} >
             <SlippageSettings slippage={slippage} isAutoSlippage={isAutoSlippage} setSlippage={onSetSlippage} setIsAutoSlippage={onSetIsAutoSlippage} />
           </MenuList>
         </Menu>
@@ -131,7 +131,7 @@ export const SwapView = () => {
                             This price & percentage shows the current difference
                             between minting and swapping to XTC from ICP. If
                             negative, it's better to swap; if positive, it's
-                            better to mint.{' '}
+                            better to mint.
                             <Link
                               color={linkColor}
                               rel="noopener noreferrer"
@@ -153,8 +153,10 @@ export const SwapView = () => {
             <IconButton aria-label="Switch placement"
               icon={<Icon as={FaArrowDown} transition="transform 250ms" />}
               variant="outline" mt={-2} mb={-2} w="fit-content" mx="auto"
-              bg={swapPlacementButtonBg} onClick={onSwitchTokens}
+              data-bg={swapPlacementButtonBg} onClick={onSwitchTokens}
+              colorScheme="green"
               pointerEvents={!to.metadata ? 'none' : 'all'}
+              style={{background : '#38a169'}}
               _hover={{
                 '& > svg': {
                   transform: 'rotate(180deg)',

@@ -89,3 +89,8 @@
     color: #000 !important;
     box-shadow: 0px 0px 34px 0px #FFFFFF66;
 }
+.chakra-ui-light .bg{
+    &:after{
+        background: transparent !important;
+    }
+}

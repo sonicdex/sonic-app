@@ -97,7 +97,7 @@ export const TokenSelectModal = () => {
           ) : (
             <Flex w="100%" direction="column" alignItems="center" position="sticky" bg={bg} top={0}>
               <Heading as="h1" fontWeight={700} fontSize="lg">
-                Select Token --- 
+                Select Token 
               </Heading>
               <Box fontSize="md" px="0.625rem" w="100%" mt={4}>
                 <SearchBar search={search} setSearch={setSearch} />

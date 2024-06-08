@@ -8,17 +8,16 @@ type options = {
 
 export const SwapSubTab: React.FC<options> = ({ tabname }) => {
     var url = location.pathname;
+    const isSwapTab = url == '/swap';
     return (
-        <Flex gap={4} direction='row' align='center' alignItems='center' style={ {justifyContent: 'center'}}>
-            <Button style={
-                { backgroundColor: (url == '/swap')?'#3F51B5' :'transparent' , border:"1" , color:'white' , borderColor:'#3F51B5' }} 
-                as={Link} colorScheme='blue'  to={'/swap'} variant='outline' px={6}>
-              Swap
+        <Flex gap={4} direction='row' align='center' alignItems='center' style={{ justifyContent: 'center' }}>
+            <Button
+                as={Link} colorScheme={isSwapTab ? 'green' : ''} to={'/swap'} variant={isSwapTab ? 'solid' : 'outline'} px={6}>
+                Swap
             </Button>
-            <Button  style={
-                { backgroundColor: (url == '/swap/mint')?'#3F51B5' :'transparent' , border:"1" , color:'white' , borderColor:'#3F51B5' }} 
-                as={Link} colorScheme='blue'  to={'/swap/mint'} variant='outline'  px={6}>
-            Mint
+            <Button
+                as={Link} colorScheme={isSwapTab ? '' : 'green'} to={'/swap/mint'} variant={isSwapTab ? 'outline' : 'solid'} px={6}>
+                Mint
             </Button>
         </Flex>
     );

@@ -91,7 +91,7 @@ export const WalletListModal: React.FC = () => {
                             </Heading>
                         </ModalHeader>
                         <ModalBody mt={4} p={4}>
-                            <Spinner thickness='4px' speed='0.65s' emptyColor='rgba(0, 0, 0, 0.5)' color='blue.500' size='xl' />
+                            <Spinner thickness='4px' speed='0.65s' emptyColor='rgba(0, 0, 0, 0.5)' color='green' size='xl' />
                         </ModalBody>
                     </>
                 }

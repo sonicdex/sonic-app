@@ -46,7 +46,7 @@ export const Header: React.FC<HeaderProps> = ({
           {isUpdating && <Spinner width={3} height={3} mx={3} />}
         </Box>
         {buttonText && onButtonClick && (
-          <Button variant="gradient" colorScheme="dark-blue" onClick={onButtonClick}>
+          <Button variant="gradient" colorScheme="green" onClick={onButtonClick}>
             {buttonText}
           </Button>
         )}
