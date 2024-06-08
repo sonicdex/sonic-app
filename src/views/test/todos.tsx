@@ -5,10 +5,8 @@ type TodosProps={
     addTodo:() => any;
 }
 const Todos2: React.FC<TodosProps>  = ( {todos, addTodo} ) => {
-    console.log("child render");
     return (
       <div>
-        ---------------------------------------
         <br/>
         <h2>My Todos</h2>
         {todos.map((todo, index) => {

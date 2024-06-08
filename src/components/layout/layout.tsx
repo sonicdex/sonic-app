@@ -59,7 +59,6 @@ export const Layout: React.FC = ({ children, ...props }) => {
   const menuShadow = useColorModeValue('base', 'none');
 
   useHeaderResizeEffect((element) =>  setHeaderHeight(`${element.clientHeight}px`));
-  console.log( headerHeight )
   const [showBanner, setShowBanner] = useState(false);
   const handleCloseBanner = () => {
     setShowBanner(false);
@@ -162,7 +161,7 @@ export const Layout: React.FC = ({ children, ...props }) => {
         </Flex>
       </Container>
 
-      <Container as="main" maxW="xl" minH={`calc(100vh - var(--header-height) - ${FOOTER_HEIGHT})`} py="4" display="flex" flexDirection="column" {...props}>
+      <Container as="main" maxW="xl" minH={`calc(100vh - ${headerHeight} - ${FOOTER_HEIGHT})`} py="4" display="flex" flexDirection="column" {...props}>
         {children}
       </Container>
       <BottomWarning/>
