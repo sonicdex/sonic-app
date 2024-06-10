@@ -89,12 +89,27 @@
     color: #000 !important;
     box-shadow: 0px 0px 34px 0px #FFFFFF66;
 }
-.chakra-ui-light .bg{
-    &:after{
-        background: transparent !important;
-    }
-}
 
 .token-search{
     background-color: transparent !important;
+}
+
+
+body::-webkit-scrollbar {
+    width: 10px;
+}
+
+.sc-t1::-webkit-scrollbar{
+    width: 10px;
+}
+.sc-t1::-webkit-scrollbar-track {
+    background-color: #3B3F44;
+
+}
+
+.sc-t1::-webkit-scrollbar-thumb {
+    border-radius: 100px;
+    border: 1px solid transparent;
+    background-clip: content-box;
+    background: linear-gradient(180deg, #38A169 0%, #276749 100%);
 }

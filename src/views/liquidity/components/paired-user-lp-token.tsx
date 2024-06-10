@@ -77,7 +77,7 @@ export const PairedUserLPToken: React.FC<PairedUserLPTokenProps> = ({
           </Text>
           <Button
             variant="outline"
-            borderColor="dark-blue.500"
+            borderColor="green.200"
             onClick={() => handleAdd(token0.id, token1.id)}
             fontWeight="normal"
             width="4.5rem"
@@ -154,9 +154,9 @@ export const PairedUserLPToken: React.FC<PairedUserLPTokenProps> = ({
                 </Flex>
               </PopoverTrigger>
 
-              <PopoverContent color={useColorModeValue('black', 'white')}>
+              <PopoverContent color={useColorModeValue('black', 'white')} bg={'custom.2'}>
                 <PopoverArrow />
-                <PopoverBody>
+                <PopoverBody >
                   The earned fee values for your LP (Liquidity Pool) will reset to zero upon a full or partial withdrawal of LP.
                 </PopoverBody>
               </PopoverContent>

@@ -105,7 +105,7 @@ export const TokenSelectModal = () => {
             </Flex>
           )}
         </ModalHeader>
-        <ModalBody>
+        <ModalBody className='sc-t1'>
           {addToken ? (
             <div>
               <ImportToken id={importTokenData?.id} symbol={importTokenData?.symbol} name={importTokenData?.name} handleImport={importToken}/>
