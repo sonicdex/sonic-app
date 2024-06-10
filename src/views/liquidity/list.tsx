@@ -151,7 +151,6 @@ export const LiquidityListView = () => {
         isUpdating={isUpdating}
 
       >
-
         {isBannerOpened && (
           <InformationBox
             onClose={handleInformationClose}
@@ -207,7 +206,7 @@ export const LiquidityListView = () => {
       <Flex alignItems={'self-end'} w="100%" flexDirection="column" pb={40} mt={10}>
         <Flex>
           <Text mr={1} mt={1} color={'custom.1'}>Lost funds during LP addition? </Text>
-          <Button size="sm" borderRadius={8} colorScheme="dark-blue" isLoading={isLoading} onClick={retryFailedTrx}>
+          <Button size="sm" borderRadius={8} colorScheme="green" isLoading={isLoading} onClick={retryFailedTrx}>
             Claim Here
           </Button>
         </Flex>

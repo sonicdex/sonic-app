@@ -31,7 +31,7 @@ export const InformationBox = ({
   };
 
   const titleColor = useColorModeValue('gray.800', 'gray.50');
-  const bg = useColorModeValue('dark-blue.100', 'rgba(57, 77, 231, 0.2)');
+  const bg = useColorModeValue('dark-blue.100', 'custom.2');
 
   return (
     <Collapse in={collapse} unmountOnExit={true}>

@@ -40,7 +40,7 @@ export const Layout: React.FC = ({ children, ...props }) => {
 
   const dispatch = useAppDispatch();
   const location = useLocation();
-  const [headerHeight, setHeaderHeight] = useState('116px');
+  const [headerHeight,setHeaderHeight] = useState('116px');
 
   const currentTabIndex = useMemo(
     () =>
@@ -58,7 +58,7 @@ export const Layout: React.FC = ({ children, ...props }) => {
   const menuBg = useColorModeValue('gray.50', 'custom.2');
   const menuShadow = useColorModeValue('base', 'none');
 
-  useHeaderResizeEffect((element) => { setHeaderHeight(`${element.clientHeight}px`); });
+  useHeaderResizeEffect((element) =>  setHeaderHeight(`${element.clientHeight}px`));
   const [showBanner, setShowBanner] = useState(false);
   const handleCloseBanner = () => {
     setShowBanner(false);
@@ -82,7 +82,7 @@ export const Layout: React.FC = ({ children, ...props }) => {
           <CloseButton size="sm" onClick={handleCloseBanner} position="absolute" right="8px" top="8px" />
         </Alert>
       )}
-      <Container as="header" maxW={['100%', 'container.xl', 'container.xl']} position="sticky" top={0} zIndex={10} id="header" bg={backgroundColorValue} >
+      <Container as="header" maxW={['100%', 'container.xl', 'container.xl']} position="sticky" top={0} zIndex={10} id="header" data-legacy-bg={backgroundColorValue} >
         <Flex
           zIndex="1000" width="full" maxWidth="container.xl" margin="auto"
           direction="row" justifyContent="center" alignItems="center" flexWrap="wrap"
@@ -92,8 +92,8 @@ export const Layout: React.FC = ({ children, ...props }) => {
             <LogoBox />
           </Flex>
           <chakra.nav flex="1" display="flex" alignItems="center" justifyContent="center">
-            <Tabs index={currentTabIndex} variant="solid-rounded" colorScheme="dark-blue">
-              <TabList bg={menuBg} >
+            <Tabs index={currentTabIndex} variant="" colorScheme="dark-blue">
+              <TabList bg={'transparent'} >
                 {NAVIGATION_TABS.map(({ label, url }) => (
                   <Tab as={Link} key={label} to={url} px={6}>
                     {label}

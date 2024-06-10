@@ -28,6 +28,7 @@ const appTheme = {
   config: {
     initialColorMode: 'dark',
     useSystemColorMode: false,
+    
   },
   sizes: {
     modalHeight: '345px',

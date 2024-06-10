@@ -46,7 +46,10 @@
 #sonic-app-root{
     position: relative;
     z-index: 1;
+    
 }
+
+
 
 #canvas {
     position: absolute;
@@ -57,3 +60,41 @@
     z-index: 0;
   }
   
+.bg{
+    position: relative;
+}
+.bg:after{
+    display: block ;
+    content: "";
+    height: 200px ;
+    position: absolute ;
+    right: 0 ;
+    left: 0 ;
+    top: 0 ;
+    background: linear-gradient(180deg, rgba(0, 38, 24, 0.99) 0%, rgba(0, 0, 0, 0) 100%);
+
+}
+
+.contents{
+    display: block ;
+    width: 100% ;
+    margin: auto ;
+    height: auto ;
+    position: relative;
+    z-index: 1 ;
+}
+
+.wallet-button{
+    background-color: white !important;
+    color: #000 !important;
+    box-shadow: 0px 0px 34px 0px #FFFFFF66;
+}
+.chakra-ui-light .bg{
+    &:after{
+        background: transparent !important;
+    }
+}
+
+.token-search{
+    background-color: transparent !important;
+}
