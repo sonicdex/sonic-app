@@ -29,8 +29,8 @@ export const SlippageSettings = ({
   isAutoSlippage,
   setIsAutoSlippage,
 }: SlippageSettingsProps) => {
-  const inputBorderColorDisabled = useColorModeValue('gray.200', 'custom.4');
-  const inputBorderColorEnabled = 'dark-blue.500';
+  const inputBorderColorDisabled = useColorModeValue('gray.200', 'green');
+  const inputBorderColorEnabled = 'green';
   const inputBorderColor = isAutoSlippage
     ? inputBorderColorDisabled
     : inputBorderColorEnabled;
@@ -92,7 +92,7 @@ export const SlippageSettings = ({
       <Flex direction="row" alignItems="center">
         <Button
           variant={isAutoSlippage ? 'gradient' : 'outline'}
-          colorScheme="dark-blue"
+          colorScheme="green"
           borderRadius="full"
           onClick={handleButtonClick}
           mr={3}

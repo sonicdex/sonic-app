@@ -106,7 +106,7 @@ export const RetryFailedTrxModal: React.FC<RetryProps> = ({ isRetryOpen }) => {
                     </FormControl>
                 </ModalBody>
                 <ModalFooter as={HStack}>
-                    <Button isLoading={isTokenTrx} width={'100%'} leftIcon={<FaRedoAlt />} type="submit" variant="gradient" colorScheme="dark-blue">
+                    <Button isLoading={isTokenTrx} width={'100%'} leftIcon={<FaRedoAlt />} type="submit" variant="gradient" colorScheme="green">
                         {buttonText}
                     </Button>
                 </ModalFooter>

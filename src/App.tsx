@@ -19,70 +19,73 @@ import { useBlockHeightsInit } from './hooks/use-block-heights-init';
 import { useWalletInit } from '@/integrations/artemis'
 
 import { useCyclesMintingCanisterInit, useLiquidityViewInit, usePriceInit, useSwapCanisterInit } from './store';
-import { loadsupportedTokenList } from '@/utils'
-
+import { loadsupportedTokenList } from '@/utils';
 
 export const App = () => {
   useCyclesMintingCanisterInit();
-  useWalletInit();
   usePriceInit();
   useSwapCanisterInit();
   useLiquidityViewInit();
   useBlockHeightsInit();
   useNetworkErrorNotifications();
   loadsupportedTokenList();
- 
+  useWalletInit();
+
   return (
     <BrowserRouter basename="/">
-      <Layout>
-        <WalletListModal />
-        <NotificationManager />
+      <div className='bg'>
+        <div className='contents'> 
+          <Layout>
+            <WalletListModal />
+            <NotificationManager />
 
-        <TermsAndConditionsModal />
-        <TokenSelectModal />
-        <AllowanceVerifyModal />
-        <MintManualModal />
+            <TermsAndConditionsModal />
+            <TokenSelectModal />
+            <AllowanceVerifyModal />
+            <MintManualModal />
 
-        <SwapProgressModal />
-        <SwapFailModal />
+            <SwapProgressModal />
+            <SwapFailModal />
 
-        <WithdrawProgressModal />
+            <WithdrawProgressModal />
 
-        <DepositProgressModal />
+            <DepositProgressModal />
 
-        <TransferProgressModal />
+            <TransferProgressModal />
 
-        <AddLiquidityProgressModal />
-        <AddLiquidityFailModal />
+            <AddLiquidityProgressModal />
+            <AddLiquidityFailModal />
 
-        <RemoveLiquidityProgressModal />
-        <RemoveLiquidityFailModal />
+            <RemoveLiquidityProgressModal />
+            <RemoveLiquidityFailModal />
 
-        <WithdrawWICPProgressModal />
-        <WithdrawWICPFailModal />
+            <WithdrawWICPProgressModal />
+            <WithdrawWICPFailModal />
 
-        <MintXTCProgressModal />
-        <MintXTCFailModal />
+            <MintXTCProgressModal />
+            <MintXTCFailModal />
 
-        <MintWICPProgressModal />
-        <MintWICPFailModal />
+            <MintWICPProgressModal />
+            <MintWICPFailModal />
 
-        <Routes>
-          <Route path="/swap" element={<SwapView />} />
-          <Route path="/swap/mint" element={<MintView />} />
-          <Route path="/assets" element={<AssetsListView />} />
-          <Route path="/assets/withdraw" element={<AssetsWithdrawView />} />
-          <Route path="/assets/deposit" element={<AssetsDepositView />} />
-          <Route path="/assets/transfer" element={<AssetsTransferView />} />
-          <Route path="/liquidity" element={<LiquidityListView />} />
-          <Route path="/liquidity/add" element={<LiquidityAddView />} />
-          <Route path="/activity" element={<ActivityListView />} />
-          {/* <Route path="/test" element={<TestView />} />
+            <Routes>
+              <Route path="/swap" element={<SwapView />} />
+              <Route path="/swap/mint" element={<MintView />} />
+              <Route path="/assets" element={<AssetsListView />} />
+              <Route path="/assets/withdraw" element={<AssetsWithdrawView />} />
+              <Route path="/assets/deposit" element={<AssetsDepositView />} />
+              <Route path="/assets/transfer" element={<AssetsTransferView />} />
+              <Route path="/liquidity" element={<LiquidityListView />} />
+              <Route path="/liquidity/add" element={<LiquidityAddView />} />
+              <Route path="/activity" element={<ActivityListView />} />
+              {/* <Route path="/test" element={<TestView />} />
           <Route path="/test/t1" element={<TestViewt1 />} />
           <Route path="/test/t2" element={<TestViewt2 />} /> */}
-          <Route path="*" element={<Navigate to="/swap" />} />
-        </Routes>
-      </Layout>
+              <Route path="*" element={<Navigate to="/swap" />} />
+            </Routes>
+          </Layout>
+        </div>
+      </div>
     </BrowserRouter>
   );
 };

@@ -25,7 +25,7 @@ export const useSwapViewStore = () => {
     if (!from.metadata || !tokenList) return [[], []];
     const fromTokenOptions: any = [];
     Object.values(tokenList).forEach(x => {
-      if (x.blockStatus!='Partial')
+      if (x?.blockStatus!='Partial')
         fromTokenOptions.push(x)
     });
 

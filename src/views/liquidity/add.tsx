@@ -311,7 +311,7 @@ export const LiquidityAddView = () => {
   };
 
   const menuListShadow = useColorModeValue('lg', 'none');
-  const menuListBg = useColorModeValue('gray.50', 'custom.3');
+  const menuListBg = useColorModeValue('gray.50', 'custom.2');
   const color = useColorModeValue('gray.600', 'custom.1');
   const bg = useColorModeValue('gray.100', 'gray.800');
   const iconBorderColor = useColorModeValue('gray.200', 'custom.4');
@@ -487,7 +487,7 @@ export const LiquidityAddView = () => {
         isDisabled ? (
           <Button isFullWidth size="lg" isDisabled={true}>Liquidity Adding Disabled</Button>
         ) : (
-          <Button isFullWidth size="lg" variant="gradient" colorScheme="dark-blue" onClick={handleAddLiquidity}
+          <Button isFullWidth size="lg" variant="gradient" colorScheme="green" onClick={handleAddLiquidity}
             isDisabled={buttonDisabled || typeof token0Allowance !== 'number' || typeof token1Allowance !== 'number'}
             isLoading={isLoading || typeof token0Allowance !== 'number' || typeof token1Allowance !== 'number'}
           >

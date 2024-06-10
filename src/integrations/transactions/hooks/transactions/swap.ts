@@ -9,7 +9,7 @@ import { parseAmount } from '@/utils/format';
 
 //import { useBalances } from '@/hooks';
 
-import {  getswapActor } from '@/utils' ; //getSwapCapActor
+import {  getswapActor } from '@/utils' ;
 
 import { CreateTransaction, SwapModel } from '../../models';
 

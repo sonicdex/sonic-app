@@ -15,7 +15,7 @@ var buckets={
     dev:'dev.sonic.ooo'
 }
 var distributions={
-    prod:'EP6ZE3CYNVMJB',
+    prod:'E32OS6OHYP8CJU',
     preprod:'E3ABAAMEF9JRLC',
     dev:"E3SAHCRX5HU64G"
 }
