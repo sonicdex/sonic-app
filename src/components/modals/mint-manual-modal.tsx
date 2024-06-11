@@ -157,6 +157,7 @@ export const MintManualModal = () => {
               value={mintManualTokenSymbol}
               onChange={handleTokenSymbolSelect}
               colorScheme="green"
+              _focus={{ borderColor:"#0b361d" , boxShadow : "0 0 0 1px #0b361d"}}
             >
               {TOKEN_OPTIONS.map((option) => (
                 <option key={option.value} value={option.value}>
