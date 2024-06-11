@@ -11,7 +11,7 @@ const baseStyle: SystemStyleObject = {
   transitionProperty: 'common',
   transitionDuration: 'normal',
   _focus: {
-    boxShadow: 'outline',
+    boxShadow : "0 0 0 3px #286a4b !important"
   },
   _disabled: {
     opacity: 0.4,

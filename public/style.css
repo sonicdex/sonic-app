@@ -113,3 +113,7 @@ body::-webkit-scrollbar {
     background-clip: content-box;
     background: linear-gradient(180deg, #38A169 0%, #276749 100%);
 }
+
+.chakra-modal__close-btn:focus,.chakra-modal__close-btn:active{
+    box-shadow: 0 0 0 3px #286a4b !important;   
+} 
