@@ -154,7 +154,7 @@ export const TokenSelectModal = () => {
                     </Skeleton>
                   </Flex>
                   <Skeleton isLoaded={!isLoading} minWidth={17} ml={2}>
-                    <Button width="fit-content" variant="gradient" colorScheme="dark-blue"
+                    <Button width="fit-content" variant="gradient" colorScheme="green"
                       px={4} borderRadius={20} fontWeight={700} onClick={handleImportToken}
                     >
                       Import

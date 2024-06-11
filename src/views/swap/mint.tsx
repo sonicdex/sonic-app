@@ -165,7 +165,7 @@ export const MintView = () => {
       <KeepInSonicBox canHeldInSonic={canHeldInSonic} symbol={to.metadata?.symbol} operation={currentOperation} />
 
       {isConnected ? (
-        <Button isFullWidth variant="gradient" colorScheme="dark-blue" size="lg" onClick={onButtonClick}
+        <Button isFullWidth variant="gradient" colorScheme="green" size="lg" onClick={onButtonClick}
           isLoading={
             isLoading ||
             (step === SwapStep.Review && typeof allowance !== 'number')

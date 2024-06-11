@@ -213,7 +213,7 @@ export const RemoveLiquidityModal = () => {
             <Slider
               value={removeAmountPercentage || 1}
               onChange={handleSliderChange}
-              colorScheme="dark-blue"
+              colorScheme="green"
               focusThumbOnChange={false}
               min={1}
               max={100}
@@ -233,7 +233,7 @@ export const RemoveLiquidityModal = () => {
               >
                 <Button
                   lineHeight="1"
-                  colorScheme="dark-blue"
+                  colorScheme="green"
                   variant="outline"
                   disabled={removeAmountPercentage === preset}
                   onClick={() => handleSliderChange(preset)}
@@ -283,7 +283,7 @@ export const RemoveLiquidityModal = () => {
                     liquidityViewActions.setKeepInSonic(e.target.checked)
                   )
                 }
-                colorScheme="dark-blue"
+                colorScheme="green"
                 size="md"
                 color={checkboxColor}
                 fontWeight={600}
@@ -297,7 +297,7 @@ export const RemoveLiquidityModal = () => {
         <ModalFooter>
           <Button
             variant="gradient"
-            colorScheme="dark-blue"
+            colorScheme="green"
             mb={3}
             size="lg"
             isFullWidth

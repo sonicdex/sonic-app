@@ -27,7 +27,7 @@ export const MintXTCFailModal = () => {
     >
       <Button
         variant="gradient"
-        colorScheme="dark-blue"
+        colorScheme="green"
         borderRadius={12}
         fontWeight={700}
         fontSize="1.125rem"

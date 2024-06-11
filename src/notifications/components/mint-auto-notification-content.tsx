@@ -137,7 +137,7 @@ export const MintAutoNotificationContent: React.FC<
 
   return shouldShowRetryButton ? (
     <Button
-      colorScheme="dark-blue"
+      colorScheme="green"
       variant="gradient"
       isFullWidth
       onClick={handleAutoMint}

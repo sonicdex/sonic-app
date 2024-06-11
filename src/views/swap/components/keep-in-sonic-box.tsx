@@ -113,7 +113,7 @@ export const KeepInSonicBox: React.FC<KeepInSonicBoxProps> = ({
               onChange={(e) =>
                 dispatch(swapViewActions.setKeepInSonic(e.target.checked))
               }
-              colorScheme="dark-blue"
+              colorScheme="green"
               color={checkboxColor}
               fontWeight={600}
             >

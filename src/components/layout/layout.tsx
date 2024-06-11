@@ -92,7 +92,7 @@ export const Layout: React.FC = ({ children, ...props }) => {
             <LogoBox />
           </Flex>
           <chakra.nav flex="1" display="flex" alignItems="center" justifyContent="center">
-            <Tabs index={currentTabIndex} variant="" colorScheme="dark-blue">
+            <Tabs index={currentTabIndex} variant="" colorScheme="green">
               <TabList bg={'transparent'} >
                 {NAVIGATION_TABS.map(({ label, url }) => (
                   <Tab as={Link} key={label} to={url} px={6}>

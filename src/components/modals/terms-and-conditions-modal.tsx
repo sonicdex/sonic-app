@@ -55,7 +55,7 @@ export const TermsAndConditionsModal = () => {
           <Button
             onClick={successCallback}
             width="full"
-            colorScheme="dark-blue"
+            colorScheme="green"
             variant="gradient"
           >
             I agree

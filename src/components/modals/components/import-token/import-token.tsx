@@ -96,7 +96,7 @@ export const ImportToken = ({
       </Checkbox>
       <Button
         variant="gradient"
-        colorScheme="dark-blue"
+        colorScheme="green"
         w="100%"
         borderRadius={12}
         fontSize="1.125rem"

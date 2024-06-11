@@ -145,7 +145,7 @@ export const AssetsTransferView = () => {
       </Box>
       <FeeBox isTransfer token={selectedTokenMetadata} />
 
-      <Button isFullWidth size="lg" variant="gradient" colorScheme="dark-blue"
+      <Button isFullWidth size="lg" variant="gradient" colorScheme="green"
         isDisabled={buttonDisabled} onClick={handleTransfer} isLoading={isLoading}>
         {buttonMessage}
       </Button>

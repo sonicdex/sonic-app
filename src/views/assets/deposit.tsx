@@ -178,7 +178,7 @@ export const AssetsDepositView = () => {
       <FeeBox token={selectedTokenMetadata} isDeposit />
       {isDisabled ?
         (<Button isFullWidth size="lg" isDisabled={true}>Deposit Disabled</Button>) :
-        (<Button isFullWidth size="lg" variant="gradient" colorScheme="dark-blue"
+        (<Button isFullWidth size="lg" variant="gradient" colorScheme="green"
           isDisabled={buttonDisabled} onClick={handleDeposit} isLoading={isLoading}>
           {buttonMessage}
         </Button>)

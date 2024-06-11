@@ -20,7 +20,7 @@ export const Checkbox = ({ checked, onClick }: CheckboxProps) => {
       onClick={onClick}
       border={checked ? 'none' : '1.5px solid'}
       borderColor={borderColor}
-      bg={checked ? 'dark-blue.400' : ''}
+      bg={checked ? 'green' : ''}
       alignItems="center"
       justifyContent="center"
     >
