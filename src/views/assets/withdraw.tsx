@@ -191,7 +191,7 @@ export const AssetsWithdrawView = () => {
       <Button
         isFullWidth
         variant="gradient"
-        colorScheme="dark-blue"
+        colorScheme="green"
         size="lg"
         onClick={handleWithdraw}
         isLoading={isLoading}

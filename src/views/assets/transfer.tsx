@@ -139,7 +139,7 @@ export const AssetsTransferView = () => {
            
             <Input type="text" value={toAddress} onChange={handleToAddressChange} fontSize={'large'}
               placeholder={`Enter ${supportingAddrsType === 'both' ? 'Principal ID or Account ID' : supportingAddrsType === 'accountId' ? 'Account ID' : supportingAddrsType === 'principalId' ? 'Principal ID' : ''}`}
-              size="md" />
+              size="md" colorScheme="green" _focus={{ borderColor:"#0b361d" , boxShadow : "0 0 0 1px #0b361d"}} />
           </Skeleton>
         </Token>
       </Box>

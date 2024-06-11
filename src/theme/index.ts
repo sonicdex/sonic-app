@@ -8,7 +8,7 @@ import Modal from './components/modal';
 import Popover from './components/popover';
 import Tabs from './components/tabs';
 import { colors } from './foundations';
-
+import { Input } from "./components/input"
 const appTheme = {
   styles: {
     global: (props: any) => ({
@@ -41,6 +41,7 @@ const appTheme = {
     Modal,
     Popover,
     Menu,
+    Input
   },
 };
 
