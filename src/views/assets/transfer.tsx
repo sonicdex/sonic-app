@@ -136,6 +136,7 @@ export const AssetsTransferView = () => {
           
           <Skeleton isLoaded={!isLoading} borderRadius="6" mt={'3'}>
             <Text mb="4" fontWeight={600}> To :</Text>
+           
             <Input type="text" value={toAddress} onChange={handleToAddressChange} fontSize={'large'}
               placeholder={`Enter ${supportingAddrsType === 'both' ? 'Principal ID or Account ID' : supportingAddrsType === 'accountId' ? 'Account ID' : supportingAddrsType === 'principalId' ? 'Principal ID' : ''}`}
               size="md" />

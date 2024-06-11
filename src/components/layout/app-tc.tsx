@@ -91,7 +91,7 @@ export const TandCModal: React.FC<tandCModalProps> = ({ isOpened }) => {
                             <Checkbox isChecked={isChecked} onChange={handleCheckboxChange} marginRight="10">
                                 I have read the risk warning carefully and agree to take the risk myself
                             </Checkbox>
-                            <Button colorScheme="blue" onClick={handleAgree}>
+                            <Button colorScheme="green" onClick={handleAgree}>
                                 Close
                             </Button>
                         </Flex>

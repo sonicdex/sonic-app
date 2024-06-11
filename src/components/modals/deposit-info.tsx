@@ -81,7 +81,7 @@ export const DepostAddressModal: React.FC<DepostAddressProps> = ({ isNotiOpen, t
                         <Heading as="h2" color={titleColor} fontWeight={400} fontSize="1.2rem" mb={3}>
                             Use Principal ID
                         </Heading>
-                        <Flex width={'100%'} border="1px solid rgb(63, 81, 181)" borderRadius={'lg'} py={3} px={2}>
+                        <Flex width={'100%'} border="1px solid #1c3326" borderRadius={'lg'} py={3} px={2}>
                             <Box display="flex" width={'100%'} alignItems="center"  justifyContent="start">
                                 <Box mr={4}>Principal ID</Box>
                                 <Button onClick={()=>handleCopy('princ')} >
@@ -91,7 +91,7 @@ export const DepostAddressModal: React.FC<DepostAddressProps> = ({ isNotiOpen, t
                                     </HStack>
                                 </Button>
                             </Box>
-                            <Box border="1px solid rgb(63, 81, 181)" p={1} borderRadius={'md'} >
+                            <Box border="1px solid #1c3326" p={1} borderRadius={'md'} >
                                 {principalId && <QRCode value={principalId} size={100} />}
                             </Box>
                         </Flex>
@@ -101,7 +101,7 @@ export const DepostAddressModal: React.FC<DepostAddressProps> = ({ isNotiOpen, t
                         <Heading as="h2" color={titleColor} fontWeight={400} fontSize="1.2rem" mb={3}>
                             Use Account ID
                         </Heading>
-                        <Flex width={'100%'} border="1px solid rgb(63, 81, 181)" borderRadius={'lg'} py={3} px={2}>
+                        <Flex width={'100%'} border="1px solid #1c3326" borderRadius={'lg'} py={3} px={2}>
                         <Box display="flex" width={'100%'} alignItems="center"  justifyContent="start" >
                                 <Box mr={4}>Account ID</Box>
                                 <Button onClick={()=>handleCopy('acntid')} >
@@ -111,7 +111,7 @@ export const DepostAddressModal: React.FC<DepostAddressProps> = ({ isNotiOpen, t
                                     </HStack>
                                 </Button>
                             </Box>
-                            <Box border="1px solid rgb(63, 81, 181)" p={1} borderRadius={'md'} >
+                            <Box border="1px solid #1c3326" p={1} borderRadius={'md'} >
                                 {accountId && <QRCode value={accountId} size={100} />}
                             </Box>
                         </Flex>

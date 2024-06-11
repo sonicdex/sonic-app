@@ -10,6 +10,7 @@ const baseStyle: SystemStyleObject = {
   fontWeight: 'semibold',
   transitionProperty: 'common',
   transitionDuration: 'normal',
+  
   _focus: {
     boxShadow : "0 0 0 3px #286a4b !important"
   },
