@@ -22,8 +22,8 @@ type CircleIconProps = {
 export const CircleIcon = ({ status, iconSrc }: CircleIconProps) => {
   const spinAnimation = `${spin} infinite 2s linear`;
 
-  const bgDark = status === StepStatus.Disabled ? 'custom.3' : 'dark-blue.500';
-  const bgLight = status === StepStatus.Disabled ? 'gray.200' : 'dark-blue.500';
+  const bgDark = status === StepStatus.Disabled ? 'custom.3' : 'green.500';
+  const bgLight = status === StepStatus.Disabled ? 'gray.200' : 'green.500';
   const bg = useColorModeValue(bgLight, bgDark);
 
   const opacity = status === StepStatus.Disabled ? 0.5 : 1;

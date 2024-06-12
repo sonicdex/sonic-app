@@ -41,7 +41,7 @@ export const KeepInSonicBox: React.FC<KeepInSonicBoxProps> = ({
   const { keepInSonic } = useSwapViewStore();
   const dispatch = useAppDispatch();
 
-  const linkColor = useColorModeValue('dark-blue.300', 'dark-blue.500');
+  const linkColor = useColorModeValue('green.300', 'green.500');
   const bg = useColorModeValue('gray.50', 'custom.2');
   const shadow = useColorModeValue('base', 'none');
 

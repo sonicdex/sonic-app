@@ -43,7 +43,7 @@ export const TermsAndConditionsModal = () => {
         <ModalHeader borderBottom="none">Terms and Conditions</ModalHeader>
         <Text as="p" color={color} maxW={370}>
           Please read &nbsp;
-          <Link color="dark-blue.600" href={ExternalLink.termsAndConditions}>
+          <Link color="green.600" href={ExternalLink.termsAndConditions}>
             Sonic's terms & conditions
           </Link>
           &nbsp;carefully.

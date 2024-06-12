@@ -29,7 +29,7 @@ export const MintView = () => {
   const swapPlacementButtonBg = useColorModeValue('gray.50', 'custom.3');
   const menuListShadow = useColorModeValue('lg', 'none');
   const menuListBg = useColorModeValue('gray.50', 'custom.3');
-  const linkColor = useColorModeValue('dark-blue.500', 'dark-blue.400');
+  const linkColor = useColorModeValue('green.500', 'green.400');
   useEffect(() => { dispatch(swapViewActions.setKeepInSonic(false)) }, []);
 
   

@@ -114,7 +114,7 @@ export const MintManualModal = () => {
     handleClose();
   };
 
-  const linkColor = useColorModeValue('dark-blue.500', 'dark-blue.400');
+  const linkColor = useColorModeValue('green.500', 'green.400');
 
   const { activityTabURL, learnMoreURL } = useMemo(() => {
     return {

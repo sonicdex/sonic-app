@@ -87,7 +87,7 @@ export const WithdrawWICPNotificationContent: React.FC<WithdrawWICPNotificationC
   }, []);
 
   return (
-    <Link target="_blank" rel="noreferrer" color="dark-blue.500" onClick={handleOpenModal}>
+    <Link target="_blank" rel="noreferrer" color="green.500" onClick={handleOpenModal}>
       View progress
     </Link>
   );

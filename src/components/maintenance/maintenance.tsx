@@ -35,7 +35,7 @@ export const Maintenance = () => {
         <Text fontSize="xl">
           Sonic App is under maintenance. We'll be back shortly.
         </Text>
-        <Text color="dark-blue.500">
+        <Text color="green.500">
           <Link href={ExternalLink.twitter} target={ExternalLink.twitter}>
             Checkout out more information
           </Link>

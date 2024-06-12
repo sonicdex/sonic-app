@@ -76,6 +76,6 @@ export const MintWICPNotificationContent: React.FC<
   }, [batchFnUpdate]);
 
   return (
-    <Link target="_blank" rel="noreferrer" color="dark-blue.500" onClick={handleOpenModal}>View progress</Link>
+    <Link target="_blank" rel="noreferrer" color="green.500" onClick={handleOpenModal}>View progress</Link>
   );
 };

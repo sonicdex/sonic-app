@@ -36,7 +36,7 @@ export const SwapView = () => {
   const swapPlacementButtonBg = useColorModeValue('gray.50', 'custom.3');
   const menuListShadow = useColorModeValue('lg', 'none');
   const menuListBg = useColorModeValue('gray.50', 'custom.2');
-  const linkColor = useColorModeValue('dark-blue.500', 'dark-blue.400');
+  const linkColor = useColorModeValue('green.500', 'green.400');
 
   const { fromTokenOptions, toTokenOptions, from, to, slippage } = useSwapViewStore();
   
