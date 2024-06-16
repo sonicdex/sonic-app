@@ -12,10 +12,11 @@ import { useKeepSync } from '@/store/features/keep-sync';
 import { AppLog } from '@/utils';
 import { parseResponseUserLPBalances } from '@/utils/canister';
 
-import { parseAmount, roundBigInt } from '@/utils/format';
-import { fetchICPBalance } from '@/utils/icp';
+import { parseAmount, roundBigInt , formatValue } from '@/utils/format';
+// import { fetchICPBalance } from '@/utils/icp';
 
 import { getswapActor, getTokenBalance, tokenList } from '@/utils'
+import { ENV } from '@/config';
 
 export const useBalances = () => {
   const { principalId } = useWalletStore();
@@ -76,7 +77,7 @@ export const useBalances = () => {
         })
       ) : undefined;
 
-      const icpBalance = await fetchICPBalance(principalId);
+      var icpBalance =  formatValue(await getTokenBalance(ENV.canistersPrincipalIDs.ledger, principalId),8);
       dispatch(swapCanisterActions.setICPBalance(parseAmount(icpBalance, ICP_METADATA.decimals)));
       dispatch(swapCanisterActions.setSonicBalances(sonicBalances));
       dispatch(swapCanisterActions.setTokenBalances(tokenBalances));

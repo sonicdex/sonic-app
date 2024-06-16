@@ -23,6 +23,7 @@ export const TokenBalancesPopover: FC<TokenBalancesPopoverProps> = ({
   );
 
   const color = useColorModeValue('gray.800', 'gray.50');
+  const bg = useColorModeValue('gray.50', 'custom.2');
 
   if (filteredSources.length === 0) { return null; }
 
@@ -39,7 +40,7 @@ export const TokenBalancesPopover: FC<TokenBalancesPopoverProps> = ({
         )}
       </PopoverTrigger>
       <div>
-        <PopoverContent color={color}>
+        <PopoverContent color={color} bg={bg}>
           <PopoverArrow />
           <PopoverHeader>
             <Heading as="h3" size="sm"> Balance Breakdown</Heading>
