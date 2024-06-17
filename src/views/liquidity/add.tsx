@@ -1,5 +1,5 @@
 import {
-  Box, Button, Center, Flex, HStack, Icon, IconButton, Menu, MenuButton, MenuList, Popover, PopoverArrow, PopoverBody,
+  Box, Button, Center, Flex, HStack, Icon, IconButton, Menu, MenuButton, MenuList, Popover, PopoverBody,
   PopoverContent, PopoverHeader, PopoverTrigger, Skeleton, Stack, Text, Tooltip, useColorModeValue,
 } from '@chakra-ui/react';
 
@@ -327,6 +327,7 @@ export const LiquidityAddView = () => {
   }, [token0?.metadata?.id, token1?.metadata?.id])
 
 
+const popupbg = useColorModeValue('gray.50', 'custom.2');
   return (
     <Stack spacing={4} mb="5">
       <ViewHeader onArrowBack={handlePreviousStep} title="Add Liquidity">
@@ -421,8 +422,8 @@ export const LiquidityAddView = () => {
                             <Icon as={FaInfoCircle} ml={2.5} width={4} />
                           </Flex>
                         </PopoverTrigger>
-                        <PopoverContent>
-                          <PopoverArrow />
+                        <PopoverContent bg={popupbg}>
+                          {/* <PopoverArrow /> */}
                           <PopoverBody>
                             This is your share of the liquidity pool represented
                             as tokens
@@ -462,9 +463,9 @@ export const LiquidityAddView = () => {
                         <Icon as={FaInfoCircle} width={5} transition="opacity 200ms" opacity={0.6} />
                       </Flex>
                     </PopoverTrigger>
-                    <PopoverContent minWidth="25rem">
+                    <PopoverContent minWidth="25rem" bg={popupbg}>
                       <PopoverHeader>Transaction Details</PopoverHeader>
-                      <PopoverArrow />
+                      {/* <PopoverArrow /> */}
                       <PopoverBody display="inline-block">
                         <Stack>
                           <StackLine title={`${token0.metadata.name} Deposit Fee`} value={`${fee0} ${token0.metadata.symbol}`} />
