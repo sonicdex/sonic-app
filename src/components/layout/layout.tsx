@@ -1,5 +1,5 @@
 import {  chakra, Container, Flex, HStack, IconButton, Link as ChakraLink, Menu, MenuButton,
-  MenuDivider,MenuItem,MenuList,Tab,TabList,Tabs,Text,useColorMode,useColorModeValue,useToken,Alert,AlertIcon,CloseButton,
+  MenuDivider,MenuItem,MenuList,Tab,TabList,Tabs,Text,useColorMode,useColorModeValue,Alert,AlertIcon,CloseButton,
 } from '@chakra-ui/react';
 
 
@@ -48,9 +48,8 @@ export const Layout: React.FC = ({ children, ...props }) => {
     [location]
   );
 
-   const backgroundColor = useColorModeValue('custom.5', 'darkGreen');
+ 
 
-  const backgroundColorValue = useToken('colors', backgroundColor);
 
   const { colorMode, toggleColorMode } = useColorMode();
   const [bannerMsg, setBannerMsg] = useState<string>('');;
@@ -63,7 +62,7 @@ export const Layout: React.FC = ({ children, ...props }) => {
   const handleCloseBanner = () => {
     setShowBanner(false);
   };
-
+  
   useEffect(() => {
     try {
       axios.get('https://cdn.sonic.ooo/data/appdata.json').then((resp: any) => {
@@ -72,6 +71,8 @@ export const Layout: React.FC = ({ children, ...props }) => {
       });
     } catch (e) { }
   }, [])
+
+  const headerBackground = useColorModeValue('app.background.body.light','custom.header-bg')
   return (
     <>
       {(showBanner && bannerMsg) && (
@@ -82,8 +83,9 @@ export const Layout: React.FC = ({ children, ...props }) => {
           <CloseButton size="sm" onClick={handleCloseBanner} position="absolute" right="8px" top="8px" />
         </Alert>
       )}
-      <Container as="header" maxW={['100%', 'container.xl', 'container.xl']} position="sticky" top={0} zIndex={10} id="header" data-legacy-bg={backgroundColorValue} >
+      <Container as="header" maxW={['100%']} position="sticky" top={0} zIndex={10} id="header"   bg={headerBackground} >
         <Flex
+         maxW={[ 'container.xl', 'container.xl']}
           zIndex="1000" width="full" maxWidth="container.xl" margin="auto"
           direction="row" justifyContent="center" alignItems="center" flexWrap="wrap"
           gap="2" p={['4', '4', '8']} position="sticky" top="0"
@@ -161,7 +163,7 @@ export const Layout: React.FC = ({ children, ...props }) => {
         </Flex>
       </Container>
 
-      <Container as="main" maxW="xl" minH={`calc(100vh - ${headerHeight} - ${FOOTER_HEIGHT})`} py="4" display="flex" flexDirection="column" {...props}>
+      <Container as="main"  maxW="xl" minH={`calc(100vh - ${headerHeight} - ${FOOTER_HEIGHT})`} py="4" display="flex" flexDirection="column" {...props}>
         {children}
       </Container>
       <BottomWarning/>

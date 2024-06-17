@@ -25,7 +25,8 @@ export const colors = {
     'card-bg-green': '#0f1a14',
     'card-border':'#1c3326',
     'token-card-border':'#29352f',
-    'token-search-box':'#384d42'
+    'token-search-box':'#384d42',
+    'header-bg':'linear-gradient(180deg, rgba(0, 38, 24, 0.99) 0%, rgb(4 5 5) 50%, rgb(4 5 5) 100%)'
   },
   ['dark-blue']: {
     50: '#eceefe',
