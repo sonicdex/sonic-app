@@ -10,6 +10,7 @@ import {
   Portal,
   Stack,
   Text,
+  useColorModeValue,
 } from '@chakra-ui/react';
 import { toBigNumber } from '@sonicdex/sonic-js';
 import { FaArrowRight } from '@react-icons/all-files/fa/FaArrowRight';
@@ -115,6 +116,7 @@ export const ExchangeBox: React.FC<ExchangeBoxProps> = ({ priceImpact }) => {
 
   if (!from.metadata || !to.metadata) return null;
 
+
   if (icpMetadata) {
     return (
       <Flex opacity={0.4} alignItems="center" px={4} fontWeight={400}>
@@ -129,7 +131,7 @@ export const ExchangeBox: React.FC<ExchangeBoxProps> = ({ priceImpact }) => {
       </Flex>
     );
   }
-
+  const popbg = useColorModeValue('gray.50', 'custom.2');
   return (
     <Flex alignItems="center" px={4} fontWeight={400}>
       <ChainPopover from={from} to={to} />
@@ -146,7 +148,7 @@ export const ExchangeBox: React.FC<ExchangeBoxProps> = ({ priceImpact }) => {
           </Flex>
         </PopoverTrigger>
         <Portal>
-          <PopoverContent minWidth="25rem">
+          <PopoverContent minWidth="25rem" background={popbg}>
             <PopoverHeader>Transaction Details</PopoverHeader>
             <PopoverArrow />
             <PopoverBody display="inline-block">

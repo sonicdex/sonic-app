@@ -318,6 +318,7 @@ export const LiquidityAddView = () => {
   const textColor = useColorModeValue('gray.700', 'gray.300');
   const [isDisabled, setIsDisabled] = useState(false);
 
+  const popbg = useColorModeValue('gray.50', 'custom.2');
   useEffect(() => {
     if( token0?.metadata?.blockStatus =='Partial' || token1?.metadata?.blockStatus =='Partial'){
       setIsDisabled(true);
@@ -462,7 +463,7 @@ export const LiquidityAddView = () => {
                         <Icon as={FaInfoCircle} width={5} transition="opacity 200ms" opacity={0.6} />
                       </Flex>
                     </PopoverTrigger>
-                    <PopoverContent minWidth="25rem">
+                    <PopoverContent minWidth="25rem" background={popbg} >
                       <PopoverHeader>Transaction Details</PopoverHeader>
                       <PopoverArrow />
                       <PopoverBody display="inline-block">
