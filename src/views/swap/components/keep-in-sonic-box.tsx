@@ -5,7 +5,6 @@ import {
   Icon,
   Link,
   Popover,
-  PopoverArrow,
   PopoverBody,
   PopoverContent,
   PopoverTrigger,
@@ -133,7 +132,6 @@ export const KeepInSonicBox: React.FC<KeepInSonicBoxProps> = ({
             </PopoverTrigger>
             <Portal>
               <PopoverContent bg="custom.2">
-                <PopoverArrow />
                 <PopoverBody display="inline-block">{popoverLabel}</PopoverBody>
               </PopoverContent>
             </Portal>
