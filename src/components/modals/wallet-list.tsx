@@ -49,7 +49,7 @@ export const WalletListModal: React.FC = () => {
 
     const bg = useColorModeValue('gray.50', 'custom.2');
     const titleColor = useColorModeValue('gray.800', 'gray.50');
-
+const borderColor = useColorModeValue('gray.100','custom.search-box-bg')
     
     return (
         <Modal isOpen={(state == walletState.OpenWalletList || state == walletState.Connecting) ? true : false} isCentered onClose={handleClose}>
@@ -68,7 +68,7 @@ export const WalletListModal: React.FC = () => {
                         <ModalBody mt={4} p={0}>
                             {artemis?.wallets.map((item: any, i:number) => (
                                 <Stack width="100%" maxWidth="100%" direction={['row', 'row']} key={i}
-                                    alignItems="center" mt={2} cursor="pointer" mb={2} pt={1} pb={1} pl={2} pr={20} border="1px solid #286d4c" borderRadius="60px"
+                                    alignItems="center" mt={2} cursor="pointer" mb={2} pt={1} pb={1} pl={2} pr={20} border="1px solid" borderColor={borderColor} borderRadius="60px"
                                     onClick={() => handleSelectWallet(item?.id, item?.name)}
                                 >
                                     <Box mr={4}>

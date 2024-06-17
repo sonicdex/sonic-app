@@ -12,11 +12,12 @@ export const SwapSubTab: React.FC<options> = ({ tabname }) => {
     return (
         <Flex gap={4} direction='row' align='center' alignItems='center' style={{ justifyContent: 'center' }}>
             <Button
-                as={Link} colorScheme={isSwapTab ? 'green' : ''} to={'/swap'} variant={isSwapTab ? 'solid' : 'outline'} px={6}>
+                as={Link} colorScheme={isSwapTab ? 'green' : ''} to={'/swap'} variant={isSwapTab ? 'gradient' : 'outline'} px={6}
+                >
                 Swap
             </Button>
             <Button
-                as={Link} colorScheme={isSwapTab ? '' : 'green'} to={'/swap/mint'} variant={isSwapTab ? 'outline' : 'solid'} px={6}>
+                as={Link} colorScheme={isSwapTab ? '' : 'green'} to={'/swap/mint'} variant={isSwapTab ? 'outline' : 'gradient'} px={6}>
                 Mint
             </Button>
         </Flex>

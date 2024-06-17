@@ -90,9 +90,9 @@
 }
 
 .wallet-button {
-    background-color: white !important;
+    /* background-color: white !important;
     color: #000 !important;
-    box-shadow: 0px 0px 34px 0px #FFFFFF66;
+    box-shadow: 0px 0px 34px 0px #FFFFFF66; */
 }
 
 .token-search {
@@ -125,4 +125,9 @@ header nav a[role="tab"]:active,
 .chakra-modal__close-btn:focus,
 .chakra-modal__close-btn:active {
     box-shadow: 0 0 0 3px #286a4b !important;
+}
+
+
+.logo-ring{
+    border: solid 1px #486354 ;
 }

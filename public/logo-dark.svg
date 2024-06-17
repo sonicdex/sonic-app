@@ -1,0 +1,29 @@
+<svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 108 21" width="108" height="21">
+	<title>logo-svg</title>
+	<defs>
+		<linearGradient id="g1" x2="1" gradientUnits="userSpaceOnUse" gradientTransform="matrix(14.491,24.008,-24.484,14.778,19.889,0)">
+			<stop offset="0" stop-color="#00fe8e"/>
+			<stop offset=".442" stop-color="#07e992"/>
+			<stop offset=".899" stop-color="#1ae0ba"/>
+		</linearGradient>
+	</defs>
+	<style>
+		.s0 { fill: #fbfcff } 
+		.s1 { fill: url(#g1) } 
+	</style>
+	<g id="Group 6356470">
+		<filter id="f0">
+			<feFlood flood-color="#000000" flood-opacity="1" />
+			<feBlend mode="normal" in2="SourceGraphic"/>
+			<feComposite in2="SourceAlpha" operator="in" />
+		</filter>
+		<g id="Vector" filter="url(#f0)">
+			<path id="Layer" class="s0" d="m96.8 12.7c0-3.1 2-5.7 5.6-5.7 2.1 0 4.8 1.2 5.1 4.4h-1.8c-0.3-2.1-1.7-2.8-3.3-2.8-2.6 0-3.8 1.9-3.8 4.1 0 2.3 1.2 4.2 3.8 4.2 1.6 0 3-0.7 3.3-2.8h1.8c-0.3 3.1-3 4.3-5.1 4.3-3.6 0-5.6-2.5-5.6-5.7z"/>
+			<path id="Layer" class="s0" d="m91 5.5c-0.9 0-1.5-0.7-1.5-1.5 0-0.9 0.6-1.6 1.5-1.6 0.9 0 1.6 0.7 1.6 1.6 0 0.8-0.7 1.5-1.6 1.5zm-3.6 12.9v-1.6h3.1v-8.2l-2.3 0.7v-1.6l2.5-0.6c1.1-0.1 1.5 0.5 1.5 1.3v8.4h3v1.6z"/>
+			<path id="Layer" class="s0" d="m81.3 8.6c-2.3 0-4 1.8-4 4.8v5h-1.8v-11.4h1.8v2.1l-0.2 1.3h0.5c0.4-2 1.8-3.4 4.2-3.4 2.4 0 4.1 1.5 4.1 4.5v6.9h-1.8v-6.7c0-2.2-0.9-3.1-2.8-3.1z"/>
+			<path id="Layer" fill-rule="evenodd" class="s0" d="m62.5 12.7c0-3.2 2.3-5.7 5.8-5.7 3.4 0 5.7 2.5 5.7 5.7 0 3.2-2.3 5.7-5.7 5.7-3.5 0-5.8-2.5-5.8-5.7zm1.8 0c0 2.3 1.4 4.2 4 4.2 2.5 0 3.9-1.9 3.9-4.2 0-2.3-1.4-4.1-3.9-4.1-2.6 0-4 1.8-4 4.1z"/>
+			<path id="Layer" class="s0" d="m60.9 14.3c0 2.3-1.4 4.1-5.9 4.1-5.5 0-7.1-2.4-7.1-6h1.8c0 3.6 2 4.5 5.3 4.5 2.6 0 4.1-0.7 4.1-2.6 0-2.3-2.7-2.8-5.2-3.5-3-0.9-5.3-1.8-5.3-4.5 0-2.4 1.7-3.9 5.5-3.9 4.6 0 6.2 2.8 6.2 5.4h-1.8c0-2.7-2-3.8-4.4-3.8-2.1 0-3.7 0.5-3.7 2.2 0 1.7 1.4 2.2 4 3 3 1 6.5 1.8 6.5 5.1z"/>
+		</g>
+		<path id="Union" class="s1" d="m1.4 7.7c-1.2 0-1.8-1.4-1.1-2.3l4.5-5.4h13.1c1.1 0 1.8 1.4 1 2.3l-2.1 2.5c-0.7 0.9-0.1 2.3 1.1 2.3h17.6c2.4 0 3.7 2.8 2.2 4.7l-7.4 9h-11.9c-2.1 0-3.2-2.4-1.9-3.9l5.6-6.9c0.8-0.9 0.1-2.3-1-2.3z"/>
+	</g>
+</svg>
