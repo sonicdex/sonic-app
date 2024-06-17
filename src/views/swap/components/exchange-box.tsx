@@ -2,7 +2,7 @@ import {
   Flex,
   Icon,
   Popover,
-  PopoverArrow,
+  // PopoverArrow,
   PopoverBody,
   PopoverContent,
   PopoverHeader,
@@ -10,6 +10,7 @@ import {
   Portal,
   Stack,
   Text,
+  useColorModeValue,
 } from '@chakra-ui/react';
 import { toBigNumber } from '@sonicdex/sonic-js';
 import { FaArrowRight } from '@react-icons/all-files/fa/FaArrowRight';
@@ -112,7 +113,7 @@ export const ExchangeBox: React.FC<ExchangeBoxProps> = ({ priceImpact }) => {
       getSwapAmountOutMin({ from, to, slippage, allPairs, hasDeposit: Boolean(depositFee), hasWithdraw: keepInSonic}),
     [allPairs, depositFee, from, keepInSonic, slippage, to]
   );
-
+  const bg = useColorModeValue('gray.50', 'custom.2');
   if (!from.metadata || !to.metadata) return null;
 
   if (icpMetadata) {
@@ -146,9 +147,9 @@ export const ExchangeBox: React.FC<ExchangeBoxProps> = ({ priceImpact }) => {
           </Flex>
         </PopoverTrigger>
         <Portal>
-          <PopoverContent minWidth="25rem">
+          <PopoverContent minWidth="25rem" bg={bg}>
             <PopoverHeader>Transaction Details</PopoverHeader>
-            <PopoverArrow />
+            {/* <PopoverArrow /> */}
             <PopoverBody display="inline-block">
               <Stack>
                 <StackLine

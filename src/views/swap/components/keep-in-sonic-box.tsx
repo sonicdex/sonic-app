@@ -131,7 +131,7 @@ export const KeepInSonicBox: React.FC<KeepInSonicBoxProps> = ({
               </Flex>
             </PopoverTrigger>
             <Portal>
-              <PopoverContent bg="custom.2">
+              <PopoverContent bg={bg}>
                 <PopoverBody display="inline-block">{popoverLabel}</PopoverBody>
               </PopoverContent>
             </Portal>
