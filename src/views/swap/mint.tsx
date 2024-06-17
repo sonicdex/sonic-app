@@ -26,9 +26,9 @@ export const MintView = () => {
   useSwapView('mint');
   const dispatch = useAppDispatch();
 
-  const swapPlacementButtonBg = useColorModeValue('gray.50', 'custom.3');
+
   const menuListShadow = useColorModeValue('lg', 'none');
-  const menuListBg = useColorModeValue('gray.50', 'custom.3');
+  const menuListBg = useColorModeValue('gray.50', 'custom.2');
   const linkColor = useColorModeValue('green.500', 'green.400');
   useEffect(() => { dispatch(swapViewActions.setKeepInSonic(false)) }, []);
 
@@ -148,8 +148,10 @@ export const MintView = () => {
             <IconButton aria-label="Switch placement"
               icon={<Icon as={FaArrowDown} transition="transform 250ms" />}
               variant="outline" mt={-2} mb={-2} w="fit-content" mx="auto"
-              bg={swapPlacementButtonBg} onClick={onSwitchTokens}
+              bg={menuListBg} 
+              onClick={onSwitchTokens}
               pointerEvents={!to.metadata ? 'none' : 'all'}
+              colorScheme="green"
               _hover={{
                 '& > svg': {
                   transform: 'rotate(180deg)',

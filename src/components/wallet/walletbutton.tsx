@@ -10,7 +10,7 @@ export const WalletConnectBtn: React.FC = ({ }) => {
     }
     return (
         <Button size="lg" borderRadius={100} style={{ width:'100%' }} className='wallet-button' variant="gradient" colorScheme="green"  onClick={handleClick}>
-           11 Connect Wallet
+           Connect Wallet
         </Button>
     );
 }

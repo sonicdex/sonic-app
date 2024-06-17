@@ -121,3 +121,7 @@ header nav a[role="tab"]:active,
 .logo-ring{
     border: solid 1px #486354 ;
 }
+
+*{
+    --chakra-shadows-outline: 0 0 0 3px #38a169;
+}
