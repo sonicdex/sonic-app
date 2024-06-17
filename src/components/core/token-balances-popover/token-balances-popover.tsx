@@ -25,9 +25,9 @@ export const TokenBalancesPopover: FC<TokenBalancesPopoverProps> = ({
   const color = useColorModeValue('gray.800', 'gray.50');
 
   if (filteredSources.length === 0) { return null; }
-
+const bg = useColorModeValue('app.background.body.light','app.background.body.dark')
   return (
-    <Popover trigger="hover">
+    <Popover trigger="hover" >
       <PopoverTrigger>
         {children || (
           <HStack spacing={1}>
@@ -39,8 +39,8 @@ export const TokenBalancesPopover: FC<TokenBalancesPopoverProps> = ({
         )}
       </PopoverTrigger>
       <div>
-        <PopoverContent color={color}>
-          <PopoverArrow />
+        <PopoverContent color={color} bg={bg} >
+          <PopoverArrow bg={bg} />
           <PopoverHeader>
             <Heading as="h3" size="sm"> Balance Breakdown</Heading>
           </PopoverHeader>
@@ -51,7 +51,6 @@ export const TokenBalancesPopover: FC<TokenBalancesPopoverProps> = ({
           </PopoverBody>
         </PopoverContent>
       </div>
-
     </Popover>
   );
 };
