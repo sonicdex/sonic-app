@@ -64,17 +64,7 @@
     position: relative;
 }
 
-.bg:after {
-    display: block;
-    content: "";
-    height: 200px;
-    position: absolute;
-    right: 0;
-    left: 0;
-    top: 0;
-    background: linear-gradient(180deg, rgba(0, 38, 24, 0.99) 0%, rgba(0, 38, 24, 0.1) 50%, rgba(0, 0, 0, 0) 100%);
 
-}
 
 .chakra-ui-light .bg:after {
     display: none;

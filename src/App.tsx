@@ -34,6 +34,7 @@ export const App = () => {
   return (
     <BrowserRouter basename="/">
       <div className='bg'>
+       
         <div className='contents'> 
           <Layout>
             <WalletListModal />
@@ -85,6 +86,7 @@ export const App = () => {
             </Routes>
           </Layout>
         </div>
+      
       </div>
     </BrowserRouter>
   );
