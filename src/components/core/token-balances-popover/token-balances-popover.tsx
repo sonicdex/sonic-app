@@ -1,4 +1,4 @@
-import { Popover, PopoverArrow, PopoverBody, PopoverContent, PopoverHeader, PopoverTrigger } from '@chakra-ui/popover';
+import { Popover,PopoverBody, PopoverContent, PopoverHeader, PopoverTrigger } from '@chakra-ui/popover';
 
 import { Heading, HStack, Image, useColorModeValue } from '@chakra-ui/react';
 import { FC, useMemo } from 'react';
@@ -25,7 +25,8 @@ export const TokenBalancesPopover: FC<TokenBalancesPopoverProps> = ({
   const color = useColorModeValue('gray.800', 'gray.50');
 
   if (filteredSources.length === 0) { return null; }
-const bg = useColorModeValue('app.background.body.light','app.background.body.dark')
+// const bg = useColorModeValue('app.background.body.light','app.background.body.dark')
+const popupbg = useColorModeValue('gray.50', 'custom.2');
   return (
     <Popover trigger="hover" >
       <PopoverTrigger>
@@ -39,8 +40,8 @@ const bg = useColorModeValue('app.background.body.light','app.background.body.da
         )}
       </PopoverTrigger>
       <div>
-        <PopoverContent color={color} bg={bg} >
-          <PopoverArrow bg={bg} />
+        <PopoverContent color={color} bg={popupbg} >
+          {/* <PopoverArrow bg={bg} /> */}
           <PopoverHeader>
             <Heading as="h3" size="sm"> Balance Breakdown</Heading>
           </PopoverHeader>
