@@ -63,8 +63,8 @@ export const Token: React.FC<TokenProps> = ({
   children,
   ...tokenProps
 }) => {
-  const borderGlow = useColorModeValue('green', 'green');
-  const borderNotGlow = useColorModeValue('custom.6', 'custom.6');
+  const borderGlow = useColorModeValue('gray.50', 'green');
+  const borderNotGlow = useColorModeValue('gray.50', 'custom.6');
   const borderColor = shouldGlow ? borderGlow : borderNotGlow;
 
   const backgroundGlow = useColorModeValue('gray.50', 'black');
@@ -116,7 +116,7 @@ export const TokenDetailsButton = forwardRef<TokenDetailsButtonProps, 'button'>(
   ({ children, ...props }, ref) => {
     const { isLoading } = useTokenContext();
     return (
-      <Button ref={ref} borderRadius="full" mr={5} minWidth="fit-content" {...props} colorScheme='green'  isDisabled={isLoading || props.isDisabled}>
+      <Button ref={ref} borderRadius="full" mr={5} minWidth="fit-content" {...props} colorScheme='green' variant="gradient"  isDisabled={isLoading || props.isDisabled}>
         {children}
         <Icon as={FaChevronDown} ml={2.5} width={3} />
       </Button>

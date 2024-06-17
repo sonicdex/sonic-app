@@ -14,7 +14,7 @@ export const SearchBar = ({ search, setSearch }: SearchBarProps) => {
     setSearch(inputValue);
   };
 
-  const bg = useColorModeValue('gray.50', 'custom.2');
+  const bg = useColorModeValue('gray.50', 'custom.token-search-box');
   const color = useColorModeValue('gray.800', 'gray.50');
  
 
@@ -31,7 +31,7 @@ export const SearchBar = ({ search, setSearch }: SearchBarProps) => {
       <Box
         as="input"
         value={search}
-        // bg={bg}
+        bg={bg}
         border="none"
         w="100%"
         color={color}

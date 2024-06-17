@@ -99,7 +99,7 @@ export const TokenSelectModal = () => {
               <Heading as="h1" fontWeight={700} fontSize="lg">
                 Select Token 
               </Heading>
-              <Box fontSize="md" px="0.625rem" w="100%" mt={4}>
+              <Box fontSize="md" px="0.625rem" w="100%" mt={4} >
                 <SearchBar search={search} setSearch={setSearch} />
               </Box>
             </Flex>
@@ -201,15 +201,15 @@ const TokenSelectItem = ({
   }, [balancesState]);
 
   const nameColor = useColorModeValue('gray.700', 'gray.300');
-
+  const cardBorderColor = useColorModeValue('gray.100','custom.token-card-border')
   return (
     <Flex alignItems="center" justifyContent="space-between" py={3} px={3} cursor="pointer"
-      width="100%" transition="border 400ms" border="1px solid" borderColor={isSelected ? 'gray.600' : 'transparent'}
-      borderRadius="20px" onClick={onSelect} _hover={{ borderColor: 'custom.4'}}
+      width="100%" transition="border 400ms" border="1px solid" borderColor={isSelected ? cardBorderColor : 'transparent'}
+      borderRadius="20px" onClick={onSelect} _hover={{ borderColor: '#40574c'}}
     >
       <Stack direction="row" alignItems="center" spacing={4}>
         <Skeleton isLoaded={!isLoading}>
-          <Image alt={symbol} src={logoSrc} w={8} h={8} borderRadius={40} />
+          <Image alt={symbol} src={logoSrc} w={8} h={8} borderRadius={40} className="logo-ring" />
         </Skeleton>
         <Box>
           <Skeleton isLoaded={!isLoading} minWidth="fit-content">
@@ -217,7 +217,7 @@ const TokenSelectItem = ({
               {symbol}
             </Text>
           </Skeleton>
-          <Skeleton isLoaded={!isLoading} flex={1} overflow="hidden">
+          <Skeleton isLoaded={!isLoading} flex={1} overflow="hidden" style={{ minWidth : 150 }}>
             <Tooltip label={name} openDelay={1000}>
               <Text fontSize="sm" color={nameColor}>
                 {name}
