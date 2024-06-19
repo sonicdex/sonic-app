@@ -47,6 +47,7 @@ export const TokenBalancesPopover: FC<TokenBalancesPopoverProps> = ({
           </PopoverHeader>
           <PopoverBody>
             {filteredSources.map((source) => (
+              
               <TokenBalancesPopoverItem key={source.name} decimals={decimals} symbol={symbol} {...source} />
             ))}
           </PopoverBody>
